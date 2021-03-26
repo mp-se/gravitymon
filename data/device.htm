@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+
+<!-- 
+  TODO:
+  * Add OTA check for new firmware.
+  * Add button to do upgrade to new firmware.
+-->
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <title>Beer Gravity Monitor</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="py-4">
+
+<!-- START MENU -->
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+  <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbar"> 
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/index.htm">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/device.htm">Device</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/config.htm">Configuration</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/about.htm">About</a>
+      </li>
+    </ul>
+  </div>
+  <div class="spinner-border text-light" id="spinner" role="status"></div>
+</nav>
+
+<!-- START MAIN INDEX -->
+
+<div class="container">
+
+  <hr class="my-4">
+
+  <div class="alert alert-success alert-dismissible fade hide show d-none" role="alert" id="alert">
+    <div id="alert-msg">...</div>
+    <button type="button" id="alert-btn" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <script type="text/javascript">
+    function showError( msg ) {
+      $('.alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show')
+      $('#alert-msg').text( msg );
+    }
+
+    function showSuccess( msg ) {
+      $('.alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show')
+      $('#alert-msg').text( msg );
+    }
+
+    $("#alert-btn").click(function(e){
+      $('.alert').addClass('d-none').removeClass('show')
+    });    
+  </script>
+
+  <div class="row mb-3">
+    <div class="col-md-8 themed-grid-col bg-light">Current version:</div>
+    <div class="col-md-4 themed-grid-col bg-light" id="app-ver">Loading...</div>
+  </div>
+  <div class="row mb-3" id="h-app-ver-new" hidden>
+    <div class="col-md-8 themed-grid-col bg-light">New version:</div>
+    <div class="col-md-4 themed-grid-col bg-light" id="app-ver-new">Loading...</div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-8 themed-grid-col bg-light">Host name:</div>
+    <div class="col-md-4 themed-grid-col bg-light" id="mdns">Loading...</div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-8 themed-grid-col bg-light">Device ID:</div>
+    <div class="col-md-4 themed-grid-col bg-light" id="id">Loading...</div>
+  </div>
+
+  <!--
+  <div class="form-group row">
+    <div class="col-md-4 ">
+      <button type="button" class="btn btn-warning" id="wifi-reset-btn">Reset Device</button>
+    </div>
+    <div class="col-md-4">
+      <button type="button" class="btn btn-warning" id="wifi-reset-btn">Clear WIFI Settings</button>
+    </div>
+    <div class="col-md-4">
+      <button type="button" class="btn btn-warning" id="wifi-reset-btn">Factory default settings</button>
+    </div>
+  </div>
+  -->
+  
+  <hr class="my-4">
+</div>
+
+<script type="text/javascript">
+  window.onload = getConfig;
+
+  function getConfig() {
+    var url = "/api/device";
+    //var url = "/test/device.json";
+    $('#spinner').show(); 
+    $.getJSON(url, function (cfg) {
+        console.log( cfg );
+        $("#app-ver").text(cfg["app-ver"]);
+        $("#mdns").text(cfg["mdns"]);
+        $("#id").text(cfg["id"]);
+    })
+    .fail(function () {
+      showError('Unable to get data from the device.');
+    })
+    .always(function () {
+        $('#spinner').hide(); 
+    });
+  }
+</script>
+
+<!-- START FOOTER -->
+
+<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021 Magnus Persson</div>
+</body>
+</html>
