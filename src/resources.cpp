@@ -25,16 +25,16 @@ SOFTWARE.
 
 #if defined( EMBED_HTML )
 
-/*INCBIN(IndexHtm, "data/index.htm" );
-INCBIN(DeviceHtm, "data/device.htm" );
-INCBIN(ConfigHtm, "data/config.htm" );
-INCBIN(AboutHtm, "data/about.htm" );*/
-
 // Using minify to reduce memory usage. Reducing RAM memory usage with about 7%
 INCBIN(IndexHtm, "data/index.min.htm" );
 INCBIN(DeviceHtm, "data/device.min.htm" );
 INCBIN(ConfigHtm, "data/config.min.htm" );
 INCBIN(AboutHtm, "data/about.min.htm" );
+
+#else
+
+// Minium web interface for uploading htm files 
+INCBIN(UploadHtm, "data/upload.min.htm" );
 
 #endif
 

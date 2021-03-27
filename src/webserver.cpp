@@ -31,6 +31,7 @@ SOFTWARE.
 #include <ArduinoJson.h>
 #include <incbin.h>
 #include <ESP8266WiFi.h>
+//#define DEBUG_ESP_HTTP_SERVER
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <LittleFS.h>
@@ -41,9 +42,11 @@ INCBIN_EXTERN(IndexHtm);
 INCBIN_EXTERN(DeviceHtm);
 INCBIN_EXTERN(ConfigHtm);
 INCBIN_EXTERN(AboutHtm);
+#else
+INCBIN_EXTERN(UploadHtm);
 #endif
 
-WebServer myWebServer;
+WebServer myWebServer;                  // My wrapper class fr webserver functions
 ESP8266WebServer server(80);
 
 extern bool sleepModeActive;
@@ -84,9 +87,9 @@ void webHandleConfig() {
     double temp  = myTempSensor.getValueCelcius();
     double gravity = calculateGravity( angle, temp );
 
-    doc[ CFG_PARAM_ANGLE ]              = reduceFloatPrecision( angle);
-    doc[ CFG_PARAM_GRAVITY ]            = reduceFloatPrecision( gravityTemperatureCorrection( gravity, temp ), 4);
-    doc[ CFG_PARAM_BATTERY ]            = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
+    doc[ CFG_PARAM_ANGLE ]   = reduceFloatPrecision( angle);
+    doc[ CFG_PARAM_GRAVITY ] = reduceFloatPrecision( gravityTemperatureCorrection( gravity, temp ), 4);
+    doc[ CFG_PARAM_BATTERY ] = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
 
 #if LOG_LEVEL==6
     serializeJson(doc, Serial);
@@ -95,6 +98,72 @@ void webHandleConfig() {
     String out;
     serializeJson(doc, out);
     server.send(200, "application/json", out.c_str() );
+}
+
+//
+// Callback from webServer when / has been accessed.
+//
+void webHandleUpload() {
+#if LOG_LEVEL==6
+    Log.verbose(F("WEB : webServer callback for /api/upload." CR));
+#endif
+    Log.notice(F("WEB : webServer callback for /api/upload." CR));
+    DynamicJsonDocument doc(100);
+
+    doc[ "index" ]  = myWebServer.checkHtmlFile( WebServer::HTML_INDEX );
+    doc[ "device" ] = myWebServer.checkHtmlFile( WebServer::HTML_DEVICE );
+    doc[ "config" ] = myWebServer.checkHtmlFile( WebServer::HTML_CONFIG );
+    doc[ "about" ]  = myWebServer.checkHtmlFile( WebServer::HTML_ABOUT );
+    
+#if LOG_LEVEL==6
+    serializeJson(doc, Serial);
+    Serial.print( CR );
+#endif    
+    String out;
+    serializeJson(doc, out);
+    server.send(200, "application/json", out.c_str() );
+}
+
+//
+// Callback from webServer when / has been accessed.
+//
+File uploadFile;
+
+void webHandleUploadFile() {
+    Log.notice(F("WEB : webServer callback for /api/upload/file." CR));
+#if LOG_LEVEL==6
+    Log.verbose(F("WEB : webServer callback for /api/upload/file." CR));
+#endif
+    HTTPUpload& upload = server.upload();
+    String f = upload.filename;
+    bool validFilename = false;
+
+    if( f.equalsIgnoreCase("index.min.htm")  || f.equalsIgnoreCase("device.min.htm") ||
+        f.equalsIgnoreCase("config.min.htm") || f.equalsIgnoreCase("about.min.htm")  ) {
+            validFilename = true;
+    }
+
+    Log.notice(F("WEB : webServer callback for /api/upload, receiving file %s, valid=%s." CR), f.c_str(), validFilename?"yes":"no");
+
+    if(upload.status == UPLOAD_FILE_START) {
+        Log.notice(F("WEB : Start upload." CR) );
+        if( validFilename )
+            uploadFile = LittleFS.open( f, "w");
+    } else if(upload.status == UPLOAD_FILE_WRITE) {
+        Log.notice(F("WEB : Writing upload." CR) );
+        if(uploadFile)
+            uploadFile.write(upload.buf, upload.currentSize); // Write the received bytes to the file
+    } else if(upload.status == UPLOAD_FILE_END){
+        Log.notice(F("WEB : Finish upload." CR) );
+        if(uploadFile) {                                    
+            uploadFile.close();                               
+            Log.notice(F("WEB : File uploaded %d bytes." CR), upload.totalSize);
+        } 
+        server.sendHeader("Location","/");               
+        server.send(303);
+    } else {
+        server.send(500, "text/plain", "Couldn't create file.");
+    }
 }
 
 //
@@ -146,15 +215,15 @@ void webHandleStatus() {
     double temp  = myTempSensor.getValueCelcius();
     double gravity = calculateGravity( angle, temp );
 
-    doc[ CFG_PARAM_ID ]                 = myConfig.getID();
-    doc[ CFG_PARAM_ANGLE ]              = reduceFloatPrecision( angle);
-    doc[ CFG_PARAM_GRAVITY ]            = reduceFloatPrecision( gravityTemperatureCorrection( gravity, temp ), 4);
-    doc[ CFG_PARAM_TEMP_C ]             = reduceFloatPrecision( temp, 1);
-    doc[ CFG_PARAM_TEMP_F ]             = reduceFloatPrecision( myTempSensor.getValueFarenheight(), 1);
-    doc[ CFG_PARAM_BATTERY ]            = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
-    doc[ CFG_PARAM_TEMPFORMAT ]         = String( myConfig.getTempFormat() ); 
-    doc[ CFG_PARAM_SLEEP_MODE ]         = sleepModeAlwaysSkip; 
-    doc[ CFG_PARAM_RSSI ]               = WiFi.RSSI(); 
+    doc[ CFG_PARAM_ID ]         = myConfig.getID();
+    doc[ CFG_PARAM_ANGLE ]      = reduceFloatPrecision( angle);
+    doc[ CFG_PARAM_GRAVITY ]    = reduceFloatPrecision( gravityTemperatureCorrection( gravity, temp ), 4);
+    doc[ CFG_PARAM_TEMP_C ]     = reduceFloatPrecision( temp, 1);
+    doc[ CFG_PARAM_TEMP_F ]     = reduceFloatPrecision( myTempSensor.getValueFarenheight(), 1);
+    doc[ CFG_PARAM_BATTERY ]    = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
+    doc[ CFG_PARAM_TEMPFORMAT ] = String( myConfig.getTempFormat() ); 
+    doc[ CFG_PARAM_SLEEP_MODE ] = sleepModeAlwaysSkip; 
+    doc[ CFG_PARAM_RSSI ]       = WiFi.RSSI(); 
 #if LOG_LEVEL==6
     serializeJson(doc, Serial);
     Serial.print( CR );
@@ -300,13 +369,45 @@ void webHandleConfigHardware() {
 }
 
 //
+// Helper function to check if files exist on file system.
+//
+const char* WebServer::getHtmlFileName( HtmlFile item ) {
+#if LOG_LEVEL==6
+    Log.verbose(F("WEB : Looking up filename for %d." CR), item);
+#endif
+    switch( item ) {
+        case HTML_INDEX:
+        return "index.min.htm";
+        case HTML_DEVICE:
+        return "device.min.htm";
+        case HTML_CONFIG:
+        return "config.min.htm";
+        case HTML_ABOUT:
+        return "about.min.htm";
+    }
+
+    return "";
+}
+
+//
+// Helper function to check if files exist on file system.
+//
+bool WebServer::checkHtmlFile( HtmlFile item ) {
+    const char *fn = getHtmlFileName( item );
+
+#if LOG_LEVEL==6
+    Log.verbose(F("WEB : Checking for file %s." CR), fn );
+#endif
+
+    // TODO: We might need to add more checks here like zero file size etc. But for now we only check if the file exist.
+
+    return LittleFS.exists( fn );
+}
+
+//
 // Setup the Web Server callbacks and start it
 //
 bool WebServer::setupWebServer() {
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : Setting up web server." CR));
-#endif
-
     Log.notice(F("WEB : Web server setup started." CR));
 
     MDNS.begin( myConfig.getMDNS() );
@@ -331,34 +432,53 @@ bool WebServer::setupWebServer() {
     } );
 #else
     // Show files in the filessytem at startup
+   
     FSInfo fs;
     LittleFS.info(fs);
-    Log.notice( F("File system: Total=%d, Used=%d." CR), fs.totalBytes, fs.usedBytes );
+    Log.notice( F("WEB : File system Total=%d, Used=%d." CR), fs.totalBytes, fs.usedBytes );
     Dir dir = LittleFS.openDir("/");
     while( dir.next() ) {
-        Log.notice( F("File: %s, %d bytes" CR), dir.fileName().c_str(), dir.fileSize() );
+        Log.notice( F("WEB : File=%s, %d bytes" CR), dir.fileName().c_str(), dir.fileSize() );
     }
 
-    server.serveStatic("/", LittleFS, "/index.htm" );
-    server.serveStatic("/index.htm", LittleFS, "/index.htm" );
-    server.serveStatic("/device.htm", LittleFS, "/device.htm" );
-    server.serveStatic("/config.htm", LittleFS, "/config.htm" );
-    server.serveStatic("/about.htm", LittleFS, "/about.htm" );
+    // Check if the html files exist, if so serve them, else show the static upload page.
+    if( checkHtmlFile( HTML_INDEX ) && checkHtmlFile( HTML_DEVICE ) && checkHtmlFile( HTML_CONFIG ) && checkHtmlFile( HTML_ABOUT ) ) {
+        Log.notice(F("WEB : All html files exist, starting in normal mode." CR));
+
+        server.serveStatic("/", LittleFS, "/index.min.htm" );
+        server.serveStatic("/index.htm", LittleFS, "/index.min.htm" );
+        server.serveStatic("/device.htm", LittleFS, "/device.min.htm" );
+        server.serveStatic("/config.htm", LittleFS, "/config.min.htm" );
+        server.serveStatic("/about.htm", LittleFS, "/about.min.htm" );
+
+        // Also add the static upload view in case we we have issues that needs to be fixed.
+        server.on("/upload.htm",[]() {
+            server.send_P(200, "text/html", (const char*) gUploadHtmData, gUploadHtmSize );
+        } );
+    } else {
+        Log.error(F("WEB : Missing html files, starting with upload UI." CR));
+
+        server.on("/",[]() {
+            server.send_P(200, "text/html", (const char*) gUploadHtmData, gUploadHtmSize );
+        } );
+    }
 #endif
 
     // Dynamic content
-    server.on("/api/config", webHandleConfig);              // Get config.json
-    server.on("/api/device", webHandleDevice);              // Get device.json
-    server.on("/api/calibrate", webHandleCalibrate);        // Run calibration routine (param id)
-    server.on("/api/factory", webHandleFactoryReset);                // Reset the device
-    server.on("/api/status", webHandleStatus);              // Get the status.json
-    server.on("/api/clearwifi", webHandleClearWIFI);        // Clear wifi settings
+    server.on("/api/config", HTTP_GET, webHandleConfig);              // Get config.json
+    server.on("/api/device", HTTP_GET, webHandleDevice);              // Get device.json
+    server.on("/api/calibrate", HTTP_GET, webHandleCalibrate);        // Run calibration routine (param id)
+    server.on("/api/factory", HTTP_GET, webHandleFactoryReset);       // Reset the device
+    server.on("/api/status", HTTP_GET, webHandleStatus);              // Get the status.json
+    server.on("/api/clearwifi", HTTP_GET, webHandleClearWIFI);        // Clear wifi settings
+    server.on("/api/upload", HTTP_GET, webHandleUpload);              // Get upload.json
 
-    server.on("/api/status/sleepmode", webHandleStatusSleepmode); 
-    server.on("/api/config/device", webHandleConfigDevice); 
-    server.on("/api/config/push", webHandleConfigPush); 
-    server.on("/api/config/gravity", webHandleConfigGravity); 
-    server.on("/api/config/hardware", webHandleConfigHardware); 
+    server.on("/api/upload", HTTP_POST, [](){ server.send(200); }, webHandleUploadFile);        // File upload data
+    server.on("/api/status/sleepmode", HTTP_POST, webHandleStatusSleepmode);                    // Change sleep mode 
+    server.on("/api/config/device", HTTP_POST, webHandleConfigDevice);                          // Change device settings
+    server.on("/api/config/push", HTTP_POST, webHandleConfigPush);                              // Change push settings
+    server.on("/api/config/gravity", HTTP_POST, webHandleConfigGravity);                        // Change gravity settings
+    server.on("/api/config/hardware", HTTP_POST, webHandleConfigHardware);                      // Change hardware settings
 
     server.onNotFound( []() {
         Log.error(F("WEB : URL not found %s received." CR), server.uri().c_str());

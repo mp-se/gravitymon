@@ -29,8 +29,17 @@ SOFTWARE.
 // classes
 class WebServer {
     public:
-        bool setupWebServer();
-        void loop();
+        enum HtmlFile {
+            HTML_INDEX = 0,
+            HTML_DEVICE = 1,
+            HTML_CONFIG = 2,
+            HTML_ABOUT = 3
+        };
+
+        bool        setupWebServer();
+        void        loop();
+        bool        checkHtmlFile( HtmlFile item );
+        const char* getHtmlFileName( HtmlFile item );
 };
 
 // Global instance created
