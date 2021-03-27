@@ -26,16 +26,19 @@ SOFTWARE.
 
 // Include 
 #include <WiFiManager.h>
+#include <ArduinoJson.h>
 
 // classes
 class Wifi {
     private:
         // WIFI
-        bool connectedFlag = false;
+        bool      connectedFlag = false;
+        JsonArray htmlFiles;
 
         // OTA
         bool newFirmware = false;
         bool parseFirmwareVersionString( int (&num)[3], const char *version );
+        void downloadFile(const char *fname);
 
     public:
         // WIFI

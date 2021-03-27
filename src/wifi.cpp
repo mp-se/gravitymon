@@ -29,7 +29,6 @@ SOFTWARE.
 #include "tempsensor.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-#include <ArduinoJson.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 #include <LittleFS.h>
@@ -39,7 +38,6 @@ Wifi myWifi;
 WiFiManager myWifiManager; 
 
 // TODO: ADD MDNS setting to WIFI portal.....
-// TODO: Download html files during OTA update to reduce image size.
 
 //
 // Connect to last known access point or create one if connection is not working. 
@@ -113,6 +111,33 @@ bool Wifi::updateFirmware() {
 }
 
 //
+// Download and save file
+//
+void Wifi::downloadFile(const char *fname) {
+#if LOG_LEVEL==6
+    Log.verbose(F("WIFI: Download file %s." CR), fname);
+#endif
+    WiFiClient client;
+    HTTPClient http;
+    String serverPath = myConfig.getOtaURL();
+    serverPath += fname;
+
+    // Your Domain name with URL path or IP address with path
+    http.begin( client, serverPath);
+    int httpResponseCode = http.GET();
+
+    if (httpResponseCode==200) {
+        File f = LittleFS.open( fname, "w" );    
+        http.writeToStream( &f );
+        f.close();
+        Log.notice(F("WIFI: Downloaded file %s." CR), fname);
+    } else {
+        Log.error(F("WIFI: HTTP Response code %d" CR), httpResponseCode);
+    }
+    http.end();
+}
+
+//
 // Check what firmware version is available over OTA
 //
 bool Wifi::checkFirmwareVersion() {
@@ -137,13 +162,13 @@ bool Wifi::checkFirmwareVersion() {
 #if LOG_LEVEL==6
         Log.verbose(F("WIFI: Payload %s." CR), payload.c_str());
 #endif
-        DynamicJsonDocument ver(256);
+        DynamicJsonDocument ver(300);
         DeserializationError err = deserializeJson(ver, payload);
         if( err ) {
-            Log.error(F("WIFI: Failed to parse json" CR));
+            Log.error(F("WIFI: Failed to parse json, %s" CR), err);
         } else {
 #if LOG_LEVEL==6
-            Log.verbose(F("WIFI: Project %s version %s." CR), ver["project"].as<char*>(), ver["version"].as<char*>());
+            Log.verbose(F("WIFI: Project %s version %s." CR), (const char*) ver["project"], (const char*) ver["version"]);
 #endif
             int  newVer[3];
             int  curVer[3];
@@ -163,6 +188,19 @@ bool Wifi::checkFirmwareVersion() {
                     if( newVer[0] == curVer[0] && newVer[1] == curVer[1] && newVer[2] > curVer[2] )
                         newFirmware = true;
                 }
+            }
+
+            // Download new html files to filesystem if they are present.
+            if( !ver["html"].isNull() && newFirmware ) {
+                Log.notice(F("OTA : Downloading new html files." CR));
+                htmlFiles = ver["html"].as<JsonArray>();
+                for(JsonVariant v : htmlFiles) {
+                    String s = v;
+#if LOG_LEVEL==6
+                    Log.verbose(F("OTA : Html file found %s" CR), s.c_str() );
+#endif
+                    downloadFile( s.c_str() );
+                }                
             }
         }
     } else {
@@ -188,8 +226,6 @@ bool Wifi::parseFirmwareVersionString( int (&num)[3], const char *version ) {
     int  i = 0;
 
     strcpy( &temp[0], version );
-
-    // TODO: Do some error checking on the string, lenght etc. 
 
     while ((s = strtok_r(p, ".", &p)) != NULL) {
         num[i++] = atoi( s );

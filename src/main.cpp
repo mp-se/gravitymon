@@ -132,16 +132,15 @@ void setup() {
     if( myWifi.isConnected() ) {
         Log.notice(F("Main: Connected to wifi ip=%s." CR), myWifi.getIPAddress().c_str() );
 
+#if defined( ACTIVATE_OTA ) 
+        if( !sleepModeActive && myWifi.checkFirmwareVersion() ) {
+            myWifi.updateFirmware();
+        }
+#endif
         if( !sleepModeActive )
             if( myWebServer.setupWebServer() )
                 Log.notice(F("Main: Webserver is running." CR) );
     }
-
-#if defined( ACTIVATE_OTA ) 
-    if( !sleepModeActive && myWifi.isConnected() && myWifi.checkFirmwareVersion() ) {
-        myWifi.updateFirmware();
-    }
-#endif
 }
 
 //
