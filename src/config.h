@@ -47,6 +47,7 @@ SOFTWARE.
 #define CFG_PARAM_OTA                "ota-url"                        // Base URL for OTA
 #define CFG_PARAM_PUSH_BREWFATHER    "brewfather-push"                // URL (brewfather format)
 #define CFG_PARAM_PUSH_HTTP          "http-push"                      // URL (iSpindle format)
+#define CFG_PARAM_PUSH_HTTP2         "http-push2"                     // URL (iSpindle format)
 #define CFG_PARAM_PUSH_INTERVAL      "push-interval"                  // Time between push 
 #define CFG_PARAM_TEMPFORMAT         "temp-format"                    // C or F
 #define CFG_PARAM_VOLTAGEFACTOR      "voltage-factor"                 // Factor to calculate the battery voltage
@@ -95,6 +96,7 @@ class Config {
         // Push target settings
         char brewfatherPushTarget[200];
         char httpPushTarget[200];               
+        char httpPushTarget2[200];               
         int  pushInterval;                
 
         // Gravity and temperature calculations
@@ -126,6 +128,10 @@ class Config {
         const char*  getHttpPushTarget() { return &httpPushTarget[0]; }
         void         setHttpPushTarget( const char* s ) { strncpy(&httpPushTarget[0], s, sizeof(httpPushTarget)-1); saveNeeded = true; }
         bool         isHttpActive() { return strlen(&httpPushTarget[0])>0?true:false; }
+
+        const char*  getHttpPushTarget2() { return &httpPushTarget2[0]; }
+        void         setHttpPushTarget2( const char* s ) { strncpy(&httpPushTarget2[0], s, sizeof(httpPushTarget2)-1); saveNeeded = true; }
+        bool         isHttpActive2() { return strlen(&httpPushTarget2[0])>0?true:false; }
 
         int          getPushInterval() { return pushInterval; }
         void         setPushInterval( int v ) { pushInterval = v; saveNeeded = true; }

@@ -2,3 +2,5 @@
 .vscode/*
 *.map
 test/*.md
+test/env/*
+test/*.py

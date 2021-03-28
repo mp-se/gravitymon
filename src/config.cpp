@@ -53,6 +53,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
     doc[ CFG_PARAM_TEMPFORMAT ]       = String( getTempFormat() );
     doc[ CFG_PARAM_PUSH_BREWFATHER ]  = getBrewfatherPushTarget();
     doc[ CFG_PARAM_PUSH_HTTP ]        = getHttpPushTarget();
+    doc[ CFG_PARAM_PUSH_HTTP2 ]       = getHttpPushTarget2();
     doc[ CFG_PARAM_PUSH_INTERVAL ]    = getPushInterval();
     doc[ CFG_PARAM_VOLTAGEFACTOR ]    = getVoltageFactor();
     doc[ CFG_PARAM_GRAVITY_FORMULA ]  = getGravityFormula();
@@ -154,6 +155,8 @@ bool Config::loadFile() {
         setBrewfatherPushTarget( doc[ CFG_PARAM_PUSH_BREWFATHER ] );
     if( !doc[ CFG_PARAM_PUSH_HTTP ].isNull() )
         setHttpPushTarget( doc[ CFG_PARAM_PUSH_HTTP ] );
+    if( !doc[ CFG_PARAM_PUSH_HTTP2 ].isNull() )
+        setHttpPushTarget2( doc[ CFG_PARAM_PUSH_HTTP2 ] );
     if( !doc[ CFG_PARAM_PUSH_INTERVAL ].isNull() )
         setPushInterval( doc[ CFG_PARAM_PUSH_INTERVAL ].as<int>() );
     if( !doc[ CFG_PARAM_VOLTAGEFACTOR ].isNull() )
@@ -223,6 +226,7 @@ void Config::debug() {
     Log.verbose(F("CFG : Gravity formula; '%s'." CR), getGravityFormula() );
     Log.verbose(F("CFG : Push brewfather; '%s'." CR), getBrewfatherPushTarget() );
     Log.verbose(F("CFG : Push http; '%s'." CR), getHttpPushTarget() );
+    Log.verbose(F("CFG : Push http2; '%s'." CR), getHttpPushTarget2() );
     Log.verbose(F("CFG : Push interval; %d." CR), getPushInterval() );
 //  Log.verbose(F("CFG : Accel offset\t%d\t%d\t%d" CR), gyroCalibration.ax, gyroCalibration.ay, gyroCalibration.az );
 //  Log.verbose(F("CFG : Gyro offset \t%d\t%d\t%d" CR), gyroCalibration.gx, gyroCalibration.gy, gyroCalibration.gz );

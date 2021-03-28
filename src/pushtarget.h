@@ -38,7 +38,7 @@ class PushTarget {
         unsigned long ms;   // Used to check that we do not post to often 
 
         void sendBrewfather(float angle, float gravity, float temp );
-        void sendHttp(float angle, float gravity, float temp, float runTime );
+        void sendHttp(String serverPath, float angle, float gravity, float temp, float runTime );
 
     public:
         PushTarget() { ms = millis(); }

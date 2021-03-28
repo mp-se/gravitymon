@@ -314,6 +314,7 @@ void webHandleConfigPush() {
     Log.verbose(F("WEB : http=%s, bf=%s interval=%s." CR), server.arg( CFG_PARAM_PUSH_HTTP ).c_str(), server.arg( CFG_PARAM_PUSH_BREWFATHER ).c_str(),  server.arg( CFG_PARAM_PUSH_INTERVAL ).c_str() );
 #endif
     myConfig.setHttpPushTarget( server.arg( CFG_PARAM_PUSH_HTTP ).c_str() );
+    myConfig.setHttpPushTarget2( server.arg( CFG_PARAM_PUSH_HTTP2 ).c_str() );
     myConfig.setBrewfatherPushTarget( server.arg( CFG_PARAM_PUSH_BREWFATHER ).c_str() );
     myConfig.setPushInterval( server.arg( CFG_PARAM_PUSH_INTERVAL ).c_str() );
     myConfig.saveFile();

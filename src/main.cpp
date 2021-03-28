@@ -38,7 +38,7 @@ SOFTWARE.
 #define MRD_TIMES               3
 #define MRD_TIMEOUT             10
 #define MRD_ADDRESS             0
-#define MULTIRESETDETECTOR_DEBUG true 
+//#define MULTIRESETDETECTOR_DEBUG true 
 #include <ESP_MultiResetDetector.h>            
 MultiResetDetector *mrd;
 

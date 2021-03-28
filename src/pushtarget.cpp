@@ -51,7 +51,10 @@ void PushTarget::send(float angle, float gravity, float temp, float runTime, boo
        sendBrewfather( angle,  gravity, temp );
 
     if( myConfig.isHttpActive() )
-       sendHttp( angle, gravity, temp, runTime );
+       sendHttp( myConfig.getHttpPushTarget(), angle, gravity, temp, runTime );
+
+    if( myConfig.isHttpActive2() )
+       sendHttp( myConfig.getHttpPushTarget2(), angle, gravity, temp, runTime );
 }
 
 //
@@ -123,7 +126,7 @@ void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
 //
 // Send data to http target
 //
-void PushTarget::sendHttp(float angle, float gravity, float temp, float runTime ) {
+void PushTarget::sendHttp( String serverPath, float angle, float gravity, float temp, float runTime ) {
     Log.notice(F("PUSH: Sending values to http angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
 
     DynamicJsonDocument doc(256);
@@ -141,7 +144,6 @@ void PushTarget::sendHttp(float angle, float gravity, float temp, float runTime 
 
     WiFiClient client;
     HTTPClient http;
-    String serverPath = myConfig.getHttpPushTarget();
 
     // Your Domain name with URL path or IP address with path
     http.begin( client, serverPath);
