@@ -131,15 +131,19 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
 
     DynamicJsonDocument doc(256);
 
-    doc["name"]      = myConfig.getMDNS();
-    doc["temp"]      = reduceFloatPrecision( temp, 1 );
-    doc["temp-unit"] = String( myConfig.getTempFormat() ); 
-    doc["gravity"]   = reduceFloatPrecision( gravity, 4 );
-    doc["angle"]     = reduceFloatPrecision( angle, 2);
-    doc["battery"]   = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 );
-    doc["rssi"]      = WiFi.RSSI(); 
+    // Use iSpindle format for compatibility
+    doc["name"]        = myConfig.getMDNS();
+    doc["ID"]          = myConfig.getMDNS();
+    doc["token"]       = "gravmon";
+    doc["interval"]    = myConfig.getPushInterval();
+    doc["temperature"] = reduceFloatPrecision( temp, 1 );
+    doc["temp-units"]  = String( myConfig.getTempFormat() ); 
+    doc["gravity"]     = reduceFloatPrecision( gravity, 4 );
+    doc["angle"]       = reduceFloatPrecision( angle, 2);
+    doc["battery"]     = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 );
+    doc["rssi"]        = WiFi.RSSI(); 
 
-    // Some debug information 
+    // Some additional information
     doc["run-time"]  = reduceFloatPrecision( runTime, 2 );
 
     WiFiClient client;

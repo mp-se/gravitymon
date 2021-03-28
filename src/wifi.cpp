@@ -27,17 +27,24 @@ SOFTWARE.
 #include "gyro.h"
 #include "calc.h"
 #include "tempsensor.h"
-#include <ESP8266WiFi.h>
+#include <ArduinoJson.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
+#include <ESP_WiFiManager.h>   
 #include <LittleFS.h>
 #include <incbin.h>
 
 Wifi myWifi;
-WiFiManager myWifiManager; 
+ESP_WiFiManager myWifiManager; 
+bool shouldSaveConfig = false;
 
-// TODO: ADD MDNS setting to WIFI portal.....
+//
+// Callback notifying us of the need to save config
+//
+void saveConfigCallback () {
+  shouldSaveConfig = true;
+}
 
 //
 // Connect to last known access point or create one if connection is not working. 
@@ -50,13 +57,25 @@ bool Wifi::connect( bool showPortal ) {
     myWifiManager.setDebugOutput(false);    
 #endif
     unsigned long startMillis = millis();
+
+    myWifiManager.setConfigPortalChannel(0);
     myWifiManager.setConfigPortalTimeout( WIFI_PORTAL_TIMEOUT );
+
+    ESP_WMParameter mdnsParam("mDNS name", "hostname", myConfig.getMDNS(), 20);
+    myWifiManager.setSaveConfigCallback(saveConfigCallback);
+    myWifiManager.addParameter( &mdnsParam );
+    myWifiManager.setMinimumSignalQuality(-1);  // Ignore under 8%
+
     if( showPortal ) {
         Log.notice(F("WIFI: Starting wifi portal." CR));
         connectedFlag = myWifiManager.startConfigPortal( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
     }
     else
         connectedFlag = myWifiManager.autoConnect( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
+
+    if( shouldSaveConfig ) {
+        myConfig.setMDNS( mdnsParam.getValue() );
+    }
 
     Log.notice( F("WIFI: Connect time %d s" CR), abs(millis() - startMillis)/1000);
 
@@ -193,7 +212,7 @@ bool Wifi::checkFirmwareVersion() {
             // Download new html files to filesystem if they are present.
             if( !ver["html"].isNull() && newFirmware ) {
                 Log.notice(F("OTA : Downloading new html files." CR));
-                htmlFiles = ver["html"].as<JsonArray>();
+                JsonArray htmlFiles = ver["html"].as<JsonArray>();
                 for(JsonVariant v : htmlFiles) {
                     String s = v;
 #if LOG_LEVEL==6

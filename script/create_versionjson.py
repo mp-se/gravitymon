@@ -46,5 +46,5 @@ def after_build(source, target, env):
     f.close()
 
 
-print( "Adding custom build step: (create json)")
+print( "Adding custom build step (create json):")
 env.AddPreAction("buildprog", after_build)

@@ -25,15 +25,13 @@ SOFTWARE.
 #define _WIFI_H
 
 // Include 
-#include <WiFiManager.h>
-#include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
 
 // classes
 class Wifi {
     private:
         // WIFI
         bool      connectedFlag = false;
-        JsonArray htmlFiles;
 
         // OTA
         bool newFirmware = false;

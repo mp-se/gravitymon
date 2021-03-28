@@ -32,27 +32,27 @@ SOFTWARE.
 #include <LittleFS.h>
 
 // Settings for double reset detector.
-#define ESP_MRD_USE_LITTLEFS    true
-#define ESP_MRD_USE_SPIFFS      false
-#define ESP_MRD_USE_EEPROM      false
-#define MRD_TIMES               3
-#define MRD_TIMEOUT             10
-#define MRD_ADDRESS             0
-//#define MULTIRESETDETECTOR_DEBUG true 
-#include <ESP_MultiResetDetector.h>            
-MultiResetDetector *mrd;
+//#define USE_LITTLEFS              true
+//#define ESP_DRD_USE_LITTLEFS      true
+#define ESP8266_DRD_USE_RTC       true
+#define DRD_TIMEOUT               1
+#define DRD_ADDRESS               0
+#define DOUBLERESETDETECTOR_DEBUG true
+#include <ESP_DoubleResetDetector.h>            
+DoubleResetDetector *drd;
 
 // Define constats for this program
 #if LOG_LEVEL==6 
 const int interval = 1000;                  // ms, time to wait between changes to output
 bool sleepModeAlwaysSkip = true;           // Web interface can override normal behaviour
 #else
-const int interval = 100;                   // ms, time to wait between changes to output
+const int interval = 200;                   // ms, time to wait between changes to output
 bool sleepModeAlwaysSkip = false;           // Web interface can override normal behaviour
 #endif
 unsigned long lastMillis = 0;
 unsigned long startMillis;
 bool sleepModeActive = false;
+int  loopCounter = 0;
 
 //
 // Check if we should be in sleep mode
@@ -94,8 +94,6 @@ void checkSleepMode( float angle, float volt ) {
 //
 void setup() {
     startMillis = millis();
-    mrd = new MultiResetDetector(MRD_TIMEOUT, MRD_ADDRESS);
-    bool dt = mrd->detectMultiReset();  
 
 #if LOG_LEVEL==6
     Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str() );
@@ -118,13 +116,14 @@ void setup() {
     if( !myGyro.setup() )
         Log.error(F("Main: Failed to initialize the gyro." CR));
 
+    drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
+    bool dt = drd->detectDoubleReset();  
+
     if( dt ) 
         Log.notice(F("Main: Detected doubletap on reset." CR));
 
     Log.notice(F("Main: Connecting to wifi." CR));
     myWifi.connect( dt );
-    Log.notice(F("Main: WIFI connected." CR));
-
     myGyro.read();
     myBatteryVoltage.read();
     checkSleepMode( myGyro.getAngle(), myBatteryVoltage.getVoltage() );
@@ -147,11 +146,12 @@ void setup() {
 // Main loops
 //
 void loop() {
-    mrd->loop();
+    drd->loop();
 
     if( sleepModeActive || abs(millis() - lastMillis) > interval ) {
         float angle = 90;
         float volt = myBatteryVoltage.getVoltage();
+        loopCounter++;
 #if LOG_LEVEL==6
         Log.verbose(F("Main: Entering main loop." CR) );
 #endif   
@@ -170,7 +170,9 @@ void loop() {
 #endif   
             }
 
-            Log.notice(F("Main: Gyro angle=%F, temp=%F, gravity=%F, batt=%F." CR), angle, temp, gravity, volt );
+            // Limit the printout when sleep mode is not active.
+            if( loopCounter%10 == 0 || sleepModeActive )
+                Log.notice(F("Main: Gyro angle=%F, temp=%F, gravity=%F, batt=%F." CR), angle, temp, gravity, volt );
 
 #if defined( ACTIVATE_PUSH )
             unsigned long runTime = millis() - startMillis;
@@ -185,10 +187,10 @@ void loop() {
             unsigned long runTime = millis() - startMillis;
 
             // Enter sleep mode...
-            Log.notice(F("MAIN: Entering deep sleep, run time %l s." CR), runTime/1000 );
+            Log.notice(F("MAIN: Entering deep sleep for %d s, run time %l s, battery=%F V." CR), myConfig.getPushInterval(), runTime/1000, volt );
             LittleFS.end();
             myGyro.enterSleep();
-            mrd->stop();
+            drd->stop();
             delay(100);
             deepSleep( myConfig.getPushInterval() ); 
         }

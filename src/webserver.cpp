@@ -468,7 +468,7 @@ bool WebServer::setupWebServer() {
     // Dynamic content
     server.on("/api/config", HTTP_GET, webHandleConfig);              // Get config.json
     server.on("/api/device", HTTP_GET, webHandleDevice);              // Get device.json
-    server.on("/api/calibrate", HTTP_GET, webHandleCalibrate);        // Run calibration routine (param id)
+    server.on("/api/calibrate", HTTP_POST, webHandleCalibrate);       // Run calibration routine (param id)
     server.on("/api/factory", HTTP_GET, webHandleFactoryReset);       // Reset the device
     server.on("/api/status", HTTP_GET, webHandleStatus);              // Get the status.json
     server.on("/api/clearwifi", HTTP_GET, webHandleClearWIFI);        // Clear wifi settings
