@@ -58,26 +58,35 @@ bool Wifi::connect( bool showPortal ) {
 #endif
     unsigned long startMillis = millis();
 
-    myWifiManager.setConfigPortalChannel(0);
     myWifiManager.setConfigPortalTimeout( WIFI_PORTAL_TIMEOUT );
 
     ESP_WMParameter mdnsParam("mDNS name", "hostname", myConfig.getMDNS(), 20);
     myWifiManager.setSaveConfigCallback(saveConfigCallback);
     myWifiManager.addParameter( &mdnsParam );
-    myWifiManager.setMinimumSignalQuality(-1);  // Ignore under 8%
 
     if( showPortal ) {
         Log.notice(F("WIFI: Starting wifi portal." CR));
+        myWifiManager.setMinimumSignalQuality(-1);  // Ignore under 8%
         connectedFlag = myWifiManager.startConfigPortal( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
-    }
-    else
-        connectedFlag = myWifiManager.autoConnect( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
 
-    if( shouldSaveConfig ) {
-        myConfig.setMDNS( mdnsParam.getValue() );
-    }
+        if( shouldSaveConfig ) {
+            myConfig.setMDNS( mdnsParam.getValue() );
+            myConfig.saveFile();
+        }
+    } 
 
-    Log.notice( F("WIFI: Connect time %d s" CR), abs(millis() - startMillis)/1000);
+    // TODO: Add timeout after x retries to not end up in forever loop.
+
+    // Connect to wifi
+    WiFi.begin();
+    while( WiFi.status() != WL_CONNECTED ) {
+        delay(100);
+        Serial.print( "." );
+    }
+    Serial.print( CR );
+    connectedFlag = true;
+
+    Log.notice( F("WIFI: IP=%s, Connect time %d s" CR), WiFi.localIP().toString().c_str(), abs(millis() - startMillis)/1000);
 
 #if LOG_LEVEL==6
     Log.verbose(F("WIFI: Connect returned %s." CR), connectedFlag?"True":"False" );
