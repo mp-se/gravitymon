@@ -86,23 +86,23 @@ class Config {
         bool saveNeeded;
 
         // Device configuration
-        char  id[10];
-        char  mDNS[30];
-        char  otaURL[200];
-        char  tempFormat;                      // C, F
-        float voltageFactor;
-        float tempSensorAdj;                   // This value will be added to the read sensor value
+        String id;
+        String mDNS;
+        String otaURL;
+        char   tempFormat;                      // C, F
+        float  voltageFactor;
+        float  tempSensorAdj;                   // This value will be added to the read sensor value
  
         // Push target settings
-        char brewfatherPushTarget[200];
-        char httpPushTarget[200];               
-        char httpPushTarget2[200];               
-        int  pushInterval;                
+        String brewfatherPushTarget;
+        String httpPushTarget;               
+        String httpPushTarget2;               
+        int    pushInterval;                
 
         // Gravity and temperature calculations
-        char gravityFormula[200];
-        bool gravityTempAdj;                  // true, false      
-        char gravityFormat;                   // G, P
+        String gravityFormula;
+        bool   gravityTempAdj;                  // true, false      
+        char   gravityFormat;                   // G, P
 
         // Gyro calibration data
         RawGyroData gyroCalibration;          // Holds the gyro calibration constants (6 * int16_t)
@@ -112,30 +112,30 @@ class Config {
 
     public:
         Config();
-        const char*  getID() { return &id[0]; };
+        const char*  getID() { return id.c_str(); };
 
-        const char*  getMDNS() { return &mDNS[0]; }
-        void         setMDNS( const char* s ) { strncpy( &mDNS[0], s, sizeof(mDNS)-1); saveNeeded = true; }
+        const char*  getMDNS() { return mDNS.c_str(); }
+        void         setMDNS( String s ) { mDNS = s; saveNeeded = true; }
 
-        const char*  getOtaURL() { return &otaURL[0]; }
-        void         setOtaURL( const char* s ) { strncpy( &otaURL[0], s, sizeof(otaURL)-1); saveNeeded = true; }
-        bool         isOtaActive() { return strlen(&otaURL[0])>0?true:false; }
+        const char*  getOtaURL() { return otaURL.c_str(); }
+        void         setOtaURL( String s ) { otaURL = s; saveNeeded = true; }
+        bool         isOtaActive() { return otaURL.length()>0?true:false; }
 
-        const char*  getBrewfatherPushTarget() { return &brewfatherPushTarget[0]; }
-        void         setBrewfatherPushTarget( const char* s ) { strncpy(&brewfatherPushTarget[0], s, sizeof(brewfatherPushTarget)-1); saveNeeded = true; }
-        bool         isBrewfatherActive() { return strlen(&brewfatherPushTarget[0])>0?true:false; }
+        const char*  getBrewfatherPushTarget() { return brewfatherPushTarget.c_str(); }
+        void         setBrewfatherPushTarget( String s ) { brewfatherPushTarget = s; saveNeeded = true; }
+        bool         isBrewfatherActive() { return brewfatherPushTarget.length()>0?true:false; }
 
-        const char*  getHttpPushTarget() { return &httpPushTarget[0]; }
-        void         setHttpPushTarget( const char* s ) { strncpy(&httpPushTarget[0], s, sizeof(httpPushTarget)-1); saveNeeded = true; }
-        bool         isHttpActive() { return strlen(&httpPushTarget[0])>0?true:false; }
+        const char*  getHttpPushTarget() { return httpPushTarget.c_str(); }
+        void         setHttpPushTarget( String s ) { httpPushTarget = s; saveNeeded = true; }
+        bool         isHttpActive() { return httpPushTarget.length()>0?true:false; }
 
-        const char*  getHttpPushTarget2() { return &httpPushTarget2[0]; }
-        void         setHttpPushTarget2( const char* s ) { strncpy(&httpPushTarget2[0], s, sizeof(httpPushTarget2)-1); saveNeeded = true; }
-        bool         isHttpActive2() { return strlen(&httpPushTarget2[0])>0?true:false; }
+        const char*  getHttpPushTarget2() { return httpPushTarget2.c_str(); }
+        void         setHttpPushTarget2( String s ) { httpPushTarget2 = s; saveNeeded = true; }
+        bool         isHttpActive2() { return httpPushTarget2.length()>0?true:false; }
 
         int          getPushInterval() { return pushInterval; }
         void         setPushInterval( int v ) { pushInterval = v; saveNeeded = true; }
-        void         setPushInterval( const char* s ) { pushInterval = atoi(s); saveNeeded = true; }
+        void         setPushInterval( String s ) { pushInterval = s.toInt(); saveNeeded = true; }
 
         char         getTempFormat() { return tempFormat; }
         void         setTempFormat( char c ) { tempFormat = c; saveNeeded = true; }
@@ -144,14 +144,14 @@ class Config {
 
         float        getVoltageFactor() { return voltageFactor; }
         void         setVoltageFactor( float f ) { voltageFactor = f; saveNeeded = true; }
-        void         setVoltageFactor( const char* s ) { voltageFactor = atof(s); saveNeeded = true; }
+        void         setVoltageFactor( String s ) { voltageFactor = s.toFloat(); saveNeeded = true; }
 
         float        getTempSensorAdj() { return tempSensorAdj; }
         void         setTempSensorAdj( float f ) { tempSensorAdj = f; saveNeeded = true; }
-        void         setTempSensorAdj( const char* s ) { tempSensorAdj = atof(s); saveNeeded = true; }
+        void         setTempSensorAdj( String s ) { tempSensorAdj = s.toFloat(); saveNeeded = true; }
 
-        const char*  getGravityFormula() { return &gravityFormula[0]; }
-        void         setGravityFormula( const char* s ) { strncpy(&gravityFormula[0], s, sizeof(gravityFormula)-1); saveNeeded = true; }
+        const char*  getGravityFormula() { return gravityFormula.c_str(); }
+        void         setGravityFormula( String s ) { gravityFormula = s; saveNeeded = true; }
 
         bool         isGravityTempAdj() { return gravityTempAdj; }
         void         setGravityTempAdj( bool b ) { gravityTempAdj = b; saveNeeded = true; }
