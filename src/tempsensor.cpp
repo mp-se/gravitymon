@@ -32,7 +32,7 @@ SOFTWARE.
 // Conversion between C and F
 //
 float convertCtoF( float t ) { 
-  return (t * 1.8 ) + 32.0; 
+    return (t * 1.8 ) + 32.0; 
 }
 
 OneWire myOneWire(D6);
@@ -47,36 +47,36 @@ TempSensor myTempSensor;
 void TempSensor::setup() {
 
 #if defined( SIMULATE_TEMP )
-  hasSensors = true;
-  return;
-#endif
-
-  if( mySensors.getDeviceCount() )
+    hasSensors = true;
     return;
-
-#if LOG_LEVEL==6
-  Log.verbose(F("TSEN: Looking for temp sensors." CR));
 #endif
-  mySensors.begin();
 
-  if( mySensors.getDeviceCount() ) {
-    Log.notice(F("TSEN: Found %d sensors." CR), mySensors.getDeviceCount());
-    mySensors.setResolution(TEMPERATURE_PRECISION);
-  }
-
-  float t = myConfig.getTempSensorAdj();
-
-  // Set the temp sensor adjustment values
-  if( myConfig.isTempC() ) {
-    tempSensorAdjF = t * 1.8;     // Convert the adjustment value to C
-    tempSensorAdjC = t;
-  } else {
-    tempSensorAdjF = t;
-    tempSensorAdjC = t * 0.556;   // Convert the adjustent value to F
-  }
+    if( mySensors.getDeviceCount() )
+        return;
 
 #if LOG_LEVEL==6
-  Log.verbose(F("TSEN: Adjustment values for temp sensor %F C, %F F." CR), tempSensorAdjC, tempSensorAdjF );
+    Log.verbose(F("TSEN: Looking for temp sensors." CR));
+#endif
+    mySensors.begin();
+
+    if( mySensors.getDeviceCount() ) {
+        Log.notice(F("TSEN: Found %d sensors." CR), mySensors.getDeviceCount());
+        mySensors.setResolution(TEMPERATURE_PRECISION);
+    }
+
+    float t = myConfig.getTempSensorAdj();
+
+    // Set the temp sensor adjustment values
+    if( myConfig.isTempC() ) {
+        tempSensorAdjF = t * 1.8;     // Convert the adjustment value to C
+        tempSensorAdjC = t;
+    } else {
+        tempSensorAdjF = t;
+        tempSensorAdjC = t * 0.556;   // Convert the adjustent value to F
+    }
+
+#if LOG_LEVEL==6
+    Log.verbose(F("TSEN: Adjustment values for temp sensor %F C, %F F." CR), tempSensorAdjC, tempSensorAdjF );
 #endif
 }
 
@@ -84,25 +84,25 @@ void TempSensor::setup() {
 // Retrieving value from sensor
 //
 float TempSensor::getValue() {
-  float c = 0;
+    float c = 0;
 
 #if defined( SIMULATE_TEMP )
-  return 21;
+    return 21;
 #endif
 
-  // Read the sensors
-  mySensors.requestTemperatures();
+    // Read the sensors
+    mySensors.requestTemperatures();
 
-  if( mySensors.getDeviceCount() >= 1) {
-    c = mySensors.getTempCByIndex(0);
+    if( mySensors.getDeviceCount() >= 1) {
+        c = mySensors.getTempCByIndex(0);
 
 #if LOG_LEVEL==6
-    Log.verbose(F("TSEN: Reciving temp value for sensor %F C." CR), c);
+        Log.verbose(F("TSEN: Reciving temp value for sensor %F C." CR), c);
 #endif
-    hasSensor = true;
-  }
+        hasSensor = true;
+    }
 
-  return c;
+    return c;
 }
 
 // EOF 

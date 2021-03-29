@@ -27,8 +27,6 @@ SOFTWARE.
 #include "tinyexpr.h"
 #include "tempsensor.h"
 
-//#define LOG_LEVEL 5
-
 //
 // Calculates gravity according to supplied formula, compatible with iSpindle/Fermentrack formula  
 //

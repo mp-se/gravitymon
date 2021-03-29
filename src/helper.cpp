@@ -49,6 +49,9 @@ void printBuildOptions() {
 #ifdef SKIP_SLEEPMODE
                 "SKIP_SLEEP "
 #endif
+#ifdef EMBED_HTML
+                "EMBED_HTML "
+#endif    
 #ifdef ACTIVATE_OTA
                 "OTA "
 #endif     

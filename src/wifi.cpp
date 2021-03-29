@@ -75,13 +75,18 @@ bool Wifi::connect( bool showPortal ) {
         }
     } 
 
-    // TODO: Add timeout after x retries to not end up in forever loop.
-
     // Connect to wifi
+    int i = 0;
+
     WiFi.begin();
     while( WiFi.status() != WL_CONNECTED ) {
         delay(100);
         Serial.print( "." );
+
+        if( i++ > 100 ) {
+            LittleFS.end();
+            ESP.reset();
+        }
     }
     Serial.print( CR );
     connectedFlag = true;
