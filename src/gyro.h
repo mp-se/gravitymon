@@ -51,6 +51,7 @@ class GyroSensor {
         bool        sensorConnected = false;
         bool        validValue = false;
         double      angle = 0;
+        float       sensorTemp = 0;
         RawGyroData calibrationOffset;
 
         void    debug();
@@ -66,6 +67,7 @@ class GyroSensor {
         void calibrateSensor();
 
         double getAngle() { return angle; };
+        double getSensorTempC() { return sensorTemp; };
         bool   isConnected() { return sensorConnected; };
         bool   hasValue() { return validValue; };
         void   enterSleep();

@@ -151,17 +151,19 @@ void loop() {
     if( sleepModeActive || abs(millis() - lastMillis) > interval ) {
         float angle = 90;
         float volt = myBatteryVoltage.getVoltage();
+        float sensorTemp = 0;
         loopCounter++;
 #if LOG_LEVEL==6
         Log.verbose(F("Main: Entering main loop." CR) );
 #endif   
         // If we dont get any readings we just skip this and try again the next interval.
         if( myGyro.hasValue() ) {
-            angle = myGyro.getAngle();
+            angle         = myGyro.getAngle();                  // Gyro angle
+            sensorTemp    = myGyro.getSensorTempC();            // Temp in the Gyro
             float temp    = myTempSensor.getValueCelcius();     // The code is build around using C for temp. 
             float gravity = calculateGravity( angle, temp );
 #if LOG_LEVEL==6
-            Log.verbose(F("Main: Sensor values gyro=%F, temp=%F, gravity=%F." CR), angle, temp, gravity );
+            Log.verbose(F("Main: Sensor values gyro angle=%F gyro temp=%F, temp=%F, gravity=%F." CR), angle, sensorTemp, temp, gravity );
 #endif   
             if( myConfig.isGravityTempAdj() ) {
                 gravity = gravityTemperatureCorrection( gravity, temp);       // Use default correction temperature of 20C
@@ -172,7 +174,7 @@ void loop() {
 
             // Limit the printout when sleep mode is not active.
             if( loopCounter%10 == 0 || sleepModeActive )
-                Log.notice(F("Main: Gyro angle=%F, temp=%F, gravity=%F, batt=%F." CR), angle, temp, gravity, volt );
+                Log.notice(F("Main: gyro angle=%F, gyro temp=%F, DS18B20 temp=%F, gravity=%F, batt=%F." CR), angle, sensorTemp, temp, gravity, volt );
 
 #if defined( ACTIVATE_PUSH )
             unsigned long runTime = millis() - startMillis;
