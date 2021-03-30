@@ -32,8 +32,11 @@ Config myConfig;
 //
 Config::Config() {
     // Assiging default values
-    sprintf(&id[0], "%6x", (unsigned int) ESP.getChipId() );
-    sprintf(&mDNS[0], "" WIFI_MDNS "%s", getID() );
+    char buf[20];
+    sprintf(&buf[0], "%6x", (unsigned int) ESP.getChipId() );
+    id = &buf[0];
+    sprintf(&buf[0], "" WIFI_MDNS "%s", getID() );
+    mDNS = &buf[0];
     setTempFormat('C');
     setPushInterval(900);             // 15 minutes
     setVoltageFactor(1.59);           // Conversion factor for battery

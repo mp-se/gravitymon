@@ -80,7 +80,7 @@ void checkSleepMode( float angle, float volt ) {
     }
 
     // Will not enter sleep mode if: charger is connected 
-    sleepModeActive = volt<4.15 ? true : false; 
+    sleepModeActive = (volt<4.15 && angle>85) || (volt>4.15) ? false : true; 
 
     // sleep mode active when flat
     //sleepModeActive = ( angle<85 && angle>5 ) ? true : false; 
