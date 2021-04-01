@@ -32,10 +32,8 @@ SOFTWARE.
 #include <LittleFS.h>
 
 // Settings for double reset detector.
-//#define USE_LITTLEFS              true
-//#define ESP_DRD_USE_LITTLEFS      true
 #define ESP8266_DRD_USE_RTC       true
-#define DRD_TIMEOUT               1
+#define DRD_TIMEOUT               2
 #define DRD_ADDRESS               0
 #define DOUBLERESETDETECTOR_DEBUG true
 #include <ESP_DoubleResetDetector.h>            
@@ -95,6 +93,9 @@ void checkSleepMode( float angle, float volt ) {
 void setup() {
     startMillis = millis();
 
+    drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
+    bool dt = drd->detectDoubleReset();  
+
 #if LOG_LEVEL==6
     Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str() );
 #endif
@@ -115,9 +116,6 @@ void setup() {
     // Setup Gyro
     if( !myGyro.setup() )
         Log.error(F("Main: Failed to initialize the gyro." CR));
-
-    drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
-    bool dt = drd->detectDoubleReset();  
 
     if( dt ) 
         Log.notice(F("Main: Detected doubletap on reset." CR));
