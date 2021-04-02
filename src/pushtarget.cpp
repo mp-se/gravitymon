@@ -24,8 +24,6 @@ SOFTWARE.
 #include "pushtarget.h"
 #include "config.h"
 
-#if defined( ACTIVATE_PUSH )
-
 PushTarget myPushTarget;
 
 //
@@ -170,7 +168,5 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
 
     http.end();
 }
-
-#endif // ACTIVATE_PUSH
 
 // EOF 

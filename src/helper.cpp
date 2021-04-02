@@ -43,9 +43,6 @@ void deepSleep(int t) {
 //
 void printBuildOptions() {
     Log.notice( F("Build options: %s LOGLEVEL %d " 
-#ifdef ACTIVATE_PUSH
-                "PUSH "
-#endif    
 #ifdef SKIP_SLEEPMODE
                 "SKIP_SLEEP "
 #endif
