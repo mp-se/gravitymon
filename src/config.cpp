@@ -38,6 +38,7 @@ Config::Config() {
     sprintf(&buf[0], "" WIFI_MDNS "%s", getID() );
     mDNS = &buf[0];
     setTempFormat('C');
+    setGravityFormat('G');
     setSleepInterval(900);             // 15 minutes
     setVoltageFactor(1.59);           // Conversion factor for battery
     setTempSensorAdj(0.0);
@@ -58,9 +59,10 @@ void Config::createJson(DynamicJsonDocument& doc) {
     doc[ CFG_PARAM_PUSH_HTTP ]        = getHttpPushTarget();
     doc[ CFG_PARAM_PUSH_HTTP2 ]       = getHttpPushTarget2();
     doc[ CFG_PARAM_SLEEP_INTERVAL ]   = getSleepInterval();
-    doc[ CFG_PARAM_PUSH_INTERVAL ]    = getSleepInterval();         // TODO: @deprecated
+//  doc[ CFG_PARAM_PUSH_INTERVAL ]    = getSleepInterval();         // TODO: @deprecated
     doc[ CFG_PARAM_VOLTAGEFACTOR ]    = getVoltageFactor();
     doc[ CFG_PARAM_GRAVITY_FORMULA ]  = getGravityFormula();
+    doc[ CFG_PARAM_GRAVITY_FORMAT ]   = String(getGravityFormat());
     doc[ CFG_PARAM_TEMP_ADJ ]         = getTempSensorAdj();
     doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ] = isGravityTempAdj();
 
@@ -169,6 +171,10 @@ bool Config::loadFile() {
         setVoltageFactor( doc[ CFG_PARAM_VOLTAGEFACTOR ].as<float>() );
     if( !doc[ CFG_PARAM_GRAVITY_FORMULA ].isNull() )
         setGravityFormula( doc[ CFG_PARAM_GRAVITY_FORMULA ] );
+    if( !doc[ CFG_PARAM_GRAVITY_FORMAT ].isNull() ) {
+        String s = doc[ CFG_PARAM_GRAVITY_FORMAT ];
+        setGravityFormat( s.charAt(0) );
+    }
     if( !doc[ CFG_PARAM_TEMP_ADJ ].isNull() )
         setTempSensorAdj( doc[ CFG_PARAM_TEMP_ADJ ].as<float>() );
 
@@ -230,6 +236,7 @@ void Config::debug() {
     Log.verbose(F("CFG : Temp Adj; %F." CR), getTempSensorAdj() );
     Log.verbose(F("CFG : VoltageFactor; %F." CR), getVoltageFactor() );
     Log.verbose(F("CFG : Gravity formula; '%s'." CR), getGravityFormula() );
+    Log.verbose(F("CFG : Gravity format; '%c'." CR), getGravityFormat() );
     Log.verbose(F("CFG : Push brewfather; '%s'." CR), getBrewfatherPushTarget() );
     Log.verbose(F("CFG : Push http; '%s'." CR), getHttpPushTarget() );
     Log.verbose(F("CFG : Push http2; '%s'." CR), getHttpPushTarget2() );

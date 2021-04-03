@@ -54,6 +54,7 @@ SOFTWARE.
 #define CFG_PARAM_TEMPFORMAT         "temp-format"                    // C or F
 #define CFG_PARAM_VOLTAGEFACTOR      "voltage-factor"                 // Factor to calculate the battery voltage
 #define CFG_PARAM_GRAVITY_FORMULA    "gravity-formula"                // Formula for calculating gravity
+#define CFG_PARAM_GRAVITY_FORMAT     "gravity-format"                 // Gravity format G or P
 #define CFG_PARAM_GRAVITY_TEMP_ADJ   "gravity-temp-adjustment"        // True/False. Adjust gravity for temperature
 #define CFG_PARAM_TEMP_ADJ           "temp-adjustment-value"          // Correction value for temp sensor
 #define CFG_PARAM_GYRO_CALIBRATION   "gyro-calibration-data"          // READ ONLY
