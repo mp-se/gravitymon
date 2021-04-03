@@ -156,10 +156,11 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="push-interval" class="col-sm-4 col-form-label">Interval:</label>
-              <div class="col-sm-8">
+              <label for="push-interval" class="col-sm-4 col-form-label">Interval (seconds):</label>
+              <div class="col-sm-4">
                 <input type="number" min="10" max="10000" class="form-control" name="push-interval" id="push-interval">
               </div>
+              <label for="push-interval" class="col-sm-4 col-form-label" id="push-interval-info"></label>
             </div>
             <div class="form-group row">
               <div class="col-sm-8 offset-sm-4">
@@ -280,6 +281,14 @@
     } );
   });
 
+  function updatePushInfo() {
+    var i = $("#push-interval").val()
+    $("#push-interval-info").text( Math.floor(i/60) + " m " + (i%60) + " s" )
+  }
+
+  // Trigger the calibration
+  $("#push-interval").keyup(updatePushInfo);
+
   function setButtonDisabled( b ) {
     $("#device-btn").prop("disabled", b);
     $("#calibrate-btn").prop("disabled", b);
@@ -293,7 +302,7 @@
     setButtonDisabled( true );
 
     var url = "/api/config";
-    //var url = "/test/config.json";
+    var url = "/test/config.json";
     $('#spinner').show(); 
     $.getJSON(url, function (cfg) {
       console.log( cfg );
@@ -326,6 +335,7 @@
     .always(function() {
       $('#spinner').hide(); 
       setButtonDisabled( false );
+      updatePushInfo();
     });
   }
 </script>

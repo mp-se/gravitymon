@@ -1,8 +1,19 @@
 # Gravity Monitor for Beer Brewing
 
-I started this project out of curiosity for how a motion sensor is working and since I like to brew beer this was the result. This software can be used with iSpindle hardware and utilizes the same hardware configuration. No part of this software has been copied from that project. 
+I started this project out of curiosity for how a motion sensor is working and since I like to brew beer this was the result. This software can be used with iSpindle hardware and utilizes the same hardware configuration. No code has been reused from the iSpindle project. 
 
-## Functionallity
+### TODO
+
+* Add support for Plato in device (today it assumes that formula is in SG). 
+* Add support for converting between SG/Plato in device.
+* Add support for InfluxDB as endpoint
+* Add support for Blynk as endpoint
+* Add support for https connections (push)
+* Add support for https web server (will require certificates to be created as part of build process)
+* Add option to enter SSID/Password as part of build proccess (since WifiManager does not support secure connections)
+* Add iSpindle 3D print cradle + small PCB (what I use for my builds)
+
+# Functionallity
 
 I have made a few differnt design decision compared to the standard iSpindle software. 
 
@@ -22,7 +33,7 @@ In this version the software supports sending data to standad HTTP endpoint and 
 
 ## Configuration 
 
-Configuration is accessed by entering the URL for the device, this will be the mDNS name __device.local__ or the IP adress.
+Configuration is accessed by entering the URL for the device, this will be the mDNS name __device.local__ or the IP adress. The following chapter assumes the device name is __gravmon__.
 
 ### Index page
 
@@ -50,20 +61,33 @@ This page is divided into several categories of settings. The first one contains
 
 The second section contains the push settings, two URL's for http sending and one for Brewfather. The interval setting is the amount of time the device will be in sleep mode between readings (interval is in seconds).
 
-This is the format used for standard http posts. 
+### This is the format used for standard http posts. 
 ```
 { 
    "name" : "gravmon",      // mDNS name
-   "ID": "gravmon",         // mDNS name
+   "ID": "2E6753",          // esp device id
    "token" : "gravmon",
    "interval": 900,     
-   "temperature": 20.5,
-   "temp-units": "C",
-   "gravity": 1.0050,
+   "temperature": 20.5,     // C or F based on setting, adjusted value.
+   "temp-units": "C",       // C or F based on setting
+   "gravity": 1.0050,       // 
    "angle": 45.34,
    "battery": 3.67,
    "rssi": -12,
-   "run-time": 2.30,        // Runtime for this reading
+   "run-time": 2.30,        // Runtime for this reading, this is an extension
+}
+```
+
+### This is the format for Brewfather
+
+```
+{ 
+   "name" : "gravmon",      // mDNS name
+   "temp": 20.5,
+   "temp-unit": "C",
+   "battery": 3.67,
+   "gravity": 1.0050,
+   "gravity_unit": "G",     // G = SG, Plato is not yet supported
 }
 ```
 
@@ -71,7 +95,7 @@ This is the format used for standard http posts.
 
 The third section contains the gravity options, formlua and option for temperature correcting gravity.
 
-* Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. I use the tool fermentrack for controlling my fermentation and I use this tool for calculating gravity.
+* Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. I use the tool fermentrack for controlling my fermentation and I use this tool for calculating gravity. The formula can handle two keywords, __tilt__ and __temp__. This is an example of a formula; __0.00145*tilt^3+0.1445*tilt^2+0.00179*tilt+0.9436__ 
 
 ![Config - Gravity](img/config3.png)
 
@@ -90,6 +114,10 @@ Contents version.json
 ```
 
 ![Config - Hardware](img/config4.png)
+
+# Building a device
+
+Not yet complete.
 
 # Compiling the software
 

@@ -131,7 +131,7 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
 
     // Use iSpindle format for compatibility
     doc["name"]        = myConfig.getMDNS();
-    doc["ID"]          = myConfig.getMDNS();
+    doc["ID"]          = myConfig.getID();
     doc["token"]       = "gravmon";
     doc["interval"]    = myConfig.getPushInterval();
     doc["temperature"] = reduceFloatPrecision( temp, 1 );
