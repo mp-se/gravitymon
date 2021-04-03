@@ -39,6 +39,9 @@ Wifi myWifi;
 WiFiManager myWifiManager; 
 bool shouldSaveConfig = false;
 
+const char* userSSID= USER_SSID;
+const char* userPWD = USER_SSID_PWD;
+
 //
 // Callback notifying us of the need to save config
 //
@@ -56,7 +59,7 @@ bool Wifi::connect( bool showPortal ) {
 #endif
     unsigned long startMillis = millis();
 
-    if( showPortal ) {
+    if( strlen(userSSID)==0 && showPortal ) {
         Log.notice(F("WIFI: Starting wifi portal." CR));
 
         myWifiManager.setBreakAfterConfig( true );
@@ -79,7 +82,13 @@ bool Wifi::connect( bool showPortal ) {
     // Connect to wifi
     int i = 0;
 
-    WiFi.begin();
+    if( strlen(userSSID) ) {
+        Log.notice(F("WIFI: connecting to wifi using predefined settings %s." CR), userSSID);
+        WiFi.begin( userSSID, userPWD );
+    } else {
+        WiFi.begin();
+    }
+
     while( WiFi.status() != WL_CONNECTED ) {
         delay(100);
         Serial.print( "." );

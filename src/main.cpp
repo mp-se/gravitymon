@@ -187,12 +187,12 @@ void loop() {
             unsigned long runTime = millis() - startMillis;
 
             // Enter sleep mode...
-            Log.notice(F("MAIN: Entering deep sleep for %d s, run time %l s, battery=%F V." CR), myConfig.getPushInterval(), runTime/1000, volt );
+            Log.notice(F("MAIN: Entering deep sleep for %d s, run time %l s, battery=%F V." CR), myConfig.getSleepInterval(), runTime/1000, volt );
             LittleFS.end();
             myGyro.enterSleep();
             drd->stop();
             delay(100);
-            deepSleep( myConfig.getPushInterval() ); 
+            deepSleep( myConfig.getSleepInterval() ); 
         }
 
 #if LOG_LEVEL==6

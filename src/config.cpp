@@ -38,7 +38,7 @@ Config::Config() {
     sprintf(&buf[0], "" WIFI_MDNS "%s", getID() );
     mDNS = &buf[0];
     setTempFormat('C');
-    setPushInterval(900);             // 15 minutes
+    setSleepInterval(900);             // 15 minutes
     setVoltageFactor(1.59);           // Conversion factor for battery
     setTempSensorAdj(0.0);
     setGravityTempAdj(false);
@@ -57,7 +57,8 @@ void Config::createJson(DynamicJsonDocument& doc) {
     doc[ CFG_PARAM_PUSH_BREWFATHER ]  = getBrewfatherPushTarget();
     doc[ CFG_PARAM_PUSH_HTTP ]        = getHttpPushTarget();
     doc[ CFG_PARAM_PUSH_HTTP2 ]       = getHttpPushTarget2();
-    doc[ CFG_PARAM_PUSH_INTERVAL ]    = getPushInterval();
+    doc[ CFG_PARAM_SLEEP_INTERVAL ]   = getSleepInterval();
+    doc[ CFG_PARAM_PUSH_INTERVAL ]    = getSleepInterval();         // TODO: @deprecated
     doc[ CFG_PARAM_VOLTAGEFACTOR ]    = getVoltageFactor();
     doc[ CFG_PARAM_GRAVITY_FORMULA ]  = getGravityFormula();
     doc[ CFG_PARAM_TEMP_ADJ ]         = getTempSensorAdj();
@@ -160,8 +161,10 @@ bool Config::loadFile() {
         setHttpPushTarget( doc[ CFG_PARAM_PUSH_HTTP ] );
     if( !doc[ CFG_PARAM_PUSH_HTTP2 ].isNull() )
         setHttpPushTarget2( doc[ CFG_PARAM_PUSH_HTTP2 ] );
-    if( !doc[ CFG_PARAM_PUSH_INTERVAL ].isNull() )
-        setPushInterval( doc[ CFG_PARAM_PUSH_INTERVAL ].as<int>() );
+    if( !doc[ CFG_PARAM_SLEEP_INTERVAL ].isNull() )     
+        setSleepInterval( doc[ CFG_PARAM_SLEEP_INTERVAL ].as<int>() );
+    if( !doc[ CFG_PARAM_PUSH_INTERVAL ].isNull() )                          // TODO: @deprecated
+        setSleepInterval( doc[ CFG_PARAM_PUSH_INTERVAL ].as<int>() );       // TODO: @deprecated
     if( !doc[ CFG_PARAM_VOLTAGEFACTOR ].isNull() )
         setVoltageFactor( doc[ CFG_PARAM_VOLTAGEFACTOR ].as<float>() );
     if( !doc[ CFG_PARAM_GRAVITY_FORMULA ].isNull() )
@@ -230,7 +233,7 @@ void Config::debug() {
     Log.verbose(F("CFG : Push brewfather; '%s'." CR), getBrewfatherPushTarget() );
     Log.verbose(F("CFG : Push http; '%s'." CR), getHttpPushTarget() );
     Log.verbose(F("CFG : Push http2; '%s'." CR), getHttpPushTarget2() );
-    Log.verbose(F("CFG : Push interval; %d." CR), getPushInterval() );
+    Log.verbose(F("CFG : Sleep interval; %d." CR), getSleepInterval() );
 //  Log.verbose(F("CFG : Accel offset\t%d\t%d\t%d" CR), gyroCalibration.ax, gyroCalibration.ay, gyroCalibration.az );
 //  Log.verbose(F("CFG : Gyro offset \t%d\t%d\t%d" CR), gyroCalibration.gx, gyroCalibration.gy, gyroCalibration.gz );
 #endif    

@@ -10,7 +10,6 @@ I started this project out of curiosity for how a motion sensor is working and s
 * Add support for Blynk as endpoint
 * Add support for https connections (push)
 * Add support for https web server (will require certificates to be created as part of build process)
-* Add option to enter SSID/Password as part of build proccess (since WifiManager does not support secure connections)
 * Add iSpindle 3D print cradle + small PCB (what I use for my builds)
 
 # Functionallity
@@ -124,3 +123,9 @@ Not yet complete.
 I recommend that VSCODE with PlatformIO and Minfy extensions are used. Minify is used to reduce the size of the HTML files which are embedded into the firmware or uploaded to the file system. When using minify on a file, for example index.htm the output will be called index.min.htm. This is the file that will be used when buildning the image. 
 
 By default the html files are embedded but there are options to upload them to the file system to reduce the size of the image if the size becomes to large for OTA. 
+
+You can set the SSID and PWD as presets through platformio.ini by adding the settings to the following definitions:
+```
+-D USER_SSID=\""\""           // =\""myssid\""
+-D USER_SSID_PWD=\""\""       // =\""mypwd\""
+```

@@ -292,6 +292,7 @@ void webHandleConfigDevice() {
 #endif
     myConfig.setMDNS( server.arg( CFG_PARAM_MDNS ).c_str() );
     myConfig.setTempFormat( server.arg( CFG_PARAM_TEMPFORMAT ).charAt(0) );
+    myConfig.setSleepInterval( server.arg( CFG_PARAM_SLEEP_INTERVAL ).c_str() );
     myConfig.saveFile();
     server.sendHeader("Location", "/config.htm#collapseOne", true);  
     server.send(302, "text/plain", "Device config updated" );
@@ -316,7 +317,6 @@ void webHandleConfigPush() {
     myConfig.setHttpPushTarget( server.arg( CFG_PARAM_PUSH_HTTP ).c_str() );
     myConfig.setHttpPushTarget2( server.arg( CFG_PARAM_PUSH_HTTP2 ).c_str() );
     myConfig.setBrewfatherPushTarget( server.arg( CFG_PARAM_PUSH_BREWFATHER ).c_str() );
-    myConfig.setPushInterval( server.arg( CFG_PARAM_PUSH_INTERVAL ).c_str() );
     myConfig.saveFile();
     server.sendHeader("Location", "/config.htm#collapseTwo", true);  
     server.send(302, "text/plain", "Push config updated" );

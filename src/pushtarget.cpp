@@ -31,7 +31,7 @@ PushTarget myPushTarget;
 //
 void PushTarget::send(float angle, float gravity, float temp, float runTime, bool force ) {
     unsigned long timePassed = abs( millis() - ms );
-    unsigned long interval = myConfig.getPushInterval()*1000;
+    unsigned long interval = myConfig.getSleepInterval()*1000;
 
     if( ( timePassed < interval ) && !force) {
 #if LOG_LEVEL==6
@@ -133,7 +133,7 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
     doc["name"]        = myConfig.getMDNS();
     doc["ID"]          = myConfig.getID();
     doc["token"]       = "gravmon";
-    doc["interval"]    = myConfig.getPushInterval();
+    doc["interval"]    = myConfig.getSleepInterval();
     doc["temperature"] = reduceFloatPrecision( temp, 1 );
     doc["temp-units"]  = String( myConfig.getTempFormat() ); 
     doc["gravity"]     = reduceFloatPrecision( gravity, 4 );

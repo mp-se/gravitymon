@@ -48,6 +48,8 @@ SOFTWARE.
 #define CFG_PARAM_PUSH_BREWFATHER    "brewfather-push"                // URL (brewfather format)
 #define CFG_PARAM_PUSH_HTTP          "http-push"                      // URL (iSpindle format)
 #define CFG_PARAM_PUSH_HTTP2         "http-push2"                     // URL (iSpindle format)
+#define CFG_PARAM_SLEEP_INTERVAL     "sleep-interval"                 // Sleep interval 
+// TODO: @deprecated setting
 #define CFG_PARAM_PUSH_INTERVAL      "push-interval"                  // Time between push 
 #define CFG_PARAM_TEMPFORMAT         "temp-format"                    // C or F
 #define CFG_PARAM_VOLTAGEFACTOR      "voltage-factor"                 // Factor to calculate the battery voltage
@@ -92,12 +94,12 @@ class Config {
         char   tempFormat;                      // C, F
         float  voltageFactor;
         float  tempSensorAdj;                   // This value will be added to the read sensor value
+        int    sleepInterval;                
  
         // Push target settings
         String brewfatherPushTarget;
         String httpPushTarget;               
         String httpPushTarget2;               
-        int    pushInterval;                
 
         // Gravity and temperature calculations
         String gravityFormula;
@@ -133,9 +135,9 @@ class Config {
         void         setHttpPushTarget2( String s ) { httpPushTarget2 = s; saveNeeded = true; }
         bool         isHttpActive2() { return httpPushTarget2.length()>0?true:false; }
 
-        int          getPushInterval() { return pushInterval; }
-        void         setPushInterval( int v ) { pushInterval = v; saveNeeded = true; }
-        void         setPushInterval( String s ) { pushInterval = s.toInt(); saveNeeded = true; }
+        int          getSleepInterval() { return sleepInterval; }
+        void         setSleepInterval( int v ) { sleepInterval = v; saveNeeded = true; }
+        void         setSleepInterval( String s ) { sleepInterval = s.toInt(); saveNeeded = true; }
 
         char         getTempFormat() { return tempFormat; }
         void         setTempFormat( char c ) { tempFormat = c; saveNeeded = true; }
