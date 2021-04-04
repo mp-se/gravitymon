@@ -91,6 +91,7 @@ void checkSleepMode( float angle, float volt ) {
 // Setup
 //
 void setup() {
+    LOG_PERF_START("main-setup");
     startMillis = millis();
 
     drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
@@ -104,40 +105,63 @@ void setup() {
     printBuildOptions();
 
     Log.notice(F("Main: Loading configuration." CR));
+    LOG_PERF_START("main-config-load");
     myConfig.checkFileSystem();
     myConfig.loadFile();
+    LOG_PERF_STOP("main-config-load");
 
     // Setup watchdog
     ESP.wdtDisable();
     ESP.wdtEnable( interval*2 );
 
+    LOG_PERF_START("main-temp-setup");
     myTempSensor.setup();
+    LOG_PERF_STOP("main-temp-setup");
 
     // Setup Gyro
+    LOG_PERF_START("main-gyro-setup");
     if( !myGyro.setup() )
         Log.error(F("Main: Failed to initialize the gyro." CR));
+    LOG_PERF_STOP("main-gyro-setup");
 
     if( dt ) 
         Log.notice(F("Main: Detected doubletap on reset." CR));
 
     Log.notice(F("Main: Connecting to wifi." CR));
+    LOG_PERF_START("main-wifi-connect");
     myWifi.connect( dt );
+    LOG_PERF_STOP("main-wifi-connect");
+
+    LOG_PERF_START("main-gyro-read");
     myGyro.read();
+    LOG_PERF_STOP("main-gyro-read");
+
+    LOG_PERF_START("main-batt-read");
     myBatteryVoltage.read();
+    LOG_PERF_STOP("main-batt-read");
     checkSleepMode( myGyro.getAngle(), myBatteryVoltage.getVoltage() );
 
     if( myWifi.isConnected() ) {
         Log.notice(F("Main: Connected to wifi ip=%s." CR), myWifi.getIPAddress().c_str() );
 
 #if defined( ACTIVATE_OTA ) 
+        LOG_PERF_START("main-wifi-ota");
         if( !sleepModeActive && myWifi.checkFirmwareVersion() ) {
             myWifi.updateFirmware();
         }
+        LOG_PERF_STOP("main-wifi-ota");
 #endif
-        if( !sleepModeActive )
+        if( !sleepModeActive ) {
+            LOG_PERF_START("main-webserver-setup");
             if( myWebServer.setupWebServer() )
                 Log.notice(F("Main: Webserver is running." CR) );
+            LOG_PERF_STOP("main-webserver-setup");
+        }
     }
+
+    LOG_PERF_STOP("main-setup");
+    LOG_PERF_PRINT();
+    LOG_PERF_CLEAR();
 }
 
 //
@@ -158,27 +182,39 @@ void loop() {
         if( myGyro.hasValue() ) {
             angle         = myGyro.getAngle();                  // Gyro angle
             sensorTemp    = myGyro.getSensorTempC();            // Temp in the Gyro
+
+            LOG_PERF_START("loop-temp-read");
             float temp    = myTempSensor.getValueCelcius();     // The code is build around using C for temp. 
+            LOG_PERF_STOP("loop-temp-read");
+
+            LOG_PERF_START("loop-gravity-calc");
             float gravity = calculateGravity( angle, temp );
+            LOG_PERF_STOP("loop-gravity-calc");
+
 #if LOG_LEVEL==6
             Log.verbose(F("Main: Sensor values gyro angle=%F gyro temp=%F, temp=%F, gravity=%F." CR), angle, sensorTemp, temp, gravity );
 #endif   
             if( myConfig.isGravityTempAdj() ) {
+                LOG_PERF_START("loop-gravity-corr");
                 gravity = gravityTemperatureCorrection( gravity, temp);       // Use default correction temperature of 20C
+                LOG_PERF_STOP("loop-gravity-corr");
 #if LOG_LEVEL==6
                 Log.verbose(F("Main: Temp adjusted gravity=%F." CR), gravity );
 #endif   
             }
 
             // Limit the printout when sleep mode is not active.
-            if( loopCounter%10 == 0 || sleepModeActive )
+            if( loopCounter%10 == 0 || sleepModeActive ) {
                 Log.notice(F("Main: gyro angle=%F, gyro temp=%F, DS18B20 temp=%F, gravity=%F, batt=%F." CR), angle, sensorTemp, temp, gravity, volt );
+                LOG_PERF_PRINT();
+            }
 
-#if defined( ACTIVATE_PUSH )
             unsigned long runTime = millis() - startMillis;
 
+            LOG_PERF_START("loop-push");
             myPushTarget.send( angle, gravity, temp, runTime/1000, sleepModeActive );    // Force the transmission if we are going to sleep
-#endif
+            LOG_PERF_STOP("loop-push");
+
         } else {
             Log.error(F("Main: No gyro value." CR) );
         }
@@ -191,6 +227,7 @@ void loop() {
             LittleFS.end();
             myGyro.enterSleep();
             drd->stop();
+            LOG_PERF_PRINT();
             delay(100);
             deepSleep( myConfig.getSleepInterval() ); 
         }
@@ -200,8 +237,15 @@ void loop() {
 #endif   
         // Do these checks if we are running in normal mode (not sleep mode)
         checkSleepMode( angle, volt );
+
+        LOG_PERF_START("loop-gyro-read");
         myGyro.read();
+        LOG_PERF_STOP("loop-gyro-read");
+
+        LOG_PERF_START("loop-batt-read");
         myBatteryVoltage.read();
+        LOG_PERF_STOP("loop-batt-read");
+
         lastMillis = millis();
 #if LOG_LEVEL==6
         Log.verbose(F("Main: Heap %d kb FreeSketch %d kb." CR), ESP.getFreeHeap()/1024, ESP.getFreeSketchSpace()/1024 );

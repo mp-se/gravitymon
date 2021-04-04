@@ -25,6 +25,7 @@ SOFTWARE.
 #include "config.h"
 
 SerialDebug mySerial;
+PerfLogging myPerfLogging;
 BatteryVoltage myBatteryVoltage;
 
 //
@@ -48,6 +49,9 @@ void printBuildOptions() {
 #endif
 #ifdef EMBED_HTML
                 "EMBED_HTML "
+#endif    
+#ifdef COLLECT_PERFDATA
+                "PERFDATA "
 #endif    
 #ifdef ACTIVATE_OTA
                 "OTA "

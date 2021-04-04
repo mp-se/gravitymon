@@ -57,8 +57,134 @@ class BatteryVoltage {
         float getVoltage() { return batteryLevel; };
 };
 
+#if defined( COLLECT_PERFDATA )
+// Use these to collect performance data from various parts of the code
+#define LOG_PERF_START(s)   myPerfLogging.start(s)
+#define LOG_PERF_STOP(s)    myPerfLogging.stop(s)
+#define LOG_PERF_PRINT()    myPerfLogging.print()
+#define LOG_PERF_CLEAR()    myPerfLogging.clear()
+#else
+// These will disable the performance collection
+#define LOG_PERF_START(s)   
+#define LOG_PERF_STOP(s)    
+#define LOG_PERF_PRINT()    
+#define LOG_PERF_CLEAR()    
+#endif
+
+class PerfLogging {
+    private:
+        struct PerfEntry {
+            unsigned long start;        // millis()
+            unsigned long end;          // millis() 
+            unsigned long max;          // max time in ms
+            const char*   key;          // measurement
+            PerfEntry*    next;         //
+        };
+
+        PerfEntry* first = 0;
+
+        PerfEntry* find( const char* k ) {
+            if( first == 0 )
+                return 0;
+
+            PerfEntry* pe = first;
+
+            while( strcmp( k, pe->key ) != 0 ) {
+                if( pe->next == 0 )
+                    return 0;
+                
+                pe = pe->next;
+            }
+            return pe;
+        };
+
+        PerfEntry* add( const char* k ) {
+            if( first == 0 ) {
+                first = new PerfEntry();
+                first->key = k;
+                first->next = 0;
+                first->max = 0;
+                return first;
+            }
+
+            PerfEntry* pe = first;
+
+            while( strcmp( k, pe->key ) != 0 ) {
+                if( pe->next == 0 ) {
+                    pe->next = new PerfEntry();
+                    pe->next->key = k;
+                    pe->next->max = 0;
+                    pe->next->next = 0;
+                    return pe->next;
+                }
+                
+                pe = pe->next;
+            }
+
+            return pe;
+        };
+
+
+    public:
+        //
+        // Clear the current cache
+        //
+        void clear() { 
+            if( first == 0 )
+                return;
+
+            PerfEntry* pe = first;
+
+            do {
+                PerfEntry* p = pe;
+                pe = pe->next;
+                delete p;
+            } while( pe != 0 );
+
+            first = 0;
+        }
+
+        //
+        // Start measuring this performance point
+        //
+        void start( const char* key ) { 
+            PerfEntry* pe = add( key );
+            pe->start = millis(); 
+        }
+
+        //
+        // Finalize measuring of this performance point
+        //
+        void stop( const char* key ) { 
+            PerfEntry* pe = find( key );
+
+            if( pe != 0 ) {
+                pe->end = millis(); 
+
+                unsigned long t = pe->end - pe->start;
+                
+                if( t > pe->max )
+                    pe->max = t;
+            }
+        }
+
+        //
+        // Print the collected performance data
+        //
+        void print() { 
+            PerfEntry* pe = first;
+
+            while( pe != 0 ) {
+                //Log.notice( F("PERF: %s=%l ms (%l, %l)" CR), pe->key, (pe->end - pe->start), pe->start, pe->end );                
+                Log.notice( F("PERF: %s %lms" CR), pe->key, pe->max );                
+                pe = pe->next;
+            }
+        }
+};
+
 // Global instance created
 extern SerialDebug mySerial;
+extern PerfLogging myPerfLogging;
 extern BatteryVoltage myBatteryVoltage;
 
 #endif // _HELPER_H

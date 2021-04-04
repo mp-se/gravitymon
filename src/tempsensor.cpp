@@ -51,7 +51,7 @@ void TempSensor::setup() {
     return;
 #endif
 
-    if( mySensors.getDeviceCount() )
+    if( mySensors.getDS18Count() )
         return;
 
 #if LOG_LEVEL==6
@@ -59,8 +59,8 @@ void TempSensor::setup() {
 #endif
     mySensors.begin();
 
-    if( mySensors.getDeviceCount() ) {
-        Log.notice(F("TSEN: Found %d sensors." CR), mySensors.getDeviceCount());
+    if( mySensors.getDS18Count() ) {
+        Log.notice(F("TSEN: Found %d sensors." CR), mySensors.getDS18Count());
         mySensors.setResolution(TEMPERATURE_PRECISION);
     }
 
@@ -91,10 +91,14 @@ float TempSensor::getValue() {
 #endif
 
     // Read the sensors
+    //LOG_PERF_START("temp-request");
     mySensors.requestTemperatures();
+    //LOG_PERF_STOP("temp-request");
 
-    if( mySensors.getDeviceCount() >= 1) {
+    if( mySensors.getDS18Count() >= 1) {
+        //LOG_PERF_START("temp-get");
         c = mySensors.getTempCByIndex(0);
+        //LOG_PERF_STOP("temp-get");
 
 #if LOG_LEVEL==6
         Log.verbose(F("TSEN: Reciving temp value for sensor %F C." CR), c);

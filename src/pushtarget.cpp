@@ -45,14 +45,23 @@ void PushTarget::send(float angle, float gravity, float temp, float runTime, boo
 #endif
     ms = millis();
 
-    if( myConfig.isBrewfatherActive() )
-       sendBrewfather( angle,  gravity, temp );
+    if( myConfig.isBrewfatherActive() ) {
+        LOG_PERF_START("push-brewfather");
+        sendBrewfather( angle,  gravity, temp );
+        LOG_PERF_STOP("push-brewfather");
+    }
 
-    if( myConfig.isHttpActive() )
-       sendHttp( myConfig.getHttpPushTarget(), angle, gravity, temp, runTime );
+    if( myConfig.isHttpActive() ) {
+        LOG_PERF_START("push-http");
+        sendHttp( myConfig.getHttpPushTarget(), angle, gravity, temp, runTime );
+        LOG_PERF_STOP("push-http");
+    }
 
-    if( myConfig.isHttpActive2() )
-       sendHttp( myConfig.getHttpPushTarget2(), angle, gravity, temp, runTime );
+    if( myConfig.isHttpActive2() ) {
+        LOG_PERF_START("push-http2");
+        sendHttp( myConfig.getHttpPushTarget2(), angle, gravity, temp, runTime );
+        LOG_PERF_STOP("push-http2");
+    }
 }
 
 //
