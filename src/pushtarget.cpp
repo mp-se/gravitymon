@@ -87,11 +87,13 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float run
     // Create body for influxdb2
     char buf[1024];
     sprintf( &buf[0], "gravity,host=%s,device=%s,format=%s value=%.4f\n"
+                    "angle,host=%s,device=%s value=%.2f\n"
                     "temp,host=%s,device=%s,format=%c value=%.1f\n"
                     "battery,host=%s,device=%s value=%.2f\n"
                     "rssi,host=%s,device=%s value=%d\n",
                     // TODO: Add support for plato format
                     myConfig.getMDNS(), myConfig.getID(), "SG", gravity,
+                    myConfig.getMDNS(), myConfig.getID(), angle,
                     myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), temp,
                     myConfig.getMDNS(), myConfig.getID(), myBatteryVoltage.getVoltage(),
                     myConfig.getMDNS(), myConfig.getID(),  WiFi.RSSI() );
@@ -107,9 +109,9 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float run
     int httpResponseCode = http.POST(&buf[0]);
 
     if (httpResponseCode==204) {
-        Log.notice(F("PUSH: InfluxDB2 HTTP Response code %d" CR), httpResponseCode);
+        Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR), httpResponseCode);
     } else {
-        Log.error(F("PUSH: InfluxDB2 HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("PUSH: InfluxDB2 push failed, response=%d" CR), httpResponseCode);
     }
 
     http.end();
@@ -167,9 +169,9 @@ void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
     int httpResponseCode = http.POST(json);
 
     if (httpResponseCode==200) {
-        Log.notice(F("PUSH: Brewfather HTTP Response code %d" CR), httpResponseCode);
+        Log.notice(F("PUSH: Brewfather push successful, response=%d" CR), httpResponseCode);
     } else {
-        Log.error(F("PUSH: Brewfather HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("PUSH: Brewfather push failed, response=%d" CR), httpResponseCode);
     }
 
     http.end();
@@ -217,9 +219,9 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
     int httpResponseCode = http.POST(json);
     
     if (httpResponseCode==200) {
-        Log.notice(F("PUSH: HTTP Response code %d" CR), httpResponseCode);
+        Log.notice(F("PUSH: HTTP push successful, response=%d" CR), httpResponseCode);
     } else {
-        Log.error(F("PUSH: HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("PUSH: HTTP push failed, response=%d" CR), httpResponseCode);
     }
 
     http.end();

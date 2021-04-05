@@ -194,9 +194,9 @@ void PerfLogging::pushInflux() {
     int httpResponseCode = http.POST(body);
 
     if (httpResponseCode==204) {
-        Log.notice(F("PUSH: InfluxDB2 HTTP Response code %d" CR), httpResponseCode);
+        Log.notice(F("PERF: InfluxDB2 push performance data successful, response=%d" CR), httpResponseCode);
     } else {
-        Log.error(F("PUSH: InfluxDB2 HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("PERF: InfluxDB2 push performance data failed, response=%d" CR), httpResponseCode);
     }
 
     http.end();

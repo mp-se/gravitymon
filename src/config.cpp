@@ -137,7 +137,7 @@ bool Config::loadFile() {
         return false;
     }
 
-    Log.notice(F("CFG : Size of configuration %d bytes." CR), configFile.size() );
+    Log.notice(F("CFG : Size of configuration file=%d bytes." CR), configFile.size() );
 
     DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
     DeserializationError err = deserializeJson(doc, configFile);

@@ -97,7 +97,6 @@ void setup() {
 
     drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
     bool dt = drd->detectDoubleReset();  
-
 #if LOG_LEVEL==6
     Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str() );
 #endif
@@ -105,7 +104,6 @@ void setup() {
     Log.notice(F("Main: Started setup for %s." CR), String( ESP.getChipId(), HEX).c_str() );
     printBuildOptions();
 
-    Log.notice(F("Main: Loading configuration." CR));
     LOG_PERF_START("main-config-load");
     myConfig.checkFileSystem();
     myConfig.loadFile();
@@ -128,7 +126,6 @@ void setup() {
     if( dt ) 
         Log.notice(F("Main: Detected doubletap on reset." CR));
 
-    Log.notice(F("Main: Connecting to wifi." CR));
     LOG_PERF_START("main-wifi-connect");
     myWifi.connect( dt );
     LOG_PERF_STOP("main-wifi-connect");
@@ -143,8 +140,6 @@ void setup() {
     checkSleepMode( myGyro.getAngle(), myBatteryVoltage.getVoltage() );
 
     if( myWifi.isConnected() ) {
-        Log.notice(F("Main: Connected to wifi ip=%s." CR), myWifi.getIPAddress().c_str() );
-
 #if defined( ACTIVATE_OTA ) 
         LOG_PERF_START("main-wifi-ota");
         if( !sleepModeActive && myWifi.checkFirmwareVersion() ) {
@@ -154,8 +149,7 @@ void setup() {
 #endif
         if( !sleepModeActive ) {
             LOG_PERF_START("main-webserver-setup");
-            if( myWebServer.setupWebServer() )
-                Log.notice(F("Main: Webserver is running." CR) );
+            myWebServer.setupWebServer();
             LOG_PERF_STOP("main-webserver-setup");
         }
     }
@@ -163,6 +157,7 @@ void setup() {
     LOG_PERF_STOP("main-setup");
     LOG_PERF_PRINT();               // Dump data to serial
     LOG_PERF_PUSH();                // Dump data to influx
+    Log.notice(F("Main: Setup completed." CR));
 }
 
 //

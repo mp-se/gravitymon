@@ -125,13 +125,14 @@ extern PerfLogging myPerfLogging;
 // Use these to collect performance data from various parts of the code
 #define LOG_PERF_START(s)   myPerfLogging.start(s)
 #define LOG_PERF_STOP(s)    myPerfLogging.stop(s)
-#define LOG_PERF_PRINT()    myPerfLogging.print()
+//#define LOG_PERF_PRINT()    myPerfLogging.print()
+#define LOG_PERF_PRINT()    
 #define LOG_PERF_CLEAR()    myPerfLogging.clear()
 #define LOG_PERF_PUSH()     myPerfLogging.pushInflux()
 
 #else
 
-// These will disable the performance collection
+// These will disable the performance collection function
 #define LOG_PERF_START(s)   
 #define LOG_PERF_STOP(s)    
 #define LOG_PERF_PRINT()    

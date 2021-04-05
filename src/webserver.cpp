@@ -444,7 +444,7 @@ bool WebServer::checkHtmlFile( HtmlFile item ) {
 // Setup the Web Server callbacks and start it
 //
 bool WebServer::setupWebServer() {
-    Log.notice(F("WEB : Web server setup started." CR));
+    Log.notice(F("WEB : Configuring web server." CR));
 
     MDNS.begin( myConfig.getMDNS() );
     MDNS.addService("http", "tcp", 80);

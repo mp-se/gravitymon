@@ -6,7 +6,6 @@ I started this project out of curiosity for how a motion sensor is working and s
 
 * Add support for Plato in device (today it assumes that formula is in SG). 
 * Add support for converting between SG/Plato in device.
-* Add support for InfluxDB as endpoint
 * Add support for Blynk as endpoint
 * Add support for https connections (push)
 * Add support for https web server (will require certificates to be created as part of build process)
@@ -54,11 +53,15 @@ The device page shows the device settings and software versions.
 
 http://gravmon.local/config.htm
 
-This page is divided into several categories of settings. The first one contains device settings, mDNS name, temperature format, and gyro calibration data. Calibration needs to be done or the device will not work correctly. Place the device flat on a surface with gyro up and press the calibrate button when it's stable. 
+This page is divided into several categories of settings. The first one contains device settings, mDNS name, temperature format, and gyro calibration data. The interval setting is the amount of time the device will be in sleep mode between readings (interval is in seconds).
+
+Calibration needs to be done or the device will not work correctly. Place the device flat on a surface with gyro up and press the calibrate button when it's stable. 
+
+__TODO: Update image for config settings.__
 
 ![Config - Device](img/config1.png)
 
-The second section contains the push settings, two URL's for http sending and one for Brewfather. The interval setting is the amount of time the device will be in sleep mode between readings (interval is in seconds).
+The second section contains the push settings, two URL's for http posts, Brewfather and settings for InfluxDB v2. 
 
 ### This is the format used for standard http posts. 
 ```
@@ -73,7 +76,7 @@ The second section contains the push settings, two URL's for http sending and on
    "angle": 45.34,
    "battery": 3.67,
    "rssi": -12,
-   "run-time": 2.30,        // Runtime for this reading, this is an extension
+   "run-time": 230,         // ms, Runtime for this reading, this is an additional field not part of the standard format
 }
 ```
 
@@ -89,6 +92,18 @@ The second section contains the push settings, two URL's for http sending and on
    "gravity_unit": "G",     // G = SG, Plato is not yet supported
 }
 ```
+
+### This is the format for InfluxDB v2
+
+```
+gravity,host=<mdns>,device=<id>,format=SG value=1.0004
+angle,host=<mdns>,device=<id> value=45.45
+temp,host=<mdns>,device=<id>,format=<C|F> value=20.1
+battery,host=<mdns>,device=<id> value=3.96
+rssi,host=<mdns>,device=<id> value=-18
+```
+
+__TODO: Update image for push settings.__
 
 ![Config - Push](img/config2.png)
 
