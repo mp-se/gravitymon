@@ -53,15 +53,67 @@ void PushTarget::send(float angle, float gravity, float temp, float runTime, boo
 
     if( myConfig.isHttpActive() ) {
         LOG_PERF_START("push-http");
-        sendHttp( myConfig.getHttpPushTarget(), angle, gravity, temp, runTime );
+        sendHttp( myConfig.getHttpPushUrl(), angle, gravity, temp, runTime );
         LOG_PERF_STOP("push-http");
     }
 
     if( myConfig.isHttpActive2() ) {
         LOG_PERF_START("push-http2");
-        sendHttp( myConfig.getHttpPushTarget2(), angle, gravity, temp, runTime );
+        sendHttp( myConfig.getHttpPushUrl2(), angle, gravity, temp, runTime );
         LOG_PERF_STOP("push-http2");
     }
+
+    if( myConfig.isInfluxDb2Active() ) {
+        LOG_PERF_START("push-influxdb2");
+        sendInfluxDb2( angle, gravity, temp, runTime );
+        LOG_PERF_STOP("push-influxdb2");
+    }
+}
+
+//
+// Send to influx db v2
+//
+void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float runTime) {
+    Log.notice(F("PUSH: Sending values to influxdb2 angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
+
+    WiFiClient client;
+    HTTPClient http;
+    String serverPath = String(myConfig.getInfluxDb2PushUrl()) + "/api/v2/write?org=" + 
+                        String(myConfig.getInfluxDb2PushOrg()) + "&bucket=" + 
+                        String(myConfig.getInfluxDb2PushBucket());
+
+    http.begin( client, serverPath);
+
+    // Create body for influxdb2
+    char buf[1024];
+    sprintf( &buf[0], "gravity,host=%s,device=%s,format=%s value=%.4f\n"
+                    "temp,host=%s,device=%s,format=%c value=%.1f\n"
+                    "battery,host=%s,device=%s value=%.2f\n"
+                    "rssi,host=%s,device=%s value=%d\n",
+                    // TODO: Add support for plato format
+                    myConfig.getMDNS(), myConfig.getID(), "SG", gravity,
+                    myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), temp,
+                    myConfig.getMDNS(), myConfig.getID(), myBatteryVoltage.getVoltage(),
+                    myConfig.getMDNS(), myConfig.getID(),  WiFi.RSSI() );
+
+#if LOG_LEVEL==6
+    Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
+    Log.verbose(F("PUSH: data %s." CR), &buf[0] );
+#endif
+
+    // Send HTTP POST request
+    String auth = "Token " + String( myConfig.getInfluxDb2PushToken() );
+    http.addHeader(F("Authorization"), auth.c_str() );
+    int httpResponseCode = http.POST(&buf[0]);
+
+    if (httpResponseCode==204) {
+        Log.notice(F("PUSH: InfluxDB2 HTTP Response code %d" CR), httpResponseCode);
+    } else {
+        Log.error(F("PUSH: InfluxDB2 HTTP Response code %d" CR), httpResponseCode);
+    }
+
+    http.end();
+
 }
 
 //
@@ -91,22 +143,15 @@ void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
     //
     doc["name"]          = myConfig.getMDNS();
     doc["temp"]          = reduceFloatPrecision( temp, 1);
-  //doc["aux_temp"]      = 0;
-  //doc["ext_temp"]      = 0;
     doc["temp_unit"]     = String( myConfig.getTempFormat() ); 
-  //doc["pressure"]      = ; 
-  //doc["pressure_unit"] = ;  
     doc["battery"]       = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 ); 
+    // TODO: Add support for plato format
     doc["gravity"]       = reduceFloatPrecision( gravity, 4 );
     doc["gravity_unit"]  = myConfig.isGravitySG()?"G":"P";
-  //doc["ph"]            = 0;
-  //doc["bpm"]           = 0;
-  //doc["comment"]       = "";
-  //doc["beer"]          = "";
 
     WiFiClient client;
     HTTPClient http;
-    String serverPath = myConfig.getBrewfatherPushTarget();
+    String serverPath = myConfig.getBrewfatherPushUrl();
 
     // Your Domain name with URL path or IP address with path
     http.begin( client, serverPath);
@@ -122,9 +167,9 @@ void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
     int httpResponseCode = http.POST(json);
 
     if (httpResponseCode==200) {
-        Log.notice(F("PUSH: HTTP Response code %d" CR), httpResponseCode);
+        Log.notice(F("PUSH: Brewfather HTTP Response code %d" CR), httpResponseCode);
     } else {
-        Log.error(F("PUSH: HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("PUSH: Brewfather HTTP Response code %d" CR), httpResponseCode);
     }
 
     http.end();
@@ -139,19 +184,21 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
     DynamicJsonDocument doc(256);
 
     // Use iSpindle format for compatibility
-    doc["name"]        = myConfig.getMDNS();
-    doc["ID"]          = myConfig.getID();
-    doc["token"]       = "gravmon";
-    doc["interval"]    = myConfig.getSleepInterval();
-    doc["temperature"] = reduceFloatPrecision( temp, 1 );
-    doc["temp-units"]  = String( myConfig.getTempFormat() ); 
-    doc["gravity"]     = reduceFloatPrecision( gravity, 4 );
-    doc["angle"]       = reduceFloatPrecision( angle, 2);
-    doc["battery"]     = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 );
-    doc["rssi"]        = WiFi.RSSI(); 
+    doc["name"]          = myConfig.getMDNS();
+    doc["ID"]            = myConfig.getID();
+    doc["token"]         = "gravmon";
+    doc["interval"]      = myConfig.getSleepInterval();
+    doc["temperature"]   = reduceFloatPrecision( temp, 1 );
+    doc["temp-units"]    = String( myConfig.getTempFormat() ); 
+    // TODO: Add support for plato format
+    doc["gravity"]       = reduceFloatPrecision( gravity, 4 );
+    doc["angle"]         = reduceFloatPrecision( angle, 2);
+    doc["battery"]       = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 );
+    doc["rssi"]          = WiFi.RSSI(); 
 
     // Some additional information
-    doc["run-time"]  = reduceFloatPrecision( runTime, 2 );
+    doc["gravity-units"] = "SG";
+    doc["run-time"]      = reduceFloatPrecision( runTime, 2 );
 
     WiFiClient client;
     HTTPClient http;

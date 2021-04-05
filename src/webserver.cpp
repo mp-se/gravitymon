@@ -56,6 +56,7 @@ extern bool sleepModeAlwaysSkip;
 // Callback from webServer when / has been accessed.
 //
 void webHandleDevice() {
+    LOG_PERF_START("webserver-api-device");
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/config." CR));
 #endif
@@ -71,12 +72,14 @@ void webHandleDevice() {
     String out;
     serializeJson(doc, out);
     server.send(200, "application/json", out.c_str() );
+    LOG_PERF_STOP("webserver-api-device");
 }
 
 //
 // Callback from webServer when / has been accessed.
 //
 void webHandleConfig() {
+    LOG_PERF_START("webserver-api-config");
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/config." CR));
 #endif
@@ -98,12 +101,14 @@ void webHandleConfig() {
     String out;
     serializeJson(doc, out);
     server.send(200, "application/json", out.c_str() );
+    LOG_PERF_STOP("webserver-api-config");
 }
 
 //
 // Callback from webServer when / has been accessed.
 //
 void webHandleUpload() {
+    LOG_PERF_START("webserver-api-upload");
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/upload." CR));
 #endif
@@ -122,6 +127,7 @@ void webHandleUpload() {
     String out;
     serializeJson(doc, out);
     server.send(200, "application/json", out.c_str() );
+    LOG_PERF_STOP("webserver-api-upload");
 }
 
 //
@@ -130,7 +136,7 @@ void webHandleUpload() {
 File uploadFile;
 
 void webHandleUploadFile() {
-    Log.notice(F("WEB : webServer callback for /api/upload/file." CR));
+    LOG_PERF_START("webserver-api-upload-file");
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/upload/file." CR));
 #endif
@@ -164,12 +170,14 @@ void webHandleUploadFile() {
     } else {
         server.send(500, "text/plain", "Couldn't create file.");
     }
+    LOG_PERF_STOP("webserver-api-upload-file");
 }
 
 //
 // Callback from webServer when / has been accessed.
 //
 void webHandleCalibrate() {
+    LOG_PERF_START("webserver-api-calibrate");
     String id = server.arg( CFG_PARAM_ID );
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/calibrate." CR));
@@ -177,10 +185,12 @@ void webHandleCalibrate() {
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server.send(400, "text/plain", "Invalid ID.");
+        LOG_PERF_STOP("webserver-api-calibrate");
         return;
     }
     myGyro.calibrateSensor();
     server.send(200, "text/plain", "Device calibrated" );
+    LOG_PERF_STOP("webserver-api-calibrate");
 }
 
 //
@@ -206,6 +216,7 @@ void webHandleFactoryReset() {
 // Callback from webServer when / has been accessed.
 //
 void webHandleStatus() {
+    LOG_PERF_START("webserver-api-status");
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/status." CR));
 #endif
@@ -231,6 +242,7 @@ void webHandleStatus() {
     String out;
     serializeJson(doc, out);
     server.send(200, "application/json", out.c_str() );
+    LOG_PERF_STOP("webserver-api-status");
 }
 
 //
@@ -255,6 +267,7 @@ void webHandleClearWIFI() {
 // Used to force the device to never sleep.
 //
 void webHandleStatusSleepmode() {
+    LOG_PERF_START("webserver-api-sleepmode");
     String id = server.arg( CFG_PARAM_ID );
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/status/sleepmode." CR) );
@@ -262,6 +275,7 @@ void webHandleStatusSleepmode() {
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server.send(400, "text/plain", "Invalid ID.");
+        LOG_PERF_STOP("webserver-api-sleepmode");
         return;
     }
 #if LOG_LEVEL==6
@@ -272,12 +286,14 @@ void webHandleStatusSleepmode() {
     else
         sleepModeAlwaysSkip = false;
     server.send(200, "text/plain", "Sleep mode updated" );    
+    LOG_PERF_STOP("webserver-api-sleepmode");
 }
 
 //
 // Update device settings.
 //
 void webHandleConfigDevice() {
+    LOG_PERF_START("webserver-api-config-device");
     String id = server.arg( CFG_PARAM_ID );
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/config/device." CR) );
@@ -285,6 +301,7 @@ void webHandleConfigDevice() {
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server.send(400, "text/plain", "Invalid ID.");
+        LOG_PERF_STOP("webserver-api-config-device");
         return;
     }
 #if LOG_LEVEL==6
@@ -296,12 +313,14 @@ void webHandleConfigDevice() {
     myConfig.saveFile();
     server.sendHeader("Location", "/config.htm#collapseOne", true);  
     server.send(302, "text/plain", "Device config updated" );
+    LOG_PERF_STOP("webserver-api-config-device");
 }
 
 //
 // Update push settings.
 //
 void webHandleConfigPush() {
+    LOG_PERF_START("webserver-api-config-push");
     String id = server.arg( CFG_PARAM_ID );
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/config/push." CR) );
@@ -309,23 +328,34 @@ void webHandleConfigPush() {
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server.send(400, "text/plain", "Invalid ID.");
+        LOG_PERF_STOP("webserver-api-config-push");
         return;
     }
 #if LOG_LEVEL==6
-    Log.verbose(F("WEB : http=%s, bf=%s interval=%s." CR), server.arg( CFG_PARAM_PUSH_HTTP ).c_str(), server.arg( CFG_PARAM_PUSH_BREWFATHER ).c_str(),  server.arg( CFG_PARAM_PUSH_INTERVAL ).c_str() );
+    Log.verbose(F("WEB : http=%s,%s, bf=%s influx2=%s, %s, %s, %s." CR), server.arg( CFG_PARAM_PUSH_HTTP ).c_str(),
+                    server.arg( CFG_PARAM_PUSH_HTTP2 ).c_str(), server.arg( CFG_PARAM_PUSH_BREWFATHER ).c_str(),
+                    server.arg( CFG_PARAM_PUSH_INFLUXDB2 ).c_str(), server.arg( CFG_PARAM_PUSH_INFLUXDB2_ORG ).c_str(),
+                    server.arg( CFG_PARAM_PUSH_INFLUXDB2_BUCKET ).c_str(), server.arg( CFG_PARAM_PUSH_INFLUXDB2_AUTH ).c_str()
+          );
 #endif
-    myConfig.setHttpPushTarget( server.arg( CFG_PARAM_PUSH_HTTP ).c_str() );
-    myConfig.setHttpPushTarget2( server.arg( CFG_PARAM_PUSH_HTTP2 ).c_str() );
-    myConfig.setBrewfatherPushTarget( server.arg( CFG_PARAM_PUSH_BREWFATHER ).c_str() );
+    myConfig.setHttpPushUrl( server.arg( CFG_PARAM_PUSH_HTTP ).c_str() );
+    myConfig.setHttpPushUrl2( server.arg( CFG_PARAM_PUSH_HTTP2 ).c_str() );
+    myConfig.setBrewfatherPushUrl( server.arg( CFG_PARAM_PUSH_BREWFATHER ).c_str() );
+    myConfig.setInfluxDb2PushUrl( server.arg( CFG_PARAM_PUSH_INFLUXDB2 ).c_str() );
+    myConfig.setInfluxDb2PushOrg( server.arg( CFG_PARAM_PUSH_INFLUXDB2_ORG ).c_str() );
+    myConfig.setInfluxDb2PushBucket( server.arg( CFG_PARAM_PUSH_INFLUXDB2_BUCKET ).c_str() );
+    myConfig.setInfluxDb2PushToken( server.arg( CFG_PARAM_PUSH_INFLUXDB2_AUTH ).c_str() );
     myConfig.saveFile();
     server.sendHeader("Location", "/config.htm#collapseTwo", true);  
     server.send(302, "text/plain", "Push config updated" );
+    LOG_PERF_STOP("webserver-api-config-push");
 }
 
 //
 // Update gravity settings.
 //
 void webHandleConfigGravity() {
+    LOG_PERF_START("webserver-api-config-gravity");
     String id = server.arg( CFG_PARAM_ID );
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/config/gravity." CR) );
@@ -333,6 +363,7 @@ void webHandleConfigGravity() {
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server.send(400, "text/plain", "Invalid ID.");
+        LOG_PERF_STOP("webserver-api-config-gravity");
         return;
     }
 #if LOG_LEVEL==6
@@ -343,12 +374,14 @@ void webHandleConfigGravity() {
     myConfig.saveFile();
     server.sendHeader("Location", "/config.htm#collapseThree", true);  
     server.send(302, "text/plain", "Gravity config updated" );
+    LOG_PERF_STOP("webserver-api-config-gravity");
 }
 
 //
 // Update hardware settings.
 //
 void webHandleConfigHardware() {
+    LOG_PERF_START("webserver-api-config-hardware");
     String id = server.arg( CFG_PARAM_ID );
 #if LOG_LEVEL==6
     Log.verbose(F("WEB : webServer callback for /api/config/hardware." CR) );
@@ -356,6 +389,7 @@ void webHandleConfigHardware() {
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server.send(400, "text/plain", "Invalid ID.");
+        LOG_PERF_STOP("webserver-api-config-hardware");
         return;
     }
 #if LOG_LEVEL==6
@@ -367,6 +401,7 @@ void webHandleConfigHardware() {
     myConfig.saveFile();
     server.sendHeader("Location", "/config.htm#collapseFour", true);  
     server.send(302, "text/plain", "Hardware config updated" );
+    LOG_PERF_STOP("webserver-api-config-hardware");
 }
 
 //

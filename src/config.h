@@ -31,7 +31,7 @@ SOFTWARE.
 #include <stdlib.h>
 
 // defintions
-#define CFG_JSON_BUFSIZE    1000
+#define CFG_JSON_BUFSIZE    2000
 
 #define CFG_APPNAME         "GravityMon "       // Name of firmware
 #define CFG_FILENAME        "/gravitymon.json"  // Name of config file
@@ -42,22 +42,26 @@ SOFTWARE.
 #define WIFI_PORTAL_TIMEOUT 120                 // Number of seconds until the config portal is closed
 
 // These are used in API + Savefile
-#define CFG_PARAM_ID                 "id"
-#define CFG_PARAM_MDNS               "mdns"                           // Device name
-#define CFG_PARAM_OTA                "ota-url"                        // Base URL for OTA
-#define CFG_PARAM_PUSH_BREWFATHER    "brewfather-push"                // URL (brewfather format)
-#define CFG_PARAM_PUSH_HTTP          "http-push"                      // URL (iSpindle format)
-#define CFG_PARAM_PUSH_HTTP2         "http-push2"                     // URL (iSpindle format)
-#define CFG_PARAM_SLEEP_INTERVAL     "sleep-interval"                 // Sleep interval 
+#define CFG_PARAM_ID                    "id"
+#define CFG_PARAM_MDNS                  "mdns"                          // Device name
+#define CFG_PARAM_OTA                   "ota-url"                       // Base URL for OTA
+#define CFG_PARAM_PUSH_BREWFATHER       "brewfather-push"               // URL (brewfather format)
+#define CFG_PARAM_PUSH_HTTP             "http-push"                     // URL (iSpindle format)
+#define CFG_PARAM_PUSH_HTTP2            "http-push2"                    // URL (iSpindle format)
+#define CFG_PARAM_PUSH_INFLUXDB2        "influxdb2-push"                // URL (iSpindle format)
+#define CFG_PARAM_PUSH_INFLUXDB2_ORG    "influxdb2-org"                 // URL (iSpindle format)
+#define CFG_PARAM_PUSH_INFLUXDB2_BUCKET "influxdb2-bucket"              // URL (iSpindle format)
+#define CFG_PARAM_PUSH_INFLUXDB2_AUTH   "influxdb2-auth"                // URL (iSpindle format)
+#define CFG_PARAM_SLEEP_INTERVAL        "sleep-interval"                // Sleep interval 
 // TODO: @deprecated setting
-#define CFG_PARAM_PUSH_INTERVAL      "push-interval"                  // Time between push 
-#define CFG_PARAM_TEMPFORMAT         "temp-format"                    // C or F
-#define CFG_PARAM_VOLTAGEFACTOR      "voltage-factor"                 // Factor to calculate the battery voltage
-#define CFG_PARAM_GRAVITY_FORMULA    "gravity-formula"                // Formula for calculating gravity
-#define CFG_PARAM_GRAVITY_FORMAT     "gravity-format"                 // Gravity format G or P
-#define CFG_PARAM_GRAVITY_TEMP_ADJ   "gravity-temp-adjustment"        // True/False. Adjust gravity for temperature
-#define CFG_PARAM_TEMP_ADJ           "temp-adjustment-value"          // Correction value for temp sensor
-#define CFG_PARAM_GYRO_CALIBRATION   "gyro-calibration-data"          // READ ONLY
+#define CFG_PARAM_PUSH_INTERVAL         "push-interval"                 // Time between push 
+#define CFG_PARAM_TEMPFORMAT            "temp-format"                   // C or F
+#define CFG_PARAM_VOLTAGEFACTOR         "voltage-factor"                // Factor to calculate the battery voltage
+#define CFG_PARAM_GRAVITY_FORMULA       "gravity-formula"               // Formula for calculating gravity
+#define CFG_PARAM_GRAVITY_FORMAT        "gravity-format"                // Gravity format G or P
+#define CFG_PARAM_GRAVITY_TEMP_ADJ      "gravity-temp-adjustment"       // True/False. Adjust gravity for temperature
+#define CFG_PARAM_TEMP_ADJ              "temp-adjustment-value"         // Correction value for temp sensor
+#define CFG_PARAM_GYRO_CALIBRATION      "gyro-calibration-data"         // READ ONLY
 
 // These are used in API's
 #define CFG_PARAM_APP_NAME           "app-name"
@@ -98,9 +102,15 @@ class Config {
         int    sleepInterval;                
  
         // Push target settings
-        String brewfatherPushTarget;
-        String httpPushTarget;               
-        String httpPushTarget2;               
+        String brewfatherPushUrl;               // URL For brewfather
+
+        String httpPushUrl;                     // URL 1 for standard http
+        String httpPushUrl2;                    // URL 2 for standard http
+
+        String influxDb2Url;                    // URL for InfluxDB v2 
+        String influxDb2Org;                    // Organisation for InfluxDB v2
+        String influxDb2Bucket;                 // Bucket for InfluxDB v2
+        String influxDb2Token;                  // Auth Token for InfluxDB v2
 
         // Gravity and temperature calculations
         String gravityFormula;
@@ -122,19 +132,31 @@ class Config {
 
         const char*  getOtaURL() { return otaURL.c_str(); }
         void         setOtaURL( String s ) { otaURL = s; saveNeeded = true; }
-        bool         isOtaActive() { return otaURL.length()>0?true:false; }
+        bool         isOtaActive() { return otaURL.length()?true:false; }
 
-        const char*  getBrewfatherPushTarget() { return brewfatherPushTarget.c_str(); }
-        void         setBrewfatherPushTarget( String s ) { brewfatherPushTarget = s; saveNeeded = true; }
-        bool         isBrewfatherActive() { return brewfatherPushTarget.length()>0?true:false; }
+        // Brewfather
+        const char*  getBrewfatherPushUrl() { return brewfatherPushUrl.c_str(); }
+        void         setBrewfatherPushUrl( String s ) { brewfatherPushUrl = s; saveNeeded = true; }
+        bool         isBrewfatherActive() { return brewfatherPushUrl.length()?true:false; }
 
-        const char*  getHttpPushTarget() { return httpPushTarget.c_str(); }
-        void         setHttpPushTarget( String s ) { httpPushTarget = s; saveNeeded = true; }
-        bool         isHttpActive() { return httpPushTarget.length()>0?true:false; }
+        // Standard HTTP
+        const char*  getHttpPushUrl() { return httpPushUrl.c_str(); }
+        void         setHttpPushUrl( String s ) { httpPushUrl = s; saveNeeded = true; }
+        bool         isHttpActive() { return httpPushUrl.length()?true:false; }
+        const char*  getHttpPushUrl2() { return httpPushUrl2.c_str(); }
+        void         setHttpPushUrl2( String s ) { httpPushUrl2 = s; saveNeeded = true; }
+        bool         isHttpActive2() { return httpPushUrl2.length()?true:false; }
 
-        const char*  getHttpPushTarget2() { return httpPushTarget2.c_str(); }
-        void         setHttpPushTarget2( String s ) { httpPushTarget2 = s; saveNeeded = true; }
-        bool         isHttpActive2() { return httpPushTarget2.length()>0?true:false; }
+        // InfluxDB2
+        const char*  getInfluxDb2PushUrl() { return influxDb2Url.c_str(); }
+        void         setInfluxDb2PushUrl( String s ) { influxDb2Url = s; saveNeeded = true; }
+        bool         isInfluxDb2Active() { return influxDb2Url.length()?true:false; }
+        const char*  getInfluxDb2PushOrg() { return influxDb2Org.c_str(); }
+        void         setInfluxDb2PushOrg( String s ) { influxDb2Org = s; saveNeeded = true; }
+        const char*  getInfluxDb2PushBucket() { return influxDb2Bucket.c_str(); }
+        void         setInfluxDb2PushBucket( String s ) { influxDb2Bucket = s; saveNeeded = true; }
+        const char*  getInfluxDb2PushToken() { return influxDb2Token.c_str(); }
+        void         setInfluxDb2PushToken( String s ) { influxDb2Token = s; saveNeeded = true; }
 
         int          getSleepInterval() { return sleepInterval; }
         void         setSleepInterval( int v ) { sleepInterval = v; saveNeeded = true; }

@@ -51,20 +51,24 @@ Config::Config() {
 // Populate the json document with all configuration parameters (used in both web and saving to file)
 //
 void Config::createJson(DynamicJsonDocument& doc) {
-    doc[ CFG_PARAM_MDNS ]             = getMDNS();
-    doc[ CFG_PARAM_ID ]               = getID();
-    doc[ CFG_PARAM_OTA ]              = getOtaURL();
-    doc[ CFG_PARAM_TEMPFORMAT ]       = String( getTempFormat() );
-    doc[ CFG_PARAM_PUSH_BREWFATHER ]  = getBrewfatherPushTarget();
-    doc[ CFG_PARAM_PUSH_HTTP ]        = getHttpPushTarget();
-    doc[ CFG_PARAM_PUSH_HTTP2 ]       = getHttpPushTarget2();
-    doc[ CFG_PARAM_SLEEP_INTERVAL ]   = getSleepInterval();
-//  doc[ CFG_PARAM_PUSH_INTERVAL ]    = getSleepInterval();         // TODO: @deprecated
-    doc[ CFG_PARAM_VOLTAGEFACTOR ]    = getVoltageFactor();
-    doc[ CFG_PARAM_GRAVITY_FORMULA ]  = getGravityFormula();
-    doc[ CFG_PARAM_GRAVITY_FORMAT ]   = String(getGravityFormat());
-    doc[ CFG_PARAM_TEMP_ADJ ]         = getTempSensorAdj();
-    doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ] = isGravityTempAdj();
+    doc[ CFG_PARAM_MDNS ]                   = getMDNS();
+    doc[ CFG_PARAM_ID ]                     = getID();
+    doc[ CFG_PARAM_OTA ]                    = getOtaURL();
+    doc[ CFG_PARAM_TEMPFORMAT ]             = String( getTempFormat() );
+    doc[ CFG_PARAM_PUSH_BREWFATHER ]        = getBrewfatherPushUrl();
+    doc[ CFG_PARAM_PUSH_HTTP ]              = getHttpPushUrl();
+    doc[ CFG_PARAM_PUSH_HTTP2 ]             = getHttpPushUrl2();
+    doc[ CFG_PARAM_PUSH_INFLUXDB2 ]         = getInfluxDb2PushUrl();
+    doc[ CFG_PARAM_PUSH_INFLUXDB2_ORG ]     = getInfluxDb2PushOrg();
+    doc[ CFG_PARAM_PUSH_INFLUXDB2_BUCKET ]  = getInfluxDb2PushBucket();
+    doc[ CFG_PARAM_PUSH_INFLUXDB2_AUTH ]    = getInfluxDb2PushToken();
+    doc[ CFG_PARAM_SLEEP_INTERVAL ]         = getSleepInterval();
+//  doc[ CFG_PARAM_PUSH_INTERVAL ]          = getSleepInterval();         // TODO: @deprecated
+    doc[ CFG_PARAM_VOLTAGEFACTOR ]          = getVoltageFactor();
+    doc[ CFG_PARAM_GRAVITY_FORMULA ]        = getGravityFormula();
+    doc[ CFG_PARAM_GRAVITY_FORMAT ]         = String(getGravityFormat());
+    doc[ CFG_PARAM_TEMP_ADJ ]               = getTempSensorAdj();
+    doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ]       = isGravityTempAdj();
 
     JsonObject cal = doc.createNestedObject( CFG_PARAM_GYRO_CALIBRATION );
     cal["ax"] = gyroCalibration.ax;
@@ -133,6 +137,8 @@ bool Config::loadFile() {
         return false;
     }
 
+    Log.notice(F("CFG : Size of configuration %d bytes." CR), configFile.size() );
+
     DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
     DeserializationError err = deserializeJson(doc, configFile);
 #if LOG_LEVEL==6
@@ -158,11 +164,19 @@ bool Config::loadFile() {
         setTempFormat( s.charAt(0) );
     }
     if( !doc[ CFG_PARAM_PUSH_BREWFATHER ].isNull() )
-        setBrewfatherPushTarget( doc[ CFG_PARAM_PUSH_BREWFATHER ] );
+        setBrewfatherPushUrl( doc[ CFG_PARAM_PUSH_BREWFATHER ] );
     if( !doc[ CFG_PARAM_PUSH_HTTP ].isNull() )
-        setHttpPushTarget( doc[ CFG_PARAM_PUSH_HTTP ] );
+        setHttpPushUrl( doc[ CFG_PARAM_PUSH_HTTP ] );
     if( !doc[ CFG_PARAM_PUSH_HTTP2 ].isNull() )
-        setHttpPushTarget2( doc[ CFG_PARAM_PUSH_HTTP2 ] );
+        setHttpPushUrl2( doc[ CFG_PARAM_PUSH_HTTP2 ] );
+    if( !doc[ CFG_PARAM_PUSH_INFLUXDB2 ].isNull() )
+        setInfluxDb2PushUrl( doc[ CFG_PARAM_PUSH_INFLUXDB2 ] );
+    if( !doc[ CFG_PARAM_PUSH_INFLUXDB2_ORG ].isNull() )
+        setInfluxDb2PushOrg( doc[ CFG_PARAM_PUSH_INFLUXDB2_ORG ] );
+    if( !doc[ CFG_PARAM_PUSH_INFLUXDB2_BUCKET ].isNull() )
+        setInfluxDb2PushBucket( doc[ CFG_PARAM_PUSH_INFLUXDB2_BUCKET ] );
+    if( !doc[ CFG_PARAM_PUSH_INFLUXDB2_AUTH ].isNull() )
+        setInfluxDb2PushToken( doc[ CFG_PARAM_PUSH_INFLUXDB2_AUTH ] );
     if( !doc[ CFG_PARAM_SLEEP_INTERVAL ].isNull() )     
         setSleepInterval( doc[ CFG_PARAM_SLEEP_INTERVAL ].as<int>() );
     if( !doc[ CFG_PARAM_PUSH_INTERVAL ].isNull() )                          // TODO: @deprecated
@@ -231,16 +245,18 @@ void Config::debug() {
     Log.verbose(F("CFG : Dumping configration " CFG_FILENAME "." CR));
     Log.verbose(F("CFG : ID; '%s'." CR), getID());
     Log.verbose(F("CFG : mDNS; '%s'." CR), getMDNS() );
+    Log.verbose(F("CFG : Sleep interval; %d." CR), getSleepInterval() );
     Log.verbose(F("CFG : OTA; '%s'." CR), getOtaURL() );
     Log.verbose(F("CFG : Temp; %c." CR), getTempFormat() );
     Log.verbose(F("CFG : Temp Adj; %F." CR), getTempSensorAdj() );
     Log.verbose(F("CFG : VoltageFactor; %F." CR), getVoltageFactor() );
     Log.verbose(F("CFG : Gravity formula; '%s'." CR), getGravityFormula() );
     Log.verbose(F("CFG : Gravity format; '%c'." CR), getGravityFormat() );
-    Log.verbose(F("CFG : Push brewfather; '%s'." CR), getBrewfatherPushTarget() );
-    Log.verbose(F("CFG : Push http; '%s'." CR), getHttpPushTarget() );
-    Log.verbose(F("CFG : Push http2; '%s'." CR), getHttpPushTarget2() );
-    Log.verbose(F("CFG : Sleep interval; %d." CR), getSleepInterval() );
+    Log.verbose(F("CFG : Push brewfather; '%s'." CR), getBrewfatherPushUrl() );
+    Log.verbose(F("CFG : Push http; '%s'." CR), getHttpPushUrl() );
+    Log.verbose(F("CFG : Push http2; '%s'." CR), getHttpPushUrl2() );
+    Log.verbose(F("CFG : InfluxDb2; '%s', '%s', '%s', '%s'." CR), getInfluxDb2PushUrl(), getInfluxDb2PushOrg(),
+                        getInfluxDb2PushBucket(), getInfluxDb2PushToken() );
 //  Log.verbose(F("CFG : Accel offset\t%d\t%d\t%d" CR), gyroCalibration.ax, gyroCalibration.ay, gyroCalibration.az );
 //  Log.verbose(F("CFG : Gyro offset \t%d\t%d\t%d" CR), gyroCalibration.gx, gyroCalibration.gy, gyroCalibration.gz );
 #endif    

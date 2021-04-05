@@ -91,6 +91,7 @@ void checkSleepMode( float angle, float volt ) {
 // Setup
 //
 void setup() {
+    LOG_PERF_START("run-time");
     LOG_PERF_START("main-setup");
     startMillis = millis();
 
@@ -160,8 +161,8 @@ void setup() {
     }
 
     LOG_PERF_STOP("main-setup");
-    LOG_PERF_PRINT();
-    LOG_PERF_CLEAR();
+    LOG_PERF_PRINT();               // Dump data to serial
+    LOG_PERF_PUSH();                // Dump data to influx
 }
 
 //
@@ -227,6 +228,8 @@ void loop() {
             LittleFS.end();
             myGyro.enterSleep();
             drd->stop();
+            LOG_PERF_STOP("run-time");
+            LOG_PERF_PUSH();
             LOG_PERF_PRINT();
             delay(100);
             deepSleep( myConfig.getSleepInterval() ); 

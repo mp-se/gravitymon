@@ -23,9 +23,10 @@ SOFTWARE.
  */
 #include "helper.h"
 #include "config.h"
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 
 SerialDebug mySerial;
-PerfLogging myPerfLogging;
 BatteryVoltage myBatteryVoltage;
 
 //
@@ -93,6 +94,115 @@ void BatteryVoltage::read() {
     Log.verbose(F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR), factor, v, batteryLevel );
 #endif
 }
+
+
+#if defined( COLLECT_PERFDATA )
+
+PerfLogging myPerfLogging;
+
+//
+// Clear the current cache
+//
+void PerfLogging::clear() { 
+    if( first == 0 )
+        return;
+
+    PerfEntry* pe = first;
+
+    do {
+        PerfEntry* p = pe;
+        pe = pe->next;
+        delete p;
+    } while( pe != 0 );
+
+    first = 0;
+}
+
+//
+// Start measuring this performance point
+//
+void PerfLogging::start( const char* key ) { 
+    PerfEntry* pe = add( key );
+    pe->start = millis(); 
+}
+
+//
+// Finalize measuring of this performance point
+//
+void PerfLogging::stop( const char* key ) { 
+    PerfEntry* pe = find( key );
+
+    if( pe != 0 ) {
+        pe->end = millis(); 
+
+        unsigned long t = pe->end - pe->start;
+        
+        if( t > pe->max )
+            pe->max = t;
+    }
+}
+
+//
+// Print the collected performance data
+//
+void PerfLogging::print() { 
+    PerfEntry* pe = first;
+
+    while( pe != 0 ) {
+        //Log.notice( F("PERF: %s=%l ms (%l, %l)" CR), pe->key, (pe->end - pe->start), pe->start, pe->end );                
+        Log.notice( F("PERF: %s %lms" CR), pe->key, pe->max );                
+        pe = pe->next;
+    }
+}
+
+//
+// Push collected performance data to influx (use influx configuration)
+//
+void PerfLogging::pushInflux() { 
+    if( !myConfig.isInfluxDb2Active() )
+        return;
+
+    WiFiClient client;
+    HTTPClient http;
+    String serverPath = String(myConfig.getInfluxDb2PushUrl()) + "/api/v2/write?org=" + 
+                        String(myConfig.getInfluxDb2PushOrg()) + "&bucket=" + 
+                        String(myConfig.getInfluxDb2PushBucket());
+
+    http.begin( client, serverPath);
+
+    // Create body for influxdb2, format used
+    // key,host=mdns value=0.0
+    String body;
+
+    PerfEntry* pe = first;
+
+    while( pe != 0 ) {
+        char buf[100];
+        sprintf( &buf[0], "%s,host=%s,device=%s value=%ld\n", pe->key, myConfig.getMDNS(), myConfig.getID(), pe->max);
+        body += &buf[0];
+        pe = pe->next;
+    }
+
+#if LOG_LEVEL==6
+    Log.verbose(F("PERF: url %s." CR), serverPath.c_str());
+    Log.verbose(F("PERF: data %s." CR), body.c_str() );
+#endif
+
+    // Send HTTP POST request
+    String auth = "Token " + String( myConfig.getInfluxDb2PushToken() );
+    http.addHeader(F("Authorization"), auth.c_str() );
+    int httpResponseCode = http.POST(body);
+
+    if (httpResponseCode==204) {
+        Log.notice(F("PUSH: InfluxDB2 HTTP Response code %d" CR), httpResponseCode);
+    } else {
+        Log.error(F("PUSH: InfluxDB2 HTTP Response code %d" CR), httpResponseCode);
+    }
+
+    http.end();
+}
+
+#endif // COLLECT_PERFDATA
 
 //
 // Convert float to formatted string with n decimals. Buffer should be at least 10 chars.

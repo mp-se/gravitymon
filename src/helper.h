@@ -58,18 +58,6 @@ class BatteryVoltage {
 };
 
 #if defined( COLLECT_PERFDATA )
-// Use these to collect performance data from various parts of the code
-#define LOG_PERF_START(s)   myPerfLogging.start(s)
-#define LOG_PERF_STOP(s)    myPerfLogging.stop(s)
-#define LOG_PERF_PRINT()    myPerfLogging.print()
-#define LOG_PERF_CLEAR()    myPerfLogging.clear()
-#else
-// These will disable the performance collection
-#define LOG_PERF_START(s)   
-#define LOG_PERF_STOP(s)    
-#define LOG_PERF_PRINT()    
-#define LOG_PERF_CLEAR()    
-#endif
 
 class PerfLogging {
     private:
@@ -124,67 +112,36 @@ class PerfLogging {
             return pe;
         };
 
-
     public:
-        //
-        // Clear the current cache
-        //
-        void clear() { 
-            if( first == 0 )
-                return;
-
-            PerfEntry* pe = first;
-
-            do {
-                PerfEntry* p = pe;
-                pe = pe->next;
-                delete p;
-            } while( pe != 0 );
-
-            first = 0;
-        }
-
-        //
-        // Start measuring this performance point
-        //
-        void start( const char* key ) { 
-            PerfEntry* pe = add( key );
-            pe->start = millis(); 
-        }
-
-        //
-        // Finalize measuring of this performance point
-        //
-        void stop( const char* key ) { 
-            PerfEntry* pe = find( key );
-
-            if( pe != 0 ) {
-                pe->end = millis(); 
-
-                unsigned long t = pe->end - pe->start;
-                
-                if( t > pe->max )
-                    pe->max = t;
-            }
-        }
-
-        //
-        // Print the collected performance data
-        //
-        void print() { 
-            PerfEntry* pe = first;
-
-            while( pe != 0 ) {
-                //Log.notice( F("PERF: %s=%l ms (%l, %l)" CR), pe->key, (pe->end - pe->start), pe->start, pe->end );                
-                Log.notice( F("PERF: %s %lms" CR), pe->key, pe->max );                
-                pe = pe->next;
-            }
-        }
+        void clear();
+        void start( const char* key );
+        void stop( const char* key );
+        void print();
+        void pushInflux(); 
 };
+
+extern PerfLogging myPerfLogging;
+
+// Use these to collect performance data from various parts of the code
+#define LOG_PERF_START(s)   myPerfLogging.start(s)
+#define LOG_PERF_STOP(s)    myPerfLogging.stop(s)
+#define LOG_PERF_PRINT()    myPerfLogging.print()
+#define LOG_PERF_CLEAR()    myPerfLogging.clear()
+#define LOG_PERF_PUSH()     myPerfLogging.pushInflux()
+
+#else
+
+// These will disable the performance collection
+#define LOG_PERF_START(s)   
+#define LOG_PERF_STOP(s)    
+#define LOG_PERF_PRINT()    
+#define LOG_PERF_CLEAR()    
+#define LOG_PERF_PUSH()    
+
+#endif  // COLLECT_PERFDATA
 
 // Global instance created
 extern SerialDebug mySerial;
-extern PerfLogging myPerfLogging;
 extern BatteryVoltage myBatteryVoltage;
 
 #endif // _HELPER_H

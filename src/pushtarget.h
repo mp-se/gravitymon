@@ -39,6 +39,7 @@ class PushTarget {
 
         void sendBrewfather(float angle, float gravity, float temp );
         void sendHttp(String serverPath, float angle, float gravity, float temp, float runTime);
+        void sendInfluxDb2(float angle, float gravity, float temp, float runTime);
 
     public:
         PushTarget() { ms = millis(); }
