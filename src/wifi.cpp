@@ -65,7 +65,8 @@ bool Wifi::connect( bool showPortal ) {
         myWifiManager.setMinimumSignalQuality(10);  
         myWifiManager.setClass("invert");
         myWifiManager.setHostname( myConfig.getMDNS() );
-
+        myWifiManager.setConfigPortalTimeout( 120 );             // Keep it open for 120 seconds
+        
         WiFiManagerParameter mdnsParam("mDNS", "hostname", myConfig.getMDNS(), 20);
         myWifiManager.addParameter( &mdnsParam );
 
