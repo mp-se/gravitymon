@@ -23,6 +23,7 @@ SOFTWARE.
  */
 #include "pushtarget.h"
 #include "config.h"
+#include "gyro.h"           // For testing the tempsensor in the gyro
 
 PushTarget myPushTarget;
 
@@ -86,17 +87,11 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float run
 
     // Create body for influxdb2
     char buf[1024];
-    sprintf( &buf[0], "gravity,host=%s,device=%s,format=%s value=%.4f\n"
-                    "angle,host=%s,device=%s value=%.2f\n"
-                    "temp,host=%s,device=%s,format=%c value=%.1f\n"
-                    "battery,host=%s,device=%s value=%.2f\n"
-                    "rssi,host=%s,device=%s value=%d\n",
+    sprintf( &buf[0], "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
+                      "gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,rssi=%d,temp2=%.2f\n",
                     // TODO: Add support for plato format
-                    myConfig.getMDNS(), myConfig.getID(), "SG", gravity,
-                    myConfig.getMDNS(), myConfig.getID(), angle,
-                    myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), temp,
-                    myConfig.getMDNS(), myConfig.getID(), myBatteryVoltage.getVoltage(),
-                    myConfig.getMDNS(), myConfig.getID(),  WiFi.RSSI() );
+                    myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), "SG", 
+                    gravity, angle, temp, myBatteryVoltage.getVoltage(), WiFi.RSSI(), myGyro.getSensorTempC() );                // For comparing gyro tempsensor vs DSB1820
 
 #if LOG_LEVEL==6
     Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -115,7 +110,6 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float run
     }
 
     http.end();
-
 }
 
 //

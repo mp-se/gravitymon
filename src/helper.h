@@ -66,10 +66,15 @@ class PerfLogging {
             unsigned long end;          // millis() 
             unsigned long max;          // max time in ms
             const char*   key;          // measurement
-            PerfEntry*    next;         //
+
+            PerfEntry*    next;         // Next in the linked list
+
+            float         mA;           // Power consumption
+            float         V;            // Power consumption
         };
 
         PerfEntry* first = 0;
+        bool measurePower = false;
 
         PerfEntry* find( const char* k ) {
             if( first == 0 )
@@ -112,7 +117,10 @@ class PerfLogging {
             return pe;
         };
 
+        void readPowerSensor(PerfEntry* pe);
+
     public:
+        PerfLogging();
         void clear();
         void start( const char* key );
         void stop( const char* key );

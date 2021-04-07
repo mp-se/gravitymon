@@ -7,9 +7,11 @@ I started this project out of curiosity for how a motion sensor is working and s
 * Add support for Plato in device (today it assumes that formula is in SG). 
 * Add support for converting between SG/Plato in device.
 * Add support for Blynk as endpoint
-* Add support for https connections (push)
+* Add support for https connections (push) - [need to reduce memory usage for this to work, gets out of memory error]
 * Add support for https web server (will require certificates to be created as part of build process)
 * Add iSpindle 3D print cradle + small PCB (what I use for my builds)
+* Validate max sleep time to 70 min (max time for ESP)
+* Check how much movement there is during fermentack (check run time) if we should go into sleep mode for a shorter time...
 
 # Functionallity
 
@@ -96,11 +98,7 @@ The second section contains the push settings, two URL's for http posts, Brewfat
 ### This is the format for InfluxDB v2
 
 ```
-gravity,host=<mdns>,device=<id>,format=SG value=1.0004
-angle,host=<mdns>,device=<id> value=45.45
-temp,host=<mdns>,device=<id>,format=<C|F> value=20.1
-battery,host=<mdns>,device=<id> value=3.96
-rssi,host=<mdns>,device=<id> value=-18
+measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
 ```
 
 __TODO: Update image for push settings.__

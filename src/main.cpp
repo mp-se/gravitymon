@@ -35,7 +35,6 @@ SOFTWARE.
 #define ESP8266_DRD_USE_RTC       true
 #define DRD_TIMEOUT               2
 #define DRD_ADDRESS               0
-#define DOUBLERESETDETECTOR_DEBUG true
 #include <ESP_DoubleResetDetector.h>            
 DoubleResetDetector *drd;
 
@@ -47,10 +46,12 @@ bool sleepModeAlwaysSkip = true;           // Web interface can override normal 
 const int interval = 200;                   // ms, time to wait between changes to output
 bool sleepModeAlwaysSkip = false;           // Web interface can override normal behaviour
 #endif
-unsigned long lastMillis = 0;
-unsigned long startMillis;
-bool sleepModeActive = false;
-int  loopCounter = 0;
+unsigned long loopMillis = 0;               // Used for main loop to run the code every _interval_
+unsigned long runtimeMillis;                // Used to calculate the total time since start/wakeup 
+unsigned long stableGyroMillis;             // Used to calculate the total time since last stable gyro reading 
+bool          sleepModeActive = false;
+bool          goToSleep = false;
+int           loopCounter = 0;
 
 //
 // Check if we should be in sleep mode
@@ -78,7 +79,7 @@ void checkSleepMode( float angle, float volt ) {
     }
 
     // Will not enter sleep mode if: charger is connected 
-    sleepModeActive = (volt<4.15 && angle>85) || (volt>4.15) ? false : true; 
+    sleepModeActive = (volt<4.15 && (angle>85 && angle<95)) || (volt>4.15) ? false : true; 
 
     // sleep mode active when flat
     //sleepModeActive = ( angle<85 && angle>5 ) ? true : false; 
@@ -93,7 +94,7 @@ void checkSleepMode( float angle, float volt ) {
 void setup() {
     LOG_PERF_START("run-time");
     LOG_PERF_START("main-setup");
-    startMillis = millis();
+    runtimeMillis = millis();
 
     drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
     bool dt = drd->detectDoubleReset();  
@@ -118,10 +119,10 @@ void setup() {
     LOG_PERF_STOP("main-temp-setup");
 
     // Setup Gyro
-    LOG_PERF_START("main-gyro-setup");
+    //LOG_PERF_START("main-gyro-setup");    // Takes less than 5ms, so skip this measurment
     if( !myGyro.setup() )
         Log.error(F("Main: Failed to initialize the gyro." CR));
-    LOG_PERF_STOP("main-gyro-setup");
+    //LOG_PERF_STOP("main-gyro-setup");
 
     if( dt ) 
         Log.notice(F("Main: Detected doubletap on reset." CR));
@@ -148,16 +149,15 @@ void setup() {
         LOG_PERF_STOP("main-wifi-ota");
 #endif
         if( !sleepModeActive ) {
-            LOG_PERF_START("main-webserver-setup");
+            //LOG_PERF_START("main-webserver-setup");   // Takes less than 4ms , so skip this measurment
             myWebServer.setupWebServer();
-            LOG_PERF_STOP("main-webserver-setup");
+            //LOG_PERF_STOP("main-webserver-setup");
         }
     }
 
     LOG_PERF_STOP("main-setup");
-    LOG_PERF_PRINT();               // Dump data to serial
-    LOG_PERF_PUSH();                // Dump data to influx
     Log.notice(F("Main: Setup completed." CR));
+    stableGyroMillis = millis();                        // Put it here so we dont include time for wifi connection
 }
 
 //
@@ -166,26 +166,31 @@ void setup() {
 void loop() {
     drd->loop();
 
-    if( sleepModeActive || abs(millis() - lastMillis) > interval ) {
-        float angle = 90;
+    if( sleepModeActive || abs(millis() - loopMillis) > interval ) {
+        float angle = 0;
         float volt = myBatteryVoltage.getVoltage();
         float sensorTemp = 0;
         loopCounter++;
 #if LOG_LEVEL==6
         Log.verbose(F("Main: Entering main loop." CR) );
 #endif   
+        // Process the sensor values and push data to targets.
+        // ------------------------------------------------------------------------------------------------
         // If we dont get any readings we just skip this and try again the next interval.
+        //
         if( myGyro.hasValue() ) {
             angle         = myGyro.getAngle();                  // Gyro angle
             sensorTemp    = myGyro.getSensorTempC();            // Temp in the Gyro
+
+            stableGyroMillis = millis();                        // Reset timer
 
             LOG_PERF_START("loop-temp-read");
             float temp    = myTempSensor.getValueCelcius();     // The code is build around using C for temp. 
             LOG_PERF_STOP("loop-temp-read");
 
-            LOG_PERF_START("loop-gravity-calc");
+            //LOG_PERF_START("loop-gravity-calc");  // Takes less than 2ms , so skip this measurment
             float gravity = calculateGravity( angle, temp );
-            LOG_PERF_STOP("loop-gravity-calc");
+            //LOG_PERF_STOP("loop-gravity-calc");
 
 #if LOG_LEVEL==6
             Log.verbose(F("Main: Sensor values gyro angle=%F gyro temp=%F, temp=%F, gravity=%F." CR), angle, sensorTemp, temp, gravity );
@@ -202,49 +207,62 @@ void loop() {
             // Limit the printout when sleep mode is not active.
             if( loopCounter%10 == 0 || sleepModeActive ) {
                 Log.notice(F("Main: gyro angle=%F, gyro temp=%F, DS18B20 temp=%F, gravity=%F, batt=%F." CR), angle, sensorTemp, temp, gravity, volt );
-                LOG_PERF_PRINT();
             }
 
-            unsigned long runTime = millis() - startMillis;
-
             LOG_PERF_START("loop-push");
-            myPushTarget.send( angle, gravity, temp, runTime/1000, sleepModeActive );    // Force the transmission if we are going to sleep
+            myPushTarget.send( angle, gravity, temp, (millis()-runtimeMillis)/1000, sleepModeActive );    // Force the transmission if we are going to sleep
             LOG_PERF_STOP("loop-push");
 
+            // If we have completed the update lets go to sleep
+            if( sleepModeActive )
+                goToSleep = true;
         } else {
             Log.error(F("Main: No gyro value." CR) );
-        }
-
-        if( sleepModeActive ) {
-            unsigned long runTime = millis() - startMillis;
-
-            // Enter sleep mode...
-            Log.notice(F("MAIN: Entering deep sleep for %d s, run time %l s, battery=%F V." CR), myConfig.getSleepInterval(), runTime/1000, volt );
-            LittleFS.end();
-            myGyro.enterSleep();
-            drd->stop();
-            LOG_PERF_STOP("run-time");
-            LOG_PERF_PUSH();
-            LOG_PERF_PRINT();
-            delay(100);
-            deepSleep( myConfig.getSleepInterval() ); 
         }
 
 #if LOG_LEVEL==6
         Log.verbose(F("Main: Sleep mode not active." CR) );
 #endif   
+        int sleepInterval = myConfig.getSleepInterval();
+
+        // If the sensor is moving and we are not getting a clear reading, we enter sleep for a short time to conserve battery.
+        // ------------------------------------------------------------------------------------------------
+        //
+        if( sleepModeActive && ((millis()-stableGyroMillis)>10000L) ) {           // 10s since last stable gyro reading
+            Log.notice(F("MAIN: Unable to get a stable reading for 10s, sleeping for 60s." CR) );
+            sleepInterval = 60;                                                   // 60s
+            goToSleep = true;            
+        }
+
+        // Enter sleep mode if the conditions are right 
+        // ------------------------------------------------------------------------------------------------
+        //
+        if( goToSleep ) {
+            Log.notice(F("MAIN: Entering deep sleep for %d s, run time %l s, battery=%F V." CR), sleepInterval, (millis()-runtimeMillis)/1000, volt );
+            LittleFS.end();
+            myGyro.enterSleep();
+            drd->stop();
+            LOG_PERF_STOP("run-time");
+            LOG_PERF_PUSH();
+            delay(100);
+            deepSleep( sleepInterval ); 
+        }
+
+        // If we are running in normal mode we just continue 
+        // ------------------------------------------------------------------------------------------------
         // Do these checks if we are running in normal mode (not sleep mode)
+        //
         checkSleepMode( angle, volt );
 
         LOG_PERF_START("loop-gyro-read");
         myGyro.read();
         LOG_PERF_STOP("loop-gyro-read");
 
-        LOG_PERF_START("loop-batt-read");
+        //LOG_PERF_START("loop-batt-read"); // Takes less than 2ms , so skip this measurment
         myBatteryVoltage.read();
-        LOG_PERF_STOP("loop-batt-read");
+        //LOG_PERF_STOP("loop-batt-read");
 
-        lastMillis = millis();
+        loopMillis = millis();
 #if LOG_LEVEL==6
         Log.verbose(F("Main: Heap %d kb FreeSketch %d kb." CR), ESP.getFreeHeap()/1024, ESP.getFreeSketchSpace()/1024 );
         Log.verbose(F("Main: HeapFrag %d %%." CR), ESP.getHeapFragmentation() );

@@ -21,7 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-//#define DEBUG_ESP_HTTP_SERVER
 #include "webserver.h"
 #include "config.h"
 #include "helper.h"
@@ -31,7 +30,6 @@ SOFTWARE.
 #include <ArduinoJson.h>
 #include <incbin.h>
 #include <ESP8266WiFi.h>
-//#define DEBUG_ESP_HTTP_SERVER
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <LittleFS.h>

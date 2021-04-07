@@ -26,6 +26,10 @@ SOFTWARE.
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
+#if defined( COLLECT_PERFDATA )
+#include <INA219_WE.h>              // For measuring power consumption
+#endif 
+
 SerialDebug mySerial;
 BatteryVoltage myBatteryVoltage;
 
@@ -95,27 +99,64 @@ void BatteryVoltage::read() {
 #endif
 }
 
-
 #if defined( COLLECT_PERFDATA )
 
 PerfLogging myPerfLogging;
+INA219_WE ina219(0x40);             // For measuring power consumption
+
+//
+// Initialize
+//
+PerfLogging::PerfLogging() { 
+    if( ina219.init() )
+        measurePower = true;
+
+    Log.notice( F("PERF: Performance logging enabled. Power sensor %s" CR), measurePower?"found":"not found");                
+}
+
+//
+// Initialize
+//
+void PerfLogging::readPowerSensor(PerfEntry *pe) { 
+    pe->mA = 0;
+    pe->V  = 0;
+
+    if( !measurePower )
+        return;
+
+    if( ina219.getOverflow() )
+       Log.error( F("PERF: Voltage sensor overflow detected." CR));                
+
+    /*
+    shuntVoltage_mV = ina219.getShuntVoltage_mV();
+    busVoltage_V    = ina219.getBusVoltage_V();
+    current_mA      = ina219.getCurrent_mA();
+    power_mW        = ina219.getBusPower();
+    loadVoltage_V   = busVoltage_V + (shuntVoltage_mV/1000);
+    */
+
+    pe->mA = ina219.getCurrent_mA();
+    pe->V  = ina219.getBusVoltage_V() + (ina219.getShuntVoltage_mV()/1000);
+}
 
 //
 // Clear the current cache
 //
 void PerfLogging::clear() { 
+    // Clear the measurements 
     if( first == 0 )
         return;
 
     PerfEntry* pe = first;
 
     do {
-        PerfEntry* p = pe;
+        pe->max   = 0;
+        pe->start = 0;
+        pe->end   = 0;
+        pe->mA    = 0;
+        pe->V     = 0;
         pe = pe->next;
-        delete p;
     } while( pe != 0 );
-
-    first = 0;
 }
 
 //
@@ -137,8 +178,10 @@ void PerfLogging::stop( const char* key ) {
 
         unsigned long t = pe->end - pe->start;
         
-        if( t > pe->max )
+        if( t > pe->max ) 
             pe->max = t;
+
+        readPowerSensor( pe );
     }
 }
 
@@ -175,11 +218,19 @@ void PerfLogging::pushInflux() {
     String body;
 
     PerfEntry* pe = first;
+    char buf[100];
+    sprintf( &buf[0], "perf,host=%s,device=%s ", myConfig.getMDNS(), myConfig.getID() );
+    body += &buf[0];
 
     while( pe != 0 ) {
-        char buf[100];
-        sprintf( &buf[0], "%s,host=%s,device=%s value=%ld\n", pe->key, myConfig.getMDNS(), myConfig.getID(), pe->max);
-        body += &buf[0];
+        if( pe->max ) {
+            if( pe->next )
+                sprintf( &buf[0], "%s=%ld,", pe->key, pe->max);
+            else
+                sprintf( &buf[0], "%s=%ld", pe->key, pe->max);
+
+            body += &buf[0];
+        }
         pe = pe->next;
     }
 

@@ -52,7 +52,7 @@ bool GyroSensor::setup() {
         Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
         sensorConnected = true;
 
-        // Configure ethe sensor
+        // Configure the sensor
         accelgyro.setTempSensorEnabled(true);
         accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
         accelgyro.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
@@ -91,6 +91,7 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations, const int 
 #if LOG_LEVEL==6
     Log.verbose(F("GYRO: Reading sensor with %d iterations %d us delay." CR), noIterations, delayTime );
 #endif
+
     // Set some initial values
 #if defined( GYRO_SHOW_MINMAX )
     RawGyroData min, max; 
@@ -99,7 +100,6 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations, const int 
     min.temp = accelgyro.getTemperature();
     max = min;
 #endif
-
     for(int cnt = 0; cnt < noIterations ; cnt ++) {
         accelgyro.getRotation( &raw.gx, &raw.gy, &raw.gz );
         accelgyro.getAcceleration( &raw.ax, &raw.ay, &raw.az );
