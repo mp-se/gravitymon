@@ -45,6 +45,8 @@ struct RawGyroDataL {   // Used for average multiple readings
     long temp;      // Only for information (temperature of chip)
 };
 
+#define INVALID_TEMPERATURE -273
+
 class GyroSensor {
     private:
         MPU6050     accelgyro;
@@ -52,6 +54,7 @@ class GyroSensor {
         bool        validValue = false;
         double      angle = 0;
         float       sensorTemp = 0;
+        float       initialSensorTemp = INVALID_TEMPERATURE;
         RawGyroData calibrationOffset;
 
         void    debug();
@@ -68,6 +71,7 @@ class GyroSensor {
 
         double getAngle() { return angle; };
         float  getSensorTempC() { return sensorTemp; };
+        float  getInitialSensorTempC() { return initialSensorTemp; };
         bool   isConnected() { return sensorConnected; };
         bool   hasValue() { return validValue; };
         void   enterSleep();

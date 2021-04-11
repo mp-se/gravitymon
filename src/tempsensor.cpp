@@ -97,8 +97,9 @@ float TempSensor::getValue() {
 #endif
 
 #if defined( USE_GYRO_TEMP )
+    // When using the gyro temperature only the first read value will be accurate so we will use this for processing. 
     //LOG_PERF_START("temp-get");
-    float c = myGyro.getSensorTempC();
+    float c = myGyro.getInitialSensorTempC();
     //LOG_PERF_STOP("temp-get");
     hasSensor = true;
     return c;

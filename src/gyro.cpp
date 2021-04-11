@@ -211,9 +211,15 @@ bool GyroSensor::read() {
     } else {
         validValue = true;
         angle = calculateAngle( raw );
-        sensorTemp = ((float) raw.temp) / 340 + 36.53;
         //Log.notice(F("GYRO: Calculated angle %F" CR), angle );
     }
+
+    sensorTemp = ((float) raw.temp) / 340 + 36.53;
+
+    // The first read value is close to the DS18 value according to my tests, if more reads are 
+    // done then the gyro temp will increase to much
+    if( initialSensorTemp == INVALID_TEMPERATURE )
+        initialSensorTemp = sensorTemp;
 
     return validValue;
 }

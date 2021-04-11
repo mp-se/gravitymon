@@ -180,12 +180,11 @@ void loop() {
         //
         if( myGyro.hasValue() ) {
             angle         = myGyro.getAngle();                  // Gyro angle
-            sensorTemp    = myGyro.getSensorTempC();            // Temp in the Gyro
 
             stableGyroMillis = millis();                        // Reset timer
 
             LOG_PERF_START("loop-temp-read");
-            float temp    = myTempSensor.getValueCelcius();     // The code is build around using C for temp. 
+            float temp    = myTempSensor.getValueCelcius();  
             LOG_PERF_STOP("loop-temp-read");
 
             //LOG_PERF_START("loop-gravity-calc");  // Takes less than 2ms , so skip this measurment
@@ -193,7 +192,7 @@ void loop() {
             //LOG_PERF_STOP("loop-gravity-calc");
 
 #if LOG_LEVEL==6
-            Log.verbose(F("Main: Sensor values gyro angle=%F gyro temp=%F, temp=%F, gravity=%F." CR), angle, sensorTemp, temp, gravity );
+            Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%F, gravity=%F." CR), angle, temp, gravity );
 #endif   
             if( myConfig.isGravityTempAdj() ) {
                 LOG_PERF_START("loop-gravity-corr");
@@ -206,7 +205,7 @@ void loop() {
 
             // Limit the printout when sleep mode is not active.
             if( loopCounter%10 == 0 || sleepModeActive ) {
-                Log.notice(F("Main: gyro angle=%F, gyro temp=%F, DS18B20 temp=%F, gravity=%F, batt=%F." CR), angle, sensorTemp, temp, gravity, volt );
+                Log.notice(F("Main: angle=%F, temp=%F, gravity=%F, batt=%F." CR), angle, temp, gravity, volt );
             }
 
             LOG_PERF_START("loop-push");
