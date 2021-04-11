@@ -88,9 +88,12 @@ void webHandleConfig() {
     double temp  = myTempSensor.getValueCelcius();
     double gravity = calculateGravity( angle, temp );
 
-    doc[ CFG_PARAM_ANGLE ]   = reduceFloatPrecision( angle);
-    doc[ CFG_PARAM_GRAVITY ] = reduceFloatPrecision( gravityTemperatureCorrection( gravity, temp ), 4);
-    doc[ CFG_PARAM_BATTERY ] = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
+    doc[ CFG_PARAM_ANGLE ]      = reduceFloatPrecision( angle);
+    if( myConfig.isGravityTempAdj() )
+        doc[ CFG_PARAM_GRAVITY ] = reduceFloatPrecision( gravityTemperatureCorrection( gravity, temp, myConfig.getTempFormat() ), 4);
+    else
+        doc[ CFG_PARAM_GRAVITY ] = reduceFloatPrecision( gravity, 4);    
+    doc[ CFG_PARAM_BATTERY ]    = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
 
 #if LOG_LEVEL==6
     serializeJson(doc, Serial);
@@ -224,15 +227,18 @@ void webHandleStatus() {
     double temp  = myTempSensor.getValueCelcius();
     double gravity = calculateGravity( angle, temp );
 
-    doc[ CFG_PARAM_ID ]         = myConfig.getID();
-    doc[ CFG_PARAM_ANGLE ]      = reduceFloatPrecision( angle);
-    doc[ CFG_PARAM_GRAVITY ]    = reduceFloatPrecision( gravityTemperatureCorrection( gravity, temp ), 4);
-    doc[ CFG_PARAM_TEMP_C ]     = reduceFloatPrecision( temp, 1);
-    doc[ CFG_PARAM_TEMP_F ]     = reduceFloatPrecision( myTempSensor.getValueFarenheight(), 1);
-    doc[ CFG_PARAM_BATTERY ]    = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
-    doc[ CFG_PARAM_TEMPFORMAT ] = String( myConfig.getTempFormat() ); 
-    doc[ CFG_PARAM_SLEEP_MODE ] = sleepModeAlwaysSkip; 
-    doc[ CFG_PARAM_RSSI ]       = WiFi.RSSI(); 
+    doc[ CFG_PARAM_ID ]             = myConfig.getID();
+    doc[ CFG_PARAM_ANGLE ]          = reduceFloatPrecision( angle);
+    if( myConfig.isGravityTempAdj() )
+        doc[ CFG_PARAM_GRAVITY ]    = reduceFloatPrecision( gravityTemperatureCorrection( gravity, temp, myConfig.getTempFormat() ), 4);
+    else
+        doc[ CFG_PARAM_GRAVITY ]    = reduceFloatPrecision( gravity, 4);
+    doc[ CFG_PARAM_TEMP_C ]         = reduceFloatPrecision( temp, 1);
+    doc[ CFG_PARAM_TEMP_F ]         = reduceFloatPrecision( myTempSensor.getValueFarenheight(), 1);
+    doc[ CFG_PARAM_BATTERY ]        = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
+    doc[ CFG_PARAM_TEMPFORMAT ]     = String( myConfig.getTempFormat() ); 
+    doc[ CFG_PARAM_SLEEP_MODE ]     = sleepModeAlwaysSkip; 
+    doc[ CFG_PARAM_RSSI ]           = WiFi.RSSI(); 
 #if LOG_LEVEL==6
     serializeJson(doc, Serial);
     Serial.print( CR );

@@ -29,7 +29,7 @@ SOFTWARE.
 
 // Functions
 double calculateGravity( double angle, double temp );
-double gravityTemperatureCorrection( double gravity, double temp, double calTemp = 20 );
+double gravityTemperatureCorrection( double gravity, double temp, char tempFormat, double calTemp = 20 );
 
 #endif // _CALC_H
 

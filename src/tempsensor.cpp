@@ -24,6 +24,7 @@ SOFTWARE.
 #include "tempsensor.h"
 #include "helper.h"
 #include "config.h"
+#include "gyro.h"
 #include <onewire.h>
 #include <DallasTemperature.h>
 #include <Wire.h>
@@ -35,11 +36,13 @@ float convertCtoF( float t ) {
     return (t * 1.8 ) + 32.0; 
 }
 
+#if !defined( USE_GYRO_TEMP )
 OneWire myOneWire(D6);
 DallasTemperature mySensors(&myOneWire);
-TempSensor myTempSensor;
-
 #define TEMPERATURE_PRECISION 9
+#endif
+
+TempSensor myTempSensor;
 
 //
 // Setup temp sensors
@@ -51,6 +54,10 @@ void TempSensor::setup() {
     return;
 #endif
 
+#if defined( USE_GYRO_TEMP )
+    Log.notice(F("TSEN: Using temperature from gyro." CR));
+#else
+    // This code is used to read the DS18 temp sensor
     if( mySensors.getDS18Count() )
         return;
 
@@ -63,6 +70,7 @@ void TempSensor::setup() {
         Log.notice(F("TSEN: Found %d sensors." CR), mySensors.getDS18Count());
         mySensors.setResolution(TEMPERATURE_PRECISION);
     }
+#endif 
 
     float t = myConfig.getTempSensorAdj();
 
@@ -81,19 +89,29 @@ void TempSensor::setup() {
 }
 
 //
-// Retrieving value from sensor
+// Retrieving value from sensor, value is in Celcius
 //
 float TempSensor::getValue() {
-    float c = 0;
-
 #if defined( SIMULATE_TEMP )
     return 21;
 #endif
 
+#if defined( USE_GYRO_TEMP )
+    //LOG_PERF_START("temp-get");
+    float c = myGyro.getSensorTempC();
+    //LOG_PERF_STOP("temp-get");
+    hasSensor = true;
+    return c;
+#if LOG_LEVEL==6
+    Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR), c);
+#endif
+#else
     // Read the sensors
     //LOG_PERF_START("temp-request");
     mySensors.requestTemperatures();
     //LOG_PERF_STOP("temp-request");
+
+    float c = 0;
 
     if( mySensors.getDS18Count() >= 1) {
         //LOG_PERF_START("temp-get");
@@ -107,6 +125,7 @@ float TempSensor::getValue() {
     }
 
     return c;
+#endif
 }
 
 // EOF 

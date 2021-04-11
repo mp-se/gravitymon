@@ -48,10 +48,10 @@ SOFTWARE.
 #define CFG_PARAM_PUSH_BREWFATHER       "brewfather-push"               // URL (brewfather format)
 #define CFG_PARAM_PUSH_HTTP             "http-push"                     // URL (iSpindle format)
 #define CFG_PARAM_PUSH_HTTP2            "http-push2"                    // URL (iSpindle format)
-#define CFG_PARAM_PUSH_INFLUXDB2        "influxdb2-push"                // URL (iSpindle format)
-#define CFG_PARAM_PUSH_INFLUXDB2_ORG    "influxdb2-org"                 // URL (iSpindle format)
-#define CFG_PARAM_PUSH_INFLUXDB2_BUCKET "influxdb2-bucket"              // URL (iSpindle format)
-#define CFG_PARAM_PUSH_INFLUXDB2_AUTH   "influxdb2-auth"                // URL (iSpindle format)
+#define CFG_PARAM_PUSH_INFLUXDB2        "influxdb2-push"                // URL 
+#define CFG_PARAM_PUSH_INFLUXDB2_ORG    "influxdb2-org"                 // URL 
+#define CFG_PARAM_PUSH_INFLUXDB2_BUCKET "influxdb2-bucket"              // URL 
+#define CFG_PARAM_PUSH_INFLUXDB2_AUTH   "influxdb2-auth"                // URL 
 #define CFG_PARAM_SLEEP_INTERVAL        "sleep-interval"                // Sleep interval 
 // TODO: @deprecated setting
 #define CFG_PARAM_PUSH_INTERVAL         "push-interval"                 // Time between push 

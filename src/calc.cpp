@@ -64,17 +64,18 @@ double calculateGravity( double angle, double temp ) {
 //
 // Do a standard gravity temperature correction. This is a simple way to adjust for differnt worth temperatures
 //
-double gravityTemperatureCorrection( double gravity, double temp, double calTemp) {
+double gravityTemperatureCorrection( double gravity, double temp, char tempFormat, double calTemp) {
 #if LOG_LEVEL==6
     Log.verbose(F("CALC: Adjusting gravity based on temperature, gravity %F, temp %F, calTemp %F." CR), gravity, temp, calTemp);
 #endif
 
-    double tempF = convertCtoF( temp );
-    double calTempF = convertCtoF(calTemp); 
+    if( tempFormat == 'C')
+        temp = convertCtoF( temp );
+    double calTempF = convertCtoF(calTemp);     // calTemp is in C
     const char* formula = "gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0.00000000232820948*temp^3)/(1.00130346-0.000134722124*cal+0.00000204052596*cal^2-0.00000000232820948*cal^3))";
 
     // Store variable names and pointers.
-    te_variable vars[] = {{"gravity", &gravity}, {"temp", &tempF}, {"cal", &calTempF}};
+    te_variable vars[] = {{"gravity", &gravity}, {"temp", &temp}, {"cal", &calTempF}};
 
     int err;
     // Compile the expression with variables.

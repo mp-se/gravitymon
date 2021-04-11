@@ -2,7 +2,7 @@
 
 I started this project out of curiosity for how a motion sensor is working and since I like to brew beer this was the result. This software can be used with iSpindle hardware and utilizes the same hardware configuration. No code has been reused from the iSpindle project. 
 
-### TODO
+## TODO
 
 * Add support for Plato in device (today it assumes that formula is in SG). 
 * Add support for converting between SG/Plato in device.
@@ -11,25 +11,25 @@ I started this project out of curiosity for how a motion sensor is working and s
 * Add support for https web server (will require certificates to be created as part of build process)
 * Add iSpindle 3D print cradle + small PCB (what I use for my builds)
 * Validate max sleep time to 70 min (max time for ESP)
-* Check how much movement there is during fermentack (check run time) if we should go into sleep mode for a shorter time...
+* Validate the power consumption of the device using amp meter (integrated and/or separate)
+* Add option to use temperature readings from motion sensor (longer battery life)
+* Testing, Testing and more testing......
 
 # Functionallity
 
-I have made a few differnt design decision compared to the standard iSpindle software. 
+I have made a few different design decision compared to the standard iSpindle software. 
 
-* All configuration options have been moved to a web gui and is accesible without using the double reset function. You only need to use this for changing the WIFI configuration. The web gui can be accessed when either the device is laying flat on a surface (90 degress) or it's beeing charged. The benefits is that it's easier to change settings and also read the angle/tilt when doing calibration. You can also change the forumla and directly see the new calculated result. 
+* The device operate in two modes, __always-on__ or __deep-sleep__. Always on can be triggered in two ways: Connected to charger and the power is over 4.1V or the device is lying flat (angle is approx 90 degrees). 
 
-* The software also has built in OTA support so new versions can be downloaded from a local webserver (when connected to power)
+* Configuration options have been moved to a web gui and is accesible when the device is in __always-on__ mode. The Wifi portal only need to be used for changing WIFI network. 
 
-* Temperature calibration of DS18B20 sensor so you can adjust the temperature sensor readings.
+* The software also has built in OTA support so new versions can be downloaded from a local webserver and checks are done during startup and the device is in __always-on__ mode.
 
-* Automatic temperature gravity calculation to adjust for a lower temperature in the fermentation vessels. Useful if you are fermenting at lower temperatures. It's possible to build this into the normal gravity formula but this is an easier option. Just make sure that the calibration is done at 20°C.
+* Temperature calibration has been added for the DS18B20 sensor so you can adjust the temperature sensor readings if there is a need. When the device is in __always-on__ mode the temperature will rise in the container so the value will increase and not reflect the temperature for the surronding the container.
 
-* The software will read the motion sensor 50 times and use the average to calculate the angle. If the readings show that the device is moving it will wait a few seconds and retry the operation again to make sure that no invalid angles should be reported. The downside is that the device will remain running if it's moving and draw more power. For normal fermentation this should not be an issue.
+* There is an option to automatically correct the gravity calculation based on the temperature. Useful if you are fermenting at lower temperatures. It's possible to build this into the normal gravity formula but this is an easier option. Just make sure that the calibration is done at 20°C.
 
-## Integrations / Sending data 
-
-In this version the software supports sending data to standad HTTP endpoint and Brewfather. These are the ones I use so more can be added on request. 
+* The software will read the motion sensor 50 times and use the average to calculate the angle. If the readings show that the device is moving it will wait a few seconds and retry the operation again to make sure that no invalid angles should be reported. If the device is unsuccesful to get a valid angle within 10s it will go to sleep for 60s and then retry again (TODO: This will be adjusted after more testing).
 
 ## Configuration 
 
@@ -39,7 +39,7 @@ Configuration is accessed by entering the URL for the device, this will be the m
 
 http://gravmon.local/
 
-The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if you are collecting angle/tilt for calibration. If this is unchecked the device will go into sleep mode and the web UI is no longer accesible. 
+The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.
 
 ![Status](img/index.png)
 
@@ -55,15 +55,13 @@ The device page shows the device settings and software versions.
 
 http://gravmon.local/config.htm
 
-This page is divided into several categories of settings. The first one contains device settings, mDNS name, temperature format, and gyro calibration data. The interval setting is the amount of time the device will be in sleep mode between readings (interval is in seconds).
+* This page is divided into several categories of settings. The first one contains device settings, mDNS name, temperature format, sleep interval and gyro calibration data. The interval setting is the amount of time the device will be in sleep mode between readings (interval is in seconds). To simplify this you can also see the conversion to minutes / seconds next to the input field.
 
-Calibration needs to be done or the device will not work correctly. Place the device flat on a surface with gyro up and press the calibrate button when it's stable. 
-
-__TODO: Update image for config settings.__
+* Calibration needs to be done or the device will not work correctly. Place the device flat on a surface with gyro up and press the calibrate button when it's stable. If no calibration data exist the device will not enter sleep-mode.
 
 ![Config - Device](img/config1.png)
 
-The second section contains the push settings, two URL's for http posts, Brewfather and settings for InfluxDB v2. 
+* The second section contains the push settings, two URL's for http posts, Brewfather and settings for InfluxDB v2. 
 
 ### This is the format used for standard http posts. 
 ```
@@ -100,18 +98,19 @@ The second section contains the push settings, two URL's for http posts, Brewfat
 ```
 measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
 ```
-
-__TODO: Update image for push settings.__
-
 ![Config - Push](img/config2.png)
 
-The third section contains the gravity options, formlua and option for temperature correcting gravity.
+* The third section contains the gravity formula and also option for doing temperature compensation. The calibration formula uses two keywords, temp and tilt. Temperature is in the selected device format. 
 
 * Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. I use the tool fermentrack for controlling my fermentation and I use this tool for calculating gravity. The formula can handle two keywords, __tilt__ and __temp__. This is an example of a formula; __0.00145*tilt^3+0.1445*tilt^2+0.00179*tilt+0.9436__ 
 
-![Config - Gravity](img/config3.png)
+* This is the formula used for temperature calibration (temp is in F). Cal = 20C.
+```
+gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0.00000000232820948*temp^3)/(1.00130346-0.000134722124*cal+0.00000204052596*cal^2-0.00000000232820948*cal^3))
+```
+![Config - gravity](img/config3.png)
 
-The fouth section contains the hardware options, voltage factor for calculating the battery charge, temperature sensor adjustment and OTA base URL.  
+* Hardware settings contain settings for temperature sensor adjustment, voltage factor (to calulate the battery level) and OTA URL.
 
 * For the OTA to work, place the following files (version.json + firmware.bin) at the location that you pointed out in OTA URL. If the version number in the json file is newer than in the code the update will be done during startup.
 
@@ -129,7 +128,7 @@ Contents version.json
 
 # Building a device
 
-Not yet complete.
+See the iSpindle documentation for building a device. 
 
 # Compiling the software
 
@@ -142,3 +141,5 @@ You can set the SSID and PWD as presets through platformio.ini by adding the set
 -D USER_SSID=\""\""           // =\""myssid\""
 -D USER_SSID_PWD=\""\""       // =\""mypwd\""
 ```
+
+There are more options in teh platform.ini file that enable/disable additional functions for logging level, pushing performance data to InfluxDB and more. If i get the time I will add some documentation around these. 

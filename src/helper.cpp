@@ -52,6 +52,9 @@ void printBuildOptions() {
 #ifdef SKIP_SLEEPMODE
                 "SKIP_SLEEP "
 #endif
+#ifdef USE_GYRO_TEMP
+                "GYRO_TEMP "
+#endif
 #ifdef EMBED_HTML
                 "EMBED_HTML "
 #endif    

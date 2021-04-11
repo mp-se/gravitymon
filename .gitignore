@@ -1,6 +1,7 @@
 .pio/*
 .vscode/*
 *.map
+docs/*
 test/*.md
 test/env/*
 test/*.py

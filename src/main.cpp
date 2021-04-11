@@ -197,7 +197,7 @@ void loop() {
 #endif   
             if( myConfig.isGravityTempAdj() ) {
                 LOG_PERF_START("loop-gravity-corr");
-                gravity = gravityTemperatureCorrection( gravity, temp);       // Use default correction temperature of 20C
+                gravity = gravityTemperatureCorrection( gravity, temp, myConfig.getTempFormat() ); // Use default correction temperature of 20C
                 LOG_PERF_STOP("loop-gravity-corr");
 #if LOG_LEVEL==6
                 Log.verbose(F("Main: Temp adjusted gravity=%F." CR), gravity );
