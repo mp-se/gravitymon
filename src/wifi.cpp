@@ -93,9 +93,8 @@ bool Wifi::connect( bool showPortal ) {
         delay(100);
         Serial.print( "." );
 
-        if( i++ > 100 ) {
-            LittleFS.end();
-            ESP.reset();
+        if( i++ > 60 ) {            // Try for 6 seconds.
+            return connectedFlag;   // Return to main that we have failed to connect.
         }
     }
     Serial.print( CR );

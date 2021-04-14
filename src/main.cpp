@@ -128,7 +128,7 @@ void setup() {
         Log.notice(F("Main: Detected doubletap on reset." CR));
 
     LOG_PERF_START("main-wifi-connect");
-    myWifi.connect( dt );
+    myWifi.connect( dt );                   // This will return false if unable to connect to wifi, will be handled in loop()
     LOG_PERF_STOP("main-wifi-connect");
 
     LOG_PERF_START("main-gyro-read");
@@ -169,7 +169,7 @@ void loop() {
     if( sleepModeActive || abs(millis() - loopMillis) > interval ) {
         float angle = 0;
         float volt = myBatteryVoltage.getVoltage();
-        float sensorTemp = 0;
+        //float sensorTemp = 0;
         loopCounter++;
 #if LOG_LEVEL==6
         Log.verbose(F("Main: Entering main loop." CR) );
@@ -223,6 +223,15 @@ void loop() {
         Log.verbose(F("Main: Sleep mode not active." CR) );
 #endif   
         int sleepInterval = myConfig.getSleepInterval();
+
+        // If we didnt get a wifi connection, we enter sleep for a short time to conserve battery.
+        // ------------------------------------------------------------------------------------------------
+        //
+        if( !myWifi.isConnected() ) {           // no connection to wifi
+            Log.notice(F("MAIN: No connection to wifi established, sleeping for 60s." CR) );
+            sleepInterval = 60;                                                   // 60s
+            goToSleep = true;            
+        }
 
         // If the sensor is moving and we are not getting a clear reading, we enter sleep for a short time to conserve battery.
         // ------------------------------------------------------------------------------------------------

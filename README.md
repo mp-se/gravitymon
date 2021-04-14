@@ -4,17 +4,17 @@ I started this project out of curiosity for how a motion sensor is working and s
 
 ## TODO
 
+* Add iSpindle 3D print cradle + small PCB (what I use for my builds)
+* Validate the power consumption of the device using amp meter (integrated and/or separate)
+* Testing, Testing and more testing......
+
+Lower priority
 * Add support for Plato in device (today it assumes that formula is in SG). 
 * Add support for converting between SG/Plato in device.
 * Add support for Blynk as endpoint
 * Add support for https connections (push) - [need to reduce memory usage for this to work, gets out of memory error]
 * Add support for https web server (will require certificates to be created as part of build process)
-* Add iSpindle 3D print cradle + small PCB (what I use for my builds)
-* [done] Validate max sleep time to 70 min (max time for ESP)
-* Validate the power consumption of the device using amp meter (integrated and/or separate)
-* [done] Add option to use temperature readings from motion sensor (longer battery life)
-* [done] When using temp from motion sensor the value should be the initial read or the value will not be accurate.
-* Testing, Testing and more testing......
+* Add support for WifiManager Secure access.
 
 # Functionallity
 
