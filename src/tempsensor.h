@@ -38,8 +38,8 @@ class TempSensor {
     public:
         void setup();    
         bool  isSensorAttached() { return hasSensor; };
-        float getValueCelcius() { return getValue() + tempSensorAdjC; }
-        float getValueFarenheight() { return convertCtoF(getValue())  + tempSensorAdjF; };
+        float getTempC() { return getValue() + tempSensorAdjC; }
+        float getTempF() { return convertCtoF(getValue())  + tempSensorAdjF; };
 };
 
 // Global instance created

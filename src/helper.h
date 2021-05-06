@@ -117,10 +117,7 @@ class PerfLogging {
             return pe;
         };
 
-        void readPowerSensor(PerfEntry* pe);
-
     public:
-        PerfLogging();
         void clear();
         void start( const char* key );
         void stop( const char* key );

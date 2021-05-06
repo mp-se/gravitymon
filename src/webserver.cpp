@@ -85,7 +85,7 @@ void webHandleConfig() {
     myConfig.createJson( doc );
 
     double angle = myGyro.getAngle();
-    double temp  = myTempSensor.getValueCelcius();
+    double temp  = myTempSensor.getTempC();
     double gravity = calculateGravity( angle, temp );
 
     doc[ CFG_PARAM_ANGLE ]      = reduceFloatPrecision( angle);
@@ -224,7 +224,7 @@ void webHandleStatus() {
     DynamicJsonDocument doc(256);
 
     double angle = myGyro.getAngle();
-    double temp  = myTempSensor.getValueCelcius();
+    double temp  = myTempSensor.getTempC();
     double gravity = calculateGravity( angle, temp );
 
     doc[ CFG_PARAM_ID ]             = myConfig.getID();
@@ -234,7 +234,7 @@ void webHandleStatus() {
     else
         doc[ CFG_PARAM_GRAVITY ]    = reduceFloatPrecision( gravity, 4);
     doc[ CFG_PARAM_TEMP_C ]         = reduceFloatPrecision( temp, 1);
-    doc[ CFG_PARAM_TEMP_F ]         = reduceFloatPrecision( myTempSensor.getValueFarenheight(), 1);
+    doc[ CFG_PARAM_TEMP_F ]         = reduceFloatPrecision( myTempSensor.getTempF(), 1);
     doc[ CFG_PARAM_BATTERY ]        = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
     doc[ CFG_PARAM_TEMPFORMAT ]     = String( myConfig.getTempFormat() ); 
     doc[ CFG_PARAM_SLEEP_MODE ]     = sleepModeAlwaysSkip; 

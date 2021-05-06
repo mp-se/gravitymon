@@ -23,12 +23,10 @@ SOFTWARE.
  */
 #include "helper.h"
 #include "config.h"
+#include "gyro.h"
+#include "tempsensor.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-
-#if defined( COLLECT_PERFDATA )
-#include <INA219_WE.h>              // For measuring power consumption
-#endif 
 
 SerialDebug mySerial;
 BatteryVoltage myBatteryVoltage;
@@ -105,42 +103,6 @@ void BatteryVoltage::read() {
 #if defined( COLLECT_PERFDATA )
 
 PerfLogging myPerfLogging;
-INA219_WE ina219(0x40);             // For measuring power consumption
-
-//
-// Initialize
-//
-PerfLogging::PerfLogging() { 
-    if( ina219.init() )
-        measurePower = true;
-
-    Log.notice( F("PERF: Performance logging enabled. Power sensor %s" CR), measurePower?"found":"not found");                
-}
-
-//
-// Initialize
-//
-void PerfLogging::readPowerSensor(PerfEntry *pe) { 
-    pe->mA = 0;
-    pe->V  = 0;
-
-    if( !measurePower )
-        return;
-
-    if( ina219.getOverflow() )
-       Log.error( F("PERF: Voltage sensor overflow detected." CR));                
-
-    /*
-    shuntVoltage_mV = ina219.getShuntVoltage_mV();
-    busVoltage_V    = ina219.getBusVoltage_V();
-    current_mA      = ina219.getCurrent_mA();
-    power_mW        = ina219.getBusPower();
-    loadVoltage_V   = busVoltage_V + (shuntVoltage_mV/1000);
-    */
-
-    pe->mA = ina219.getCurrent_mA();
-    pe->V  = ina219.getBusVoltage_V() + (ina219.getShuntVoltage_mV()/1000);
-}
 
 //
 // Clear the current cache
@@ -183,8 +145,6 @@ void PerfLogging::stop( const char* key ) {
         
         if( t > pe->max ) 
             pe->max = t;
-
-        readPowerSensor( pe );
     }
 }
 
@@ -220,6 +180,8 @@ void PerfLogging::pushInflux() {
     // key,host=mdns value=0.0
     String body;
 
+    // Create the payload with performance data.
+    // ------------------------------------------------------------------------------------------
     PerfEntry* pe = first;
     char buf[100];
     sprintf( &buf[0], "perf,host=%s,device=%s ", myConfig.getMDNS(), myConfig.getID() );
@@ -236,6 +198,16 @@ void PerfLogging::pushInflux() {
         }
         pe = pe->next;
     }
+
+    // Create the payload with debug data for validating sensor stability
+    // ------------------------------------------------------------------------------------------
+    sprintf( &buf[0], "\ndebug,host=%s,device=%s ", myConfig.getMDNS(), myConfig.getID() );
+    body += &buf[0];
+    sprintf( &buf[0], "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp=%.2f", myGyro.getAngle(), myGyro.getLastGyroData().ax, 
+                myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az, myGyro.getSensorTempC(), myTempSensor.getTempC() );
+    body += &buf[0];
+
+//  Log.notice(F("PERF: data %s." CR), body.c_str() );
 
 #if LOG_LEVEL==6
     Log.verbose(F("PERF: url %s." CR), serverPath.c_str());

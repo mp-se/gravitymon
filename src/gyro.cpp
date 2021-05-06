@@ -26,11 +26,12 @@ SOFTWARE.
 
 GyroSensor myGyro;
 
+#define GYRO_USE_INTERRUPT                // Use interrupt to detect when new sample is ready
 #define SENSOR_MOVING_THREASHOLD 500
 #define SENSOR_READ_COUNT        50
 #define SENSOR_READ_DELAY        3150     // us, empirical, to hold sampling to 200 Hz
 
-//#define GYRO_SHOW_MINMAX                // Will calculate the min/max values when doing calibration 
+#define GYRO_SHOW_MINMAX                // Will calculate the min/max values when doing calibration 
 //#define GYRO_CALIBRATE_STARTUP          // Will  calibrate sensor at startup
 
 //
@@ -54,15 +55,22 @@ bool GyroSensor::setup() {
 
         // Configure the sensor
         accelgyro.setTempSensorEnabled(true);
-        accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
-        accelgyro.setFullScaleGyroRange(MPU6050_GYRO_FS_250);
+        //accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);     // Set in .initalize()
+        //accelgyro.setFullScaleGyroRange(MPU6050_GYRO_FS_250);     // Set in .initalize()
         accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
+#if defined( GYRO_USE_INTERRUPT )
+        // Alternative method to read data, let the MPU signal when sampling is done. 
         accelgyro.setRate(17);
-        
-        // For now we run the calibration at start.
-    #if defined ( GYRO_CALIBRATE_STARTUP )
+        accelgyro.setInterruptDrive(1); 
+        accelgyro.setInterruptMode(1);  
+        accelgyro.setInterruptLatch(0); 
+        accelgyro.setIntDataReadyEnabled(true);
+#endif
+
+#if defined ( GYRO_CALIBRATE_STARTUP )
+        // Run the calibration at start, useful for testing.
         calibrateSensor();
-    #endif
+#endif
 
         // Once we have calibration values stored we just apply them from the config.
         calibrationOffset = myConfig.getGyroCalibration();
@@ -101,8 +109,16 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations, const int 
     max = min;
 #endif
     for(int cnt = 0; cnt < noIterations ; cnt ++) {
-        accelgyro.getRotation( &raw.gx, &raw.gy, &raw.gz );
-        accelgyro.getAcceleration( &raw.ax, &raw.ay, &raw.az );
+
+#if defined( GYRO_USE_INTERRUPT )
+        while( accelgyro.getIntDataReadyStatus() == 0) {
+            delayMicroseconds( 1 );
+        }
+#endif
+
+        //accelgyro.getRotation( &raw.gx, &raw.gy, &raw.gz );
+        //accelgyro.getAcceleration( &raw.ax, &raw.ay, &raw.az );
+        accelgyro.getMotion6(&raw.ax, &raw.ay, &raw.az, &raw.gx, &raw.gy, &raw.gz);
         raw.temp = accelgyro.getTemperature();
 
         average.ax += raw.ax; 
@@ -133,7 +149,9 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations, const int 
         if( raw.temp > max.temp ) max.temp = raw.temp;
 #endif
 
+#if !defined( GYRO_USE_INTERRUPT )
         delayMicroseconds( delayTime );
+#endif
     }
 
     raw.ax = average.ax/noIterations;
@@ -158,13 +176,21 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations, const int 
 //
 // Calcuate the angles (tilt)
 //
-double GyroSensor::calculateAngle(RawGyroData &raw) {
+float GyroSensor::calculateAngle(RawGyroData &raw) {
 #if LOG_LEVEL==6
     Log.verbose(F("GYRO: Calculating the angle." CR) );
 #endif
 
+    // Smooth out the readings to we can have a more stable angle/tilt.
+    // ------------------------------------------------------------------------------------------------------------
+    // Accelerometer full scale range of +/- 2g with Sensitivity Scale Factor of 16,384 LSB(Count)/g.
+    // Gyroscope full scale range of +/- 250 °/s with Sensitivity Scale Factor of 131 LSB (Count)/°/s.
+    float ax = ((float) raw.ax)/16384, 
+          ay = ((float) raw.ay)/16384,
+          az = ((float) raw.az)/16384; 
+
     // Source: https://www.nxp.com/docs/en/application-note/AN3461.pdf
-    double v = (acos( raw.ay / sqrt( raw.ax*raw.ax + raw.ay*raw.ay + raw.az*raw.az ) ) *180.0 / PI);
+    float v = (acos( ay / sqrt( ax*ax + ay*ay + az*az ) ) *180.0 / PI);
     //Log.notice(F("GYRO: angle = %F." CR), v );
     //double v = (acos( raw.az / sqrt( raw.ax*raw.ax + raw.ay*raw.ay + raw.az*raw.az ) ) *180.0 / PI);
     //Log.notice(F("GYRO: angle = %F." CR), v );
@@ -201,20 +227,19 @@ bool GyroSensor::read() {
     Log.verbose(F("GYRO: Getting new gyro position." CR) );
 #endif
 
-    RawGyroData raw;
-    readSensor( raw, SENSOR_READ_COUNT, SENSOR_READ_DELAY );
+    readSensor( lastGyroData, SENSOR_READ_COUNT, SENSOR_READ_DELAY );    // Last param is unused if GYRO_USE_INTERRUPT is defined.
 
     // If the sensor is unstable we return false to signal we dont have valid value
-    if( isSensorMoving(raw) ) {
+    if( isSensorMoving(lastGyroData) ) {
         Log.notice(F("GYRO: Sensor is moving." CR) );
         validValue = false;
     } else {
         validValue = true;
-        angle = calculateAngle( raw );
-        //Log.notice(F("GYRO: Calculated angle %F" CR), angle );
+        angle = calculateAngle( lastGyroData );
+        //Log.notice(F("GYRO: Sensor values %d,%d,%d\t%F" CR), raw.ax, raw.ay, raw.az, angle );
     }
 
-    sensorTemp = ((float) raw.temp) / 340 + 36.53;
+    sensorTemp = ((float) lastGyroData.temp) / 340 + 36.53;
 
     // The first read value is close to the DS18 value according to my tests, if more reads are 
     // done then the gyro temp will increase to much

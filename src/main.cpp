@@ -184,7 +184,7 @@ void loop() {
             stableGyroMillis = millis();                        // Reset timer
 
             LOG_PERF_START("loop-temp-read");
-            float temp    = myTempSensor.getValueCelcius();  
+            float temp    = myTempSensor.getTempC();  
             LOG_PERF_STOP("loop-temp-read");
 
             //LOG_PERF_START("loop-gravity-calc");  // Takes less than 2ms , so skip this measurment

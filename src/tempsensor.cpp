@@ -67,7 +67,7 @@ void TempSensor::setup() {
     mySensors.begin();
 
     if( mySensors.getDS18Count() ) {
-        Log.notice(F("TSEN: Found %d sensors." CR), mySensors.getDS18Count());
+        Log.notice(F("TSEN: Found %d temperature sensor(s)." CR), mySensors.getDS18Count());
         mySensors.setResolution(TEMPERATURE_PRECISION);
     }
 #endif 

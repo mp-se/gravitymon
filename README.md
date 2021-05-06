@@ -1,10 +1,11 @@
 # Gravity Monitor for Beer Brewing
 
-I started this project out of curiosity for how a motion sensor is working and since I like to brew beer this was the result. This software can be used with iSpindle hardware and utilizes the same hardware configuration. No code has been reused from the iSpindle project. 
+This software can be used with iSpindle hardware and utilizes the same hardware configuration. No code has been reused from the iSpindle project. 
+
+I started this project out of curiosity for how a motion sensor is working and since I like to brew beer this was the result. 
 
 ## TODO
 
-* Add iSpindle 3D print cradle + small PCB (what I use for my builds)
 * Validate the power consumption of the device using amp meter (integrated and/or separate)
 * Testing, Testing and more testing......
 
@@ -14,7 +15,7 @@ Lower priority
 * Add support for Blynk as endpoint
 * Add support for https connections (push) - [need to reduce memory usage for this to work, gets out of memory error]
 * Add support for https web server (will require certificates to be created as part of build process)
-* Add support for WifiManager Secure access.
+* Add support for WifiManager Secure access, depends on support in library.
 
 # Functionallity
 
@@ -132,6 +133,11 @@ Contents version.json
 # Building a device
 
 See the iSpindle documentation for building a device. 
+
+I've included my 3d sled that I use for my builds that allows for easy adjustment of the default angle. The stl files can be found under the stl directory.
+
+![Spindle sled](img/spindle.png)
+![Spindle sled with weight](img/spindle-weight.png)
 
 # Compiling the software
 
