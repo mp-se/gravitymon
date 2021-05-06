@@ -23,8 +23,7 @@ SOFTWARE.
  */
 #include "pushtarget.h"
 #include "config.h"
-
-#if defined( ACTIVATE_PUSH )
+#include "gyro.h"           // For testing the tempsensor in the gyro
 
 PushTarget myPushTarget;
 
@@ -33,7 +32,7 @@ PushTarget myPushTarget;
 //
 void PushTarget::send(float angle, float gravity, float temp, float runTime, bool force ) {
     unsigned long timePassed = abs( millis() - ms );
-    unsigned long interval = myConfig.getPushInterval()*1000;
+    unsigned long interval = myConfig.getSleepInterval()*1000;
 
     if( ( timePassed < interval ) && !force) {
 #if LOG_LEVEL==6
@@ -47,14 +46,70 @@ void PushTarget::send(float angle, float gravity, float temp, float runTime, boo
 #endif
     ms = millis();
 
-    if( myConfig.isBrewfatherActive() )
-       sendBrewfather( angle,  gravity, temp );
+    if( myConfig.isBrewfatherActive() ) {
+        LOG_PERF_START("push-brewfather");
+        sendBrewfather( angle,  gravity, temp );
+        LOG_PERF_STOP("push-brewfather");
+    }
 
-    if( myConfig.isHttpActive() )
-       sendHttp( myConfig.getHttpPushTarget(), angle, gravity, temp, runTime );
+    if( myConfig.isHttpActive() ) {
+        LOG_PERF_START("push-http");
+        sendHttp( myConfig.getHttpPushUrl(), angle, gravity, temp, runTime );
+        LOG_PERF_STOP("push-http");
+    }
 
-    if( myConfig.isHttpActive2() )
-       sendHttp( myConfig.getHttpPushTarget2(), angle, gravity, temp, runTime );
+    if( myConfig.isHttpActive2() ) {
+        LOG_PERF_START("push-http2");
+        sendHttp( myConfig.getHttpPushUrl2(), angle, gravity, temp, runTime );
+        LOG_PERF_STOP("push-http2");
+    }
+
+    if( myConfig.isInfluxDb2Active() ) {
+        LOG_PERF_START("push-influxdb2");
+        sendInfluxDb2( angle, gravity, temp, runTime );
+        LOG_PERF_STOP("push-influxdb2");
+    }
+}
+
+//
+// Send to influx db v2
+//
+void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float runTime) {
+    Log.notice(F("PUSH: Sending values to influxdb2 angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
+
+    WiFiClient client;
+    HTTPClient http;
+    String serverPath = String(myConfig.getInfluxDb2PushUrl()) + "/api/v2/write?org=" + 
+                        String(myConfig.getInfluxDb2PushOrg()) + "&bucket=" + 
+                        String(myConfig.getInfluxDb2PushBucket());
+
+    http.begin( client, serverPath);
+
+    // Create body for influxdb2
+    char buf[1024];
+    sprintf( &buf[0], "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
+                      "gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,rssi=%d,temp2=%.2f\n",
+                    // TODO: Add support for plato format
+                    myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), "SG", 
+                    gravity, angle, temp, myBatteryVoltage.getVoltage(), WiFi.RSSI(), myGyro.getSensorTempC() );                // For comparing gyro tempsensor vs DSB1820
+
+#if LOG_LEVEL==6
+    Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
+    Log.verbose(F("PUSH: data %s." CR), &buf[0] );
+#endif
+
+    // Send HTTP POST request
+    String auth = "Token " + String( myConfig.getInfluxDb2PushToken() );
+    http.addHeader(F("Authorization"), auth.c_str() );
+    int httpResponseCode = http.POST(&buf[0]);
+
+    if (httpResponseCode==204) {
+        Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR), httpResponseCode);
+    } else {
+        Log.error(F("PUSH: InfluxDB2 push failed, response=%d" CR), httpResponseCode);
+    }
+
+    http.end();
 }
 
 //
@@ -84,22 +139,15 @@ void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
     //
     doc["name"]          = myConfig.getMDNS();
     doc["temp"]          = reduceFloatPrecision( temp, 1);
-  //doc["aux_temp"]      = 0;
-  //doc["ext_temp"]      = 0;
     doc["temp_unit"]     = String( myConfig.getTempFormat() ); 
-  //doc["pressure"]      = ; 
-  //doc["pressure_unit"] = ;  
     doc["battery"]       = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 ); 
+    // TODO: Add support for plato format
     doc["gravity"]       = reduceFloatPrecision( gravity, 4 );
     doc["gravity_unit"]  = myConfig.isGravitySG()?"G":"P";
-  //doc["ph"]            = 0;
-  //doc["bpm"]           = 0;
-  //doc["comment"]       = "";
-  //doc["beer"]          = "";
 
     WiFiClient client;
     HTTPClient http;
-    String serverPath = myConfig.getBrewfatherPushTarget();
+    String serverPath = myConfig.getBrewfatherPushUrl();
 
     // Your Domain name with URL path or IP address with path
     http.begin( client, serverPath);
@@ -115,9 +163,9 @@ void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
     int httpResponseCode = http.POST(json);
 
     if (httpResponseCode==200) {
-        Log.notice(F("PUSH: HTTP Response code %d" CR), httpResponseCode);
+        Log.notice(F("PUSH: Brewfather push successful, response=%d" CR), httpResponseCode);
     } else {
-        Log.error(F("PUSH: HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("PUSH: Brewfather push failed, response=%d" CR), httpResponseCode);
     }
 
     http.end();
@@ -132,19 +180,21 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
     DynamicJsonDocument doc(256);
 
     // Use iSpindle format for compatibility
-    doc["name"]        = myConfig.getMDNS();
-    doc["ID"]          = myConfig.getMDNS();
-    doc["token"]       = "gravmon";
-    doc["interval"]    = myConfig.getPushInterval();
-    doc["temperature"] = reduceFloatPrecision( temp, 1 );
-    doc["temp-units"]  = String( myConfig.getTempFormat() ); 
-    doc["gravity"]     = reduceFloatPrecision( gravity, 4 );
-    doc["angle"]       = reduceFloatPrecision( angle, 2);
-    doc["battery"]     = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 );
-    doc["rssi"]        = WiFi.RSSI(); 
+    doc["name"]          = myConfig.getMDNS();
+    doc["ID"]            = myConfig.getID();
+    doc["token"]         = "gravmon";
+    doc["interval"]      = myConfig.getSleepInterval();
+    doc["temperature"]   = reduceFloatPrecision( temp, 1 );
+    doc["temp-units"]    = String( myConfig.getTempFormat() ); 
+    // TODO: Add support for plato format
+    doc["gravity"]       = reduceFloatPrecision( gravity, 4 );
+    doc["angle"]         = reduceFloatPrecision( angle, 2);
+    doc["battery"]       = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 );
+    doc["rssi"]          = WiFi.RSSI(); 
 
     // Some additional information
-    doc["run-time"]  = reduceFloatPrecision( runTime, 2 );
+    doc["gravity-units"] = "SG";
+    doc["run-time"]      = reduceFloatPrecision( runTime, 2 );
 
     WiFiClient client;
     HTTPClient http;
@@ -163,14 +213,12 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
     int httpResponseCode = http.POST(json);
     
     if (httpResponseCode==200) {
-        Log.notice(F("PUSH: HTTP Response code %d" CR), httpResponseCode);
+        Log.notice(F("PUSH: HTTP push successful, response=%d" CR), httpResponseCode);
     } else {
-        Log.error(F("PUSH: HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("PUSH: HTTP push failed, response=%d" CR), httpResponseCode);
     }
 
     http.end();
 }
-
-#endif // ACTIVATE_PUSH
 
 // EOF 

@@ -57,6 +57,95 @@ class BatteryVoltage {
         float getVoltage() { return batteryLevel; };
 };
 
+#if defined( COLLECT_PERFDATA )
+
+class PerfLogging {
+    private:
+        struct PerfEntry {
+            unsigned long start;        // millis()
+            unsigned long end;          // millis() 
+            unsigned long max;          // max time in ms
+            const char*   key;          // measurement
+
+            PerfEntry*    next;         // Next in the linked list
+
+            float         mA;           // Power consumption
+            float         V;            // Power consumption
+        };
+
+        PerfEntry* first = 0;
+        bool measurePower = false;
+
+        PerfEntry* find( const char* k ) {
+            if( first == 0 )
+                return 0;
+
+            PerfEntry* pe = first;
+
+            while( strcmp( k, pe->key ) != 0 ) {
+                if( pe->next == 0 )
+                    return 0;
+                
+                pe = pe->next;
+            }
+            return pe;
+        };
+
+        PerfEntry* add( const char* k ) {
+            if( first == 0 ) {
+                first = new PerfEntry();
+                first->key = k;
+                first->next = 0;
+                first->max = 0;
+                return first;
+            }
+
+            PerfEntry* pe = first;
+
+            while( strcmp( k, pe->key ) != 0 ) {
+                if( pe->next == 0 ) {
+                    pe->next = new PerfEntry();
+                    pe->next->key = k;
+                    pe->next->max = 0;
+                    pe->next->next = 0;
+                    return pe->next;
+                }
+                
+                pe = pe->next;
+            }
+
+            return pe;
+        };
+
+    public:
+        void clear();
+        void start( const char* key );
+        void stop( const char* key );
+        void print();
+        void pushInflux(); 
+};
+
+extern PerfLogging myPerfLogging;
+
+// Use these to collect performance data from various parts of the code
+#define LOG_PERF_START(s)   myPerfLogging.start(s)
+#define LOG_PERF_STOP(s)    myPerfLogging.stop(s)
+//#define LOG_PERF_PRINT()    myPerfLogging.print()
+#define LOG_PERF_PRINT()    
+#define LOG_PERF_CLEAR()    myPerfLogging.clear()
+#define LOG_PERF_PUSH()     myPerfLogging.pushInflux()
+
+#else
+
+// These will disable the performance collection function
+#define LOG_PERF_START(s)   
+#define LOG_PERF_STOP(s)    
+#define LOG_PERF_PRINT()    
+#define LOG_PERF_CLEAR()    
+#define LOG_PERF_PUSH()    
+
+#endif  // COLLECT_PERFDATA
+
 // Global instance created
 extern SerialDebug mySerial;
 extern BatteryVoltage myBatteryVoltage;

@@ -23,6 +23,10 @@ SOFTWARE.
  */
 #include "helper.h"
 #include "config.h"
+#include "gyro.h"
+#include "tempsensor.h"
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 
 SerialDebug mySerial;
 BatteryVoltage myBatteryVoltage;
@@ -43,14 +47,17 @@ void deepSleep(int t) {
 //
 void printBuildOptions() {
     Log.notice( F("Build options: %s LOGLEVEL %d " 
-#ifdef ACTIVATE_PUSH
-                "PUSH "
-#endif    
 #ifdef SKIP_SLEEPMODE
                 "SKIP_SLEEP "
 #endif
+#ifdef USE_GYRO_TEMP
+                "GYRO_TEMP "
+#endif
 #ifdef EMBED_HTML
                 "EMBED_HTML "
+#endif    
+#ifdef COLLECT_PERFDATA
+                "PERFDATA "
 #endif    
 #ifdef ACTIVATE_OTA
                 "OTA "
@@ -92,6 +99,136 @@ void BatteryVoltage::read() {
     Log.verbose(F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR), factor, v, batteryLevel );
 #endif
 }
+
+#if defined( COLLECT_PERFDATA )
+
+PerfLogging myPerfLogging;
+
+//
+// Clear the current cache
+//
+void PerfLogging::clear() { 
+    // Clear the measurements 
+    if( first == 0 )
+        return;
+
+    PerfEntry* pe = first;
+
+    do {
+        pe->max   = 0;
+        pe->start = 0;
+        pe->end   = 0;
+        pe->mA    = 0;
+        pe->V     = 0;
+        pe = pe->next;
+    } while( pe != 0 );
+}
+
+//
+// Start measuring this performance point
+//
+void PerfLogging::start( const char* key ) { 
+    PerfEntry* pe = add( key );
+    pe->start = millis(); 
+}
+
+//
+// Finalize measuring of this performance point
+//
+void PerfLogging::stop( const char* key ) { 
+    PerfEntry* pe = find( key );
+
+    if( pe != 0 ) {
+        pe->end = millis(); 
+
+        unsigned long t = pe->end - pe->start;
+        
+        if( t > pe->max ) 
+            pe->max = t;
+    }
+}
+
+//
+// Print the collected performance data
+//
+void PerfLogging::print() { 
+    PerfEntry* pe = first;
+
+    while( pe != 0 ) {
+        //Log.notice( F("PERF: %s=%l ms (%l, %l)" CR), pe->key, (pe->end - pe->start), pe->start, pe->end );                
+        Log.notice( F("PERF: %s %lms" CR), pe->key, pe->max );                
+        pe = pe->next;
+    }
+}
+
+//
+// Push collected performance data to influx (use influx configuration)
+//
+void PerfLogging::pushInflux() { 
+    if( !myConfig.isInfluxDb2Active() )
+        return;
+
+    WiFiClient client;
+    HTTPClient http;
+    String serverPath = String(myConfig.getInfluxDb2PushUrl()) + "/api/v2/write?org=" + 
+                        String(myConfig.getInfluxDb2PushOrg()) + "&bucket=" + 
+                        String(myConfig.getInfluxDb2PushBucket());
+
+    http.begin( client, serverPath);
+
+    // Create body for influxdb2, format used
+    // key,host=mdns value=0.0
+    String body;
+
+    // Create the payload with performance data.
+    // ------------------------------------------------------------------------------------------
+    PerfEntry* pe = first;
+    char buf[100];
+    sprintf( &buf[0], "perf,host=%s,device=%s ", myConfig.getMDNS(), myConfig.getID() );
+    body += &buf[0];
+
+    while( pe != 0 ) {
+        if( pe->max ) {
+            if( pe->next )
+                sprintf( &buf[0], "%s=%ld,", pe->key, pe->max);
+            else
+                sprintf( &buf[0], "%s=%ld", pe->key, pe->max);
+
+            body += &buf[0];
+        }
+        pe = pe->next;
+    }
+
+    // Create the payload with debug data for validating sensor stability
+    // ------------------------------------------------------------------------------------------
+    sprintf( &buf[0], "\ndebug,host=%s,device=%s ", myConfig.getMDNS(), myConfig.getID() );
+    body += &buf[0];
+    sprintf( &buf[0], "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp=%.2f", myGyro.getAngle(), myGyro.getLastGyroData().ax, 
+                myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az, myGyro.getSensorTempC(), myTempSensor.getTempC() );
+    body += &buf[0];
+
+//  Log.notice(F("PERF: data %s." CR), body.c_str() );
+
+#if LOG_LEVEL==6
+    Log.verbose(F("PERF: url %s." CR), serverPath.c_str());
+    Log.verbose(F("PERF: data %s." CR), body.c_str() );
+#endif
+
+    // Send HTTP POST request
+    String auth = "Token " + String( myConfig.getInfluxDb2PushToken() );
+    http.addHeader(F("Authorization"), auth.c_str() );
+    int httpResponseCode = http.POST(body);
+
+    if (httpResponseCode==204) {
+        Log.notice(F("PERF: InfluxDB2 push performance data successful, response=%d" CR), httpResponseCode);
+    } else {
+        Log.error(F("PERF: InfluxDB2 push performance data failed, response=%d" CR), httpResponseCode);
+    }
+
+    http.end();
+}
+
+#endif // COLLECT_PERFDATA
 
 //
 // Convert float to formatted string with n decimals. Buffer should be at least 10 chars.

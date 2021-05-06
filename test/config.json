@@ -1,1 +1,30 @@
-{"mdns":"gravitymon2","id":"ee1bfc","ota-url":"","temp-format":"C","brewfather-push":"","http-push":"http://192.168.1.16:9090/api/v1/V7s7vRXLqnsW3HdxxRuD/telemetry","http-push2":"http://192.168.1.16:9090/test", "push-interval":30,"voltage-factor":1.59,"gravity-formula":"0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436","temp-adjustment-value":0,"gravity-temp-adjustment":false,"gyro-calibration-data":{"ax":-4814,"ay":1143,"az":2270,"gx":47,"gy":-25,"gz":47},"angle":90.38,"gravity":1.1106,"battery":4.24}
+{
+    "mdns": "gravmon3",
+    "id": "7376ef",
+    "ota-url": "http://192.168.1.100:80/firmware/gravmon/",
+    "temp-format": "C",
+    "brewfather-push": "http://log.brewfather.net/stream?id=KfkJU43jUFfj",
+    "http-push": "http://192.168.1.10:9090/api/v1/ZYfjlUNeiuyu9N/telemetry",
+    "http-push2": "http://192.168.1.10/ispindel",
+    "influxdb2-push": "http://192.168.1.10:8086",
+    "influxdb2-org": "hello",
+    "influxdb2-bucket": "spann",
+    "influxdb2-auth": "OijkU((jhfkh",
+    "sleep-interval": 30,
+    "voltage-factor": 1.59,
+    "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
+    "gravity-format": "G",
+    "temp-adjustment-value": 0,
+    "gravity-temp-adjustment": false,
+    "gyro-calibration-data": {
+        "ax": -330,
+        "ay": -2249,
+        "az": 1170,
+        "gx": 99,
+        "gy": -6,
+        "gz": 4
+    },
+    "angle": 90.93,
+    "gravity": 1.105,
+    "battery": 0.04
+}

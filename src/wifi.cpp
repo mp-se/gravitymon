@@ -39,6 +39,9 @@ Wifi myWifi;
 WiFiManager myWifiManager; 
 bool shouldSaveConfig = false;
 
+const char* userSSID= USER_SSID;
+const char* userPWD = USER_SSID_PWD;
+
 //
 // Callback notifying us of the need to save config
 //
@@ -54,9 +57,7 @@ bool Wifi::connect( bool showPortal ) {
     Log.verbose(F("WIFI: Connecting to WIFI via connection manager (portal=%s)." CR), showPortal?"true":"false");
     myWifiManager.setDebugOutput(true);    
 #endif
-    unsigned long startMillis = millis();
-
-    if( showPortal ) {
+    if( strlen(userSSID)==0 && showPortal ) {
         Log.notice(F("WIFI: Starting wifi portal." CR));
 
         myWifiManager.setBreakAfterConfig( true );
@@ -64,7 +65,8 @@ bool Wifi::connect( bool showPortal ) {
         myWifiManager.setMinimumSignalQuality(10);  
         myWifiManager.setClass("invert");
         myWifiManager.setHostname( myConfig.getMDNS() );
-
+        myWifiManager.setConfigPortalTimeout( 120 );             // Keep it open for 120 seconds
+        
         WiFiManagerParameter mdnsParam("mDNS", "hostname", myConfig.getMDNS(), 20);
         myWifiManager.addParameter( &mdnsParam );
 
@@ -79,25 +81,25 @@ bool Wifi::connect( bool showPortal ) {
     // Connect to wifi
     int i = 0;
 
-    WiFi.begin();
+    Log.notice(F("WIFI: Connecting to WIFI." CR));
+    if( strlen(userSSID) ) {
+        Log.notice(F("WIFI: Connecting to wifi using predefined settings %s." CR), userSSID);
+        WiFi.begin( userSSID, userPWD );
+    } else {
+        WiFi.begin();
+    }
+
     while( WiFi.status() != WL_CONNECTED ) {
         delay(100);
         Serial.print( "." );
 
-        if( i++ > 100 ) {
-            LittleFS.end();
-            ESP.reset();
+        if( i++ > 60 ) {            // Try for 6 seconds.
+            return connectedFlag;   // Return to main that we have failed to connect.
         }
     }
     Serial.print( CR );
     connectedFlag = true;
-
-    Log.notice( F("WIFI: IP=%s, Connect time %d s" CR), WiFi.localIP().toString().c_str(), abs(millis() - startMillis)/1000);
-
-#if LOG_LEVEL==6
-    Log.verbose(F("WIFI: Connect returned %s." CR), connectedFlag?"True":"False" );
-#endif
-
+    Log.notice(F("WIFI: Connected to wifi ip=%s." CR), getIPAddress().c_str() );
     return connectedFlag;
 }
 
@@ -107,7 +109,7 @@ bool Wifi::connect( bool showPortal ) {
 bool Wifi::disconnect() {
     Log.notice(F("WIFI: Erasing stored WIFI credentials." CR));
     // Erase WIFI credentials
-    return WiFi.disconnect();
+    return WiFi.disconnect(true);
 }
 
 #if defined( ACTIVATE_OTA )
@@ -132,12 +134,13 @@ bool Wifi::updateFirmware() {
 
     switch(ret) {
         case HTTP_UPDATE_FAILED:
-            Log.error(F("WIFI: Updating failed %d, %s." CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            Log.error(F("WIFI: OTA update failed %d, %s." CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
             break;
         case HTTP_UPDATE_NO_UPDATES:
             break;
         case HTTP_UPDATE_OK:
-            Log.notice("WIFI: Updated succesfull, rebooting." );
+            Log.notice("WIFI: OTA Update sucesfull, rebooting." );
+            delay(100);
             ESP.reset();
             break;
     }
@@ -166,7 +169,7 @@ void Wifi::downloadFile(const char *fname) {
         f.close();
         Log.notice(F("WIFI: Downloaded file %s." CR), fname);
     } else {
-        Log.error(F("WIFI: HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("WIFI: Failed to download file, respone=%d" CR), httpResponseCode);
     }
     http.end();
 }
@@ -190,7 +193,7 @@ bool Wifi::checkFirmwareVersion() {
     int httpResponseCode = http.GET();
       
     if (httpResponseCode==200) {
-        Log.notice(F("WIFI: HTTP Response code %d" CR), httpResponseCode);
+        Log.notice(F("WIFI: Found version.json, response=%d" CR), httpResponseCode);
  
         String payload = http.getString();
 #if LOG_LEVEL==6
@@ -199,7 +202,7 @@ bool Wifi::checkFirmwareVersion() {
         DynamicJsonDocument ver(300);
         DeserializationError err = deserializeJson(ver, payload);
         if( err ) {
-            Log.error(F("WIFI: Failed to parse json, %s" CR), err);
+            Log.error(F("WIFI: Failed to parse version.json, %s" CR), err);
         } else {
 #if LOG_LEVEL==6
             Log.verbose(F("WIFI: Project %s version %s." CR), (const char*) ver["project"], (const char*) ver["version"]);
@@ -210,7 +213,7 @@ bool Wifi::checkFirmwareVersion() {
             if( parseFirmwareVersionString( newVer, (const char*) ver["version"] ) ) {
                 if( parseFirmwareVersionString( curVer, CFG_APPVER) ) {
 #if LOG_LEVEL==6
-                  Log.verbose(F("OTA : Checking New=%d.%d.%d Cur=%d.%d.%d" CR), newVer[0], newVer[1], newVer[2], curVer[0], curVer[1], curVer[2] );
+                  Log.verbose(F("WIFI: OTA checking new=%d.%d.%d cur=%d.%d.%d" CR), newVer[0], newVer[1], newVer[2], curVer[0], curVer[1], curVer[2] );
 #endif
                     // Compare major version
                     if( newVer[0] > curVer[0] )
@@ -226,23 +229,23 @@ bool Wifi::checkFirmwareVersion() {
 
             // Download new html files to filesystem if they are present.
             if( !ver["html"].isNull() && newFirmware ) {
-                Log.notice(F("OTA : Downloading new html files." CR));
+                Log.notice(F("WIFI: OTA downloading new html files." CR));
                 JsonArray htmlFiles = ver["html"].as<JsonArray>();
                 for(JsonVariant v : htmlFiles) {
                     String s = v;
 #if LOG_LEVEL==6
-                    Log.verbose(F("OTA : Html file found %s" CR), s.c_str() );
+                    Log.verbose(F("WIFI: OTA listed html file %s" CR), s.c_str() );
 #endif
                     downloadFile( s.c_str() );
                 }                
             }
         }
     } else {
-        Log.error(F("WIFI: HTTP Response code %d" CR), httpResponseCode);
+        Log.error(F("WIFI: OTA error checking version.json, response=%d" CR), httpResponseCode);
     }
     http.end();
 #if LOG_LEVEL==6
-    Log.verbose(F("WIFI: Found new version %s." CR), newFirmware?"true":"false");
+    Log.verbose(F("WIFI: OTA found new version %s." CR), newFirmware?"true":"false");
 #endif
     return newFirmware;
 }
@@ -252,7 +255,7 @@ bool Wifi::checkFirmwareVersion() {
 //
 bool Wifi::parseFirmwareVersionString( int (&num)[3], const char *version ) {
 #if LOG_LEVEL==6
-    Log.verbose(F("WIFI: Parsing version number %s." CR), version);
+    Log.verbose(F("WIFI: Parsing version number string %s." CR), version);
 #endif
     char temp[80]; 
     char *s;

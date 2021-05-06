@@ -45,32 +45,38 @@ struct RawGyroDataL {   // Used for average multiple readings
     long temp;      // Only for information (temperature of chip)
 };
 
+#define INVALID_TEMPERATURE -273
+
 class GyroSensor {
     private:
         MPU6050     accelgyro;
         bool        sensorConnected = false;
         bool        validValue = false;
-        double      angle = 0;
+        float       angle = 0;
         float       sensorTemp = 0;
+        float       initialSensorTemp = INVALID_TEMPERATURE;
         RawGyroData calibrationOffset;
+        RawGyroData lastGyroData;
 
         void    debug();
         void    applyCalibration();
         void    dumpCalibration();
         void    readSensor(RawGyroData &raw, const int noIterations = 100, const int delayTime = 1);
         bool    isSensorMoving(RawGyroData &raw);
-        double  calculateAngle(RawGyroData &raw);
+        float   calculateAngle(RawGyroData &raw);
 
     public:
         bool setup();
         bool read();
         void calibrateSensor();
 
-        double getAngle() { return angle; };
-        double getSensorTempC() { return sensorTemp; };
-        bool   isConnected() { return sensorConnected; };
-        bool   hasValue() { return validValue; };
-        void   enterSleep();
+        const RawGyroData& getLastGyroData() { return lastGyroData; }
+        float              getAngle() { return angle; };
+        float              getSensorTempC() { return sensorTemp; };
+        float              getInitialSensorTempC() { return initialSensorTemp; };
+        bool               isConnected() { return sensorConnected; };
+        bool               hasValue() { return validValue; };
+        void               enterSleep();
 };
 
 // Global instance created
