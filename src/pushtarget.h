@@ -37,13 +37,13 @@ class PushTarget {
     private:
         unsigned long ms;   // Used to check that we do not post to often 
 
-        void sendBrewfather(float angle, float gravity, float temp );
-        void sendHttp(String serverPath, float angle, float gravity, float temp, float runTime);
-        void sendInfluxDb2(float angle, float gravity, float temp, float runTime);
+        void sendBrewfather(float angle, float gravity, float corrGravity, float temp );
+        void sendHttp(String serverPath, float angle, float gravity, float corrGravity, float temp, float runTime);
+        void sendInfluxDb2(float angle, float gravity, float corrGravity, float temp, float runTime);
 
     public:
         PushTarget() { ms = millis(); }
-        void send(float angle, float gravity, float temp, float runTime, bool force = false );
+        void send(float angle, float gravity, float corrGravity, float temp, float runTime, bool force = false );
 };
 
 extern PushTarget myPushTarget;

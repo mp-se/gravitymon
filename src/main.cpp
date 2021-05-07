@@ -179,9 +179,9 @@ void loop() {
         // If we dont get any readings we just skip this and try again the next interval.
         //
         if( myGyro.hasValue() ) {
-            angle         = myGyro.getAngle();                  // Gyro angle
+            angle = myGyro.getAngle();              // Gyro angle
 
-            stableGyroMillis = millis();                        // Reset timer
+            stableGyroMillis = millis();            // Reset timer
 
             LOG_PERF_START("loop-temp-read");
             float temp    = myTempSensor.getTempC();  
@@ -191,25 +191,21 @@ void loop() {
             float gravity = calculateGravity( angle, temp );
             //LOG_PERF_STOP("loop-gravity-calc");
 
-#if LOG_LEVEL==6
-            Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%F, gravity=%F." CR), angle, temp, gravity );
-#endif   
-            if( myConfig.isGravityTempAdj() ) {
-                LOG_PERF_START("loop-gravity-corr");
-                gravity = gravityTemperatureCorrection( gravity, temp, myConfig.getTempFormat() ); // Use default correction temperature of 20C
-                LOG_PERF_STOP("loop-gravity-corr");
-#if LOG_LEVEL==6
-                Log.verbose(F("Main: Temp adjusted gravity=%F." CR), gravity );
-#endif   
-            }
+            //LOG_PERF_START("loop-gravity-corr");  // Takes less than 2ms , so skip this measurment
+            // Use default correction temperature of 20C
+            float corrGravity = gravityTemperatureCorrection( gravity, temp, myConfig.getTempFormat() ); 
+            //LOG_PERF_STOP("loop-gravity-corr");
 
+#if LOG_LEVEL==6
+            Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%F, gravity=%F, corr=%F." CR), angle, temp, gravity, corrGravity );
+#endif   
             // Limit the printout when sleep mode is not active.
             if( loopCounter%10 == 0 || sleepModeActive ) {
-                Log.notice(F("Main: angle=%F, temp=%F, gravity=%F, batt=%F." CR), angle, temp, gravity, volt );
+                Log.notice(F("Main: angle=%F, temp=%F, gravity=%F, corrGravity=%F, batt=%F." CR), angle, temp, gravity, corrGravity ,volt );
             }
 
             LOG_PERF_START("loop-push");
-            myPushTarget.send( angle, gravity, temp, (millis()-runtimeMillis)/1000, sleepModeActive );    // Force the transmission if we are going to sleep
+            myPushTarget.send( angle, gravity, corrGravity, temp, (millis()-runtimeMillis)/1000, sleepModeActive );    // Force the transmission if we are going to sleep
             LOG_PERF_STOP("loop-push");
 
             // If we have completed the update lets go to sleep
