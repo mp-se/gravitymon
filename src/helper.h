@@ -40,6 +40,7 @@ float reduceFloatPrecision( float f, int dec = 2 );
 // Logging via serial
 void printTimestamp(Print* _logOutput);
 void printNewline(Print* _logOutput);
+void printHeap();
 
 // Classes
 class SerialDebug {

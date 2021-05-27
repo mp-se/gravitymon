@@ -76,7 +76,8 @@ http://gravmon.local/config.htm
    "interval": 900,     
    "temperature": 20.5,     // C or F based on setting, adjusted value.
    "temp-units": "C",       // C or F based on setting
-   "gravity": 1.0050,       // 
+   "gravity": 1.0050,       // Raw or temperature corrected gravity (based on setting)
+   "corr-gravity": 1.0050,  // Temperature corrected gravity 
    "angle": 45.34,
    "battery": 3.67,
    "rssi": -12,
@@ -100,8 +101,9 @@ http://gravmon.local/config.htm
 ### This is the format for InfluxDB v2
 
 ```
-measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
+measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG,gravity=1.0004,corr-gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
 ```
+
 ![Config - Push](img/config2.png)
 
 * The third section contains the gravity formula and also option for doing temperature compensation. The calibration formula uses two keywords, temp and tilt. Temperature is in the selected device format. 

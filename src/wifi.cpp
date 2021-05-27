@@ -82,18 +82,24 @@ bool Wifi::connect( bool showPortal ) {
     int i = 0;
 
     Log.notice(F("WIFI: Connecting to WIFI." CR));
+    WiFi.mode(WIFI_STA);
     if( strlen(userSSID) ) {
         Log.notice(F("WIFI: Connecting to wifi using predefined settings %s." CR), userSSID);
         WiFi.begin( userSSID, userPWD );
     } else {
         WiFi.begin();
+#if LOG_LEVEL==6
+        Log.debug(F("WIFI: Using SSID=%s, KEY=%s." CR), WiFi.SSID().c_str(), WiFi.psk().c_str() );
+#endif
     }
 
     while( WiFi.status() != WL_CONNECTED ) {
         delay(100);
         Serial.print( "." );
 
-        if( i++ > 60 ) {            // Try for 6 seconds.
+//        if( i++ > 60 ) {            // Try for 6 seconds.
+        if( i++ > 200 ) {            // Try for 20 seconds.
+            Log.error(F("WIFI: Failed to connect to wifi, aborting." CR));
             return connectedFlag;   // Return to main that we have failed to connect.
         }
     }

@@ -32,6 +32,15 @@ SerialDebug mySerial;
 BatteryVoltage myBatteryVoltage;
 
 //
+// Print the heap information.
+//
+void printHeap() {
+#if LOG_LEVEL==6
+    Log.verbose(F("HELP: Heap %d kb, HeapFrag %d %%, FreeSketch %d kb." CR), ESP.getFreeHeap()/1024, ESP.getHeapFragmentation(), ESP.getFreeSketchSpace()/1024 );
+#endif    
+}
+
+//
 // Enter deep sleep for the defined duration (Argument is seconds)
 //
 void deepSleep(int t) {
@@ -49,9 +58,6 @@ void printBuildOptions() {
     Log.notice( F("Build options: %s LOGLEVEL %d " 
 #ifdef SKIP_SLEEPMODE
                 "SKIP_SLEEP "
-#endif
-#ifdef USE_GYRO_TEMP
-                "GYRO_TEMP "
 #endif
 #ifdef EMBED_HTML
                 "EMBED_HTML "

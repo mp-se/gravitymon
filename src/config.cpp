@@ -40,7 +40,7 @@ Config::Config() {
     setTempFormat('C');
     setGravityFormat('G');
     setSleepInterval(900);             // 15 minutes
-    setVoltageFactor(1.59);           // Conversion factor for battery
+    setVoltageFactor(1.59);            // Conversion factor for battery
     setTempSensorAdj(0.0);
     setGravityTempAdj(false);
     gyroCalibration = { 0, 0, 0, 0, 0 ,0 };
@@ -185,6 +185,8 @@ bool Config::loadFile() {
         setVoltageFactor( doc[ CFG_PARAM_VOLTAGEFACTOR ].as<float>() );
     if( !doc[ CFG_PARAM_GRAVITY_FORMULA ].isNull() )
         setGravityFormula( doc[ CFG_PARAM_GRAVITY_FORMULA ] );
+    if( !doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ].isNull() )
+        setGravityTempAdj( doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ].as<bool>() );
     if( !doc[ CFG_PARAM_GRAVITY_FORMAT ].isNull() ) {
         String s = doc[ CFG_PARAM_GRAVITY_FORMAT ];
         setGravityFormat( s.charAt(0) );
@@ -247,11 +249,12 @@ void Config::debug() {
     Log.verbose(F("CFG : mDNS; '%s'." CR), getMDNS() );
     Log.verbose(F("CFG : Sleep interval; %d." CR), getSleepInterval() );
     Log.verbose(F("CFG : OTA; '%s'." CR), getOtaURL() );
-    Log.verbose(F("CFG : Temp; %c." CR), getTempFormat() );
+    Log.verbose(F("CFG : Temp Format; %c." CR), getTempFormat() );
     Log.verbose(F("CFG : Temp Adj; %F." CR), getTempSensorAdj() );
     Log.verbose(F("CFG : VoltageFactor; %F." CR), getVoltageFactor() );
     Log.verbose(F("CFG : Gravity formula; '%s'." CR), getGravityFormula() );
     Log.verbose(F("CFG : Gravity format; '%c'." CR), getGravityFormat() );
+    Log.verbose(F("CFG : Gravity temp adj; %s." CR), isGravityTempAdj()?"true":"false" );
     Log.verbose(F("CFG : Push brewfather; '%s'." CR), getBrewfatherPushUrl() );
     Log.verbose(F("CFG : Push http; '%s'." CR), getHttpPushUrl() );
     Log.verbose(F("CFG : Push http2; '%s'." CR), getHttpPushUrl2() );
