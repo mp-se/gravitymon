@@ -38,7 +38,7 @@ char* convertFloatToString( float f, char* buf, int dec = 2);
 float reduceFloatPrecision( float f, int dec = 2 );
 
 // Logging via serial
-void printTimestamp(Print* _logOutput);
+void printTimestamp(Print* _logOutput, int _logLevel);
 void printNewline(Print* _logOutput);
 void printHeap();
 

@@ -87,7 +87,7 @@ SerialDebug::SerialDebug(const long serialSpeed) {
 //
 // Print the timestamp (ms since start of device)
 //
-void printTimestamp(Print* _logOutput) {
+void printTimestamp(Print* _logOutput, int _logLevel) {
   char c[12];
   sprintf(c, "%10lu ", millis());
   _logOutput->print(c);

@@ -89,7 +89,7 @@ bool Wifi::connect( bool showPortal ) {
     } else {
         WiFi.begin();
 #if LOG_LEVEL==6
-        Log.debug(F("WIFI: Using SSID=%s, KEY=%s." CR), WiFi.SSID().c_str(), WiFi.psk().c_str() );
+        Log.verbose(F("WIFI: Using SSID=%s, KEY=%s." CR), WiFi.SSID().c_str(), WiFi.psk().c_str() );
 #endif
     }
 
