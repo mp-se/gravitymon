@@ -106,6 +106,7 @@ bool Wifi::connect( bool showPortal ) {
     Serial.print( CR );
     connectedFlag = true;
     Log.notice(F("WIFI: Connected to wifi ip=%s." CR), getIPAddress().c_str() );
+    Log.notice(F("WIFI: Using mDNS name %s%s." CR), myConfig.getMDNS() );
     return connectedFlag;
 }
 
