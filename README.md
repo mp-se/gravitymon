@@ -4,10 +4,10 @@ This software can be used with iSpindle hardware and utilizes the same hardware 
 
 I started this project out of curiosity for how a motion sensor is working and since I like to brew beer this was the result. 
 
-## TODO
+After 6 months of testing I believe this is working as planned. It give accurate readings same as the orginal iSpindel software. 
 
-* Validate the power consumption of the device using amp meter (integrated and/or separate)
-* Testing, Testing and more testing......
+Version history
+* v0.4 First official version with 5+ brews on record. 
 
 Lower priority
 * Add support for Plato in device (today it assumes that formula is in SG). 
