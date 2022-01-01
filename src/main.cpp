@@ -166,7 +166,7 @@ void setup() {
 void loop() {
     drd->loop();
 
-    if( sleepModeActive || abs(millis() - loopMillis) > interval ) {
+    if( sleepModeActive || abs( (long) (millis() - loopMillis)) > interval ) {
         float angle = 0;
         float volt = myBatteryVoltage.getVoltage();
         //float sensorTemp = 0;

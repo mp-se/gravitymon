@@ -31,7 +31,7 @@ PushTarget myPushTarget;
 // Send the pressure value
 //
 void PushTarget::send(float angle, float gravity, float corrGravity, float temp, float runTime, bool force ) {
-    unsigned long timePassed = abs( millis() - ms );
+    unsigned long timePassed = abs( (long) (millis() - ms) );
     unsigned long interval = myConfig.getSleepInterval()*1000;
 
     if( ( timePassed < interval ) && !force) {
