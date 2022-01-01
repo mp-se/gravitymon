@@ -16,6 +16,8 @@ def after_build(source, target, env):
         target = dir + "\\bin\\firmware-debug.bin"
     if name == "gravity-release" :
         target = dir + "\\bin\\firmware.bin"
+    if name == "gravity-perf" :
+        target = dir + "\\bin\\firmware-perf.bin"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 

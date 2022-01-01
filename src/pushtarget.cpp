@@ -30,8 +30,8 @@ PushTarget myPushTarget;
 //
 // Send the pressure value
 //
-void PushTarget::send(float angle, float gravity, float temp, float runTime, bool force ) {
-    unsigned long timePassed = abs( millis() - ms );
+void PushTarget::send(float angle, float gravity, float corrGravity, float temp, float runTime, bool force ) {
+    unsigned long timePassed = abs( (long) (millis() - ms) );
     unsigned long interval = myConfig.getSleepInterval()*1000;
 
     if( ( timePassed < interval ) && !force) {
@@ -48,25 +48,25 @@ void PushTarget::send(float angle, float gravity, float temp, float runTime, boo
 
     if( myConfig.isBrewfatherActive() ) {
         LOG_PERF_START("push-brewfather");
-        sendBrewfather( angle,  gravity, temp );
+        sendBrewfather( angle,  gravity, corrGravity, temp );
         LOG_PERF_STOP("push-brewfather");
     }
 
     if( myConfig.isHttpActive() ) {
         LOG_PERF_START("push-http");
-        sendHttp( myConfig.getHttpPushUrl(), angle, gravity, temp, runTime );
+        sendHttp( myConfig.getHttpPushUrl(), angle, gravity, corrGravity, temp, runTime );
         LOG_PERF_STOP("push-http");
     }
 
     if( myConfig.isHttpActive2() ) {
         LOG_PERF_START("push-http2");
-        sendHttp( myConfig.getHttpPushUrl2(), angle, gravity, temp, runTime );
+        sendHttp( myConfig.getHttpPushUrl2(), angle, gravity, corrGravity, temp, runTime );
         LOG_PERF_STOP("push-http2");
     }
 
     if( myConfig.isInfluxDb2Active() ) {
         LOG_PERF_START("push-influxdb2");
-        sendInfluxDb2( angle, gravity, temp, runTime );
+        sendInfluxDb2( angle, gravity, corrGravity, temp, runTime );
         LOG_PERF_STOP("push-influxdb2");
     }
 }
@@ -74,7 +74,7 @@ void PushTarget::send(float angle, float gravity, float temp, float runTime, boo
 //
 // Send to influx db v2
 //
-void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float runTime) {
+void PushTarget::sendInfluxDb2(float angle, float gravity, float corrGravity, float temp, float runTime) {
     Log.notice(F("PUSH: Sending values to influxdb2 angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
 
     WiFiClient client;
@@ -88,10 +88,11 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float run
     // Create body for influxdb2
     char buf[1024];
     sprintf( &buf[0], "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
-                      "gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,rssi=%d,temp2=%.2f\n",
+                      "gravity=%.4f,corr-gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,rssi=%d,temp2=%.2f\n",
                     // TODO: Add support for plato format
                     myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), "SG", 
-                    gravity, angle, temp, myBatteryVoltage.getVoltage(), WiFi.RSSI(), myGyro.getSensorTempC() );                // For comparing gyro tempsensor vs DSB1820
+                    myConfig.isGravityTempAdj() ? corrGravity : gravity, 
+                    corrGravity, angle, temp, myBatteryVoltage.getVoltage(), WiFi.RSSI(), myGyro.getSensorTempC() );                // For comparing gyro tempsensor vs DSB1820
 
 #if LOG_LEVEL==6
     Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -115,7 +116,7 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float temp, float run
 //
 // Send data to brewfather
 //
-void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
+void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity, float temp ) {
     Log.notice(F("PUSH: Sending values to brewfather angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
 
     DynamicJsonDocument doc(300);
@@ -142,7 +143,7 @@ void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
     doc["temp_unit"]     = String( myConfig.getTempFormat() ); 
     doc["battery"]       = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 ); 
     // TODO: Add support for plato format
-    doc["gravity"]       = reduceFloatPrecision( gravity, 4 );
+    doc["gravity"]       = reduceFloatPrecision( myConfig.isGravityTempAdj() ? corrGravity : gravity, 4 );
     doc["gravity_unit"]  = myConfig.isGravitySG()?"G":"P";
 
     WiFiClient client;
@@ -174,7 +175,7 @@ void PushTarget::sendBrewfather(float angle, float gravity, float temp ) {
 //
 // Send data to http target
 //
-void PushTarget::sendHttp( String serverPath, float angle, float gravity, float temp, float runTime ) {
+void PushTarget::sendHttp( String serverPath, float angle, float gravity, float corrGravity, float temp, float runTime ) {
     Log.notice(F("PUSH: Sending values to http angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
 
     DynamicJsonDocument doc(256);
@@ -187,7 +188,8 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
     doc["temperature"]   = reduceFloatPrecision( temp, 1 );
     doc["temp-units"]    = String( myConfig.getTempFormat() ); 
     // TODO: Add support for plato format
-    doc["gravity"]       = reduceFloatPrecision( gravity, 4 );
+    doc["gravity"]       = reduceFloatPrecision( myConfig.isGravityTempAdj() ? corrGravity : gravity, 4 );
+    doc["corr-gravity"]  = reduceFloatPrecision( corrGravity, 4 );
     doc["angle"]         = reduceFloatPrecision( angle, 2);
     doc["battery"]       = reduceFloatPrecision( myBatteryVoltage.getVoltage(), 2 );
     doc["rssi"]          = WiFi.RSSI(); 
