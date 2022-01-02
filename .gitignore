@@ -6,3 +6,4 @@ test/*.md
 test/env/*
 test/*.py
 TODO.md
+data/*.min.htm
