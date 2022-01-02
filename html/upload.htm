@@ -75,6 +75,10 @@
     <div class="col-md-6 themed-grid-col bg-light" id="config">Checking...</div>
   </div>
   <div class="row mb-3">
+    <div class="col-md-2 themed-grid-col bg-light">calibration.min.htm</div>
+    <div class="col-md-6 themed-grid-col bg-light" id="calibration">Checking...</div>
+  </div>
+  <div class="row mb-3">
     <div class="col-md-2 themed-grid-col bg-light">about.min.htm</div>
     <div class="col-md-6 themed-grid-col bg-light" id="about">Checking...</div>
   </div>
@@ -118,10 +122,15 @@ function getUpload() {
       else
         $("#device").text("File is missing.");
 
-        if( cfg["config"] )
+      if( cfg["config"] )
         $("#config").text("Completed.");
       else
         $("#config").text("File is missing.");
+
+        if( cfg["calibration"] )
+        $("#calibration").text("Completed.");
+      else
+        $("#calibration").text("File is missing.");
 
       if( cfg["about"] )
         $("#about").text("Completed.");
@@ -141,6 +150,6 @@ function getUpload() {
 
 <!-- START FOOTER -->
 
-<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021 Magnus Persson</div>
+<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div>
 </body>
 </html>
