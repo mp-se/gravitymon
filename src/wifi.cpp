@@ -32,8 +32,6 @@ SOFTWARE.
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 #include <WiFiManager.h>   
-//#include <ESP_WiFiManager.h>                // TEST
-//#include <ESP_WiFiManager-Impl.h>           // TEST
 #include <LittleFS.h>
 #include <incbin.h>
 
@@ -46,39 +44,31 @@ const char* userPWD = USER_SSID_PWD;
 // Connect to last known access point or create one if connection is not working. 
 //
 bool Wifi::connect( bool showPortal ) {
+
+    WiFi.mode(WIFI_STA);
+    WiFiManager myWifiManager; 
+
+    if( myWifiManager.getWiFiSSID().length()==0 )  {
+        Log.info(F("WIFI: No SSID seams to be stored, forcing portal to start." CR));
+        showPortal = true;
+    }
+
 #if LOG_LEVEL==6
     Log.verbose(F("WIFI: Connecting to WIFI via connection manager (portal=%s)." CR), showPortal?"true":"false");
-
-    WiFiManager myWifiManager; 
     myWifiManager.setDebugOutput(true);    
 #endif
+
     if( strlen(userSSID)==0 && showPortal ) {
         Log.notice(F("WIFI: Starting wifi portal." CR));
-
-        myWifiManager.setBreakAfterConfig( true );
-        myWifiManager.setSaveConfigCallback(std::bind(&Wifi::setSaveConfig, this));
-        myWifiManager.setMinimumSignalQuality(10);  
         myWifiManager.setClass("invert");
-        myWifiManager.setHostname( myConfig.getMDNS() );
-        myWifiManager.setConfigPortalTimeout( 120 );             // Keep it open for 120 seconds
-        
-        WiFiManagerParameter mdnsParam("mDNS", "hostname", myConfig.getMDNS(), 20);
-        myWifiManager.addParameter( &mdnsParam );
-
+        myWifiManager.setConfigPortalTimeout( 120 );                                    // Keep it open for 120 seconds  
         myWifiManager.startConfigPortal( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
-
-        if( shouldSaveConfig ) {
-            myConfig.setMDNS( mdnsParam.getValue() );
-            myConfig.saveFile();
-        }
-    } 
+    }
 
     // Connect to wifi
     int i = 0;
 
     Log.notice(F("WIFI: Connecting to WIFI." CR));
-    //WiFi.persistent(false);
-    WiFi.mode(WIFI_STA);
     if( strlen(userSSID) ) {
         Log.notice(F("WIFI: Connecting to wifi using predefined settings %s." CR), userSSID);
         WiFi.begin( userSSID, userPWD );

@@ -278,7 +278,8 @@ void loop() {
 //#endif    
     }
 
-    myWebServer.loop();
+    if( myWifi.isConnected() )
+        myWebServer.loop();
 }
 
 // EOF
