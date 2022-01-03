@@ -28,7 +28,7 @@ SOFTWARE.
 //#define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
 
 // Includes
-#include <arduino.h>
+#include <Arduino.h>
 #include "MPU6050.h"
 #include "config.h"
 

@@ -2,5 +2,6 @@
     "index": false,
     "device": false,
     "config": false,
+    "calibration": false,
     "about": true
 }

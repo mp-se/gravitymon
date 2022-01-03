@@ -33,7 +33,8 @@ class WebServer {
             HTML_INDEX = 0,
             HTML_DEVICE = 1,
             HTML_CONFIG = 2,
-            HTML_ABOUT = 3
+            HTML_ABOUT = 3,
+            HTML_CALIBRATION = 4
         };
 
         bool        setupWebServer();

@@ -39,7 +39,7 @@ SOFTWARE.
 DoubleResetDetector *drd;
 
 // Define constats for this program
-#if LOG_LEVEL==6 
+#ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000;                  // ms, time to wait between changes to output
 bool sleepModeAlwaysSkip = true;           // Web interface can override normal behaviour
 #else
@@ -126,6 +126,11 @@ void setup() {
 
     if( dt ) 
         Log.notice(F("Main: Detected doubletap on reset." CR));
+
+#ifdef DEACTIVATE_SLEEPMODE
+    // If we are running in debug more we skip this part. makes is hard to debug in case of crash/watchdog reset
+    dt = false;
+#endif
 
     LOG_PERF_START("main-wifi-connect");
     myWifi.connect( dt );                   // This will return false if unable to connect to wifi, will be handled in loop()
@@ -241,7 +246,7 @@ void loop() {
         // Enter sleep mode if the conditions are right 
         // ------------------------------------------------------------------------------------------------
         //
-        if( goToSleep ) {
+        if( goToSleep && !sleepModeAlwaysSkip ) {
             Log.notice(F("MAIN: Entering deep sleep for %d s, run time %l s, battery=%F V." CR), sleepInterval, (millis()-runtimeMillis)/1000, volt );
             LittleFS.end();
             myGyro.enterSleep();
@@ -267,10 +272,10 @@ void loop() {
         //LOG_PERF_STOP("loop-batt-read");
 
         loopMillis = millis();
-#if LOG_LEVEL==6
+//#if LOG_LEVEL==6
         Log.verbose(F("Main: Heap %d kb FreeSketch %d kb." CR), ESP.getFreeHeap()/1024, ESP.getFreeSketchSpace()/1024 );
         Log.verbose(F("Main: HeapFrag %d %%." CR), ESP.getHeapFragmentation() );
-#endif    
+//#endif    
     }
 
     myWebServer.loop();

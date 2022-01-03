@@ -32,11 +32,16 @@ Config myConfig;
 //
 Config::Config() {
     // Assiging default values
-    char buf[20];
+    char buf[30];
     sprintf(&buf[0], "%6x", (unsigned int) ESP.getChipId() );
-    id = &buf[0];
+    id = String( &buf[0] );
     sprintf(&buf[0], "" WIFI_MDNS "%s", getID() );
-    mDNS = &buf[0];
+    mDNS = String( &buf[0] );
+
+#if LOG_LEVEL==6
+    Log.verbose(F("CFG : Created config for %s (%s)." CR), id.c_str(), mDNS.c_str() );
+#endif
+
     setTempFormat('C');
     setGravityFormat('G');
     setSleepInterval(900);             // 15 minutes
@@ -44,6 +49,7 @@ Config::Config() {
     setTempSensorAdj(0.0);
     setGravityTempAdj(false);
     gyroCalibration = { 0, 0, 0, 0, 0 ,0 };
+    formulaData = {{ 0, 0, 0, 0, 0},{ 1, 1, 1, 1, 1}};
     saveNeeded = false;
 }
 
@@ -77,6 +83,19 @@ void Config::createJson(DynamicJsonDocument& doc) {
     cal["gx"] = gyroCalibration.gx;
     cal["gy"] = gyroCalibration.gy;
     cal["gz"] = gyroCalibration.gz;
+
+    JsonObject cal2 = doc.createNestedObject( CFG_PARAM_FORMULA_DATA );
+    cal2[ "a1" ] = reduceFloatPrecision( formulaData.a[0], 2);
+    cal2[ "a2" ] = reduceFloatPrecision( formulaData.a[1], 2);
+    cal2[ "a3" ] = reduceFloatPrecision( formulaData.a[2], 2);
+    cal2[ "a4" ] = reduceFloatPrecision( formulaData.a[3], 2);
+    cal2[ "a5" ] = reduceFloatPrecision( formulaData.a[4], 2);
+    
+    cal2[ "g1" ] = reduceFloatPrecision( formulaData.g[0], 4);
+    cal2[ "g2" ] = reduceFloatPrecision( formulaData.g[1], 4);
+    cal2[ "g3" ] = reduceFloatPrecision( formulaData.g[2], 4);
+    cal2[ "g4" ] = reduceFloatPrecision( formulaData.g[3], 4);
+    cal2[ "g5" ] = reduceFloatPrecision( formulaData.g[4], 4);
 }
 
 //
@@ -144,7 +163,7 @@ bool Config::loadFile() {
 #if LOG_LEVEL==6
     serializeJson(doc, Serial);
     Serial.print( CR );
-#endif    
+#endif
     configFile.close();
 
     if( err ) {
@@ -206,6 +225,28 @@ bool Config::loadFile() {
         gyroCalibration.gy = doc[ CFG_PARAM_GYRO_CALIBRATION ]["gy"];
     if( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["gz"].isNull() ) 
         gyroCalibration.gz = doc[ CFG_PARAM_GYRO_CALIBRATION ]["gz"];
+
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a1" ].isNull() ) 
+        formulaData.a[0] = doc[ CFG_PARAM_FORMULA_DATA ][ "a1" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a2" ].isNull() ) 
+        formulaData.a[1] = doc[ CFG_PARAM_FORMULA_DATA ][ "a2" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a3" ].isNull() ) 
+        formulaData.a[2] = doc[ CFG_PARAM_FORMULA_DATA ][ "a3" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a4" ].isNull() ) 
+        formulaData.a[3] = doc[ CFG_PARAM_FORMULA_DATA ][ "a4" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a5" ].isNull() ) 
+        formulaData.a[4] = doc[ CFG_PARAM_FORMULA_DATA ][ "a5" ].as<double>();
+
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g1" ].isNull() ) 
+        formulaData.g[0] = doc[ CFG_PARAM_FORMULA_DATA ][ "g1" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g2" ].isNull() ) 
+        formulaData.g[1] = doc[ CFG_PARAM_FORMULA_DATA ][ "g2" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g3" ].isNull() ) 
+        formulaData.g[2] = doc[ CFG_PARAM_FORMULA_DATA ][ "g3" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g4" ].isNull() ) 
+        formulaData.g[3] = doc[ CFG_PARAM_FORMULA_DATA ][ "g4" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g5" ].isNull() ) 
+        formulaData.g[4] = doc[ CFG_PARAM_FORMULA_DATA ][ "g5" ];
 
     myConfig.debug();
     saveNeeded = false;     // Reset save flag 

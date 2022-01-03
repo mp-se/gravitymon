@@ -32,22 +32,15 @@ SOFTWARE.
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 #include <WiFiManager.h>   
+//#include <ESP_WiFiManager.h>                // TEST
+//#include <ESP_WiFiManager-Impl.h>           // TEST
 #include <LittleFS.h>
 #include <incbin.h>
 
 Wifi myWifi;
-WiFiManager myWifiManager; 
-bool shouldSaveConfig = false;
 
 const char* userSSID= USER_SSID;
 const char* userPWD = USER_SSID_PWD;
-
-//
-// Callback notifying us of the need to save config
-//
-void saveConfigCallback () {
-  shouldSaveConfig = true;
-}
 
 //
 // Connect to last known access point or create one if connection is not working. 
@@ -55,13 +48,15 @@ void saveConfigCallback () {
 bool Wifi::connect( bool showPortal ) {
 #if LOG_LEVEL==6
     Log.verbose(F("WIFI: Connecting to WIFI via connection manager (portal=%s)." CR), showPortal?"true":"false");
+
+    WiFiManager myWifiManager; 
     myWifiManager.setDebugOutput(true);    
 #endif
     if( strlen(userSSID)==0 && showPortal ) {
         Log.notice(F("WIFI: Starting wifi portal." CR));
 
         myWifiManager.setBreakAfterConfig( true );
-        myWifiManager.setSaveConfigCallback(saveConfigCallback);
+        myWifiManager.setSaveConfigCallback(std::bind(&Wifi::setSaveConfig, this));
         myWifiManager.setMinimumSignalQuality(10);  
         myWifiManager.setClass("invert");
         myWifiManager.setHostname( myConfig.getMDNS() );
@@ -82,6 +77,7 @@ bool Wifi::connect( bool showPortal ) {
     int i = 0;
 
     Log.notice(F("WIFI: Connecting to WIFI." CR));
+    //WiFi.persistent(false);
     WiFi.mode(WIFI_STA);
     if( strlen(userSSID) ) {
         Log.notice(F("WIFI: Connecting to wifi using predefined settings %s." CR), userSSID);
@@ -97,16 +93,16 @@ bool Wifi::connect( bool showPortal ) {
         delay(100);
         Serial.print( "." );
 
-//        if( i++ > 60 ) {            // Try for 6 seconds.
         if( i++ > 200 ) {            // Try for 20 seconds.
-            Log.error(F("WIFI: Failed to connect to wifi, aborting." CR));
+            Log.error(F("WIFI: Failed to connect to wifi %d, aborting." CR), WiFi.status() );
+            WiFi.disconnect();
             return connectedFlag;   // Return to main that we have failed to connect.
         }
     }
     Serial.print( CR );
     connectedFlag = true;
     Log.notice(F("WIFI: Connected to wifi ip=%s." CR), getIPAddress().c_str() );
-    Log.notice(F("WIFI: Using mDNS name %s%s." CR), myConfig.getMDNS() );
+    Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS() );
     return connectedFlag;
 }
 

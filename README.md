@@ -7,6 +7,7 @@ I started this project out of curiosity for how a motion sensor is working and s
 After 6 months of testing I believe this is working as planned. It give accurate readings same as the orginal iSpindel software. 
 
 Version history
+* v0.5 Added support for creating formula on device + bug fixes.
 * v0.4 First official version with 5+ brews on record. 
 
 Lower priority
@@ -127,10 +128,18 @@ http://192.168.1.1/firmware/gravmon/
 
 Contents version.json
 ```
-{ "project":"gravmon", "version":"0.3.0" }
+{ "project":"gravmon", "version":"0.5.0" }
 ```
 
 ![Config - Hardware](img/config4.png)
+
+### Calibration page
+
+http://gravmon.local/calibration.htm
+
+The device page is used to enter gravity + angle/tilt into the device in order to create a formula. Data will be saved on the device and a formula will be checked against the entered numbers for accuracy. Support currently up to 5 values and the more readings the more accurate the formula will be. Its prefeered to use at least 3 values. 
+
+![Device](img/calibration.png)
 
 # Building a device
 

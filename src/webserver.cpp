@@ -39,6 +39,7 @@ SOFTWARE.
 INCBIN_EXTERN(IndexHtm);
 INCBIN_EXTERN(DeviceHtm);
 INCBIN_EXTERN(ConfigHtm);
+INCBIN_EXTERN(CalibrationHtm);
 INCBIN_EXTERN(AboutHtm);
 #else
 INCBIN_EXTERN(UploadHtm);
@@ -46,6 +47,7 @@ INCBIN_EXTERN(UploadHtm);
 
 WebServer myWebServer;                  // My wrapper class fr webserver functions
 ESP8266WebServer server(80);
+int lastFormulaCreateError = 0; 
 
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
@@ -116,10 +118,11 @@ void webHandleUpload() {
     Log.notice(F("WEB : webServer callback for /api/upload." CR));
     DynamicJsonDocument doc(100);
 
-    doc[ "index" ]  = myWebServer.checkHtmlFile( WebServer::HTML_INDEX );
-    doc[ "device" ] = myWebServer.checkHtmlFile( WebServer::HTML_DEVICE );
-    doc[ "config" ] = myWebServer.checkHtmlFile( WebServer::HTML_CONFIG );
-    doc[ "about" ]  = myWebServer.checkHtmlFile( WebServer::HTML_ABOUT );
+    doc[ "index" ]       = myWebServer.checkHtmlFile( WebServer::HTML_INDEX );
+    doc[ "device" ]      = myWebServer.checkHtmlFile( WebServer::HTML_DEVICE );
+    doc[ "config" ]      = myWebServer.checkHtmlFile( WebServer::HTML_CONFIG );
+    doc[ "calibration" ] = myWebServer.checkHtmlFile( WebServer::HTML_CALIBRATION );
+    doc[ "about" ]       = myWebServer.checkHtmlFile( WebServer::HTML_ABOUT );
     
 #if LOG_LEVEL==6
     serializeJson(doc, Serial);
@@ -145,7 +148,7 @@ void webHandleUploadFile() {
     String f = upload.filename;
     bool validFilename = false;
 
-    if( f.equalsIgnoreCase("index.min.htm")  || f.equalsIgnoreCase("device.min.htm") ||
+    if( f.equalsIgnoreCase("index.min.htm")  || f.equalsIgnoreCase("device.min.htm") || f.equalsIgnoreCase("calibration.min.htm") ||
         f.equalsIgnoreCase("config.min.htm") || f.equalsIgnoreCase("about.min.htm")  ) {
             validFilename = true;
     }
@@ -409,6 +412,127 @@ void webHandleConfigHardware() {
 }
 
 //
+// Callback from webServer when / has been accessed.
+//
+void webHandleFormulaRead() {
+    LOG_PERF_START("webserver-api-formula-read");
+#if LOG_LEVEL==6
+    Log.verbose(F("WEB : webServer callback for /api/formula/get." CR));
+#endif
+    DynamicJsonDocument doc(250);
+    const RawFormulaData& fd = myConfig.getFormulaData();
+
+#if LOG_LEVEL==6
+    Log.verbose(F("WEB : %F %F %F %F %F." CR), fd.a[0], fd.a[1], fd.a[2], fd.a[3], fd.a[4] );
+    Log.verbose(F("WEB : %F %F %F %F %F." CR), fd.g[0], fd.g[1], fd.g[2], fd.g[3], fd.g[4] );
+#endif
+
+    doc[ CFG_PARAM_ID ] = myConfig.getID();
+    doc[ CFG_PARAM_ANGLE ] = reduceFloatPrecision( myGyro.getAngle() );
+
+    switch( lastFormulaCreateError ) {
+        case ERR_FORMULA_INTERNAL:
+            doc[ CFG_PARAM_GRAVITY_FORMULA ] = "Internal error creating formula.";
+        break;
+        case ERR_FORMULA_NOTENOUGHVALUES:
+            doc[ CFG_PARAM_GRAVITY_FORMULA ] = "Not enough values to create formula.";
+        break;
+        case ERR_FORMULA_UNABLETOFFIND:
+            doc[ CFG_PARAM_GRAVITY_FORMULA ] = "Unable to find an accurate formula based on input.";
+        break;
+        default:
+            doc[ CFG_PARAM_GRAVITY_FORMULA ] = myConfig.getGravityFormula();
+        break;
+    }
+    
+    doc[ "a1" ] = reduceFloatPrecision( fd.a[0], 2);
+    doc[ "a2" ] = reduceFloatPrecision( fd.a[1], 2);
+    doc[ "a3" ] = reduceFloatPrecision( fd.a[2], 2);
+    doc[ "a4" ] = reduceFloatPrecision( fd.a[3], 2);
+    doc[ "a5" ] = reduceFloatPrecision( fd.a[4], 2);
+
+    doc[ "g1" ] = reduceFloatPrecision( fd.g[0], 4);
+    doc[ "g2" ] = reduceFloatPrecision( fd.g[1], 4);
+    doc[ "g3" ] = reduceFloatPrecision( fd.g[2], 4);
+    doc[ "g4" ] = reduceFloatPrecision( fd.g[3], 4);
+    doc[ "g5" ] = reduceFloatPrecision( fd.g[4], 4);
+
+#if LOG_LEVEL==6
+    serializeJson(doc, Serial);
+    Serial.print( CR );
+#endif    
+    String out;
+    serializeJson(doc, out);
+    server.send(200, "application/json", out.c_str() );
+    LOG_PERF_STOP("webserver-api-formula-read");
+}
+
+//
+// Update hardware settings.
+//
+void webHandleFormulaWrite() {
+    LOG_PERF_START("webserver-api-formula-write");
+    String id = server.arg( CFG_PARAM_ID );
+#if LOG_LEVEL==6
+    Log.verbose(F("WEB : webServer callback for /api/formula/post." CR) );
+#endif
+    if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
+        Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
+        server.send(400, "text/plain", "Invalid ID.");
+        LOG_PERF_STOP("webserver-api-formula-write");
+        return;
+    }
+#if LOG_LEVEL==6
+    Log.verbose(F("WEB : angles=%F,%F,%F,%F,%F." CR), server.arg( "a1" ).toFloat(), server.arg( "a2" ).toFloat(), server.arg( "a3" ).toFloat(), server.arg( "a4" ).toFloat(), server.arg( "a5" ).toFloat() );
+    Log.verbose(F("WEB : gravity=%F,%F,%F,%F,%F." CR), server.arg( "g1" ).toFloat(), server.arg( "g2" ).toFloat(), server.arg( "g3" ).toFloat(), server.arg( "g4" ).toFloat(), server.arg( "g5" ).toFloat() );
+#endif
+    RawFormulaData fd;
+    fd.a[0] = server.arg( "a1" ).toDouble();
+    fd.a[1] = server.arg( "a2" ).toDouble();
+    fd.a[2] = server.arg( "a3" ).toDouble();
+    fd.a[3] = server.arg( "a4" ).toDouble();
+    fd.a[4] = server.arg( "a5" ).toDouble();
+    fd.g[0] = server.arg( "g1" ).toDouble();
+    fd.g[1] = server.arg( "g2" ).toDouble();
+    fd.g[2] = server.arg( "g3" ).toDouble();
+    fd.g[3] = server.arg( "g4" ).toDouble();
+    fd.g[4] = server.arg( "g5" ).toDouble();
+    myConfig.setFormulaData( fd );
+
+    int e;
+    char buf[100];
+
+    e = createFormula( fd, &buf[0], 4 );
+
+    if( e ) {
+        // If we fail with order=4 try with 3
+        Log.warning(F("WEB : Failed to find formula with order 4." CR), e );
+        e = createFormula( fd, &buf[0], 3 );
+    }
+
+    if( e ) {
+        // If we fail with order=3 try with 2
+        Log.warning(F("WEB : Failed to find formula with order 3." CR), e );
+        e = createFormula( fd, &buf[0], 2 );
+    }
+
+    if( e ) {
+        // If we fail with order=2 then we mark it as failed
+        Log.error(F("WEB : Unable to find formula based on provided values err=%d." CR), e );
+        lastFormulaCreateError = e;         
+    } else {
+        // Save the formula as succesful
+        Log.info(F("WEB : Found valid formula: '%s'" CR), &buf[0] );
+        myConfig.setGravityFormula( buf );
+        lastFormulaCreateError = 0;         
+    }
+
+    myConfig.saveFile();
+    server.sendHeader("Location", "/calibration.htm", true);  
+    server.send(302, "text/plain", "Formula updated" );
+    LOG_PERF_STOP("webserver-api-formula-write");
+}
+//
 // Helper function to check if files exist on file system.
 //
 const char* WebServer::getHtmlFileName( HtmlFile item ) {
@@ -422,6 +546,8 @@ const char* WebServer::getHtmlFileName( HtmlFile item ) {
         return "device.min.htm";
         case HTML_CONFIG:
         return "config.min.htm";
+        case HTML_CALIBRATION:
+        return "calibration.min.htm";
         case HTML_ABOUT:
         return "about.min.htm";
     }
@@ -467,6 +593,9 @@ bool WebServer::setupWebServer() {
     server.on("/config.htm",[]() {
         server.send_P(200, "text/html", (const char*) gConfigHtmData, gConfigHtmSize );
     } );
+    server.on("/calibration.htm",[]() {
+        server.send_P(200, "text/html", (const char*) gCalibrationHtmData, gCalibrationHtmSize );
+    } );
     server.on("/about.htm",[]() {
         server.send_P(200, "text/html", (const char*) gAboutHtmData, gAboutHtmSize );
     } );
@@ -490,6 +619,7 @@ bool WebServer::setupWebServer() {
         server.serveStatic("/device.htm", LittleFS, "/device.min.htm" );
         server.serveStatic("/config.htm", LittleFS, "/config.min.htm" );
         server.serveStatic("/about.htm", LittleFS, "/about.min.htm" );
+        server.serveStatic("/calibration.htm", LittleFS, "/calibration.min.htm" );
 
         // Also add the static upload view in case we we have issues that needs to be fixed.
         server.on("/upload.htm",[]() {
@@ -507,6 +637,8 @@ bool WebServer::setupWebServer() {
     // Dynamic content
     server.on("/api/config", HTTP_GET, webHandleConfig);              // Get config.json
     server.on("/api/device", HTTP_GET, webHandleDevice);              // Get device.json
+    server.on("/api/formula", HTTP_GET, webHandleFormulaRead);        // Get formula.json (calibration page)
+    server.on("/api/formula", HTTP_POST, webHandleFormulaWrite);      // Get formula.json (calibration page)
     server.on("/api/calibrate", HTTP_POST, webHandleCalibrate);       // Run calibration routine (param id)
     server.on("/api/factory", HTTP_GET, webHandleFactoryReset);       // Reset the device
     server.on("/api/status", HTTP_GET, webHandleStatus);              // Get the status.json

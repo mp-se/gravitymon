@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#define INCBIN_OUTPUT_SECTION ".irom.text"
 #include <incbin.h>
 
 #if defined( EMBED_HTML )
@@ -29,6 +30,7 @@ SOFTWARE.
 INCBIN(IndexHtm, "data/index.min.htm" );
 INCBIN(DeviceHtm, "data/device.min.htm" );
 INCBIN(ConfigHtm, "data/config.min.htm" );
+INCBIN(CalibrationHtm, "data/calibration.min.htm" );
 INCBIN(AboutHtm, "data/about.min.htm" );
 
 #else

@@ -31,12 +31,14 @@ SOFTWARE.
 class Wifi {
     private:
         // WIFI
-        bool      connectedFlag = false;
+        bool connectedFlag = false;
+        bool shouldSaveConfig = false;
 
         // OTA
         bool newFirmware = false;
         bool parseFirmwareVersionString( int (&num)[3], const char *version );
         void downloadFile(const char *fname);
+        void setSaveConfig() { shouldSaveConfig = true; }
 
     public:
         // WIFI
