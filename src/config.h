@@ -45,6 +45,9 @@ SOFTWARE.
 #define CFG_PARAM_ID                    "id"
 #define CFG_PARAM_MDNS                  "mdns"                          // Device name
 #define CFG_PARAM_OTA                   "ota-url"                       // Base URL for OTA
+#define CFG_PARAM_SSID                  "wifi-ssid"                     // WIFI
+#define CFG_PARAM_PASS                  "wifi-pass"                     // WIFI
+
 #define CFG_PARAM_PUSH_BREWFATHER       "brewfather-push"               // URL (brewfather format)
 #define CFG_PARAM_PUSH_HTTP             "http-push"                     // URL (iSpindle format)
 #define CFG_PARAM_PUSH_HTTP2            "http-push2"                    // URL (iSpindle format)
@@ -66,15 +69,15 @@ SOFTWARE.
 #define CFG_PARAM_FORMULA_DATA          "formula-calculation-data"      // Raw data for the formula calculation
 
 // These are used in API's
-#define CFG_PARAM_APP_NAME           "app-name"
-#define CFG_PARAM_APP_VER            "app-ver"
-#define CFG_PARAM_ANGLE              "angle"
-#define CFG_PARAM_GRAVITY            "gravity"
-#define CFG_PARAM_TEMP_C             "temp-c"
-#define CFG_PARAM_TEMP_F             "temp-f"
-#define CFG_PARAM_BATTERY            "battery"
-#define CFG_PARAM_SLEEP_MODE         "sleep-mode"
-#define CFG_PARAM_RSSI               "rssi"
+#define CFG_PARAM_APP_NAME   "app-name"
+#define CFG_PARAM_APP_VER    "app-ver"
+#define CFG_PARAM_ANGLE      "angle"
+#define CFG_PARAM_GRAVITY    "gravity"
+#define CFG_PARAM_TEMP_C     "temp-c"
+#define CFG_PARAM_TEMP_F     "temp-f"
+#define CFG_PARAM_BATTERY    "battery"
+#define CFG_PARAM_SLEEP_MODE "sleep-mode"
+#define CFG_PARAM_RSSI       "rssi"
 
 // Used for holding sensordata or sensoroffsets
 struct RawGyroData { 
@@ -109,6 +112,10 @@ class Config {
         float  tempSensorAdj;                   // This value will be added to the read sensor value
         int    sleepInterval;                
 
+        // Wifi Config
+        String wifiSSID;
+        String wifiPASS;
+
         // Push target settings
         String brewfatherPushUrl;               // URL For brewfather
 
@@ -142,6 +149,11 @@ class Config {
         const char*  getOtaURL() { return otaURL.c_str(); }
         void         setOtaURL( String s ) { otaURL = s; saveNeeded = true; }
         bool         isOtaActive() { return otaURL.length()?true:false; }
+
+        const char*  getWifiSSID() { return wifiSSID.c_str(); }
+        void         setWifiSSID( String s ) { wifiSSID = s; saveNeeded = true; }
+        const char*  getWifiPass() { return wifiPASS.c_str(); }
+        void         setWifiPass( String s ) { wifiPASS = s; saveNeeded = true; }
 
         // Brewfather
         const char*  getBrewfatherPushUrl() { return brewfatherPushUrl.c_str(); }

@@ -45,49 +45,63 @@ const char* userPWD = USER_SSID_PWD;
 //
 bool Wifi::connect( bool showPortal ) {
 
+    WiFi.persistent( true );
     WiFi.mode(WIFI_STA);
-    WiFiManager myWifiManager; 
 
-    if( myWifiManager.getWiFiSSID().length()==0 )  {
+    if( !strlen( myConfig.getWifiSSID() ) )  {
         Log.info(F("WIFI: No SSID seams to be stored, forcing portal to start." CR));
         showPortal = true;
+    } else {
+        Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), myConfig.getWifiPass() );
     }
 
-#if LOG_LEVEL==6
-    Log.verbose(F("WIFI: Connecting to WIFI via connection manager (portal=%s)." CR), showPortal?"true":"false");
-    myWifiManager.setDebugOutput(true);    
-#endif
-
     if( strlen(userSSID)==0 && showPortal ) {
+#if LOG_LEVEL==6
+        Log.verbose(F("WIFI: Connecting to WIFI via connection manager (portal=%s)." CR), showPortal?"true":"false");
+#endif
+        WiFiManager myWifiManager; 
         Log.notice(F("WIFI: Starting wifi portal." CR));
+        myWifiManager.setDebugOutput(true);    
         myWifiManager.setClass("invert");
         myWifiManager.setConfigPortalTimeout( 120 );                                    // Keep it open for 120 seconds  
-        myWifiManager.startConfigPortal( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
+        bool f = myWifiManager.startConfigPortal( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
+        if( f ) {
+            Log.notice(F("WIFI: Success got values from WIFI portal=%s,%s." CR), myWifiManager.getWiFiSSID(), myWifiManager.getWiFiPass() );
+            myConfig.setWifiSSID( myWifiManager.getWiFiSSID() );
+            myConfig.setWifiPass( myWifiManager.getWiFiPass() );
+            myConfig.saveFile();
+        } else {
+            Log.notice(F("WIFI: Failure from WIFI portal, rebooting." CR) );
+            delay(200);
+            ESP.reset();
+        }
     }
 
     // Connect to wifi
     int i = 0;
 
-    Log.notice(F("WIFI: Connecting to WIFI." CR));
+    Log.notice(F("WIFI: Connecting to WIFI, mode=%d,persistent=%d,fhy=%d ." CR), WiFi.getMode(), WiFi.getPersistent(), WiFi.getPhyMode() );
+    WiFi.mode(WIFI_STA);
     if( strlen(userSSID) ) {
         Log.notice(F("WIFI: Connecting to wifi using predefined settings %s." CR), userSSID);
         WiFi.begin( userSSID, userPWD );
     } else {
-        WiFi.begin();
-#if LOG_LEVEL==6
-        Log.verbose(F("WIFI: Using SSID=%s, KEY=%s." CR), WiFi.SSID().c_str(), WiFi.psk().c_str() );
-#endif
+        Log.notice(F("WIFI: Connecting to wifi using stored settings. %s." CR), myConfig.getWifiSSID());
+        WiFi.begin(myConfig.getWifiSSID(), myConfig.getWifiPass());
     }
+    
+    WiFi.printDiag(Serial);
 
     while( WiFi.status() != WL_CONNECTED ) {
+        yield();
         delay(100);
         Serial.print( "." );
 
-        if( i++ > 200 ) {            // Try for 20 seconds.
-            Log.error(F("WIFI: Failed to connect to wifi %d, aborting." CR), WiFi.status() );
-            WiFi.disconnect();
+        /*if( i++ > 200 ) {            // Try for 20 seconds.
+            Log.error(F("WIFI: Failed to connect to wifi %d, aborting %s." CR), WiFi.status(), getIPAddress().c_str() );
+            //WiFi.disconnect();
             return connectedFlag;   // Return to main that we have failed to connect.
-        }
+        }*/
     }
     Serial.print( CR );
     connectedFlag = true;

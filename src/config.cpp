@@ -60,6 +60,8 @@ void Config::createJson(DynamicJsonDocument& doc) {
     doc[ CFG_PARAM_MDNS ]                   = getMDNS();
     doc[ CFG_PARAM_ID ]                     = getID();
     doc[ CFG_PARAM_OTA ]                    = getOtaURL();
+    doc[ CFG_PARAM_SSID ]                   = getWifiSSID();
+    doc[ CFG_PARAM_PASS ]                   = getWifiPass();
     doc[ CFG_PARAM_TEMPFORMAT ]             = String( getTempFormat() );
     doc[ CFG_PARAM_PUSH_BREWFATHER ]        = getBrewfatherPushUrl();
     doc[ CFG_PARAM_PUSH_HTTP ]              = getHttpPushUrl();
@@ -178,6 +180,10 @@ bool Config::loadFile() {
         setOtaURL( doc[ CFG_PARAM_OTA ] );
     if( !doc[ CFG_PARAM_MDNS ].isNull() )
         setMDNS( doc[ CFG_PARAM_MDNS ] );
+    if( !doc[ CFG_PARAM_SSID ].isNull() )
+        setWifiSSID( doc[ CFG_PARAM_SSID ] );
+    if( !doc[ CFG_PARAM_PASS ].isNull() )
+        setWifiPass( doc[ CFG_PARAM_PASS ] );
     if( !doc[ CFG_PARAM_TEMPFORMAT ].isNull() ) {
         String s = doc[ CFG_PARAM_TEMPFORMAT ];
         setTempFormat( s.charAt(0) );
@@ -287,6 +293,7 @@ void Config::debug() {
 #if LOG_LEVEL==6
     Log.verbose(F("CFG : Dumping configration " CFG_FILENAME "." CR));
     Log.verbose(F("CFG : ID; '%s'." CR), getID());
+    Log.verbose(F("CFG : WIFI; '%s', '%s'." CR), getWifiSSID(), getWifiPass() );
     Log.verbose(F("CFG : mDNS; '%s'." CR), getMDNS() );
     Log.verbose(F("CFG : Sleep interval; %d." CR), getSleepInterval() );
     Log.verbose(F("CFG : OTA; '%s'." CR), getOtaURL() );

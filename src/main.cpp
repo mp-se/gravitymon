@@ -114,20 +114,11 @@ void setup() {
     ESP.wdtDisable();
     ESP.wdtEnable( interval*2 );
 
-    LOG_PERF_START("main-temp-setup");
-    myTempSensor.setup();
-    LOG_PERF_STOP("main-temp-setup");
+    if( dt ) {
+        Log.notice(F("Main: Detected doubletap on reset. Reset reason=%s" CR), ESP.getResetReason().c_str());
+    }
 
-    // Setup Gyro
-    //LOG_PERF_START("main-gyro-setup");    // Takes less than 5ms, so skip this measurment
-    if( !myGyro.setup() )
-        Log.error(F("Main: Failed to initialize the gyro." CR));
-    //LOG_PERF_STOP("main-gyro-setup");
-
-    if( dt ) 
-        Log.notice(F("Main: Detected doubletap on reset." CR));
-
-#ifdef DEACTIVATE_SLEEPMODE
+#ifdef SKIP_SLEEPMODE
     // If we are running in debug more we skip this part. makes is hard to debug in case of crash/watchdog reset
     dt = false;
 #endif
@@ -135,6 +126,15 @@ void setup() {
     LOG_PERF_START("main-wifi-connect");
     myWifi.connect( dt );                   // This will return false if unable to connect to wifi, will be handled in loop()
     LOG_PERF_STOP("main-wifi-connect");
+
+    LOG_PERF_START("main-temp-setup");
+    myTempSensor.setup();
+    LOG_PERF_STOP("main-temp-setup");
+
+    //LOG_PERF_START("main-gyro-setup");    // Takes less than 5ms, so skip this measurment
+    if( !myGyro.setup() )
+        Log.error(F("Main: Failed to initialize the gyro." CR));
+    //LOG_PERF_STOP("main-gyro-setup");
 
     LOG_PERF_START("main-gyro-read");
     myGyro.read();
@@ -278,8 +278,8 @@ void loop() {
 //#endif    
     }
 
-    if( myWifi.isConnected() )
-        myWebServer.loop();
+    //if( myWifi.isConnected() )
+    myWebServer.loop();
 }
 
 // EOF

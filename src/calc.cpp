@@ -30,7 +30,6 @@ SOFTWARE.
 
 #define FORMULA_MAX_DEVIATION 1.5
 
-
 //
 // Use values to derive a formula
 //
@@ -61,6 +60,10 @@ int createFormula( RawFormulaData& fd, char *formulaBuffer, int order ) {
         //Returned value is 0 if no error
         if( ret == 0 ) { 
 
+#if LOG_LEVEL==6
+            Log.verbose(F("CALC: Finshied processing data points." CR));
+#endif
+
             // Print the formula based on 'order'
             if( order == 4 ) {
                 sprintf( formulaBuffer, "%.8f*tilt^4+%.8f*tilt^3+%.8f*tilt^2+%.8f*tilt+%.8f", coeffs[0], coeffs[1], coeffs[2], coeffs[3], coeffs[4] );
@@ -71,6 +74,10 @@ int createFormula( RawFormulaData& fd, char *formulaBuffer, int order ) {
             } else { // order == 1
                 sprintf( formulaBuffer, "%.8f*tilt+%.8f", coeffs[0], coeffs[1] );
             }
+
+#if LOG_LEVEL==6
+            Log.verbose(F("CALC: Formula: %s" CR), formulaBuffer );
+#endif
 
             bool valid = true;
 

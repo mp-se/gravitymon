@@ -226,6 +226,8 @@ bool GyroSensor::read() {
 #if LOG_LEVEL==6
     Log.verbose(F("GYRO: Getting new gyro position." CR) );
 #endif
+    if( !sensorConnected )
+        return false;
 
     readSensor( lastGyroData, SENSOR_READ_COUNT, SENSOR_READ_DELAY );    // Last param is unused if GYRO_USE_INTERRUPT is defined.
 
