@@ -25,6 +25,8 @@ SOFTWARE.
 #include "helper.h"
 #include <LittleFS.h>
 
+#define CFG_DISABLE_LOGGING
+
 Config myConfig;
 
 //
@@ -38,9 +40,9 @@ Config::Config() {
     sprintf(&buf[0], "" WIFI_MDNS "%s", getID() );
     mDNS = String( &buf[0] );
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Created config for %s (%s)." CR), id.c_str(), mDNS.c_str() );
-#endif
+    #endif
 
     setTempFormat('C');
     setGravityFormat('G');
@@ -105,15 +107,15 @@ void Config::createJson(DynamicJsonDocument& doc) {
 //
 bool Config::saveFile() {
     if( !saveNeeded ) {
-#if LOG_LEVEL==6
+        #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
         Log.verbose(F("CFG : Skipping save, not needed." CR));
-#endif
+        #endif
         return true;
     }
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Saving configuration to file." CR));
-#endif    
+    #endif    
 
     File configFile = LittleFS.open(CFG_FILENAME, "w");
 
@@ -124,10 +126,12 @@ bool Config::saveFile() {
 
     DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
     createJson( doc );
-#if LOG_LEVEL==6
+    
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     serializeJson(doc, Serial);
     Serial.print( CR );
-#endif    
+    #endif    
+
     serializeJson(doc, configFile);
     configFile.flush();
     configFile.close();
@@ -142,9 +146,9 @@ bool Config::saveFile() {
 // Load config file from disk
 //
 bool Config::loadFile() {
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Loading configuration from file." CR));
-#endif 
+    #endif 
 
     if (!LittleFS.exists(CFG_FILENAME)) {
         Log.error(F("CFG : Configuration file does not exist " CFG_FILENAME "." CR));
@@ -264,9 +268,7 @@ bool Config::loadFile() {
 // Check if file system can be mounted, if not we format it.
 //
 void Config::formatFileSystem() {
-#if LOG_LEVEL==6
-    Log.verbose(F("CFG : Formating filesystem." CR));
-#endif    
+    Log.notice(F("CFG : Formating filesystem." CR));
     LittleFS.format();
 }
 
@@ -274,9 +276,9 @@ void Config::formatFileSystem() {
 // Check if file system can be mounted, if not we format it.
 //
 void Config::checkFileSystem() {
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Checking if filesystem is valid." CR));
-#endif    
+    #endif    
 
     if (LittleFS.begin()) {
         Log.notice(F("CFG : Filesystem mounted." CR));
@@ -290,7 +292,7 @@ void Config::checkFileSystem() {
 // Dump the configuration to the serial port
 //
 void Config::debug() {
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Dumping configration " CFG_FILENAME "." CR));
     Log.verbose(F("CFG : ID; '%s'." CR), getID());
     Log.verbose(F("CFG : WIFI; '%s', '%s'." CR), getWifiSSID(), getWifiPass() );
@@ -310,7 +312,7 @@ void Config::debug() {
                         getInfluxDb2PushBucket(), getInfluxDb2PushToken() );
 //  Log.verbose(F("CFG : Accel offset\t%d\t%d\t%d" CR), gyroCalibration.ax, gyroCalibration.ay, gyroCalibration.az );
 //  Log.verbose(F("CFG : Gyro offset \t%d\t%d\t%d" CR), gyroCalibration.gx, gyroCalibration.gy, gyroCalibration.gz );
-#endif    
+    #endif    
 }
 
 // EOF 

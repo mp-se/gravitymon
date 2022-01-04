@@ -30,6 +30,8 @@ SOFTWARE.
 #include <ArduinoJson.h>
 #include <LittleFS.h>
 
+#define WEB_DISABLE_LOGGING
+
 WebServer myWebServer;                  // My wrapper class fr webserver functions
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
@@ -39,9 +41,10 @@ extern bool sleepModeAlwaysSkip;
 //
 void WebServer::webHandleDevice() {
     LOG_PERF_START("webserver-api-device");
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : webServer callback for /api/config." CR));
-#endif
+    #endif
+
     DynamicJsonDocument doc(100);
     doc[ CFG_PARAM_ID ]       = myConfig.getID();
     doc[ CFG_PARAM_APP_NAME ] = CFG_APPNAME;
@@ -62,9 +65,8 @@ void WebServer::webHandleDevice() {
 //
 void WebServer::webHandleConfig() {
     LOG_PERF_START("webserver-api-config");
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/config." CR));
-#endif
+    Log.notice(F("WEB : webServer callback for /api/config." CR));
+
     DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
     myConfig.createJson( doc );
 
@@ -79,10 +81,11 @@ void WebServer::webHandleConfig() {
         doc[ CFG_PARAM_GRAVITY ] = reduceFloatPrecision( gravity, 4);    
     doc[ CFG_PARAM_BATTERY ]    = reduceFloatPrecision( myBatteryVoltage.getVoltage()); 
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     serializeJson(doc, Serial);
     Serial.print( CR );
-#endif    
+    #endif    
+
     String out;
     serializeJson(doc, out);
     server->send(200, "application/json", out.c_str() );
@@ -94,9 +97,6 @@ void WebServer::webHandleConfig() {
 //
 void WebServer::webHandleUpload() {
     LOG_PERF_START("webserver-api-upload");
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/upload." CR));
-#endif
     Log.notice(F("WEB : webServer callback for /api/upload." CR));
     DynamicJsonDocument doc(100);
 
@@ -106,10 +106,11 @@ void WebServer::webHandleUpload() {
     doc[ "calibration" ] = myWebServer.checkHtmlFile( WebServer::HTML_CALIBRATION );
     doc[ "about" ]       = myWebServer.checkHtmlFile( WebServer::HTML_ABOUT );
     
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     serializeJson(doc, Serial);
     Serial.print( CR );
-#endif    
+    #endif    
+
     String out;
     serializeJson(doc, out);
     server->send(200, "application/json", out.c_str() );
@@ -121,9 +122,7 @@ void WebServer::webHandleUpload() {
 //
 void WebServer::webHandleUploadFile() {
     LOG_PERF_START("webserver-api-upload-file");
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/upload/file." CR));
-#endif
+    Log.notice(F("WEB : webServer callback for /api/upload/file." CR));
     HTTPUpload& upload = server->upload();
     String f = upload.filename;
     bool validFilename = false;
@@ -133,7 +132,9 @@ void WebServer::webHandleUploadFile() {
             validFilename = true;
     }
 
-    Log.notice(F("WEB : webServer callback for /api/upload, receiving file %s, valid=%s." CR), f.c_str(), validFilename?"yes":"no");
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
+    Log.debug(F("WEB : webServer callback for /api/upload, receiving file %s, valid=%s." CR), f.c_str(), validFilename?"yes":"no");
+    #endif
 
     if(upload.status == UPLOAD_FILE_START) {
         Log.notice(F("WEB : Start upload." CR) );
@@ -163,9 +164,8 @@ void WebServer::webHandleUploadFile() {
 void WebServer::webHandleCalibrate() {
     LOG_PERF_START("webserver-api-calibrate");
     String id = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/calibrate." CR));
-#endif
+    Log.notice(F("WEB : webServer callback for /api/calibrate." CR));
+
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server->send(400, "text/plain", "Invalid ID.");
@@ -182,9 +182,8 @@ void WebServer::webHandleCalibrate() {
 //
 void WebServer::webHandleFactoryReset() {
     String id = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/factory." CR));
-#endif
+    Log.notice(F("WEB : webServer callback for /api/factory." CR));
+
     if( !id.compareTo( myConfig.getID() ) ) {
         server->send(200, "text/plain", "Doing reset...");
         LittleFS.remove(CFG_FILENAME);
@@ -201,9 +200,8 @@ void WebServer::webHandleFactoryReset() {
 //
 void WebServer::webHandleStatus() {
     LOG_PERF_START("webserver-api-status");
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/status." CR));
-#endif
+    Log.notice(F("WEB : webServer callback for /api/status." CR));
+
     DynamicJsonDocument doc(256);
 
     double angle = myGyro.getAngle();
@@ -222,10 +220,12 @@ void WebServer::webHandleStatus() {
     doc[ CFG_PARAM_TEMPFORMAT ]     = String( myConfig.getTempFormat() ); 
     doc[ CFG_PARAM_SLEEP_MODE ]     = sleepModeAlwaysSkip; 
     doc[ CFG_PARAM_RSSI ]           = WiFi.RSSI(); 
-#if LOG_LEVEL==6
+
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     serializeJson(doc, Serial);
     Serial.print( CR );
-#endif    
+    #endif    
+
     String out;
     serializeJson(doc, out);
     server->send(200, "application/json", out.c_str() );
@@ -237,9 +237,8 @@ void WebServer::webHandleStatus() {
 //
 void WebServer::webHandleClearWIFI() {
     String id    = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/clearwifi." CR));
-#endif
+    Log.notice(F("WEB : webServer callback for /api/clearwifi." CR));
+
     if( !id.compareTo( myConfig.getID() ) ) {
         server->send(200, "text/plain", "Clearing WIFI credentials and doing reset...");
         delay(1000);
@@ -256,18 +255,19 @@ void WebServer::webHandleClearWIFI() {
 void WebServer::webHandleStatusSleepmode() {
     LOG_PERF_START("webserver-api-sleepmode");
     String id = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/status/sleepmode." CR) );
-#endif
+    Log.notice(F("WEB : webServer callback for /api/status/sleepmode." CR) );
+
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server->send(400, "text/plain", "Invalid ID.");
         LOG_PERF_STOP("webserver-api-sleepmode");
         return;
     }
-#if LOG_LEVEL==6
+
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : sleep-mode=%s." CR), server->arg( CFG_PARAM_SLEEP_MODE ).c_str() );
-#endif
+    #endif
+
     if( server->arg( CFG_PARAM_SLEEP_MODE ).equalsIgnoreCase( "true" ) )
         sleepModeAlwaysSkip = true;
     else
@@ -282,18 +282,19 @@ void WebServer::webHandleStatusSleepmode() {
 void WebServer::webHandleConfigDevice() {
     LOG_PERF_START("webserver-api-config-device");
     String id = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/config/device." CR) );
-#endif
+    Log.notice(F("WEB : webServer callback for /api/config/device." CR) );
+
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server->send(400, "text/plain", "Invalid ID.");
         LOG_PERF_STOP("webserver-api-config-device");
         return;
     }
-#if LOG_LEVEL==6
+
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : mdns=%s, temp-format=%s." CR), server->arg( CFG_PARAM_MDNS ).c_str(), server->arg( CFG_PARAM_TEMPFORMAT ).c_str() );
-#endif
+    #endif
+
     myConfig.setMDNS( server->arg( CFG_PARAM_MDNS ).c_str() );
     myConfig.setTempFormat( server->arg( CFG_PARAM_TEMPFORMAT ).charAt(0) );
     myConfig.setSleepInterval( server->arg( CFG_PARAM_SLEEP_INTERVAL ).c_str() );
@@ -309,22 +310,22 @@ void WebServer::webHandleConfigDevice() {
 void WebServer::webHandleConfigPush() {
     LOG_PERF_START("webserver-api-config-push");
     String id = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/config/push." CR) );
-#endif
+    Log.notice(F("WEB : webServer callback for /api/config/push." CR) );
+
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server->send(400, "text/plain", "Invalid ID.");
         LOG_PERF_STOP("webserver-api-config-push");
         return;
     }
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : http=%s,%s, bf=%s influx2=%s, %s, %s, %s." CR), server->arg( CFG_PARAM_PUSH_HTTP ).c_str(),
                     server->arg( CFG_PARAM_PUSH_HTTP2 ).c_str(), server->arg( CFG_PARAM_PUSH_BREWFATHER ).c_str(),
                     server->arg( CFG_PARAM_PUSH_INFLUXDB2 ).c_str(), server->arg( CFG_PARAM_PUSH_INFLUXDB2_ORG ).c_str(),
                     server->arg( CFG_PARAM_PUSH_INFLUXDB2_BUCKET ).c_str(), server->arg( CFG_PARAM_PUSH_INFLUXDB2_AUTH ).c_str()
           );
-#endif
+    #endif
+    
     myConfig.setHttpPushUrl( server->arg( CFG_PARAM_PUSH_HTTP ).c_str() );
     myConfig.setHttpPushUrl2( server->arg( CFG_PARAM_PUSH_HTTP2 ).c_str() );
     myConfig.setBrewfatherPushUrl( server->arg( CFG_PARAM_PUSH_BREWFATHER ).c_str() );
@@ -344,18 +345,19 @@ void WebServer::webHandleConfigPush() {
 void WebServer::webHandleConfigGravity() {
     LOG_PERF_START("webserver-api-config-gravity");
     String id = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/config/gravity." CR) );
-#endif
+    Log.notice(F("WEB : webServer callback for /api/config/gravity." CR) );
+
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server->send(400, "text/plain", "Invalid ID.");
         LOG_PERF_STOP("webserver-api-config-gravity");
         return;
     }
-#if LOG_LEVEL==6
+    
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : formula=%s, temp-corr=%s." CR), server->arg( CFG_PARAM_GRAVITY_FORMULA ).c_str(), server->arg( CFG_PARAM_GRAVITY_TEMP_ADJ ).c_str() );
-#endif
+    #endif
+
     myConfig.setGravityFormula( server->arg( CFG_PARAM_GRAVITY_FORMULA ).c_str() );
     myConfig.setGravityTempAdj( server->arg( CFG_PARAM_GRAVITY_TEMP_ADJ ).equalsIgnoreCase( "on" ) ? true:false); 
     myConfig.saveFile();
@@ -370,18 +372,19 @@ void WebServer::webHandleConfigGravity() {
 void WebServer::webHandleConfigHardware() {
     LOG_PERF_START("webserver-api-config-hardware");
     String id = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/config/hardware." CR) );
-#endif
+    Log.notice(F("WEB : webServer callback for /api/config/hardware." CR) );
+
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server->send(400, "text/plain", "Invalid ID.");
         LOG_PERF_STOP("webserver-api-config-hardware");
         return;
     }
-#if LOG_LEVEL==6
+
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : vf=%s, tempadj=%s, ota=%s." CR), server->arg( CFG_PARAM_VOLTAGEFACTOR ).c_str(), server->arg( CFG_PARAM_TEMP_ADJ ).c_str(), server->arg( CFG_PARAM_OTA ).c_str() );
-#endif
+    #endif
+
     myConfig.setVoltageFactor( server->arg( CFG_PARAM_VOLTAGEFACTOR ).toFloat() );
     myConfig.setTempSensorAdj( server->arg( CFG_PARAM_TEMP_ADJ ).toFloat() ); 
     myConfig.setOtaURL( server->arg( CFG_PARAM_OTA ).c_str() ); 
@@ -396,16 +399,15 @@ void WebServer::webHandleConfigHardware() {
 //
 void WebServer::webHandleFormulaRead() {
     LOG_PERF_START("webserver-api-formula-read");
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/formula/get." CR));
-#endif
+    Log.notice(F("WEB : webServer callback for /api/formula/get." CR));
+
     DynamicJsonDocument doc(250);
     const RawFormulaData& fd = myConfig.getFormulaData();
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : %F %F %F %F %F." CR), fd.a[0], fd.a[1], fd.a[2], fd.a[3], fd.a[4] );
     Log.verbose(F("WEB : %F %F %F %F %F." CR), fd.g[0], fd.g[1], fd.g[2], fd.g[3], fd.g[4] );
-#endif
+    #endif
 
     doc[ CFG_PARAM_ID ] = myConfig.getID();
     doc[ CFG_PARAM_ANGLE ] = reduceFloatPrecision( myGyro.getAngle() );
@@ -437,10 +439,11 @@ void WebServer::webHandleFormulaRead() {
     doc[ "g4" ] = reduceFloatPrecision( fd.g[3], 4);
     doc[ "g5" ] = reduceFloatPrecision( fd.g[4], 4);
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     serializeJson(doc, Serial);
     Serial.print( CR );
-#endif    
+    #endif    
+
     String out;
     serializeJson(doc, out);
     server->send(200, "application/json", out.c_str() );
@@ -453,19 +456,20 @@ void WebServer::webHandleFormulaRead() {
 void WebServer::webHandleFormulaWrite() {
     LOG_PERF_START("webserver-api-formula-write");
     String id = server->arg( CFG_PARAM_ID );
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : webServer callback for /api/formula/post." CR) );
-#endif
+    Log.notice(F("WEB : webServer callback for /api/formula/post." CR) );
+
     if( !id.equalsIgnoreCase( myConfig.getID() ) ) {
         Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(), myConfig.getID());
         server->send(400, "text/plain", "Invalid ID.");
         LOG_PERF_STOP("webserver-api-formula-write");
         return;
     }
-#if LOG_LEVEL==6
+
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : angles=%F,%F,%F,%F,%F." CR), server->arg( "a1" ).toFloat(), server->arg( "a2" ).toFloat(), server->arg( "a3" ).toFloat(), server->arg( "a4" ).toFloat(), server->arg( "a5" ).toFloat() );
     Log.verbose(F("WEB : gravity=%F,%F,%F,%F,%F." CR), server->arg( "g1" ).toFloat(), server->arg( "g2" ).toFloat(), server->arg( "g3" ).toFloat(), server->arg( "g4" ).toFloat(), server->arg( "g5" ).toFloat() );
-#endif
+    #endif
+
     RawFormulaData fd;
     fd.a[0] = server->arg( "a1" ).toDouble();
     fd.a[1] = server->arg( "a2" ).toDouble();
@@ -516,9 +520,8 @@ void WebServer::webHandleFormulaWrite() {
 // Helper function to check if files exist on file system.
 //
 const char* WebServer::getHtmlFileName( HtmlFile item ) {
-#if LOG_LEVEL==6
-    Log.verbose(F("WEB : Looking up filename for %d." CR), item);
-#endif
+    Log.notice(F("WEB : Looking up filename for %d." CR), item);
+
     switch( item ) {
         case HTML_INDEX:
         return "index.min.htm";
@@ -541,9 +544,9 @@ const char* WebServer::getHtmlFileName( HtmlFile item ) {
 bool WebServer::checkHtmlFile( HtmlFile item ) {
     const char *fn = getHtmlFileName( item );
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( WEB_DISABLE_LOGGING )
     Log.verbose(F("WEB : Checking for file %s." CR), fn );
-#endif
+    #endif
 
     // TODO: We might need to add more checks here like zero file size etc. But for now we only check if the file exist.
 

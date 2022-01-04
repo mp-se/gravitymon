@@ -31,6 +31,8 @@ SOFTWARE.
 #include "pushtarget.h"
 #include <LittleFS.h>
 
+#define MAIN_DISABLE_LOGGING
+
 // Settings for double reset detector.
 #define ESP8266_DRD_USE_RTC       true
 #define DRD_TIMEOUT               2
@@ -83,9 +85,9 @@ void checkSleepMode( float angle, float volt ) {
 
     // sleep mode active when flat
     //sleepModeActive = ( angle<85 && angle>5 ) ? true : false; 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
     Log.verbose(F("MAIN: Deep sleep mode %s (angle=%F volt=%F)." CR), sleepModeActive ? "true":"false", angle, volt );
-#endif
+    #endif
 }
 
 //
@@ -98,9 +100,9 @@ void setup() {
 
     drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
     bool dt = drd->detectDoubleReset();  
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
     Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str() );
-#endif
+    #endif
     // Main startup
     Log.notice(F("Main: Started setup for %s." CR), String( ESP.getChipId(), HEX).c_str() );
     printBuildOptions();
@@ -176,9 +178,11 @@ void loop() {
         float volt = myBatteryVoltage.getVoltage();
         //float sensorTemp = 0;
         loopCounter++;
-#if LOG_LEVEL==6
+        
+        #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
         Log.verbose(F("Main: Entering main loop." CR) );
-#endif   
+        #endif   
+
         // Process the sensor values and push data to targets.
         // ------------------------------------------------------------------------------------------------
         // If we dont get any readings we just skip this and try again the next interval.
@@ -201,9 +205,10 @@ void loop() {
             float corrGravity = gravityTemperatureCorrection( gravity, temp, myConfig.getTempFormat() ); 
             //LOG_PERF_STOP("loop-gravity-corr");
 
-#if LOG_LEVEL==6
+            #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
             Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%F, gravity=%F, corr=%F." CR), angle, temp, gravity, corrGravity );
-#endif   
+            #endif   
+
             // Limit the printout when sleep mode is not active.
             if( loopCounter%10 == 0 || sleepModeActive ) {
                 Log.notice(F("Main: angle=%F, temp=%F, gravity=%F, corrGravity=%F, batt=%F." CR), angle, temp, gravity, corrGravity ,volt );
@@ -220,9 +225,10 @@ void loop() {
             Log.error(F("Main: No gyro value." CR) );
         }
 
-#if LOG_LEVEL==6
+        #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
         Log.verbose(F("Main: Sleep mode not active." CR) );
-#endif   
+        #endif   
+
         int sleepInterval = myConfig.getSleepInterval();
 
         // If we didnt get a wifi connection, we enter sleep for a short time to conserve battery.
@@ -272,13 +278,11 @@ void loop() {
         //LOG_PERF_STOP("loop-batt-read");
 
         loopMillis = millis();
-//#if LOG_LEVEL==6
-        Log.verbose(F("Main: Heap %d kb FreeSketch %d kb." CR), ESP.getFreeHeap()/1024, ESP.getFreeSketchSpace()/1024 );
-        Log.verbose(F("Main: HeapFrag %d %%." CR), ESP.getHeapFragmentation() );
-//#endif    
+        //#if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
+        Log.verbose(F("Main: Heap %d kb FreeSketch %d kb HeapFrag %d %%." CR), ESP.getFreeHeap()/1024, ESP.getFreeSketchSpace()/1024, ESP.getHeapFragmentation() );
+        //#endif    
     }
 
-    //if( myWifi.isConnected() )
     myWebServer.loop();
 }
 

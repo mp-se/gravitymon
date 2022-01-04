@@ -52,7 +52,8 @@ bool Wifi::connect( bool showPortal ) {
         Log.info(F("WIFI: No SSID seams to be stored, forcing portal to start." CR));
         showPortal = true;
     } else {
-        Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), myConfig.getWifiPass() );
+        //Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), myConfig.getWifiPass() );
+        Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), "*****" );
     }
 
     if( strlen(userSSID)==0 && showPortal ) {
@@ -66,7 +67,8 @@ bool Wifi::connect( bool showPortal ) {
         myWifiManager.setConfigPortalTimeout( 120 );                                    // Keep it open for 120 seconds  
         bool f = myWifiManager.startConfigPortal( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
         if( f ) {
-            Log.notice(F("WIFI: Success got values from WIFI portal=%s,%s." CR), myWifiManager.getWiFiSSID(), myWifiManager.getWiFiPass() );
+            //Log.notice(F("WIFI: Success got values from WIFI portal=%s,%s." CR), myWifiManager.getWiFiSSID(), myWifiManager.getWiFiPass() );
+            Log.notice(F("WIFI: Success got values from WIFI portal=%s,%s." CR), myWifiManager.getWiFiSSID(), "*****" );
             myConfig.setWifiSSID( myWifiManager.getWiFiSSID() );
             myConfig.setWifiPass( myWifiManager.getWiFiPass() );
             myConfig.saveFile();
@@ -90,18 +92,17 @@ bool Wifi::connect( bool showPortal ) {
         WiFi.begin(myConfig.getWifiSSID(), myConfig.getWifiPass());
     }
     
-    WiFi.printDiag(Serial);
+    //WiFi.printDiag(Serial);
 
     while( WiFi.status() != WL_CONNECTED ) {
-        yield();
-        delay(100);
+        delay(200);
         Serial.print( "." );
 
-        /*if( i++ > 200 ) {            // Try for 20 seconds.
+        if( i++ > 100 ) {            // Try for 20 seconds.
             Log.error(F("WIFI: Failed to connect to wifi %d, aborting %s." CR), WiFi.status(), getIPAddress().c_str() );
-            //WiFi.disconnect();
+            WiFi.disconnect();
             return connectedFlag;   // Return to main that we have failed to connect.
-        }*/
+        }
     }
     Serial.print( CR );
     connectedFlag = true;
