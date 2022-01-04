@@ -61,12 +61,16 @@ int createFormula( RawFormulaData& fd, char *formulaBuffer, int order ) {
         //Returned value is 0 if no error
         if( ret == 0 ) { 
 
-            if( noAngles==5 )
+            // Print the formula based on 'order'
+            if( order == 4 ) {
+                sprintf( formulaBuffer, "%.8f*tilt^4+%.8f*tilt^3+%.8f*tilt^2+%.8f*tilt+%.8f", coeffs[0], coeffs[1], coeffs[2], coeffs[3], coeffs[4] );
+            } else if( order == 3 ) {
                 sprintf( formulaBuffer, "%.8f*tilt^3+%.8f*tilt^2+%.8f*tilt+%.8f", coeffs[0], coeffs[1], coeffs[2], coeffs[3] );
-            else if( noAngles==4 )
+            } else if( order == 2 ) {
                 sprintf( formulaBuffer, "%.8f*tilt^2+%.8f*tilt+%.8f", coeffs[0], coeffs[1], coeffs[2] );
-            else // ==3
+            } else { // order == 1
                 sprintf( formulaBuffer, "%.8f*tilt+%.8f", coeffs[0], coeffs[1] );
+            }
 
             bool valid = true;
 

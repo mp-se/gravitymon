@@ -8,6 +8,7 @@
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head> 
 <body class="py-4">
 
@@ -88,14 +89,15 @@
             <input type="text" name="id" id="id" hidden>
 
             <div class="row mb-3">
-                Here you can create your gravity formula by entering angles and the corresponding gravity (SG). These values
+                Here you can create your gravity formula by entering angles/tilt and the corresponding gravity (SG). These values
                 will be saved for future use. Angles with 0 (zero) will be skipped. The values below will be used to check the 
-                formula and if the deviation is more than 1.5 SG then the forumla will be rejected.
+                formula and if the deviation is more than 1.5 SG then the forumla will be rejected. On the bottom of the page you can 
+                see a graph over the entered values + values calcualated by the formula.
             </div>
 
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">#:</label>
-              <label class="col-sm-4 col-form-label">Angle:</label>
+              <label class="col-sm-4 col-form-label">Angle/Tilt:</label>
               <label class="col-sm-4 col-form-label">Gravity (SG):</label>
             </div>
 
@@ -163,14 +165,72 @@
                 <label for="calculate-btn" class="col-sm-2 col-form-label">Formula: </label>
               <label for="calculate-btn" class="col-sm-8 col-form-label" id="formula">Loading...</label>
             </div>
-
           </form>
         </div>
       </div>
     </div>
   </div>
   <hr class="my-4">
+  <div>
+    <canvas id="gravityChart"></canvas>
+  </div>
+  <hr class="my-4">
 </div>
+
+<script type="text/javascript">
+  var chartDataForm = [];
+  var chartDataCalc = [];
+
+  const dataSetChart = {
+    datasets: [{
+      label: 'Raw data',
+      borderColor: 'blue',
+      backgroundColor: 'blue',
+      data: chartDataForm
+    }, {
+      label: 'Calculated',
+      borderColor: 'green',
+      backgroundColor: 'green',
+      data: chartDataCalc
+    }]
+  }
+
+  const configChart = {
+    type: 'line',
+    data: dataSetChart,
+    options: {
+      responsive: true,
+      interaction: {
+        intersect: false,
+      },
+      scales: {
+        x: {
+          display: true,
+          type: 'linear',
+          grace: '5%',
+          title: {
+            display: true,
+            text: 'Angle/Tilt'
+          },
+          ticks: {
+            crossAlign: 'far'
+          },
+          suggestedMin: 25
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: 'Gravity'
+          },
+          suggestedMin: 1.000
+        }
+      }
+    }
+  };
+
+  var myChart = 0;
+</script>
 
 <script type="text/javascript">
   g1.onchange = setFourNumberDecimal
@@ -190,11 +250,52 @@
 
   function setTwoNumberDecimal(event) {
     this.value = parseFloat(this.value).toFixed(2);
+    populateChart();
   } 
 
   function setFourNumberDecimal(event) {
     this.value = parseFloat(this.value).toFixed(4);
+    populateChart();
   } 
+
+  function populateChartForm(a, g) {
+    if( a != 0)
+      chartDataForm.push( { x: parseFloat(a), y: parseFloat(g) });
+  }
+
+  function populateChartCalc(a, g) {
+    chartDataCalc.push( { x: parseFloat(a), y: parseFloat(g) });
+  }
+
+  function populateChart() {
+
+    chartDataCalc.length = 0
+
+    for( i = 25.0; i<80.0; i+=5.0) {
+      var formula = $("#formula").text();
+      var angle = i.toString();
+      formula=formula.replaceAll( "tilt^3", angle+"*"+angle+"*"+angle );
+      formula=formula.replaceAll( "tilt^2", angle+"*"+angle );
+      formula=formula.replaceAll( "tilt", angle );
+      var g = eval( formula );
+      populateChartCalc( i, g );
+    }
+
+    chartDataForm.length = 0
+    populateChartForm( $("#a1").val(), $("#g1").val() );
+    populateChartForm( $("#a2").val(), $("#g2").val() );
+    populateChartForm( $("#a3").val(), $("#g3").val() );
+    populateChartForm( $("#a4").val(), $("#g4").val() );
+    populateChartForm( $("#a5").val(), $("#g5").val() );
+
+    if( myChart )
+      myChart.destroy();
+
+    myChart = new Chart(
+      document.getElementById('gravityChart'),
+      configChart
+    );
+  }
 
   function setButtonDisabled( b ) {
     $("#calculate-btn").prop("disabled", b);
@@ -225,6 +326,8 @@
       $("#g3").val( parseFloat(cfg["g3"]).toFixed(4) );
       $("#g4").val( parseFloat(cfg["g4"]).toFixed(4) );
       $("#g5").val( parseFloat(cfg["g5"]).toFixed(4) );
+
+      populateChart();
     })
     .fail(function () {
       showError('Unable to get data from the device.');
