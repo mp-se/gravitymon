@@ -53,7 +53,7 @@ bool Wifi::connect( bool showPortal ) {
         showPortal = true;
     } else {
         //Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), myConfig.getWifiPass() );
-        Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), "*****" );
+        //Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), "*****" );
     }
 
     if( strlen(userSSID)==0 && showPortal ) {
@@ -82,13 +82,13 @@ bool Wifi::connect( bool showPortal ) {
     // Connect to wifi
     int i = 0;
 
-    Log.notice(F("WIFI: Connecting to WIFI, mode=%d,persistent=%d,fhy=%d ." CR), WiFi.getMode(), WiFi.getPersistent(), WiFi.getPhyMode() );
+    //Log.notice(F("WIFI: Connecting to WIFI, mode=%d,persistent=%d,fhy=%d ." CR), WiFi.getMode(), WiFi.getPersistent(), WiFi.getPhyMode() );
     WiFi.mode(WIFI_STA);
     if( strlen(userSSID) ) {
-        Log.notice(F("WIFI: Connecting to wifi using predefined settings %s." CR), userSSID);
+        Log.notice(F("WIFI: Connecting to wifi using hardcoded settings %s." CR), userSSID);
         WiFi.begin( userSSID, userPWD );
     } else {
-        Log.notice(F("WIFI: Connecting to wifi using stored settings. %s." CR), myConfig.getWifiSSID());
+        Log.notice(F("WIFI: Connecting to wifi using stored settings %s." CR), myConfig.getWifiSSID());
         WiFi.begin(myConfig.getWifiSSID(), myConfig.getWifiPass());
     }
     

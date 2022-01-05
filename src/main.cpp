@@ -31,8 +31,6 @@ SOFTWARE.
 #include "pushtarget.h"
 #include <LittleFS.h>
 
-#define MAIN_DISABLE_LOGGING
-
 // Settings for double reset detector.
 #define ESP8266_DRD_USE_RTC       true
 #define DRD_TIMEOUT               2
@@ -85,9 +83,7 @@ void checkSleepMode( float angle, float volt ) {
 
     // sleep mode active when flat
     //sleepModeActive = ( angle<85 && angle>5 ) ? true : false; 
-    #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
-    Log.verbose(F("MAIN: Deep sleep mode %s (angle=%F volt=%F)." CR), sleepModeActive ? "true":"false", angle, volt );
-    #endif
+    Log.notice(F("MAIN: Deep sleep mode %s (angle=%F volt=%F)." CR), sleepModeActive ? "true":"false", angle, volt );
 }
 
 //

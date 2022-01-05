@@ -30,8 +30,6 @@ SOFTWARE.
 #include <ArduinoJson.h>
 #include <LittleFS.h>
 
-#define WEB_DISABLE_LOGGING
-
 WebServer myWebServer;                  // My wrapper class fr webserver functions
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;

@@ -25,8 +25,6 @@ SOFTWARE.
 #include "config.h"
 #include "gyro.h"           // For testing the tempsensor in the gyro
 
-#define PUSH_DISABLE_LOGGING
-
 PushTarget myPushTarget;
 
 //

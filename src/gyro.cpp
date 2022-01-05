@@ -24,8 +24,6 @@ SOFTWARE.
 #include "gyro.h"
 #include "helper.h"
 
-#define GYRO_DISABLE_LOGGING
-
 GyroSensor myGyro;
 
 #define GYRO_USE_INTERRUPT                // Use interrupt to detect when new sample is ready
@@ -245,7 +243,7 @@ bool GyroSensor::read() {
         validValue = true;
         angle = calculateAngle( lastGyroData );
         #if !defined( GYRO_DISABLE_LOGGING )
-        Log.notice(F("GYRO: Sensor values %d,%d,%d\t%F" CR), raw.ax, raw.ay, raw.az, angle );
+        Log.notice(F("GYRO: Sensor values %d,%d,%d\t%F" CR), lastGyroData.ax, lastGyroData.ay, lastGyroData.az, angle );
         #endif
     }
 

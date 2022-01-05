@@ -25,8 +25,6 @@ SOFTWARE.
 #include "helper.h"
 #include <LittleFS.h>
 
-#define CFG_DISABLE_LOGGING
-
 Config myConfig;
 
 //

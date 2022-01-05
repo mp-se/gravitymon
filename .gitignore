@@ -4,6 +4,6 @@
 docs/*
 test/*.md
 test/env/*
-test/*.py
+test/configure_*.py
 TODO.md
 data/*.min.htm

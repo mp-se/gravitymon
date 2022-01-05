@@ -29,8 +29,6 @@ SOFTWARE.
 #include <DallasTemperature.h>
 #include <Wire.h>
 
-#define TSEN_DISABLE_LOGGING
-
 //
 // Conversion between C and F
 //
