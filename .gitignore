@@ -5,3 +5,4 @@ test/*.md
 test/env/*
 test/*.py
 TODO.md
+docs/build/*
