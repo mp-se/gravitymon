@@ -21,8 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include "config.h"
-#include "helper.h"
+#include "src/config.h"
+#include "src/helper.h"
 #include <LittleFS.h>
 
 Config myConfig;
@@ -33,12 +33,12 @@ Config myConfig;
 Config::Config() {
     // Assiging default values
     char buf[30];
-    sprintf(&buf[0], "%6x", (unsigned int) ESP.getChipId() );
-    id = String( &buf[0] );
-    sprintf(&buf[0], "" WIFI_MDNS "%s", getID() );
-    mDNS = String( &buf[0] );
+    snprintf(&buf[0], sizeof(buf) "%6x", (unsigned int) ESP.getChipId());
+    id = String(&buf[0]);
+    snprintf(&buf[0], sizeof(buf), "" WIFI_MDNS "%s", getID());
+    mDNS = String(&buf[0]);
 
-    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
+    #if LOG_LEVEL == 6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Created config for %s (%s)." CR), id.c_str(), mDNS.c_str() );
     #endif
 
@@ -48,8 +48,8 @@ Config::Config() {
     setVoltageFactor(1.59);            // Conversion factor for battery
     setTempSensorAdj(0.0);
     setGravityTempAdj(false);
-    gyroCalibration = { 0, 0, 0, 0, 0 ,0 };
-    formulaData = {{ 0, 0, 0, 0, 0},{ 1, 1, 1, 1, 1}};
+    gyroCalibration = { 0 , 0 , 0 , 0 , 0 , 0 };
+    formulaData = {{ 0 , 0 , 0 , 0 , 0 } , { 1 , 1 , 1 , 1 , 1 }};
     saveNeeded = false;
 }
 
@@ -62,7 +62,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
     doc[ CFG_PARAM_OTA ]                    = getOtaURL();
     doc[ CFG_PARAM_SSID ]                   = getWifiSSID();
     doc[ CFG_PARAM_PASS ]                   = getWifiPass();
-    doc[ CFG_PARAM_TEMPFORMAT ]             = String( getTempFormat() );
+    doc[ CFG_PARAM_TEMPFORMAT ]             = String(getTempFormat());
     doc[ CFG_PARAM_PUSH_BREWFATHER ]        = getBrewfatherPushUrl();
     doc[ CFG_PARAM_PUSH_HTTP ]              = getHttpPushUrl();
     doc[ CFG_PARAM_PUSH_HTTP2 ]             = getHttpPushUrl2();
@@ -78,7 +78,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
     doc[ CFG_PARAM_TEMP_ADJ ]               = getTempSensorAdj();
     doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ]       = isGravityTempAdj();
 
-    JsonObject cal = doc.createNestedObject( CFG_PARAM_GYRO_CALIBRATION );
+    JsonObject cal = doc.createNestedObject(CFG_PARAM_GYRO_CALIBRATION);
     cal["ax"] = gyroCalibration.ax;
     cal["ay"] = gyroCalibration.ay;
     cal["az"] = gyroCalibration.az;
@@ -86,54 +86,54 @@ void Config::createJson(DynamicJsonDocument& doc) {
     cal["gy"] = gyroCalibration.gy;
     cal["gz"] = gyroCalibration.gz;
 
-    JsonObject cal2 = doc.createNestedObject( CFG_PARAM_FORMULA_DATA );
-    cal2[ "a1" ] = reduceFloatPrecision( formulaData.a[0], 2);
-    cal2[ "a2" ] = reduceFloatPrecision( formulaData.a[1], 2);
-    cal2[ "a3" ] = reduceFloatPrecision( formulaData.a[2], 2);
-    cal2[ "a4" ] = reduceFloatPrecision( formulaData.a[3], 2);
-    cal2[ "a5" ] = reduceFloatPrecision( formulaData.a[4], 2);
-    
-    cal2[ "g1" ] = reduceFloatPrecision( formulaData.g[0], 4);
-    cal2[ "g2" ] = reduceFloatPrecision( formulaData.g[1], 4);
-    cal2[ "g3" ] = reduceFloatPrecision( formulaData.g[2], 4);
-    cal2[ "g4" ] = reduceFloatPrecision( formulaData.g[3], 4);
-    cal2[ "g5" ] = reduceFloatPrecision( formulaData.g[4], 4);
+    JsonObject cal2 = doc.createNestedObject(CFG_PARAM_FORMULA_DATA);
+    cal2[ "a1" ] = reduceFloatPrecision(formulaData.a[0], 2);
+    cal2[ "a2" ] = reduceFloatPrecision(formulaData.a[1], 2);
+    cal2[ "a3" ] = reduceFloatPrecision(formulaData.a[2], 2);
+    cal2[ "a4" ] = reduceFloatPrecision(formulaData.a[3], 2);
+    cal2[ "a5" ] = reduceFloatPrecision(formulaData.a[4], 2);
+
+    cal2[ "g1" ] = reduceFloatPrecision(formulaData.g[0], 4);
+    cal2[ "g2" ] = reduceFloatPrecision(formulaData.g[1], 4);
+    cal2[ "g3" ] = reduceFloatPrecision(formulaData.g[2], 4);
+    cal2[ "g4" ] = reduceFloatPrecision(formulaData.g[3], 4);
+    cal2[ "g5" ] = reduceFloatPrecision(formulaData.g[4], 4);
 }
 
 //
 // Save json document to file
 //
 bool Config::saveFile() {
-    if( !saveNeeded ) {
-        #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
+    if ( !saveNeeded ) {
+        #if LOG_LEVEL == 6 && !defined( CFG_DISABLE_LOGGING )
         Log.verbose(F("CFG : Skipping save, not needed." CR));
         #endif
         return true;
     }
 
-    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
+    #if LOG_LEVEL == 6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Saving configuration to file." CR));
-    #endif    
+    #endif
 
     File configFile = LittleFS.open(CFG_FILENAME, "w");
 
-    if (!configFile) {
+    if ( !configFile ) {
         Log.error(F("CFG : Failed to open file " CFG_FILENAME " for save." CR));
         return false;
     }
 
     DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
-    createJson( doc );
-    
-    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
+    createJson(doc);
+
+    #if LOG_LEVEL == 6 && !defined( CFG_DISABLE_LOGGING )
     serializeJson(doc, Serial);
-    Serial.print( CR );
-    #endif    
+    Serial.print(CR);
+    #endif
 
     serializeJson(doc, configFile);
     configFile.flush();
     configFile.close();
-    
+
     saveNeeded = false;
     myConfig.debug();
     Log.notice(F("CFG : Configuration saved to " CFG_FILENAME "." CR));
@@ -144,18 +144,18 @@ bool Config::saveFile() {
 // Load config file from disk
 //
 bool Config::loadFile() {
-    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
+    #if LOG_LEVEL == 6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Loading configuration from file." CR));
-    #endif 
+    #endif
 
-    if (!LittleFS.exists(CFG_FILENAME)) {
+    if ( !LittleFS.exists(CFG_FILENAME) ) {
         Log.error(F("CFG : Configuration file does not exist " CFG_FILENAME "." CR));
         return false;
     }
 
     File configFile = LittleFS.open(CFG_FILENAME, "r");
 
-    if (!configFile) {
+    if ( !configFile ) {
         Log.error(F("CFG : Failed to open " CFG_FILENAME "." CR));
         return false;
     }
@@ -164,100 +164,100 @@ bool Config::loadFile() {
 
     DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
     DeserializationError err = deserializeJson(doc, configFile);
-#if LOG_LEVEL==6
+    #if LOG_LEVEL == 6
     serializeJson(doc, Serial);
-    Serial.print( CR );
-#endif
+    Serial.print(CR);
+    #endif
     configFile.close();
 
-    if( err ) {
+    if ( err ) {
         Log.error(F("CFG : Failed to parse " CFG_FILENAME " file, Err: %s, %d." CR), err.c_str(), doc.capacity());
         return false;
     }
 
-#if LOG_LEVEL==6
+#if LOG_LEVEL == 6
     Log.verbose(F("CFG : Parsed configuration file." CR));
-#endif                    
-    if( !doc[ CFG_PARAM_OTA ].isNull() )
-        setOtaURL( doc[ CFG_PARAM_OTA ] );
-    if( !doc[ CFG_PARAM_MDNS ].isNull() )
-        setMDNS( doc[ CFG_PARAM_MDNS ] );
-    if( !doc[ CFG_PARAM_SSID ].isNull() )
-        setWifiSSID( doc[ CFG_PARAM_SSID ] );
-    if( !doc[ CFG_PARAM_PASS ].isNull() )
-        setWifiPass( doc[ CFG_PARAM_PASS ] );
-    if( !doc[ CFG_PARAM_TEMPFORMAT ].isNull() ) {
+#endif
+    if ( !doc[ CFG_PARAM_OTA ].isNull() )
+        setOtaURL(doc[ CFG_PARAM_OTA ]);
+    if ( !doc[ CFG_PARAM_MDNS ].isNull() )
+        setMDNS(doc[ CFG_PARAM_MDNS ] );
+    if ( !doc[ CFG_PARAM_SSID ].isNull() )
+        setWifiSSID(doc[ CFG_PARAM_SSID ]);
+    if ( !doc[ CFG_PARAM_PASS ].isNull() )
+        setWifiPass(doc[ CFG_PARAM_PASS ]);
+    if ( !doc[ CFG_PARAM_TEMPFORMAT ].isNull() ) {
         String s = doc[ CFG_PARAM_TEMPFORMAT ];
-        setTempFormat( s.charAt(0) );
+        setTempFormat(s.charAt(0));
     }
-    if( !doc[ CFG_PARAM_PUSH_BREWFATHER ].isNull() )
-        setBrewfatherPushUrl( doc[ CFG_PARAM_PUSH_BREWFATHER ] );
-    if( !doc[ CFG_PARAM_PUSH_HTTP ].isNull() )
-        setHttpPushUrl( doc[ CFG_PARAM_PUSH_HTTP ] );
-    if( !doc[ CFG_PARAM_PUSH_HTTP2 ].isNull() )
-        setHttpPushUrl2( doc[ CFG_PARAM_PUSH_HTTP2 ] );
-    if( !doc[ CFG_PARAM_PUSH_INFLUXDB2 ].isNull() )
-        setInfluxDb2PushUrl( doc[ CFG_PARAM_PUSH_INFLUXDB2 ] );
-    if( !doc[ CFG_PARAM_PUSH_INFLUXDB2_ORG ].isNull() )
-        setInfluxDb2PushOrg( doc[ CFG_PARAM_PUSH_INFLUXDB2_ORG ] );
-    if( !doc[ CFG_PARAM_PUSH_INFLUXDB2_BUCKET ].isNull() )
-        setInfluxDb2PushBucket( doc[ CFG_PARAM_PUSH_INFLUXDB2_BUCKET ] );
-    if( !doc[ CFG_PARAM_PUSH_INFLUXDB2_AUTH ].isNull() )
-        setInfluxDb2PushToken( doc[ CFG_PARAM_PUSH_INFLUXDB2_AUTH ] );
-    if( !doc[ CFG_PARAM_SLEEP_INTERVAL ].isNull() )     
-        setSleepInterval( doc[ CFG_PARAM_SLEEP_INTERVAL ].as<int>() );
-    if( !doc[ CFG_PARAM_PUSH_INTERVAL ].isNull() )                          // TODO: @deprecated
-        setSleepInterval( doc[ CFG_PARAM_PUSH_INTERVAL ].as<int>() );       // TODO: @deprecated
-    if( !doc[ CFG_PARAM_VOLTAGEFACTOR ].isNull() )
-        setVoltageFactor( doc[ CFG_PARAM_VOLTAGEFACTOR ].as<float>() );
-    if( !doc[ CFG_PARAM_GRAVITY_FORMULA ].isNull() )
-        setGravityFormula( doc[ CFG_PARAM_GRAVITY_FORMULA ] );
-    if( !doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ].isNull() )
-        setGravityTempAdj( doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ].as<bool>() );
-    if( !doc[ CFG_PARAM_GRAVITY_FORMAT ].isNull() ) {
+    if ( !doc[ CFG_PARAM_PUSH_BREWFATHER ].isNull() )
+        setBrewfatherPushUrl(doc[ CFG_PARAM_PUSH_BREWFATHER ]);
+    if ( !doc[ CFG_PARAM_PUSH_HTTP ].isNull() )
+        setHttpPushUrl(doc[ CFG_PARAM_PUSH_HTTP ]);
+    if ( !doc[ CFG_PARAM_PUSH_HTTP2 ].isNull() )
+        setHttpPushUrl2(doc[ CFG_PARAM_PUSH_HTTP2 ]);
+    if ( !doc[ CFG_PARAM_PUSH_INFLUXDB2 ].isNull() )
+        setInfluxDb2PushUrl(doc[ CFG_PARAM_PUSH_INFLUXDB2 ]);
+    if ( !doc[ CFG_PARAM_PUSH_INFLUXDB2_ORG ].isNull() )
+        setInfluxDb2PushOrg(doc[ CFG_PARAM_PUSH_INFLUXDB2_ORG ]);
+    if ( !doc[ CFG_PARAM_PUSH_INFLUXDB2_BUCKET ].isNull() )
+        setInfluxDb2PushBucket(doc[ CFG_PARAM_PUSH_INFLUXDB2_BUCKET ]);
+    if ( !doc[ CFG_PARAM_PUSH_INFLUXDB2_AUTH ].isNull() )
+        setInfluxDb2PushToken(doc[ CFG_PARAM_PUSH_INFLUXDB2_AUTH ]);
+    if ( !doc[ CFG_PARAM_SLEEP_INTERVAL ].isNull() )
+        setSleepInterval(doc[ CFG_PARAM_SLEEP_INTERVAL ].as<int>());
+    if ( !doc[ CFG_PARAM_PUSH_INTERVAL ].isNull() )                       // TODO: @deprecated
+        setSleepInterval(doc[ CFG_PARAM_PUSH_INTERVAL ].as<int>());       // TODO: @deprecated
+    if ( !doc[ CFG_PARAM_VOLTAGEFACTOR ].isNull() )
+        setVoltageFactor(doc[ CFG_PARAM_VOLTAGEFACTOR ].as<float>());
+    if ( !doc[ CFG_PARAM_GRAVITY_FORMULA ].isNull() )
+        setGravityFormula(doc[ CFG_PARAM_GRAVITY_FORMULA ]);
+    if ( !doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ].isNull() )
+        setGravityTempAdj(doc[ CFG_PARAM_GRAVITY_TEMP_ADJ ].as<bool>());
+    if ( !doc[ CFG_PARAM_GRAVITY_FORMAT ].isNull() ) {
         String s = doc[ CFG_PARAM_GRAVITY_FORMAT ];
-        setGravityFormat( s.charAt(0) );
+        setGravityFormat(s.charAt(0));
     }
-    if( !doc[ CFG_PARAM_TEMP_ADJ ].isNull() )
-        setTempSensorAdj( doc[ CFG_PARAM_TEMP_ADJ ].as<float>() );
+    if ( !doc[ CFG_PARAM_TEMP_ADJ ].isNull() )
+        setTempSensorAdj(doc[ CFG_PARAM_TEMP_ADJ ].as<float>());
 
-    if( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["ax"].isNull() ) 
+    if ( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["ax"].isNull() )
         gyroCalibration.ax = doc[ CFG_PARAM_GYRO_CALIBRATION ]["ax"];
-    if( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["ay"].isNull() ) 
+    if ( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["ay"].isNull() )
         gyroCalibration.ay = doc[ CFG_PARAM_GYRO_CALIBRATION ]["ay"];
-    if( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["az"].isNull() ) 
+    if ( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["az"].isNull() )
         gyroCalibration.az = doc[ CFG_PARAM_GYRO_CALIBRATION ]["az"];
-    if( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["gx"].isNull() ) 
+    if ( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["gx"].isNull() )
         gyroCalibration.gx = doc[ CFG_PARAM_GYRO_CALIBRATION ]["gx"];
-    if( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["gy"].isNull() ) 
+    if ( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["gy"].isNull() )
         gyroCalibration.gy = doc[ CFG_PARAM_GYRO_CALIBRATION ]["gy"];
-    if( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["gz"].isNull() ) 
+    if ( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["gz"].isNull() )
         gyroCalibration.gz = doc[ CFG_PARAM_GYRO_CALIBRATION ]["gz"];
 
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a1" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "a1" ].isNull() )
         formulaData.a[0] = doc[ CFG_PARAM_FORMULA_DATA ][ "a1" ].as<double>();
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a2" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "a2" ].isNull() )
         formulaData.a[1] = doc[ CFG_PARAM_FORMULA_DATA ][ "a2" ].as<double>();
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a3" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "a3" ].isNull() )
         formulaData.a[2] = doc[ CFG_PARAM_FORMULA_DATA ][ "a3" ].as<double>();
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a4" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "a4" ].isNull() )
         formulaData.a[3] = doc[ CFG_PARAM_FORMULA_DATA ][ "a4" ].as<double>();
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a5" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "a5" ].isNull() )
         formulaData.a[4] = doc[ CFG_PARAM_FORMULA_DATA ][ "a5" ].as<double>();
 
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g1" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "g1" ].isNull() )
         formulaData.g[0] = doc[ CFG_PARAM_FORMULA_DATA ][ "g1" ].as<double>();
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g2" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "g2" ].isNull() )
         formulaData.g[1] = doc[ CFG_PARAM_FORMULA_DATA ][ "g2" ].as<double>();
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g3" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "g3" ].isNull() )
         formulaData.g[2] = doc[ CFG_PARAM_FORMULA_DATA ][ "g3" ].as<double>();
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g4" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "g4" ].isNull() )
         formulaData.g[3] = doc[ CFG_PARAM_FORMULA_DATA ][ "g4" ].as<double>();
-    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g5" ].isNull() ) 
+    if ( !doc[ CFG_PARAM_FORMULA_DATA ][ "g5" ].isNull() )
         formulaData.g[4] = doc[ CFG_PARAM_FORMULA_DATA ][ "g5" ];
 
     myConfig.debug();
-    saveNeeded = false;     // Reset save flag 
+    saveNeeded = false;     // Reset save flag
     Log.notice(F("CFG : Configuration file " CFG_FILENAME " loaded." CR));
     return true;
 }
@@ -274,11 +274,11 @@ void Config::formatFileSystem() {
 // Check if file system can be mounted, if not we format it.
 //
 void Config::checkFileSystem() {
-    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
+    #if LOG_LEVEL == 6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Checking if filesystem is valid." CR));
-    #endif    
+    #endif
 
-    if (LittleFS.begin()) {
+    if ( LittleFS.begin() ) {
         Log.notice(F("CFG : Filesystem mounted." CR));
     } else {
         Log.error(F("CFG : Unable to mount file system, formatting..." CR));
@@ -290,7 +290,7 @@ void Config::checkFileSystem() {
 // Dump the configuration to the serial port
 //
 void Config::debug() {
-    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
+    #if LOG_LEVEL == 6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Dumping configration " CFG_FILENAME "." CR));
     Log.verbose(F("CFG : ID; '%s'." CR), getID());
     Log.verbose(F("CFG : WIFI; '%s', '%s'." CR), getWifiSSID(), getWifiPass() );
@@ -310,7 +310,7 @@ void Config::debug() {
                         getInfluxDb2PushBucket(), getInfluxDb2PushToken() );
 //  Log.verbose(F("CFG : Accel offset\t%d\t%d\t%d" CR), gyroCalibration.ax, gyroCalibration.ay, gyroCalibration.az );
 //  Log.verbose(F("CFG : Gyro offset \t%d\t%d\t%d" CR), gyroCalibration.gx, gyroCalibration.gy, gyroCalibration.gz );
-    #endif    
+    #endif
 }
 
-// EOF 
+// EOF
