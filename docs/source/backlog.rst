@@ -4,13 +4,16 @@ Backlog of changes
 Documentation
 -------------
 
-- Add library references to missing libraries from the latest release v0.5.
-- Copy images to build folder for documentation 
 - Create page with list of releases
 - Updates over OTA (from PC)
+- Write compile instructions
+- Write contribution instructions
+- publish docs
 
 Code
 -------------
 
 - Support for MQTT
 - Support for plato
+- Use pre-commit for validating check-in
+- Automatic builds via github actions

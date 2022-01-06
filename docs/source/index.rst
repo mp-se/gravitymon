@@ -16,7 +16,7 @@ projects based on esp8266 and also started to brew beer so this combination was 
 
 The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. 
 
-My approach to this software is a little different from the approach that the orignial ispindle firmware has. 
+My approach to this software is a little different from that the original ispindle firmware. 
 
 .. note::
 
@@ -55,6 +55,9 @@ This software uses the following libraries and without these this would have bee
 * https://github.com/bblanchon/ArduinoJson
 * https://github.com/PaulStoffregen/OneWire
 * https://github.com/milesburton/Arduino-Temperature-Control-Library
+* https://github.com/Rotario/arduinoCurveFitting
+* https://graphjs.com/
+* https://getbootstrap.com/
 
 
 .. toctree::

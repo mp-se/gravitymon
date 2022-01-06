@@ -14,6 +14,10 @@ Main index
 
 URL: (http://gravmon.local)
 
+.. image:: images/index.png
+  :width: 800
+  :alt: Index page
+
 Configuration is accessed by entering the URL for the device, this will be the mDNS name *device.local* or the IP adress. The following chapter assumes the device name is *gravmon*.
 
 The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if 
@@ -30,7 +34,7 @@ Device
 URL: (http://gravmon.local/device)
 
 .. image:: images/device.png
-  :width: 400
+  :width: 800
   :alt: Device Settings
 
 
@@ -56,7 +60,7 @@ Device Setting
 **************
 
 .. image:: images/config1.png
-  :width: 400
+  :width: 800
   :alt: Device Settings
 
 * **Device name:** 
@@ -87,7 +91,7 @@ Push Settings
 *************
 
 .. image:: images/config2.png
-  :width: 400
+  :width: 800
   :alt: Push Settings
 
 * **HTTP URL 1:**
@@ -123,7 +127,7 @@ Gravity Settings
 ****************
 
 .. image:: images/config3.png
-  :width: 400
+  :width: 800
   :alt: Gravity Settings
 
 * **Gravity formula:**
@@ -145,7 +149,7 @@ Hardware Settings
 *****************
 
 .. image:: images/config4.png
-  :width: 400
+  :width: 800
   :alt: Hardware Settings
 
 * **Voltage factor:**
@@ -168,7 +172,6 @@ Hardware Settings
 ::
   
    http://192.168.1.1/firmware/gravmon/
-
   
 
    Contents version.json
@@ -180,11 +183,205 @@ Hardware Settings
 
 Create formula
 =============================
-todo
+
+.. image:: images/formula1.png
+  :width: 800
+  :alt: Formula data
+
+Here you can enter up to 5 values (angles + gravity) that is then used to create the formula. Angles equal to zero will be regarded as empty even if there is a gravity reading.
+
+.. image:: images/formula2.png
+  :width: 800
+  :alt: Formula graph
+
+Once the formula is created a graph over the entered values and a simulation of the formula will give you a nice overview on how the formula will work.
+
 
 REST API
 =============================
-todo
+
+GET: /api/config
+****************
+
+Retrive the current configuation of the device via an HTTP GET command. Payload is in JSON format.
+
+::
+
+   {
+      "mdns": "gravmon",
+      "id": "ee1bfc",
+      "ota-url": "http://192.168.1.50:80/firmware/gravmon/",
+      "temp-format": "C",
+      "brewfather-push": "http://log.brewfather.net/stream?id=Qwerty",
+      "http-push": "http://192.168.1.50:9090/api/v1/Qwerty/telemetry",
+      "http-push2": "http://192.168.1.50/ispindel",
+      "influxdb2-push": "http://192.168.1.50:8086",
+      "influxdb2-org": "Qwerty",
+      "influxdb2-bucket": "Qwerty",
+      "influxdb2-auth": "Qwerty",
+      "sleep-interval": 30,
+      "voltage-factor": 1.59,
+      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
+      "gravity-format": "G",
+      "temp-adjustment-value": 0,
+      "gravity-temp-adjustment": false,
+      "gyro-calibration-data": {
+         "ax": -330,
+         "ay": -2249,
+         "az": 1170,
+         "gx": 99,
+         "gy": -6,
+         "gz": 4
+      },
+      "angle": 90.93,
+      "gravity": 1.105,
+      "battery": 0.04
+   }
+
+
+GET: /api/device
+****************
+
+Retrive the current device settings via an HTTP GET command. Payload is in JSON format.
+
+::
+
+   {
+      "app-name": "GravityMon ",
+      "app-ver": "0.0.0",
+      "id": "ee1bfc",
+      "mdns": "gravmon"
+   }
+
+
+GET: /api/status
+****************
+
+Retrive the current device status via an HTTP GET command. Payload is in JSON format.
+
+::
+
+   {
+      "id": "ee1bfc",
+      "angle": 89.86,
+      "gravity": 1.1052,
+      "gravity-tempcorr": 1.1031,
+      "temp-c": 0,
+      "temp-f": 32,
+      "battery": 0,
+      "temp-format": "C",
+      "sleep-mode": false,
+      "rssi": -56
+   }
+
+
+GET: /api/config/formula
+************************
+
+Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
+
+:: 
+
+   { 
+      "id": "ee1bfc",   // Unique id of the device (API Key)
+      "a1": 22.4,       // Angles 1-5
+      "a2": 54.4, 
+      "a3": 58, 
+      "a4": 0, 
+      "a5": 0, 
+      "g1": 1.000,      // Gravity 1-5
+      "g2": 1.053, 
+      "g3": 1.062, 
+      "g4": 1, 
+      "g5": 1 
+      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
+   }
+
+
+POST: /api/config/device
+************************
+
+Used to update device settings via an HTTP POST command. Payload is in JSON format.
+
+:: 
+
+   { 
+      "id": "ee1bfc",            // Unique id of the device (API Key)
+      "mdns": "gravmon",         // Network name / Device name
+      "temp-format": "C",        // Can be either C or F
+      "sleep-interval": 30       // Time in seconds.
+   }
+
+
+POST: /api/config/push
+**********************
+
+Used to update push settings via an HTTP POST command. Payload is in JSON format.
+
+:: 
+
+   { 
+      "id": "ee1bfc",                                 // Unique id of the device (API Key)
+      "http-push": "http://192.168.1.50/ispindel", 
+      "http-push2": "", 
+      "brewfather-push": "",
+      "influxdb2-push": "http://192.168.1.50:8086",
+      "influxdb2-org": "Qwerty",
+      "influxdb2-bucket": "Qwerty",
+      "influxdb2-auth": "Qwerty" 
+   }  
+
+
+POST: /api/config/gravity
+*************************
+
+Used to update gravity settings via an HTTP POST command. Payload is in JSON format.
+
+:: 
+
+   { 
+      "id": "ee1bfc",                                                   // Unique id of the device (API Key)
+      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
+      "gravity-temp-adjustment": "off"                                  // Can be on or off
+   }
+
+
+POST: /api/config/gravity
+*************************
+
+Used to update hardware settings via an HTTP POST command. Payload is in JSON format.
+
+:: 
+
+   { 
+      "id": "ee1bfc",                                    // Unique id of the device (API Key)
+      "voltage-factor": 1.59, 
+      "temp-adjustment": 0, 
+      "ota-url": "http://192.168.1.50/firmware/gravmon/" 
+   }
+
+
+POST: /api/config/formula
+*************************
+
+Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.
+
+:: 
+
+   { 
+      "id": "ee1bfc",   // Unique id of the device (API Key)
+      "a1": 22.4,       // Angles 1-5
+      "a2": 54.4, 
+      "a3": 58, 
+      "a4": 0, 
+      "a5": 0, 
+      "g1": 1.000,      // Gravity 1-5
+      "g2": 1.053, 
+      "g3": 1.062, 
+      "g4": 1, 
+      "g5": 1 
+   }
+
 
 Data Formats
 =============================
