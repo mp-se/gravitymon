@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Functionallity" href="functionallity.html" /> 
+    <link rel="next" title="Releases" href="releases.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,6 +38,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -82,7 +83,8 @@ of fermentation.</p>
 <p>I started GravityMon because i like to create software and wanted to do some low level programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural.</p>
 <p>The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation.</p>
-<p>My approach to this software is a little different from that the original ispindle firmware.</p>
+<p>My approach to this software is a little different from that the original ispindle firmware. The github repository can
+be found here; <a class="reference external" href="https://github.com/mp-se/gravitymon">https://github.com/mp-se/gravitymon</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This software is in the early stages even though its more than one year old so if you find issues, please
@@ -109,23 +111,48 @@ over the last 6 months without any issues.</p>
 <section id="credits-to">
 <h2>Credits to<a class="headerlink" href="#credits-to" title="Permalink to this headline"></a></h2>
 <p>This software uses the following libraries and without these this would have been much more difficult to acheive:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/jrowberg/i2cdevlib.git">https://github.com/jrowberg/i2cdevlib.git</a></p></li>
-<li><p><a class="reference external" href="https://github.com/codeplea/tinyexpr">https://github.com/codeplea/tinyexpr</a></p></li>
-<li><p><a class="reference external" href="https://github.com/graphitemaster/incbin">https://github.com/graphitemaster/incbin</a></p></li>
-<li><p><a class="reference external" href="https://github.com/khoih-prog/ESP_DoubleResetDetector">https://github.com/khoih-prog/ESP_DoubleResetDetector</a></p></li>
-<li><p><a class="reference external" href="https://github.com/tzapu/WiFiManager">https://github.com/tzapu/WiFiManager</a></p></li>
-<li><p><a class="reference external" href="https://github.com/thijse/Arduino-Log">https://github.com/thijse/Arduino-Log</a></p></li>
-<li><p><a class="reference external" href="https://github.com/bblanchon/ArduinoJson">https://github.com/bblanchon/ArduinoJson</a></p></li>
-<li><p><a class="reference external" href="https://github.com/PaulStoffregen/OneWire">https://github.com/PaulStoffregen/OneWire</a></p></li>
-<li><p><a class="reference external" href="https://github.com/milesburton/Arduino-Temperature-Control-Library">https://github.com/milesburton/Arduino-Temperature-Control-Library</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Rotario/arduinoCurveFitting">https://github.com/Rotario/arduinoCurveFitting</a></p></li>
-<li><p><a class="reference external" href="https://graphjs.com/">https://graphjs.com/</a></p></li>
-<li><p><a class="reference external" href="https://getbootstrap.com/">https://getbootstrap.com/</a></p></li>
+<ul>
+<li><p><a class="reference external" href="https://github.com/jrowberg/i2cdevlib.git">https://github.com/jrowberg/i2cdevlib.git</a></p>
+<p>This library contains the basic code to interact with the gyro + many more chips.</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/codeplea/tinyexpr">https://github.com/codeplea/tinyexpr</a></p>
+<p>Proccess the gravity formula and calculate the gravity and various corrections.</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/graphitemaster/incbin">https://github.com/graphitemaster/incbin</a></p>
+<p>Include binary files into the code, used to service html files.</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/khoih-prog/ESP_DoubleResetDetector">https://github.com/khoih-prog/ESP_DoubleResetDetector</a></p>
+<p>Can detect if the reset button is pressed twice, is used to enter WIFI config mode.</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/tzapu/WiFiManager">https://github.com/tzapu/WiFiManager</a></p>
+<p>Configure wifi settings.</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/thijse/Arduino-Log">https://github.com/thijse/Arduino-Log</a></p>
+<p>Logging library for handling different loglevels and configure what sent over the serial.</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/bblanchon/ArduinoJson">https://github.com/bblanchon/ArduinoJson</a></p>
+<p>Json parser/creator used in configuration files and API’s</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/PaulStoffregen/OneWire">https://github.com/PaulStoffregen/OneWire</a></p>
+<p>Communication library used for interacting with temperature sensor.</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/milesburton/Arduino-Temperature-Control-Library">https://github.com/milesburton/Arduino-Temperature-Control-Library</a></p>
+<p>Interaction with the DS18B20 sensor</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/Rotario/arduinoCurveFitting">https://github.com/Rotario/arduinoCurveFitting</a></p>
+<p>Create the gravity formula.</p>
+</li>
+<li><p><a class="reference external" href="https://graphjs.com/">https://graphjs.com/</a></p>
+<p>Render the graphs in the UI.</p>
+</li>
+<li><p><a class="reference external" href="https://getbootstrap.com/">https://getbootstrap.com/</a></p>
+<p>CSS templates for the web page.</p>
+</li>
 </ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="functionallity.html#the-main-differences">The main differences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functionallity.html#other-features">Other features</a></li>
@@ -147,7 +174,7 @@ over the last 6 months without any issues.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="compiling.html#vscode-platformio">VSCODE + PlatformIO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compiling.html#tools">Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#targets">Targets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#source-structure">Source structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#options">Options</a></li>
@@ -176,7 +203,7 @@ over the last 6 months without any issues.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="functionallity.html" class="btn btn-neutral float-right" title="Functionallity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="releases.html" class="btn btn-neutral float-right" title="Releases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -21,7 +21,8 @@ projects based on esp8266 and also started to brew beer so this combination was 
 
 The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. 
 
-My approach to this software is a little different from that the original ispindle firmware. 
+My approach to this software is a little different from that the original ispindle firmware. The github repository can 
+be found here; https://github.com/mp-se/gravitymon
 
 .. note::
 
@@ -52,23 +53,59 @@ Credits to
 This software uses the following libraries and without these this would have been much more difficult to acheive:
 
 * https://github.com/jrowberg/i2cdevlib.git 
+
+  This library contains the basic code to interact with the gyro + many more chips.
+
 * https://github.com/codeplea/tinyexpr
+
+  Proccess the gravity formula and calculate the gravity and various corrections.
+
 * https://github.com/graphitemaster/incbin 		
+
+  Include binary files into the code, used to service html files.
+
 * https://github.com/khoih-prog/ESP_DoubleResetDetector
+
+  Can detect if the reset button is pressed twice, is used to enter WIFI config mode.
+
 * https://github.com/tzapu/WiFiManager
+
+  Configure wifi settings.
+
 * https://github.com/thijse/Arduino-Log
+
+  Logging library for handling different loglevels and configure what sent over the serial.
+
 * https://github.com/bblanchon/ArduinoJson
+
+  Json parser/creator used in configuration files and API's
+
 * https://github.com/PaulStoffregen/OneWire
+
+  Communication library used for interacting with temperature sensor.
+
 * https://github.com/milesburton/Arduino-Temperature-Control-Library
+
+  Interaction with the DS18B20 sensor
+
 * https://github.com/Rotario/arduinoCurveFitting
+
+  Create the gravity formula.
+
 * https://graphjs.com/
+
+  Render the graphs in the UI.
+
 * https://getbootstrap.com/
+
+  CSS templates for the web page.
 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   releases
    functionallity
    installation
    configuration

@@ -5,5 +5,5 @@ test/*.md
 test/env/*
 test/configure_*.py
 TODO.md
-docs/_build/*
+src_docs/_build/*
 data/*.min.htm
