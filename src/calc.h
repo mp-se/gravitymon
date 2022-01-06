@@ -21,22 +21,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef _CALC_H
-#define _CALC_H
+#ifndef SRC_CALC_H_
+#define SRC_CALC_H_
 
 // Includes
-#include "helper.h"
-#include "config.h"
+#include "src/helper.h"
+#include "src/config.h"
 
-#define ERR_FORMULA_NOTENOUGHVALUES -1  
+#define ERR_FORMULA_NOTENOUGHVALUES -1
 #define ERR_FORMULA_INTERNAL        -2
-#define ERR_FORMULA_UNABLETOFFIND   -3  
+#define ERR_FORMULA_UNABLETOFFIND   -3
 
 // Functions
-double calculateGravity( double angle, double temp, const char *tempFormula = 0 );
-double gravityTemperatureCorrection( double gravity, double temp, char tempFormat, double calTemp = 20 );
-int createFormula( RawFormulaData& fd, char *formulaBuffer, int order);
+double calculateGravity(double angle, double temp, const char *tempFormula = 0);
+double gravityTemperatureCorrection(double gravity, double temp, char tempFormat, double calTemp = 20);
+int createFormula(RawFormulaData& fd, char *formulaBuffer, int formulaBufferSize, int order);
 
-#endif // _CALC_H
+#endif // SRC_CALC_H_
 
 // EOF
