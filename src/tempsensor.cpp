@@ -57,17 +57,15 @@ void TempSensor::setup() {
 #if defined( USE_GYRO_TEMP )
     Log.notice(F("TSEN: Using temperature from gyro." CR));
 #else
-    // This code is used to read the DS18 temp sensor
-    if( mySensors.getDS18Count() )
-        return;
-
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( TSEN_DISABLE_LOGGING )
     Log.verbose(F("TSEN: Looking for temp sensors." CR));
-#endif
+    #endif
     mySensors.begin();
 
     if( mySensors.getDS18Count() ) {
+        #if !defined( TSEN_DISABLE_LOGGING )
         Log.notice(F("TSEN: Found %d temperature sensor(s)." CR), mySensors.getDS18Count());
+        #endif
         mySensors.setResolution(TEMPERATURE_PRECISION);
     }
 #endif 
@@ -83,9 +81,9 @@ void TempSensor::setup() {
         tempSensorAdjC = t * 0.556;   // Convert the adjustent value to F
     }
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( TSEN_DISABLE_LOGGING )
     Log.verbose(F("TSEN: Adjustment values for temp sensor %F C, %F F." CR), tempSensorAdjC, tempSensorAdjF );
-#endif
+    #endif
 }
 
 //
@@ -103,10 +101,16 @@ float TempSensor::getValue() {
     //LOG_PERF_STOP("temp-get");
     hasSensor = true;
     return c;
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( TSEN_DISABLE_LOGGING )
     Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR), c);
-#endif
+    #endif
 #else
+    // If we dont have sensors just return 0
+    if( !mySensors.getDS18Count() ) {
+        Log.error(F("TSEN: No temperature sensors found. Skipping read." CR));
+        return -273;
+    }
+
     // Read the sensors
     //LOG_PERF_START("temp-request");
     mySensors.requestTemperatures();
@@ -119,12 +123,11 @@ float TempSensor::getValue() {
         c = mySensors.getTempCByIndex(0);
         //LOG_PERF_STOP("temp-get");
 
-#if LOG_LEVEL==6
+        #if LOG_LEVEL==6 && !defined( TSEN_DISABLE_LOGGING )
         Log.verbose(F("TSEN: Reciving temp value for sensor %F C." CR), c);
-#endif
+        #endif
         hasSensor = true;
     }
-
     return c;
 #endif
 }

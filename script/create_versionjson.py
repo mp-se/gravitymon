@@ -36,6 +36,12 @@ def after_build(source, target, env):
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
+    # Copy file 4
+    source = dir + "\\data\\calibration.min.htm"
+    target = dir + "\\bin\\calibration.min.htm"
+    print( "Copy file : " + source + " -> " + target )
+    shutil.copyfile( source, target )
+
     target = dir + "\\bin\\version.json"
     ver = get_build_flag_value("CFG_APPVER")
 

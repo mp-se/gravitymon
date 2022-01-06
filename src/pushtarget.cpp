@@ -35,15 +35,16 @@ void PushTarget::send(float angle, float gravity, float corrGravity, float temp,
     unsigned long interval = myConfig.getSleepInterval()*1000;
 
     if( ( timePassed < interval ) && !force) {
-#if LOG_LEVEL==6
-      Log.verbose(F("PUSH: Timer has not expired %l vs %l." CR), timePassed, interval );
-#endif
+        #if LOG_LEVEL==6 && !defined( PUSH_DISABLE_LOGGING )
+        Log.verbose(F("PUSH: Timer has not expired %l vs %l." CR), timePassed, interval );
+        #endif
         return;
     }
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( PUSH_DISABLE_LOGGING )
     Log.verbose(F("PUSH: Sending data." CR) );
-#endif
+    #endif
+
     ms = millis();
 
     if( myConfig.isBrewfatherActive() ) {
@@ -75,7 +76,9 @@ void PushTarget::send(float angle, float gravity, float corrGravity, float temp,
 // Send to influx db v2
 //
 void PushTarget::sendInfluxDb2(float angle, float gravity, float corrGravity, float temp, float runTime) {
+    #if !defined( PUSH_DISABLE_LOGGING )
     Log.notice(F("PUSH: Sending values to influxdb2 angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
+    #endif
 
     WiFiClient client;
     HTTPClient http;
@@ -94,10 +97,10 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float corrGravity, fl
                     myConfig.isGravityTempAdj() ? corrGravity : gravity, 
                     corrGravity, angle, temp, myBatteryVoltage.getVoltage(), WiFi.RSSI(), myGyro.getSensorTempC() );                // For comparing gyro tempsensor vs DSB1820
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( PUSH_DISABLE_LOGGING )
     Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
     Log.verbose(F("PUSH: data %s." CR), &buf[0] );
-#endif
+    #endif
 
     // Send HTTP POST request
     String auth = "Token " + String( myConfig.getInfluxDb2PushToken() );
@@ -117,7 +120,9 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float corrGravity, fl
 // Send data to brewfather
 //
 void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity, float temp ) {
+    #if !defined( PUSH_DISABLE_LOGGING )
     Log.notice(F("PUSH: Sending values to brewfather angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
+    #endif
 
     DynamicJsonDocument doc(300);
     //
@@ -154,10 +159,10 @@ void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity, f
     http.begin( client, serverPath);
     String json;
     serializeJson(doc, json);
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( PUSH_DISABLE_LOGGING )
     Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
     Log.verbose(F("PUSH: json %s." CR), json.c_str());
-#endif
+    #endif
 
     // Send HTTP POST request
     http.addHeader(F("Content-Type"), F("application/json") );
@@ -176,7 +181,9 @@ void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity, f
 // Send data to http target
 //
 void PushTarget::sendHttp( String serverPath, float angle, float gravity, float corrGravity, float temp, float runTime ) {
+    #if !defined( PUSH_DISABLE_LOGGING )
     Log.notice(F("PUSH: Sending values to http angle=%F, gravity=%F, temp=%F." CR), angle, gravity, temp );
+    #endif
 
     DynamicJsonDocument doc(256);
 
@@ -205,10 +212,10 @@ void PushTarget::sendHttp( String serverPath, float angle, float gravity, float 
     http.begin( client, serverPath);
     String json;
     serializeJson(doc, json);
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( PUSH_DISABLE_LOGGING )
     Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
     Log.verbose(F("PUSH: json %s." CR), json.c_str());
-#endif
+    #endif
 
     // Send HTTP POST request
     http.addHeader(F("Content-Type"), F("application/json") );

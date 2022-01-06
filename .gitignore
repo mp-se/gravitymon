@@ -3,6 +3,7 @@
 *.map
 test/*.md
 test/env/*
-test/*.py
+test/configure_*.py
 TODO.md
 docs/build/*
+data/*.min.htm

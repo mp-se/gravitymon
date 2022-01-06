@@ -32,11 +32,16 @@ Config myConfig;
 //
 Config::Config() {
     // Assiging default values
-    char buf[20];
+    char buf[30];
     sprintf(&buf[0], "%6x", (unsigned int) ESP.getChipId() );
-    id = &buf[0];
+    id = String( &buf[0] );
     sprintf(&buf[0], "" WIFI_MDNS "%s", getID() );
-    mDNS = &buf[0];
+    mDNS = String( &buf[0] );
+
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
+    Log.verbose(F("CFG : Created config for %s (%s)." CR), id.c_str(), mDNS.c_str() );
+    #endif
+
     setTempFormat('C');
     setGravityFormat('G');
     setSleepInterval(900);             // 15 minutes
@@ -44,6 +49,7 @@ Config::Config() {
     setTempSensorAdj(0.0);
     setGravityTempAdj(false);
     gyroCalibration = { 0, 0, 0, 0, 0 ,0 };
+    formulaData = {{ 0, 0, 0, 0, 0},{ 1, 1, 1, 1, 1}};
     saveNeeded = false;
 }
 
@@ -54,6 +60,8 @@ void Config::createJson(DynamicJsonDocument& doc) {
     doc[ CFG_PARAM_MDNS ]                   = getMDNS();
     doc[ CFG_PARAM_ID ]                     = getID();
     doc[ CFG_PARAM_OTA ]                    = getOtaURL();
+    doc[ CFG_PARAM_SSID ]                   = getWifiSSID();
+    doc[ CFG_PARAM_PASS ]                   = getWifiPass();
     doc[ CFG_PARAM_TEMPFORMAT ]             = String( getTempFormat() );
     doc[ CFG_PARAM_PUSH_BREWFATHER ]        = getBrewfatherPushUrl();
     doc[ CFG_PARAM_PUSH_HTTP ]              = getHttpPushUrl();
@@ -77,6 +85,19 @@ void Config::createJson(DynamicJsonDocument& doc) {
     cal["gx"] = gyroCalibration.gx;
     cal["gy"] = gyroCalibration.gy;
     cal["gz"] = gyroCalibration.gz;
+
+    JsonObject cal2 = doc.createNestedObject( CFG_PARAM_FORMULA_DATA );
+    cal2[ "a1" ] = reduceFloatPrecision( formulaData.a[0], 2);
+    cal2[ "a2" ] = reduceFloatPrecision( formulaData.a[1], 2);
+    cal2[ "a3" ] = reduceFloatPrecision( formulaData.a[2], 2);
+    cal2[ "a4" ] = reduceFloatPrecision( formulaData.a[3], 2);
+    cal2[ "a5" ] = reduceFloatPrecision( formulaData.a[4], 2);
+    
+    cal2[ "g1" ] = reduceFloatPrecision( formulaData.g[0], 4);
+    cal2[ "g2" ] = reduceFloatPrecision( formulaData.g[1], 4);
+    cal2[ "g3" ] = reduceFloatPrecision( formulaData.g[2], 4);
+    cal2[ "g4" ] = reduceFloatPrecision( formulaData.g[3], 4);
+    cal2[ "g5" ] = reduceFloatPrecision( formulaData.g[4], 4);
 }
 
 //
@@ -84,15 +105,15 @@ void Config::createJson(DynamicJsonDocument& doc) {
 //
 bool Config::saveFile() {
     if( !saveNeeded ) {
-#if LOG_LEVEL==6
+        #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
         Log.verbose(F("CFG : Skipping save, not needed." CR));
-#endif
+        #endif
         return true;
     }
 
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Saving configuration to file." CR));
-#endif    
+    #endif    
 
     File configFile = LittleFS.open(CFG_FILENAME, "w");
 
@@ -103,10 +124,12 @@ bool Config::saveFile() {
 
     DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
     createJson( doc );
-#if LOG_LEVEL==6
+    
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     serializeJson(doc, Serial);
     Serial.print( CR );
-#endif    
+    #endif    
+
     serializeJson(doc, configFile);
     configFile.flush();
     configFile.close();
@@ -121,9 +144,9 @@ bool Config::saveFile() {
 // Load config file from disk
 //
 bool Config::loadFile() {
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Loading configuration from file." CR));
-#endif 
+    #endif 
 
     if (!LittleFS.exists(CFG_FILENAME)) {
         Log.error(F("CFG : Configuration file does not exist " CFG_FILENAME "." CR));
@@ -144,7 +167,7 @@ bool Config::loadFile() {
 #if LOG_LEVEL==6
     serializeJson(doc, Serial);
     Serial.print( CR );
-#endif    
+#endif
     configFile.close();
 
     if( err ) {
@@ -159,6 +182,10 @@ bool Config::loadFile() {
         setOtaURL( doc[ CFG_PARAM_OTA ] );
     if( !doc[ CFG_PARAM_MDNS ].isNull() )
         setMDNS( doc[ CFG_PARAM_MDNS ] );
+    if( !doc[ CFG_PARAM_SSID ].isNull() )
+        setWifiSSID( doc[ CFG_PARAM_SSID ] );
+    if( !doc[ CFG_PARAM_PASS ].isNull() )
+        setWifiPass( doc[ CFG_PARAM_PASS ] );
     if( !doc[ CFG_PARAM_TEMPFORMAT ].isNull() ) {
         String s = doc[ CFG_PARAM_TEMPFORMAT ];
         setTempFormat( s.charAt(0) );
@@ -207,6 +234,28 @@ bool Config::loadFile() {
     if( !doc[ CFG_PARAM_GYRO_CALIBRATION ]["gz"].isNull() ) 
         gyroCalibration.gz = doc[ CFG_PARAM_GYRO_CALIBRATION ]["gz"];
 
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a1" ].isNull() ) 
+        formulaData.a[0] = doc[ CFG_PARAM_FORMULA_DATA ][ "a1" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a2" ].isNull() ) 
+        formulaData.a[1] = doc[ CFG_PARAM_FORMULA_DATA ][ "a2" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a3" ].isNull() ) 
+        formulaData.a[2] = doc[ CFG_PARAM_FORMULA_DATA ][ "a3" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a4" ].isNull() ) 
+        formulaData.a[3] = doc[ CFG_PARAM_FORMULA_DATA ][ "a4" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "a5" ].isNull() ) 
+        formulaData.a[4] = doc[ CFG_PARAM_FORMULA_DATA ][ "a5" ].as<double>();
+
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g1" ].isNull() ) 
+        formulaData.g[0] = doc[ CFG_PARAM_FORMULA_DATA ][ "g1" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g2" ].isNull() ) 
+        formulaData.g[1] = doc[ CFG_PARAM_FORMULA_DATA ][ "g2" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g3" ].isNull() ) 
+        formulaData.g[2] = doc[ CFG_PARAM_FORMULA_DATA ][ "g3" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g4" ].isNull() ) 
+        formulaData.g[3] = doc[ CFG_PARAM_FORMULA_DATA ][ "g4" ].as<double>();
+    if( !doc[ CFG_PARAM_FORMULA_DATA ][ "g5" ].isNull() ) 
+        formulaData.g[4] = doc[ CFG_PARAM_FORMULA_DATA ][ "g5" ];
+
     myConfig.debug();
     saveNeeded = false;     // Reset save flag 
     Log.notice(F("CFG : Configuration file " CFG_FILENAME " loaded." CR));
@@ -217,9 +266,7 @@ bool Config::loadFile() {
 // Check if file system can be mounted, if not we format it.
 //
 void Config::formatFileSystem() {
-#if LOG_LEVEL==6
-    Log.verbose(F("CFG : Formating filesystem." CR));
-#endif    
+    Log.notice(F("CFG : Formating filesystem." CR));
     LittleFS.format();
 }
 
@@ -227,9 +274,9 @@ void Config::formatFileSystem() {
 // Check if file system can be mounted, if not we format it.
 //
 void Config::checkFileSystem() {
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Checking if filesystem is valid." CR));
-#endif    
+    #endif    
 
     if (LittleFS.begin()) {
         Log.notice(F("CFG : Filesystem mounted." CR));
@@ -243,9 +290,10 @@ void Config::checkFileSystem() {
 // Dump the configuration to the serial port
 //
 void Config::debug() {
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( CFG_DISABLE_LOGGING )
     Log.verbose(F("CFG : Dumping configration " CFG_FILENAME "." CR));
     Log.verbose(F("CFG : ID; '%s'." CR), getID());
+    Log.verbose(F("CFG : WIFI; '%s', '%s'." CR), getWifiSSID(), getWifiPass() );
     Log.verbose(F("CFG : mDNS; '%s'." CR), getMDNS() );
     Log.verbose(F("CFG : Sleep interval; %d." CR), getSleepInterval() );
     Log.verbose(F("CFG : OTA; '%s'." CR), getOtaURL() );
@@ -262,7 +310,7 @@ void Config::debug() {
                         getInfluxDb2PushBucket(), getInfluxDb2PushToken() );
 //  Log.verbose(F("CFG : Accel offset\t%d\t%d\t%d" CR), gyroCalibration.ax, gyroCalibration.ay, gyroCalibration.az );
 //  Log.verbose(F("CFG : Gyro offset \t%d\t%d\t%d" CR), gyroCalibration.gx, gyroCalibration.gy, gyroCalibration.gz );
-#endif    
+    #endif    
 }
 
 // EOF 

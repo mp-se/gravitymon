@@ -39,7 +39,7 @@ SOFTWARE.
 DoubleResetDetector *drd;
 
 // Define constats for this program
-#if LOG_LEVEL==6 
+#ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000;                  // ms, time to wait between changes to output
 bool sleepModeAlwaysSkip = true;           // Web interface can override normal behaviour
 #else
@@ -83,9 +83,7 @@ void checkSleepMode( float angle, float volt ) {
 
     // sleep mode active when flat
     //sleepModeActive = ( angle<85 && angle>5 ) ? true : false; 
-#if LOG_LEVEL==6
-    Log.verbose(F("MAIN: Deep sleep mode %s (angle=%F volt=%F)." CR), sleepModeActive ? "true":"false", angle, volt );
-#endif
+    Log.notice(F("MAIN: Deep sleep mode %s (angle=%F volt=%F)." CR), sleepModeActive ? "true":"false", angle, volt );
 }
 
 //
@@ -98,9 +96,9 @@ void setup() {
 
     drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
     bool dt = drd->detectDoubleReset();  
-#if LOG_LEVEL==6
+    #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
     Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str() );
-#endif
+    #endif
     // Main startup
     Log.notice(F("Main: Started setup for %s." CR), String( ESP.getChipId(), HEX).c_str() );
     printBuildOptions();
@@ -114,22 +112,27 @@ void setup() {
     ESP.wdtDisable();
     ESP.wdtEnable( interval*2 );
 
-    LOG_PERF_START("main-temp-setup");
-    myTempSensor.setup();
-    LOG_PERF_STOP("main-temp-setup");
+    if( dt ) {
+        Log.notice(F("Main: Detected doubletap on reset. Reset reason=%s" CR), ESP.getResetReason().c_str());
+    }
 
-    // Setup Gyro
-    //LOG_PERF_START("main-gyro-setup");    // Takes less than 5ms, so skip this measurment
-    if( !myGyro.setup() )
-        Log.error(F("Main: Failed to initialize the gyro." CR));
-    //LOG_PERF_STOP("main-gyro-setup");
-
-    if( dt ) 
-        Log.notice(F("Main: Detected doubletap on reset." CR));
+#ifdef SKIP_SLEEPMODE
+    // If we are running in debug more we skip this part. makes is hard to debug in case of crash/watchdog reset
+    dt = false;
+#endif
 
     LOG_PERF_START("main-wifi-connect");
     myWifi.connect( dt );                   // This will return false if unable to connect to wifi, will be handled in loop()
     LOG_PERF_STOP("main-wifi-connect");
+
+    LOG_PERF_START("main-temp-setup");
+    myTempSensor.setup();
+    LOG_PERF_STOP("main-temp-setup");
+
+    //LOG_PERF_START("main-gyro-setup");    // Takes less than 5ms, so skip this measurment
+    if( !myGyro.setup() )
+        Log.error(F("Main: Failed to initialize the gyro." CR));
+    //LOG_PERF_STOP("main-gyro-setup");
 
     LOG_PERF_START("main-gyro-read");
     myGyro.read();
@@ -171,9 +174,11 @@ void loop() {
         float volt = myBatteryVoltage.getVoltage();
         //float sensorTemp = 0;
         loopCounter++;
-#if LOG_LEVEL==6
+        
+        #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
         Log.verbose(F("Main: Entering main loop." CR) );
-#endif   
+        #endif   
+
         // Process the sensor values and push data to targets.
         // ------------------------------------------------------------------------------------------------
         // If we dont get any readings we just skip this and try again the next interval.
@@ -196,9 +201,10 @@ void loop() {
             float corrGravity = gravityTemperatureCorrection( gravity, temp, myConfig.getTempFormat() ); 
             //LOG_PERF_STOP("loop-gravity-corr");
 
-#if LOG_LEVEL==6
+            #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
             Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%F, gravity=%F, corr=%F." CR), angle, temp, gravity, corrGravity );
-#endif   
+            #endif   
+
             // Limit the printout when sleep mode is not active.
             if( loopCounter%10 == 0 || sleepModeActive ) {
                 Log.notice(F("Main: angle=%F, temp=%F, gravity=%F, corrGravity=%F, batt=%F." CR), angle, temp, gravity, corrGravity ,volt );
@@ -215,9 +221,10 @@ void loop() {
             Log.error(F("Main: No gyro value." CR) );
         }
 
-#if LOG_LEVEL==6
+        #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
         Log.verbose(F("Main: Sleep mode not active." CR) );
-#endif   
+        #endif   
+
         int sleepInterval = myConfig.getSleepInterval();
 
         // If we didnt get a wifi connection, we enter sleep for a short time to conserve battery.
@@ -241,7 +248,7 @@ void loop() {
         // Enter sleep mode if the conditions are right 
         // ------------------------------------------------------------------------------------------------
         //
-        if( goToSleep ) {
+        if( goToSleep && !sleepModeAlwaysSkip ) {
             Log.notice(F("MAIN: Entering deep sleep for %d s, run time %l s, battery=%F V." CR), sleepInterval, (millis()-runtimeMillis)/1000, volt );
             LittleFS.end();
             myGyro.enterSleep();
@@ -267,10 +274,9 @@ void loop() {
         //LOG_PERF_STOP("loop-batt-read");
 
         loopMillis = millis();
-#if LOG_LEVEL==6
-        Log.verbose(F("Main: Heap %d kb FreeSketch %d kb." CR), ESP.getFreeHeap()/1024, ESP.getFreeSketchSpace()/1024 );
-        Log.verbose(F("Main: HeapFrag %d %%." CR), ESP.getHeapFragmentation() );
-#endif    
+        //#if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
+        Log.verbose(F("Main: Heap %d kb FreeSketch %d kb HeapFrag %d %%." CR), ESP.getFreeHeap()/1024, ESP.getFreeSketchSpace()/1024, ESP.getHeapFragmentation() );
+        //#endif    
     }
 
     myWebServer.loop();

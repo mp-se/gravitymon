@@ -36,77 +36,78 @@ SOFTWARE.
 #include <incbin.h>
 
 Wifi myWifi;
-WiFiManager myWifiManager; 
-bool shouldSaveConfig = false;
 
 const char* userSSID= USER_SSID;
 const char* userPWD = USER_SSID_PWD;
 
 //
-// Callback notifying us of the need to save config
-//
-void saveConfigCallback () {
-  shouldSaveConfig = true;
-}
-
-//
 // Connect to last known access point or create one if connection is not working. 
 //
 bool Wifi::connect( bool showPortal ) {
-#if LOG_LEVEL==6
-    Log.verbose(F("WIFI: Connecting to WIFI via connection manager (portal=%s)." CR), showPortal?"true":"false");
-    myWifiManager.setDebugOutput(true);    
-#endif
+
+    WiFi.persistent( true );
+    WiFi.mode(WIFI_STA);
+
+    if( !strlen( myConfig.getWifiSSID() ) )  {
+        Log.info(F("WIFI: No SSID seams to be stored, forcing portal to start." CR));
+        showPortal = true;
+    } else {
+        //Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), myConfig.getWifiPass() );
+        //Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(), "*****" );
+    }
+
     if( strlen(userSSID)==0 && showPortal ) {
+#if LOG_LEVEL==6
+        Log.verbose(F("WIFI: Connecting to WIFI via connection manager (portal=%s)." CR), showPortal?"true":"false");
+#endif
+        WiFiManager myWifiManager; 
         Log.notice(F("WIFI: Starting wifi portal." CR));
-
-        myWifiManager.setBreakAfterConfig( true );
-        myWifiManager.setSaveConfigCallback(saveConfigCallback);
-        myWifiManager.setMinimumSignalQuality(10);  
+        myWifiManager.setDebugOutput(true);    
         myWifiManager.setClass("invert");
-        myWifiManager.setHostname( myConfig.getMDNS() );
-        myWifiManager.setConfigPortalTimeout( 120 );             // Keep it open for 120 seconds
-        
-        WiFiManagerParameter mdnsParam("mDNS", "hostname", myConfig.getMDNS(), 20);
-        myWifiManager.addParameter( &mdnsParam );
-
-        myWifiManager.startConfigPortal( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
-
-        if( shouldSaveConfig ) {
-            myConfig.setMDNS( mdnsParam.getValue() );
+        myWifiManager.setConfigPortalTimeout( 120 );                                    // Keep it open for 120 seconds  
+        bool f = myWifiManager.startConfigPortal( WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD );
+        if( f ) {
+            //Log.notice(F("WIFI: Success got values from WIFI portal=%s,%s." CR), myWifiManager.getWiFiSSID(), myWifiManager.getWiFiPass() );
+            Log.notice(F("WIFI: Success got values from WIFI portal=%s,%s." CR), myWifiManager.getWiFiSSID(), "*****" );
+            myConfig.setWifiSSID( myWifiManager.getWiFiSSID() );
+            myConfig.setWifiPass( myWifiManager.getWiFiPass() );
             myConfig.saveFile();
+        } else {
+            Log.notice(F("WIFI: Failure from WIFI portal, rebooting." CR) );
+            delay(200);
+            ESP.reset();
         }
-    } 
+    }
 
     // Connect to wifi
     int i = 0;
 
-    Log.notice(F("WIFI: Connecting to WIFI." CR));
+    //Log.notice(F("WIFI: Connecting to WIFI, mode=%d,persistent=%d,fhy=%d ." CR), WiFi.getMode(), WiFi.getPersistent(), WiFi.getPhyMode() );
     WiFi.mode(WIFI_STA);
     if( strlen(userSSID) ) {
-        Log.notice(F("WIFI: Connecting to wifi using predefined settings %s." CR), userSSID);
+        Log.notice(F("WIFI: Connecting to wifi using hardcoded settings %s." CR), userSSID);
         WiFi.begin( userSSID, userPWD );
     } else {
-        WiFi.begin();
-#if LOG_LEVEL==6
-        Log.verbose(F("WIFI: Using SSID=%s, KEY=%s." CR), WiFi.SSID().c_str(), WiFi.psk().c_str() );
-#endif
+        Log.notice(F("WIFI: Connecting to wifi using stored settings %s." CR), myConfig.getWifiSSID());
+        WiFi.begin(myConfig.getWifiSSID(), myConfig.getWifiPass());
     }
+    
+    //WiFi.printDiag(Serial);
 
     while( WiFi.status() != WL_CONNECTED ) {
-        delay(100);
+        delay(200);
         Serial.print( "." );
 
-//        if( i++ > 60 ) {            // Try for 6 seconds.
-        if( i++ > 200 ) {            // Try for 20 seconds.
-            Log.error(F("WIFI: Failed to connect to wifi, aborting." CR));
+        if( i++ > 100 ) {            // Try for 20 seconds.
+            Log.error(F("WIFI: Failed to connect to wifi %d, aborting %s." CR), WiFi.status(), getIPAddress().c_str() );
+            WiFi.disconnect();
             return connectedFlag;   // Return to main that we have failed to connect.
         }
     }
     Serial.print( CR );
     connectedFlag = true;
     Log.notice(F("WIFI: Connected to wifi ip=%s." CR), getIPAddress().c_str() );
-    Log.notice(F("WIFI: Using mDNS name %s%s." CR), myConfig.getMDNS() );
+    Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS() );
     return connectedFlag;
 }
 

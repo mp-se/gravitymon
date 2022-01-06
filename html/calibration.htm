@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <title>Beer Gravity Monitor</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head> 
+<body class="py-4">
+
+<!-- START MENU -->
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+
+  <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbar"> 
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/index.htm">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/device.htm">Device</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/config.htm">Configuration</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/calibration.htm">Calibration</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/about.htm">About</a>
+      </li>
+    </ul>
+  </div>
+  <div class="spinner-border text-light" id="spinner" role="status"></div>
+</nav>
+
+<!-- START MAIN INDEX -->
+
+<div class="container">
+
+  <hr class="my-2">
+
+  <div class="alert alert-success alert-dismissible fade hide show d-none" role="alert" id="alert">
+    <div id="alert-msg">...</div>
+    <button type="button" id="alert-btn" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <script type="text/javascript">
+    function showError( msg ) {
+      $('.alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show')
+      $('#alert-msg').text( msg );
+    }
+
+    function showSuccess( msg ) {
+      $('.alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show')
+      $('#alert-msg').text( msg );
+    }
+
+    $("#alert-btn").click(function(e){
+      $('.alert').addClass('d-none').removeClass('show')
+    });    
+  </script>
+
+  <div class="accordion" id="accordion">
+
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h2 class="mb-0">
+          <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Formula calculation
+          </button>
+        </h2>
+      </div>  
+
+      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+          <form action="/api/formula" method="post">
+            <input type="text" name="id" id="id" hidden>
+
+            <div class="row mb-3">
+                Here you can create your gravity formula by entering angles/tilt and the corresponding gravity (SG). These values
+                will be saved for future use. Angles with 0 (zero) will be skipped. The values below will be used to check the 
+                formula and if the deviation is more than 1.5 SG then the forumla will be rejected. On the bottom of the page you can 
+                see a graph over the entered values + values calcualated by the formula.
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">#:</label>
+              <label class="col-sm-4 col-form-label">Angle/Tilt:</label>
+              <label class="col-sm-4 col-form-label">Gravity (SG):</label>
+            </div>
+
+            <div class="form-group row">
+              <label for="angle1" class="col-sm-2 col-form-label">1.</label>
+              <div class="col-sm-4">
+                <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a1" id="a1">
+              </div>
+              <div class="col-sm-4">
+                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g1" id="g1">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="angle2" class="col-sm-2 col-form-label">2.</label>
+              <div class="col-sm-4">
+                <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a2" id="a2">
+              </div>
+              <div class="col-sm-4">
+                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g2" id="g2">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="angle3" class="col-sm-2 col-form-label">3.</label>
+              <div class="col-sm-4">
+                <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a3" id="a3">
+              </div>
+              <div class="col-sm-4">
+                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g3" id="g3">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="angle4" class="col-sm-2 col-form-label">4.</label>
+              <div class="col-sm-4">
+                <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a4" id="a4">
+              </div>
+              <div class="col-sm-4">
+                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g4" id="g4">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="angle5" class="col-sm-2 col-form-label">5.</label>
+              <div class="col-sm-4">
+                <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a5" id="a5">
+              </div>
+              <div class="col-sm-4">
+                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g5" id="g5">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-sm-8 offset-sm-0">
+                <button type="submit" class="btn btn-primary" id="calculate-btn">Save & Calculate</button>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="calculate-btn" class="col-sm-2 col-form-label">Current angle: </label>
+              <label for="calculate-btn" class="col-sm-2 col-form-label" id="angle"></label>
+            </div>
+            <div class="form-group row">
+                <label for="calculate-btn" class="col-sm-2 col-form-label">Formula: </label>
+              <label for="calculate-btn" class="col-sm-8 col-form-label" id="formula">Loading...</label>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="my-4">
+  <div>
+    <canvas id="gravityChart"></canvas>
+  </div>
+  <hr class="my-4">
+</div>
+
+<script type="text/javascript">
+  var chartDataForm = [];
+  var chartDataCalc = [];
+
+  const dataSetChart = {
+    datasets: [{
+      label: 'Raw data',
+      borderColor: 'blue',
+      backgroundColor: 'blue',
+      data: chartDataForm
+    }, {
+      label: 'Calculated',
+      borderColor: 'green',
+      backgroundColor: 'green',
+      data: chartDataCalc
+    }]
+  }
+
+  const configChart = {
+    type: 'line',
+    data: dataSetChart,
+    options: {
+      responsive: true,
+      interaction: {
+        intersect: false,
+      },
+      scales: {
+        x: {
+          display: true,
+          type: 'linear',
+          grace: '5%',
+          title: {
+            display: true,
+            text: 'Angle/Tilt'
+          },
+          ticks: {
+            crossAlign: 'far'
+          },
+          suggestedMin: 25
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: 'Gravity'
+          },
+          suggestedMin: 1.000
+        }
+      }
+    }
+  };
+
+  var myChart = 0;
+</script>
+
+<script type="text/javascript">
+  g1.onchange = setFourNumberDecimal
+  g2.onchange = setFourNumberDecimal
+  g3.onchange = setFourNumberDecimal
+  g4.onchange = setFourNumberDecimal
+  g5.onchange = setFourNumberDecimal
+
+  a1.onchange = setTwoNumberDecimal
+  a2.onchange = setTwoNumberDecimal
+  a3.onchange = setTwoNumberDecimal
+  a4.onchange = setTwoNumberDecimal
+  a5.onchange = setTwoNumberDecimal
+
+  window.onload = getConfig;
+  setButtonDisabled( true );
+
+  function setTwoNumberDecimal(event) {
+    this.value = parseFloat(this.value).toFixed(2);
+    populateChart();
+  } 
+
+  function setFourNumberDecimal(event) {
+    this.value = parseFloat(this.value).toFixed(4);
+    populateChart();
+  } 
+
+  function populateChartForm(a, g) {
+    if( a != 0)
+      chartDataForm.push( { x: parseFloat(a), y: parseFloat(g) });
+  }
+
+  function populateChartCalc(a, g) {
+    chartDataCalc.push( { x: parseFloat(a), y: parseFloat(g) });
+  }
+
+  function populateChart() {
+
+    chartDataCalc.length = 0
+
+    for( i = 25.0; i<80.0; i+=5.0) {
+      var formula = $("#formula").text();
+      var angle = i.toString();
+      formula=formula.replaceAll( "tilt^3", angle+"*"+angle+"*"+angle );
+      formula=formula.replaceAll( "tilt^2", angle+"*"+angle );
+      formula=formula.replaceAll( "tilt", angle );
+      var g = eval( formula );
+      populateChartCalc( i, g );
+    }
+
+    chartDataForm.length = 0
+    populateChartForm( $("#a1").val(), $("#g1").val() );
+    populateChartForm( $("#a2").val(), $("#g2").val() );
+    populateChartForm( $("#a3").val(), $("#g3").val() );
+    populateChartForm( $("#a4").val(), $("#g4").val() );
+    populateChartForm( $("#a5").val(), $("#g5").val() );
+
+    if( myChart )
+      myChart.destroy();
+
+    myChart = new Chart(
+      document.getElementById('gravityChart'),
+      configChart
+    );
+  }
+
+  function setButtonDisabled( b ) {
+    $("#calculate-btn").prop("disabled", b);
+  }
+
+  // Get the configuration values from the API
+  function getConfig() {
+    setButtonDisabled( true );
+
+    var url = "/api/formula";
+    //var url = "/test/formula.json";
+    $('#spinner').show(); 
+    $.getJSON(url, function (cfg) {
+      console.log( cfg );
+     
+      $("#id").val(cfg["id"]);
+      $("#angle").text(cfg["angle"]);
+      $("#formula").text(cfg["gravity-formula"]);
+
+      $("#a1").val( parseFloat(cfg["a1"]).toFixed(2) );
+      $("#a2").val( parseFloat(cfg["a2"]).toFixed(2) );
+      $("#a3").val( parseFloat(cfg["a3"]).toFixed(2) );
+      $("#a4").val( parseFloat(cfg["a4"]).toFixed(2) );
+      $("#a5").val( parseFloat(cfg["a5"]).toFixed(2) );
+
+      $("#g1").val( parseFloat(cfg["g1"]).toFixed(4) );
+      $("#g2").val( parseFloat(cfg["g2"]).toFixed(4) );
+      $("#g3").val( parseFloat(cfg["g3"]).toFixed(4) );
+      $("#g4").val( parseFloat(cfg["g4"]).toFixed(4) );
+      $("#g5").val( parseFloat(cfg["g5"]).toFixed(4) );
+
+      populateChart();
+    })
+    .fail(function () {
+      showError('Unable to get data from the device.');
+    })
+    .always(function() {
+      $('#spinner').hide(); 
+      setButtonDisabled( false );
+    });
+  }
+</script>
+
+<!-- START FOOTER -->
+
+<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div>
+</body>
+</html>

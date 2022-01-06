@@ -31,7 +31,7 @@ SOFTWARE.
 class Wifi {
     private:
         // WIFI
-        bool      connectedFlag = false;
+        bool connectedFlag = false;
 
         // OTA
         bool newFirmware = false;

@@ -25,20 +25,70 @@ SOFTWARE.
 #define _WEBSERVER_H
 
 // Include 
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <incbin.h>
+
+// Binary resouces
+#if defined( EMBED_HTML )
+INCBIN_EXTERN(IndexHtm);
+INCBIN_EXTERN(DeviceHtm);
+INCBIN_EXTERN(ConfigHtm);
+INCBIN_EXTERN(CalibrationHtm);
+INCBIN_EXTERN(AboutHtm);
+#else
+INCBIN_EXTERN(UploadHtm);
+#endif
 
 // classes
 class WebServer {
+    private:
+        ESP8266WebServer *server = 0;
+        File uploadFile;
+        int lastFormulaCreateError = 0; 
+
+        void webHandleConfig();
+        void webHandleFormulaWrite();
+        void webHandleFormulaRead();
+        void webHandleConfigHardware();
+        void webHandleConfigGravity();
+        void webHandleConfigPush();
+        void webHandleConfigDevice();
+        void webHandleStatusSleepmode();
+        void webHandleClearWIFI();
+        void webHandleStatus();
+        void webHandleFactoryReset();
+        void webHandleCalibrate();
+        void webHandleUploadFile();
+        void webHandleUpload();
+        void webHandleDevice();
+        void webHandlePageNotFound();
+
+        // Inline functions.
+        void webReturnOK() { server->send(200); }
+#if defined( EMBED_HTML )
+        void webReturnIndexHtm() { server->send_P(200, "text/html", (const char*) gIndexHtmData, gIndexHtmSize ); }
+        void webReturnDeviceHtm() { server->send_P(200, "text/html", (const char*) gDeviceHtmData, gDeviceHtmSize ); }
+        void webReturnConfigHtm() { server->send_P(200, "text/html", (const char*) gConfigHtmData, gConfigHtmSize ); }
+        void webReturnCalibrationHtm() { server->send_P(200, "text/html", (const char*) gCalibrationHtmData, gCalibrationHtmSize ); }
+        void webReturnAboutHtm() { server->send_P(200, "text/html", (const char*) gAboutHtmData, gAboutHtmSize ); }
+#else
+        void webReturnUploadHtm() { server->send_P(200, "text/html", (const char*) gUploadHtmData, gUploadHtmSize ); }
+#endif
+
     public:
         enum HtmlFile {
             HTML_INDEX = 0,
             HTML_DEVICE = 1,
             HTML_CONFIG = 2,
-            HTML_ABOUT = 3
+            HTML_ABOUT = 3,
+            HTML_CALIBRATION = 4
         };
 
-        bool        setupWebServer();
-        void        loop();
-        bool        checkHtmlFile( HtmlFile item );
+        bool setupWebServer();
+        void loop();
+        bool checkHtmlFile( HtmlFile item );
         const char* getHtmlFileName( HtmlFile item );
 };
 
