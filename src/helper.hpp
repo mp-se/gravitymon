@@ -45,7 +45,7 @@ void printHeap();
 // Classes
 class SerialDebug {
  public:
-  explicit SerialDebug(const int32 serialSpeed = 115200L);
+  explicit SerialDebug(const uint32_t serialSpeed = 115200L);
   static Logging* getLog() { return &Log; }
 };
 

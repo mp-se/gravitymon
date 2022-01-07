@@ -50,7 +50,7 @@ void deepSleep(int t) {
 #if LOG_LEVEL == 6
   Log.verbose(F("HELP: Entering sleep mode for %ds." CR), t);
 #endif
-  uint64_t wake = t * 1000000;
+  uint32_t wake = t * 1000000;
   ESP.deepSleep(wake);
 }
 
@@ -78,14 +78,14 @@ void printBuildOptions() {
 //
 // Configure serial debug output
 //
-SerialDebug::SerialDebug(const int32 serialSpeed) {
+SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   // Start serial with auto-detected rate (default to defined BAUD)
   Serial.flush();
   Serial.begin(serialSpeed);
 
   getLog()->begin(LOG_LEVEL, &Serial, true);
   getLog()->setPrefix(printTimestamp);
-  getLog()->notice(F("SDBG: Serial logging started at %l." CR), serialSpeed);
+  getLog()->notice(F("SDBG: Serial logging started at %u." CR), serialSpeed);
 }
 
 //
@@ -168,7 +168,7 @@ void PerfLogging::print() {
   while (pe != 0) {
     // Log.notice( F("PERF: %s=%l ms (%l, %l)" CR), pe->key, (pe->end -
     // pe->start), pe->start, pe->end );
-    Log.notice(F("PERF: %s %lms" CR), pe->key, pe->max);
+    Log.notice(F("PERF: %s %ums" CR), pe->key, pe->max);
     pe = pe->next;
   }
 }

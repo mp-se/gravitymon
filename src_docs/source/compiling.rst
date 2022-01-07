@@ -10,6 +10,17 @@ I use the following tools in order to build and manage the software:
 * Git for Windows
 * VSCode plugin: Minify (used to minimise the html files)
 
+Code Formatting
+===============
+I use pre-commit and their cpp style checks to validate the code. Plugin defintions are found in **.pre-commit-config.yaml**
+
+https://www.pre-commit.com
+
+.. note::
+
+  There is not yet any automatic checks since this does not work on Windows. It works if running under WSL2 with Ubuntu.
+
+
 Targets 
 =======
 In the repository there are 3 targets defined

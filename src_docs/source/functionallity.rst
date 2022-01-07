@@ -60,6 +60,8 @@ Experimental features
 * Use the temperature sensor in the gyro instead of DS18B20
 
   This works fine when the device has time to cool down between measurements and it saves a few milliseconds (reduced battery consumption). My testing shows that this is quite accurate. 
+  There is lots of battery power to save, reading the temp sensor takes almost as long as the gyro. This could reduce the run time by 40-50% and probly extend battery life with the same. 
+  However more testing is required. Might add this as an option in the UI.
   
 .. note::
 

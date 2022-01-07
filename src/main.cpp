@@ -105,6 +105,8 @@ void setup() {
   drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
   bool dt = drd->detectDoubleReset();
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
+  delay(3000);  // Wait a few seconds when using debug version so that serial is
+                // started.
   Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str());
 #endif
   // Main startup
@@ -141,18 +143,15 @@ void setup() {
   myTempSensor.setup();
   LOG_PERF_STOP("main-temp-setup");
 
-  // LOG_PERF_START("main-gyro-setup");    // Takes less than 5ms, so skip this
-  // measurment
-  if (!myGyro.setup()) Log.error(F("Main: Failed to initialize the gyro." CR));
-  // LOG_PERF_STOP("main-gyro-setup");
+  if (!myGyro.setup())  // Takes less than 5ms, so skip this
+    Log.error(F("Main: Failed to initialize the gyro." CR));
 
   LOG_PERF_START("main-gyro-read");
   myGyro.read();
   LOG_PERF_STOP("main-gyro-read");
 
-  LOG_PERF_START("main-batt-read");
-  myBatteryVoltage.read();
-  LOG_PERF_STOP("main-batt-read");
+  myBatteryVoltage
+      .read();  // Takes less than 1ms, so skip this measuring time on this
   checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
 
   if (myWifi.isConnected()) {
@@ -164,10 +163,8 @@ void setup() {
     LOG_PERF_STOP("main-wifi-ota");
 #endif
     if (!sleepModeActive) {
-      // LOG_PERF_START("main-webserver-setup");   // Takes less than 4ms , so
-      // skip this measurment
-      myWebServer.setupWebServer();
-      // LOG_PERF_STOP("main-webserver-setup");
+      myWebServer
+          .setupWebServer();  // Takes less than 4ms, so skip this measurement
     }
   }
 
@@ -186,7 +183,6 @@ void loop() {
   if (sleepModeActive || abs((int32_t)(millis() - loopMillis)) > interval) {
     float angle = 0;
     float volt = myBatteryVoltage.getVoltage();
-    // float sensorTemp = 0;
     loopCounter++;
 
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
@@ -207,16 +203,11 @@ void loop() {
       float temp = myTempSensor.getTempC();
       LOG_PERF_STOP("loop-temp-read");
 
-      // LOG_PERF_START("loop-gravity-calc");  // Takes less than 2ms , so skip
-      // this measurment
-      float gravity = calculateGravity(angle, temp);
-      // LOG_PERF_STOP("loop-gravity-calc");
-
-      // LOG_PERF_START("loop-gravity-corr");  // Takes less than 2ms , so skip
-      // this measurment Use default correction temperature of 20C
-      float corrGravity =
-          gravityTemperatureCorrection(gravity, temp, myConfig.getTempFormat());
-      // LOG_PERF_STOP("loop-gravity-corr");
+      float gravity = calculateGravity(
+          angle, temp);  // Takes less than 2ms , so skip this measurment
+      float corrGravity = gravityTemperatureCorrection(
+          gravity, temp, myConfig.getTempFormat());  // Takes less than 2ms , so
+                                                     // skip this measurment
 
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
       Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%F, gravity=%F, "
@@ -299,17 +290,15 @@ void loop() {
     myGyro.read();
     LOG_PERF_STOP("loop-gyro-read");
 
-    // LOG_PERF_START("loop-batt-read"); // Takes less than 2ms , so skip this
-    // measurment
-    myBatteryVoltage.read();
-    // LOG_PERF_STOP("loop-batt-read");
+    myBatteryVoltage.read();  // Takes less than 2ms , so skip this measurment
 
     loopMillis = millis();
-    // #if LOG_LEVEL==6 && !defined( MAIN_DISABLE_LOGGING )
+#if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
     Log.verbose(F("Main: Heap %d kb FreeSketch %d kb HeapFrag %d %%." CR),
                 ESP.getFreeHeap() / 1024, ESP.getFreeSketchSpace() / 1024,
                 ESP.getHeapFragmentation());
-    // #endif
+#endif
+    LOG_PERF_PUSH();
   }
 
   myWebServer.loop();

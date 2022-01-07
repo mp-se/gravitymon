@@ -39,11 +39,13 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Compiling the software</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tools">Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-formatting">Code Formatting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#targets">Targets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#source-structure">Source structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
@@ -88,6 +90,15 @@
 <li><p>Git for Windows</p></li>
 <li><p>VSCode plugin: Minify (used to minimise the html files)</p></li>
 </ul>
+</section>
+<section id="code-formatting">
+<h2>Code Formatting<a class="headerlink" href="#code-formatting" title="Permalink to this headline"></a></h2>
+<p>I use pre-commit and their cpp style checks to validate the code. Plugin defintions are found in <strong>.pre-commit-config.yaml</strong></p>
+<p><a class="reference external" href="https://www.pre-commit.com">https://www.pre-commit.com</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is not yet any automatic checks since this does not work on Windows. It works if running under WSL2 with Ubuntu.</p>
+</div>
 </section>
 <section id="targets">
 <h2>Targets<a class="headerlink" href="#targets" title="Permalink to this headline"></a></h2>
