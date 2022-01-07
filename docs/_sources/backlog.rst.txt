@@ -4,7 +4,6 @@ Backlog of changes
 Documentation
 -------------
 
-- Updates over OTA (from PC)
 - Write contribution instructions
 
 Code

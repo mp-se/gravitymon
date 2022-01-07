@@ -7,9 +7,9 @@ Official esptool
 The prefered option for flashing esp8266 device is via the official esptool. Documentation can be found 
 here; https://docs.espressif.com/projects/esptool/en/latest/esp32/
 
-The basic command for flashing is;
+The basic command for flashing on Windows is;
 
-``esptool.py --port COM4 write_flash 0x1000 firmware.bin``
+``esptool.py --port COM4 write_flash 0x0 firmware.bin``
 
 In the /bin directory you will find 3 different firmware builds;
 
