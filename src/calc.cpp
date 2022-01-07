@@ -21,11 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <config.h>
 #include <curveFitting.h>
 #include <tinyexpr.h>
 
 #include <calc.hpp>
+#include <config.hpp>
 #include <helper.hpp>
 #include <tempsensor.hpp>
 
