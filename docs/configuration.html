@@ -43,7 +43,7 @@
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#main-index">Main index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#status">Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#device">Device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Configuration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#device-setting">Device Setting</a></li>
@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ispindle-format">iSpindle format</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#brewfather-format">Brewfather format</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#influx-db-v2">Influx DB v2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-json">version.json</a></li>
 </ul>
 </li>
 </ul>
@@ -76,6 +77,7 @@
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backlog.html">Backlog of changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backlog.html#header-1">Header 1</a></li>
 </ul>
 
         </div>
@@ -112,8 +114,8 @@
 <li><p>Placed in horizontal mode 85-90 degrees</p></li>
 <li><p>Charger connected &gt;4.15V</p></li>
 </ul>
-<section id="main-index">
-<h2>Main index<a class="headerlink" href="#main-index" title="Permalink to this headline"></a></h2>
+<section id="status">
+<h2>Status<a class="headerlink" href="#status" title="Permalink to this headline"></a></h2>
 <p>URL: (<a class="reference external" href="http://gravmon.local">http://gravmon.local</a>)</p>
 <a class="reference internal image-reference" href="_images/index.png"><img alt="Index page" src="_images/index.png" style="width: 800px;" /></a>
 <p>Configuration is accessed by entering the URL for the device, this will be the mDNS name <em>device.local</em> or the IP adress. The following chapter assumes the device name is <em>gravmon</em>.</p>
@@ -270,14 +272,6 @@ code the update will be done during startup.</p>
 </li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.1.1</span><span class="o">/</span><span class="n">firmware</span><span class="o">/</span><span class="n">gravmon</span><span class="o">/</span>
-
-
-<span class="n">Contents</span> <span class="n">version</span><span class="o">.</span><span class="n">json</span><span class="o">.</span> <span class="n">The</span> <span class="n">version</span> <span class="ow">is</span> <span class="n">used</span> <span class="n">by</span> <span class="n">the</span> <span class="n">device</span> <span class="n">to</span> <span class="n">check</span> <span class="k">if</span> <span class="n">the</span> <span class="n">this</span> <span class="n">version</span> <span class="ow">is</span> <span class="n">newer</span><span class="o">.</span> <span class="n">The</span> <span class="n">html</span> <span class="n">files</span> <span class="n">will</span> <span class="n">also</span> <span class="n">be</span> <span class="n">downloaded</span> <span class="k">if</span> <span class="n">the</span> <span class="n">are</span> <span class="n">present</span> <span class="n">on</span> <span class="n">the</span> <span class="n">server</span><span class="o">.</span> <span class="n">This</span> <span class="n">way</span> <span class="n">it</span><span class="s1">&#39;s easy to</span>
-<span class="n">upgrade</span> <span class="n">to</span> <span class="n">a</span> <span class="n">version</span> <span class="n">that</span> <span class="n">serve</span> <span class="n">the</span> <span class="n">html</span> <span class="n">files</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">file</span> <span class="n">system</span><span class="o">.</span> <span class="n">If</span> <span class="n">they</span> <span class="n">dont</span> <span class="n">exist</span> <span class="n">nothing</span> <span class="n">will</span> <span class="n">happen</span><span class="p">,</span> <span class="n">the</span> <span class="n">OTA</span> <span class="n">flashing</span> <span class="n">will</span> <span class="n">still</span> <span class="n">work</span><span class="o">.</span> <span class="n">If</span> <span class="n">the</span> <span class="n">html</span> <span class="n">files</span> <span class="n">are</span> <span class="n">missing</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">file</span> <span class="n">system</span>
-<span class="n">they</span> <span class="n">can</span> <span class="n">be</span> <span class="n">uploaded</span> <span class="n">manually</span> <span class="n">afterwards</span><span class="o">.</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s2">&quot;project&quot;</span><span class="p">:</span><span class="s2">&quot;gravmon&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">:</span><span class="s2">&quot;0.4.10&quot;</span><span class="p">,</span>  <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;index.min.htm&quot;</span><span class="p">,</span> <span class="s2">&quot;device.min.htm&quot;</span><span class="p">,</span> <span class="s2">&quot;config.min.htm&quot;</span><span class="p">,</span> <span class="s2">&quot;calibration.min.htm&quot;</span><span class="p">,</span> <span class="s2">&quot;about.min.htm&quot;</span> <span class="p">]</span> <span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -291,159 +285,183 @@ code the update will be done during startup.</p>
 </section>
 <section id="rest-api">
 <h2>REST API<a class="headerlink" href="#rest-api" title="Permalink to this headline"></a></h2>
+<p>All the API’s use a key called <code class="docutils literal notranslate"><span class="pre">ID</span></code> which is the unique device id (chip id). This is used as an API key when sending requests to the device.</p>
 <section id="get-api-config">
 <h3>GET: /api/config<a class="headerlink" href="#get-api-config" title="Permalink to this headline"></a></h3>
 <p>Retrive the current configuation of the device via an HTTP GET command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;mdns&quot;</span><span class="p">:</span> <span class="s2">&quot;gravmon&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;ota-url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://192.168.1.50:80/firmware/gravmon/&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;temp-format&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;brewfather-push&quot;</span><span class="p">:</span> <span class="s2">&quot;http://log.brewfather.net/stream?id=Qwerty&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;http-push&quot;</span><span class="p">:</span> <span class="s2">&quot;http://192.168.1.50:9090/api/v1/Qwerty/telemetry&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;http-push2&quot;</span><span class="p">:</span> <span class="s2">&quot;http://192.168.1.50/ispindel&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;influxdb2-push&quot;</span><span class="p">:</span> <span class="s2">&quot;http://192.168.1.50:8086&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;influxdb2-org&quot;</span><span class="p">:</span> <span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;influxdb2-bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;influxdb2-auth&quot;</span><span class="p">:</span> <span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;sleep-interval&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
-   <span class="s2">&quot;voltage-factor&quot;</span><span class="p">:</span> <span class="mf">1.59</span><span class="p">,</span>
-   <span class="s2">&quot;gravity-formula&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;gravity-format&quot;</span><span class="p">:</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;temp-adjustment-value&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;gravity-temp-adjustment&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-   <span class="s2">&quot;gyro-calibration-data&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;ax&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">330</span><span class="p">,</span>
-      <span class="s2">&quot;ay&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">2249</span><span class="p">,</span>
-      <span class="s2">&quot;az&quot;</span><span class="p">:</span> <span class="mi">1170</span><span class="p">,</span>
-      <span class="s2">&quot;gx&quot;</span><span class="p">:</span> <span class="mi">99</span><span class="p">,</span>
-      <span class="s2">&quot;gy&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span>
-      <span class="s2">&quot;gz&quot;</span><span class="p">:</span> <span class="mi">4</span>
-   <span class="p">},</span>
-   <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="mf">90.93</span><span class="p">,</span>
-   <span class="s2">&quot;gravity&quot;</span><span class="p">:</span> <span class="mf">1.105</span><span class="p">,</span>
-   <span class="s2">&quot;battery&quot;</span><span class="p">:</span> <span class="mf">0.04</span>
-<span class="p">}</span>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gravity-format</span></code> is always <code class="docutils literal notranslate"><span class="pre">G</span></code> (plato is not yet supported)</p></li>
+</ul>
+<p>Other parameters are the same as in the configuration guide.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;mdns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gravmon&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;ota-url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://192.168.1.50:80/firmware/gravmon/&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;brewfather-push&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://log.brewfather.net/stream?id=Qwerty&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;http-push&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://192.168.1.50:9090/api/v1/Qwerty/telemetry&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;http-push2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://192.168.1.50/ispindel&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;influxdb2-push&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://192.168.1.50:8086&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;influxdb2-org&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;influxdb2-bucket&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;influxdb2-auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;sleep-interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;voltage-factor&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.59</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity-formula&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity-format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;G&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-adjustment-value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity-temp-adjustment&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gyro-calibration-data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ax&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-330</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;ay&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-2249</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;az&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1170</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;gx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">99</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;gy&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-6</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;gz&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
+<span class="w">   </span><span class="p">},</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">90.93</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.105</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;battery&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="get-api-device">
 <h3>GET: /api/device<a class="headerlink" href="#get-api-device" title="Permalink to this headline"></a></h3>
 <p>Retrive the current device settings via an HTTP GET command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;app-name&quot;</span><span class="p">:</span> <span class="s2">&quot;GravityMon &quot;</span><span class="p">,</span>
-   <span class="s2">&quot;app-ver&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.0&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;mdns&quot;</span><span class="p">:</span> <span class="s2">&quot;gravmon&quot;</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;app-name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GravityMon &quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;app-ver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.0.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;mdns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gravmon&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="get-api-status">
 <h3>GET: /api/status<a class="headerlink" href="#get-api-status" title="Permalink to this headline"></a></h3>
 <p>Retrive the current device status via an HTTP GET command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="mf">89.86</span><span class="p">,</span>
-   <span class="s2">&quot;gravity&quot;</span><span class="p">:</span> <span class="mf">1.1052</span><span class="p">,</span>
-   <span class="s2">&quot;gravity-tempcorr&quot;</span><span class="p">:</span> <span class="mf">1.1031</span><span class="p">,</span>
-   <span class="s2">&quot;temp-c&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;temp-f&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
-   <span class="s2">&quot;battery&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;temp-format&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;sleep-mode&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-   <span class="s2">&quot;rssi&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">56</span>
-<span class="p">}</span>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
+</ul>
+<p>Other parameters are the same as in the configuration guide.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">89.86</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1052</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity-tempcorr&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1031</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-c&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-f&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;battery&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;sleep-mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;rssi&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-56</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="get-api-config-formula">
 <h3>GET: /api/config/formula<a class="headerlink" href="#get-api-config-formula" title="Permalink to this headline"></a></h3>
 <p>Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>   <span class="o">//</span> <span class="n">Unique</span> <span class="nb">id</span> <span class="n">of</span> <span class="n">the</span> <span class="n">device</span> <span class="p">(</span><span class="n">API</span> <span class="n">Key</span><span class="p">)</span>
-   <span class="s2">&quot;a1&quot;</span><span class="p">:</span> <span class="mf">22.4</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Angles</span> <span class="mi">1</span><span class="o">-</span><span class="mi">5</span>
-   <span class="s2">&quot;a2&quot;</span><span class="p">:</span> <span class="mf">54.4</span><span class="p">,</span>
-   <span class="s2">&quot;a3&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
-   <span class="s2">&quot;a4&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;a5&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;g1&quot;</span><span class="p">:</span> <span class="mf">1.000</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Gravity</span> <span class="mi">1</span><span class="o">-</span><span class="mi">5</span>
-   <span class="s2">&quot;g2&quot;</span><span class="p">:</span> <span class="mf">1.053</span><span class="p">,</span>
-   <span class="s2">&quot;g3&quot;</span><span class="p">:</span> <span class="mf">1.062</span><span class="p">,</span>
-   <span class="s2">&quot;g4&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-   <span class="s2">&quot;g5&quot;</span><span class="p">:</span> <span class="mi">1</span>
-   <span class="s2">&quot;gravity-formula&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436&quot;</span><span class="p">,</span>
-<span class="p">}</span>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a4</span></code> are the angles/tilt readings (up to 5 are currently supported)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g4</span></code> are the corresponding gravity reaadings (in SG)</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.4</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">54.4</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a4&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a5&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.000</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.053</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.062</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g4&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g5&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity-formula&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="post-api-config-device">
 <h3>POST: /api/config/device<a class="headerlink" href="#post-api-config-device" title="Permalink to this headline"></a></h3>
 <p>Used to update device settings via an HTTP POST command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>            <span class="o">//</span> <span class="n">Unique</span> <span class="nb">id</span> <span class="n">of</span> <span class="n">the</span> <span class="n">device</span> <span class="p">(</span><span class="n">API</span> <span class="n">Key</span><span class="p">)</span>
-   <span class="s2">&quot;mdns&quot;</span><span class="p">:</span> <span class="s2">&quot;gravmon&quot;</span><span class="p">,</span>         <span class="o">//</span> <span class="n">Network</span> <span class="n">name</span> <span class="o">/</span> <span class="n">Device</span> <span class="n">name</span>
-   <span class="s2">&quot;temp-format&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>        <span class="o">//</span> <span class="n">Can</span> <span class="n">be</span> <span class="n">either</span> <span class="n">C</span> <span class="ow">or</span> <span class="n">F</span>
-   <span class="s2">&quot;sleep-interval&quot;</span><span class="p">:</span> <span class="mi">30</span>       <span class="o">//</span> <span class="n">Time</span> <span class="ow">in</span> <span class="n">seconds</span><span class="o">.</span>
-<span class="p">}</span>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;mdns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gravmon&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;sleep-interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="post-api-config-push">
 <h3>POST: /api/config/push<a class="headerlink" href="#post-api-config-push" title="Permalink to this headline"></a></h3>
 <p>Used to update push settings via an HTTP POST command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>                                 <span class="o">//</span> <span class="n">Unique</span> <span class="nb">id</span> <span class="n">of</span> <span class="n">the</span> <span class="n">device</span> <span class="p">(</span><span class="n">API</span> <span class="n">Key</span><span class="p">)</span>
-   <span class="s2">&quot;http-push&quot;</span><span class="p">:</span> <span class="s2">&quot;http://192.168.1.50/ispindel&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;http-push2&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;brewfather-push&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;influxdb2-push&quot;</span><span class="p">:</span> <span class="s2">&quot;http://192.168.1.50:8086&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;influxdb2-org&quot;</span><span class="p">:</span> <span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;influxdb2-bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;influxdb2-auth&quot;</span><span class="p">:</span> <span class="s2">&quot;Qwerty&quot;</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;http-push&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://192.168.1.50/ispindel&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;http-push2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;brewfather-push&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;influxdb2-push&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://192.168.1.50:8086&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;influxdb2-org&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;influxdb2-bucket&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwerty&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;influxdb2-auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Qwerty&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="post-api-config-gravity">
 <h3>POST: /api/config/gravity<a class="headerlink" href="#post-api-config-gravity" title="Permalink to this headline"></a></h3>
 <p>Used to update gravity settings via an HTTP POST command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>                                                   <span class="o">//</span> <span class="n">Unique</span> <span class="nb">id</span> <span class="n">of</span> <span class="n">the</span> <span class="n">device</span> <span class="p">(</span><span class="n">API</span> <span class="n">Key</span><span class="p">)</span>
-   <span class="s2">&quot;gravity-formula&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;gravity-temp-adjustment&quot;</span><span class="p">:</span> <span class="s2">&quot;off&quot;</span>                                  <span class="o">//</span> <span class="n">Can</span> <span class="n">be</span> <span class="n">on</span> <span class="ow">or</span> <span class="n">off</span>
-<span class="p">}</span>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gravity-formula</span></code> keywords <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">tilt</span></code> are supported.</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity-formula&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity-temp-adjustment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;off&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="id2">
 <h3>POST: /api/config/gravity<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
 <p>Used to update hardware settings via an HTTP POST command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>                                    <span class="o">//</span> <span class="n">Unique</span> <span class="nb">id</span> <span class="n">of</span> <span class="n">the</span> <span class="n">device</span> <span class="p">(</span><span class="n">API</span> <span class="n">Key</span><span class="p">)</span>
-   <span class="s2">&quot;voltage-factor&quot;</span><span class="p">:</span> <span class="mf">1.59</span><span class="p">,</span>
-   <span class="s2">&quot;temp-adjustment&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;ota-url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://192.168.1.50/firmware/gravmon/&quot;</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;voltage-factor&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.59</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-adjustment&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;ota-url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://192.168.1.50/firmware/gravmon/&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="post-api-config-formula">
 <h3>POST: /api/config/formula<a class="headerlink" href="#post-api-config-formula" title="Permalink to this headline"></a></h3>
 <p>Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>   <span class="o">//</span> <span class="n">Unique</span> <span class="nb">id</span> <span class="n">of</span> <span class="n">the</span> <span class="n">device</span> <span class="p">(</span><span class="n">API</span> <span class="n">Key</span><span class="p">)</span>
-   <span class="s2">&quot;a1&quot;</span><span class="p">:</span> <span class="mf">22.4</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Angles</span> <span class="mi">1</span><span class="o">-</span><span class="mi">5</span>
-   <span class="s2">&quot;a2&quot;</span><span class="p">:</span> <span class="mf">54.4</span><span class="p">,</span>
-   <span class="s2">&quot;a3&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
-   <span class="s2">&quot;a4&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;a5&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-   <span class="s2">&quot;g1&quot;</span><span class="p">:</span> <span class="mf">1.000</span><span class="p">,</span>      <span class="o">//</span> <span class="n">Gravity</span> <span class="mi">1</span><span class="o">-</span><span class="mi">5</span>
-   <span class="s2">&quot;g2&quot;</span><span class="p">:</span> <span class="mf">1.053</span><span class="p">,</span>
-   <span class="s2">&quot;g3&quot;</span><span class="p">:</span> <span class="mf">1.062</span><span class="p">,</span>
-   <span class="s2">&quot;g4&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-   <span class="s2">&quot;g5&quot;</span><span class="p">:</span> <span class="mi">1</span>
-<span class="p">}</span>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a4</span></code> are the angles/tilt readings (up to 5 are currently supported)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g4</span></code> are the corresponding gravity reaadings (in SG)</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.4</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">54.4</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a4&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;a5&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.000</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.053</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.062</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g4&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;g5&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -453,36 +471,38 @@ code the update will be done during startup.</p>
 <section id="ispindle-format">
 <h3>iSpindle format<a class="headerlink" href="#ispindle-format" title="Permalink to this headline"></a></h3>
 <p>This is the format used for standard http posts.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;gravmon&quot;</span><span class="p">,</span>      <span class="o">//</span> <span class="n">mDNS</span> <span class="n">name</span>
-   <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="s2">&quot;2E6753&quot;</span><span class="p">,</span>          <span class="o">//</span> <span class="n">esp</span> <span class="n">device</span> <span class="nb">id</span>
-   <span class="s2">&quot;token&quot;</span> <span class="p">:</span> <span class="s2">&quot;gravmon&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="mi">900</span><span class="p">,</span>
-   <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="mf">20.5</span><span class="p">,</span>     <span class="o">//</span> <span class="n">C</span> <span class="ow">or</span> <span class="n">F</span> <span class="n">based</span> <span class="n">on</span> <span class="n">setting</span><span class="p">,</span> <span class="n">adjusted</span> <span class="n">value</span><span class="o">.</span>
-   <span class="s2">&quot;temp-units&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>       <span class="o">//</span> <span class="n">C</span> <span class="ow">or</span> <span class="n">F</span> <span class="n">based</span> <span class="n">on</span> <span class="n">setting</span>
-   <span class="s2">&quot;gravity&quot;</span><span class="p">:</span> <span class="mf">1.0050</span><span class="p">,</span>       <span class="o">//</span> <span class="n">Raw</span> <span class="ow">or</span> <span class="n">temperature</span> <span class="n">corrected</span> <span class="n">gravity</span> <span class="p">(</span><span class="n">based</span> <span class="n">on</span> <span class="n">setting</span><span class="p">)</span>
-   <span class="s2">&quot;corr-gravity&quot;</span><span class="p">:</span> <span class="mf">1.0050</span><span class="p">,</span>  <span class="o">//</span> <span class="n">Temperature</span> <span class="n">corrected</span> <span class="n">gravity</span>
-   <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="mf">45.34</span><span class="p">,</span>
-   <span class="s2">&quot;battery&quot;</span><span class="p">:</span> <span class="mf">3.67</span><span class="p">,</span>
-   <span class="s2">&quot;rssi&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">12</span><span class="p">,</span>
-
-   <span class="o">//</span> <span class="n">Extension</span> <span class="n">fields</span>
-   <span class="s2">&quot;run-time&quot;</span><span class="p">:</span> <span class="mi">230</span><span class="p">,</span>         <span class="o">//</span> <span class="n">ms</span><span class="p">,</span> <span class="n">Runtime</span> <span class="k">for</span> <span class="n">this</span> <span class="n">reading</span><span class="p">,</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">an</span> <span class="n">additional</span> <span class="n">field</span> <span class="ow">not</span> <span class="n">part</span> <span class="n">of</span> <span class="n">the</span> <span class="n">standard</span> <span class="nb">format</span>
-<span class="p">}</span>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">corr-gravity</span></code> is an extended parameter containing a temperature corrected gravity reading.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run-time</span></code> is an extended parameter containing the number of seconds the execution took.</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gravmon&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2E6753&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;token&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gravmon&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">900</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temperature&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">20.5</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-units&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;corr-gravity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;angle&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">45.34</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;battery&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;rssi&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-12</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;run-time&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="brewfather-format">
 <h3>Brewfather format<a class="headerlink" href="#brewfather-format" title="Permalink to this headline"></a></h3>
 <p>This is the format for Brewfather</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="s2">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;gravmon&quot;</span><span class="p">,</span>      <span class="o">//</span> <span class="n">mDNS</span> <span class="n">name</span>
-   <span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="mf">20.5</span><span class="p">,</span>
-   <span class="s2">&quot;temp-unit&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
-   <span class="s2">&quot;battery&quot;</span><span class="p">:</span> <span class="mf">3.67</span><span class="p">,</span>
-   <span class="s2">&quot;gravity&quot;</span><span class="p">:</span> <span class="mf">1.0050</span><span class="p">,</span>
-   <span class="s2">&quot;gravity_unit&quot;</span><span class="p">:</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span>     <span class="o">//</span> <span class="n">G</span> <span class="o">=</span> <span class="n">SG</span><span class="p">,</span> <span class="n">Plato</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">yet</span> <span class="n">supported</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gravmon&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">20.5</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;temp-unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;battery&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;gravity_unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;G&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -490,6 +510,25 @@ code the update will be done during startup.</p>
 <h3>Influx DB v2<a class="headerlink" href="#influx-db-v2" title="Permalink to this headline"></a></h3>
 <p>This is the format for InfluxDB v2</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">measurement</span><span class="p">,</span><span class="n">host</span><span class="o">=&lt;</span><span class="n">mdns</span><span class="o">&gt;</span><span class="p">,</span><span class="n">device</span><span class="o">=&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="p">,</span><span class="n">temp</span><span class="o">-</span><span class="nb">format</span><span class="o">=&lt;</span><span class="n">C</span><span class="o">|</span><span class="n">F</span><span class="o">&gt;</span><span class="p">,</span><span class="n">gravity</span><span class="o">-</span><span class="nb">format</span><span class="o">=</span><span class="n">SG</span><span class="p">,</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">corr</span><span class="o">-</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">angle</span><span class="o">=</span><span class="mf">45.45</span><span class="p">,</span><span class="n">temp</span><span class="o">=</span><span class="mf">20.1</span><span class="p">,</span><span class="n">battery</span><span class="o">=</span><span class="mf">3.96</span><span class="p">,</span><span class="n">rssi</span><span class="o">=-</span><span class="mi">18</span>
+</pre></div>
+</div>
+</section>
+<section id="version-json">
+<h3>version.json<a class="headerlink" href="#version-json" title="Permalink to this headline"></a></h3>
+<p>Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it’s easy to
+upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system
+they can be uploaded manually afterwards.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;project&quot;</span><span class="p">:</span><span class="s2">&quot;gravmon&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="s2">&quot;0.4.10&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">&quot;html&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;index.min.htm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;device.min.htm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;config.min.htm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;calibration.min.htm&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;about.min.htm&quot;</span><span class="w"></span>
+<span class="w">   </span><span class="p">]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>

@@ -8,7 +8,7 @@ Welcome to GravityMon's documentation!
 
 .. note::
 
-  Preliminary documentation. This is work in progress. 
+  Preliminary documentation. This is work in progress. This documentation reflects **v0.5**
   
 
 GravityMon is a replacement firmare for the iSpindle hardware. It's used to measure gravity in beer and show the progress

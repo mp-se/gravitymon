@@ -9,8 +9,8 @@ One of the following conditions will place the device in `configuration mode`:
 - Placed in horizontal mode 85-90 degrees
 - Charger connected >4.15V
 
-Main index
-==========
+Status 
+======
 
 URL: (http://gravmon.local)
 
@@ -140,7 +140,7 @@ Gravity Settings
 
    This is the formula used for temperature calibration (temp is in F). Cal = 20C.
 
-::
+.. code-block::
 
    gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0.00000000232820948*temp^3)/(1.00130346-0.000134722124*cal+0.00000204052596*cal^2-0.00000000232820948*cal^3))
 
@@ -169,18 +169,10 @@ Hardware Settings
 
    Example; OTA URL (don't forget trailing dash), the name of the file should be firmware.bin
 
-::
-  
+.. code-block::
+
    http://192.168.1.1/firmware/gravmon/
   
-
-   Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it's easy to 
-   upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system 
-   they can be uploaded manually afterwards. 
-
-::
-
-   { "project":"gravmon", "version":"0.4.10",  "html": [ "index.min.htm", "device.min.htm", "config.min.htm", "calibration.min.htm", "about.min.htm" ] }
 
 
 Create formula
@@ -202,12 +194,19 @@ Once the formula is created a graph over the entered values and a simulation of 
 REST API
 =============================
 
+All the API's use a key called ``ID`` which is the unique device id (chip id). This is used as an API key when sending requests to the device. 
+
 GET: /api/config
 ****************
 
 Retrive the current configuation of the device via an HTTP GET command. Payload is in JSON format.
 
-::
+* ``temp-format`` can be either ``C`` or ``F``
+* ``gravity-format`` is always ``G`` (plato is not yet supported)
+
+Other parameters are the same as in the configuration guide.
+
+.. code-block:: json
 
    {
       "mdns": "gravmon",
@@ -246,7 +245,7 @@ GET: /api/device
 
 Retrive the current device settings via an HTTP GET command. Payload is in JSON format.
 
-::
+.. code-block:: json
 
    {
       "app-name": "GravityMon ",
@@ -261,7 +260,11 @@ GET: /api/status
 
 Retrive the current device status via an HTTP GET command. Payload is in JSON format.
 
-::
+* ``temp-format`` can be either ``C`` or ``F``
+
+Other parameters are the same as in the configuration guide.
+
+.. code-block:: json
 
    {
       "id": "ee1bfc",
@@ -282,16 +285,19 @@ GET: /api/config/formula
 
 Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
 
-:: 
+* ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
+* ``g1``-``g4`` are the corresponding gravity reaadings (in SG)
+
+.. code-block:: json
 
    { 
-      "id": "ee1bfc",   // Unique id of the device (API Key)
-      "a1": 22.4,       // Angles 1-5
+      "id": "ee1bfc",   
+      "a1": 22.4,       
       "a2": 54.4, 
       "a3": 58, 
       "a4": 0, 
       "a5": 0, 
-      "g1": 1.000,      // Gravity 1-5
+      "g1": 1.000,      
       "g2": 1.053, 
       "g3": 1.062, 
       "g4": 1, 
@@ -305,13 +311,15 @@ POST: /api/config/device
 
 Used to update device settings via an HTTP POST command. Payload is in JSON format.
 
-:: 
+* ``temp-format`` can be either ``C`` or ``F``
+
+.. code-block:: json
 
    { 
-      "id": "ee1bfc",            // Unique id of the device (API Key)
-      "mdns": "gravmon",         // Network name / Device name
-      "temp-format": "C",        // Can be either C or F
-      "sleep-interval": 30       // Time in seconds.
+      "id": "ee1bfc",            
+      "mdns": "gravmon",         
+      "temp-format": "C",        
+      "sleep-interval": 30       
    }
 
 
@@ -320,10 +328,10 @@ POST: /api/config/push
 
 Used to update push settings via an HTTP POST command. Payload is in JSON format.
 
-:: 
+.. code-block:: json
 
    { 
-      "id": "ee1bfc",                                 // Unique id of the device (API Key)
+      "id": "ee1bfc",                                 
       "http-push": "http://192.168.1.50/ispindel", 
       "http-push2": "", 
       "brewfather-push": "",
@@ -339,12 +347,14 @@ POST: /api/config/gravity
 
 Used to update gravity settings via an HTTP POST command. Payload is in JSON format.
 
-:: 
+* ``gravity-formula`` keywords ``temp`` and ``tilt`` are supported.
+
+.. code-block:: json
 
    { 
-      "id": "ee1bfc",                                                   // Unique id of the device (API Key)
+      "id": "ee1bfc",                                                   
       "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
-      "gravity-temp-adjustment": "off"                                  // Can be on or off
+      "gravity-temp-adjustment": "off"                                  
    }
 
 
@@ -353,10 +363,10 @@ POST: /api/config/gravity
 
 Used to update hardware settings via an HTTP POST command. Payload is in JSON format.
 
-:: 
+.. code-block:: json
 
    { 
-      "id": "ee1bfc",                                    // Unique id of the device (API Key)
+      "id": "ee1bfc",                                   
       "voltage-factor": 1.59, 
       "temp-adjustment": 0, 
       "ota-url": "http://192.168.1.50/firmware/gravmon/" 
@@ -368,16 +378,19 @@ POST: /api/config/formula
 
 Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.
 
-:: 
+* ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
+* ``g1``-``g4`` are the corresponding gravity reaadings (in SG)
+
+.. code-block:: json
 
    { 
-      "id": "ee1bfc",   // Unique id of the device (API Key)
-      "a1": 22.4,       // Angles 1-5
+      "id": "ee1bfc",   
+      "a1": 22.4,       
       "a2": 54.4, 
       "a3": 58, 
       "a4": 0, 
       "a5": 0, 
-      "g1": 1.000,      // Gravity 1-5
+      "g1": 1.000,      
       "g2": 1.053, 
       "g3": 1.062, 
       "g4": 1, 
@@ -393,23 +406,24 @@ iSpindle format
 
 This is the format used for standard http posts. 
 
-::
+* ``corr-gravity`` is an extended parameter containing a temperature corrected gravity reading.
+* ``run-time`` is an extended parameter containing the number of seconds the execution took.
+
+.. code-block:: json
 
    { 
-      "name" : "gravmon",      // mDNS name
-      "ID": "2E6753",          // esp device id
+      "name" : "gravmon",
+      "ID": "2E6753",
       "token" : "gravmon",
-      "interval": 900,     
-      "temperature": 20.5,     // C or F based on setting, adjusted value.
-      "temp-units": "C",       // C or F based on setting
-      "gravity": 1.0050,       // Raw or temperature corrected gravity (based on setting)
-      "corr-gravity": 1.0050,  // Temperature corrected gravity 
+      "interval": 900,
+      "temperature": 20.5,
+      "temp-units": "C",
+      "gravity": 1.0050,
+      "corr-gravity": 1.0050,
       "angle": 45.34,
       "battery": 3.67,
       "rssi": -12,
-
-      // Extension fields
-      "run-time": 230,         // ms, Runtime for this reading, this is an additional field not part of the standard format
+      "run-time": 6
    }
    
 
@@ -419,15 +433,15 @@ Brewfather format
 This is the format for Brewfather
 
 
-::
+.. code-block:: json
 
    { 
-      "name" : "gravmon",      // mDNS name
+      "name" : "gravmon",     
       "temp": 20.5,
       "temp-unit": "C",
       "battery": 3.67,
       "gravity": 1.0050,
-      "gravity_unit": "G",     // G = SG, Plato is not yet supported
+      "gravity_unit": "G",
    }
 
 
@@ -436,8 +450,28 @@ Influx DB v2
 
 This is the format for InfluxDB v2
 
-
-::
+.. code-block::
    
    measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG,gravity=1.0004,corr-gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
    
+
+version.json
+************
+
+Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it's easy to 
+upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system 
+they can be uploaded manually afterwards. 
+
+.. code-block:: json
+
+   { 
+      "project":"gravmon", 
+      "version":"0.4.10",  
+      "html": [ 
+         "index.min.htm", 
+         "device.min.htm", 
+         "config.min.htm", 
+         "calibration.min.htm", 
+         "about.min.htm" 
+      ] 
+   }
