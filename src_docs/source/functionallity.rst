@@ -73,3 +73,17 @@ Experimental features
 
   *See the compile section for more information.*
 
+Typical performance 
+-------------------
+
+Since I have the possibility to measaure the performance of different function in the code this is what I have been able to gather.
+
+The typical runtime in a measurement cycle is approx 2 seconds and in some cases it can take up to 6-8 seconds but this is mainly related to establishing the WIFI connection. So stable wifi is 
+essential for long batterylife. Out of the 2 seconds of run-time the major time is spent on gyro readings (1.3s) and temperature measurements of (0.6s) so using the gyro sensor for measureing 
+temperature would reduce the total runtime with 25%. Sending data over http takes less than 100ms (on my local network) so this is not drawing much power. 
+
+The image below shows how the run-time varies over time. The pink line is the wifi connection time and this is why the time varies. 
+
+.. image:: images/perf1.png
+  :width: 800
+  :alt: Performance view
