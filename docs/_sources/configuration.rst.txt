@@ -174,11 +174,13 @@ Hardware Settings
    http://192.168.1.1/firmware/gravmon/
   
 
-   Contents version.json
+   Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it's easy to 
+   upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system 
+   they can be uploaded manually afterwards. 
 
 ::
 
-   { "project":"gravmon", "version":"0.5.0" }
+   { "project":"gravmon", "version":"0.4.10",  "html": [ "index.min.htm", "device.min.htm", "config.min.htm", "calibration.min.htm", "about.min.htm" ] }
 
 
 Create formula

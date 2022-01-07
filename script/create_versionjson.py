@@ -36,7 +36,7 @@ def after_build(source, target, env):
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
-    # Copy file 4
+    # Copy file 5
     source = dir + "\\data\\calibration.min.htm"
     target = dir + "\\bin\\calibration.min.htm"
     print( "Copy file : " + source + " -> " + target )
@@ -48,9 +48,9 @@ def after_build(source, target, env):
     print( "Creating version.json" )
     f = open( target, "w" )
     f.write( "{ \"project\":\"gravmon\", \"version\":" + ver + ", " ) 
-    f.write( " \"html\": [ \"index.min.htm\", \"device.min.htm\", \"config.min.htm\", \"about.min.htm\" ] }" )
+    f.write( " \"html\": [ \"index.min.htm\", \"device.min.htm\", \"config.min.htm\", \"calibration.min.htm\", \"about.min.htm\" ] }" )
     f.close()
 
 
 print( "Adding custom build step (create json):")
-env.AddPreAction("buildprog", after_build)
+env.AddPostAction("buildprog", after_build)
