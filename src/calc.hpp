@@ -21,23 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#define INCBIN_OUTPUT_SECTION ".irom.text"
-#include <incbin.h>
+#ifndef SRC_CALC_HPP_
+#define SRC_CALC_HPP_
 
-#if defined(EMBED_HTML)
+// Includes
+#include <config.hpp>
+#include <helper.hpp>
 
-// Using minify to reduce memory usage. Reducing RAM memory usage with about 7%
-INCBIN(IndexHtm, "data/index.min.htm");
-INCBIN(DeviceHtm, "data/device.min.htm");
-INCBIN(ConfigHtm, "data/config.min.htm");
-INCBIN(CalibrationHtm, "data/calibration.min.htm");
-INCBIN(AboutHtm, "data/about.min.htm");
+#define ERR_FORMULA_NOTENOUGHVALUES -1
+#define ERR_FORMULA_INTERNAL -2
+#define ERR_FORMULA_UNABLETOFFIND -3
 
-#else
+// Functions
+double calculateGravity(double angle, double temp, const char *tempFormula = 0);
+double gravityTemperatureCorrection(double gravity, double temp,
+                                    char tempFormat, double calTemp = 20);
+int createFormula(RawFormulaData &fd, char *formulaBuffer,
+                  int formulaBufferSize, int order);
 
-// Minium web interface for uploading htm files
-INCBIN(UploadHtm, "data/upload.min.htm");
-
-#endif
+#endif  // SRC_CALC_HPP_
 
 // EOF

@@ -21,23 +21,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#define INCBIN_OUTPUT_SECTION ".irom.text"
-#include <incbin.h>
+#ifndef SRC_WIFI_HPP_
+#define SRC_WIFI_HPP_
 
-#if defined(EMBED_HTML)
+// Include
+#include <ESP8266WiFi.h>
 
-// Using minify to reduce memory usage. Reducing RAM memory usage with about 7%
-INCBIN(IndexHtm, "data/index.min.htm");
-INCBIN(DeviceHtm, "data/device.min.htm");
-INCBIN(ConfigHtm, "data/config.min.htm");
-INCBIN(CalibrationHtm, "data/calibration.min.htm");
-INCBIN(AboutHtm, "data/about.min.htm");
+// classes
+class Wifi {
+ private:
+  // WIFI
+  bool connectedFlag = false;
 
-#else
+  // OTA
+  bool newFirmware = false;
+  bool parseFirmwareVersionString(int (&num)[3], const char *version);
+  void downloadFile(const char *fname);
 
-// Minium web interface for uploading htm files
-INCBIN(UploadHtm, "data/upload.min.htm");
+ public:
+  // WIFI
+  bool connect(bool showPortal = false);
+  bool disconnect();
+  bool isConnected() { return connectedFlag; }
+  String getIPAddress() { return WiFi.localIP().toString(); }
 
-#endif
+  // OTA
+  bool updateFirmware();
+  bool checkFirmwareVersion();
+};
+
+// Global instance created
+extern Wifi myWifi;
+
+#endif  // SRC_WIFI_HPP_
 
 // EOF

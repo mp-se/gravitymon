@@ -21,23 +21,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#define INCBIN_OUTPUT_SECTION ".irom.text"
-#include <incbin.h>
+#ifndef SRC_PUSHTARGET_HPP_
+#define SRC_PUSHTARGET_HPP_
 
-#if defined(EMBED_HTML)
+// Includes
+#include <Arduino.h>
+#include <ArduinoJson.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
 
-// Using minify to reduce memory usage. Reducing RAM memory usage with about 7%
-INCBIN(IndexHtm, "data/index.min.htm");
-INCBIN(DeviceHtm, "data/device.min.htm");
-INCBIN(ConfigHtm, "data/config.min.htm");
-INCBIN(CalibrationHtm, "data/calibration.min.htm");
-INCBIN(AboutHtm, "data/about.min.htm");
+#include <helper.hpp>
 
-#else
+// Classes
+class PushTarget {
+ private:
+  uint32_t ms;  // Used to check that we do not post to often
 
-// Minium web interface for uploading htm files
-INCBIN(UploadHtm, "data/upload.min.htm");
+  void sendBrewfather(float angle, float gravity, float corrGravity,
+                      float temp);
+  void sendHttp(String serverPath, float angle, float gravity,
+                float corrGravity, float temp, float runTime);
+  void sendInfluxDb2(float angle, float gravity, float corrGravity, float temp,
+                     float runTime);
 
-#endif
+ public:
+  PushTarget() { ms = millis(); }
+  void send(float angle, float gravity, float corrGravity, float temp,
+            float runTime, bool force = false);
+};
+
+extern PushTarget myPushTarget;
+
+#endif  // SRC_PUSHTARGET_HPP_
 
 // EOF

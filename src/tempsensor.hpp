@@ -21,23 +21,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#define INCBIN_OUTPUT_SECTION ".irom.text"
-#include <incbin.h>
+#ifndef SRC_TEMPSENSOR_HPP_
+#define SRC_TEMPSENSOR_HPP_
 
-#if defined(EMBED_HTML)
+// definitions
+float convertCtoF(float t);
 
-// Using minify to reduce memory usage. Reducing RAM memory usage with about 7%
-INCBIN(IndexHtm, "data/index.min.htm");
-INCBIN(DeviceHtm, "data/device.min.htm");
-INCBIN(ConfigHtm, "data/config.min.htm");
-INCBIN(CalibrationHtm, "data/calibration.min.htm");
-INCBIN(AboutHtm, "data/about.min.htm");
+// classes
+class TempSensor {
+ private:
+  bool hasSensor = false;
+  float tempSensorAdjF = 0;
+  float tempSensorAdjC = 0;
+  float getValue();
 
-#else
+ public:
+  void setup();
+  bool isSensorAttached() { return hasSensor; }
+  float getTempC() { return getValue() + tempSensorAdjC; }
+  float getTempF() { return convertCtoF(getValue()) + tempSensorAdjF; }
+};
 
-// Minium web interface for uploading htm files
-INCBIN(UploadHtm, "data/upload.min.htm");
+// Global instance created
+extern TempSensor myTempSensor;
 
-#endif
+#endif  // SRC_TEMPSENSOR_HPP_
 
 // EOF
