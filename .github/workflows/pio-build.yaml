@@ -36,4 +36,4 @@ jobs:
         pip install --upgrade platformio
 
     - name: Run PlatformIO
-      run: pio run -e release -e release-perf
+      run: pio run -e gravity-release -e gravity-perf
