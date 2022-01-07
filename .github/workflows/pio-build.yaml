@@ -2,7 +2,8 @@ name: PlatformIO CI
 
 on: 
   push:
-    branches: ghactions
+    branches: 
+      - ghactions
 
 jobs:
   build:
