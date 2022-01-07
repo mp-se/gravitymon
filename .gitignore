@@ -1,8 +1,9 @@
 .pio/*
 .vscode/*
 *.map
-docs/*
 test/*.md
 test/env/*
-test/*.py
+test/configure_*.py
 TODO.md
+src_docs/_build/*
+data/*.min.htm
