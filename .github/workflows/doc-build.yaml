@@ -24,8 +24,9 @@ jobs:
         run: |
           pwd
           ls -al
+          ls -al docs 
           git clone https://github.com/mp-se/gravitymon.git --branch ghpages --single-branch ghpages
-          cp -r docs/_build/html/* ghpages/
+          cp -r docs/* ghpages/
           cd ghpages
           git config --local user.email "action@noreply.github.com"
           git config --local user.name "GitHub Action"
