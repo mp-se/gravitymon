@@ -26,8 +26,9 @@ jobs:
           ls -al
           ls -al docs 
           git clone https://github.com/mp-se/gravitymon.git --branch ghpages --single-branch ghpages
-          cp -r docs/* ghpages/
+          cp -r docs/* ghpages/docs
           cd ghpages
+          touch docs/.nojekyll
           git config --local user.email "action@noreply.github.com"
           git config --local user.name "GitHub Action"
           git add .
