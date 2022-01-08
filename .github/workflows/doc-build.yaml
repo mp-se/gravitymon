@@ -26,9 +26,9 @@ jobs:
           author_name: GitHub Action
           author_email: magnus@users.noreply.github.com
 
-          branch: origin/docs
+          branch: docs
 
-          #branch_mode: create
+          branch_mode: create
           default_author: github_actor
           message: 'GitHub Action Build'
           pathspec_error_handling: ignore
