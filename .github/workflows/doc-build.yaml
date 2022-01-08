@@ -34,12 +34,12 @@ jobs:
           git config --local user.name "GitHub Action"
           git add .
           git commit -m "Update documentation" -a || true
-          git push https://${{secrets.token}}@github.com/mp-se/gravitymon.git
+#         git push https://${{secrets.token}}@github.com/mp-se/gravitymon.git
           # The above command will fail if no changes were present, so we ignore
           # the return code.
-#      - name: Push changes
-#        uses: ad-m/github-push-action@master
-#        with:
-#          branch: ghpages
-#          directory: docs
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ghpages
+          directory: ghpages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
