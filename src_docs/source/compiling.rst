@@ -43,8 +43,6 @@ Source structure
      - Directory for flashing device filesystem
    * - /doc
      - Various external documents used as input
-   * - /docs
-     - Folder published to github pages
    * - /html
      - Source for html files
    * - /img

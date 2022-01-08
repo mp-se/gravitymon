@@ -7,13 +7,32 @@ Official esptool
 The prefered option for flashing esp8266 device is via the official esptool. Documentation can be found 
 here; https://docs.espressif.com/projects/esptool/en/latest/esp32/
 
+Windows 10 should install a driver for the USB -> Serial automatically when you connect a esp8266.
+
+Flashing on windows
+*******************
+
 The basic command for flashing on Windows is;
 
-``esptool.py --port COM4 write_flash 0 firmware.bin``
+``esptool.py --port COM4 write_flash 0x0 firmware.bin``
 
 If there are issues you can try do erase the flash first using this command;
 
 ``esptool.py --port COM4 erase_flash``
+
+Serial Monitoring
+*******************
+
+To check output from the device (logs) there are several tools out there. I found this simple tool in the Windows Store called ``Serial Port Monitoring``. 
+Just select a baud rate of 115200, 8N1.
+
+.. image:: images/serial.png
+  :width: 800
+  :alt: Serial output
+
+
+Binaries
+********
 
 In the /bin directory you will find 3 different firmware builds;
 
@@ -46,4 +65,8 @@ the device its possible that wifi settings exist.
 If this is not configured in the device it will create an wirless access point called `GravMon`. Connect to this AP and 
 enter the SSID and password you want to use. If the web page dont open automatically you can enter the following adress 
 in the browser: **http://192.168.4.1**
+
+.. image:: images/wifi.png
+  :width: 200
+  :alt: Wifi page
 
