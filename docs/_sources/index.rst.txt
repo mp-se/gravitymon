@@ -11,8 +11,8 @@ Welcome to GravityMon's documentation!
   Preliminary documentation. This is work in progress. This documentation reflects **v0.5**
   
 
-GravityMon is a replacement firmare for the iSpindle hardware. It's used to measure gravity in beer and show the progress
-of fermentation. 
+GravityMon is a replacement firmare for the iSpindle firmware, it uses the same hardware configuration so 
+you can easily switch between them. It's used to measure gravity in beer and show the progress of fermentation. 
 
 For more information on this topic and function please visit https://www.ispindel.de.
 
@@ -35,7 +35,7 @@ be found here; https://github.com/mp-se/gravitymon
 The main differences:
 ---------------------
 
-* Operates in two modes `gravity monitoring` and `configuration mode`
+* Operates in two modes ``gravity monitoring`` and ``configuration mode``
 * Send data to multiple endpoints when pushing data.
 * Automatic temperature adjustment of gravity reading 
 * OTA support from local webserver 

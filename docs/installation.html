@@ -81,7 +81,9 @@
 <p>The prefered option for flashing esp8266 device is via the official esptool. Documentation can be found
 here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">https://docs.espressif.com/projects/esptool/en/latest/esp32/</a></p>
 <p>The basic command for flashing on Windows is;</p>
-<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">write_flash</span> <span class="pre">0x0</span> <span class="pre">firmware.bin</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">write_flash</span> <span class="pre">0</span> <span class="pre">firmware.bin</span></code></p>
+<p>If there are issues you can try do erase the flash first using this command;</p>
+<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">erase_flash</span></code></p>
 <p>In the /bin directory you will find 3 different firmware builds;</p>
 <ul>
 <li><p><strong>firmware.bin</strong></p>
