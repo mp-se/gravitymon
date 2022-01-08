@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Functionallity &mdash; GravityMon 0.5.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>Functionallity &mdash; GravityMon 0.5.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -37,13 +35,14 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Functionallity</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-main-differences">The main differences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-features">Other features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#experimental-features">Experimental features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#typical-performance">Typical performance</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
@@ -77,10 +76,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="functionallity">
-<h1>Functionallity<a class="headerlink" href="#functionallity" title="Permalink to this headline"></a></h1>
-<section id="the-main-differences">
-<h2>The main differences<a class="headerlink" href="#the-main-differences" title="Permalink to this headline"></a></h2>
+  <div class="section" id="functionallity">
+<h1>Functionallity<a class="headerlink" href="#functionallity" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-main-differences">
+<h2>The main differences<a class="headerlink" href="#the-main-differences" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p><strong>Operates in two modes `gravity monitoring` and `configuration mode`</strong></p>
 <p>In gravity monitoring mode it behaves just like the iSpindle, it wakes up at regular intervals, measure angle/tile, temperature, calculates gravity and pushes the data to defined endpoints.</p>
@@ -115,17 +114,17 @@ via an REST API so data can be pushed to the device via scripts (see API section
 <p>The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60seconds. This way we should avoid faulty measurements.</p>
 </li>
 </ul>
-</section>
-<section id="other-features">
-<h2>Other features<a class="headerlink" href="#other-features" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="other-features">
+<h2>Other features<a class="headerlink" href="#other-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Support for Celcius and Farenheigt as temperature formats.</p></li>
 <li><p>Support SG (Plato is not yet supported)</p></li>
 <li><p>Gyro data is read 50 times to ensure good accuracy</p></li>
 </ul>
-</section>
-<section id="experimental-features">
-<h2>Experimental features<a class="headerlink" href="#experimental-features" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="experimental-features">
+<h2>Experimental features<a class="headerlink" href="#experimental-features" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>Use the temperature sensor in the gyro instead of DS18B20</p>
 <p>This works fine when the device has time to cool down between measurements and it saves a few milliseconds (reduced battery consumption). My testing shows that this is quite accurate.
@@ -143,8 +142,17 @@ However more testing is required. Might add this as an option in the UI.</p>
 <p><em>See the compile section for more information.</em></p>
 </li>
 </ul>
-</section>
-</section>
+</div>
+<div class="section" id="typical-performance">
+<h2>Typical performance<a class="headerlink" href="#typical-performance" title="Permalink to this headline">¶</a></h2>
+<p>Since I have the possibility to measaure the performance of different function in the code this is what I have been able to gather.</p>
+<p>The typical runtime in a measurement cycle is approx 2 seconds and in some cases it can take up to 6-8 seconds but this is mainly related to establishing the WIFI connection. So stable wifi is
+essential for long batterylife. Out of the 2 seconds of run-time the major time is spent on gyro readings (1.3s) and temperature measurements of (0.6s) so using the gyro sensor for measureing
+temperature would reduce the total runtime with 25%. Sending data over http takes less than 100ms (on my local network) so this is not drawing much power.</p>
+<p>The image below shows how the run-time varies over time. The pink line is the wifi connection time and this is why the time varies.</p>
+<a class="reference internal image-reference" href="_images/perf1.png"><img alt="Performance view" src="_images/perf1.png" style="width: 800px;" /></a>
+</div>
+</div>
 
 
            </div>

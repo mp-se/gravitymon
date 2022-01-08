@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; GravityMon 0.5.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>Installation &mdash; GravityMon 0.5.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -37,7 +35,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
@@ -76,10 +74,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
-<section id="official-esptool">
-<h2>Official esptool<a class="headerlink" href="#official-esptool" title="Permalink to this headline"></a></h2>
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="official-esptool">
+<h2>Official esptool<a class="headerlink" href="#official-esptool" title="Permalink to this headline">¶</a></h2>
 <p>The prefered option for flashing esp8266 device is via the official esptool. Documentation can be found
 here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">https://docs.espressif.com/projects/esptool/en/latest/esp32/</a></p>
 <p>The basic command for flashing on Windows is;</p>
@@ -101,16 +99,16 @@ the configuration file.</p>
 <p>If the software becomes so large the html files can be moved to the file system, but this is not enabled by
 default (see compiling for details). This approach makes installation much easier and ensure that html files
 and code is in sync.</p>
-</section>
-<section id="configuring-wifi">
-<h2>Configuring WIFI<a class="headerlink" href="#configuring-wifi" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="configuring-wifi">
+<h2>Configuring WIFI<a class="headerlink" href="#configuring-wifi" title="Permalink to this headline">¶</a></h2>
 <p>When the device is flashed it will need to have WIFI configuration in order to work. If you have used other software on
 the device its possible that wifi settings exist.</p>
 <p>If this is not configured in the device it will create an wirless access point called <cite>GravMon</cite>. Connect to this AP and
 enter the SSID and password you want to use. If the web page dont open automatically you can enter the following adress
 in the browser: <strong>http://192.168.4.1</strong></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

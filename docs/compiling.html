@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Compiling the software &mdash; GravityMon 0.5.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>Compiling the software &mdash; GravityMon 0.5.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -37,7 +35,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
@@ -79,10 +77,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="compiling-the-software">
-<h1>Compiling the software<a class="headerlink" href="#compiling-the-software" title="Permalink to this headline"></a></h1>
-<section id="tools">
-<h2>Tools<a class="headerlink" href="#tools" title="Permalink to this headline"></a></h2>
+  <div class="section" id="compiling-the-software">
+<h1>Compiling the software<a class="headerlink" href="#compiling-the-software" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="tools">
+<h2>Tools<a class="headerlink" href="#tools" title="Permalink to this headline">¶</a></h2>
 <p>I use the following tools in order to build and manage the software:</p>
 <ul class="simple">
 <li><p>Visual Studio Code</p></li>
@@ -90,29 +88,29 @@
 <li><p>Git for Windows</p></li>
 <li><p>VSCode plugin: Minify (used to minimise the html files)</p></li>
 </ul>
-</section>
-<section id="code-formatting">
-<h2>Code Formatting<a class="headerlink" href="#code-formatting" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="code-formatting">
+<h2>Code Formatting<a class="headerlink" href="#code-formatting" title="Permalink to this headline">¶</a></h2>
 <p>I use pre-commit and their cpp style checks to validate the code. Plugin defintions are found in <strong>.pre-commit-config.yaml</strong></p>
 <p><a class="reference external" href="https://www.pre-commit.com">https://www.pre-commit.com</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>There is not yet any automatic checks since this does not work on Windows. It works if running under WSL2 with Ubuntu.</p>
 </div>
-</section>
-<section id="targets">
-<h2>Targets<a class="headerlink" href="#targets" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="targets">
+<h2>Targets<a class="headerlink" href="#targets" title="Permalink to this headline">¶</a></h2>
 <p>In the repository there are 3 targets defined</p>
 <ul class="simple">
 <li><p>gravity-debug; Maximum logging for trouble shooting, deep sleep is disabled.</p></li>
 <li><p>gravity-release; Standard release</p></li>
 <li><p>gravity-perf; Standard release but contains code for measuring performance</p></li>
 </ul>
-</section>
-<section id="source-structure">
-<h2>Source structure<a class="headerlink" href="#source-structure" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="source-structure">
+<h2>Source structure<a class="headerlink" href="#source-structure" title="Permalink to this headline">¶</a></h2>
 <table class="colwidths-given docutils align-default" id="id1">
-<caption><span class="caption-text">Directory structure</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Directory structure</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 40%" />
 <col style="width: 60%" />
@@ -161,12 +159,12 @@
 </tr>
 </tbody>
 </table>
-</section>
-<section id="options">
-<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <p>This is a list of C++ defines that is used to enable/disable functions in the code.</p>
 <table class="colwidths-given docutils align-default" id="id2">
-<caption><span class="caption-text">Defines</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Defines</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 40%" />
 <col style="width: 60%" />
@@ -221,8 +219,8 @@
 </tr>
 </tbody>
 </table>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
