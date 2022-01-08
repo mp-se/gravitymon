@@ -22,9 +22,9 @@ jobs:
 
       - name: Commit documentation changes
         run: |
-          git clone https://github.com/mp-se/gravitymon.git --branch docs --single-branch docs
-          cp -r docs/_build/html/* docs/
-          cd docs
+          git clone https://github.com/mp-se/gravitymon.git --branch ghpages --single-branch ghpages
+          cp -r docs/_build/html/* ghpages/
+          cd ghpages
           git config --local user.email "action@noreply.github.com"
           git config --local user.name "GitHub Action"
           git add .
@@ -34,7 +34,6 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          branch: docs
+          branch: ghpages
           directory: docs
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
