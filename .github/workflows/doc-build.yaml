@@ -1,0 +1,19 @@
+name: PlatformIO CI
+
+on: 
+  push:
+    branches: 
+      - ghactions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "src_docs/"
+          build-command: "sphinx-build -b html . _build"
+
