@@ -36,7 +36,7 @@ jobs:
           git config --global advice.detachedHead false
 
       - name: Run PlatformIO
-        run: pio run -e gravity-release -e gravity-perf
+        run: pio run -e gravity-release -e gravity-perf -e gravity-debug
 
       - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version. https://github.com/marketplace/actions/add-commit
         with:
