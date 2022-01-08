@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Functionallity &mdash; GravityMon 0.5.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Releases" href="releases.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GravityMon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Functionallity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-main-differences">The main differences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-features">Other features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experimental-features">Experimental features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backlog.html">Backlog of changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GravityMon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Functionallity</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/functionallity.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="functionallity">
+<h1>Functionallity<a class="headerlink" href="#functionallity" title="Permalink to this headline"></a></h1>
+<section id="the-main-differences">
+<h2>The main differences<a class="headerlink" href="#the-main-differences" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p><strong>Operates in two modes `gravity monitoring` and `configuration mode`</strong></p>
+<p>In gravity monitoring mode it behaves just like the iSpindle, it wakes up at regular intervals, measure angle/tile, temperature, calculates gravity and pushes the data to defined endpoints.</p>
+<p>In configuration mode the device is always active and the webserver is active. Here you can view the angle/tilt values, change configuration options and more. When in this mode you can also interact with the device
+via an REST API so data can be pushed to the device via scripts (see API section for more information)-</p>
+<p><em>See the configuration section for more information on how to trigger the configuration mode.</em></p>
+</li>
+<li><p><strong>Can send data to multiple endpoints at once</strong></p>
+<p>The orignial iSpindle can only have one destination, this sofware will push data to all defined endpoints so in theory you can use them all. However this will consume a lot of battery power so use only as many as needed.</p>
+<p>Currently the device supports the following endpoints: http (2 differnt), influxdb2 and Brewfather</p>
+<p>If you want additional targets please raise a feature request in the github repo.</p>
+</li>
+<li><p><strong>Build in function to create gravity formulas, so no need for using other tools for this part</strong></p>
+<p>Another big difference is that this software can create the gravity formula in the device, just enter the angle/gravity data that you have collected. You will also see a graph simulating how the formula would work.</p>
+</li>
+<li><p><strong>Automatic temperature adjustment of gravity reading</strong></p>
+<p>If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice feature that can correct the gravity as a second step making this independant of the formula.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This feature needs more testing to be validated.</p>
+</div>
+<ul>
+<li><p><strong>OTA support from local webserver</strong></p>
+<p>When starting up in configuration mode the device will check for a software update from a local webserver.</p>
+</li>
+<li><p><strong>DS18B20 temperature adjustments</strong></p>
+<p>You can adjust the temperature reading of the temperature sensor.</p>
+</li>
+<li><p><strong>Gyro Movement</strong></p>
+<p>The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60seconds. This way we should avoid faulty measurements.</p>
+</li>
+</ul>
+</section>
+<section id="other-features">
+<h2>Other features<a class="headerlink" href="#other-features" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Support for Celcius and Farenheigt as temperature formats.</p></li>
+<li><p>Support SG (Plato is not yet supported)</p></li>
+<li><p>Gyro data is read 50 times to ensure good accuracy</p></li>
+</ul>
+</section>
+<section id="experimental-features">
+<h2>Experimental features<a class="headerlink" href="#experimental-features" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p>Use the temperature sensor in the gyro instead of DS18B20</p>
+<p>This works fine when the device has time to cool down between measurements and it saves a few milliseconds (reduced battery consumption). My testing shows that this is quite accurate.
+There is lots of battery power to save, reading the temp sensor takes almost as long as the gyro. This could reduce the run time by 40-50% and probly extend battery life with the same.
+However more testing is required. Might add this as an option in the UI.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is not enabled by default.</p>
+</div>
+<ul>
+<li><p>Performance measurements</p>
+<p>I’ve also create a small library to measure execution code in some areas of the code that i know is time consuming. This way I can find a good balance between performace and quality.</p>
+<p><em>See the compile section for more information.</em></p>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="releases.html" class="btn btn-neutral float-left" title="Releases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021-2022, Magnus Persson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
