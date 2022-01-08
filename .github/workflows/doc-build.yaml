@@ -27,7 +27,8 @@ jobs:
           author_email: magnus@users.noreply.github.com
 
           branch: docs
-
+          
+          pull: 'NO-PULL'
           branch_mode: create
           default_author: github_actor
           message: 'GitHub Action Build'
