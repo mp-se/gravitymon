@@ -3,7 +3,7 @@ name: PlatformIO CI
 on: 
   push:
     branches: 
-      - dev2
+      - dev
 
 jobs:
   build:

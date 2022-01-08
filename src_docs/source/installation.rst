@@ -9,7 +9,11 @@ here; https://docs.espressif.com/projects/esptool/en/latest/esp32/
 
 The basic command for flashing on Windows is;
 
-``esptool.py --port COM4 write_flash 0x0 firmware.bin``
+``esptool.py --port COM4 write_flash 0 firmware.bin``
+
+If there are issues you can try do erase the flash first using this command;
+
+``esptool.py --port COM4 erase_flash``
 
 In the /bin directory you will find 3 different firmware builds;
 

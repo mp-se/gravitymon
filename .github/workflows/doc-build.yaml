@@ -18,8 +18,6 @@ jobs:
           pre-build-command: "pip install sphinx_rtd_theme"
           build-command: "sphinx-build -b html ./source ../docs"
 
-      # .nojekyll file must exist in docs
-
       - name: Commit documentation changes
         run: |
           pwd
