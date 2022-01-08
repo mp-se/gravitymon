@@ -58,9 +58,6 @@ bool GyroSensor::setup() {
 
     // Configure the sensor
     accelgyro.setTempSensorEnabled(true);
-    // accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);     // Set in
-    // .initalize() accelgyro.setFullScaleGyroRange(MPU6050_GYRO_FS_250);     //
-    // Set in .initalize()
     accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
 #if defined(GYRO_USE_INTERRUPT)
     // Alternative method to read data, let the MPU signal when sampling is
@@ -110,7 +107,6 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
   // Set some initial values
 #if defined(GYRO_SHOW_MINMAX)
   RawGyroData min, max;
-  // accelgyro.getRotation( &min.gx, &min.gy, &min.gz );
   accelgyro.getAcceleration(&min.ax, &min.ay, &min.az);
   min.temp = accelgyro.getTemperature();
   max = min;
@@ -122,8 +118,6 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
     }
 #endif
 
-    // accelgyro.getRotation( &raw.gx, &raw.gy, &raw.gz );
-    // accelgyro.getAcceleration( &raw.ax, &raw.ay, &raw.az );
     accelgyro.getMotion6(&raw.ax, &raw.ay, &raw.az, &raw.gx, &raw.gy, &raw.gz);
     raw.temp = accelgyro.getTemperature();
 
@@ -205,10 +199,6 @@ float GyroSensor::calculateAngle(RawGyroData &raw) {
 
   // Source: https://www.nxp.com/docs/en/application-note/AN3461.pdf
   float v = (acos(ay / sqrt(ax * ax + ay * ay + az * az)) * 180.0 / PI);
-  // Log.notice(F("GYRO: angle = %F." CR), v );
-  // double v = (acos( raw.az / sqrt( raw.ax*raw.ax + raw.ay*raw.ay +
-  // raw.az*raw.az ) ) *180.0 / PI); Log.notice(F("GYRO: angle = %F." CR), v );
-
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: angle = %F." CR), v);
 #endif
@@ -360,9 +350,6 @@ void GyroSensor::debug() {
   Log.verbose(F("GYRO: Debug - Rate        %d." CR), accelgyro.getRate());
   Log.verbose(F("GYRO: Debug - Gyro range  %d." CR),
               accelgyro.getFullScaleGyroRange());
-  //  Log.verbose(F("GYRO: Debug - I2C bypass %s." CR),
-  //  accelgyro.getI2CBypassEnabled()?"on":"off" ); Log.verbose(F("GYRO: Debug -
-  //  I2C master %s." CR), accelgyro.getI2CMasterModeEnabled()?"on":"off" );
   Log.verbose(F("GYRO: Debug - Acc FactX   %d." CR),
               accelgyro.getAccelXSelfTestFactoryTrim());
   Log.verbose(F("GYRO: Debug - Acc FactY   %d." CR),

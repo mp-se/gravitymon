@@ -74,8 +74,6 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[CFG_PARAM_PUSH_INFLUXDB2_BUCKET] = getInfluxDb2PushBucket();
   doc[CFG_PARAM_PUSH_INFLUXDB2_AUTH] = getInfluxDb2PushToken();
   doc[CFG_PARAM_SLEEP_INTERVAL] = getSleepInterval();
-  //  doc[ CFG_PARAM_PUSH_INTERVAL ]          = getSleepInterval();         //
-  //  TODO: @deprecated
   doc[CFG_PARAM_VOLTAGEFACTOR] = getVoltageFactor();
   doc[CFG_PARAM_GRAVITY_FORMULA] = getGravityFormula();
   doc[CFG_PARAM_GRAVITY_FORMAT] = String(getGravityFormat());
@@ -209,9 +207,6 @@ bool Config::loadFile() {
     setInfluxDb2PushToken(doc[CFG_PARAM_PUSH_INFLUXDB2_AUTH]);
   if (!doc[CFG_PARAM_SLEEP_INTERVAL].isNull())
     setSleepInterval(doc[CFG_PARAM_SLEEP_INTERVAL].as<int>());
-  if (!doc[CFG_PARAM_PUSH_INTERVAL].isNull())  // TODO: @deprecated
-    setSleepInterval(
-        doc[CFG_PARAM_PUSH_INTERVAL].as<int>());  // TODO: @deprecated
   if (!doc[CFG_PARAM_VOLTAGEFACTOR].isNull())
     setVoltageFactor(doc[CFG_PARAM_VOLTAGEFACTOR].as<float>());
   if (!doc[CFG_PARAM_GRAVITY_FORMULA].isNull())
@@ -314,10 +309,6 @@ void Config::debug() {
   Log.verbose(F("CFG : InfluxDb2; '%s', '%s', '%s', '%s'." CR),
               getInfluxDb2PushUrl(), getInfluxDb2PushOrg(),
               getInfluxDb2PushBucket(), getInfluxDb2PushToken());
-  //  Log.verbose(F("CFG : Accel offset\t%d\t%d\t%d" CR), gyroCalibration.ax,
-  //  gyroCalibration.ay, gyroCalibration.az ); Log.verbose(F("CFG : Gyro offset
-  //  \t%d\t%d\t%d" CR), gyroCalibration.gx, gyroCalibration.gy,
-  //  gyroCalibration.gz );
 #endif
 }
 

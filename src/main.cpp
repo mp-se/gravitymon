@@ -89,7 +89,6 @@ void checkSleepMode(float angle, float volt) {
                         : true;
 
   // sleep mode active when flat
-  // sleepModeActive = ( angle<85 && angle>5 ) ? true : false;
   Log.notice(F("MAIN: Deep sleep mode %s (angle=%F volt=%F)." CR),
              sleepModeActive ? "true" : "false", angle, volt);
 }

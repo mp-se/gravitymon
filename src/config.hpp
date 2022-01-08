@@ -58,8 +58,6 @@ SOFTWARE.
 #define CFG_PARAM_PUSH_INFLUXDB2_BUCKET "influxdb2-bucket"  // URL
 #define CFG_PARAM_PUSH_INFLUXDB2_AUTH "influxdb2-auth"      // URL
 #define CFG_PARAM_SLEEP_INTERVAL "sleep-interval"           // Sleep interval
-// TODO: @deprecated setting
-#define CFG_PARAM_PUSH_INTERVAL "push-interval"  // Time between push
 #define CFG_PARAM_TEMPFORMAT "temp-format"       // C or F
 #define CFG_PARAM_VOLTAGEFACTOR \
   "voltage-factor"  // Factor to calculate the battery voltage

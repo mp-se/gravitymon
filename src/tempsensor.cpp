@@ -96,9 +96,8 @@ float TempSensor::getValue() {
 
 #if defined(USE_GYRO_TEMP)
   // When using the gyro temperature only the first read value will be accurate
-  // so we will use this for processing. LOG_PERF_START("temp-get");
+  // so we will use this for processing. 
   float c = myGyro.getInitialSensorTempC();
-  // LOG_PERF_STOP("temp-get");
   hasSensor = true;
   return c;
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
@@ -112,16 +111,12 @@ float TempSensor::getValue() {
   }
 
   // Read the sensors
-  // LOG_PERF_START("temp-request");
   mySensors.requestTemperatures();
-  // LOG_PERF_STOP("temp-request");
 
   float c = 0;
 
   if (mySensors.getDS18Count() >= 1) {
-    // LOG_PERF_START("temp-get");
     c = mySensors.getTempCByIndex(0);
-    // LOG_PERF_STOP("temp-get");
 
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
     Log.verbose(F("TSEN: Reciving temp value for sensor %F C." CR), c);
