@@ -34,8 +34,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install --upgrade platformio
-        pwd
-        ls -al
+        git config --global advice.detachedHead false
 
     - name: Run PlatformIO
       run: pio run -e gravity-release -e gravity-perf

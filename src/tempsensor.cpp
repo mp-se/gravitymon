@@ -23,7 +23,7 @@ SOFTWARE.
  */
 #include <DallasTemperature.h>
 #include <Wire.h>
-#include <onewire.h>
+#include <OneWire.h>
 
 #include <config.hpp>
 #include <gyro.hpp>
