@@ -26,6 +26,7 @@ jobs:
           ls -al
           ls -al docs 
           git clone https://github.com/mp-se/gravitymon.git --branch ghpages --single-branch ghpages
+          mkdir -p ghpages/docs
           cp -r docs/* ghpages/docs
           cd ghpages
           touch docs/.nojekyll
