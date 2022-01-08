@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +38,7 @@ jobs:
       - name: Run PlatformIO
         run: pio run -e gravity-release -e gravity-perf
 
-      - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version.
+      - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version. https://github.com/marketplace/actions/add-commit
         with:
           add: 'bin'
           author_name: GitHub Action
@@ -47,51 +46,6 @@ jobs:
 
           branch: ghactions
 
-          # How the action should behave when the targeted branch is missing: "create" will create a new one on the remote, "throw" will exit
-          # Default: throw
-          #branch_mode: create
-          # The name of the custom committer you want to use, if different from the author of the commit.
-          # Default: the name of the author (set with either author_name or default_author)
-          #committer_name: Committer Name
-          # The email of the custom committer you want to use, if different from the author of the commit.
-          # Default: the email of the author (set with either author_email or default_author)
-          #committer_email: mail@example.com
-
-          # The local path to the directory where your repository is located. You should use actions/checkout first to set it up.
-          # Default: '.'
-          #cwd: './path/to/the/repo'
-
-          # Determines the way the action fills missing author name and email. Three options are available:
-          # - github_actor -> UserName <UserName@users.noreply.github.com>
-          # - user_info -> Your Display Name <your-actual@email.com>
-          # - github_actions -> github-actions <email associated with the github logo>
-          # Default: github_actor
           default_author: github_actor
-
-          # The message for the commit.
-          # Default: 'Commit from GitHub Actions (name of the workflow)'
           message: 'GitHub Action Build'
-
-          # The way the action should handle pathspec errors from the add and remove commands. Three options are available:
-          # - ignore -> errors will be logged but the step won't fail
-          # - exitImmediately -> the action will stop right away, and the step will fail
-          # - exitAtEnd -> the action will go on, every pathspec error will be logged at the end, the step will fail.
-          # Default: ignore
           pathspec_error_handling: ignore
-
-          # Arguments for the git pull command. Use NO-PULL to avoid the action pulling at all.
-          # Default: '--no-rebase'
-          #pull: 'NO-PULL or --rebase --autostash ...'
-
-          # Whether to push the commit and, if any, its tags to the repo. It can also be used to set the git push arguments (see the paragraph below for more info)
-          # Default: true
-          #push: false
-
-          # The arguments for the `git rm` command (see the paragraph below for more info)
-          # Default: ''
-          #remove: './dir/old_file.js'
-
-          # Arguments for the git tag command (the tag name always needs to be the first word not preceded by an hyphen)
-          # Default: ''
-          #tag: 'v1.0.0 --force'
-          
