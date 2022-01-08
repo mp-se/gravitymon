@@ -20,17 +20,21 @@ jobs:
 
       # .nojekyll file must exist in docs
 
-      - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version.
+      - name: Commit documentation changes
+        run: |
+          git clone https://github.com/mp-se/gravitymon.git --branch docs --single-branch docs
+          cp -r docs/_build/html/* docs/
+          cd docs
+          git config --local user.email "action@noreply.github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update documentation" -a || true
+          # The above command will fail if no changes were present, so we ignore
+          # the return code.
+      - name: Push changes
+        uses: ad-m/github-push-action@master
         with:
-          add: 'docs'
-          author_name: GitHub Action
-          author_email: magnus@users.noreply.github.com
-
           branch: docs
-          
-          pull: 'NO-PULL'
-          branch_mode: create
-          default_author: github_actor
-          message: 'GitHub Action Build'
-          pathspec_error_handling: ignore
-                
+          directory: docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
