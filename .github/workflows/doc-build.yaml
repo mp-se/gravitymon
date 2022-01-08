@@ -22,6 +22,8 @@ jobs:
 
       - name: Commit documentation changes
         run: |
+          pwd
+          ls -al
           git clone https://github.com/mp-se/gravitymon.git --branch ghpages --single-branch ghpages
           cp -r docs/_build/html/* ghpages/
           cd ghpages
