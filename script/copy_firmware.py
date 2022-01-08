@@ -11,13 +11,13 @@ def after_build(source, target, env):
     print( "Executing custom step " )
     dir    = env.GetLaunchDir()
     name   = env.get( "PIOENV" )
-    source = dir + "\\.pio\\build\\" + name + "\\firmware.bin"
+    source = dir + "/.pio/build/" + name + "/firmware.bin"
     if name == "gravity-debug" :
-        target = dir + "\\bin\\firmware-debug.bin"
+        target = dir + "/bin/firmware-debug.bin"
     if name == "gravity-release" :
-        target = dir + "\\bin\\firmware.bin"
+        target = dir + "/bin/firmware.bin"
     if name == "gravity-perf" :
-        target = dir + "\\bin\\firmware-perf.bin"
+        target = dir + "/bin/firmware-perf.bin"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
