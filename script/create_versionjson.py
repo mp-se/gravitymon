@@ -13,36 +13,36 @@ def after_build(source, target, env):
     #name   = env.get( "PIOENV" )
 
     # Copy file 1
-    source = dir + "\\data\\index.min.htm"
-    target = dir + "\\bin\\index.min.htm"
+    source = dir + "/data/index.min.htm"
+    target = dir + "/bin/index.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
     # Copy file 2
-    source = dir + "\\data\\device.min.htm"
-    target = dir + "\\bin\\device.min.htm"
+    source = dir + "/data/device.min.htm"
+    target = dir + "/bin/device.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
     # Copy file 3
-    source = dir + "\\data\\config.min.htm"
-    target = dir + "\\bin\\config.min.htm"
+    source = dir + "/data/config.min.htm"
+    target = dir + "/bin/config.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
     # Copy file 4
-    source = dir + "\\data\\about.min.htm"
-    target = dir + "\\bin\\about.min.htm"
+    source = dir + "/data/about.min.htm"
+    target = dir + "/bin/about.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
     # Copy file 5
-    source = dir + "\\data\\calibration.min.htm"
-    target = dir + "\\bin\\calibration.min.htm"
+    source = dir + "/data/calibration.min.htm"
+    target = dir + "/bin/calibration.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
-    target = dir + "\\bin\\version.json"
+    target = dir + "/bin/version.json"
     ver = get_build_flag_value("CFG_APPVER")
 
     print( "Creating version.json" )
