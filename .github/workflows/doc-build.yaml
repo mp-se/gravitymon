@@ -3,7 +3,7 @@ name: Sphinx Build
 on: 
   push:
     branches: 
-      - ghactions
+      - dev
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
           author_name: GitHub Action
           author_email: magnus@users.noreply.github.com
 
-          branch: ghactions
+          branch: docs
 
           #branch_mode: create
           default_author: github_actor

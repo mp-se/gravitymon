@@ -3,7 +3,7 @@ name: PlatformIO CI
 on: 
   push:
     branches: 
-      - ghactions
+      - dev
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
           author_name: GitHub Action
           author_email: magnus@users.noreply.github.com
 
-          branch: ghactions
+          branch: dev
 
           default_author: github_actor
           message: 'GitHub Action Build'
