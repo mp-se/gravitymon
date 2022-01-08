@@ -40,7 +40,12 @@
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#official-esptool">Official esptool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#official-esptool">Official esptool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#flashing-on-windows">Flashing on windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#serial-monitoring">Serial Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#binaries">Binaries</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#configuring-wifi">Configuring WIFI</a></li>
 </ul>
 </li>
@@ -80,10 +85,22 @@
 <h2>Official esptool<a class="headerlink" href="#official-esptool" title="Permalink to this headline">¶</a></h2>
 <p>The prefered option for flashing esp8266 device is via the official esptool. Documentation can be found
 here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">https://docs.espressif.com/projects/esptool/en/latest/esp32/</a></p>
+<p>Windows 10 should install a driver for the USB -&gt; Serial automatically when you connect a esp8266.</p>
+<div class="section" id="flashing-on-windows">
+<h3>Flashing on windows<a class="headerlink" href="#flashing-on-windows" title="Permalink to this headline">¶</a></h3>
 <p>The basic command for flashing on Windows is;</p>
-<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">write_flash</span> <span class="pre">0</span> <span class="pre">firmware.bin</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">write_flash</span> <span class="pre">0x0</span> <span class="pre">firmware.bin</span></code></p>
 <p>If there are issues you can try do erase the flash first using this command;</p>
 <p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">erase_flash</span></code></p>
+</div>
+<div class="section" id="serial-monitoring">
+<h3>Serial Monitoring<a class="headerlink" href="#serial-monitoring" title="Permalink to this headline">¶</a></h3>
+<p>To check output from the device (logs) there are several tools out there. I found this simple tool in the Windows Store called <code class="docutils literal notranslate"><span class="pre">Serial</span> <span class="pre">Port</span> <span class="pre">Monitoring</span></code>.
+Just select a baud rate of 115200, 8N1.</p>
+<a class="reference internal image-reference" href="_images/serial.png"><img alt="Serial output" src="_images/serial.png" style="width: 800px;" /></a>
+</div>
+<div class="section" id="binaries">
+<h3>Binaries<a class="headerlink" href="#binaries" title="Permalink to this headline">¶</a></h3>
 <p>In the /bin directory you will find 3 different firmware builds;</p>
 <ul>
 <li><p><strong>firmware.bin</strong></p>
@@ -102,6 +119,7 @@ the configuration file.</p>
 default (see compiling for details). This approach makes installation much easier and ensure that html files
 and code is in sync.</p>
 </div>
+</div>
 <div class="section" id="configuring-wifi">
 <h2>Configuring WIFI<a class="headerlink" href="#configuring-wifi" title="Permalink to this headline">¶</a></h2>
 <p>When the device is flashed it will need to have WIFI configuration in order to work. If you have used other software on
@@ -109,6 +127,7 @@ the device its possible that wifi settings exist.</p>
 <p>If this is not configured in the device it will create an wirless access point called <cite>GravMon</cite>. Connect to this AP and
 enter the SSID and password you want to use. If the web page dont open automatically you can enter the following adress
 in the browser: <strong>http://192.168.4.1</strong></p>
+<a class="reference internal image-reference" href="_images/wifi.png"><img alt="Wifi page" src="_images/wifi.png" style="width: 200px;" /></a>
 </div>
 </div>
 
