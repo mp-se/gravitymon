@@ -12,8 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install dependant theme
+        run: |
+          python -m pip install --upgrade pip
+          pip install sphinx_rtd_theme
+
       - uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "src_docs/"
-          build-command: "sphinx-build -b html ./source _build"
+          build-command: "sphinx-build -b html ./source ../docs"
 
+      # .nojekyll file must exist in docs
