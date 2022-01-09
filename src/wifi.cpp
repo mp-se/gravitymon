@@ -21,12 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <ArduinoJson.h>
+#include <wifi.hpp>
+#include <ArduinoJson.hpp>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
-#include <ESP8266mDNS.h>
+//#include <ESP8266mDNS.h>
 #include <LittleFS.h>
-#include <ESP_WiFiManager_Lite.h>
 #include <incbin.h>
 
 #include <calc.hpp>
@@ -34,91 +34,153 @@ SOFTWARE.
 #include <gyro.hpp>
 #include <helper.hpp>
 #include <tempsensor.hpp>
-#include <wifi.hpp>
 
-Wifi myWifi;
+/*
+// Configuration settings for WifiManager_Lite
+#define ESP_WM_LITE_DEBUG_OUTPUT Serial
+#define _ESP_WM_LITE_LOGLEVEL_ 3
+#define MULTIRESETDETECTOR_DEBUG true
+#define USE_DYNAMIC_PARAMETERS false
+#define CONFIG_TIMEOUT 120*1000
+#define USING_MRD false // We use DRD instead
+#define REQUIRE_ONE_SET_SSID_PW true
+#include <ESP_WiFiManager_Lite.h>
+bool LOAD_DEFAULT_CONFIG_DATA = false;
+ESP_WiFiManager_Lite* wifiManager = 0;
+ESP_WM_LITE_Configuration defaultConfig;
+*/
 
+// Settings for DRD
+#define ESP_DRD_USE_LITTLEFS      true
+#define ESP_DRD_USE_SPIFFS        false
+#define ESP_DRD_USE_EEPROM        false
+#define DOUBLERESETDETECTOR_DEBUG true
+#include <ESP_DoubleResetDetector.h> 
+#define DRD_TIMEOUT 3
+#define DRD_ADDRESS 0
+
+// Settings for WIFI Manager
+/*#define USING_AFRICA            false
+#define USING_AMERICA           true
+#define USING_ANTARCTICA        false
+#define USING_ASIA              false
+#define USING_ATLANTIC          false
+#define USING_AUSTRALIA         false
+#define USING_EUROPE            true
+#define USING_INDIAN            false
+#define USING_PACIFIC           false
+#define USING_ETC_GMT           false
+#define USE_CLOUDFLARE_NTP      false
+#define CONFIG_FILENAME F("/wifi_cred.dat")*/
+#define USE_ESP_WIFIMANAGER_NTP false
+#define USE_CLOUDFLARE_NTP      false
+#define USING_CORS_FEATURE      false
+#define NUM_WIFI_CREDENTIALS    1
+#define USE_STATIC_IP_CONFIG_IN_CP false
+#include <ESP_WiFiManager.h>
+const char WM_HTTP_FORM_START[] PROGMEM = "<form method='get' action='wifisave'><fieldset><div><label>SSID</label><input id='s' name='s' length=32 placeholder='SSID'><div></div></div><div><label>Password</label><input id='p' name='p' length=64 placeholder='password'><div></div></div><div hidden><label>SSID1</label><input id='s1' name='s1' length=32 placeholder='SSID1'><div></div></div><div hidden><label>Password</label><input id='p1' name='p1' length=64 placeholder='password1'><div></div></div></fieldset>";
+#include <ESP_WiFiManager-Impl.h>
+ESP_WiFiManager* myWifiManager;
+DoubleResetDetector* myDRD;
+
+WifiConnection myWifi;
 const char *userSSID = USER_SSID;
-const char *userPWD = USER_SSID_PWD;
+const char *userPWD  = USER_SSID_PWD;
+
+const int PIN_LED = 2; 
+
+//
+// Constructor
+//
+WifiConnection::WifiConnection() {
+  myDRD = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
+}
 
 //
 // Check if we have a valid wifi configuration
 //
-bool Wifi::hasConfig() {
+bool WifiConnection::hasConfig() {
   if (strlen(myConfig.getWifiSSID()) ) return true;
   if (strlen(userSSID) ) return true;
-
   return false;
+}
+
+//
+// Check if the wifi is connected
+//
+bool WifiConnection::isConnected() {
+  return WiFi.status() == WL_CONNECTED; 
+}
+
+//
+// Get the IP adress
+//
+String WifiConnection::getIPAddress() { 
+  return WiFi.localIP().toString(); 
+}
+
+//
+// Additional method to detect double reset. 
+//
+bool WifiConnection::isDoubleResetDetected() {
+  if (myDRD->detectDoubleReset()) {
+    Log.notice(F("WIFI: Double reset has been detected." CR));
+    return true;
+  }
+  return false;
+}
+
+//
+// Stop double reset detection
+//
+void WifiConnection::stopDoubleReset() {
+  myDRD->stop();
 }
 
 //
 // Start the wifi manager
 //
-bool Wifi::startPortal() {
+void WifiConnection::startPortal() {
   Log.notice(F("WIFI: Starting Wifi config portal." CR));
-  return true;
+
+  pinMode(PIN_LED, OUTPUT);
+  digitalWrite(PIN_LED, LOW); 
+
+  myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
+  myWifiManager->setMinimumSignalQuality(-1);
+  myWifiManager->setConfigPortalChannel(0);
+  myWifiManager->setConfigPortalTimeout(120);
+
+  if (myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD)) { 
+    Log.notice(F("WIFI: Exited portal, connected to wifi." CR));
+    myConfig.setWifiSSID(myWifiManager->getSSID());
+    myConfig.setWifiPass(myWifiManager->getPW());
+    myConfig.saveFile();
+  }
+  else { 
+    Log.notice(F("WIFI: Exited portal, no connection to wifi." CR));    Serial.println(F("Not connected to WiFi")); 
+  }
+
+  stopDoubleReset();
+  delay(500);
+  ESP.reset();
 }
 
 //
 // Call the wifi manager in loop
 //
-void Wifi::portalLoop() {
+void WifiConnection::loop() {
+  myDRD->loop();
 }
 
 //
 // Connect to last known access point or create one if connection is not
 // working.
 //
-// REMOVE bool Wifi::connect(bool showPortal) {
-bool Wifi::connect() {
-  WiFi.persistent(true);
-  WiFi.mode(WIFI_STA);
-
-/* REMOVE 
-  if (!strlen(myConfig.getWifiSSID())) {
-    Log.info(
-        F("WIFI: No SSID seams to be stored, forcing portal to start." CR));
-    showPortal = true;
-  } else {
-    // Log.info(F("WIFI: Using SSID=%s and %s." CR), myConfig.getWifiSSID(),
-    // myConfig.getWifiPass()); Log.info(F("WIFI: Using SSID=%s and %s." CR),
-    // myConfig.getWifiSSID(), "*****");
-  }
-
-  if (strlen(userSSID) == 0 && showPortal) {
-#if LOG_LEVEL == 6
-    Log.verbose(
-        F("WIFI: Connecting to WIFI via connection manager (portal=%s)." CR),
-        showPortal ? "true" : "false");
-#endif
-    WiFiManager myWifiManager;
-    Log.notice(F("WIFI: Starting wifi portal." CR));
-    myWifiManager.setDebugOutput(true);
-    myWifiManager.setClass("invert");
-    myWifiManager.setConfigPortalTimeout(120);  // Keep it open for 120 seconds
-    bool f =
-        myWifiManager.startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD);
-    if (f) {
-      // Log.notice(F("WIFI: Success got values from WIFI portal=%s,%s." CR),
-      // myWifiManager.getWiFiSSID(), myWifiManager.getWiFiPass() );
-      Log.notice(F("WIFI: Success got values from WIFI portal=%s,%s." CR),
-                 myWifiManager.getWiFiSSID(), "*****");
-      myConfig.setWifiSSID(myWifiManager.getWiFiSSID());
-      myConfig.setWifiPass(myWifiManager.getWiFiPass());
-      myConfig.saveFile();
-    } else {
-      Log.notice(F("WIFI: Failure from WIFI portal, rebooting." CR));
-      delay(200);
-      ESP.reset();
-    }
-  }
-*/
-
+bool WifiConnection::connect() {
   // Connect to wifi
   int i = 0;
 
-  // Log.notice(F("WIFI: Connecting to WIFI, mode=%d,persistent=%d,fhy=%d ."
-  // CR), WiFi.getMode(), WiFi.getPersistent(), WiFi.getPhyMode() );
   WiFi.mode(WIFI_STA);
   if (strlen(userSSID)) {
     Log.notice(F("WIFI: Connecting to wifi using hardcoded settings %s." CR),
@@ -140,21 +202,22 @@ bool Wifi::connect() {
       Log.error(F("WIFI: Failed to connect to wifi %d, aborting %s." CR),
                 WiFi.status(), getIPAddress().c_str());
       WiFi.disconnect();
-      return connectedFlag;  // Return to main that we have failed to connect.
+      Serial.print(CR);
+      return false;  // Return to main that we have failed to connect.
     }
   }
+
   Serial.print(CR);
-  connectedFlag = true;
   Log.notice(F("WIFI: Connected to wifi ip=%s." CR), getIPAddress().c_str());
   Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS());
-  return connectedFlag;
+  return true;
 }
 
 //
 // This will erase the stored credentials and forcing the WIFI manager to AP
 // mode.
 //
-bool Wifi::disconnect() {
+bool WifiConnection::disconnect() {
   Log.notice(F("WIFI: Erasing stored WIFI credentials." CR));
   // Erase WIFI credentials
   return WiFi.disconnect(true);
@@ -165,7 +228,7 @@ bool Wifi::disconnect() {
 //
 //
 //
-bool Wifi::updateFirmware() {
+bool WifiConnection::updateFirmware() {
   if (!newFirmware) {
     Log.notice(F("WIFI: No newer version exist, skipping update." CR));
     return false;
@@ -200,7 +263,7 @@ bool Wifi::updateFirmware() {
 //
 // Download and save file
 //
-void Wifi::downloadFile(const char *fname) {
+void WifiConnection::downloadFile(const char *fname) {
 #if LOG_LEVEL == 6
   Log.verbose(F("WIFI: Download file %s." CR), fname);
 #endif
@@ -228,7 +291,7 @@ void Wifi::downloadFile(const char *fname) {
 //
 // Check what firmware version is available over OTA
 //
-bool Wifi::checkFirmwareVersion() {
+bool WifiConnection::checkFirmwareVersion() {
 #if LOG_LEVEL == 6
   Log.verbose(F("WIFI: Checking if new version exist." CR));
 #endif
@@ -309,7 +372,7 @@ bool Wifi::checkFirmwareVersion() {
 //
 // Parse a version string in the format M.m.p (eg. 1.2.10)
 //
-bool Wifi::parseFirmwareVersionString(int (&num)[3], const char *version) {
+bool WifiConnection::parseFirmwareVersionString(int (&num)[3], const char *version) {
 #if LOG_LEVEL == 6
   Log.verbose(F("WIFI: Parsing version number string %s." CR), version);
 #endif

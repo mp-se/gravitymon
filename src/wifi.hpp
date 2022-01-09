@@ -25,13 +25,13 @@ SOFTWARE.
 #define SRC_WIFI_HPP_
 
 // Include
-#include <ESP8266WiFi.h>
+//#include <ESP8266WiFi.h>
+#include <Arduino.h>
 
 // classes
-class Wifi {
+class WifiConnection {
  private:
   // WIFI
-  bool connectedFlag = false;
 
   // OTA
   bool newFirmware = false;
@@ -40,13 +40,16 @@ class Wifi {
 
  public:
   // WIFI
-  bool connect();
-  bool disconnect();
-  bool isConnected() { return connectedFlag; }
-  bool hasConfig();
-  String getIPAddress() { return WiFi.localIP().toString(); }
-  bool startPortal();
-  void portalLoop();
+  WifiConnection();
+  bool   connect();
+  bool   disconnect();
+  bool   isConnected();
+  bool   isDoubleResetDetected();
+  void   stopDoubleReset();
+  bool   hasConfig();
+  String getIPAddress();
+  void   startPortal();
+  void   loop();
 
   // OTA
   bool updateFirmware();
@@ -54,7 +57,7 @@ class Wifi {
 };
 
 // Global instance created
-extern Wifi myWifi;
+extern WifiConnection myWifi;
 
 #endif  // SRC_WIFI_HPP_
 

@@ -32,13 +32,6 @@ SOFTWARE.
 #include <webserver.hpp>
 #include <wifi.hpp>
 
-// Settings for double reset detector.
-#define ESP_DRD_USE_LITTLEFS true
-#define DRD_TIMEOUT 2
-#define DRD_ADDRESS 0
-#include <ESP_DoubleResetDetector.h>
-extern DoubleResetDetector *drd;  // Declared in WifiManager_Lite
-
 // Define constats for this program
 #ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000; // ms, time to wait between changes to output
@@ -105,8 +98,6 @@ void setup() {
   LOG_PERF_START("main-setup");
   runtimeMillis = millis();
 
-  drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
-  bool dt = drd->detectDoubleReset();
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
   delay(3000);  // Wait a few seconds when using debug version so that serial is
                 // started.
@@ -126,18 +117,15 @@ void setup() {
   ESP.wdtDisable();
   ESP.wdtEnable(5000); // 5 seconds
 
-  if (dt) {
-    Log.notice(F("Main: Detected doubletap on reset. Reset reason=%s" CR),
-               ESP.getResetReason().c_str());
+  // No stored config, move to portal
+  if( !myWifi.hasConfig() ) {
+    Log.notice(F("Main: No wifi configuration detected, entering wifi setup." CR));
+    runMode = RunMode::wifiSetupMode;
   }
 
-#ifdef SKIP_SLEEPMODE
-  // If we are running in debug more we skip this part. makes is hard to debug
-  // in case of crash/watchdog reset
-  dt = false;
-#endif
-
-  if( !myWifi.hasConfig() ) {
+  // Double reset, go to portal.
+  if( myWifi.isDoubleResetDetected() ) {
+    Log.notice(F("Main: Double reset detected, entering wifi setup." CR));
     runMode = RunMode::wifiSetupMode;
   }
 
@@ -145,7 +133,6 @@ void setup() {
   switch (runMode) {
     case RunMode::wifiSetupMode:
       myWifi.startPortal();
-      Log.notice(F("Main: No wifi configuration detected, running in wifiSetupMode." CR));
     break;
 
     default:
@@ -274,7 +261,6 @@ void goToSleep(int sleepInterval) {
               sleepInterval, (millis() - runtimeMillis) / 1000, volt);
   LittleFS.end();
   myGyro.enterSleep();
-  drd->stop();
   LOG_PERF_STOP("run-time");
   LOG_PERF_PUSH();
   delay(100);
@@ -285,11 +271,12 @@ void goToSleep(int sleepInterval) {
 // Main loops
 //
 void loop() {
-  drd->loop();
+//  myDRD->loop();
 
   switch (runMode) {
     case RunMode::configurationMode:
       myWebServer.loop();
+      myWifi.loop();
       loopGravityOnInterval();
     break;
 
@@ -298,26 +285,31 @@ void loop() {
       // conserve battery.
       if (!myWifi.isConnected()) {  // no connection to wifi
         Log.notice(F("MAIN: No connection to wifi established, sleeping for 60s." CR));
+        myWifi.stopDoubleReset();
         goToSleep(60);
       }
 
-      if( loopReadGravity() )
+      if( loopReadGravity() ) {
+        myWifi.stopDoubleReset();
         goToSleep(myConfig.getSleepInterval());
+      }
       
       // If the sensor is moving and we are not getting a clear reading, we enter
       // sleep for a short time to conserve battery.
       if (((millis() - stableGyroMillis) > 10000L)) { // 10s since last stable gyro reading
         Log.notice(F("MAIN: Unable to get a stable reading for 10s, sleeping for 60s." CR));
+        myWifi.stopDoubleReset();
         goToSleep(60);
       }
 
       LOG_PERF_START("loop-gyro-read");
       myGyro.read();
       LOG_PERF_STOP("loop-gyro-read");
+      myWifi.loop();
     break;
 
     case RunMode::wifiSetupMode:
-      myWifi.portalLoop();
+      myWifi.loop();
     break;
   }
 }
