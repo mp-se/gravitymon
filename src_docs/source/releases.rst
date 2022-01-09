@@ -3,10 +3,10 @@
 Releases 
 ########
 
-v0.5.0 (beta)
--------------
+v0.5.0
+------
 
-Latest next target version is: **v0.5.0**. This is hosted in the **dev branch**.
+Latest stable version.
 
 * Added feature to calcuate formula on device
 * Total rewrite of documentation
@@ -15,10 +15,9 @@ Latest next target version is: **v0.5.0**. This is hosted in the **dev branch**.
 * Cleanup of code
 * Refactor code from C to C++
 
+`Release v0.5 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.5.0>`_
+
 v0.4.0
 ------
 
-Latest stable development version is: **v0.4.0**
-
 `Release v0.4 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.4.0>`_
-
