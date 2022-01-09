@@ -40,10 +40,13 @@ class Wifi {
 
  public:
   // WIFI
-  bool connect(bool showPortal = false);
+  bool connect();
   bool disconnect();
   bool isConnected() { return connectedFlag; }
+  bool hasConfig();
   String getIPAddress() { return WiFi.localIP().toString(); }
+  bool startPortal();
+  void portalLoop();
 
   // OTA
   bool updateFirmware();

@@ -26,7 +26,7 @@ SOFTWARE.
 #include <ESP8266httpUpdate.h>
 #include <ESP8266mDNS.h>
 #include <LittleFS.h>
-#include <WiFiManager.h>
+#include <ESP_WiFiManager_Lite.h>
 #include <incbin.h>
 
 #include <calc.hpp>
@@ -42,13 +42,39 @@ const char *userSSID = USER_SSID;
 const char *userPWD = USER_SSID_PWD;
 
 //
+// Check if we have a valid wifi configuration
+//
+bool Wifi::hasConfig() {
+  if (strlen(myConfig.getWifiSSID()) ) return true;
+  if (strlen(userSSID) ) return true;
+
+  return false;
+}
+
+//
+// Start the wifi manager
+//
+bool Wifi::startPortal() {
+  Log.notice(F("WIFI: Starting Wifi config portal." CR));
+  return true;
+}
+
+//
+// Call the wifi manager in loop
+//
+void Wifi::portalLoop() {
+}
+
+//
 // Connect to last known access point or create one if connection is not
 // working.
 //
-bool Wifi::connect(bool showPortal) {
+// REMOVE bool Wifi::connect(bool showPortal) {
+bool Wifi::connect() {
   WiFi.persistent(true);
   WiFi.mode(WIFI_STA);
 
+/* REMOVE 
   if (!strlen(myConfig.getWifiSSID())) {
     Log.info(
         F("WIFI: No SSID seams to be stored, forcing portal to start." CR));
@@ -86,6 +112,7 @@ bool Wifi::connect(bool showPortal) {
       ESP.reset();
     }
   }
+*/
 
   // Connect to wifi
   int i = 0;
