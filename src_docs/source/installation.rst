@@ -5,7 +5,7 @@ Official esptool
 ================
 
 The prefered option for flashing esp8266 device is via the official esptool. Documentation can be found 
-here; https://docs.espressif.com/projects/esptool/en/latest/esp32/
+here; `esptool home page <https://docs.espressif.com/projects/esptool/en/latest/esp32/>`_
 
 Windows 10 should install a driver for the USB -> Serial automatically when you connect a esp8266.
 
@@ -34,7 +34,7 @@ Just select a baud rate of 115200, 8N1.
 Binaries
 ********
 
-In the /bin directory you will find 3 different firmware builds;
+In the /bin directory you will find 2 different firmware builds;
 
 * **firmware.bin**
 
@@ -44,9 +44,6 @@ In the /bin directory you will find 3 different firmware builds;
 
   This version also submits performance data to an influx database with detailed execution times.
 
-* **firmware-debug.bin** 
-  
-  Development build. Not recommended for normal use.
 
 In these versions all the html files are embedded in the binaries. The file system is currently only used for storing 
 the configuration file. 

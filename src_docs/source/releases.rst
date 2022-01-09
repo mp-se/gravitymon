@@ -1,5 +1,7 @@
+.. _releases:
+
 Releases 
-========
+########
 
 v0.5.0 (beta)
 -------------
@@ -18,5 +20,5 @@ v0.4.0
 
 Latest stable development version is: **v0.4.0**
 
-https://github.com/mp-se/gravitymon/releases/tag/v0.4.0
+`Release v0.4 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.4.0>`_
 

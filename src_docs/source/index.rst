@@ -7,14 +7,13 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-
-  Preliminary documentation. This is work in progress. This documentation reflects **v0.5**
+  This documentation reflects **v0.5**. Last updated 2022-01-09
   
 
 GravityMon is a replacement firmare for the iSpindle firmware, it uses the same hardware configuration so 
 you can easily switch between them. It's used to measure gravity in beer and show the progress of fermentation. 
 
-For more information on this topic and function please visit https://www.ispindel.de.
+For more information on this topic and function please visit `iSpindel Homepage <https://www.ispindel.de>`_ .
 
 I started GravityMon because i like to create software and wanted to do some low level programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural. 
@@ -22,10 +21,9 @@ projects based on esp8266 and also started to brew beer so this combination was 
 The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. 
 
 My approach to this software is a little different from that the original ispindle firmware. The github repository can 
-be found here; https://github.com/mp-se/gravitymon
+be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
 
 .. note::
-
   This software is in the early stages even though its more than one year old so if you find issues, please 
   open a ticket on github.
   
@@ -39,18 +37,19 @@ The main differences:
 * Send data to multiple endpoints when pushing data.
 * Automatic temperature adjustment of gravity reading 
 * OTA support from local webserver 
-* Build in function to create gravity formulas (*New in v0.5*)
+* Build in function to create gravity formulas
 
 There are also a experimental features such as:
 
 * Using the temperature sensor in gyro instead of DS18B20 (faster)
 * Performance measurements (used to optimise code)
 
-**For a complete breakdown see the functionallity section.**
+For a complete breakdown see the :ref:`functionallity`
 
 Credits to
 ----------
-This software uses the following libraries and without these this would have been much more difficult to acheive:
+Ideas to some of these functions have been picked up from disucssions in the iSpindle forums. This software uses 
+the following libraries and without these this would have been much more difficult to acheive:
 
 * https://github.com/jrowberg/i2cdevlib.git 
 
@@ -105,6 +104,7 @@ This software uses the following libraries and without these this would have bee
    :maxdepth: 2
    :caption: Contents:
 
+   license
    releases
    functionallity
    installation

@@ -1,5 +1,7 @@
+.. _compiling-the-software:
+
 Compiling the software
------------------------
+######################
 
 Tools
 =====
@@ -14,7 +16,7 @@ Code Formatting
 ===============
 I use pre-commit and their cpp style checks to validate the code. Plugin defintions are found in **.pre-commit-config.yaml**
 
-https://www.pre-commit.com
+`Pre-Commit <https://www.pre-commit.com>`_
 
 .. note::
 
@@ -23,11 +25,18 @@ https://www.pre-commit.com
 
 Targets 
 =======
-In the repository there are 3 targets defined
+In the platformio config there are 3 targets defined
 
 * gravity-debug; Maximum logging for trouble shooting, deep sleep is disabled.
 * gravity-release; Standard release
 * gravity-perf; Standard release but contains code for measuring performance 
+
+.. warning::
+  The debug target can be unsable and crash the device under certain circumstanses. 
+  Excessive logging to the serial port can cause corruption and crashes. I'm still 
+  trying to figure out what causes these issues in the debug target. Other targets are 
+  stable and works fine.
+
 
 Source structure 
 ================
