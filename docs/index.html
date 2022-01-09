@@ -16,7 +16,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Releases" href="releases.html" /> 
+    <link rel="next" title="Licence" href="license.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -36,10 +36,14 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Setting up device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backlog.html">Backlog of changes</a></li>
@@ -73,16 +77,16 @@
 <h1>Welcome to GravityMon’s documentation!<a class="headerlink" href="#welcome-to-gravitymon-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Preliminary documentation. This is work in progress. This documentation reflects <strong>v0.5</strong></p>
+<p>This documentation reflects <strong>v0.5</strong>. Last updated 2022-01-09</p>
 </div>
 <p>GravityMon is a replacement firmare for the iSpindle firmware, it uses the same hardware configuration so
 you can easily switch between them. It’s used to measure gravity in beer and show the progress of fermentation.</p>
-<p>For more information on this topic and function please visit <a class="reference external" href="https://www.ispindel.de">https://www.ispindel.de</a>.</p>
+<p>For more information on this topic and function please visit <a class="reference external" href="https://www.ispindel.de">iSpindel Homepage</a> .</p>
 <p>I started GravityMon because i like to create software and wanted to do some low level programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural.</p>
 <p>The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation.</p>
 <p>My approach to this software is a little different from that the original ispindle firmware. The github repository can
-be found here; <a class="reference external" href="https://github.com/mp-se/gravitymon">https://github.com/mp-se/gravitymon</a></p>
+be found here; <a class="reference external" href="https://github.com/mp-se/gravitymon">GravityMon on Github</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This software is in the early stages even though its more than one year old so if you find issues, please
@@ -97,18 +101,19 @@ over the last 6 months without any issues.</p>
 <li><p>Send data to multiple endpoints when pushing data.</p></li>
 <li><p>Automatic temperature adjustment of gravity reading</p></li>
 <li><p>OTA support from local webserver</p></li>
-<li><p>Build in function to create gravity formulas (<em>New in v0.5</em>)</p></li>
+<li><p>Build in function to create gravity formulas</p></li>
 </ul>
 <p>There are also a experimental features such as:</p>
 <ul class="simple">
 <li><p>Using the temperature sensor in gyro instead of DS18B20 (faster)</p></li>
 <li><p>Performance measurements (used to optimise code)</p></li>
 </ul>
-<p><strong>For a complete breakdown see the functionallity section.</strong></p>
+<p>For a complete breakdown see the <a class="reference internal" href="functionallity.html#functionallity"><span class="std std-ref">Functionallity</span></a></p>
 </div>
 <div class="section" id="credits-to">
 <h2>Credits to<a class="headerlink" href="#credits-to" title="Permalink to this headline">¶</a></h2>
-<p>This software uses the following libraries and without these this would have been much more difficult to acheive:</p>
+<p>Ideas to some of these functions have been picked up from disucssions in the iSpindle forums. This software uses
+the following libraries and without these this would have been much more difficult to acheive:</p>
 <ul>
 <li><p><a class="reference external" href="https://github.com/jrowberg/i2cdevlib.git">https://github.com/jrowberg/i2cdevlib.git</a></p>
 <p>This library contains the basic code to interact with the gyro + many more chips.</p>
@@ -150,6 +155,7 @@ over the last 6 months without any issues.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-5-0-beta">v0.5.0 (beta)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-4-0">v0.4.0</a></li>
@@ -168,13 +174,31 @@ over the last 6 months without any issues.</p>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#configuring-wifi">Configuring WIFI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Setting up device</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#status">Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#device">Device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#id1">Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#rest-api">REST API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-config">GET: /api/config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-device">GET: /api/device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-status">GET: /api/status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-config-formula">GET: /api/config/formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-device">POST: /api/config/device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-push">POST: /api/config/push</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-gravity">POST: /api/config/gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#id4">POST: /api/config/gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-formula">POST: /api/config/formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#calling-the-api-s-from-python">Calling the API’s from Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#ispindle-format">iSpindle format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#brewfather-format">Brewfather format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#influx-db-v2">Influx DB v2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#version-json">version.json</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a><ul>
@@ -208,7 +232,7 @@ over the last 6 months without any issues.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="releases.html" class="btn btn-neutral float-right" title="Releases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="license.html" class="btn btn-neutral float-right" title="Licence" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,8 +1,11 @@
-Configuration
------------------------
-The device can operate in two modes and must be in `configuration mode` in order for the web server to be active.
+.. _setting-up-device:
 
-One of the following conditions will place the device in `configuration mode`:
+Setting up device
+#################
+
+The device can operate in two modes and must be in ``configuration mode`` in order for the web server to be active.
+
+One of the following conditions will place the device in ``configuration mode``:
 
 - Gyro has not been calibrated
 - Sleep mode has been disabled in the web interface
@@ -23,7 +26,7 @@ Configuration is accessed by entering the URL for the device, this will be the m
 The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if 
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.
 
-.. note::
+.. tip::
 
    If you are connected to the device via a serial console (speed: 115200) you can see the connection sequence and get the Unique ID and IP adress from there. 
 
@@ -57,7 +60,7 @@ Configuration
 URL: (http://gravmon.local/config)
 
 Device Setting
-**************
+++++++++++++++
 
 .. image:: images/config1.png
   :width: 800
@@ -83,12 +86,12 @@ Device Setting
 
    These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.
 
-.. note::
+.. warning::
 
    The device will **not** go into `gravity monitoring` mode unless calibrated
 
 Push Settings
-*************
++++++++++++++
 
 .. image:: images/config2.png
   :width: 800
@@ -124,7 +127,7 @@ Push Settings
 
 
 Gravity Settings
-****************
+++++++++++++++++
 
 .. image:: images/config3.png
   :width: 800
@@ -138,15 +141,19 @@ Gravity Settings
 
    Will apply a temperature calibration formula to the gravity as a second step. 
 
-   This is the formula used for temperature calibration (temp is in F). Cal = 20C.
+.. warning::
+   This formula assumes that the calibration has been done at 20C.
 
-.. code-block::
+Formula used in temperature correction:
 
-   gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0.00000000232820948*temp^3)/(1.00130346-0.000134722124*cal+0.00000204052596*cal^2-0.00000000232820948*cal^3))
+::
+
+   gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0.00000000232820948*temp^3)/
+   (1.00130346-0.000134722124*cal+0.00000204052596*cal^2-0.00000000232820948*cal^3))
 
 
 Hardware Settings
-*****************
++++++++++++++++++
 
 .. image:: images/config4.png
   :width: 800
@@ -174,9 +181,10 @@ Hardware Settings
    http://192.168.1.1/firmware/gravmon/
   
 
+.. _create-formula:
 
 Create formula
-=============================
+##############
 
 .. image:: images/formula1.png
   :width: 800
@@ -190,14 +198,15 @@ Here you can enter up to 5 values (angles + gravity) that is then used to create
 
 Once the formula is created a graph over the entered values and a simulation of the formula will give you a nice overview on how the formula will work.
 
+.. _rest-api:
 
 REST API
-=============================
+########
 
 All the API's use a key called ``ID`` which is the unique device id (chip id). This is used as an API key when sending requests to the device. 
 
 GET: /api/config
-****************
+================
 
 Retrive the current configuation of the device via an HTTP GET command. Payload is in JSON format.
 
@@ -241,7 +250,7 @@ Other parameters are the same as in the configuration guide.
 
 
 GET: /api/device
-****************
+================
 
 Retrive the current device settings via an HTTP GET command. Payload is in JSON format.
 
@@ -256,7 +265,7 @@ Retrive the current device settings via an HTTP GET command. Payload is in JSON 
 
 
 GET: /api/status
-****************
+================
 
 Retrive the current device status via an HTTP GET command. Payload is in JSON format.
 
@@ -281,7 +290,7 @@ Other parameters are the same as in the configuration guide.
 
 
 GET: /api/config/formula
-************************
+========================
 
 Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
 
@@ -307,7 +316,7 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
 
 
 POST: /api/config/device
-************************
+========================
 
 Used to update device settings via an HTTP POST command. Payload is in JSON format.
 
@@ -324,7 +333,7 @@ Used to update device settings via an HTTP POST command. Payload is in JSON form
 
 
 POST: /api/config/push
-**********************
+======================
 
 Used to update push settings via an HTTP POST command. Payload is in JSON format.
 
@@ -343,7 +352,7 @@ Used to update push settings via an HTTP POST command. Payload is in JSON format
 
 
 POST: /api/config/gravity
-*************************
+=========================
 
 Used to update gravity settings via an HTTP POST command. Payload is in JSON format.
 
@@ -359,7 +368,7 @@ Used to update gravity settings via an HTTP POST command. Payload is in JSON for
 
 
 POST: /api/config/gravity
-*************************
+=========================
 
 Used to update hardware settings via an HTTP POST command. Payload is in JSON format.
 
@@ -374,7 +383,7 @@ Used to update hardware settings via an HTTP POST command. Payload is in JSON fo
 
 
 POST: /api/config/formula
-*************************
+=========================
 
 Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.
 
@@ -398,11 +407,87 @@ Used to update formula calculation data via an HTTP POST command. Payload is in 
    }
 
 
-Data Formats
+Calling the API's from Python
 =============================
 
+Here is some example code for how to access the API's from a python script. Keys should always be 
+present or the API call will fail.
+
+.. code-block:: python
+
+   import requests
+   import json
+
+   host = "192.168.1.1"           # IP adress (or name) of the device to send these settings to
+   id = "ee1bfc"                  # Device ID (shown in serial console during startup or in UI)
+
+   def set_config( url, json ):
+      headers = { "ContentType": "application/json" }
+      print( url )
+      resp = requests.post( url, headers=headers, data=json )
+      if resp.status_code != 200 :
+         print ( "Failed "  )
+      else :
+         print ( "Success "  )
+
+   url = "http://" + host + "/api/config/device"
+   json = { "id": id, 
+            "mdns": "gravmon",             # Name of the device
+            "temp-format": "C",            # Temperature format C or F
+            "sleep-interval": 30           # Sleep interval in seconds
+         }
+   set_config( url, json )
+
+   url = "http://" + host + "/api/config/push"
+   json = { "id": id, 
+            "http-push": "http://192.168.1.1/ispindel",    # HTTP endpoint 
+            "http-push2": "",                              # HTTP endpoint2
+            "brewfather-push": "",                         # Brewfather URL
+            "influxdb2-push": "",                          # InfluxDB2 settings
+            "influxdb2-org": "",
+            "influxdb2-bucket": "",
+            "influxdb2-auth": "" 
+            }  
+   set_config( url, json )
+
+   url = "http://" + host + "/api/config/gravity"
+   json = { "id": id, 
+            "gravity-formula": "",                         # If you want to set the gravity formula
+            "gravity-temp-adjustment": "off"               # on or off
+            }
+   set_config( url, json )
+
+   url = "http://" + host + "/api/config/hardware"
+   json = { "id": id, 
+            "voltage-factor": 1.59,                        # Default value for voltage calculation
+            "temp-adjustment": 0,                          # If temp sensor needs to be corrected
+            "ota-url": ""                                  # if the device should seach for a new update when active
+         }
+   set_config( url, json )
+
+   url = "http://" + host + "/api/formula"
+   json = { "id": id, 
+            "a1": 22.4, 
+            "a2": 54.4, 
+            "a3": 58, 
+            "a4": 0, 
+            "a5": 0, 
+            "g1": 1.000, 
+            "g2": 1.053, 
+            "g3": 1.062, 
+            "g4": 1, 
+            "g5": 1 
+            }
+   set_config( url, json )
+
+
+.. _data-formats:
+
+Data Formats
+############
+
 iSpindle format 
-***************
+===============
 
 This is the format used for standard http posts. 
 
@@ -428,10 +513,9 @@ This is the format used for standard http posts.
    
 
 Brewfather format 
-******************
+=================
 
 This is the format for Brewfather
-
 
 .. code-block:: json
 
@@ -446,7 +530,7 @@ This is the format for Brewfather
 
 
 Influx DB v2
-************
+============
 
 This is the format for InfluxDB v2
 
@@ -456,7 +540,7 @@ This is the format for InfluxDB v2
    
 
 version.json
-************
+============
 
 Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it's easy to 
 upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system 

@@ -16,7 +16,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="next" title="Setting up device" href="configuration.html" />
     <link rel="prev" title="Functionallity" href="functionallity.html" /> 
 </head>
 
@@ -37,6 +37,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
@@ -49,7 +50,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#configuring-wifi">Configuring WIFI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Setting up device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backlog.html">Backlog of changes</a></li>
@@ -84,7 +88,7 @@
 <div class="section" id="official-esptool">
 <h2>Official esptool<a class="headerlink" href="#official-esptool" title="Permalink to this headline">¶</a></h2>
 <p>The prefered option for flashing esp8266 device is via the official esptool. Documentation can be found
-here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">https://docs.espressif.com/projects/esptool/en/latest/esp32/</a></p>
+here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">esptool home page</a></p>
 <p>Windows 10 should install a driver for the USB -&gt; Serial automatically when you connect a esp8266.</p>
 <div class="section" id="flashing-on-windows">
 <h3>Flashing on windows<a class="headerlink" href="#flashing-on-windows" title="Permalink to this headline">¶</a></h3>
@@ -101,16 +105,13 @@ Just select a baud rate of 115200, 8N1.</p>
 </div>
 <div class="section" id="binaries">
 <h3>Binaries<a class="headerlink" href="#binaries" title="Permalink to this headline">¶</a></h3>
-<p>In the /bin directory you will find 3 different firmware builds;</p>
+<p>In the /bin directory you will find 2 different firmware builds;</p>
 <ul>
 <li><p><strong>firmware.bin</strong></p>
 <p>This is the standard release build (prefered version)</p>
 </li>
 <li><p><strong>firmware-perf.bin</strong></p>
 <p>This version also submits performance data to an influx database with detailed execution times.</p>
-</li>
-<li><p><strong>firmware-debug.bin</strong></p>
-<p>Development build. Not recommended for normal use.</p>
 </li>
 </ul>
 <p>In these versions all the html files are embedded in the binaries. The file system is currently only used for storing
@@ -136,7 +137,7 @@ in the browser: <strong>http://192.168.4.1</strong></p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="functionallity.html" class="btn btn-neutral float-left" title="Functionallity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Setting up device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

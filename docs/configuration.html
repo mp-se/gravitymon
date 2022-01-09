@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Configuration &mdash; GravityMon 0.5.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>Setting up device &mdash; GravityMon 0.5.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
@@ -37,39 +37,41 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setting up device</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#status">Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#device">Device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#device-setting">Device Setting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#push-settings">Push Settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gravity-settings">Gravity Settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hardware-settings">Hardware Settings</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#create-formula">Create formula</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rest-api">REST API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#get-api-config">GET: /api/config</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-api-device">GET: /api/device</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-api-status">GET: /api/status</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-api-config-formula">GET: /api/config/formula</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#post-api-config-device">POST: /api/config/device</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#post-api-config-push">POST: /api/config/push</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#post-api-config-gravity">POST: /api/config/gravity</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">POST: /api/config/gravity</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#post-api-config-formula">POST: /api/config/formula</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#data-formats">Data Formats</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ispindle-format">iSpindle format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#brewfather-format">Brewfather format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#influx-db-v2">Influx DB v2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#version-json">version.json</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#create-formula">Create formula</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#rest-api">REST API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#get-api-config">GET: /api/config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-api-device">GET: /api/device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-api-status">GET: /api/status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-api-config-formula">GET: /api/config/formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#post-api-config-device">POST: /api/config/device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#post-api-config-push">POST: /api/config/push</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#post-api-config-gravity">POST: /api/config/gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">POST: /api/config/gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#post-api-config-formula">POST: /api/config/formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calling-the-api-s-from-python">Calling the API’s from Python</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="#data-formats">Data Formats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ispindle-format">iSpindle format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#brewfather-format">Brewfather format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#influx-db-v2">Influx DB v2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-json">version.json</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
@@ -91,7 +93,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Configuration</li>
+      <li>Setting up device</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/configuration.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -101,10 +103,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="configuration">
-<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
-<p>The device can operate in two modes and must be in <cite>configuration mode</cite> in order for the web server to be active.</p>
-<p>One of the following conditions will place the device in <cite>configuration mode</cite>:</p>
+  <div class="section" id="setting-up-device">
+<span id="id1"></span><h1>Setting up device<a class="headerlink" href="#setting-up-device" title="Permalink to this headline">¶</a></h1>
+<p>The device can operate in two modes and must be in <code class="docutils literal notranslate"><span class="pre">configuration</span> <span class="pre">mode</span></code> in order for the web server to be active.</p>
+<p>One of the following conditions will place the device in <code class="docutils literal notranslate"><span class="pre">configuration</span> <span class="pre">mode</span></code>:</p>
 <ul class="simple">
 <li><p>Gyro has not been calibrated</p></li>
 <li><p>Sleep mode has been disabled in the web interface</p></li>
@@ -118,8 +120,8 @@
 <p>Configuration is accessed by entering the URL for the device, this will be the mDNS name <em>device.local</em> or the IP adress. The following chapter assumes the device name is <em>gravmon</em>.</p>
 <p>The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>If you are connected to the device via a serial console (speed: 115200) you can see the connection sequence and get the Unique ID and IP adress from there.</p>
 </div>
 </div>
@@ -145,8 +147,8 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 </li>
 </ul>
 </div>
-<div class="section" id="id1">
-<h2>Configuration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>URL: (<a class="reference external" href="http://gravmon.local/config">http://gravmon.local/config</a>)</p>
 <div class="section" id="device-setting">
 <h3>Device Setting<a class="headerlink" href="#device-setting" title="Permalink to this headline">¶</a></h3>
@@ -179,8 +181,8 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 </div></blockquote>
 </li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>The device will <strong>not</strong> go into <cite>gravity monitoring</cite> mode unless calibrated</p>
 </div>
 </div>
@@ -237,11 +239,16 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 <li><p><strong>Temperature correct gravity:</strong></p>
 <blockquote>
 <div><p>Will apply a temperature calibration formula to the gravity as a second step.</p>
-<p>This is the formula used for temperature calibration (temp is in F). Cal = 20C.</p>
 </div></blockquote>
 </li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gravity</span><span class="o">*</span><span class="p">((</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">temp</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">cal</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">3</span><span class="p">))</span>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This formula assumes that the calibration has been done at 20C.</p>
+</div>
+<p>Formula used in temperature correction:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gravity</span><span class="o">*</span><span class="p">((</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">temp</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span>
+<span class="p">(</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">cal</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -273,18 +280,19 @@ code the update will be done during startup.</p>
 </div>
 </div>
 </div>
+</div>
 <div class="section" id="create-formula">
-<h2>Create formula<a class="headerlink" href="#create-formula" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h1>Create formula<a class="headerlink" href="#create-formula" title="Permalink to this headline">¶</a></h1>
 <a class="reference internal image-reference" href="_images/formula1.png"><img alt="Formula data" src="_images/formula1.png" style="width: 800px;" /></a>
 <p>Here you can enter up to 5 values (angles + gravity) that is then used to create the formula. Angles equal to zero will be regarded as empty even if there is a gravity reading.</p>
 <a class="reference internal image-reference" href="_images/formula2.png"><img alt="Formula graph" src="_images/formula2.png" style="width: 800px;" /></a>
 <p>Once the formula is created a graph over the entered values and a simulation of the formula will give you a nice overview on how the formula will work.</p>
 </div>
 <div class="section" id="rest-api">
-<h2>REST API<a class="headerlink" href="#rest-api" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h1>REST API<a class="headerlink" href="#rest-api" title="Permalink to this headline">¶</a></h1>
 <p>All the API’s use a key called <code class="docutils literal notranslate"><span class="pre">ID</span></code> which is the unique device id (chip id). This is used as an API key when sending requests to the device.</p>
 <div class="section" id="get-api-config">
-<h3>GET: /api/config<a class="headerlink" href="#get-api-config" title="Permalink to this headline">¶</a></h3>
+<h2>GET: /api/config<a class="headerlink" href="#get-api-config" title="Permalink to this headline">¶</a></h2>
 <p>Retrive the current configuation of the device via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
@@ -325,7 +333,7 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="get-api-device">
-<h3>GET: /api/device<a class="headerlink" href="#get-api-device" title="Permalink to this headline">¶</a></h3>
+<h2>GET: /api/device<a class="headerlink" href="#get-api-device" title="Permalink to this headline">¶</a></h2>
 <p>Retrive the current device settings via an HTTP GET command. Payload is in JSON format.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
    <span class="nt">&quot;app-name&quot;</span><span class="p">:</span> <span class="s2">&quot;GravityMon &quot;</span><span class="p">,</span>
@@ -337,7 +345,7 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="get-api-status">
-<h3>GET: /api/status<a class="headerlink" href="#get-api-status" title="Permalink to this headline">¶</a></h3>
+<h2>GET: /api/status<a class="headerlink" href="#get-api-status" title="Permalink to this headline">¶</a></h2>
 <p>Retrive the current device status via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
@@ -359,7 +367,7 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="get-api-config-formula">
-<h3>GET: /api/config/formula<a class="headerlink" href="#get-api-config-formula" title="Permalink to this headline">¶</a></h3>
+<h2>GET: /api/config/formula<a class="headerlink" href="#get-api-config-formula" title="Permalink to this headline">¶</a></h2>
 <p>Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a4</span></code> are the angles/tilt readings (up to 5 are currently supported)</p></li>
@@ -383,7 +391,7 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="post-api-config-device">
-<h3>POST: /api/config/device<a class="headerlink" href="#post-api-config-device" title="Permalink to this headline">¶</a></h3>
+<h2>POST: /api/config/device<a class="headerlink" href="#post-api-config-device" title="Permalink to this headline">¶</a></h2>
 <p>Used to update device settings via an HTTP POST command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
@@ -398,7 +406,7 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="post-api-config-push">
-<h3>POST: /api/config/push<a class="headerlink" href="#post-api-config-push" title="Permalink to this headline">¶</a></h3>
+<h2>POST: /api/config/push<a class="headerlink" href="#post-api-config-push" title="Permalink to this headline">¶</a></h2>
 <p>Used to update push settings via an HTTP POST command. Payload is in JSON format.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>
@@ -414,7 +422,7 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="post-api-config-gravity">
-<h3>POST: /api/config/gravity<a class="headerlink" href="#post-api-config-gravity" title="Permalink to this headline">¶</a></h3>
+<h2>POST: /api/config/gravity<a class="headerlink" href="#post-api-config-gravity" title="Permalink to this headline">¶</a></h2>
 <p>Used to update gravity settings via an HTTP POST command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">gravity-formula</span></code> keywords <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">tilt</span></code> are supported.</p></li>
@@ -427,8 +435,8 @@ code the update will be done during startup.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id2">
-<h3>POST: /api/config/gravity<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h2>POST: /api/config/gravity<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>Used to update hardware settings via an HTTP POST command. Payload is in JSON format.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;ee1bfc&quot;</span><span class="p">,</span>
@@ -440,7 +448,7 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="post-api-config-formula">
-<h3>POST: /api/config/formula<a class="headerlink" href="#post-api-config-formula" title="Permalink to this headline">¶</a></h3>
+<h2>POST: /api/config/formula<a class="headerlink" href="#post-api-config-formula" title="Permalink to this headline">¶</a></h2>
 <p>Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a4</span></code> are the angles/tilt readings (up to 5 are currently supported)</p></li>
@@ -462,11 +470,82 @@ code the update will be done during startup.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="calling-the-api-s-from-python">
+<h2>Calling the API’s from Python<a class="headerlink" href="#calling-the-api-s-from-python" title="Permalink to this headline">¶</a></h2>
+<p>Here is some example code for how to access the API’s from a python script. Keys should always be
+present or the API call will fail.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;192.168.1.1&quot;</span>           <span class="c1"># IP adress (or name) of the device to send these settings to</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="s2">&quot;ee1bfc&quot;</span>                  <span class="c1"># Device ID (shown in serial console during startup or in UI)</span>
+
+<span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">):</span>
+   <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;ContentType&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span> <span class="p">}</span>
+   <span class="nb">print</span><span class="p">(</span> <span class="n">url</span> <span class="p">)</span>
+   <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span> <span class="p">)</span>
+   <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="p">:</span>
+      <span class="nb">print</span> <span class="p">(</span> <span class="s2">&quot;Failed &quot;</span>  <span class="p">)</span>
+   <span class="k">else</span> <span class="p">:</span>
+      <span class="nb">print</span> <span class="p">(</span> <span class="s2">&quot;Success &quot;</span>  <span class="p">)</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">&quot;/api/config/device&quot;</span>
+<span class="n">json</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
+         <span class="s2">&quot;mdns&quot;</span><span class="p">:</span> <span class="s2">&quot;gravmon&quot;</span><span class="p">,</span>             <span class="c1"># Name of the device</span>
+         <span class="s2">&quot;temp-format&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>            <span class="c1"># Temperature format C or F</span>
+         <span class="s2">&quot;sleep-interval&quot;</span><span class="p">:</span> <span class="mi">30</span>           <span class="c1"># Sleep interval in seconds</span>
+      <span class="p">}</span>
+<span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">&quot;/api/config/push&quot;</span>
+<span class="n">json</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
+         <span class="s2">&quot;http-push&quot;</span><span class="p">:</span> <span class="s2">&quot;http://192.168.1.1/ispindel&quot;</span><span class="p">,</span>    <span class="c1"># HTTP endpoint</span>
+         <span class="s2">&quot;http-push2&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>                              <span class="c1"># HTTP endpoint2</span>
+         <span class="s2">&quot;brewfather-push&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>                         <span class="c1"># Brewfather URL</span>
+         <span class="s2">&quot;influxdb2-push&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>                          <span class="c1"># InfluxDB2 settings</span>
+         <span class="s2">&quot;influxdb2-org&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;influxdb2-bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;influxdb2-auth&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+         <span class="p">}</span>
+<span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">&quot;/api/config/gravity&quot;</span>
+<span class="n">json</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
+         <span class="s2">&quot;gravity-formula&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>                         <span class="c1"># If you want to set the gravity formula</span>
+         <span class="s2">&quot;gravity-temp-adjustment&quot;</span><span class="p">:</span> <span class="s2">&quot;off&quot;</span>               <span class="c1"># on or off</span>
+         <span class="p">}</span>
+<span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">&quot;/api/config/hardware&quot;</span>
+<span class="n">json</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
+         <span class="s2">&quot;voltage-factor&quot;</span><span class="p">:</span> <span class="mf">1.59</span><span class="p">,</span>                        <span class="c1"># Default value for voltage calculation</span>
+         <span class="s2">&quot;temp-adjustment&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>                          <span class="c1"># If temp sensor needs to be corrected</span>
+         <span class="s2">&quot;ota-url&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>                                  <span class="c1"># if the device should seach for a new update when active</span>
+      <span class="p">}</span>
+<span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">&quot;/api/formula&quot;</span>
+<span class="n">json</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
+         <span class="s2">&quot;a1&quot;</span><span class="p">:</span> <span class="mf">22.4</span><span class="p">,</span>
+         <span class="s2">&quot;a2&quot;</span><span class="p">:</span> <span class="mf">54.4</span><span class="p">,</span>
+         <span class="s2">&quot;a3&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+         <span class="s2">&quot;a4&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="s2">&quot;a5&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="s2">&quot;g1&quot;</span><span class="p">:</span> <span class="mf">1.000</span><span class="p">,</span>
+         <span class="s2">&quot;g2&quot;</span><span class="p">:</span> <span class="mf">1.053</span><span class="p">,</span>
+         <span class="s2">&quot;g3&quot;</span><span class="p">:</span> <span class="mf">1.062</span><span class="p">,</span>
+         <span class="s2">&quot;g4&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+         <span class="s2">&quot;g5&quot;</span><span class="p">:</span> <span class="mi">1</span>
+         <span class="p">}</span>
+<span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="data-formats">
-<h2>Data Formats<a class="headerlink" href="#data-formats" title="Permalink to this headline">¶</a></h2>
+<span id="id5"></span><h1>Data Formats<a class="headerlink" href="#data-formats" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="ispindle-format">
-<h3>iSpindle format<a class="headerlink" href="#ispindle-format" title="Permalink to this headline">¶</a></h3>
+<h2>iSpindle format<a class="headerlink" href="#ispindle-format" title="Permalink to this headline">¶</a></h2>
 <p>This is the format used for standard http posts.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">corr-gravity</span></code> is an extended parameter containing a temperature corrected gravity reading.</p></li>
@@ -490,7 +569,7 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="brewfather-format">
-<h3>Brewfather format<a class="headerlink" href="#brewfather-format" title="Permalink to this headline">¶</a></h3>
+<h2>Brewfather format<a class="headerlink" href="#brewfather-format" title="Permalink to this headline">¶</a></h2>
 <p>This is the format for Brewfather</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
    <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;gravmon&quot;</span><span class="p">,</span>
@@ -504,14 +583,14 @@ code the update will be done during startup.</p>
 </div>
 </div>
 <div class="section" id="influx-db-v2">
-<h3>Influx DB v2<a class="headerlink" href="#influx-db-v2" title="Permalink to this headline">¶</a></h3>
+<h2>Influx DB v2<a class="headerlink" href="#influx-db-v2" title="Permalink to this headline">¶</a></h2>
 <p>This is the format for InfluxDB v2</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">measurement</span><span class="p">,</span><span class="n">host</span><span class="o">=&lt;</span><span class="n">mdns</span><span class="o">&gt;</span><span class="p">,</span><span class="n">device</span><span class="o">=&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="p">,</span><span class="n">temp</span><span class="o">-</span><span class="nb">format</span><span class="o">=&lt;</span><span class="n">C</span><span class="o">|</span><span class="n">F</span><span class="o">&gt;</span><span class="p">,</span><span class="n">gravity</span><span class="o">-</span><span class="nb">format</span><span class="o">=</span><span class="n">SG</span><span class="p">,</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">corr</span><span class="o">-</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">angle</span><span class="o">=</span><span class="mf">45.45</span><span class="p">,</span><span class="n">temp</span><span class="o">=</span><span class="mf">20.1</span><span class="p">,</span><span class="n">battery</span><span class="o">=</span><span class="mf">3.96</span><span class="p">,</span><span class="n">rssi</span><span class="o">=-</span><span class="mi">18</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="version-json">
-<h3>version.json<a class="headerlink" href="#version-json" title="Permalink to this headline">¶</a></h3>
+<h2>version.json<a class="headerlink" href="#version-json" title="Permalink to this headline">¶</a></h2>
 <p>Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it’s easy to
 upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system
 they can be uploaded manually afterwards.</p>
@@ -527,7 +606,6 @@ they can be uploaded manually afterwards.</p>
    <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
-</div>
 </div>
 </div>
 </div>
