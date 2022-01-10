@@ -43,7 +43,7 @@ jobs:
         with:
           add: 'bin'
           author_name: GitHub Action
-          author_email: magnus@users.noreply.github.com
+          author_email: mp-se@noreply.github.com
 
           branch: dev
 
