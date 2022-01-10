@@ -141,13 +141,10 @@ void WifiConnection::startPortal() {
 void WifiConnection::loop() { myDRD->loop(); }
 
 //
-// Connect to last known access point or create one if connection is not
-// working.
+// Connect to last known access point, non blocking mode.
 //
-bool WifiConnection::connect() {
-  // Connect to wifi
-  int i = 0;
-
+void WifiConnection::connectAsync() {
+  WiFi.persistent(true);
   WiFi.mode(WIFI_STA);
   if (strlen(userSSID)) {
     Log.notice(F("WIFI: Connecting to wifi using hardcoded settings %s." CR),
@@ -158,14 +155,22 @@ bool WifiConnection::connect() {
                myConfig.getWifiSSID());
     WiFi.begin(myConfig.getWifiSSID(), myConfig.getWifiPass());
   }
+}
 
-  // WiFi.printDiag(Serial);
-
+//
+// Blocks until wifi connection has been found
+//
+bool WifiConnection::waitForConnection(int maxTime) {
+#if DEBUG_LEVEL == 6 
+  WiFi.printDiag(Serial);
+#endif
+  int i = 0;
   while (WiFi.status() != WL_CONNECTED) {
-    delay(200);
-    Serial.print(".");
+    delay(100);
 
-    if (i++ > 100) {  // Try for 20 seconds.
+    if ( i % 10 ) Serial.print(".");
+
+    if (i++ > (maxTime*10)) {  // Try for maxTime seconds. Since delay is 100ms.
       Log.error(F("WIFI: Failed to connect to wifi %d, aborting %s." CR),
                 WiFi.status(), getIPAddress().c_str());
       WiFi.disconnect();
@@ -178,6 +183,14 @@ bool WifiConnection::connect() {
   Log.notice(F("WIFI: Connected to wifi ip=%s." CR), getIPAddress().c_str());
   Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS());
   return true;
+}
+
+//
+// Connect to last known access point, blocking mode.
+//
+bool WifiConnection::connect() {
+  connectAsync();
+  return waitForConnection(20);  // 20 seconds.
 }
 
 //

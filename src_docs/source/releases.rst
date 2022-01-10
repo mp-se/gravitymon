@@ -3,6 +3,17 @@
 Releases 
 ########
 
+v0.6.0 (work in progress)
+-------------------------
+
+This is features for the next release.
+
+* Changed the wifi manager and refactored wifi.cpp
+* LED is now turned on when Wifi Portal is open
+* Refactored main.cpp to make it easier to read
+* Tested runtime performance
+* Improved documentation
+
 v0.5.0
 ------
 

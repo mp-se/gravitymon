@@ -30,6 +30,7 @@ be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
   I dont take responsibility for any errors that can cause problems with the use. I have tested v0.4 on 5+ brews 
   over the last 6 months without any issues.
 
+
 The main differences:
 ---------------------
 
@@ -67,7 +68,7 @@ the following libraries and without these this would have been much more difficu
 
   Can detect if the reset button is pressed twice, is used to enter WIFI config mode.
 
-* https://github.com/tzapu/WiFiManager
+* https://github.com/khoih-prog/ESP_WiFiManager
 
   Configure wifi settings.
 

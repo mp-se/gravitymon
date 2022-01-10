@@ -36,6 +36,8 @@ class WifiConnection {
   bool newFirmware = false;
   bool parseFirmwareVersionString(int (&num)[3], const char *version);
   void downloadFile(const char *fname);
+  void connectAsync();
+  bool waitForConnection(int maxTime = 20);
 
  public:
   // WIFI
