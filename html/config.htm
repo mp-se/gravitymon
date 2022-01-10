@@ -55,20 +55,32 @@
     </button>
   </div>
 
+  <div class="alert alert-warning fade hide show d-none" role="alert" id="warning">
+    <div id="warning-msg">...</div>
+  </div>
+
   <script type="text/javascript">
     function showError( msg ) {
-      $('.alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show')
+      $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show')
       $('#alert-msg').text( msg );
     }
 
     function showSuccess( msg ) {
-      $('.alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show')
+      $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show')
       $('#alert-msg').text( msg );
     }
 
     $("#alert-btn").click(function(e){
-      $('.alert').addClass('d-none').removeClass('show')
+      $('#alert').addClass('d-none').removeClass('show')
     });    
+
+    function showWarning( msg ) {
+      $('#warning').removeClass('d-none').addClass('show')
+      $('#warning-msg').text( msg );
+    }
+    function hideWarning() {
+      $('#warning').addClass('d-none').removeClass('show')
+    }
   </script>
 
   <div class="accordion" id="accordion">
@@ -319,6 +331,11 @@
   function updateSleepInfo() {
     var i = $("#sleep-interval").val()
     $("#sleep-interval-info").text( Math.floor(i/60) + " m " + (i%60) + " s" )
+
+    if(i<300) 
+      showWarning("A sleep-interval of <300s will reduce battery life, consider using 900s");
+    else 
+      hideWarning();
   }
 
   // Trigger the calibration
