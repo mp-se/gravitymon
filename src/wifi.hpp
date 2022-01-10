@@ -25,7 +25,6 @@ SOFTWARE.
 #define SRC_WIFI_HPP_
 
 // Include
-//#include <ESP8266WiFi.h>
 #include <Arduino.h>
 
 // classes
@@ -41,15 +40,16 @@ class WifiConnection {
  public:
   // WIFI
   WifiConnection();
-  bool   connect();
-  bool   disconnect();
-  bool   isConnected();
-  bool   isDoubleResetDetected();
-  void   stopDoubleReset();
-  bool   hasConfig();
+
+  bool connect();
+  bool disconnect();
+  bool isConnected();
+  bool isDoubleResetDetected();
+  void stopDoubleReset();
+  bool hasConfig();
   String getIPAddress();
-  void   startPortal();
-  void   loop();
+  void startPortal();
+  void loop();
 
   // OTA
   bool updateFirmware();
