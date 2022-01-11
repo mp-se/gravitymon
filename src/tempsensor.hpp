@@ -33,13 +33,17 @@ class TempSensor {
   bool hasSensor = false;
   float tempSensorAdjF = 0;
   float tempSensorAdjC = 0;
-  float getValue();
+  float getValue(bool useGyro);
 
  public:
   void setup();
   bool isSensorAttached() { return hasSensor; }
-  float getTempC() { return getValue() + tempSensorAdjC; }
-  float getTempF() { return convertCtoF(getValue()) + tempSensorAdjF; }
+  float getTempC(bool useGyro = false) {
+    return getValue(useGyro) + tempSensorAdjC;
+  }
+  float getTempF(bool useGyro = false) {
+    return convertCtoF(getValue(useGyro)) + tempSensorAdjF;
+  }
 };
 
 // Global instance created

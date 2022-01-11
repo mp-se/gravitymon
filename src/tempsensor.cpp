@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #include <DallasTemperature.h>
-#include <Wire.h>
 #include <OneWire.h>
+#include <Wire.h>
 
 #include <config.hpp>
 #include <gyro.hpp>
@@ -35,16 +35,14 @@ SOFTWARE.
 //
 float convertCtoF(float t) { return (t * 1.8) + 32.0; }
 
-#if !defined(USE_GYRO_TEMP)
 OneWire myOneWire(D6);
 DallasTemperature mySensors(&myOneWire);
 #define TEMPERATURE_PRECISION 9
-#endif
 
 TempSensor myTempSensor;
 
 //
-// Setup temp sensors
+// Setup DS18B20 temp sensor. Doing setup is not that time consuming.
 //
 void TempSensor::setup() {
 #if defined(SIMULATE_TEMP)
@@ -52,9 +50,6 @@ void TempSensor::setup() {
   return;
 #endif
 
-#if defined(USE_GYRO_TEMP)
-  Log.notice(F("TSEN: Using temperature from gyro." CR));
-#else
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
   Log.verbose(F("TSEN: Looking for temp sensors." CR));
 #endif
@@ -67,7 +62,6 @@ void TempSensor::setup() {
 #endif
     mySensors.setResolution(TEMPERATURE_PRECISION);
   }
-#endif
 
   float t = myConfig.getTempSensorAdj();
 
@@ -89,21 +83,22 @@ void TempSensor::setup() {
 //
 // Retrieving value from sensor, value is in Celcius
 //
-float TempSensor::getValue() {
+float TempSensor::getValue(bool useGyro) {
 #if defined(SIMULATE_TEMP)
   return 21;
 #endif
 
-#if defined(USE_GYRO_TEMP)
-  // When using the gyro temperature only the first read value will be accurate
-  // so we will use this for processing. 
-  float c = myGyro.getInitialSensorTempC();
-  hasSensor = true;
-  return c;
+  if (useGyro) {
+    // When using the gyro temperature only the first read value will be
+    // accurate so we will use this for processing.
+    float c = myGyro.getInitialSensorTempC();
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
-  Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR), c);
+    Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR), c);
 #endif
-#else
+    hasSensor = true;
+    return c;
+  }
+
   // If we dont have sensors just return 0
   if (!mySensors.getDS18Count()) {
     Log.error(F("TSEN: No temperature sensors found. Skipping read." CR));
@@ -119,12 +114,11 @@ float TempSensor::getValue() {
     c = mySensors.getTempCByIndex(0);
 
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
-    Log.verbose(F("TSEN: Reciving temp value for sensor %F C." CR), c);
+    Log.verbose(F("TSEN: Reciving temp value for DS18B20 sensor %F C." CR), c);
 #endif
     hasSensor = true;
   }
   return c;
-#endif
 }
 
 // EOF

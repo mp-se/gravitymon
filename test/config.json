@@ -16,6 +16,7 @@
     "gravity-format": "G",
     "temp-adjustment-value": 0,
     "gravity-temp-adjustment": false,
+    "gyro-temp": true,
     "gyro-calibration-data": {
         "ax": -330,
         "ay": -2249,

@@ -58,7 +58,7 @@ SOFTWARE.
 #define CFG_PARAM_PUSH_INFLUXDB2_BUCKET "influxdb2-bucket"  // URL
 #define CFG_PARAM_PUSH_INFLUXDB2_AUTH "influxdb2-auth"      // URL
 #define CFG_PARAM_SLEEP_INTERVAL "sleep-interval"           // Sleep interval
-#define CFG_PARAM_TEMPFORMAT "temp-format"       // C or F
+#define CFG_PARAM_TEMPFORMAT "temp-format"                  // C or F
 #define CFG_PARAM_VOLTAGEFACTOR \
   "voltage-factor"  // Factor to calculate the battery voltage
 #define CFG_PARAM_GRAVITY_FORMULA \
@@ -69,6 +69,8 @@ SOFTWARE.
 #define CFG_PARAM_TEMP_ADJ \
   "temp-adjustment-value"  // Correction value for temp sensor
 #define CFG_PARAM_GYRO_CALIBRATION "gyro-calibration-data"  // READ ONLY
+#define CFG_PARAM_GYRO_TEMP \
+  "gyro-temp"  // True/False. Use temp sensor in gyro (only in gravity mode)
 
 #define CFG_PARAM_FORMULA_DATA \
   "formula-calculation-data"  // Raw data for the formula calculation
@@ -116,6 +118,7 @@ class Config {
   float voltageFactor;
   float tempSensorAdj;  // This value will be added to the read sensor value
   int sleepInterval;
+  bool gyroTemp;  // Experimental feature
 
   // Wifi Config
   String wifiSSID;
@@ -152,6 +155,12 @@ class Config {
   const char* getMDNS() { return mDNS.c_str(); }
   void setMDNS(String s) {
     mDNS = s;
+    saveNeeded = true;
+  }
+
+  const bool isGyroTemp() { return gyroTemp; }
+  void setGyroTemp(bool b) {
+    gyroTemp = b;
     saveNeeded = true;
   }
 

@@ -165,7 +165,13 @@ Hardware Settings
 
 * **Temperature correction:**
 
-   This value will be added to the temperature reading (negative value will reduce temperature reading).
+   This value will be added to the temperature reading (negative value will reduce temperature reading). This is applied
+   when the device starts. So changing this will not take affect until the device is restarted.
+
+* **Gyro Temperature:**
+
+   Enable this feature will use the temp sensor i the gyro instead of the DS18B20, the benefit is shorter run time and
+   longer battery life (this is an experimental feature).
 
 * **OTA URL:**
 
@@ -235,6 +241,7 @@ Other parameters are the same as in the configuration guide.
       "gravity-format": "G",
       "temp-adjustment-value": 0,
       "gravity-temp-adjustment": false,
+      "gyro-temp": true,
       "gyro-calibration-data": {
          "ax": -330,
          "ay": -2249,
@@ -367,8 +374,8 @@ Used to update gravity settings via an HTTP POST command. Payload is in JSON for
    }
 
 
-POST: /api/config/gravity
-=========================
+POST: /api/config/hardware
+==========================
 
 Used to update hardware settings via an HTTP POST command. Payload is in JSON format.
 
@@ -378,6 +385,7 @@ Used to update hardware settings via an HTTP POST command. Payload is in JSON fo
       "id": "ee1bfc",                                   
       "voltage-factor": 1.59, 
       "temp-adjustment": 0, 
+      "gyro-temp": "off",
       "ota-url": "http://192.168.1.50/firmware/gravmon/" 
    }
 
@@ -461,6 +469,7 @@ present or the API call will fail.
    json = { "id": id, 
             "voltage-factor": 1.59,                        # Default value for voltage calculation
             "temp-adjustment": 0,                          # If temp sensor needs to be corrected
+            "gyro-temp": true,                             # Use the temp sensor in the gyro instead
             "ota-url": ""                                  # if the device should seach for a new update when active
          }
    set_config( url, json )

@@ -52,6 +52,7 @@ Config::Config() {
   setGravityTempAdj(false);
   gyroCalibration = {0, 0, 0, 0, 0, 0};
   formulaData = {{0, 0, 0, 0, 0}, {1, 1, 1, 1, 1}};
+  gyroTemp = false;
   saveNeeded = false;
 }
 
@@ -79,6 +80,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[CFG_PARAM_GRAVITY_FORMAT] = String(getGravityFormat());
   doc[CFG_PARAM_TEMP_ADJ] = getTempSensorAdj();
   doc[CFG_PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
+  doc[CFG_PARAM_GYRO_TEMP] = isGyroTemp();
 
   JsonObject cal = doc.createNestedObject(CFG_PARAM_GYRO_CALIBRATION);
   cal["ax"] = gyroCalibration.ax;
@@ -213,6 +215,8 @@ bool Config::loadFile() {
     setGravityFormula(doc[CFG_PARAM_GRAVITY_FORMULA]);
   if (!doc[CFG_PARAM_GRAVITY_TEMP_ADJ].isNull())
     setGravityTempAdj(doc[CFG_PARAM_GRAVITY_TEMP_ADJ].as<bool>());
+  if (!doc[CFG_PARAM_GYRO_TEMP].isNull())
+    setGyroTemp(doc[CFG_PARAM_GYRO_TEMP].as<bool>());
   if (!doc[CFG_PARAM_GRAVITY_FORMAT].isNull()) {
     String s = doc[CFG_PARAM_GRAVITY_FORMAT];
     setGravityFormat(s.charAt(0));
@@ -253,7 +257,7 @@ bool Config::loadFile() {
   if (!doc[CFG_PARAM_FORMULA_DATA]["g4"].isNull())
     formulaData.g[3] = doc[CFG_PARAM_FORMULA_DATA]["g4"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["g5"].isNull())
-    formulaData.g[4] = doc[CFG_PARAM_FORMULA_DATA]["g5"];
+    formulaData.g[4] = doc[CFG_PARAM_FORMULA_DATA]["g5"].as<double>();
 
   myConfig.debug();
   saveNeeded = false;  // Reset save flag
@@ -303,6 +307,7 @@ void Config::debug() {
   Log.verbose(F("CFG : Gravity format; '%c'." CR), getGravityFormat());
   Log.verbose(F("CFG : Gravity temp adj; %s." CR),
               isGravityTempAdj() ? "true" : "false");
+  Log.verbose(F("CFG : Gyro temp; %s." CR), isGyroTemp() ? "true" : "false");
   Log.verbose(F("CFG : Push brewfather; '%s'." CR), getBrewfatherPushUrl());
   Log.verbose(F("CFG : Push http; '%s'." CR), getHttpPushUrl());
   Log.verbose(F("CFG : Push http2; '%s'." CR), getHttpPushUrl2());

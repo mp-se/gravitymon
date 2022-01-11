@@ -220,7 +220,7 @@ void PerfLogging::pushInflux() {
       "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp=%.2f",
       myGyro.getAngle(), myGyro.getLastGyroData().ax,
       myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
-      myGyro.getSensorTempC(), myTempSensor.getTempC());
+      myGyro.getSensorTempC(), myTempSensor.getTempC(myConfig.isGyroTemp()));
   body += &buf[0];
 
   // Log.notice(F("PERF: data %s." CR), body.c_str() );

@@ -58,6 +58,7 @@ url = "http://" + host + "/api/config/hardware"
 json = { "id": id, 
          "voltage-factor": 1.59,                        # Default value for voltage calculation
          "temp-adjustment": 0,                          # If temp sensor needs to be corrected
+         "gyro-temp": "off",                            # Use the temp sensor in the gyro
          "ota-url": ""                                  # if the device should seach for a new update when active
         }
 set_config( url, json )

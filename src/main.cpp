@@ -102,7 +102,7 @@ void setup() {
 
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
   // Add a delay so that serial is started.
-  // delay(3000);  
+  // delay(3000);
   Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str());
 #endif
   // Main startup
@@ -207,12 +207,12 @@ bool loopReadGravity() {
     stableGyroMillis = millis();  // Reset timer
 
     LOG_PERF_START("loop-temp-read");
-    float temp = myTempSensor.getTempC();
+    float temp = myTempSensor.getTempC(myConfig.isGyroTemp());
     LOG_PERF_STOP("loop-temp-read");
 
-    float gravity = calculateGravity(angle, temp);  
-    float corrGravity = gravityTemperatureCorrection(
-        gravity, temp, myConfig.getTempFormat());  
+    float gravity = calculateGravity(angle, temp);
+    float corrGravity =
+        gravityTemperatureCorrection(gravity, temp, myConfig.getTempFormat());
 
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%F, gravity=%F, "
@@ -249,6 +249,7 @@ void loopGravityOnInterval() {
     LOG_PERF_START("loop-gyro-read");
     myGyro.read();
     LOG_PERF_STOP("loop-gyro-read");
+    myBatteryVoltage.read();
     checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
     LOG_PERF_PUSH();
   }
@@ -263,7 +264,7 @@ void goToSleep(int sleepInterval) {
 
   Log.notice(F("MAIN: Entering deep sleep for %ds, run time %Fs, "
                "battery=%FV." CR),
-             sleepInterval, reduceFloatPrecision(runtime/1000, 2), volt);
+             sleepInterval, reduceFloatPrecision(runtime / 1000, 2), volt);
   LittleFS.end();
   myGyro.enterSleep();
   LOG_PERF_STOP("run-time");
@@ -281,7 +282,6 @@ void loop() {
       myWebServer.loop();
       myWifi.loop();
       loopGravityOnInterval();
-      myBatteryVoltage.read();
       break;
 
     case RunMode::gravityMode:

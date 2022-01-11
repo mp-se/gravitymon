@@ -13,6 +13,8 @@ This is features for the next release.
 * Refactored main.cpp to make it easier to read
 * Tested runtime performance
 * Improved documentation
+* Added warning on config page when sleep is <300
+* Enabled selection of gyro temperature sensor under Hardware settings.
 
 v0.5.0
 ------

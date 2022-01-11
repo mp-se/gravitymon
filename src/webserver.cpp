@@ -41,7 +41,7 @@ extern bool sleepModeAlwaysSkip;
 void WebServer::webHandleDevice() {
   LOG_PERF_START("webserver-api-device");
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : webServer callback for /api/config." CR));
+  Log.verbose(F("WEB : webServer callback for /api/device." CR));
 #endif
 
   DynamicJsonDocument doc(100);
@@ -69,8 +69,10 @@ void WebServer::webHandleConfig() {
   DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
   myConfig.createJson(doc);
 
+  doc[CFG_PARAM_PASS] = "";  // dont show the wifi password
+
   double angle = myGyro.getAngle();
-  double temp = myTempSensor.getTempC();
+  double temp = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, temp);
 
   doc[CFG_PARAM_ANGLE] = reduceFloatPrecision(angle);
@@ -137,9 +139,9 @@ void WebServer::webHandleUploadFile() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.debug(F("WEB : webServer callback for /api/upload, receiving file %s, "
-              "valid=%s." CR),
-            f.c_str(), validFilename ? "yes" : "no");
+  Log.verbose(F("WEB : webServer callback for /api/upload, receiving file %s, "
+                "valid=%s." CR),
+              f.c_str(), validFilename ? "yes" : "no");
 #endif
 
   if (upload.status == UPLOAD_FILE_START) {
@@ -213,7 +215,7 @@ void WebServer::webHandleStatus() {
   DynamicJsonDocument doc(256);
 
   double angle = myGyro.getAngle();
-  double temp = myTempSensor.getTempC();
+  double temp = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, temp);
 
   doc[CFG_PARAM_ID] = myConfig.getID();
@@ -225,7 +227,8 @@ void WebServer::webHandleStatus() {
   else
     doc[CFG_PARAM_GRAVITY] = reduceFloatPrecision(gravity, 4);
   doc[CFG_PARAM_TEMP_C] = reduceFloatPrecision(temp, 1);
-  doc[CFG_PARAM_TEMP_F] = reduceFloatPrecision(myTempSensor.getTempF(), 1);
+  doc[CFG_PARAM_TEMP_F] =
+      reduceFloatPrecision(myTempSensor.getTempF(myConfig.isGyroTemp()), 1);
   doc[CFG_PARAM_BATTERY] = reduceFloatPrecision(myBatteryVoltage.getVoltage());
   doc[CFG_PARAM_TEMPFORMAT] = String(myConfig.getTempFormat());
   doc[CFG_PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
@@ -411,15 +414,18 @@ void WebServer::webHandleConfigHardware() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : vf=%s, tempadj=%s, ota=%s." CR),
+  Log.verbose(F("WEB : vf=%s, tempadj=%s, ota=%s gyrotemp=%s." CR),
               server->arg(CFG_PARAM_VOLTAGEFACTOR).c_str(),
               server->arg(CFG_PARAM_TEMP_ADJ).c_str(),
-              server->arg(CFG_PARAM_OTA).c_str());
+              server->arg(CFG_PARAM_OTA).c_str(),
+              server->arg(CFG_PARAM_GYRO_TEMP).c_str());
 #endif
 
   myConfig.setVoltageFactor(server->arg(CFG_PARAM_VOLTAGEFACTOR).toFloat());
   myConfig.setTempSensorAdj(server->arg(CFG_PARAM_TEMP_ADJ).toFloat());
   myConfig.setOtaURL(server->arg(CFG_PARAM_OTA).c_str());
+  myConfig.setGyroTemp(
+      server->arg(CFG_PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
   myConfig.saveFile();
   server->sendHeader("Location", "/config.htm#collapseFour", true);
   server->send(302, "text/plain", "Hardware config updated");
@@ -559,6 +565,7 @@ void WebServer::webHandleFormulaWrite() {
   server->send(302, "text/plain", "Formula updated");
   LOG_PERF_STOP("webserver-api-formula-write");
 }
+
 //
 // Helper function to check if files exist on file system.
 //

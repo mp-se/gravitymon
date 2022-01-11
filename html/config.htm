@@ -284,6 +284,14 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-sm-4 form-check-label" for="gyro-temp">
+                Use gyro temperature (Experimental)
+              </label>
+              <div class="col-sm-8 form-check">
+                <input class="col-sm-1 form-check-input" type="checkbox" name="gyro-temp" id="gyro-temp">
+              </div>
+            </div>
+            <div class="form-group row">
               <label for="ota-url" class="col-sm-4 col-form-label">OTA base URL:</label>
               <div class="col-sm-8">
                 <input type="url" maxlength="90" class="form-control" name="ota-url" id="ota-url">
@@ -332,7 +340,7 @@
     var i = $("#sleep-interval").val()
     $("#sleep-interval-info").text( Math.floor(i/60) + " m " + (i%60) + " s" )
 
-    if(i<300) 
+    if(i>0 && i<300) 
       showWarning("A sleep-interval of <300s will reduce battery life, consider using 900s");
     else 
       hideWarning();
@@ -380,6 +388,7 @@
       $("#gravity-formula").val(cfg["gravity-formula"]);
       $("#temp-adjustment-value").val(cfg["temp-adjustment-value"]);
       $("#gravity-temp-adjustment").prop( "checked", cfg["gravity-temp-adjustment"] );
+      $("#gyro-temp").prop( "checked", cfg["gyro-temp"] );
       $("#gyro-calibration-data").text( cfg["gyro-calibration-data"]["ax"] + "," + cfg["gyro-calibration-data"]["ay"] + "," + cfg["gyro-calibration-data"]["az"] + "," + cfg["gyro-calibration-data"]["gx"] + "," + cfg["gyro-calibration-data"]["gy"] + "," + cfg["gyro-calibration-data"]["gz"] );
       $("#battery").text(cfg["battery"] + " V");
       $("#angle").text(cfg["angle"]);
