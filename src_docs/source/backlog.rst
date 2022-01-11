@@ -12,4 +12,3 @@ Code
 - Support for MQTT
 - Support for plato
 - Use pre-commit for validating check-in
-- Automatic builds via github actions

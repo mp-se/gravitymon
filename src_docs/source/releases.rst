@@ -14,7 +14,8 @@ This is features for the next release.
 * Tested runtime performance
 * Improved documentation
 * Added warning on config page when sleep is <300
-* Enabled selection of gyro temperature sensor under Hardware settings.
+* Enabled selection of gyro temperature sensor under Hardware settings
+* Added warning when short sleep interval and gyro temp is enabled
 
 v0.5.0
 ------

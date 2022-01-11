@@ -171,7 +171,9 @@ Hardware Settings
 * **Gyro Temperature:**
 
    Enable this feature will use the temp sensor i the gyro instead of the DS18B20, the benefit is shorter run time and
-   longer battery life (this is an experimental feature).
+   longer battery life (this is an experimental feature). The value used is the first temperature reading from when the 
+   device is activated, since the gyro should be cool this is reflecting the surronding temperature. After it has 
+   been running the value would be totally off.  
 
 * **OTA URL:**
 
@@ -365,6 +367,10 @@ Used to update gravity settings via an HTTP POST command. Payload is in JSON for
 
 * ``gravity-formula`` keywords ``temp`` and ``tilt`` are supported.
 
+.. note::
+  ``gravity-temp-adjustment`` is defined as "on" or "off" when posting since this is the output values 
+  from a checkbox, when reading data it's sent as boolean (true,false).
+
 .. code-block:: json
 
    { 
@@ -378,6 +384,10 @@ POST: /api/config/hardware
 ==========================
 
 Used to update hardware settings via an HTTP POST command. Payload is in JSON format.
+
+.. note::
+  ``gyro-temp`` is defined as "on" or "off" when posting since this is the output values from a checkbox, when
+  reading data it's sent as boolean (true,false).
 
 .. code-block:: json
 
@@ -448,10 +458,10 @@ present or the API call will fail.
 
    url = "http://" + host + "/api/config/push"
    json = { "id": id, 
-            "http-push": "http://192.168.1.1/ispindel",    # HTTP endpoint 
-            "http-push2": "",                              # HTTP endpoint2
-            "brewfather-push": "",                         # Brewfather URL
-            "influxdb2-push": "",                          # InfluxDB2 settings
+            "http-push": "http://192.168.1.1/ispindel",  
+            "http-push2": "",                           
+            "brewfather-push": "",                      
+            "influxdb2-push": "",                       
             "influxdb2-org": "",
             "influxdb2-bucket": "",
             "influxdb2-auth": "" 
@@ -460,17 +470,17 @@ present or the API call will fail.
 
    url = "http://" + host + "/api/config/gravity"
    json = { "id": id, 
-            "gravity-formula": "",                         # If you want to set the gravity formula
-            "gravity-temp-adjustment": "off"               # on or off
+            "gravity-formula": "",                  
+            "gravity-temp-adjustment": "off"        # Adjust gravity (on/off)
             }
    set_config( url, json )
 
    url = "http://" + host + "/api/config/hardware"
    json = { "id": id, 
-            "voltage-factor": 1.59,                        # Default value for voltage calculation
-            "temp-adjustment": 0,                          # If temp sensor needs to be corrected
-            "gyro-temp": true,                             # Use the temp sensor in the gyro instead
-            "ota-url": ""                                  # if the device should seach for a new update when active
+            "voltage-factor": 1.59,                 # Default value for voltage calculation
+            "temp-adjustment": 0,                   # If temp sensor needs to be corrected
+            "gyro-temp": "on",                      # Use the temp sensor in the gyro instead (on/off)
+            "ota-url": ""                           # if the device should seach for a new update when active
          }
    set_config( url, json )
 

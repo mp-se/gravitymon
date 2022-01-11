@@ -48,7 +48,29 @@ The main differences
 
 * **Gyro Movement**
 
-  The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60seconds. This way we should avoid faulty measurements.
+  The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60seconds. 
+  This way we should avoid faulty measurements.
+
+* **WIFI connection issues**
+
+  The software will not wait indefiently for a wifi connection. If it takes longer than 20 seconds to connect then
+  the device will go into deep sleep for 60 seoncds and then retry.
+
+* **Use gyro temperature sensor**
+
+  This works fine when the device has time to cool down between measurements and it saves up to 400 ms. 
+  My testing shows that this is quite accurate with a deviation of less than 0.3C. This  
+  reduces the run time by 20% (with optimal wifi connection). 
+  
+  The graph below compares from the temp from two different devices in the same bucket of water. One with 
+  gyro temp enabled and one with the DS18B20 sensor. The blue line is the gyro temperature and this clear
+  that the temperature will be higher after it has been running but cools down when in sleep mode. The interval 
+  has been set to 300s. A low delay of 30s will not allow the gyro to cool down and the temperature will 
+  be 0.5-1.0C higher.
+
+.. image:: images/temp1.png
+  :width: 800
+  :alt: Gyro temp vs DS18B20
 
 Other features
 --------------
@@ -62,26 +84,21 @@ Other features
 Experimental features
 ---------------------
 
-.. tip::
-  These are not enabled by default. To enable them you need to recompile the code and enable the correct defines.
-
-* Use the temperature sensor in the gyro instead of DS18B20
-
-  This works fine when the device has time to cool down between measurements and it saves a few milliseconds (reduced battery consumption). My testing shows that this is quite accurate. 
-  There is lots of battery power to save, reading the temp sensor takes almost as long as the gyro. This could reduce the run time by 40-50% and probly extend battery life with the same. 
-  However more testing is required. Might add this as an option in the UI.
-  
-* Performance measurements 
+* **Performance measurements** 
 
   I've also create a small library to measure execution code in some areas of the code that i know is time consuming. This way I can find a good balance between performace and quality.
 
   See the :ref:`compiling-the-software` for more information.
 
+* **Power measurements** 
+
+  I've also create a project to measure the power consumption of the device, but more on this later.
+
 
 Battery life
 ------------
 
-I'm currently measuring battery life of v0.5 but previous versions have been able to measure gravity for a 2-3 weeks without issues. Using 900 seconds as interval. 
+I'm currently measuring battery life of v0.5 but previous versions have been able to measure gravity for a 2-3 weeks without issues (Using 900 seconds as interval). 
 
 *More on this topics once my tests are done*
 
@@ -95,7 +112,7 @@ The typical runtime in a measurement cycle is approx 2 seconds and in some cases
 essential for long batterylife. Out of the 2 seconds of run-time the major time is spent on gyro readings (1.3s) and temperature measurements of (0.6s) so using the gyro sensor for measureing 
 temperature would reduce the total runtime with 25%. Sending data over http takes less than 100ms (on my local network) so this is not drawing much power. 
 
-The image below shows how the run-time varies over time. The pink line is the wifi connection time and this is why the time varies. 
+The image below shows how the run-time varies over time. The pink line is the wifi connection time and this is why the time varies. The orange is the total runtime for the awake period.
 
 .. image:: images/perf1.png
   :width: 800

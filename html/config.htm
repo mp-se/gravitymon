@@ -55,31 +55,40 @@
     </button>
   </div>
 
-  <div class="alert alert-warning fade hide show d-none" role="alert" id="warning">
-    <div id="warning-msg">...</div>
+  <div class="alert alert-warning fade hide show d-none" role="alert" id="warning-sleep">
+    <div>A sleep-interval of less than 300s will reduce battery life, consider using 900s</div>
+  </div>
+
+  <div class="alert alert-warning fade hide show d-none" role="alert" id="warning-gyro">
+    <div>When using the gyro temperature use a sleep-interval that is greater than 300s for accurate readings</div>
   </div>
 
   <script type="text/javascript">
     function showError( msg ) {
-      $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show')
+      $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show');
       $('#alert-msg').text( msg );
     }
 
     function showSuccess( msg ) {
-      $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show')
+      $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show');
       $('#alert-msg').text( msg );
     }
 
     $("#alert-btn").click(function(e){
-      $('#alert').addClass('d-none').removeClass('show')
+      $('#alert').addClass('d-none').removeClass('show');
     });    
 
-    function showWarning( msg ) {
-      $('#warning').removeClass('d-none').addClass('show')
-      $('#warning-msg').text( msg );
+    function showWarningSleep() {
+      $('#warning-sleep').removeClass('d-none').addClass('show');
     }
-    function hideWarning() {
-      $('#warning').addClass('d-none').removeClass('show')
+    function hideWarningSleep() {
+      $('#warning-sleep').addClass('d-none').removeClass('show');
+    }
+    function showWarningGyro() {
+      $('#warning-gyro').removeClass('d-none').addClass('show');
+    }
+    function hideWarningGyro() {
+      $('#warning-gyro').addClass('d-none').removeClass('show');
     }
   </script>
 
@@ -340,14 +349,19 @@
     var i = $("#sleep-interval").val()
     $("#sleep-interval-info").text( Math.floor(i/60) + " m " + (i%60) + " s" )
 
-    if(i>0 && i<300) 
-      showWarning("A sleep-interval of <300s will reduce battery life, consider using 900s");
-    else 
-      hideWarning();
+    hideWarningGyro();
+    if(i>0 && i<300) {
+      if( $("#gyro-temp").is(":checked") )
+        showWarningGyro();
+      showWarningSleep();
+    } else {
+      hideWarningSleep();
+    } 
   }
 
-  // Trigger the calibration
+  // Trigger the calibration and show warnings if needed
   $("#sleep-interval").keyup(updateSleepInfo);
+  $("#gyro-temp").change(updateSleepInfo);
 
   function setButtonDisabled( b ) {
     $("#device-btn").prop("disabled", b);
