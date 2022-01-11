@@ -45,20 +45,24 @@ SOFTWARE.
 
 // These are used in API + Savefile
 #define CFG_PARAM_ID "id"
-#define CFG_PARAM_MDNS "mdns"       // Device name
-#define CFG_PARAM_OTA "ota-url"     // Base URL for OTA
-#define CFG_PARAM_SSID "wifi-ssid"  // WIFI
-#define CFG_PARAM_PASS "wifi-pass"  // WIFI
+#define CFG_PARAM_MDNS "mdns"  // Device name
+#define CFG_PARAM_OTA "ota-url"
+#define CFG_PARAM_SSID "wifi-ssid"
+#define CFG_PARAM_PASS "wifi-pass"
 
-#define CFG_PARAM_PUSH_BREWFATHER "brewfather-push"   // URL (brewfather format)
-#define CFG_PARAM_PUSH_HTTP "http-push"               // URL (iSpindle format)
-#define CFG_PARAM_PUSH_HTTP2 "http-push2"             // URL (iSpindle format)
-#define CFG_PARAM_PUSH_INFLUXDB2 "influxdb2-push"     // URL
-#define CFG_PARAM_PUSH_INFLUXDB2_ORG "influxdb2-org"  // URL
-#define CFG_PARAM_PUSH_INFLUXDB2_BUCKET "influxdb2-bucket"  // URL
-#define CFG_PARAM_PUSH_INFLUXDB2_AUTH "influxdb2-auth"      // URL
-#define CFG_PARAM_SLEEP_INTERVAL "sleep-interval"           // Sleep interval
-#define CFG_PARAM_TEMPFORMAT "temp-format"                  // C or F
+#define CFG_PARAM_PUSH_BREWFATHER "brewfather-push"
+#define CFG_PARAM_PUSH_HTTP "http-push"
+#define CFG_PARAM_PUSH_HTTP2 "http-push2"
+#define CFG_PARAM_PUSH_INFLUXDB2 "influxdb2-push"
+#define CFG_PARAM_PUSH_INFLUXDB2_ORG "influxdb2-org"
+#define CFG_PARAM_PUSH_INFLUXDB2_BUCKET "influxdb2-bucket"
+#define CFG_PARAM_PUSH_INFLUXDB2_AUTH "influxdb2-auth"
+#define CFG_PARAM_PUSH_MQTT "mqtt-push"
+#define CFG_PARAM_PUSH_MQTT_USER "mqtt-user"
+#define CFG_PARAM_PUSH_MQTT_PASS "mqtt-pass"
+#define CFG_PARAM_PUSH_MQTT_TOPIC "mqtt-topic"
+#define CFG_PARAM_SLEEP_INTERVAL "sleep-interval"  // Sleep interval
+#define CFG_PARAM_TEMPFORMAT "temp-format"         // C or F
 #define CFG_PARAM_VOLTAGEFACTOR \
   "voltage-factor"  // Factor to calculate the battery voltage
 #define CFG_PARAM_GRAVITY_FORMULA \
@@ -134,6 +138,11 @@ class Config {
   String influxDb2Org;     // Organisation for InfluxDB v2
   String influxDb2Bucket;  // Bucket for InfluxDB v2
   String influxDb2Token;   // Auth Token for InfluxDB v2
+
+  String mqttUrl;  // Server name
+  String mqttTopic;
+  String mqttUser;
+  String mqttPass;
 
   // Gravity and temperature calculations
   String gravityFormula;
@@ -226,6 +235,29 @@ class Config {
   const char* getInfluxDb2PushToken() { return influxDb2Token.c_str(); }
   void setInfluxDb2PushToken(String s) {
     influxDb2Token = s;
+    saveNeeded = true;
+  }
+
+  // MQTT
+  bool isMqttActive() { return mqttUrl.length() ? true : false; }
+  const char* getMqttUrl() { return mqttUrl.c_str(); }
+  void setMqttUrl(String s) {
+    mqttUrl = s;
+    saveNeeded = true;
+  }
+  const char* getMqttTopic() { return mqttTopic.c_str(); }
+  void setMqttTopic(String s) {
+    mqttTopic = s;
+    saveNeeded = true;
+  }
+  const char* getMqttUser() { return mqttUser.c_str(); }
+  void setMqttUser(String s) {
+    mqttUser = s;
+    saveNeeded = true;
+  }
+  const char* getMqttPass() { return mqttPass.c_str(); }
+  void setMqttPass(String s) {
+    mqttPass = s;
     saveNeeded = true;
   }
 

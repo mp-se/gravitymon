@@ -359,6 +359,10 @@ void WebServer::webHandleConfigPush() {
       server->arg(CFG_PARAM_PUSH_INFLUXDB2_BUCKET).c_str());
   myConfig.setInfluxDb2PushToken(
       server->arg(CFG_PARAM_PUSH_INFLUXDB2_AUTH).c_str());
+  myConfig.setMqttUrl(server->arg(CFG_PARAM_PUSH_MQTT).c_str());
+  myConfig.setMqttTopic(server->arg(CFG_PARAM_PUSH_MQTT_TOPIC).c_str());
+  myConfig.setMqttUser(server->arg(CFG_PARAM_PUSH_MQTT_USER).c_str());
+  myConfig.setMqttPass(server->arg(CFG_PARAM_PUSH_MQTT_PASS).c_str());
   myConfig.saveFile();
   server->sendHeader("Location", "/config.htm#collapseTwo", true);
   server->send(302, "text/plain", "Push config updated");

@@ -43,6 +43,11 @@ class PushTarget {
                 float corrGravity, float temp, float runTime);
   void sendInfluxDb2(float angle, float gravity, float corrGravity, float temp,
                      float runTime);
+  void sendMqtt(float angle, float gravity, float corrGravity, float temp,
+                float runTime);
+  void createIspindleFormat(DynamicJsonDocument &doc, float angle,
+                            float gravity, float corrGravity, float temp,
+                            float runTime);
 
  public:
   PushTarget() { ms = millis(); }

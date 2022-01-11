@@ -21,6 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#include <MQTT.h>
+
 #include <config.hpp>
 #include <gyro.hpp>
 #include <pushtarget.hpp>
@@ -74,6 +76,12 @@ void PushTarget::send(float angle, float gravity, float corrGravity, float temp,
     sendInfluxDb2(angle, gravity, corrGravity, temp, runTime);
     LOG_PERF_STOP("push-influxdb2");
   }
+
+  if (myConfig.isMqttActive()) {
+    LOG_PERF_START("push-mqtt");
+    sendMqtt(angle, gravity, corrGravity, temp, runTime);
+    LOG_PERF_STOP("push-mqtt");
+  }
 }
 
 //
@@ -98,14 +106,14 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float corrGravity,
 
   // Create body for influxdb2
   char buf[1024];
-  snprintf(
-      &buf[0], sizeof(buf),
-      "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
-      "gravity=%.4f,corr-gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,rssi=%d\n",
-      // TODO: Add support for plato format
-      myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), "SG",
-      myConfig.isGravityTempAdj() ? corrGravity : gravity, corrGravity, angle,
-      temp, myBatteryVoltage.getVoltage(), WiFi.RSSI());  
+  snprintf(&buf[0], sizeof(buf),
+           "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
+           "gravity=%.4f,corr-gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,"
+           "rssi=%d\n",
+           // TODO: Add support for plato format
+           myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), "SG",
+           myConfig.isGravityTempAdj() ? corrGravity : gravity, corrGravity,
+           angle, temp, myBatteryVoltage.getVoltage(), WiFi.RSSI());
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -197,16 +205,9 @@ void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity,
 //
 // Send data to http target
 //
-void PushTarget::sendHttp(String serverPath, float angle, float gravity,
-                          float corrGravity, float temp, float runTime) {
-#if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(
-      F("PUSH: Sending values to http angle=%F, gravity=%F, temp=%F." CR),
-      angle, gravity, temp);
-#endif
-
-  DynamicJsonDocument doc(256);
-
+void PushTarget::createIspindleFormat(DynamicJsonDocument &doc, float angle,
+                                      float gravity, float corrGravity,
+                                      float temp, float runTime) {
   // Use iSpindle format for compatibility
   doc["name"] = myConfig.getMDNS();
   doc["ID"] = myConfig.getID();
@@ -225,6 +226,21 @@ void PushTarget::sendHttp(String serverPath, float angle, float gravity,
   // Some additional information
   doc["gravity-units"] = "SG";
   doc["run-time"] = reduceFloatPrecision(runTime, 2);
+}
+
+//
+// Send data to http target
+//
+void PushTarget::sendHttp(String serverPath, float angle, float gravity,
+                          float corrGravity, float temp, float runTime) {
+#if !defined(PUSH_DISABLE_LOGGING)
+  Log.notice(
+      F("PUSH: Sending values to http angle=%F, gravity=%F, temp=%F." CR),
+      angle, gravity, temp);
+#endif
+
+  DynamicJsonDocument doc(256);
+  createIspindleFormat(doc, angle, gravity, corrGravity, temp, runTime);
 
   WiFiClient client;
   HTTPClient http;
@@ -250,6 +266,45 @@ void PushTarget::sendHttp(String serverPath, float angle, float gravity,
   }
 
   http.end();
+}
+
+//
+// Send data to http target
+//
+void PushTarget::sendMqtt(float angle, float gravity, float corrGravity,
+                          float temp, float runTime) {
+#if !defined(PUSH_DISABLE_LOGGING)
+  Log.notice(
+      F("PUSH: Sending values to mqtt angle=%F, gravity=%F, temp=%F." CR),
+      angle, gravity, temp);
+#endif
+
+  DynamicJsonDocument doc(256);
+  createIspindleFormat(doc, angle, gravity, corrGravity, temp, runTime);
+
+  WiFiClient client;
+  MQTTClient mqtt;
+
+  mqtt.begin(myConfig.getMqttUrl(), client);
+  mqtt.connect(myConfig.getMDNS(), myConfig.getMqttUser(),
+               myConfig.getMqttPass());
+
+  String json;
+  serializeJson(doc, json);
+#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
+  Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
+  Log.verbose(F("PUSH: json %s." CR), json.c_str());
+#endif
+
+  // Send MQQT message
+  mqtt.setTimeout(10);  // 10 seconds timeout
+  if (mqtt.publish(myConfig.getMqttTopic(), json)) {
+    Log.notice(F("PUSH: MQTT publish successful" CR));
+  } else {
+    Log.error(F("PUSH: MQTT publish failed" CR));
+  }
+
+  mqtt.disconnect();
 }
 
 // EOF

@@ -74,6 +74,10 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[CFG_PARAM_PUSH_INFLUXDB2_ORG] = getInfluxDb2PushOrg();
   doc[CFG_PARAM_PUSH_INFLUXDB2_BUCKET] = getInfluxDb2PushBucket();
   doc[CFG_PARAM_PUSH_INFLUXDB2_AUTH] = getInfluxDb2PushToken();
+  doc[CFG_PARAM_PUSH_MQTT] = getMqttUrl();
+  doc[CFG_PARAM_PUSH_MQTT_TOPIC] = getMqttTopic();
+  doc[CFG_PARAM_PUSH_MQTT_USER] = getMqttUser();
+  doc[CFG_PARAM_PUSH_MQTT_PASS] = getMqttPass();
   doc[CFG_PARAM_SLEEP_INTERVAL] = getSleepInterval();
   doc[CFG_PARAM_VOLTAGEFACTOR] = getVoltageFactor();
   doc[CFG_PARAM_GRAVITY_FORMULA] = getGravityFormula();
@@ -189,16 +193,20 @@ bool Config::loadFile() {
   if (!doc[CFG_PARAM_MDNS].isNull()) setMDNS(doc[CFG_PARAM_MDNS]);
   if (!doc[CFG_PARAM_SSID].isNull()) setWifiSSID(doc[CFG_PARAM_SSID]);
   if (!doc[CFG_PARAM_PASS].isNull()) setWifiPass(doc[CFG_PARAM_PASS]);
+
   if (!doc[CFG_PARAM_TEMPFORMAT].isNull()) {
     String s = doc[CFG_PARAM_TEMPFORMAT];
     setTempFormat(s.charAt(0));
   }
+
   if (!doc[CFG_PARAM_PUSH_BREWFATHER].isNull())
     setBrewfatherPushUrl(doc[CFG_PARAM_PUSH_BREWFATHER]);
+
   if (!doc[CFG_PARAM_PUSH_HTTP].isNull())
     setHttpPushUrl(doc[CFG_PARAM_PUSH_HTTP]);
   if (!doc[CFG_PARAM_PUSH_HTTP2].isNull())
     setHttpPushUrl2(doc[CFG_PARAM_PUSH_HTTP2]);
+
   if (!doc[CFG_PARAM_PUSH_INFLUXDB2].isNull())
     setInfluxDb2PushUrl(doc[CFG_PARAM_PUSH_INFLUXDB2]);
   if (!doc[CFG_PARAM_PUSH_INFLUXDB2_ORG].isNull())
@@ -207,6 +215,15 @@ bool Config::loadFile() {
     setInfluxDb2PushBucket(doc[CFG_PARAM_PUSH_INFLUXDB2_BUCKET]);
   if (!doc[CFG_PARAM_PUSH_INFLUXDB2_AUTH].isNull())
     setInfluxDb2PushToken(doc[CFG_PARAM_PUSH_INFLUXDB2_AUTH]);
+
+  if (!doc[CFG_PARAM_PUSH_MQTT].isNull()) setMqttUrl(doc[CFG_PARAM_PUSH_MQTT]);
+  if (!doc[CFG_PARAM_PUSH_MQTT_TOPIC].isNull())
+    setMqttTopic(doc[CFG_PARAM_PUSH_MQTT_TOPIC]);
+  if (!doc[CFG_PARAM_PUSH_MQTT_USER].isNull())
+    setMqttUser(doc[CFG_PARAM_PUSH_MQTT_USER]);
+  if (!doc[CFG_PARAM_PUSH_MQTT_PASS].isNull())
+    setMqttPass(doc[CFG_PARAM_PUSH_MQTT_PASS]);
+
   if (!doc[CFG_PARAM_SLEEP_INTERVAL].isNull())
     setSleepInterval(doc[CFG_PARAM_SLEEP_INTERVAL].as<int>());
   if (!doc[CFG_PARAM_VOLTAGEFACTOR].isNull())
