@@ -101,13 +101,11 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float corrGravity,
   snprintf(
       &buf[0], sizeof(buf),
       "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
-      "gravity=%.4f,corr-gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,rssi=%"
-      "d,temp2=%.2f\n",
+      "gravity=%.4f,corr-gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,rssi=%d\n",
       // TODO: Add support for plato format
       myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), "SG",
       myConfig.isGravityTempAdj() ? corrGravity : gravity, corrGravity, angle,
-      temp, myBatteryVoltage.getVoltage(), WiFi.RSSI(),
-      myGyro.getSensorTempC());  // For comparing gyro tempsensor vs DSB1820
+      temp, myBatteryVoltage.getVoltage(), WiFi.RSSI());  
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
