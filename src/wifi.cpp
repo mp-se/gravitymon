@@ -87,11 +87,11 @@ bool WifiConnection::hasConfig() {
   // Check if there are stored WIFI Settings we can use.
   String ssid = WiFi.SSID();
   if (ssid.length()) {
-      Log.notice(F("WIFI: Found credentials in EEPORM." CR));
-      myConfig.setWifiSSID(WiFi.SSID());
-      myConfig.setWifiPass(WiFi.psk());
-      myConfig.saveFile();
-      return true;
+    Log.notice(F("WIFI: Found credentials in EEPORM." CR));
+    myConfig.setWifiSSID(WiFi.SSID());
+    myConfig.setWifiPass(WiFi.psk());
+    myConfig.saveFile();
+    return true;
   }
   return false;
 }
@@ -109,7 +109,9 @@ String WifiConnection::getIPAddress() { return WiFi.localIP().toString(); }
 //
 // Additional method to detect double reset.
 //
-bool WifiConnection::isDoubleResetDetected() { return myDRD->detectDoubleReset(); }
+bool WifiConnection::isDoubleResetDetected() {
+  return myDRD->detectDoubleReset();
+}
 
 //
 // Stop double reset detection
@@ -171,16 +173,17 @@ void WifiConnection::connectAsync() {
 // Blocks until wifi connection has been found
 //
 bool WifiConnection::waitForConnection(int maxTime) {
-#if DEBUG_LEVEL == 6 
+#if DEBUG_LEVEL == 6
   WiFi.printDiag(Serial);
 #endif
   int i = 0;
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
 
-    if ( i % 10 ) Serial.print(".");
+    if (i % 10) Serial.print(".");
 
-    if (i++ > (maxTime*10)) {  // Try for maxTime seconds. Since delay is 100ms.
+    if (i++ >
+        (maxTime * 10)) {  // Try for maxTime seconds. Since delay is 100ms.
       Log.error(F("WIFI: Failed to connect to wifi %d, aborting %s." CR),
                 WiFi.status(), getIPAddress().c_str());
       WiFi.disconnect();
