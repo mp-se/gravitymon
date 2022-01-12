@@ -83,6 +83,16 @@ WifiConnection::WifiConnection() {
 bool WifiConnection::hasConfig() {
   if (strlen(myConfig.getWifiSSID())) return true;
   if (strlen(userSSID)) return true;
+
+  // Check if there are stored WIFI Settings we can use.
+  String ssid = WiFi.SSID();
+  if (ssid.length()) {
+      Log.notice(F("WIFI: Found credentials in EEPORM." CR));
+      myConfig.setWifiSSID(WiFi.SSID());
+      myConfig.setWifiPass(WiFi.psk());
+      myConfig.saveFile();
+      return true;
+  }
   return false;
 }
 

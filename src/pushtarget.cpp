@@ -283,7 +283,7 @@ void PushTarget::sendMqtt(float angle, float gravity, float corrGravity,
   createIspindleFormat(doc, angle, gravity, corrGravity, temp, runTime);
 
   WiFiClient client;
-  MQTTClient mqtt;
+  MQTTClient mqtt(512); // Maximum message size
 
   mqtt.begin(myConfig.getMqttUrl(), client);
   mqtt.connect(myConfig.getMDNS(), myConfig.getMqttUser(),
@@ -292,7 +292,7 @@ void PushTarget::sendMqtt(float angle, float gravity, float corrGravity,
   String json;
   serializeJson(doc, json);
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
+  Log.verbose(F("PUSH: url %s." CR), myConfig.getMqttUrl());
   Log.verbose(F("PUSH: json %s." CR), json.c_str());
 #endif
 
@@ -301,7 +301,7 @@ void PushTarget::sendMqtt(float angle, float gravity, float corrGravity,
   if (mqtt.publish(myConfig.getMqttTopic(), json)) {
     Log.notice(F("PUSH: MQTT publish successful" CR));
   } else {
-    Log.error(F("PUSH: MQTT publish failed" CR));
+    Log.error(F("PUSH: MQTT publish failed err=%d, ret=%d" CR), mqtt.lastError(), mqtt.returnCode());
   }
 
   mqtt.disconnect();
