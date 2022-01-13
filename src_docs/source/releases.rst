@@ -16,6 +16,8 @@ This is features for the next release.
 * Added warning on config page when sleep is <300
 * Enabled selection of gyro temperature sensor under Hardware settings
 * Added warning when short sleep interval and gyro temp is enabled
+* Added support for MQTT
+* Bug: MPU init sometimes caused crash during startup.
 
 v0.5.0
 ------

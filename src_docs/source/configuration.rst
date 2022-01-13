@@ -125,6 +125,22 @@ Push Settings
 
    Token with write access to bucket.
 
+* **MQTT server:**
+
+   IP or name of server to send data to.
+
+* **MQTT Topic:**
+
+   Name of topic to publish sensor readings to, iSpindle format is used.
+
+* **MQTT user:**
+
+   Username or blank if anonymous is accepted
+
+* **MQTT password:**
+
+   Password or blank if anonymous is accepted
+
 
 Gravity Settings
 ++++++++++++++++

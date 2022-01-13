@@ -59,8 +59,9 @@ Configuring WIFI
 When the device is flashed it will need to have WIFI configuration in order to work. If you have used other software on 
 the device its possible that wifi settings exist.
 
-If this is not configured in the device it will create an wirless access point called `GravMon`. Connect to this AP and 
-enter the SSID and password you want to use. If the web page dont open automatically you can enter the following adress 
+If this is not configured in the device it will create an wirless access point called `GravMon`. The default password is `password`.
+
+Connect to this AP and enter the SSID and password you want to use. If the web page dont open automatically you can enter the following adress 
 in the browser: **http://192.168.4.1**
 
 .. image:: images/wifi.png
