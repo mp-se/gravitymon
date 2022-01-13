@@ -50,7 +50,6 @@ struct RawGyroDataL {  // Used for average multiple readings
 
 class GyroSensor {
  private:
-  MPU6050 accelgyro;
   bool sensorConnected = false;
   bool validValue = false;
   float angle = 0;

@@ -25,6 +25,7 @@ SOFTWARE.
 #include <helper.hpp>
 
 GyroSensor myGyro;
+MPU6050 accelgyro;
 
 #define GYRO_USE_INTERRUPT  // Use interrupt to detect when new sample is ready
 #define SENSOR_MOVING_THREASHOLD 500
@@ -45,8 +46,7 @@ bool GyroSensor::setup() {
   Wire.begin(D3, D4);
   Wire.setClock(400000);  // 400kHz I2C clock. Comment this line if having
                           // compilation difficulties
-  accelgyro.initialize();
-
+  
   if (!accelgyro.testConnection()) {
     Log.error(F("GYRO: Failed to connect to MPU6050 (gyro)." CR));
     sensorConnected = false;
@@ -54,6 +54,7 @@ bool GyroSensor::setup() {
 #if !defined(GYRO_DISABLE_LOGGING)
     Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
 #endif
+    accelgyro.initialize();
     sensorConnected = true;
 
     // Configure the sensor
