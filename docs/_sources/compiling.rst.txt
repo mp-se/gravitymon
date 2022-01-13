@@ -82,8 +82,6 @@ This is a list of C++ defines that is used to enable/disable functions in the co
      - description
    * - ACTIVATE_OTA
      - Enables the OTA functionallity in the code
-   * - USE_GYRO_TEMP
-     - Uses temperature from gyro instead of DS18B20 (experimental)
    * - SKIP_SLEEPMODE
      - THe device never goes into sleep mode, useful when developing.
    * - CFG_DISABLE_LOGGING

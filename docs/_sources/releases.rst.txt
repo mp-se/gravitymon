@@ -3,6 +3,22 @@
 Releases 
 ########
 
+v0.6.0 (work in progress)
+-------------------------
+
+This is features for the next release.
+
+* Changed the wifi manager and refactored wifi.cpp
+* LED is now turned on when Wifi Portal is open
+* Refactored main.cpp to make it easier to read
+* Tested runtime performance
+* Improved documentation
+* Added warning on config page when sleep is <300
+* Enabled selection of gyro temperature sensor under Hardware settings
+* Added warning when short sleep interval and gyro temp is enabled
+* Added support for MQTT
+* Bug: MPU init sometimes caused crash during startup.
+
 v0.5.0
 ------
 

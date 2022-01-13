@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v0.5**. Last updated 2022-01-09
+  This documentation reflects **v0.6**. Last updated 2022-01-13
   
 
 GravityMon is a replacement firmare for the iSpindle firmware, it uses the same hardware configuration so 
@@ -29,6 +29,7 @@ be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
   
   I dont take responsibility for any errors that can cause problems with the use. I have tested v0.4 on 5+ brews 
   over the last 6 months without any issues.
+
 
 The main differences:
 ---------------------
@@ -67,7 +68,7 @@ the following libraries and without these this would have been much more difficu
 
   Can detect if the reset button is pressed twice, is used to enter WIFI config mode.
 
-* https://github.com/tzapu/WiFiManager
+* https://github.com/khoih-prog/ESP_WiFiManager
 
   Configure wifi settings.
 
@@ -91,6 +92,10 @@ the following libraries and without these this would have been much more difficu
 
   Create the gravity formula.
 
+* https://github.com/256dpi/arduino-mqtt
+
+  Library for sending data to mqtt based on lightweight mqtt implemenentation. 
+
 * https://graphjs.com/
 
   Render the graphs in the UI.
@@ -111,6 +116,7 @@ the following libraries and without these this would have been much more difficu
    configuration
    compiling
    contributing
+   q_and_a
    backlog
 
 Indices and tables
