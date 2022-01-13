@@ -15,7 +15,10 @@ jobs:
       - uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "src_docs/"
-          pre-build-command: "pip install sphinx_rtd_theme"
+          pre-build-command: |
+            pip install sphinx_rtd_theme
+            pip install sphinx-bootstrap-theme
+            pip install renku-sphinx-theme
           build-command: "sphinx-build -b html ./source ../docs"
 
       - name: Commit documentation changes
