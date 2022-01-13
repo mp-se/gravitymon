@@ -282,22 +282,22 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 <ul>
 <li><p><strong>HTTP URL 1:</strong></p>
 <blockquote>
-<div><p>Endpoint to send data via http. Format used is standard iSpindle format (see format section).</p>
+<div><p>Endpoint to send data via http. Format used Format used <a class="reference internal" href="#data-formats-ispindle"><span class="std std-ref">iSpindle format</span></a></p>
 </div></blockquote>
 </li>
 <li><p><strong>HTTP URL 2:</strong></p>
 <blockquote>
-<div><p>Endpoint to send data via http. Format used is standard iSpindle format (see format section).</p>
+<div><p>Endpoint to send data via http. Format used <a class="reference internal" href="#data-formats-ispindle"><span class="std std-ref">iSpindle format</span></a></p>
 </div></blockquote>
 </li>
 <li><p><strong>Brewfather URL:</strong></p>
 <blockquote>
-<div><p>Endpoint to send data via http to brewfather. Format used is defined by brewfather (see format section).</p>
+<div><p>Endpoint to send data via http to brewfather. Format used <a class="reference internal" href="#data-formats-brewfather"><span class="std std-ref">Brewfather format</span></a></p>
 </div></blockquote>
 </li>
 <li><p><strong>Influx DB v2 URL:</strong></p>
 <blockquote>
-<div><p>Endpoint to send data via http to InfluxDB. For format (see format section).</p>
+<div><p>Endpoint to send data via http to InfluxDB. Format used <a class="reference internal" href="#data-formats-influxdb2"><span class="std std-ref">Influx DB v2</span></a></p>
 </div></blockquote>
 </li>
 <li><p><strong>Influx DB v2 Organisation:</strong></p>
@@ -317,7 +317,7 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 </li>
 <li><p><strong>MQTT server:</strong></p>
 <blockquote>
-<div><p>IP or name of server to send data to.</p>
+<div><p>IP or name of server to send data to. Format used <a class="reference internal" href="#data-formats-ispindle"><span class="std std-ref">iSpindle format</span></a></p>
 </div></blockquote>
 </li>
 <li><p><strong>MQTT Topic:</strong></p>
@@ -343,7 +343,8 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 <ul>
 <li><p><strong>Gravity formula:</strong></p>
 <blockquote>
-<div><p>Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. Is updated if the calibration function is used.</p>
+<div><p>Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use
+the feature to create the formula by supplying the raw data. See <a class="reference internal" href="#create-formula"><span class="std std-ref">Create formula</span></a></p>
 </div></blockquote>
 </li>
 <li><p><strong>Temperature correct gravity:</strong></p>
@@ -430,6 +431,10 @@ code the update will be done during startup.</p>
 <span class="w">   </span><span class="nt">"influxdb2-org"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-bucket"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-auth"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"192.168.1.50"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-pass"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"sleep-interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"voltage-factor"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.59</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity-formula"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"</span><span class="p">,</span><span class="w"></span>
@@ -536,7 +541,11 @@ code the update will be done during startup.</p>
 <span class="w">   </span><span class="nt">"influxdb2-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.1.50:8086"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-org"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-bucket"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"influxdb2-auth"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"influxdb2-auth"</span><span class="p">:</span><span class="w"> </span><span class="nt">"Qwerty"</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"192.168.1.50"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-pass"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
@@ -636,7 +645,11 @@ present or the API call will fail.</p>
          <span class="s2">"influxdb2-push"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"influxdb2-org"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"influxdb2-bucket"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
-         <span class="s2">"influxdb2-auth"</span><span class="p">:</span> <span class="s2">""</span>
+         <span class="s2">"influxdb2-auth"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+         <span class="s2">"mqtt-push"</span><span class="p">:</span> <span class="s2">"192.168.1.50"</span><span class="p">,</span>
+         <span class="s2">"mqtt-topic"</span><span class="p">:</span> <span class="s2">"Qwerty"</span><span class="p">,</span>
+         <span class="s2">"mqtt-user"</span><span class="p">:</span> <span class="s2">"Qwerty"</span><span class="p">,</span>
+         <span class="s2">"mqtt-pass"</span><span class="p">:</span> <span class="s2">"Qwerty"</span>
          <span class="p">}</span>
 <span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
 
@@ -677,7 +690,7 @@ present or the API call will fail.</p>
 <div class="section" id="data-formats">
 <span id="id4"></span><h1>Data Formats<a class="headerlink" href="#data-formats" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="ispindle-format">
-<h2>iSpindle format<a class="headerlink" href="#ispindle-format" title="Permalink to this headline">¶</a></h2>
+<span id="data-formats-ispindle"></span><h2>iSpindle format<a class="headerlink" href="#ispindle-format" title="Permalink to this headline">¶</a></h2>
 <p>This is the format used for standard http posts.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">corr-gravity</span></code> is an extended parameter containing a temperature corrected gravity reading.</p></li>
@@ -701,7 +714,7 @@ present or the API call will fail.</p>
 </div>
 </div>
 <div class="section" id="brewfather-format">
-<h2>Brewfather format<a class="headerlink" href="#brewfather-format" title="Permalink to this headline">¶</a></h2>
+<span id="data-formats-brewfather"></span><h2>Brewfather format<a class="headerlink" href="#brewfather-format" title="Permalink to this headline">¶</a></h2>
 <p>This is the format for Brewfather</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
@@ -715,7 +728,7 @@ present or the API call will fail.</p>
 </div>
 </div>
 <div class="section" id="influx-db-v2">
-<h2>Influx DB v2<a class="headerlink" href="#influx-db-v2" title="Permalink to this headline">¶</a></h2>
+<span id="data-formats-influxdb2"></span><h2>Influx DB v2<a class="headerlink" href="#influx-db-v2" title="Permalink to this headline">¶</a></h2>
 <p>This is the format for InfluxDB v2</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">measurement</span><span class="p">,</span><span class="n">host</span><span class="o">=&lt;</span><span class="n">mdns</span><span class="o">&gt;</span><span class="p">,</span><span class="n">device</span><span class="o">=&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="p">,</span><span class="n">temp</span><span class="o">-</span><span class="nb">format</span><span class="o">=&lt;</span><span class="n">C</span><span class="o">|</span><span class="n">F</span><span class="o">&gt;</span><span class="p">,</span><span class="n">gravity</span><span class="o">-</span><span class="nb">format</span><span class="o">=</span><span class="n">SG</span><span class="p">,</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">corr</span><span class="o">-</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">angle</span><span class="o">=</span><span class="mf">45.45</span><span class="p">,</span><span class="n">temp</span><span class="o">=</span><span class="mf">20.1</span><span class="p">,</span><span class="n">battery</span><span class="o">=</span><span class="mf">3.96</span><span class="p">,</span><span class="n">rssi</span><span class="o">=-</span><span class="mi">18</span>
 </pre></div>

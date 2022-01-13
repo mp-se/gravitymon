@@ -99,19 +99,19 @@ Push Settings
 
 * **HTTP URL 1:**
 
-   Endpoint to send data via http. Format used is standard iSpindle format (see format section).
+   Endpoint to send data via http. Format used Format used :ref:`data-formats-ispindle`
 
 * **HTTP URL 2:**
 
-   Endpoint to send data via http. Format used is standard iSpindle format (see format section).
+   Endpoint to send data via http. Format used :ref:`data-formats-ispindle`
 
 * **Brewfather URL:**
 
-   Endpoint to send data via http to brewfather. Format used is defined by brewfather (see format section).
+   Endpoint to send data via http to brewfather. Format used :ref:`data-formats-brewfather`
 
 * **Influx DB v2 URL:**
 
-   Endpoint to send data via http to InfluxDB. For format (see format section).
+   Endpoint to send data via http to InfluxDB. Format used :ref:`data-formats-influxdb2`
 
 * **Influx DB v2 Organisation:**
 
@@ -127,7 +127,7 @@ Push Settings
 
 * **MQTT server:**
 
-   IP or name of server to send data to.
+   IP or name of server to send data to. Format used :ref:`data-formats-ispindle`
 
 * **MQTT Topic:**
 
@@ -151,7 +151,8 @@ Gravity Settings
 
 * **Gravity formula:**
 
-   Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. Is updated if the calibration function is used.
+   Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use 
+   the feature to create the formula by supplying the raw data. See :ref:`create-formula`
 
 * **Temperature correct gravity:**
 
@@ -253,6 +254,10 @@ Other parameters are the same as in the configuration guide.
       "influxdb2-org": "Qwerty",
       "influxdb2-bucket": "Qwerty",
       "influxdb2-auth": "Qwerty",
+      "mqtt-push": "192.168.1.50",
+      "mqtt-topic": "Qwerty",
+      "mqtt-user": "Qwerty",
+      "mqtt-pass": "Qwerty",
       "sleep-interval": 30,
       "voltage-factor": 1.59,
       "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
@@ -373,6 +378,10 @@ Used to update push settings via an HTTP POST command. Payload is in JSON format
       "influxdb2-org": "Qwerty",
       "influxdb2-bucket": "Qwerty",
       "influxdb2-auth": "Qwerty" 
+      "mqtt-push": "192.168.1.50",
+      "mqtt-topic": "Qwerty",
+      "mqtt-user": "Qwerty",
+      "mqtt-pass": "Qwerty",
    }  
 
 
@@ -480,7 +489,11 @@ present or the API call will fail.
             "influxdb2-push": "",                       
             "influxdb2-org": "",
             "influxdb2-bucket": "",
-            "influxdb2-auth": "" 
+            "influxdb2-auth": "",
+            "mqtt-push": "192.168.1.50",
+            "mqtt-topic": "Qwerty",
+            "mqtt-user": "Qwerty",
+            "mqtt-pass": "Qwerty"
             }  
    set_config( url, json )
 
@@ -521,6 +534,8 @@ present or the API call will fail.
 Data Formats
 ############
 
+.. _data-formats-ispindle:
+
 iSpindle format 
 ===============
 
@@ -547,6 +562,8 @@ This is the format used for standard http posts.
    }
    
 
+.. _data-formats-brewfather:
+
 Brewfather format 
 =================
 
@@ -563,6 +580,8 @@ This is the format for Brewfather
       "gravity_unit": "G",
    }
 
+
+.. _data-formats-influxdb2:
 
 Influx DB v2
 ============
