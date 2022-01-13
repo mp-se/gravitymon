@@ -92,6 +92,10 @@ the following libraries and without these this would have been much more difficu
 
   Create the gravity formula.
 
+* https://github.com/256dpi/arduino-mqtt
+
+  Library for sending data to mqtt based on lightweight mqtt implemenentation. 
+
 * https://graphjs.com/
 
   Render the graphs in the UI.
