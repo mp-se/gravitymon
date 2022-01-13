@@ -3,10 +3,10 @@
 Releases 
 ########
 
-v0.6.0 (work in progress)
--------------------------
+v0.6.0
+------
 
-This is features for the next release.
+Latest stable version.
 
 * Changed the wifi manager and refactored wifi.cpp
 * LED is now turned on when Wifi Portal is open
@@ -19,10 +19,10 @@ This is features for the next release.
 * Added support for MQTT
 * Bug: MPU init sometimes caused crash during startup.
 
+`Release v0.6 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.6.0>`_
+
 v0.5.0
 ------
-
-Latest stable version.
 
 * Added feature to calcuate formula on device
 * Total rewrite of documentation
