@@ -217,25 +217,28 @@ over the last 6 months without any issues.</p>
 <div class="section" id="the-main-differences">
 <h2>The main differences:<a class="headerlink" href="#the-main-differences" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Operates in two modes <code class="docutils literal notranslate"><span class="pre">gravity</span> <span class="pre">monitoring</span></code> and <code class="docutils literal notranslate"><span class="pre">configuration</span> <span class="pre">mode</span></code></p></li>
-<li><p>Send data to multiple endpoints when pushing data.</p></li>
+<li><p>Operates in two modes gravity monitoring and configuration mode (simplify calibration)</p></li>
+<li><p>Modern web based UI for configuration (in config mode)</p></li>
+<li><p>REST API</p></li>
+<li><p>Send data to multiple endpoints when pushing data (2xhttp, brewfather, influxdb v2, mqtt supported)</p></li>
 <li><p>Automatic temperature adjustment of gravity reading</p></li>
 <li><p>OTA support from local webserver</p></li>
-<li><p>Build in function to create gravity formulas</p></li>
-</ul>
-<p>There are also a experimental features such as:</p>
-<ul class="simple">
+<li><p>Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity.</p></li>
+<li><p>Visual graph showing how formula will be interpreted</p></li>
 <li><p>Using the temperature sensor in gyro instead of DS18B20 (faster)</p></li>
-<li><p>Performance measurements (used to optimise code)</p></li>
+<li><p>Built in performance measurements (used to optimise code)</p></li>
 </ul>
 <p>For a complete breakdown see the <a class="reference internal" href="functionallity.html#functionallity"><span class="std std-ref">Functionallity</span></a></p>
+<p>This is a simple overview of the different components that the software contains. The green ones are only active during <cite>configuration mode</cite> in
+order to save battery.</p>
+<a class="reference internal image-reference" href="_images/software_design.png"><img alt="Software design" src="_images/software_design.png" style="width: 600px;"/></a>
 </div>
 <div class="section" id="credits-to">
 <h2>Credits to<a class="headerlink" href="#credits-to" title="Permalink to this headline">¶</a></h2>
 <p>Ideas to some of these functions have been picked up from disucssions in the iSpindle forums. This software uses
 the following libraries and without these this would have been much more difficult to acheive:</p>
 <ul>
-<li><p><a class="reference external" href="https://github.com/jrowberg/i2cdevlib.git">https://github.com/jrowberg/i2cdevlib.git</a></p>
+<li><p><a class="reference external" href="https://github.com/jrowberg/i2cdevlib">https://github.com/jrowberg/i2cdevlib</a></p>
 <p>This library contains the basic code to interact with the gyro + many more chips.</p>
 </li>
 <li><p><a class="reference external" href="https://github.com/codeplea/tinyexpr">https://github.com/codeplea/tinyexpr</a></p>

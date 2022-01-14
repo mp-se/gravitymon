@@ -23,6 +23,9 @@ The hardware design comes from the fantastic iSpindle project so that is not cov
 My approach to this software is a little different from that the original ispindle firmware. The github repository can 
 be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
 
+
+
+
 .. note::
   This software is in the early stages even though its more than one year old so if you find issues, please 
   open a ticket on github.
@@ -30,29 +33,36 @@ be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
   I dont take responsibility for any errors that can cause problems with the use. I have tested v0.4 on 5+ brews 
   over the last 6 months without any issues.
 
-
 The main differences:
 ---------------------
 
-* Operates in two modes ``gravity monitoring`` and ``configuration mode``
-* Send data to multiple endpoints when pushing data.
-* Automatic temperature adjustment of gravity reading 
-* OTA support from local webserver 
-* Build in function to create gravity formulas
-
-There are also a experimental features such as:
-
+* Operates in two modes gravity monitoring and configuration mode (simplify calibration)
+* Modern web based UI for configuration (in config mode)
+* REST API
+* Send data to multiple endpoints when pushing data (2xhttp, brewfather, influxdb v2, mqtt supported)
+* Automatic temperature adjustment of gravity reading
+* OTA support from local webserver
+* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity. 
+* Visual graph showing how formula will be interpreted
 * Using the temperature sensor in gyro instead of DS18B20 (faster)
-* Performance measurements (used to optimise code)
+* Built in performance measurements (used to optimise code)
 
 For a complete breakdown see the :ref:`functionallity`
+
+This is a simple overview of the different components that the software contains. The green ones are only active during `configuration mode` in 
+order to save battery.
+
+.. image:: images/software_design.png
+  :width: 600
+  :alt: Software design
+
 
 Credits to
 ----------
 Ideas to some of these functions have been picked up from disucssions in the iSpindle forums. This software uses 
 the following libraries and without these this would have been much more difficult to acheive:
 
-* https://github.com/jrowberg/i2cdevlib.git 
+* https://github.com/jrowberg/i2cdevlib 
 
   This library contains the basic code to interact with the gyro + many more chips.
 
