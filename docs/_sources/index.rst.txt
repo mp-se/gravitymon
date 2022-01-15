@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v0.6**. Last updated 2022-01-13
+  This documentation reflects **v0.6**. Last updated 2022-01-15
   
 
 GravityMon is a replacement firmare for the iSpindle firmware, it uses the same hardware configuration so 

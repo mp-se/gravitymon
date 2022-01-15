@@ -195,24 +195,11 @@
         <article role="main">
           <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="official-esptool">
-<h2>Official esptool<a class="headerlink" href="#official-esptool" title="Permalink to this headline">¶</a></h2>
-<p>The prefered option for flashing esp8266 device is via the official esptool. Documentation can be found
-here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">esptool home page</a></p>
-<p>Windows 10 should install a driver for the USB -&gt; Serial automatically when you connect a esp8266.</p>
-<div class="section" id="flashing-on-windows">
-<h3>Flashing on windows<a class="headerlink" href="#flashing-on-windows" title="Permalink to this headline">¶</a></h3>
-<p>The basic command for flashing on Windows is;</p>
-<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">write_flash</span> <span class="pre">0x0</span> <span class="pre">firmware.bin</span></code></p>
-<p>If there are issues you can try do erase the flash first using this command;</p>
-<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">erase_flash</span></code></p>
-</div>
-<div class="section" id="serial-monitoring">
-<h3>Serial Monitoring<a class="headerlink" href="#serial-monitoring" title="Permalink to this headline">¶</a></h3>
-<p>To check output from the device (logs) there are several tools out there. I found this simple tool in the Windows Store called <code class="docutils literal notranslate"><span class="pre">Serial</span> <span class="pre">Port</span> <span class="pre">Monitoring</span></code>.
-Just select a baud rate of 115200, 8N1.</p>
-<a class="reference internal image-reference" href="_images/serial.png"><img alt="Serial output" src="_images/serial.png" style="width: 800px;"/></a>
-</div>
+<div class="section" id="brewflasher">
+<h2>Brewflasher<a class="headerlink" href="#brewflasher" title="Permalink to this headline">¶</a></h2>
+<p>The prefered option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works
+on both Windows and Mac. You can download the latest version from here: <a class="reference external" href="https://www.brewflasher.com/">Brewflasher</a></p>
+<a class="reference internal image-reference" href="_images/brewflasher.png"><img alt="Serial output" src="_images/brewflasher.png" style="width: 600px;"/></a>
 <div class="section" id="binaries">
 <h3>Binaries<a class="headerlink" href="#binaries" title="Permalink to this headline">¶</a></h3>
 <p>In the /bin directory you will find 2 different firmware builds;</p>
@@ -230,6 +217,22 @@ the configuration file.</p>
 default (see compiling for details). This approach makes installation much easier and ensure that html files
 and code is in sync.</p>
 </div>
+</div>
+<div class="section" id="esptool">
+<h2>Esptool<a class="headerlink" href="#esptool" title="Permalink to this headline">¶</a></h2>
+<p>The other option for flashing esp8266 device is via the official esptool. Documentation can be found
+here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">esptool home page</a></p>
+<p>Windows 10 should install a driver for the USB -&gt; Serial automatically when you connect a esp8266.</p>
+<p>The basic command for flashing on Windows is;</p>
+<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">write_flash</span> <span class="pre">0x0</span> <span class="pre">firmware.bin</span></code></p>
+<p>If there are issues you can try do erase the flash first using this command;</p>
+<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">erase_flash</span></code></p>
+</div>
+<div class="section" id="serial-monitoring">
+<h2>Serial Monitoring<a class="headerlink" href="#serial-monitoring" title="Permalink to this headline">¶</a></h2>
+<p>To check output from the device (logs) there are several tools out there. I found this simple tool in the Windows Store called <code class="docutils literal notranslate"><span class="pre">Serial</span> <span class="pre">Port</span> <span class="pre">Monitoring</span></code>.
+Just select a baud rate of 115200, 8N1.</p>
+<a class="reference internal image-reference" href="_images/serial.png"><img alt="Serial output" src="_images/serial.png" style="width: 800px;"/></a>
 </div>
 <div class="section" id="configuring-wifi">
 <h2>Configuring WIFI<a class="headerlink" href="#configuring-wifi" title="Permalink to this headline">¶</a></h2>
@@ -290,12 +293,12 @@ in the browser: <strong>http://192.168.4.1</strong></p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#official-esptool">Official esptool</a><ul>
-<li><a class="reference internal" href="#flashing-on-windows">Flashing on windows</a></li>
-<li><a class="reference internal" href="#serial-monitoring">Serial Monitoring</a></li>
+<li><a class="reference internal" href="#brewflasher">Brewflasher</a><ul>
 <li><a class="reference internal" href="#binaries">Binaries</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#esptool">Esptool</a></li>
+<li><a class="reference internal" href="#serial-monitoring">Serial Monitoring</a></li>
 <li><a class="reference internal" href="#configuring-wifi">Configuring WIFI</a></li>
 </ul>
 </li>
