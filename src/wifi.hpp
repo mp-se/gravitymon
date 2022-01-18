@@ -41,7 +41,7 @@ class WifiConnection {
   WiFiClientSecure _secureClient;
 
   // OTA
-  bool newFirmware = false;
+  bool _newFirmware = false;
   bool parseFirmwareVersionString(int (&num)[3], const char* version);
   void downloadFile(const char* fname);
   void connectAsync();

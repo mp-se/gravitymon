@@ -224,7 +224,7 @@ bool WifiConnection::disconnect() {
 //
 //
 bool WifiConnection::updateFirmware() {
-  if (!newFirmware) {
+  if (!_newFirmware) {
     Log.notice(F("WIFI: No newer version exist, skipping update." CR));
     return false;
   }
@@ -345,19 +345,19 @@ bool WifiConnection::checkFirmwareVersion() {
                       curVer[2]);
 #endif
           // Compare major version
-          if (newVer[0] > curVer[0]) newFirmware = true;
+          if (newVer[0] > curVer[0]) _newFirmware = true;
           // Compare minor version
           if (newVer[0] == curVer[0] && newVer[1] > curVer[1])
-            newFirmware = true;
+            _newFirmware = true;
           // Compare patch version
           if (newVer[0] == curVer[0] && newVer[1] == curVer[1] &&
               newVer[2] > curVer[2])
-            newFirmware = true;
+            _newFirmware = true;
         }
       }
 
       // Download new html files to filesystem if they are present.
-      if (!ver["html"].isNull() && newFirmware) {
+      if (!ver["html"].isNull() && _newFirmware) {
         Log.notice(F("WIFI: OTA downloading new html files." CR));
         JsonArray htmlFiles = ver["html"].as<JsonArray>();
         for (JsonVariant v : htmlFiles) {
@@ -377,9 +377,9 @@ bool WifiConnection::checkFirmwareVersion() {
   myWifi.closeWifiClient();
 #if LOG_LEVEL == 6
   Log.verbose(F("WIFI: OTA found new version %s." CR),
-              newFirmware ? "true" : "false");
+              _newFirmware ? "true" : "false");
 #endif
-  return newFirmware;
+  return _newFirmware;
 }
 
 //

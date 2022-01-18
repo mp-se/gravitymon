@@ -44,9 +44,9 @@ INCBIN_EXTERN(UploadHtm);
 // classes
 class WebServer {
  private:
-  ESP8266WebServer* server = 0;
-  File uploadFile;
-  int lastFormulaCreateError = 0;
+  ESP8266WebServer* _server = 0;
+  File _uploadFile;
+  int _lastFormulaCreateError = 0;
 
   void webHandleConfig();
   void webHandleFormulaWrite();
@@ -68,29 +68,29 @@ class WebServer {
   String getRequestArguments();
 
   // Inline functions.
-  void webReturnOK() { server->send(200); }
+  void webReturnOK() { _server->send(200); }
 #if defined(EMBED_HTML)
   void webReturnIndexHtm() {
-    server->send_P(200, "text/html", (const char*)gIndexHtmData, gIndexHtmSize);
+    _server->send_P(200, "text/html", (const char*)gIndexHtmData, gIndexHtmSize);
   }
   void webReturnDeviceHtm() {
-    server->send_P(200, "text/html", (const char*)gDeviceHtmData,
+    _server->send_P(200, "text/html", (const char*)gDeviceHtmData,
                    gDeviceHtmSize);
   }
   void webReturnConfigHtm() {
-    server->send_P(200, "text/html", (const char*)gConfigHtmData,
+    _server->send_P(200, "text/html", (const char*)gConfigHtmData,
                    gConfigHtmSize);
   }
   void webReturnCalibrationHtm() {
-    server->send_P(200, "text/html", (const char*)gCalibrationHtmData,
+    _server->send_P(200, "text/html", (const char*)gCalibrationHtmData,
                    gCalibrationHtmSize);
   }
   void webReturnAboutHtm() {
-    server->send_P(200, "text/html", (const char*)gAboutHtmData, gAboutHtmSize);
+    _server->send_P(200, "text/html", (const char*)gAboutHtmData, gAboutHtmSize);
   }
 #else
   void webReturnUploadHtm() {
-    server->send_P(200, "text/html", (const char*)gUploadHtmData,
+    _server->send_P(200, "text/html", (const char*)gUploadHtmData,
                    gUploadHtmSize);
   }
 #endif

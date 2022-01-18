@@ -59,11 +59,11 @@ void TempSensor::setup() {
   }
 
   // Set the temp sensor adjustment values
-  tempSensorAdjC = myConfig.getTempSensorAdjC();
+  _tempSensorAdjC = myConfig.getTempSensorAdjC();
 
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
   Log.verbose(F("TSEN: Adjustment values for temp sensor %F C." CR),
-              tempSensorAdjC);
+              _tempSensorAdjC);
 #endif
 }
 
@@ -82,7 +82,7 @@ float TempSensor::getValue(bool useGyro) {
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
     Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR), c);
 #endif
-    hasSensor = true;
+    _hasSensor = true;
     return c;
   }
 
@@ -105,7 +105,7 @@ float TempSensor::getValue(bool useGyro) {
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
     Log.verbose(F("TSEN: Reciving temp value for DS18B20 sensor %F C." CR), c);
 #endif
-    hasSensor = true;
+    _hasSensor = true;
   }
   return c;
 }

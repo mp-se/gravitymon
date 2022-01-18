@@ -125,11 +125,11 @@ void BatteryVoltage::read() {
   // the voltage (from max 5V)
   float factor = myConfig.getVoltageFactor();  // Default value is 1.63
   int v = analogRead(A0);
-  batteryLevel = ((3.3 / 1023) * v) * factor;
+  _batteryLevel = ((3.3 / 1023) * v) * factor;
 #if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
-      factor, v, batteryLevel);
+      factor, v, _batteryLevel);
 #endif
 }
 

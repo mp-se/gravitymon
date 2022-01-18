@@ -57,11 +57,11 @@ class SerialDebug {
 
 class BatteryVoltage {
  private:
-  float batteryLevel;
+  float _batteryLevel;
 
  public:
   void read();
-  float getVoltage() { return batteryLevel; }
+  float getVoltage() { return _batteryLevel; }
 };
 
 #if defined(COLLECT_PERFDATA)

@@ -98,7 +98,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
         // If the deviation is more than 2 degress we mark it as failed.
         if (dev * 1000 > FORMULA_MAX_DEVIATION) {
 #if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
-          char s[10];
+          char s[20];
           snprintf(&s[0], sizeof(s), "%.8f", dev);
           Log.verbose(F("CALC: Deviation is: %s" CR), &s[0]);
 #endif
@@ -154,7 +154,7 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
     te_free(expr);
 
 #if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
-    char s[10];
+    char s[20];
     snprintf(&s[0], sizeof(s), "%.8f", g);
     Log.verbose(F("CALC: Calculated gravity is %s." CR), &s[0]);
 #endif

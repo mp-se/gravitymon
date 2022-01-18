@@ -36,7 +36,7 @@ PushTarget myPushTarget;
 //
 void PushTarget::send(float angle, float gravity, float corrGravity,
                       float tempC, float runTime, bool force) {
-  uint32_t timePassed = abs((int32_t)(millis() - ms));
+  uint32_t timePassed = abs((int32_t)(millis() - _ms));
   uint32_t interval = myConfig.getSleepInterval() * 1000;
 
   if ((timePassed < interval) && !force) {
@@ -47,7 +47,7 @@ void PushTarget::send(float angle, float gravity, float corrGravity,
     return;
   }
 
-  ms = millis();
+  _ms = millis();
 
   if (myConfig.isBrewfatherActive()) {
     LOG_PERF_START("push-brewfather");

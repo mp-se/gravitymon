@@ -55,7 +55,7 @@ void WebServer::webHandleDevice() {
 #endif
   String out;
   serializeJson(doc, out);
-  server->send(200, "application/json", out.c_str());
+  _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-device");
 }
 
@@ -98,7 +98,7 @@ void WebServer::webHandleConfig() {
 
   String out;
   serializeJson(doc, out);
-  server->send(200, "application/json", out.c_str());
+  _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-config");
 }
 
@@ -123,7 +123,7 @@ void WebServer::webHandleUpload() {
 
   String out;
   serializeJson(doc, out);
-  server->send(200, "application/json", out.c_str());
+  _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-upload");
 }
 
@@ -133,7 +133,7 @@ void WebServer::webHandleUpload() {
 void WebServer::webHandleUploadFile() {
   LOG_PERF_START("webserver-api-upload-file");
   Log.notice(F("WEB : webServer callback for /api/upload/file." CR));
-  HTTPUpload& upload = server->upload();
+  HTTPUpload& upload = _server->upload();
   String f = upload.filename;
   bool validFilename = false;
 
@@ -153,23 +153,23 @@ void WebServer::webHandleUploadFile() {
 
   if (upload.status == UPLOAD_FILE_START) {
     Log.notice(F("WEB : Start upload." CR));
-    if (validFilename) uploadFile = LittleFS.open(f, "w");
+    if (validFilename) _uploadFile = LittleFS.open(f, "w");
   } else if (upload.status == UPLOAD_FILE_WRITE) {
     Log.notice(F("WEB : Writing upload." CR));
-    if (uploadFile)
-      uploadFile.write(
+    if (_uploadFile)
+      _uploadFile.write(
           upload.buf,
           upload.currentSize);  // Write the received bytes to the file
   } else if (upload.status == UPLOAD_FILE_END) {
     Log.notice(F("WEB : Finish upload." CR));
-    if (uploadFile) {
-      uploadFile.close();
+    if (_uploadFile) {
+      _uploadFile.close();
       Log.notice(F("WEB : File uploaded %d bytes." CR), upload.totalSize);
     }
-    server->sendHeader("Location", "/");
-    server->send(303);
+    _server->sendHeader("Location", "/");
+    _server->send(303);
   } else {
-    server->send(500, "text/plain", "Couldn't create file.");
+    _server->send(500, "text/plain", "Couldn't create file.");
   }
   LOG_PERF_STOP("webserver-api-upload-file");
 }
@@ -179,18 +179,18 @@ void WebServer::webHandleUploadFile() {
 //
 void WebServer::webHandleCalibrate() {
   LOG_PERF_START("webserver-api-calibrate");
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/calibrate." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
-    server->send(400, "text/plain", "Invalid ID.");
+    _server->send(400, "text/plain", "Invalid ID.");
     LOG_PERF_STOP("webserver-api-calibrate");
     return;
   }
   myGyro.calibrateSensor();
-  server->send(200, "text/plain", "Device calibrated");
+  _server->send(200, "text/plain", "Device calibrated");
   LOG_PERF_STOP("webserver-api-calibrate");
 }
 
@@ -198,17 +198,17 @@ void WebServer::webHandleCalibrate() {
 // Callback from webServer when / has been accessed.
 //
 void WebServer::webHandleFactoryReset() {
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
 
   if (!id.compareTo(myConfig.getID())) {
-    server->send(200, "text/plain", "Doing reset...");
+    _server->send(200, "text/plain", "Doing reset...");
     LittleFS.remove(CFG_FILENAME);
     LittleFS.end();
     delay(500);
     ESP.reset();
   } else {
-    server->send(400, "text/plain", "Unknown ID.");
+    _server->send(400, "text/plain", "Unknown ID.");
   }
 }
 
@@ -250,7 +250,7 @@ void WebServer::webHandleStatus() {
 
   String out;
   serializeJson(doc, out);
-  server->send(200, "application/json", out.c_str());
+  _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-status");
 }
 
@@ -258,17 +258,17 @@ void WebServer::webHandleStatus() {
 // Callback from webServer when / has been accessed.
 //
 void WebServer::webHandleClearWIFI() {
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/clearwifi." CR));
 
   if (!id.compareTo(myConfig.getID())) {
-    server->send(200, "text/plain",
+    _server->send(200, "text/plain",
                  "Clearing WIFI credentials and doing reset...");
     delay(1000);
     WiFi.disconnect();  // Clear credentials
     ESP.reset();
   } else {
-    server->send(400, "text/plain", "Unknown ID.");
+    _server->send(400, "text/plain", "Unknown ID.");
   }
 }
 
@@ -277,13 +277,13 @@ void WebServer::webHandleClearWIFI() {
 //
 void WebServer::webHandleStatusSleepmode() {
   LOG_PERF_START("webserver-api-sleepmode");
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/status/sleepmode." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
-    server->send(400, "text/plain", "Invalid ID.");
+    _server->send(400, "text/plain", "Invalid ID.");
     LOG_PERF_STOP("webserver-api-sleepmode");
     return;
   }
@@ -292,11 +292,11 @@ void WebServer::webHandleStatusSleepmode() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  if (server->arg(CFG_PARAM_SLEEP_MODE).equalsIgnoreCase("true"))
+  if (_server->arg(CFG_PARAM_SLEEP_MODE).equalsIgnoreCase("true"))
     sleepModeAlwaysSkip = true;
   else
     sleepModeAlwaysSkip = false;
-  server->send(200, "text/plain", "Sleep mode updated");
+  _server->send(200, "text/plain", "Sleep mode updated");
   LOG_PERF_STOP("webserver-api-sleepmode");
 }
 
@@ -305,13 +305,13 @@ void WebServer::webHandleStatusSleepmode() {
 //
 void WebServer::webHandleConfigDevice() {
   LOG_PERF_START("webserver-api-config-device");
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/config/device." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
-    server->send(400, "text/plain", "Invalid ID.");
+    _server->send(400, "text/plain", "Invalid ID.");
     LOG_PERF_STOP("webserver-api-config-device");
     return;
   }
@@ -320,12 +320,12 @@ void WebServer::webHandleConfigDevice() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setMDNS(server->arg(CFG_PARAM_MDNS).c_str());
-  myConfig.setTempFormat(server->arg(CFG_PARAM_TEMPFORMAT).charAt(0));
-  myConfig.setSleepInterval(server->arg(CFG_PARAM_SLEEP_INTERVAL).c_str());
+  myConfig.setMDNS(_server->arg(CFG_PARAM_MDNS).c_str());
+  myConfig.setTempFormat(_server->arg(CFG_PARAM_TEMPFORMAT).charAt(0));
+  myConfig.setSleepInterval(_server->arg(CFG_PARAM_SLEEP_INTERVAL).c_str());
   myConfig.saveFile();
-  server->sendHeader("Location", "/config.htm#collapseOne", true);
-  server->send(302, "text/plain", "Device config updated");
+  _server->sendHeader("Location", "/config.htm#collapseOne", true);
+  _server->send(302, "text/plain", "Device config updated");
   LOG_PERF_STOP("webserver-api-config-device");
 }
 
@@ -334,13 +334,13 @@ void WebServer::webHandleConfigDevice() {
 //
 void WebServer::webHandleConfigPush() {
   LOG_PERF_START("webserver-api-config-push");
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/config/push." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
-    server->send(400, "text/plain", "Invalid ID.");
+    _server->send(400, "text/plain", "Invalid ID.");
     LOG_PERF_STOP("webserver-api-config-push");
     return;
   }
@@ -348,23 +348,23 @@ void WebServer::webHandleConfigPush() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setHttpPushUrl(server->arg(CFG_PARAM_PUSH_HTTP).c_str());
-  myConfig.setHttpPushUrl2(server->arg(CFG_PARAM_PUSH_HTTP2).c_str());
-  myConfig.setBrewfatherPushUrl(server->arg(CFG_PARAM_PUSH_BREWFATHER).c_str());
-  myConfig.setInfluxDb2PushUrl(server->arg(CFG_PARAM_PUSH_INFLUXDB2).c_str());
+  myConfig.setHttpPushUrl(_server->arg(CFG_PARAM_PUSH_HTTP).c_str());
+  myConfig.setHttpPushUrl2(_server->arg(CFG_PARAM_PUSH_HTTP2).c_str());
+  myConfig.setBrewfatherPushUrl(_server->arg(CFG_PARAM_PUSH_BREWFATHER).c_str());
+  myConfig.setInfluxDb2PushUrl(_server->arg(CFG_PARAM_PUSH_INFLUXDB2).c_str());
   myConfig.setInfluxDb2PushOrg(
-      server->arg(CFG_PARAM_PUSH_INFLUXDB2_ORG).c_str());
+      _server->arg(CFG_PARAM_PUSH_INFLUXDB2_ORG).c_str());
   myConfig.setInfluxDb2PushBucket(
-      server->arg(CFG_PARAM_PUSH_INFLUXDB2_BUCKET).c_str());
+      _server->arg(CFG_PARAM_PUSH_INFLUXDB2_BUCKET).c_str());
   myConfig.setInfluxDb2PushToken(
-      server->arg(CFG_PARAM_PUSH_INFLUXDB2_AUTH).c_str());
-  myConfig.setMqttUrl(server->arg(CFG_PARAM_PUSH_MQTT).c_str());
-  myConfig.setMqttTopic(server->arg(CFG_PARAM_PUSH_MQTT_TOPIC).c_str());
-  myConfig.setMqttUser(server->arg(CFG_PARAM_PUSH_MQTT_USER).c_str());
-  myConfig.setMqttPass(server->arg(CFG_PARAM_PUSH_MQTT_PASS).c_str());
+      _server->arg(CFG_PARAM_PUSH_INFLUXDB2_AUTH).c_str());
+  myConfig.setMqttUrl(_server->arg(CFG_PARAM_PUSH_MQTT).c_str());
+  myConfig.setMqttTopic(_server->arg(CFG_PARAM_PUSH_MQTT_TOPIC).c_str());
+  myConfig.setMqttUser(_server->arg(CFG_PARAM_PUSH_MQTT_USER).c_str());
+  myConfig.setMqttPass(_server->arg(CFG_PARAM_PUSH_MQTT_PASS).c_str());
   myConfig.saveFile();
-  server->sendHeader("Location", "/config.htm#collapseTwo", true);
-  server->send(302, "text/plain", "Push config updated");
+  _server->sendHeader("Location", "/config.htm#collapseTwo", true);
+  _server->send(302, "text/plain", "Push config updated");
   LOG_PERF_STOP("webserver-api-config-push");
 }
 
@@ -374,14 +374,14 @@ void WebServer::webHandleConfigPush() {
 String WebServer::getRequestArguments() {
   String debug;
 
-  for (int i = 0; i < server->args(); i++) {
-    if (!server->argName(i).equals(
+  for (int i = 0; i < _server->args(); i++) {
+    if (!_server->argName(i).equals(
             "plain")) {  // this contains all the arguments, we dont need that.
       if (debug.length()) debug += ", ";
 
-      debug += server->argName(i);
+      debug += _server->argName(i);
       debug += "=";
-      debug += server->arg(i);
+      debug += _server->arg(i);
     }
   }
   return debug;
@@ -392,13 +392,13 @@ String WebServer::getRequestArguments() {
 //
 void WebServer::webHandleConfigGravity() {
   LOG_PERF_START("webserver-api-config-gravity");
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/config/gravity." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
-    server->send(400, "text/plain", "Invalid ID.");
+    _server->send(400, "text/plain", "Invalid ID.");
     LOG_PERF_STOP("webserver-api-config-gravity");
     return;
   }
@@ -407,14 +407,14 @@ void WebServer::webHandleConfigGravity() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setGravityFormat(server->arg(CFG_PARAM_GRAVITY_FORMAT).charAt(0));
-  myConfig.setGravityFormula(server->arg(CFG_PARAM_GRAVITY_FORMULA).c_str());
+  myConfig.setGravityFormat(_server->arg(CFG_PARAM_GRAVITY_FORMAT).charAt(0));
+  myConfig.setGravityFormula(_server->arg(CFG_PARAM_GRAVITY_FORMULA).c_str());
   myConfig.setGravityTempAdj(
-      server->arg(CFG_PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
+      _server->arg(CFG_PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
                                                                      : false);
   myConfig.saveFile();
-  server->sendHeader("Location", "/config.htm#collapseThree", true);
-  server->send(302, "text/plain", "Gravity config updated");
+  _server->sendHeader("Location", "/config.htm#collapseThree", true);
+  _server->send(302, "text/plain", "Gravity config updated");
   LOG_PERF_STOP("webserver-api-config-gravity");
 }
 
@@ -423,13 +423,13 @@ void WebServer::webHandleConfigGravity() {
 //
 void WebServer::webHandleConfigHardware() {
   LOG_PERF_START("webserver-api-config-hardware");
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/config/hardware." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
-    server->send(400, "text/plain", "Invalid ID.");
+    _server->send(400, "text/plain", "Invalid ID.");
     LOG_PERF_STOP("webserver-api-config-hardware");
     return;
   }
@@ -438,18 +438,18 @@ void WebServer::webHandleConfigHardware() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setVoltageFactor(server->arg(CFG_PARAM_VOLTAGEFACTOR).toFloat());
+  myConfig.setVoltageFactor(_server->arg(CFG_PARAM_VOLTAGEFACTOR).toFloat());
   if (myConfig.isTempC()) {
-    myConfig.setTempSensorAdjC(server->arg(CFG_PARAM_TEMP_ADJ));
+    myConfig.setTempSensorAdjC(_server->arg(CFG_PARAM_TEMP_ADJ));
   } else {
-    myConfig.setTempSensorAdjF(server->arg(CFG_PARAM_TEMP_ADJ));
+    myConfig.setTempSensorAdjF(_server->arg(CFG_PARAM_TEMP_ADJ));
   }
-  myConfig.setOtaURL(server->arg(CFG_PARAM_OTA).c_str());
+  myConfig.setOtaURL(_server->arg(CFG_PARAM_OTA).c_str());
   myConfig.setGyroTemp(
-      server->arg(CFG_PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
+      _server->arg(CFG_PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
   myConfig.saveFile();
-  server->sendHeader("Location", "/config.htm#collapseFour", true);
-  server->send(302, "text/plain", "Hardware config updated");
+  _server->sendHeader("Location", "/config.htm#collapseFour", true);
+  _server->send(302, "text/plain", "Hardware config updated");
   LOG_PERF_STOP("webserver-api-config-hardware");
 }
 
@@ -473,7 +473,7 @@ void WebServer::webHandleFormulaRead() {
   doc[CFG_PARAM_GRAVITY_FORMULA] = "";
   doc[CFG_PARAM_ERROR] = "";
 
-  switch (lastFormulaCreateError) {
+  switch (_lastFormulaCreateError) {
     case ERR_FORMULA_INTERNAL:
       doc[CFG_PARAM_ERROR] = "Internal error creating formula.";
       break;
@@ -516,7 +516,7 @@ void WebServer::webHandleFormulaRead() {
 
   String out;
   serializeJson(doc, out);
-  server->send(200, "application/json", out.c_str());
+  _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-formula-read");
 }
 
@@ -525,13 +525,13 @@ void WebServer::webHandleFormulaRead() {
 //
 void WebServer::webHandleFormulaWrite() {
   LOG_PERF_START("webserver-api-formula-write");
-  String id = server->arg(CFG_PARAM_ID);
+  String id = _server->arg(CFG_PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/formula/post." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
-    server->send(400, "text/plain", "Invalid ID.");
+    _server->send(400, "text/plain", "Invalid ID.");
     LOG_PERF_STOP("webserver-api-formula-write");
     return;
   }
@@ -541,24 +541,24 @@ void WebServer::webHandleFormulaWrite() {
 #endif
 
   RawFormulaData fd;
-  fd.a[0] = server->arg("a1").toDouble();
-  fd.a[1] = server->arg("a2").toDouble();
-  fd.a[2] = server->arg("a3").toDouble();
-  fd.a[3] = server->arg("a4").toDouble();
-  fd.a[4] = server->arg("a5").toDouble();
+  fd.a[0] = _server->arg("a1").toDouble();
+  fd.a[1] = _server->arg("a2").toDouble();
+  fd.a[2] = _server->arg("a3").toDouble();
+  fd.a[3] = _server->arg("a4").toDouble();
+  fd.a[4] = _server->arg("a5").toDouble();
 
   if (myConfig.isGravityPlato()) {
-    fd.g[0] = convertToSG(server->arg("g1").toDouble());
-    fd.g[1] = convertToSG(server->arg("g2").toDouble());
-    fd.g[2] = convertToSG(server->arg("g3").toDouble());
-    fd.g[3] = convertToSG(server->arg("g4").toDouble());
-    fd.g[4] = convertToSG(server->arg("g5").toDouble());
+    fd.g[0] = convertToSG(_server->arg("g1").toDouble());
+    fd.g[1] = convertToSG(_server->arg("g2").toDouble());
+    fd.g[2] = convertToSG(_server->arg("g3").toDouble());
+    fd.g[3] = convertToSG(_server->arg("g4").toDouble());
+    fd.g[4] = convertToSG(_server->arg("g5").toDouble());
   } else {
-    fd.g[0] = server->arg("g1").toDouble();
-    fd.g[1] = server->arg("g2").toDouble();
-    fd.g[2] = server->arg("g3").toDouble();
-    fd.g[3] = server->arg("g4").toDouble();
-    fd.g[4] = server->arg("g5").toDouble();
+    fd.g[0] = _server->arg("g1").toDouble();
+    fd.g[1] = _server->arg("g2").toDouble();
+    fd.g[2] = _server->arg("g3").toDouble();
+    fd.g[3] = _server->arg("g4").toDouble();
+    fd.g[4] = _server->arg("g5").toDouble();
   }
 
   myConfig.setFormulaData(fd);
@@ -585,17 +585,17 @@ void WebServer::webHandleFormulaWrite() {
     Log.error(
         F("WEB : Unable to find formula based on provided values err=%d." CR),
         e);
-    lastFormulaCreateError = e;
+    _lastFormulaCreateError = e;
   } else {
     // Save the formula as succesful
     Log.info(F("WEB : Found valid formula: '%s'" CR), &buf[0]);
     myConfig.setGravityFormula(buf);
-    lastFormulaCreateError = 0;
+    _lastFormulaCreateError = 0;
   }
 
   myConfig.saveFile();
-  server->sendHeader("Location", "/calibration.htm", true);
-  server->send(302, "text/plain", "Formula updated");
+  _server->sendHeader("Location", "/calibration.htm", true);
+  _server->send(302, "text/plain", "Formula updated");
   LOG_PERF_STOP("webserver-api-formula-write");
 }
 
@@ -641,8 +641,8 @@ bool WebServer::checkHtmlFile(HtmlFile item) {
 // Handler for page not found
 //
 void WebServer::webHandlePageNotFound() {
-  Log.error(F("WEB : URL not found %s received." CR), server->uri().c_str());
-  server->send(404, "text/plain", F("URL not found"));
+  Log.error(F("WEB : URL not found %s received." CR), _server->uri().c_str());
+  _server->send(404, "text/plain", F("URL not found"));
 }
 
 //
@@ -651,20 +651,20 @@ void WebServer::webHandlePageNotFound() {
 bool WebServer::setupWebServer() {
   Log.notice(F("WEB : Configuring web server." CR));
 
-  server = new ESP8266WebServer();
+  _server = new ESP8266WebServer();
 
   MDNS.begin(myConfig.getMDNS());
   MDNS.addService("http", "tcp", 80);
 
   // Static content
 #if defined(EMBED_HTML)
-  server->on("/", std::bind(&WebServer::webReturnIndexHtm, this));
-  server->on("/index.htm", std::bind(&WebServer::webReturnIndexHtm, this));
-  server->on("/device.htm", std::bind(&WebServer::webReturnDeviceHtm, this));
-  server->on("/config.htm", std::bind(&WebServer::webReturnConfigHtm, this));
-  server->on("/calibration.htm",
+  _server->on("/", std::bind(&WebServer::webReturnIndexHtm, this));
+  _server->on("/index.htm", std::bind(&WebServer::webReturnIndexHtm, this));
+  _server->on("/device.htm", std::bind(&WebServer::webReturnDeviceHtm, this));
+  _server->on("/config.htm", std::bind(&WebServer::webReturnConfigHtm, this));
+  _server->on("/calibration.htm",
              std::bind(&WebServer::webReturnCalibrationHtm, this));
-  server->on("/about.htm", std::bind(&WebServer::webReturnAboutHtm, this));
+  _server->on("/about.htm", std::bind(&WebServer::webReturnAboutHtm, this));
 #else
   // Show files in the filessytem at startup
 
@@ -685,69 +685,69 @@ bool WebServer::setupWebServer() {
       checkHtmlFile(HTML_ABOUT)) {
     Log.notice(F("WEB : All html files exist, starting in normal mode." CR));
 
-    server->serveStatic("/", LittleFS, "/index.min.htm");
-    server->serveStatic("/index.htm", LittleFS, "/index.min.htm");
-    server->serveStatic("/device.htm", LittleFS, "/device.min.htm");
-    server->serveStatic("/config.htm", LittleFS, "/config.min.htm");
-    server->serveStatic("/about.htm", LittleFS, "/about.min.htm");
-    server->serveStatic("/calibration.htm", LittleFS, "/calibration.min.htm");
+    _server->serveStatic("/", LittleFS, "/index.min.htm");
+    _server->serveStatic("/index.htm", LittleFS, "/index.min.htm");
+    _server->serveStatic("/device.htm", LittleFS, "/device.min.htm");
+    _server->serveStatic("/config.htm", LittleFS, "/config.min.htm");
+    _server->serveStatic("/about.htm", LittleFS, "/about.min.htm");
+    _server->serveStatic("/calibration.htm", LittleFS, "/calibration.min.htm");
 
     // Also add the static upload view in case we we have issues that needs to
     // be fixed.
-    server->on("/upload.htm", std::bind(&WebServer::webReturnUploadHtm, this));
+    _server->on("/upload.htm", std::bind(&WebServer::webReturnUploadHtm, this));
   } else {
     Log.error(F("WEB : Missing html files, starting with upload UI." CR));
-    server->on("/", std::bind(&WebServer::webReturnUploadHtm, this));
+    _server->on("/", std::bind(&WebServer::webReturnUploadHtm, this));
   }
 #endif
 
   // Dynamic content
-  server->on("/api/config", HTTP_GET,
+  _server->on("/api/config", HTTP_GET,
              std::bind(&WebServer::webHandleConfig, this));  // Get config.json
-  server->on("/api/device", HTTP_GET,
+  _server->on("/api/device", HTTP_GET,
              std::bind(&WebServer::webHandleDevice, this));  // Get device.json
-  server->on("/api/formula", HTTP_GET,
+  _server->on("/api/formula", HTTP_GET,
              std::bind(&WebServer::webHandleFormulaRead,
                        this));  // Get formula.json (calibration page)
-  server->on("/api/formula", HTTP_POST,
+  _server->on("/api/formula", HTTP_POST,
              std::bind(&WebServer::webHandleFormulaWrite,
                        this));  // Get formula.json (calibration page)
-  server->on("/api/calibrate", HTTP_POST,
+  _server->on("/api/calibrate", HTTP_POST,
              std::bind(&WebServer::webHandleCalibrate,
                        this));  // Run calibration routine (param id)
-  server->on(
+  _server->on(
       "/api/factory", HTTP_GET,
       std::bind(&WebServer::webHandleFactoryReset, this));  // Reset the device
-  server->on(
+  _server->on(
       "/api/status", HTTP_GET,
       std::bind(&WebServer::webHandleStatus, this));  // Get the status.json
-  server->on(
+  _server->on(
       "/api/clearwifi", HTTP_GET,
       std::bind(&WebServer::webHandleClearWIFI, this));  // Clear wifi settings
-  server->on("/api/upload", HTTP_GET,
+  _server->on("/api/upload", HTTP_GET,
              std::bind(&WebServer::webHandleUpload, this));  // Get upload.json
 
-  server->on(
+  _server->on(
       "/api/upload", HTTP_POST, std::bind(&WebServer::webReturnOK, this),
       std::bind(&WebServer::webHandleUploadFile, this));  // File upload data
-  server->on("/api/status/sleepmode", HTTP_POST,
+  _server->on("/api/status/sleepmode", HTTP_POST,
              std::bind(&WebServer::webHandleStatusSleepmode,
                        this));  // Change sleep mode
-  server->on("/api/config/device", HTTP_POST,
+  _server->on("/api/config/device", HTTP_POST,
              std::bind(&WebServer::webHandleConfigDevice,
                        this));  // Change device settings
-  server->on("/api/config/push", HTTP_POST,
+  _server->on("/api/config/push", HTTP_POST,
              std::bind(&WebServer::webHandleConfigPush,
                        this));  // Change push settings
-  server->on("/api/config/gravity", HTTP_POST,
+  _server->on("/api/config/gravity", HTTP_POST,
              std::bind(&WebServer::webHandleConfigGravity,
                        this));  // Change gravity settings
-  server->on("/api/config/hardware", HTTP_POST,
+  _server->on("/api/config/hardware", HTTP_POST,
              std::bind(&WebServer::webHandleConfigHardware,
                        this));  // Change hardware settings
 
-  server->onNotFound(std::bind(&WebServer::webHandlePageNotFound, this));
-  server->begin();
+  _server->onNotFound(std::bind(&WebServer::webHandlePageNotFound, this));
+  _server->begin();
   Log.notice(F("WEB : Web server started." CR));
   return true;
 }
@@ -757,7 +757,7 @@ bool WebServer::setupWebServer() {
 //
 void WebServer::loop() {
   MDNS.update();
-  server->handleClient();
+  _server->handleClient();
 }
 
 // EOF

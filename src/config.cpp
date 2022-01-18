@@ -35,13 +35,13 @@ Config::Config() {
   // Assiging default values
   char buf[30];
   snprintf(&buf[0], sizeof(buf), "%6x", (unsigned int)ESP.getChipId());
-  id = String(&buf[0]);
+  _id = String(&buf[0]);
   snprintf(&buf[0], sizeof(buf), "" WIFI_MDNS "%s", getID());
-  mDNS = String(&buf[0]);
+  _mDNS = String(&buf[0]);
 
 #if LOG_LEVEL == 6 && !defined(CFG_DISABLE_LOGGING)
-  Log.verbose(F("CFG : Created config for %s (%s)." CR), id.c_str(),
-              mDNS.c_str());
+  Log.verbose(F("CFG : Created config for %s (%s)." CR), _id.c_str(),
+              _mDNS.c_str());
 #endif
 
   setTempFormat('C');
@@ -50,10 +50,10 @@ Config::Config() {
   setVoltageFactor(1.59);  // Conversion factor for battery
   setTempSensorAdjC(0.0);
   setGravityTempAdj(false);
-  gyroCalibration = {0, 0, 0, 0, 0, 0};
-  formulaData = {{0, 0, 0, 0, 0}, {1, 1, 1, 1, 1}};
-  gyroTemp = false;
-  saveNeeded = false;
+  _gyroCalibration = {0, 0, 0, 0, 0, 0};
+  _formulaData = {{0, 0, 0, 0, 0}, {1, 1, 1, 1, 1}};
+  _gyroTemp = false;
+  _saveNeeded = false;
 }
 
 //
@@ -87,32 +87,32 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[CFG_PARAM_GYRO_TEMP] = isGyroTemp();
 
   JsonObject cal = doc.createNestedObject(CFG_PARAM_GYRO_CALIBRATION);
-  cal["ax"] = gyroCalibration.ax;
-  cal["ay"] = gyroCalibration.ay;
-  cal["az"] = gyroCalibration.az;
-  cal["gx"] = gyroCalibration.gx;
-  cal["gy"] = gyroCalibration.gy;
-  cal["gz"] = gyroCalibration.gz;
+  cal["ax"] = _gyroCalibration.ax;
+  cal["ay"] = _gyroCalibration.ay;
+  cal["az"] = _gyroCalibration.az;
+  cal["gx"] = _gyroCalibration.gx;
+  cal["gy"] = _gyroCalibration.gy;
+  cal["gz"] = _gyroCalibration.gz;
 
   JsonObject cal2 = doc.createNestedObject(CFG_PARAM_FORMULA_DATA);
-  cal2["a1"] = reduceFloatPrecision(formulaData.a[0], 2);
-  cal2["a2"] = reduceFloatPrecision(formulaData.a[1], 2);
-  cal2["a3"] = reduceFloatPrecision(formulaData.a[2], 2);
-  cal2["a4"] = reduceFloatPrecision(formulaData.a[3], 2);
-  cal2["a5"] = reduceFloatPrecision(formulaData.a[4], 2);
+  cal2["a1"] = reduceFloatPrecision(_formulaData.a[0], 2);
+  cal2["a2"] = reduceFloatPrecision(_formulaData.a[1], 2);
+  cal2["a3"] = reduceFloatPrecision(_formulaData.a[2], 2);
+  cal2["a4"] = reduceFloatPrecision(_formulaData.a[3], 2);
+  cal2["a5"] = reduceFloatPrecision(_formulaData.a[4], 2);
 
-  cal2["g1"] = reduceFloatPrecision(formulaData.g[0], 4);
-  cal2["g2"] = reduceFloatPrecision(formulaData.g[1], 4);
-  cal2["g3"] = reduceFloatPrecision(formulaData.g[2], 4);
-  cal2["g4"] = reduceFloatPrecision(formulaData.g[3], 4);
-  cal2["g5"] = reduceFloatPrecision(formulaData.g[4], 4);
+  cal2["g1"] = reduceFloatPrecision(_formulaData.g[0], 4);
+  cal2["g2"] = reduceFloatPrecision(_formulaData.g[1], 4);
+  cal2["g3"] = reduceFloatPrecision(_formulaData.g[2], 4);
+  cal2["g4"] = reduceFloatPrecision(_formulaData.g[3], 4);
+  cal2["g5"] = reduceFloatPrecision(_formulaData.g[4], 4);
 }
 
 //
 // Save json document to file
 //
 bool Config::saveFile() {
-  if (!saveNeeded) {
+  if (!_saveNeeded) {
 #if LOG_LEVEL == 6 && !defined(CFG_DISABLE_LOGGING)
     Log.verbose(F("CFG : Skipping save, not needed." CR));
 #endif
@@ -142,7 +142,7 @@ bool Config::saveFile() {
   configFile.flush();
   configFile.close();
 
-  saveNeeded = false;
+  _saveNeeded = false;
   myConfig.debug();
   Log.notice(F("CFG : Configuration saved to " CFG_FILENAME "." CR));
   return true;
@@ -242,42 +242,42 @@ bool Config::loadFile() {
     setTempSensorAdjC(doc[CFG_PARAM_TEMP_ADJ].as<float>());
 
   if (!doc[CFG_PARAM_GYRO_CALIBRATION]["ax"].isNull())
-    gyroCalibration.ax = doc[CFG_PARAM_GYRO_CALIBRATION]["ax"];
+    _gyroCalibration.ax = doc[CFG_PARAM_GYRO_CALIBRATION]["ax"];
   if (!doc[CFG_PARAM_GYRO_CALIBRATION]["ay"].isNull())
-    gyroCalibration.ay = doc[CFG_PARAM_GYRO_CALIBRATION]["ay"];
+    _gyroCalibration.ay = doc[CFG_PARAM_GYRO_CALIBRATION]["ay"];
   if (!doc[CFG_PARAM_GYRO_CALIBRATION]["az"].isNull())
-    gyroCalibration.az = doc[CFG_PARAM_GYRO_CALIBRATION]["az"];
+    _gyroCalibration.az = doc[CFG_PARAM_GYRO_CALIBRATION]["az"];
   if (!doc[CFG_PARAM_GYRO_CALIBRATION]["gx"].isNull())
-    gyroCalibration.gx = doc[CFG_PARAM_GYRO_CALIBRATION]["gx"];
+    _gyroCalibration.gx = doc[CFG_PARAM_GYRO_CALIBRATION]["gx"];
   if (!doc[CFG_PARAM_GYRO_CALIBRATION]["gy"].isNull())
-    gyroCalibration.gy = doc[CFG_PARAM_GYRO_CALIBRATION]["gy"];
+    _gyroCalibration.gy = doc[CFG_PARAM_GYRO_CALIBRATION]["gy"];
   if (!doc[CFG_PARAM_GYRO_CALIBRATION]["gz"].isNull())
-    gyroCalibration.gz = doc[CFG_PARAM_GYRO_CALIBRATION]["gz"];
+    _gyroCalibration.gz = doc[CFG_PARAM_GYRO_CALIBRATION]["gz"];
 
   if (!doc[CFG_PARAM_FORMULA_DATA]["a1"].isNull())
-    formulaData.a[0] = doc[CFG_PARAM_FORMULA_DATA]["a1"].as<double>();
+    _formulaData.a[0] = doc[CFG_PARAM_FORMULA_DATA]["a1"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["a2"].isNull())
-    formulaData.a[1] = doc[CFG_PARAM_FORMULA_DATA]["a2"].as<double>();
+    _formulaData.a[1] = doc[CFG_PARAM_FORMULA_DATA]["a2"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["a3"].isNull())
-    formulaData.a[2] = doc[CFG_PARAM_FORMULA_DATA]["a3"].as<double>();
+    _formulaData.a[2] = doc[CFG_PARAM_FORMULA_DATA]["a3"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["a4"].isNull())
-    formulaData.a[3] = doc[CFG_PARAM_FORMULA_DATA]["a4"].as<double>();
+    _formulaData.a[3] = doc[CFG_PARAM_FORMULA_DATA]["a4"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["a5"].isNull())
-    formulaData.a[4] = doc[CFG_PARAM_FORMULA_DATA]["a5"].as<double>();
+    _formulaData.a[4] = doc[CFG_PARAM_FORMULA_DATA]["a5"].as<double>();
 
   if (!doc[CFG_PARAM_FORMULA_DATA]["g1"].isNull())
-    formulaData.g[0] = doc[CFG_PARAM_FORMULA_DATA]["g1"].as<double>();
+    _formulaData.g[0] = doc[CFG_PARAM_FORMULA_DATA]["g1"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["g2"].isNull())
-    formulaData.g[1] = doc[CFG_PARAM_FORMULA_DATA]["g2"].as<double>();
+    _formulaData.g[1] = doc[CFG_PARAM_FORMULA_DATA]["g2"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["g3"].isNull())
-    formulaData.g[2] = doc[CFG_PARAM_FORMULA_DATA]["g3"].as<double>();
+    _formulaData.g[2] = doc[CFG_PARAM_FORMULA_DATA]["g3"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["g4"].isNull())
-    formulaData.g[3] = doc[CFG_PARAM_FORMULA_DATA]["g4"].as<double>();
+    _formulaData.g[3] = doc[CFG_PARAM_FORMULA_DATA]["g4"].as<double>();
   if (!doc[CFG_PARAM_FORMULA_DATA]["g5"].isNull())
-    formulaData.g[4] = doc[CFG_PARAM_FORMULA_DATA]["g5"].as<double>();
+    _formulaData.g[4] = doc[CFG_PARAM_FORMULA_DATA]["g5"].as<double>();
 
   myConfig.debug();
-  saveNeeded = false;  // Reset save flag
+  _saveNeeded = false;  // Reset save flag
   Log.notice(F("CFG : Configuration file " CFG_FILENAME " loaded." CR));
   return true;
 }

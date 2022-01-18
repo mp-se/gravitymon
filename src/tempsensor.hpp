@@ -29,15 +29,15 @@ SOFTWARE.
 // classes
 class TempSensor {
  private:
-  bool hasSensor = false;
-  float tempSensorAdjC = 0;
+  bool _hasSensor = false;
+  float _tempSensorAdjC = 0;
   float getValue(bool useGyro);
 
  public:
   void setup();
-  bool isSensorAttached() { return hasSensor; }
+  bool isSensorAttached() { return _hasSensor; }
   float getTempC(bool useGyro = false) {
-    return getValue(useGyro) + tempSensorAdjC;
+    return getValue(useGyro) + _tempSensorAdjC;
   }
 };
 

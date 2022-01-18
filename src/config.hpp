@@ -113,230 +113,230 @@ struct RawFormulaData {
 // Main configuration class
 class Config {
  private:
-  bool saveNeeded;
+  bool _saveNeeded;
 
   // Device configuration
-  String id;
-  String mDNS;
-  String otaURL;
-  char tempFormat;
-  float voltageFactor;
-  float tempSensorAdjC;
-  int sleepInterval;
-  bool gyroTemp;
+  String _id;
+  String _mDNS;
+  String _otaURL;
+  char _tempFormat;
+  float _voltageFactor;
+  float _tempSensorAdjC;
+  int _sleepInterval;
+  bool _gyroTemp;
 
   // Wifi Config
-  String wifiSSID;
-  String wifiPASS;
+  String _wifiSSID;
+  String _wifiPASS;
 
   // Push target settings
-  String brewfatherPushUrl;
+  String _brewfatherPushUrl;
 
-  String httpPushUrl;
-  String httpPushUrl2;
+  String _httpPushUrl;
+  String _httpPushUrl2;
 
-  String influxDb2Url;
-  String influxDb2Org;
-  String influxDb2Bucket;
-  String influxDb2Token;
+  String _influxDb2Url;
+  String _influxDb2Org;
+  String _influxDb2Bucket;
+  String _influxDb2Token;
 
-  String mqttUrl;
-  String mqttTopic;
-  String mqttUser;
-  String mqttPass;
+  String _mqttUrl;
+  String _mqttTopic;
+  String _mqttUser;
+  String _mqttPass;
 
   // Gravity and temperature calculations
-  String gravityFormula;
-  bool gravityTempAdj;
-  char gravityFormat;
+  String _gravityFormula;
+  bool _gravityTempAdj;
+  char _gravityFormat;
 
   // Gyro calibration and formula calculation data
-  RawGyroData gyroCalibration;
-  RawFormulaData formulaData;
+  RawGyroData _gyroCalibration;
+  RawFormulaData _formulaData;
 
   void debug();
   void formatFileSystem();
 
  public:
   Config();
-  const char* getID() { return id.c_str(); }
+  const char* getID() { return _id.c_str(); }
 
-  const char* getMDNS() { return mDNS.c_str(); }
+  const char* getMDNS() { return _mDNS.c_str(); }
   void setMDNS(String s) {
-    mDNS = s;
-    saveNeeded = true;
+    _mDNS = s;
+    _saveNeeded = true;
   }
 
-  const bool isGyroTemp() { return gyroTemp; }
+  const bool isGyroTemp() { return _gyroTemp; }
   void setGyroTemp(bool b) {
-    gyroTemp = b;
-    saveNeeded = true;
+    _gyroTemp = b;
+    _saveNeeded = true;
   }
 
-  const char* getOtaURL() { return otaURL.c_str(); }
+  const char* getOtaURL() { return _otaURL.c_str(); }
   void setOtaURL(String s) {
-    otaURL = s;
-    saveNeeded = true;
+    _otaURL = s;
+    _saveNeeded = true;
   }
-  bool isOtaActive() { return otaURL.length() ? true : false; }
+  bool isOtaActive() { return _otaURL.length() ? true : false; }
 
-  const char* getWifiSSID() { return wifiSSID.c_str(); }
+  const char* getWifiSSID() { return _wifiSSID.c_str(); }
   void setWifiSSID(String s) {
-    wifiSSID = s;
-    saveNeeded = true;
+    _wifiSSID = s;
+    _saveNeeded = true;
   }
-  const char* getWifiPass() { return wifiPASS.c_str(); }
+  const char* getWifiPass() { return _wifiPASS.c_str(); }
   void setWifiPass(String s) {
-    wifiPASS = s;
-    saveNeeded = true;
+    _wifiPASS = s;
+    _saveNeeded = true;
   }
 
   // Brewfather
-  const char* getBrewfatherPushUrl() { return brewfatherPushUrl.c_str(); }
+  const char* getBrewfatherPushUrl() { return _brewfatherPushUrl.c_str(); }
   void setBrewfatherPushUrl(String s) {
-    brewfatherPushUrl = s;
-    saveNeeded = true;
+    _brewfatherPushUrl = s;
+    _saveNeeded = true;
   }
   bool isBrewfatherActive() {
-    return brewfatherPushUrl.length() ? true : false;
+    return _brewfatherPushUrl.length() ? true : false;
   }
 
   // Standard HTTP
-  const char* getHttpPushUrl() { return httpPushUrl.c_str(); }
+  const char* getHttpPushUrl() { return _httpPushUrl.c_str(); }
   void setHttpPushUrl(String s) {
-    httpPushUrl = s;
-    saveNeeded = true;
+    _httpPushUrl = s;
+    _saveNeeded = true;
   }
-  bool isHttpActive() { return httpPushUrl.length() ? true : false; }
-  const char* getHttpPushUrl2() { return httpPushUrl2.c_str(); }
+  bool isHttpActive() { return _httpPushUrl.length() ? true : false; }
+  const char* getHttpPushUrl2() { return _httpPushUrl2.c_str(); }
   void setHttpPushUrl2(String s) {
-    httpPushUrl2 = s;
-    saveNeeded = true;
+    _httpPushUrl2 = s;
+    _saveNeeded = true;
   }
-  bool isHttpActive2() { return httpPushUrl2.length() ? true : false; }
+  bool isHttpActive2() { return _httpPushUrl2.length() ? true : false; }
 
   // InfluxDB2
-  const char* getInfluxDb2PushUrl() { return influxDb2Url.c_str(); }
+  const char* getInfluxDb2PushUrl() { return _influxDb2Url.c_str(); }
   void setInfluxDb2PushUrl(String s) {
-    influxDb2Url = s;
-    saveNeeded = true;
+    _influxDb2Url = s;
+    _saveNeeded = true;
   }
-  bool isInfluxDb2Active() { return influxDb2Url.length() ? true : false; }
-  const char* getInfluxDb2PushOrg() { return influxDb2Org.c_str(); }
+  bool isInfluxDb2Active() { return _influxDb2Url.length() ? true : false; }
+  const char* getInfluxDb2PushOrg() { return _influxDb2Org.c_str(); }
   void setInfluxDb2PushOrg(String s) {
-    influxDb2Org = s;
-    saveNeeded = true;
+    _influxDb2Org = s;
+    _saveNeeded = true;
   }
-  const char* getInfluxDb2PushBucket() { return influxDb2Bucket.c_str(); }
+  const char* getInfluxDb2PushBucket() { return _influxDb2Bucket.c_str(); }
   void setInfluxDb2PushBucket(String s) {
-    influxDb2Bucket = s;
-    saveNeeded = true;
+    _influxDb2Bucket = s;
+    _saveNeeded = true;
   }
-  const char* getInfluxDb2PushToken() { return influxDb2Token.c_str(); }
+  const char* getInfluxDb2PushToken() { return _influxDb2Token.c_str(); }
   void setInfluxDb2PushToken(String s) {
-    influxDb2Token = s;
-    saveNeeded = true;
+    _influxDb2Token = s;
+    _saveNeeded = true;
   }
 
   // MQTT
-  bool isMqttActive() { return mqttUrl.length() ? true : false; }
-  const char* getMqttUrl() { return mqttUrl.c_str(); }
+  bool isMqttActive() { return _mqttUrl.length() ? true : false; }
+  const char* getMqttUrl() { return _mqttUrl.c_str(); }
   void setMqttUrl(String s) {
-    mqttUrl = s;
-    saveNeeded = true;
+    _mqttUrl = s;
+    _saveNeeded = true;
   }
-  const char* getMqttTopic() { return mqttTopic.c_str(); }
+  const char* getMqttTopic() { return _mqttTopic.c_str(); }
   void setMqttTopic(String s) {
-    mqttTopic = s;
-    saveNeeded = true;
+    _mqttTopic = s;
+    _saveNeeded = true;
   }
-  const char* getMqttUser() { return mqttUser.c_str(); }
+  const char* getMqttUser() { return _mqttUser.c_str(); }
   void setMqttUser(String s) {
-    mqttUser = s;
-    saveNeeded = true;
+    _mqttUser = s;
+    _saveNeeded = true;
   }
-  const char* getMqttPass() { return mqttPass.c_str(); }
+  const char* getMqttPass() { return _mqttPass.c_str(); }
   void setMqttPass(String s) {
-    mqttPass = s;
-    saveNeeded = true;
+    _mqttPass = s;
+    _saveNeeded = true;
   }
 
-  int getSleepInterval() { return sleepInterval; }
+  int getSleepInterval() { return _sleepInterval; }
   void setSleepInterval(int v) {
-    sleepInterval = v;
-    saveNeeded = true;
+    _sleepInterval = v;
+    _saveNeeded = true;
   }
   void setSleepInterval(String s) {
-    sleepInterval = s.toInt();
-    saveNeeded = true;
+    _sleepInterval = s.toInt();
+    _saveNeeded = true;
   }
 
-  char getTempFormat() { return tempFormat; }
+  char getTempFormat() { return _tempFormat; }
   void setTempFormat(char c) {
     if (c == 'C' || c == 'F') {
-      tempFormat = c;
-      saveNeeded = true;
+      _tempFormat = c;
+      _saveNeeded = true;
     }
   }
-  bool isTempC() { return tempFormat == 'C'; }
-  bool isTempF() { return tempFormat == 'F'; }
+  bool isTempC() { return _tempFormat == 'C'; }
+  bool isTempF() { return _tempFormat == 'F'; }
 
-  float getVoltageFactor() { return voltageFactor; }
+  float getVoltageFactor() { return _voltageFactor; }
   void setVoltageFactor(float f) {
-    voltageFactor = f;
-    saveNeeded = true;
+    _voltageFactor = f;
+    _saveNeeded = true;
   }
   void setVoltageFactor(String s) {
-    voltageFactor = s.toFloat();
-    saveNeeded = true;
+    _voltageFactor = s.toFloat();
+    _saveNeeded = true;
   }
 
-  float getTempSensorAdjC() { return tempSensorAdjC; }
+  float getTempSensorAdjC() { return _tempSensorAdjC; }
   void setTempSensorAdjC(float f) {
-    tempSensorAdjC = f;
-    saveNeeded = true;
+    _tempSensorAdjC = f;
+    _saveNeeded = true;
   }
   void setTempSensorAdjC(String s) {
-    tempSensorAdjC = s.toFloat();
-    saveNeeded = true;
+    _tempSensorAdjC = s.toFloat();
+    _saveNeeded = true;
   }
   void setTempSensorAdjF(String s) {
-    tempSensorAdjC = convertFtoC(s.toFloat());
-    saveNeeded = true;
+    _tempSensorAdjC = convertFtoC(s.toFloat());
+    _saveNeeded = true;
   }
 
-  const char* getGravityFormula() { return gravityFormula.c_str(); }
+  const char* getGravityFormula() { return _gravityFormula.c_str(); }
   void setGravityFormula(String s) {
-    gravityFormula = s;
-    saveNeeded = true;
+    _gravityFormula = s;
+    _saveNeeded = true;
   }
 
-  bool isGravityTempAdj() { return gravityTempAdj; }
+  bool isGravityTempAdj() { return _gravityTempAdj; }
   void setGravityTempAdj(bool b) {
-    gravityTempAdj = b;
-    saveNeeded = true;
+    _gravityTempAdj = b;
+    _saveNeeded = true;
   }
 
-  char getGravityFormat() { return gravityFormat; }
+  char getGravityFormat() { return _gravityFormat; }
   void setGravityFormat(char c) {
     if (c == 'G' || c == 'P') {
-      gravityFormat = c;
-      saveNeeded = true;
+      _gravityFormat = c;
+      _saveNeeded = true;
     }
   }
-  bool isGravitySG() { return gravityFormat == 'G'; }
-  bool isGravityPlato() { return gravityFormat == 'P'; }
+  bool isGravitySG() { return _gravityFormat == 'G'; }
+  bool isGravityPlato() { return _gravityFormat == 'P'; }
 
-  const RawGyroData& getGyroCalibration() { return gyroCalibration; }
+  const RawGyroData& getGyroCalibration() { return _gyroCalibration; }
   void setGyroCalibration(const RawGyroData& r) {
-    gyroCalibration = r;
-    saveNeeded = true;
+    _gyroCalibration = r;
+    _saveNeeded = true;
   }
 
-  const RawFormulaData& getFormulaData() { return formulaData; }
+  const RawFormulaData& getFormulaData() { return _formulaData; }
   void setFormulaData(const RawFormulaData& r) {
-    formulaData = r;
-    saveNeeded = true;
+    _formulaData = r;
+    _saveNeeded = true;
   }
 
   // IO functions
@@ -344,8 +344,8 @@ class Config {
   bool saveFile();
   bool loadFile();
   void checkFileSystem();
-  bool isSaveNeeded() { return saveNeeded; }
-  void setSaveNeeded() { saveNeeded = true; }
+  bool isSaveNeeded() { return _saveNeeded; }
+  void setSaveNeeded() { _saveNeeded = true; }
 };
 
 // Global instance created

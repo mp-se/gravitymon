@@ -49,13 +49,13 @@ bool GyroSensor::setup() {
   
   if (!accelgyro.testConnection()) {
     Log.error(F("GYRO: Failed to connect to MPU6050 (gyro)." CR));
-    sensorConnected = false;
+    _sensorConnected = false;
   } else {
 #if !defined(GYRO_DISABLE_LOGGING)
     Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
 #endif
     accelgyro.initialize();
-    sensorConnected = true;
+    _sensorConnected = true;
 
     // Configure the sensor
     accelgyro.setTempSensorEnabled(true);
@@ -77,10 +77,10 @@ bool GyroSensor::setup() {
 
     // Once we have calibration values stored we just apply them from the
     // config.
-    calibrationOffset = myConfig.getGyroCalibration();
+    _calibrationOffset = myConfig.getGyroCalibration();
     applyCalibration();
   }
-  return sensorConnected;
+  return _sensorConnected;
 }
 
 //
@@ -234,35 +234,35 @@ bool GyroSensor::read() {
   Log.verbose(F("GYRO: Getting new gyro position." CR));
 #endif
 
-  if (!sensorConnected) return false;
+  if (!_sensorConnected) return false;
 
-  readSensor(lastGyroData, SENSOR_READ_COUNT,
+  readSensor(_lastGyroData, SENSOR_READ_COUNT,
              SENSOR_READ_DELAY);  // Last param is unused if GYRO_USE_INTERRUPT
                                   // is defined.
 
   // If the sensor is unstable we return false to signal we dont have valid
   // value
-  if (isSensorMoving(lastGyroData)) {
+  if (isSensorMoving(_lastGyroData)) {
 #if !defined(GYRO_DISABLE_LOGGING)
     Log.notice(F("GYRO: Sensor is moving." CR));
 #endif
-    validValue = false;
+    _validValue = false;
   } else {
-    validValue = true;
-    angle = calculateAngle(lastGyroData);
+    _validValue = true;
+    _angle = calculateAngle(_lastGyroData);
 #if !defined(GYRO_DISABLE_LOGGING)
-    Log.notice(F("GYRO: Sensor values %d,%d,%d\t%F" CR), lastGyroData.ax,
-               lastGyroData.ay, lastGyroData.az, angle);
+    Log.notice(F("GYRO: Sensor values %d,%d,%d\t%F" CR), _lastGyroData.ax,
+               _lastGyroData.ay, _lastGyroData.az, _angle);
 #endif
   }
 
-  sensorTemp = (static_cast<float>(lastGyroData.temp)) / 340 + 36.53;
+  _sensorTemp = (static_cast<float>(_lastGyroData.temp)) / 340 + 36.53;
 
   // The first read value is close to the DS18 value according to my tests, if
   // more reads are done then the gyro temp will increase to much
-  if (initialSensorTemp == INVALID_TEMPERATURE) initialSensorTemp = sensorTemp;
+  if (_initialSensorTemp == INVALID_TEMPERATURE) _initialSensorTemp = _sensorTemp;
 
-  return validValue;
+  return _validValue;
 }
 
 //
@@ -270,10 +270,10 @@ bool GyroSensor::read() {
 //
 void GyroSensor::dumpCalibration() {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
-  Log.verbose(F("GYRO: Accel offset\t%d\t%d\t%d" CR), calibrationOffset.ax,
-              calibrationOffset.ay, calibrationOffset.az);
-  Log.verbose(F("GYRO: Gyro offset \t%d\t%d\t%d" CR), calibrationOffset.gx,
-              calibrationOffset.gy, calibrationOffset.gz);
+  Log.verbose(F("GYRO: Accel offset\t%d\t%d\t%d" CR), _calibrationOffset.ax,
+              _calibrationOffset.ay, _calibrationOffset.az);
+  Log.verbose(F("GYRO: Gyro offset \t%d\t%d\t%d" CR), _calibrationOffset.gx,
+              _calibrationOffset.gy, _calibrationOffset.gz);
 #endif
 }
 
@@ -285,19 +285,19 @@ void GyroSensor::applyCalibration() {
   Log.verbose(F("GYRO: Applying calibration offsets to sensor." CR));
 #endif
 
-  if ((calibrationOffset.ax + calibrationOffset.ay + calibrationOffset.az +
-       calibrationOffset.gx + calibrationOffset.gy + calibrationOffset.gz) ==
+  if ((_calibrationOffset.ax + _calibrationOffset.ay + _calibrationOffset.az +
+       _calibrationOffset.gx + _calibrationOffset.gy + _calibrationOffset.gz) ==
       0) {
     Log.error(F("GYRO: No valid calibraion values exist, aborting." CR));
     return;
   }
 
-  accelgyro.setXAccelOffset(calibrationOffset.ax);
-  accelgyro.setYAccelOffset(calibrationOffset.ay);
-  accelgyro.setZAccelOffset(calibrationOffset.az);
-  accelgyro.setXGyroOffset(calibrationOffset.gx);
-  accelgyro.setYGyroOffset(calibrationOffset.gy);
-  accelgyro.setZGyroOffset(calibrationOffset.gz);
+  accelgyro.setXAccelOffset(_calibrationOffset.ax);
+  accelgyro.setYAccelOffset(_calibrationOffset.ay);
+  accelgyro.setZAccelOffset(_calibrationOffset.az);
+  accelgyro.setXGyroOffset(_calibrationOffset.gx);
+  accelgyro.setYGyroOffset(_calibrationOffset.gy);
+  accelgyro.setZGyroOffset(_calibrationOffset.gz);
 }
 
 //
@@ -317,15 +317,15 @@ void GyroSensor::calibrateSensor() {
   accelgyro.PrintActiveOffsets();
   Serial.print(CR);
 
-  calibrationOffset.ax = accelgyro.getXAccelOffset();
-  calibrationOffset.ay = accelgyro.getYAccelOffset();
-  calibrationOffset.az = accelgyro.getZAccelOffset();
-  calibrationOffset.gx = accelgyro.getXGyroOffset();
-  calibrationOffset.gy = accelgyro.getYGyroOffset();
-  calibrationOffset.gz = accelgyro.getZGyroOffset();
+  _calibrationOffset.ax = accelgyro.getXAccelOffset();
+  _calibrationOffset.ay = accelgyro.getYAccelOffset();
+  _calibrationOffset.az = accelgyro.getZAccelOffset();
+  _calibrationOffset.gx = accelgyro.getXGyroOffset();
+  _calibrationOffset.gy = accelgyro.getYGyroOffset();
+  _calibrationOffset.gz = accelgyro.getZGyroOffset();
 
   // Save the calibrated values
-  myConfig.setGyroCalibration(calibrationOffset);
+  myConfig.setGyroCalibration(_calibrationOffset);
   myConfig.saveFile();
 }
 
@@ -380,17 +380,17 @@ void GyroSensor::debug() {
   }
 
   Log.verbose(F("GYRO: Debug - Acc OffX    %d\t%d." CR),
-              accelgyro.getXAccelOffset(), calibrationOffset.az);
+              accelgyro.getXAccelOffset(), _calibrationOffset.az);
   Log.verbose(F("GYRO: Debug - Acc OffY    %d\t%d." CR),
-              accelgyro.getYAccelOffset(), calibrationOffset.ay);
+              accelgyro.getYAccelOffset(), _calibrationOffset.ay);
   Log.verbose(F("GYRO: Debug - Acc OffZ    %d\t%d." CR),
-              accelgyro.getZAccelOffset(), calibrationOffset.az);
+              accelgyro.getZAccelOffset(), _calibrationOffset.az);
   Log.verbose(F("GYRO: Debug - Gyr OffX    %d\t%d." CR),
-              accelgyro.getXGyroOffset(), calibrationOffset.gx);
+              accelgyro.getXGyroOffset(), _calibrationOffset.gx);
   Log.verbose(F("GYRO: Debug - Gyr OffY    %d\t%d." CR),
-              accelgyro.getYGyroOffset(), calibrationOffset.gy);
+              accelgyro.getYGyroOffset(), _calibrationOffset.gy);
   Log.verbose(F("GYRO: Debug - Gyr OffZ    %d\t%d." CR),
-              accelgyro.getZGyroOffset(), calibrationOffset.gz);
+              accelgyro.getZGyroOffset(), _calibrationOffset.gz);
 #endif
 }
 

@@ -33,7 +33,7 @@ SOFTWARE.
 // Classes
 class PushTarget {
  private:
-  uint32_t ms;  // Used to check that we do not post to often
+  uint32_t _ms;  // Used to check that we do not post to often
 
   void sendBrewfather(float angle, float gravity, float corrGravity,
                       float tempC);
@@ -48,7 +48,7 @@ class PushTarget {
                             float runTime);
 
  public:
-  PushTarget() { ms = millis(); }
+  PushTarget() { _ms = millis(); }
   void send(float angle, float gravity, float corrGravity, float temp,
             float runTime, bool force = false);
 };

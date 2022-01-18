@@ -50,13 +50,13 @@ struct RawGyroDataL {  // Used for average multiple readings
 
 class GyroSensor {
  private:
-  bool sensorConnected = false;
-  bool validValue = false;
-  float angle = 0;
-  float sensorTemp = 0;
-  float initialSensorTemp = INVALID_TEMPERATURE;
-  RawGyroData calibrationOffset;
-  RawGyroData lastGyroData;
+  bool _sensorConnected = false;
+  bool _validValue = false;
+  float _angle = 0;
+  float _sensorTemp = 0;
+  float _initialSensorTemp = INVALID_TEMPERATURE;
+  RawGyroData _calibrationOffset;
+  RawGyroData _lastGyroData;
 
   void debug();
   void applyCalibration();
@@ -71,12 +71,12 @@ class GyroSensor {
   bool read();
   void calibrateSensor();
 
-  const RawGyroData &getLastGyroData() { return lastGyroData; }
-  float getAngle() { return angle; }
-  float getSensorTempC() { return sensorTemp; }
-  float getInitialSensorTempC() { return initialSensorTemp; }
-  bool isConnected() { return sensorConnected; }
-  bool hasValue() { return validValue; }
+  const RawGyroData &getLastGyroData() { return _lastGyroData; }
+  float getAngle() { return _angle; }
+  float getSensorTempC() { return _sensorTemp; }
+  float getInitialSensorTempC() { return _initialSensorTemp; }
+  bool isConnected() { return _sensorConnected; }
+  bool hasValue() { return _validValue; }
   void enterSleep();
 };
 
