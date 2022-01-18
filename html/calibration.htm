@@ -86,19 +86,20 @@
       <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card-body">
           <form action="/api/formula" method="post">
+            <input type="text" name="gravity-format" id="gravity-format" hidden>
             <input type="text" name="id" id="id" hidden>
 
             <div class="row mb-3">
-                Here you can create your gravity formula by entering angles/tilt and the corresponding gravity (SG). These values
+                Here you can create your gravity formula by entering angles/tilt and the corresponding gravity. These values
                 will be saved for future use. Angles with 0 (zero) will be skipped. The values below will be used to check the 
-                formula and if the deviation is more than 1.5 SG then the forumla will be rejected. On the bottom of the page you can 
-                see a graph over the entered values + values calcualated by the formula.
+                formula and if the deviation is more than 1.5SG / 0.38P on any of the provided points then the forumla will be 
+                rejected. On the bottom of the page you can see a graph over the entered values + values calcualated by the formula.
             </div>
 
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">#:</label>
               <label class="col-sm-4 col-form-label">Angle/Tilt:</label>
-              <label class="col-sm-4 col-form-label">Gravity (SG):</label>
+              <label class="col-sm-4 col-form-label" id="gravity-header">Gravity (SG):</label>
             </div>
 
             <div class="form-group row">
@@ -107,7 +108,7 @@
                 <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a1" id="a1">
               </div>
               <div class="col-sm-4">
-                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g1" id="g1">
+                <input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g1" id="g1">
               </div>
             </div>
 
@@ -117,7 +118,7 @@
                 <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a2" id="a2">
               </div>
               <div class="col-sm-4">
-                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g2" id="g2">
+                <input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g2" id="g2">
               </div>
             </div>
 
@@ -127,7 +128,7 @@
                 <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a3" id="a3">
               </div>
               <div class="col-sm-4">
-                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g3" id="g3">
+                <input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g3" id="g3">
               </div>
             </div>
 
@@ -137,7 +138,7 @@
                 <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a4" id="a4">
               </div>
               <div class="col-sm-4">
-                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g4" id="g4">
+                <input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g4" id="g4">
               </div>
             </div>
 
@@ -147,7 +148,7 @@
                 <input type="number"  min="0" max="90" step="0.001" class="form-control" name="a5" id="a5">
               </div>
               <div class="col-sm-4">
-                <input type="number"  min="1" max="2" step="0.0001" class="form-control" name="g5" id="g5">
+                <input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g5" id="g5">
               </div>
             </div>
 
@@ -233,28 +234,40 @@
 </script>
 
 <script type="text/javascript">
-  g1.onchange = setFourNumberDecimal
-  g2.onchange = setFourNumberDecimal
-  g3.onchange = setFourNumberDecimal
-  g4.onchange = setFourNumberDecimal
-  g5.onchange = setFourNumberDecimal
+  g1.onchange = setGravityDecimal
+  g2.onchange = setGravityDecimal
+  g3.onchange = setGravityDecimal
+  g4.onchange = setGravityDecimal
+  g5.onchange = setGravityDecimal
 
-  a1.onchange = setTwoNumberDecimal
-  a2.onchange = setTwoNumberDecimal
-  a3.onchange = setTwoNumberDecimal
-  a4.onchange = setTwoNumberDecimal
-  a5.onchange = setTwoNumberDecimal
+  a1.onchange = setAngleDecimal
+  a2.onchange = setAngleDecimal
+  a3.onchange = setAngleDecimal
+  a4.onchange = setAngleDecimal
+  a5.onchange = setAngleDecimal
 
   window.onload = getConfig;
   setButtonDisabled( true );
 
-  function setTwoNumberDecimal(event) {
+  function convertToPlato(sg) {
+    return 259-(259/sg);
+  }
+
+  function convertToSG(plato) {
+    return 259/(259-plato);
+  }
+
+  function setAngleDecimal(event) {
     this.value = parseFloat(this.value).toFixed(2);
     populateChart();
   } 
 
-  function setFourNumberDecimal(event) {
-    this.value = parseFloat(this.value).toFixed(4);
+  function setGravityDecimal(event) {
+    if(isPlato()) 
+      this.value = parseFloat(this.value).toFixed(1);
+    else
+      this.value = parseFloat(this.value).toFixed(4);
+
     populateChart();
   } 
 
@@ -265,6 +278,10 @@
 
   function populateChartCalc(a, g) {
     chartDataCalc.push( { x: parseFloat(a), y: parseFloat(g) });
+  }
+
+  function isPlato() {
+    return $("#gravity-format").text() == "P";
   }
 
   function populateChart() {
@@ -278,6 +295,10 @@
       formula=formula.replaceAll( "tilt^2", angle+"*"+angle );
       formula=formula.replaceAll( "tilt", angle );
       var g = eval( formula );
+
+      if(isPlato())
+        g = convertToPlato(g);
+
       populateChartCalc( i, g );
     }
 
@@ -314,6 +335,23 @@
       $("#id").val(cfg["id"]);
       $("#angle").text(cfg["angle"]);
       $("#formula").text(cfg["gravity-formula"]);
+      $("#gravity-format").text(cfg["gravity-format"]); // Sets the variable used by isPlato()
+
+      if(isPlato()) {
+        $("#gravity-header").text("Gravity (Plato):");
+        $("#g1").val( parseFloat(cfg["g1"]).toFixed(1) );
+        $("#g2").val( parseFloat(cfg["g2"]).toFixed(1) );
+        $("#g3").val( parseFloat(cfg["g3"]).toFixed(1) );
+        $("#g4").val( parseFloat(cfg["g4"]).toFixed(1) );
+        $("#g5").val( parseFloat(cfg["g5"]).toFixed(1) );
+      } else {
+        $("#gravity-header").text("Gravity (SG):");
+        $("#g1").val( parseFloat(cfg["g1"]).toFixed(4) );
+        $("#g2").val( parseFloat(cfg["g2"]).toFixed(4) );
+        $("#g3").val( parseFloat(cfg["g3"]).toFixed(4) );
+        $("#g4").val( parseFloat(cfg["g4"]).toFixed(4) );
+        $("#g5").val( parseFloat(cfg["g5"]).toFixed(4) );
+      }
 
       $("#a1").val( parseFloat(cfg["a1"]).toFixed(2) );
       $("#a2").val( parseFloat(cfg["a2"]).toFixed(2) );
@@ -321,11 +359,9 @@
       $("#a4").val( parseFloat(cfg["a4"]).toFixed(2) );
       $("#a5").val( parseFloat(cfg["a5"]).toFixed(2) );
 
-      $("#g1").val( parseFloat(cfg["g1"]).toFixed(4) );
-      $("#g2").val( parseFloat(cfg["g2"]).toFixed(4) );
-      $("#g3").val( parseFloat(cfg["g3"]).toFixed(4) );
-      $("#g4").val( parseFloat(cfg["g4"]).toFixed(4) );
-      $("#g5").val( parseFloat(cfg["g5"]).toFixed(4) );
+      if( cfg["error"]!="" ) {
+        showError(cfg["error"]);
+      }
 
       populateChart();
     })

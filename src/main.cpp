@@ -63,14 +63,18 @@ void checkSleepMode(float angle, float volt) {
 
   if (!g.ax && !g.ay && !g.az && !g.gx && !g.gy && !g.gz) {
     // Will not enter sleep mode if: no calibration data
+#if !defined(MAIN_DISABLE_LOGGING)
     Log.notice(
         F("MAIN: Missing calibration data, so forcing webserver to be "
           "active." CR));
+#endif
     runMode = RunMode::configurationMode;
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration
     // mode.
+#if !defined(MAIN_DISABLE_LOGGING)
     Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
+#endif
     runMode = RunMode::configurationMode;
   } else if ((volt < 4.15 && (angle > 85 && angle < 95)) || (volt > 4.15)) {
     runMode = RunMode::configurationMode;
@@ -80,14 +84,18 @@ void checkSleepMode(float angle, float volt) {
 
   switch (runMode) {
     case RunMode::configurationMode:
+#if !defined(MAIN_DISABLE_LOGGING)
       Log.notice(F("MAIN: run mode CONFIG (angle=%F volt=%F)." CR), angle,
                  volt);
+#endif
       break;
     case RunMode::wifiSetupMode:
       break;
     case RunMode::gravityMode:
+#if !defined(MAIN_DISABLE_LOGGING)
       Log.notice(F("MAIN: run mode GRAVITY (angle=%F volt=%F)." CR), angle,
                  volt);
+#endif
       break;
   }
 }
@@ -207,22 +215,21 @@ bool loopReadGravity() {
     stableGyroMillis = millis();  // Reset timer
 
     LOG_PERF_START("loop-temp-read");
-    float temp = myTempSensor.getTempC(myConfig.isGyroTemp());
+    float tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
     LOG_PERF_STOP("loop-temp-read");
 
-    float gravity = calculateGravity(angle, temp);
-    float corrGravity =
-        gravityTemperatureCorrection(gravity, temp, myConfig.getTempFormat());
+    float gravity = calculateGravity(angle, tempC);
+    float corrGravity = gravityTemperatureCorrectionC(gravity, tempC);
 
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
-    Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%F, gravity=%F, "
-                  "corr=%F." CR),
-                angle, temp, gravity, corrGravity);
+    Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
+                  "corr_gravity=%F." CR),
+                angle, tempC, gravity, corrGravity);
 #endif
 
     LOG_PERF_START("loop-push");
     // Force the transmission if we are going to sleep
-    myPushTarget.send(angle, gravity, corrGravity, temp,
+    myPushTarget.send(angle, gravity, corrGravity, tempC,
                       (millis() - runtimeMillis) / 1000,
                       runMode == RunMode::gravityMode ? true : false);
     LOG_PERF_STOP("loop-push");

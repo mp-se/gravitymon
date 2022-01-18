@@ -25,13 +25,11 @@ SOFTWARE.
 #define SRC_TEMPSENSOR_HPP_
 
 // definitions
-float convertCtoF(float t);
 
 // classes
 class TempSensor {
  private:
   bool hasSensor = false;
-  float tempSensorAdjF = 0;
   float tempSensorAdjC = 0;
   float getValue(bool useGyro);
 
@@ -40,9 +38,6 @@ class TempSensor {
   bool isSensorAttached() { return hasSensor; }
   float getTempC(bool useGyro = false) {
     return getValue(useGyro) + tempSensorAdjC;
-  }
-  float getTempF(bool useGyro = false) {
-    return convertCtoF(getValue(useGyro)) + tempSensorAdjF;
   }
 };
 

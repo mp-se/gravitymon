@@ -26,16 +26,24 @@ SOFTWARE.
 
 // Include
 #include <Arduino.h>
+#include <ESP8266WiFi.h>
+
+// tcp cleanup, to avoid memory crash.
+struct tcp_pcb;
+extern struct tcp_pcb* tcp_tw_pcbs;
+extern "C" void tcp_abort(struct tcp_pcb* pcb);
 
 // classes
 class WifiConnection {
  private:
   // WIFI
+  WiFiClient _client;
+  WiFiClientSecure _secureClient;
 
   // OTA
   bool newFirmware = false;
-  bool parseFirmwareVersionString(int (&num)[3], const char *version);
-  void downloadFile(const char *fname);
+  bool parseFirmwareVersionString(int (&num)[3], const char* version);
+  void downloadFile(const char* fname);
   void connectAsync();
   bool waitForConnection(int maxTime = 20);
 
@@ -52,6 +60,16 @@ class WifiConnection {
   String getIPAddress();
   void startPortal();
   void loop();
+
+  WiFiClient& getWifiClient() { return _client; }
+  WiFiClientSecure& getWifiClientSecure() { return _secureClient; }
+  void closeWifiClient() {
+    _client.stopAll();
+    _secureClient.stopAll();
+
+    // Cleanup memory allocated by open tcp connetions.
+    while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
+  }
 
   // OTA
   bool updateFirmware();

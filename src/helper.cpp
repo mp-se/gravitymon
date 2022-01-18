@@ -24,19 +24,39 @@ SOFTWARE.
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 
-#include <config.hpp>
 #include <gyro.hpp>
 #include <helper.hpp>
 #include <tempsensor.hpp>
+#include <wifi.hpp>
 
 SerialDebug mySerial;
 BatteryVoltage myBatteryVoltage;
 
 //
+// Convert sg to plato
+//
+double convertToPlato(double sg) { return 259 - (259 / sg); }
+
+//
+// Convert plato to sg
+//
+double convertToSG(double plato) { return 259 / (259 - plato); }
+
+//
+// Conversion to F
+//
+float convertCtoF(float c) { return (c * 1.8) + 32.0; }
+
+//
+// Conversion to C
+//
+float convertFtoC(float f) { return (f - 32.0) / 1.8; }
+
+//
 // Print the heap information.
 //
 void printHeap() {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(F("HELP: Heap %d kb, HeapFrag %d %%, FreeSketch %d kb." CR),
               ESP.getFreeHeap() / 1024, ESP.getHeapFragmentation(),
               ESP.getFreeSketchSpace() / 1024);
@@ -47,7 +67,7 @@ void printHeap() {
 // Enter deep sleep for the defined duration (Argument is seconds)
 //
 void deepSleep(int t) {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(F("HELP: Entering sleep mode for %ds." CR), t);
 #endif
   uint32_t wake = t * 1000000;
@@ -106,7 +126,7 @@ void BatteryVoltage::read() {
   float factor = myConfig.getVoltageFactor();  // Default value is 1.63
   int v = analogRead(A0);
   batteryLevel = ((3.3 / 1023) * v) * factor;
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
       factor, v, batteryLevel);
@@ -177,14 +197,13 @@ void PerfLogging::print() {
 void PerfLogging::pushInflux() {
   if (!myConfig.isInfluxDb2Active()) return;
 
-  WiFiClient client;
   HTTPClient http;
   String serverPath =
       String(myConfig.getInfluxDb2PushUrl()) +
       "/api/v2/write?org=" + String(myConfig.getInfluxDb2PushOrg()) +
       "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
 
-  http.begin(client, serverPath);
+  http.begin(myWifi.getWifiClient(), serverPath);
 
   // Create body for influxdb2, format used
   // key,host=mdns value=0.0
@@ -225,7 +244,7 @@ void PerfLogging::pushInflux() {
 
   // Log.notice(F("PERF: data %s." CR), body.c_str() );
 
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(F("PERF: url %s." CR), serverPath.c_str());
   Log.verbose(F("PERF: data %s." CR), body.c_str());
 #endif
@@ -236,15 +255,18 @@ void PerfLogging::pushInflux() {
   int httpResponseCode = http.POST(body);
 
   if (httpResponseCode == 204) {
+#if !defined(HELPER_DISABLE_LOGGING)
     Log.notice(
         F("PERF: InfluxDB2 push performance data successful, response=%d" CR),
         httpResponseCode);
+#endif
   } else {
     Log.error(F("PERF: InfluxDB2 push performance data failed, response=%d" CR),
               httpResponseCode);
   }
 
   http.end();
+  myWifi.closeWifiClient();
 }
 
 #endif  // COLLECT_PERFDATA

@@ -65,6 +65,8 @@ class WebServer {
   void webHandleDevice();
   void webHandlePageNotFound();
 
+  String getRequestArguments();
+
   // Inline functions.
   void webReturnOK() { server->send(200); }
 #if defined(EMBED_HTML)

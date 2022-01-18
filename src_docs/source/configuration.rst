@@ -12,6 +12,7 @@ One of the following conditions will place the device in ``configuration mode``:
 - Placed in horizontal mode 85-90 degrees
 - Charger connected >4.15V
 
+
 Status 
 ======
 
@@ -97,21 +98,35 @@ Push Settings
   :width: 800
   :alt: Push Settings
 
+.. note::
+
+   When enabling SSL this will not validate the root CA of the remote service, this is a design decision based on two aspects. Enabling CA validation will take 3-4s extra on each connection which means way less 
+   battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I belive this is a good balance.
+
+
 * **HTTP URL 1:**
 
    Endpoint to send data via http. Format used Format used :ref:`data-formats-ispindle`
+
+   If you add the prefix `https://` then the device will use SSL when sending data.
 
 * **HTTP URL 2:**
 
    Endpoint to send data via http. Format used :ref:`data-formats-ispindle`
 
+   If you add the prefix `https://` then the device will use SSL when sending data. 
+
 * **Brewfather URL:**
 
    Endpoint to send data via http to brewfather. Format used :ref:`data-formats-brewfather`
 
+   SSL is not supported for this target.
+
 * **Influx DB v2 URL:**
 
    Endpoint to send data via http to InfluxDB. Format used :ref:`data-formats-influxdb2`
+
+   SSL is not supported for this target. Raise a issue on github if this is wanted.
 
 * **Influx DB v2 Organisation:**
 
@@ -128,6 +143,8 @@ Push Settings
 * **MQTT server:**
 
    IP or name of server to send data to. Format used :ref:`data-formats-ispindle`
+
+   If you add the suffix `:8883` to the server name, then the device will use SSL when sending data.
 
 * **MQTT Topic:**
 
@@ -149,6 +166,10 @@ Gravity Settings
   :width: 800
   :alt: Gravity Settings
 
+* **Gravity format:**
+
+   Gravity format can be eihter `SG` or `Plato`. The device will use SG Internally and convert to Plato when displaying data.
+
 * **Gravity formula:**
 
    Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use 
@@ -159,9 +180,9 @@ Gravity Settings
    Will apply a temperature calibration formula to the gravity as a second step. 
 
 .. warning::
-   This formula assumes that the calibration has been done at 20C.
+   This formula assumes that the calibration has been done at 20°C / 68°F.
 
-Formula used in temperature correction:
+Formula used in temperature correction. 
 
 ::
 
@@ -198,6 +219,8 @@ Hardware Settings
 
    For the OTA to work, place the following files (version.json + firmware.bin) at the location that you pointed out in OTA URL. If the version number in the json file is newer than in the 
    code the update will be done during startup.
+
+   If you have the previx `https://` then the device will use secure transfer without CA validation.
 
    Example; OTA URL (don't forget trailing dash), the name of the file should be firmware.bin
 
@@ -325,7 +348,7 @@ GET: /api/config/formula
 Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
 
 * ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
-* ``g1``-``g4`` are the corresponding gravity reaadings (in SG)
+* ``g1``-``g4`` are the corresponding gravity reaadings in SG or Plato depending on the device-format.
 
 .. code-block:: json
 
@@ -340,8 +363,9 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
       "g2": 1.053, 
       "g3": 1.062, 
       "g4": 1, 
-      "g5": 1 
-      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
+      "g5": 1,
+      "gravity-format": "G", 
+      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"
    }
 
 
@@ -350,7 +374,7 @@ POST: /api/config/device
 
 Used to update device settings via an HTTP POST command. Payload is in JSON format.
 
-* ``temp-format`` can be either ``C`` or ``F``
+* ``temp-format`` can be either ``C`` (Celcius) or ``F`` (Farenheight)
 
 .. code-block:: json
 
@@ -391,6 +415,7 @@ POST: /api/config/gravity
 Used to update gravity settings via an HTTP POST command. Payload is in JSON format.
 
 * ``gravity-formula`` keywords ``temp`` and ``tilt`` are supported.
+* ``gravity-format`` can be either ``G`` (SG) or ``P`` (PLATO)
 
 .. note::
   ``gravity-temp-adjustment`` is defined as "on" or "off" when posting since this is the output values 
@@ -401,6 +426,7 @@ Used to update gravity settings via an HTTP POST command. Payload is in JSON for
    { 
       "id": "ee1bfc",                                                   
       "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
+      "gravity-format": "P",
       "gravity-temp-adjustment": "off"                                  
    }
 
@@ -500,6 +526,7 @@ present or the API call will fail.
    url = "http://" + host + "/api/config/gravity"
    json = { "id": id, 
             "gravity-formula": "",                  
+            "gravity-format": "P",
             "gravity-temp-adjustment": "off"        # Adjust gravity (on/off)
             }
    set_config( url, json )
@@ -542,6 +569,7 @@ iSpindle format
 This is the format used for standard http posts. 
 
 * ``corr-gravity`` is an extended parameter containing a temperature corrected gravity reading.
+* ``gravity-format`` is an extended parameter containing the gravity format (G or P).
 * ``run-time`` is an extended parameter containing the number of seconds the execution took.
 
 .. code-block:: json
@@ -554,10 +582,12 @@ This is the format used for standard http posts.
       "temperature": 20.5,
       "temp-units": "C",
       "gravity": 1.0050,
-      "corr-gravity": 1.0050,
       "angle": 45.34,
       "battery": 3.67,
       "rssi": -12,
+
+      "corr-gravity": 1.0050,
+      "gravity-unit": "G",
       "run-time": 6
    }
    
@@ -567,14 +597,14 @@ This is the format used for standard http posts.
 Brewfather format 
 =================
 
-This is the format for Brewfather
+This is the format for Brewfather. See: `Brewfather API docs <https://docs.brewfather.app/integrations/custom-stream>`_
 
 .. code-block:: json
 
    { 
       "name" : "gravmon",     
       "temp": 20.5,
-      "temp-unit": "C",
+      "temp_unit": "C",
       "battery": 3.67,
       "gravity": 1.0050,
       "gravity_unit": "G",

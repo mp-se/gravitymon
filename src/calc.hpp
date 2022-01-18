@@ -26,16 +26,16 @@ SOFTWARE.
 
 // Includes
 #include <config.hpp>
-#include <helper.hpp>
 
 #define ERR_FORMULA_NOTENOUGHVALUES -1
 #define ERR_FORMULA_INTERNAL -2
 #define ERR_FORMULA_UNABLETOFFIND -3
 
 // Functions
-double calculateGravity(double angle, double temp, const char *tempFormula = 0);
-double gravityTemperatureCorrection(double gravity, double temp,
-                                    char tempFormat, double calTemp = 20);
+double calculateGravity(double angle, double tempC,
+                        const char *tempFormula = 0);
+double gravityTemperatureCorrectionC(double gravity, double tempC,
+                                     double calTempC = 20);
 int createFormula(RawFormulaData &fd, char *formulaBuffer,
                   int formulaBufferSize, int order);
 

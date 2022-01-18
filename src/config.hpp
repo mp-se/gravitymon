@@ -89,6 +89,7 @@ SOFTWARE.
 #define CFG_PARAM_BATTERY "battery"
 #define CFG_PARAM_SLEEP_MODE "sleep-mode"
 #define CFG_PARAM_RSSI "rssi"
+#define CFG_PARAM_ERROR "error"
 
 // Used for holding sensordata or sensoroffsets
 struct RawGyroData {
@@ -118,41 +119,40 @@ class Config {
   String id;
   String mDNS;
   String otaURL;
-  char tempFormat;  // C, F
+  char tempFormat;
   float voltageFactor;
-  float tempSensorAdj;  // This value will be added to the read sensor value
+  float tempSensorAdjC;
   int sleepInterval;
-  bool gyroTemp;  // Experimental feature
+  bool gyroTemp;
 
   // Wifi Config
   String wifiSSID;
   String wifiPASS;
 
   // Push target settings
-  String brewfatherPushUrl;  // URL For brewfather
+  String brewfatherPushUrl;
 
-  String httpPushUrl;   // URL 1 for standard http
-  String httpPushUrl2;  // URL 2 for standard http
+  String httpPushUrl;
+  String httpPushUrl2;
 
-  String influxDb2Url;     // URL for InfluxDB v2
-  String influxDb2Org;     // Organisation for InfluxDB v2
-  String influxDb2Bucket;  // Bucket for InfluxDB v2
-  String influxDb2Token;   // Auth Token for InfluxDB v2
+  String influxDb2Url;
+  String influxDb2Org;
+  String influxDb2Bucket;
+  String influxDb2Token;
 
-  String mqttUrl;  // Server name
+  String mqttUrl;
   String mqttTopic;
   String mqttUser;
   String mqttPass;
 
   // Gravity and temperature calculations
   String gravityFormula;
-  bool gravityTempAdj;  // true, false
-  char gravityFormat;   // G, P
+  bool gravityTempAdj;
+  char gravityFormat;
 
-  // Gyro calibration data
-  RawGyroData
-      gyroCalibration;  // Holds the gyro calibration constants (6 * int16_t)
-  RawFormulaData formulaData;  // Used for creating formula
+  // Gyro calibration and formula calculation data
+  RawGyroData gyroCalibration;
+  RawFormulaData formulaData;
 
   void debug();
   void formatFileSystem();
@@ -273,11 +273,13 @@ class Config {
 
   char getTempFormat() { return tempFormat; }
   void setTempFormat(char c) {
-    tempFormat = c;
-    saveNeeded = true;
+    if (c == 'C' || c == 'F') {
+      tempFormat = c;
+      saveNeeded = true;
+    }
   }
-  bool isTempC() { return tempFormat == 'C' ? false : true; }
-  bool isTempF() { return tempFormat == 'F' ? false : true; }
+  bool isTempC() { return tempFormat == 'C'; }
+  bool isTempF() { return tempFormat == 'F'; }
 
   float getVoltageFactor() { return voltageFactor; }
   void setVoltageFactor(float f) {
@@ -289,13 +291,17 @@ class Config {
     saveNeeded = true;
   }
 
-  float getTempSensorAdj() { return tempSensorAdj; }
-  void setTempSensorAdj(float f) {
-    tempSensorAdj = f;
+  float getTempSensorAdjC() { return tempSensorAdjC; }
+  void setTempSensorAdjC(float f) {
+    tempSensorAdjC = f;
     saveNeeded = true;
   }
-  void setTempSensorAdj(String s) {
-    tempSensorAdj = s.toFloat();
+  void setTempSensorAdjC(String s) {
+    tempSensorAdjC = s.toFloat();
+    saveNeeded = true;
+  }
+  void setTempSensorAdjF(String s) {
+    tempSensorAdjC = convertFtoC(s.toFloat());
     saveNeeded = true;
   }
 
@@ -313,11 +319,13 @@ class Config {
 
   char getGravityFormat() { return gravityFormat; }
   void setGravityFormat(char c) {
-    gravityFormat = c;
-    saveNeeded = true;
+    if (c == 'G' || c == 'P') {
+      gravityFormat = c;
+      saveNeeded = true;
+    }
   }
-  bool isGravitySG() { return gravityFormat == 'G' ? false : true; }
-  bool isGravityPlato() { return gravityFormat == 'P' ? false : true; }
+  bool isGravitySG() { return gravityFormat == 'G'; }
+  bool isGravityPlato() { return gravityFormat == 'P'; }
 
   const RawGyroData& getGyroCalibration() { return gyroCalibration; }
   void setGyroCalibration(const RawGyroData& r) {

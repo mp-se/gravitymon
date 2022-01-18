@@ -21,19 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#include <ESP8266HTTPClient.h>
 #include <MQTT.h>
 
 #include <config.hpp>
 #include <gyro.hpp>
 #include <pushtarget.hpp>
+#include <wifi.hpp>
 
 PushTarget myPushTarget;
 
 //
-// Send the pressure value
+// Send the data to targets
 //
-void PushTarget::send(float angle, float gravity, float corrGravity, float temp,
-                      float runTime, bool force) {
+void PushTarget::send(float angle, float gravity, float corrGravity,
+                      float tempC, float runTime, bool force) {
   uint32_t timePassed = abs((int32_t)(millis() - ms));
   uint32_t interval = myConfig.getSleepInterval() * 1000;
 
@@ -45,41 +47,37 @@ void PushTarget::send(float angle, float gravity, float corrGravity, float temp,
     return;
   }
 
-#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: Sending data." CR));
-#endif
-
   ms = millis();
 
   if (myConfig.isBrewfatherActive()) {
     LOG_PERF_START("push-brewfather");
-    sendBrewfather(angle, gravity, corrGravity, temp);
+    sendBrewfather(angle, gravity, corrGravity, tempC);
     LOG_PERF_STOP("push-brewfather");
   }
 
   if (myConfig.isHttpActive()) {
     LOG_PERF_START("push-http");
-    sendHttp(myConfig.getHttpPushUrl(), angle, gravity, corrGravity, temp,
+    sendHttp(myConfig.getHttpPushUrl(), angle, gravity, corrGravity, tempC,
              runTime);
     LOG_PERF_STOP("push-http");
   }
 
   if (myConfig.isHttpActive2()) {
     LOG_PERF_START("push-http2");
-    sendHttp(myConfig.getHttpPushUrl2(), angle, gravity, corrGravity, temp,
+    sendHttp(myConfig.getHttpPushUrl2(), angle, gravity, corrGravity, tempC,
              runTime);
     LOG_PERF_STOP("push-http2");
   }
 
   if (myConfig.isInfluxDb2Active()) {
     LOG_PERF_START("push-influxdb2");
-    sendInfluxDb2(angle, gravity, corrGravity, temp, runTime);
+    sendInfluxDb2(angle, gravity, corrGravity, tempC, runTime);
     LOG_PERF_STOP("push-influxdb2");
   }
 
   if (myConfig.isMqttActive()) {
     LOG_PERF_START("push-mqtt");
-    sendMqtt(angle, gravity, corrGravity, temp, runTime);
+    sendMqtt(angle, gravity, corrGravity, tempC, runTime);
     LOG_PERF_STOP("push-mqtt");
   }
 }
@@ -88,32 +86,43 @@ void PushTarget::send(float angle, float gravity, float corrGravity, float temp,
 // Send to influx db v2
 //
 void PushTarget::sendInfluxDb2(float angle, float gravity, float corrGravity,
-                               float temp, float runTime) {
+                               float tempC, float runTime) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(
       F("PUSH: Sending values to influxdb2 angle=%F, gravity=%F, temp=%F." CR),
-      angle, gravity, temp);
+      angle, gravity, tempC);
 #endif
 
-  WiFiClient client;
   HTTPClient http;
   String serverPath =
       String(myConfig.getInfluxDb2PushUrl()) +
       "/api/v2/write?org=" + String(myConfig.getInfluxDb2PushOrg()) +
       "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
 
-  http.begin(client, serverPath);
+  http.begin(myWifi.getWifiClient(), serverPath);
+
+  float temp = myConfig.isTempC() ? tempC : convertCtoF(tempC);
+  gravity = myConfig.isGravityTempAdj() ? corrGravity : gravity;
 
   // Create body for influxdb2
   char buf[1024];
-  snprintf(&buf[0], sizeof(buf),
-           "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
-           "gravity=%.4f,corr-gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,"
-           "rssi=%d\n",
-           // TODO: Add support for plato format
-           myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(), "SG",
-           myConfig.isGravityTempAdj() ? corrGravity : gravity, corrGravity,
-           angle, temp, myBatteryVoltage.getVoltage(), WiFi.RSSI());
+  if (myConfig.isGravitySG()) {
+    snprintf(&buf[0], sizeof(buf),
+             "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
+             "gravity=%.4f,corr-gravity=%.4f,angle=%.2f,temp=%.2f,battery=%.2f,"
+             "rssi=%d\n",
+             myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(),
+             "G", gravity, corrGravity, angle, temp,
+             myBatteryVoltage.getVoltage(), WiFi.RSSI());
+  } else {
+    snprintf(&buf[0], sizeof(buf),
+             "measurement,host=%s,device=%s,temp-format=%c,gravity-format=%s "
+             "gravity=%.1f,corr-gravity=%.1f,angle=%.2f,temp=%.2f,battery=%.2f,"
+             "rssi=%d\n",
+             myConfig.getMDNS(), myConfig.getID(), myConfig.getTempFormat(),
+             "G", convertToPlato(gravity), convertToPlato(corrGravity), angle,
+             convertCtoF(temp), myBatteryVoltage.getVoltage(), WiFi.RSSI());
+  }
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -134,17 +143,18 @@ void PushTarget::sendInfluxDb2(float angle, float gravity, float corrGravity,
   }
 
   http.end();
+  myWifi.closeWifiClient();
 }
 
 //
 // Send data to brewfather
 //
 void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity,
-                                float temp) {
+                                float tempC) {
 #if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(
-      F("PUSH: Sending values to brewfather angle=%F, gravity=%F, temp=%F." CR),
-      angle, gravity, temp);
+  Log.notice(F("PUSH: Sending values to brewfather angle=%F, gravity=%F, "
+               "corr-gravity=%F, temp=%F." CR),
+             angle, gravity, corrGravity, tempC);
 #endif
 
   DynamicJsonDocument doc(300);
@@ -165,21 +175,26 @@ void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity,
   //  "battery": 4.98
   //  }
   //
+  float temp = myConfig.isTempC() ? tempC : convertCtoF(tempC);
+
   doc["name"] = myConfig.getMDNS();
   doc["temp"] = reduceFloatPrecision(temp, 1);
   doc["temp_unit"] = String(myConfig.getTempFormat());
   doc["battery"] = reduceFloatPrecision(myBatteryVoltage.getVoltage(), 2);
-  // TODO: Add support for plato format
-  doc["gravity"] = reduceFloatPrecision(
-      myConfig.isGravityTempAdj() ? corrGravity : gravity, 4);
+  if (myConfig.isGravitySG()) {
+    doc["gravity"] = reduceFloatPrecision(
+        myConfig.isGravityTempAdj() ? corrGravity : gravity, 4);
+  } else {
+    doc["gravity"] = reduceFloatPrecision(
+        convertToPlato(myConfig.isGravityTempAdj() ? corrGravity : gravity), 1);
+  }
   doc["gravity_unit"] = myConfig.isGravitySG() ? "G" : "P";
 
-  WiFiClient client;
   HTTPClient http;
   String serverPath = myConfig.getBrewfatherPushUrl();
 
   // Your Domain name with URL path or IP address with path
-  http.begin(client, serverPath);
+  http.begin(myWifi.getWifiClient(), serverPath);
   String json;
   serializeJson(doc, json);
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
@@ -200,6 +215,7 @@ void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity,
   }
 
   http.end();
+  myWifi.closeWifiClient();
 }
 
 //
@@ -207,24 +223,31 @@ void PushTarget::sendBrewfather(float angle, float gravity, float corrGravity,
 //
 void PushTarget::createIspindleFormat(DynamicJsonDocument &doc, float angle,
                                       float gravity, float corrGravity,
-                                      float temp, float runTime) {
+                                      float tempC, float runTime) {
+  float temp = myConfig.isTempC() ? tempC : convertCtoF(tempC);
+
   // Use iSpindle format for compatibility
   doc["name"] = myConfig.getMDNS();
   doc["ID"] = myConfig.getID();
-  doc["token"] = "gravmon";
+  doc["token"] = "gravitmon";
   doc["interval"] = myConfig.getSleepInterval();
   doc["temperature"] = reduceFloatPrecision(temp, 1);
   doc["temp-units"] = String(myConfig.getTempFormat());
-  // TODO: Add support for plato format
-  doc["gravity"] = reduceFloatPrecision(
-      myConfig.isGravityTempAdj() ? corrGravity : gravity, 4);
-  doc["corr-gravity"] = reduceFloatPrecision(corrGravity, 4);
+  if (myConfig.isGravitySG()) {
+    doc["gravity"] = reduceFloatPrecision(
+        myConfig.isGravityTempAdj() ? corrGravity : gravity, 4);
+    doc["corr-gravity"] = reduceFloatPrecision(corrGravity, 4);
+  } else {
+    doc["gravity"] = reduceFloatPrecision(
+        convertToPlato(myConfig.isGravityTempAdj() ? corrGravity : gravity), 1);
+    doc["corr-gravity"] = reduceFloatPrecision(convertToPlato(corrGravity), 1);
+  }
   doc["angle"] = reduceFloatPrecision(angle, 2);
   doc["battery"] = reduceFloatPrecision(myBatteryVoltage.getVoltage(), 2);
   doc["rssi"] = WiFi.RSSI();
 
   // Some additional information
-  doc["gravity-units"] = "SG";
+  doc["gravity-unit"] = myConfig.isGravitySG() ? "G" : "P";
   doc["run-time"] = reduceFloatPrecision(runTime, 2);
 }
 
@@ -232,21 +255,26 @@ void PushTarget::createIspindleFormat(DynamicJsonDocument &doc, float angle,
 // Send data to http target
 //
 void PushTarget::sendHttp(String serverPath, float angle, float gravity,
-                          float corrGravity, float temp, float runTime) {
+                          float corrGravity, float tempC, float runTime) {
 #if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(
-      F("PUSH: Sending values to http angle=%F, gravity=%F, temp=%F." CR),
-      angle, gravity, temp);
+  Log.notice(F("PUSH: Sending values to http angle=%F, gravity=%F, "
+               "corr-gravity=%F, temp=%F." CR),
+             angle, gravity, corrGravity, tempC);
 #endif
 
   DynamicJsonDocument doc(256);
-  createIspindleFormat(doc, angle, gravity, corrGravity, temp, runTime);
+  createIspindleFormat(doc, angle, gravity, corrGravity, tempC, runTime);
 
-  WiFiClient client;
   HTTPClient http;
 
-  // Your Domain name with URL path or IP address with path
-  http.begin(client, serverPath);
+  if (serverPath.startsWith("https://")) {
+    myWifi.getWifiClientSecure().setInsecure();
+    Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
+    http.begin(myWifi.getWifiClientSecure(), serverPath);
+  } else {
+    http.begin(myWifi.getWifiClient(), serverPath);
+  }
+
   String json;
   serializeJson(doc, json);
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
@@ -266,26 +294,36 @@ void PushTarget::sendHttp(String serverPath, float angle, float gravity,
   }
 
   http.end();
+  myWifi.closeWifiClient();
 }
 
 //
 // Send data to http target
 //
 void PushTarget::sendMqtt(float angle, float gravity, float corrGravity,
-                          float temp, float runTime) {
+                          float tempC, float runTime) {
 #if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(
-      F("PUSH: Sending values to mqtt angle=%F, gravity=%F, temp=%F." CR),
-      angle, gravity, temp);
+  Log.notice(F("PUSH: Sending values to mqtt angle=%F, gravity=%F, "
+               "corr-gravity=%F, temp=%F." CR),
+             angle, gravity, corrGravity, tempC);
 #endif
 
   DynamicJsonDocument doc(256);
-  createIspindleFormat(doc, angle, gravity, corrGravity, temp, runTime);
+  createIspindleFormat(doc, angle, gravity, corrGravity, tempC, runTime);
 
-  WiFiClient client;
   MQTTClient mqtt(512);  // Maximum message size
+  String url = myConfig.getMqttUrl();
 
-  mqtt.begin(myConfig.getMqttUrl(), client);
+  if (url.endsWith(":8883")) {
+    // Allow secure channel, but without certificate validation
+    myWifi.getWifiClientSecure().setInsecure();
+    Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
+    url.replace(":8883", "");
+    mqtt.begin(url.c_str(), 8883, myWifi.getWifiClientSecure());
+  } else {
+    mqtt.begin(myConfig.getMqttUrl(), myWifi.getWifiClient());
+  }
+
   mqtt.connect(myConfig.getMDNS(), myConfig.getMqttUser(),
                myConfig.getMqttPass());
 
@@ -306,6 +344,7 @@ void PushTarget::sendMqtt(float angle, float gravity, float corrGravity,
   }
 
   mqtt.disconnect();
+  myWifi.closeWifiClient();
 }
 
 // EOF

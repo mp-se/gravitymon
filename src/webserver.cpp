@@ -72,16 +72,23 @@ void WebServer::webHandleConfig() {
   doc[CFG_PARAM_PASS] = "";  // dont show the wifi password
 
   double angle = myGyro.getAngle();
-  double temp = myTempSensor.getTempC(myConfig.isGyroTemp());
-  double gravity = calculateGravity(angle, temp);
+  double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
+  double gravity = calculateGravity(angle, tempC);
 
   doc[CFG_PARAM_ANGLE] = reduceFloatPrecision(angle);
-  if (myConfig.isGravityTempAdj())
-    doc[CFG_PARAM_GRAVITY] = reduceFloatPrecision(
-        gravityTemperatureCorrection(gravity, temp, myConfig.getTempFormat()),
-        4);
-  else
+  doc[CFG_PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
+
+  if (myConfig.isGravityTempAdj()) {
+    gravity =
+        gravityTemperatureCorrectionC(gravity, tempC, myConfig.getTempFormat());
+  }
+
+  if (myConfig.isGravityPlato()) {
+    doc[CFG_PARAM_GRAVITY] = reduceFloatPrecision(convertToPlato(gravity), 1);
+  } else {
     doc[CFG_PARAM_GRAVITY] = reduceFloatPrecision(gravity, 4);
+  }
+
   doc[CFG_PARAM_BATTERY] = reduceFloatPrecision(myBatteryVoltage.getVoltage());
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -215,22 +222,24 @@ void WebServer::webHandleStatus() {
   DynamicJsonDocument doc(256);
 
   double angle = myGyro.getAngle();
-  double temp = myTempSensor.getTempC(myConfig.isGyroTemp());
-  double gravity = calculateGravity(angle, temp);
+  double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
+  double gravity = calculateGravity(angle, tempC);
 
   doc[CFG_PARAM_ID] = myConfig.getID();
   doc[CFG_PARAM_ANGLE] = reduceFloatPrecision(angle);
-  if (myConfig.isGravityTempAdj())
-    doc[CFG_PARAM_GRAVITY] = reduceFloatPrecision(
-        gravityTemperatureCorrection(gravity, temp, myConfig.getTempFormat()),
-        4);
-  else
+  if (myConfig.isGravityTempAdj()) {
+    gravity = gravityTemperatureCorrectionC(gravity, tempC);  //
+  }
+  if (myConfig.isGravityPlato()) {
+    doc[CFG_PARAM_GRAVITY] = reduceFloatPrecision(convertToPlato(gravity), 1);
+  } else {
     doc[CFG_PARAM_GRAVITY] = reduceFloatPrecision(gravity, 4);
-  doc[CFG_PARAM_TEMP_C] = reduceFloatPrecision(temp, 1);
-  doc[CFG_PARAM_TEMP_F] =
-      reduceFloatPrecision(myTempSensor.getTempF(myConfig.isGyroTemp()), 1);
+  }
+  doc[CFG_PARAM_TEMP_C] = reduceFloatPrecision(tempC, 1);
+  doc[CFG_PARAM_TEMP_F] = reduceFloatPrecision(convertCtoF(tempC), 1);
   doc[CFG_PARAM_BATTERY] = reduceFloatPrecision(myBatteryVoltage.getVoltage());
   doc[CFG_PARAM_TEMPFORMAT] = String(myConfig.getTempFormat());
+  doc[CFG_PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   doc[CFG_PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
   doc[CFG_PARAM_RSSI] = WiFi.RSSI();
 
@@ -280,8 +289,7 @@ void WebServer::webHandleStatusSleepmode() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : sleep-mode=%s." CR),
-              server->arg(CFG_PARAM_SLEEP_MODE).c_str());
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
   if (server->arg(CFG_PARAM_SLEEP_MODE).equalsIgnoreCase("true"))
@@ -309,9 +317,7 @@ void WebServer::webHandleConfigDevice() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : mdns=%s, temp-format=%s." CR),
-              server->arg(CFG_PARAM_MDNS).c_str(),
-              server->arg(CFG_PARAM_TEMPFORMAT).c_str());
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
   myConfig.setMDNS(server->arg(CFG_PARAM_MDNS).c_str());
@@ -339,14 +345,7 @@ void WebServer::webHandleConfigPush() {
     return;
   }
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : http=%s,%s, bf=%s influx2=%s, %s, %s, %s." CR),
-              server->arg(CFG_PARAM_PUSH_HTTP).c_str(),
-              server->arg(CFG_PARAM_PUSH_HTTP2).c_str(),
-              server->arg(CFG_PARAM_PUSH_BREWFATHER).c_str(),
-              server->arg(CFG_PARAM_PUSH_INFLUXDB2).c_str(),
-              server->arg(CFG_PARAM_PUSH_INFLUXDB2_ORG).c_str(),
-              server->arg(CFG_PARAM_PUSH_INFLUXDB2_BUCKET).c_str(),
-              server->arg(CFG_PARAM_PUSH_INFLUXDB2_AUTH).c_str());
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
   myConfig.setHttpPushUrl(server->arg(CFG_PARAM_PUSH_HTTP).c_str());
@@ -370,6 +369,25 @@ void WebServer::webHandleConfigPush() {
 }
 
 //
+// Get string with all received arguments. Used for debugging only.
+//
+String WebServer::getRequestArguments() {
+  String debug;
+
+  for (int i = 0; i < server->args(); i++) {
+    if (!server->argName(i).equals(
+            "plain")) {  // this contains all the arguments, we dont need that.
+      if (debug.length()) debug += ", ";
+
+      debug += server->argName(i);
+      debug += "=";
+      debug += server->arg(i);
+    }
+  }
+  return debug;
+}
+
+//
 // Update gravity settings.
 //
 void WebServer::webHandleConfigGravity() {
@@ -386,11 +404,10 @@ void WebServer::webHandleConfigGravity() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : formula=%s, temp-corr=%s." CR),
-              server->arg(CFG_PARAM_GRAVITY_FORMULA).c_str(),
-              server->arg(CFG_PARAM_GRAVITY_TEMP_ADJ).c_str());
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
+  myConfig.setGravityFormat(server->arg(CFG_PARAM_GRAVITY_FORMAT).charAt(0));
   myConfig.setGravityFormula(server->arg(CFG_PARAM_GRAVITY_FORMULA).c_str());
   myConfig.setGravityTempAdj(
       server->arg(CFG_PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
@@ -418,15 +435,15 @@ void WebServer::webHandleConfigHardware() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : vf=%s, tempadj=%s, ota=%s gyrotemp=%s." CR),
-              server->arg(CFG_PARAM_VOLTAGEFACTOR).c_str(),
-              server->arg(CFG_PARAM_TEMP_ADJ).c_str(),
-              server->arg(CFG_PARAM_OTA).c_str(),
-              server->arg(CFG_PARAM_GYRO_TEMP).c_str());
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
   myConfig.setVoltageFactor(server->arg(CFG_PARAM_VOLTAGEFACTOR).toFloat());
-  myConfig.setTempSensorAdj(server->arg(CFG_PARAM_TEMP_ADJ).toFloat());
+  if (myConfig.isTempC()) {
+    myConfig.setTempSensorAdjC(server->arg(CFG_PARAM_TEMP_ADJ));
+  } else {
+    myConfig.setTempSensorAdjF(server->arg(CFG_PARAM_TEMP_ADJ));
+  }
   myConfig.setOtaURL(server->arg(CFG_PARAM_OTA).c_str());
   myConfig.setGyroTemp(
       server->arg(CFG_PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
@@ -447,24 +464,24 @@ void WebServer::webHandleFormulaRead() {
   const RawFormulaData& fd = myConfig.getFormulaData();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %F %F %F %F %F." CR), fd.a[0], fd.a[1], fd.a[2], fd.a[3],
-              fd.a[4]);
-  Log.verbose(F("WEB : %F %F %F %F %F." CR), fd.g[0], fd.g[1], fd.g[2], fd.g[3],
-              fd.g[4]);
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
   doc[CFG_PARAM_ID] = myConfig.getID();
   doc[CFG_PARAM_ANGLE] = reduceFloatPrecision(myGyro.getAngle());
+  doc[CFG_PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
+  doc[CFG_PARAM_GRAVITY_FORMULA] = "";
+  doc[CFG_PARAM_ERROR] = "";
 
   switch (lastFormulaCreateError) {
     case ERR_FORMULA_INTERNAL:
-      doc[CFG_PARAM_GRAVITY_FORMULA] = "Internal error creating formula.";
+      doc[CFG_PARAM_ERROR] = "Internal error creating formula.";
       break;
     case ERR_FORMULA_NOTENOUGHVALUES:
-      doc[CFG_PARAM_GRAVITY_FORMULA] = "Not enough values to create formula.";
+      doc[CFG_PARAM_ERROR] = "Not enough values to create formula.";
       break;
     case ERR_FORMULA_UNABLETOFFIND:
-      doc[CFG_PARAM_GRAVITY_FORMULA] =
+      doc[CFG_PARAM_ERROR] =
           "Unable to find an accurate formula based on input.";
       break;
     default:
@@ -478,11 +495,19 @@ void WebServer::webHandleFormulaRead() {
   doc["a4"] = reduceFloatPrecision(fd.a[3], 2);
   doc["a5"] = reduceFloatPrecision(fd.a[4], 2);
 
-  doc["g1"] = reduceFloatPrecision(fd.g[0], 4);
-  doc["g2"] = reduceFloatPrecision(fd.g[1], 4);
-  doc["g3"] = reduceFloatPrecision(fd.g[2], 4);
-  doc["g4"] = reduceFloatPrecision(fd.g[3], 4);
-  doc["g5"] = reduceFloatPrecision(fd.g[4], 4);
+  if (myConfig.isGravityPlato()) {
+    doc["g1"] = reduceFloatPrecision(convertToPlato(fd.g[0]), 1);
+    doc["g2"] = reduceFloatPrecision(convertToPlato(fd.g[1]), 1);
+    doc["g3"] = reduceFloatPrecision(convertToPlato(fd.g[2]), 1);
+    doc["g4"] = reduceFloatPrecision(convertToPlato(fd.g[3]), 1);
+    doc["g5"] = reduceFloatPrecision(convertToPlato(fd.g[4]), 1);
+  } else {
+    doc["g1"] = reduceFloatPrecision(fd.g[0], 4);
+    doc["g2"] = reduceFloatPrecision(fd.g[1], 4);
+    doc["g3"] = reduceFloatPrecision(fd.g[2], 4);
+    doc["g4"] = reduceFloatPrecision(fd.g[3], 4);
+    doc["g5"] = reduceFloatPrecision(fd.g[4], 4);
+  }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -512,13 +537,7 @@ void WebServer::webHandleFormulaWrite() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : angles=%F,%F,%F,%F,%F." CR), server->arg("a1").toFloat(),
-              server->arg("a2").toFloat(), server->arg("a3").toFloat(),
-              server->arg("a4").toFloat(), server->arg("a5").toFloat());
-  Log.verbose(F("WEB : gravity=%F,%F,%F,%F,%F." CR),
-              server->arg("g1").toFloat(), server->arg("g2").toFloat(),
-              server->arg("g3").toFloat(), server->arg("g4").toFloat(),
-              server->arg("g5").toFloat());
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
   RawFormulaData fd;
@@ -527,11 +546,21 @@ void WebServer::webHandleFormulaWrite() {
   fd.a[2] = server->arg("a3").toDouble();
   fd.a[3] = server->arg("a4").toDouble();
   fd.a[4] = server->arg("a5").toDouble();
-  fd.g[0] = server->arg("g1").toDouble();
-  fd.g[1] = server->arg("g2").toDouble();
-  fd.g[2] = server->arg("g3").toDouble();
-  fd.g[3] = server->arg("g4").toDouble();
-  fd.g[4] = server->arg("g5").toDouble();
+
+  if (myConfig.isGravityPlato()) {
+    fd.g[0] = convertToSG(server->arg("g1").toDouble());
+    fd.g[1] = convertToSG(server->arg("g2").toDouble());
+    fd.g[2] = convertToSG(server->arg("g3").toDouble());
+    fd.g[3] = convertToSG(server->arg("g4").toDouble());
+    fd.g[4] = convertToSG(server->arg("g5").toDouble());
+  } else {
+    fd.g[0] = server->arg("g1").toDouble();
+    fd.g[1] = server->arg("g2").toDouble();
+    fd.g[2] = server->arg("g3").toDouble();
+    fd.g[3] = server->arg("g4").toDouble();
+    fd.g[4] = server->arg("g5").toDouble();
+  }
+
   myConfig.setFormulaData(fd);
 
   int e;
@@ -727,9 +756,8 @@ bool WebServer::setupWebServer() {
 // called from main loop
 //
 void WebServer::loop() {
-  // Dont put serial debug output in this call
-  server->handleClient();
   MDNS.update();
+  server->handleClient();
 }
 
 // EOF

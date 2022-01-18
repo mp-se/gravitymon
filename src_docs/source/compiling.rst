@@ -83,19 +83,9 @@ This is a list of C++ defines that is used to enable/disable functions in the co
    * - ACTIVATE_OTA
      - Enables the OTA functionallity in the code
    * - SKIP_SLEEPMODE
-     - THe device never goes into sleep mode, useful when developing.
-   * - CFG_DISABLE_LOGGING
-     - Done include verbose logging in Config class. Excessive logging may crash device.
-   * - GYRO_DISABLE_LOGGING
-     - Done include verbose logging in Gyro class. Excessive logging may crash device.
-   * - PUSH_DISABLE_LOGGING
-     - Done include verbose logging in PushTarget class. Excessive logging may crash device.
-   * - TSEN_DISABLE_LOGGING
-     - Done include verbose logging in TempSensor class. Excessive logging may crash device.
-   * - WEB_DISABLE_LOGGING
-     - Done include verbose logging in WebServer class. Excessive logging may crash device.
-   * - MAIN_DISABLE_LOGGING
-     - Done include verbose logging in Main class. Excessive logging may crash device.
+     - The device never goes into sleep mode, useful when developing.
+   * - xxx_DISABLE_LOGGING
+     - Done include verbose logging in the corresponding class. Excessive logging may crash device.
    * - USE_LITTLEFS
      - Use the new filesystem in Ardurino
    * - EMBED_HTML

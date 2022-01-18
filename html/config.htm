@@ -270,8 +270,25 @@
         <div class="card-body">
           <form action="/api/config/gravity" method="post">
             <input type="text" name="id" id="id3" hidden>
+            <fieldset class="form-group row">
+              <legend class="col-form-label col-sm-2 float-sm-left pt-0">Gravity Format:</legend>
+              <div class="col-sm-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-g" value="G" checked>
+                  <label class="form-check-label" for="gravity-format-g">
+                    SG
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-p" value="P">
+                  <label class="form-check-label" for="gravity-format-p">
+                    Plato
+                  </label>
+                </div>
+              </div>
+            </fieldset>
             <div class="form-group row">
-              <label for="gravity-formula" class="col-sm-2 col-form-label">Formula</label>
+              <label for="gravity-formula" class="col-sm-2 col-form-label">Formula (SG)</label>
               <div class="col-sm-10">
                 <input type="text" maxlength="200" class="form-control" name="gravity-formula" id="gravity-formula">
               </div>
@@ -416,10 +433,10 @@
       $("#id3").val(cfg["id"]);
       $("#id4").val(cfg["id"]);
       $("#mdns").val(cfg["mdns"]);
-      if( cfg["temp-format"] == "C" ) 
-        $("#temp-format-c").click();
-      else 
-        $("#temp-format-f").click();
+      if( cfg["temp-format"] == "C" ) $("#temp-format-c").click();
+      else $("#temp-format-f").click();
+      if( cfg["gravity-format"] == "G" ) $("#gravity-format-g").click();
+      else $("#gravity-format-p").click();
       $("#ota-url").val(cfg["ota-url"]);
       $("#http-push").val(cfg["http-push"]);
       $("#http-push2").val(cfg["http-push2"]);

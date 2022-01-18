@@ -29,7 +29,7 @@ SOFTWARE.
 #include <helper.hpp>
 #include <tempsensor.hpp>
 
-#define FORMULA_MAX_DEVIATION 1.5
+#define FORMULA_MAX_DEVIATION 1.6
 
 //
 // Use values to derive a formula
@@ -46,7 +46,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
   else if (fd.a[0] > 0 && fd.a[1] > 0 && fd.a[2] > 0)
     noAngles = 3;
 
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
   Log.verbose(
       F("CALC: Trying to create formula using order = %d, found %d angles" CR),
       order, noAngles);
@@ -62,7 +62,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
 
     // Returned value is 0 if no error
     if (ret == 0) {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
       Log.verbose(F("CALC: Finshied processing data points." CR));
 #endif
 
@@ -83,7 +83,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
                  coeffs[1]);
       }
 
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
       Log.verbose(F("CALC: Formula: %s" CR), formulaBuffer);
 #endif
 
@@ -96,7 +96,14 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
         double dev = (g - fd.g[i]) < 0 ? (fd.g[i] - g) : (g - fd.g[i]);
 
         // If the deviation is more than 2 degress we mark it as failed.
-        if (dev * 1000 > FORMULA_MAX_DEVIATION) valid = false;
+        if (dev * 1000 > FORMULA_MAX_DEVIATION) {
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+          char s[10];
+          snprintf(&s[0], sizeof(s), "%.8f", dev);
+          Log.verbose(F("CALC: Deviation is: %s" CR), &s[0]);
+#endif
+          valid = false;
+        }
       }
 
       if (!valid) {
@@ -121,13 +128,13 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
   const char *formula = myConfig.getGravityFormula();
 
   if (tempFormula != 0) {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
     Log.verbose(F("CALC: Using temporary formula." CR));
 #endif
     formula = tempFormula;
   }
 
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
   Log.verbose(F("CALC: Calculating gravity for angle %F, temp %F." CR), angle,
               temp);
   Log.verbose(F("CALC: Formula %s." CR), formula);
@@ -146,8 +153,10 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
     double g = te_eval(expr);
     te_free(expr);
 
-#if LOG_LEVEL == 6
-    Log.verbose(F("CALC: Calculated gravity is %F." CR), g);
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+    char s[10];
+    snprintf(&s[0], sizeof(s), "%.8f", g);
+    Log.verbose(F("CALC: Calculated gravity is %s." CR), &s[0]);
 #endif
     return g;
   }
@@ -158,18 +167,20 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
 
 //
 // Do a standard gravity temperature correction. This is a simple way to adjust
-// for differnt worth temperatures
+// for differnt worth temperatures. This function uses C as temperature.
 //
-double gravityTemperatureCorrection(double gravity, double temp,
-                                    char tempFormat, double calTemp) {
-#if LOG_LEVEL == 6
+// Source: https://homebrewacademy.com/hydrometer-temperature-correction/
+//
+double gravityTemperatureCorrectionC(double gravity, double tempC,
+                                     double calTempC) {
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
   Log.verbose(F("CALC: Adjusting gravity based on temperature, gravity %F, "
                 "temp %F, calTemp %F." CR),
-              gravity, temp, calTemp);
+              gravity, tempC, calTempC);
 #endif
+  // float tempF = convertCtoF(tempC);
+  // float calTempF = convertCtoF(calTempC);
 
-  if (tempFormat == 'C') temp = convertCtoF(temp);
-  double calTempF = convertCtoF(calTemp);  // calTemp is in C
   const char *formula =
       "gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0."
       "00000000232820948*temp^3)/"
@@ -178,7 +189,7 @@ double gravityTemperatureCorrection(double gravity, double temp,
 
   // Store variable names and pointers.
   te_variable vars[] = {
-      {"gravity", &gravity}, {"temp", &temp}, {"cal", &calTempF}};
+      {"gravity", &gravity}, {"temp", &tempC}, {"cal", &calTempC}};
 
   int err;
   // Compile the expression with variables.
@@ -188,8 +199,10 @@ double gravityTemperatureCorrection(double gravity, double temp,
     double g = te_eval(expr);
     te_free(expr);
 
-#if LOG_LEVEL == 6
-    Log.verbose(F("CALC: Corrected gravity is %F." CR), g);
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+    char s[10];
+    snprintf(&s[0], sizeof(s), "%.8f", g);
+    Log.verbose(F("CALC: Corrected gravity is %s." CR), &s[0]);
 #endif
     return g;
   }

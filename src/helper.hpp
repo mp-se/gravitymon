@@ -33,6 +33,12 @@ void deepSleep(int t);
 // Show build options
 void printBuildOptions();
 
+// Data conversion
+double convertToPlato(double sg);
+double convertToSG(double plato);
+float convertCtoF(float c);
+float convertFtoC(float f);
+
 // Float to String
 char* convertFloatToString(float f, char* buf, int dec = 2);
 float reduceFloatPrecision(float f, int dec = 2);

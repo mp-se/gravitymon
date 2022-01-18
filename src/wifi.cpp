@@ -110,6 +110,8 @@ String WifiConnection::getIPAddress() { return WiFi.localIP().toString(); }
 // Additional method to detect double reset.
 //
 bool WifiConnection::isDoubleResetDetected() {
+  if (strlen(userSSID))
+    return false;  // Ignore this if we have hardcoded settings.
   return myDRD->detectDoubleReset();
 }
 
@@ -230,11 +232,17 @@ bool WifiConnection::updateFirmware() {
   Log.verbose(F("WIFI: Updating firmware." CR));
 #endif
 
-  WiFiClient client;
   String serverPath = myConfig.getOtaURL();
   serverPath += "firmware.bin";
+  HTTPUpdateResult ret;
 
-  HTTPUpdateResult ret = ESPhttpUpdate.update(client, serverPath);
+  if (serverPath.startsWith("https://")) {
+    myWifi.getWifiClientSecure().setInsecure();
+    Log.notice(F("WIFI: OTA, SSL enabled without validation." CR));
+    ret = ESPhttpUpdate.update(myWifi.getWifiClientSecure(), serverPath);
+  } else {
+    ret = ESPhttpUpdate.update(myWifi.getWifiClient(), serverPath);
+  }
 
   switch (ret) {
     case HTTP_UPDATE_FAILED:
@@ -257,16 +265,21 @@ bool WifiConnection::updateFirmware() {
 // Download and save file
 //
 void WifiConnection::downloadFile(const char *fname) {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Download file %s." CR), fname);
 #endif
-  WiFiClient client;
   HTTPClient http;
   String serverPath = myConfig.getOtaURL();
   serverPath += fname;
 
-  // Your Domain name with URL path or IP address with path
-  http.begin(client, serverPath);
+  if (serverPath.startsWith("https://")) {
+    myWifi.getWifiClientSecure().setInsecure();
+    Log.notice(F("WIFI: OTA, SSL enabled without validation." CR));
+    http.begin(myWifi.getWifiClientSecure(), serverPath);
+  } else {
+    http.begin(myWifi.getWifiClient(), serverPath);
+  }
+
   int httpResponseCode = http.GET();
 
   if (httpResponseCode == 200) {
@@ -279,22 +292,28 @@ void WifiConnection::downloadFile(const char *fname) {
               httpResponseCode);
   }
   http.end();
+  myWifi.closeWifiClient();
 }
 
 //
 // Check what firmware version is available over OTA
 //
 bool WifiConnection::checkFirmwareVersion() {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Checking if new version exist." CR));
 #endif
-  WiFiClient client;
   HTTPClient http;
   String serverPath = myConfig.getOtaURL();
   serverPath += "version.json";
 
   // Your Domain name with URL path or IP address with path
-  http.begin(client, serverPath);
+  if (serverPath.startsWith("https://")) {
+    myWifi.getWifiClientSecure().setInsecure();
+    Log.notice(F("WIFI: OTA, SSL enabled without validation." CR));
+    http.begin(myWifi.getWifiClientSecure(), serverPath);
+  } else {
+    http.begin(myWifi.getWifiClient(), serverPath);
+  }
 
   // Send HTTP GET request
   int httpResponseCode = http.GET();
@@ -303,7 +322,7 @@ bool WifiConnection::checkFirmwareVersion() {
     Log.notice(F("WIFI: Found version.json, response=%d" CR), httpResponseCode);
 
     String payload = http.getString();
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
     Log.verbose(F("WIFI: Payload %s." CR), payload.c_str());
 #endif
     DynamicJsonDocument ver(300);
@@ -311,7 +330,7 @@ bool WifiConnection::checkFirmwareVersion() {
     if (err) {
       Log.error(F("WIFI: Failed to parse version.json, %s" CR), err);
     } else {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
       Log.verbose(F("WIFI: Project %s version %s." CR),
                   (const char *)ver["project"], (const char *)ver["version"]);
 #endif
@@ -320,7 +339,7 @@ bool WifiConnection::checkFirmwareVersion() {
 
       if (parseFirmwareVersionString(newVer, (const char *)ver["version"])) {
         if (parseFirmwareVersionString(curVer, CFG_APPVER)) {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
           Log.verbose(F("WIFI: OTA checking new=%d.%d.%d cur=%d.%d.%d" CR),
                       newVer[0], newVer[1], newVer[2], curVer[0], curVer[1],
                       curVer[2]);
@@ -355,6 +374,7 @@ bool WifiConnection::checkFirmwareVersion() {
               httpResponseCode);
   }
   http.end();
+  myWifi.closeWifiClient();
 #if LOG_LEVEL == 6
   Log.verbose(F("WIFI: OTA found new version %s." CR),
               newFirmware ? "true" : "false");
@@ -367,7 +387,7 @@ bool WifiConnection::checkFirmwareVersion() {
 //
 bool WifiConnection::parseFirmwareVersionString(int (&num)[3],
                                                 const char *version) {
-#if LOG_LEVEL == 6
+#if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Parsing version number string %s." CR), version);
 #endif
   char temp[80];

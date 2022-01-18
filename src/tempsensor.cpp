@@ -30,11 +30,6 @@ SOFTWARE.
 #include <helper.hpp>
 #include <tempsensor.hpp>
 
-//
-// Conversion between C and F
-//
-float convertCtoF(float t) { return (t * 1.8) + 32.0; }
-
 OneWire myOneWire(D6);
 DallasTemperature mySensors(&myOneWire);
 #define TEMPERATURE_PRECISION 9
@@ -63,20 +58,12 @@ void TempSensor::setup() {
     mySensors.setResolution(TEMPERATURE_PRECISION);
   }
 
-  float t = myConfig.getTempSensorAdj();
-
   // Set the temp sensor adjustment values
-  if (myConfig.isTempC()) {
-    tempSensorAdjF = t * 1.8;  // Convert the adjustment value to C
-    tempSensorAdjC = t;
-  } else {
-    tempSensorAdjF = t;
-    tempSensorAdjC = t * 0.556;  // Convert the adjustent value to F
-  }
+  tempSensorAdjC = myConfig.getTempSensorAdjC();
 
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
-  Log.verbose(F("TSEN: Adjustment values for temp sensor %F C, %F F." CR),
-              tempSensorAdjC, tempSensorAdjF);
+  Log.verbose(F("TSEN: Adjustment values for temp sensor %F C." CR),
+              tempSensorAdjC);
 #endif
 }
 
@@ -101,7 +88,9 @@ float TempSensor::getValue(bool useGyro) {
 
   // If we dont have sensors just return 0
   if (!mySensors.getDS18Count()) {
-    Log.error(F("TSEN: No temperature sensors found. Skipping read." CR));
+#if !defined(TSEN_DISABLE_LOGGING)
+    Log.notice(F("TSEN: No temperature sensors found. Skipping read." CR));
+#endif
     return -273;
   }
 

@@ -48,7 +48,7 @@ Config::Config() {
   setGravityFormat('G');
   setSleepInterval(900);   // 15 minutes
   setVoltageFactor(1.59);  // Conversion factor for battery
-  setTempSensorAdj(0.0);
+  setTempSensorAdjC(0.0);
   setGravityTempAdj(false);
   gyroCalibration = {0, 0, 0, 0, 0, 0};
   formulaData = {{0, 0, 0, 0, 0}, {1, 1, 1, 1, 1}};
@@ -82,7 +82,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[CFG_PARAM_VOLTAGEFACTOR] = getVoltageFactor();
   doc[CFG_PARAM_GRAVITY_FORMULA] = getGravityFormula();
   doc[CFG_PARAM_GRAVITY_FORMAT] = String(getGravityFormat());
-  doc[CFG_PARAM_TEMP_ADJ] = getTempSensorAdj();
+  doc[CFG_PARAM_TEMP_ADJ] = getTempSensorAdjC();
   doc[CFG_PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
   doc[CFG_PARAM_GYRO_TEMP] = isGyroTemp();
 
@@ -239,7 +239,7 @@ bool Config::loadFile() {
     setGravityFormat(s.charAt(0));
   }
   if (!doc[CFG_PARAM_TEMP_ADJ].isNull())
-    setTempSensorAdj(doc[CFG_PARAM_TEMP_ADJ].as<float>());
+    setTempSensorAdjC(doc[CFG_PARAM_TEMP_ADJ].as<float>());
 
   if (!doc[CFG_PARAM_GYRO_CALIBRATION]["ax"].isNull())
     gyroCalibration.ax = doc[CFG_PARAM_GYRO_CALIBRATION]["ax"];
@@ -318,7 +318,7 @@ void Config::debug() {
   Log.verbose(F("CFG : Sleep interval; %d." CR), getSleepInterval());
   Log.verbose(F("CFG : OTA; '%s'." CR), getOtaURL());
   Log.verbose(F("CFG : Temp Format; %c." CR), getTempFormat());
-  Log.verbose(F("CFG : Temp Adj; %F." CR), getTempSensorAdj());
+  Log.verbose(F("CFG : Temp Adj; %F." CR), getTempSensorAdjC());
   Log.verbose(F("CFG : VoltageFactor; %F." CR), getVoltageFactor());
   Log.verbose(F("CFG : Gravity formula; '%s'." CR), getGravityFormula());
   Log.verbose(F("CFG : Gravity format; '%c'." CR), getGravityFormat());

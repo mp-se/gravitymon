@@ -27,8 +27,6 @@ SOFTWARE.
 // Includes
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266WiFi.h>
 
 #include <helper.hpp>
 
@@ -38,15 +36,15 @@ class PushTarget {
   uint32_t ms;  // Used to check that we do not post to often
 
   void sendBrewfather(float angle, float gravity, float corrGravity,
-                      float temp);
+                      float tempC);
   void sendHttp(String serverPath, float angle, float gravity,
-                float corrGravity, float temp, float runTime);
-  void sendInfluxDb2(float angle, float gravity, float corrGravity, float temp,
+                float corrGravity, float tempC, float runTime);
+  void sendInfluxDb2(float angle, float gravity, float corrGravity, float tempC,
                      float runTime);
-  void sendMqtt(float angle, float gravity, float corrGravity, float temp,
+  void sendMqtt(float angle, float gravity, float corrGravity, float tempC,
                 float runTime);
   void createIspindleFormat(DynamicJsonDocument &doc, float angle,
-                            float gravity, float corrGravity, float temp,
+                            float gravity, float corrGravity, float tempC,
                             float runTime);
 
  public:

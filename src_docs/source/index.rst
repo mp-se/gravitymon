@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v0.6**. Last updated 2022-01-15
+  This documentation reflects **v0.7**. Last updated 2022-01-18
   
 
 GravityMon is a replacement firmare for the iSpindle firmware, it uses the same hardware configuration so 
@@ -22,9 +22,6 @@ The hardware design comes from the fantastic iSpindle project so that is not cov
 
 My approach to this software is a little different from that the original ispindle firmware. The github repository can 
 be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
-
-
-
 
 .. note::
   This software is in the early stages even though its more than one year old so if you find issues, please 
@@ -46,6 +43,7 @@ The main differences:
 * Visual graph showing how formula will be interpreted
 * Using the temperature sensor in gyro instead of DS18B20 (faster)
 * Built in performance measurements (used to optimise code)
+* SSL support in standard HTTP and MQTT connections.
 
 For a complete breakdown see the :ref:`functionallity`
 

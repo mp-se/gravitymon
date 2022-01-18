@@ -123,13 +123,19 @@
       console.log( cfg );
       $("#id").text(cfg["id"]);
       $("#angle").text(cfg["angle"]);
-      $("#gravity").text(cfg["gravity"] + " SG");
+      
+      if( cfg["gravity-format"] == "G")
+        $("#gravity").text(cfg["gravity"] + " SG");
+      else
+        $("#gravity").text(cfg["gravity"] + " °P");
+
       $("#battery").text(cfg["battery"] + " V");
+
       if( cfg["temp-format"] == "C") 
         $("#temp").text(cfg["temp-c"] + " C");
       else 
         $("#temp").text(cfg["temp-f"] + " F");
-      //console.log(cfg["sleep-mode"] );  
+
       if( cfg["sleep-mode"] ) 
         $("#sleep-mode").attr("checked", true );
       else 
