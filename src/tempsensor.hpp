@@ -24,9 +24,6 @@ SOFTWARE.
 #ifndef SRC_TEMPSENSOR_HPP_
 #define SRC_TEMPSENSOR_HPP_
 
-// definitions
-
-// classes
 class TempSensor {
  private:
   bool _hasSensor = false;
@@ -41,7 +38,6 @@ class TempSensor {
   }
 };
 
-// Global instance created
 extern TempSensor myTempSensor;
 
 #endif  // SRC_TEMPSENSOR_HPP_

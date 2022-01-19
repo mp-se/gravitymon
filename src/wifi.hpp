@@ -24,8 +24,6 @@ SOFTWARE.
 #ifndef SRC_WIFI_HPP_
 #define SRC_WIFI_HPP_
 
-// Include
-#include <Arduino.h>
 #include <ESP8266WiFi.h>
 
 // tcp cleanup, to avoid memory crash.
@@ -33,7 +31,6 @@ struct tcp_pcb;
 extern struct tcp_pcb* tcp_tw_pcbs;
 extern "C" void tcp_abort(struct tcp_pcb* pcb);
 
-// classes
 class WifiConnection {
  private:
   // WIFI

@@ -24,14 +24,8 @@ SOFTWARE.
 #ifndef SRC_CONFIG_HPP_
 #define SRC_CONFIG_HPP_
 
-// Includes
-#include <Arduino.h>
-#include <ArduinoJson.h>
-#include <stdlib.h>
-
 #include <helper.hpp>
 
-// defintions
 #define CFG_JSON_BUFSIZE 3192
 
 #define CFG_APPNAME "GravityMon "        // Name of firmware
@@ -43,7 +37,6 @@ SOFTWARE.
 #define WIFI_PORTAL_TIMEOUT \
   120  // Number of seconds until the config portal is closed
 
-// These are used in API + Savefile
 #define CFG_PARAM_ID "id"
 #define CFG_PARAM_MDNS "mdns"  // Device name
 #define CFG_PARAM_OTA "ota-url"
@@ -79,7 +72,6 @@ SOFTWARE.
 #define CFG_PARAM_FORMULA_DATA \
   "formula-calculation-data"  // Raw data for the formula calculation
 
-// These are used in API's
 #define CFG_PARAM_APP_NAME "app-name"
 #define CFG_PARAM_APP_VER "app-ver"
 #define CFG_PARAM_ANGLE "angle"
@@ -110,7 +102,6 @@ struct RawFormulaData {
   double g[5];
 };
 
-// Main configuration class
 class Config {
  private:
   bool _saveNeeded;
@@ -348,7 +339,6 @@ class Config {
   void setSaveNeeded() { _saveNeeded = true; }
 };
 
-// Global instance created
 extern Config myConfig;
 
 #endif  // SRC_CONFIG_HPP_

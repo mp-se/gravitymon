@@ -25,7 +25,8 @@ SOFTWARE.
 #include <MQTT.h>
 
 #include <config.hpp>
-#include <gyro.hpp>
+#include <helper.hpp>
+#include <main.hpp>
 #include <pushtarget.hpp>
 #include <wifi.hpp>
 

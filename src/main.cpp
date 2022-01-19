@@ -21,12 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <LittleFS.h>
-
 #include <calc.hpp>
 #include <config.hpp>
 #include <gyro.hpp>
 #include <helper.hpp>
+#include <main.hpp>
 #include <pushtarget.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>

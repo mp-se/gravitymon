@@ -26,12 +26,8 @@ SOFTWARE.
 #include <LittleFS.h>
 #include <incbin.h>
 
-#include <ArduinoJson.hpp>
-#include <calc.hpp>
 #include <config.hpp>
-#include <gyro.hpp>
-#include <helper.hpp>
-#include <tempsensor.hpp>
+#include <main.hpp>
 #include <wifi.hpp>
 
 // Settings for DRD

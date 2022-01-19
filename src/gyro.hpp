@@ -27,13 +27,10 @@ SOFTWARE.
 #define I2CDEV_IMPLEMENTATION I2CDEV_ARDUINO_WIRE
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
 
-// Includes
-#include <Arduino.h>
 #include <MPU6050.h>
 
 #include <config.hpp>
 
-// Classes
 struct RawGyroDataL {  // Used for average multiple readings
   int32_t ax;          // Raw Acceleration
   int32_t ay;
@@ -80,7 +77,6 @@ class GyroSensor {
   void enterSleep();
 };
 
-// Global instance created
 extern GyroSensor myGyro;
 
 #endif  // SRC_GYRO_HPP_

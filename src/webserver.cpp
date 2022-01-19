@@ -21,15 +21,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <ArduinoJson.h>
-#include <LittleFS.h>
-
 #include <calc.hpp>
 #include <config.hpp>
 #include <gyro.hpp>
 #include <helper.hpp>
+#include <main.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
+#include <wifi.hpp>
 
 WebServer myWebServer;  // My wrapper class fr webserver functions
 extern bool sleepModeActive;
@@ -263,7 +262,7 @@ void WebServer::webHandleClearWIFI() {
 
   if (!id.compareTo(myConfig.getID())) {
     _server->send(200, "text/plain",
-                 "Clearing WIFI credentials and doing reset...");
+                  "Clearing WIFI credentials and doing reset...");
     delay(1000);
     WiFi.disconnect();  // Clear credentials
     ESP.reset();
@@ -350,7 +349,8 @@ void WebServer::webHandleConfigPush() {
 
   myConfig.setHttpPushUrl(_server->arg(CFG_PARAM_PUSH_HTTP).c_str());
   myConfig.setHttpPushUrl2(_server->arg(CFG_PARAM_PUSH_HTTP2).c_str());
-  myConfig.setBrewfatherPushUrl(_server->arg(CFG_PARAM_PUSH_BREWFATHER).c_str());
+  myConfig.setBrewfatherPushUrl(
+      _server->arg(CFG_PARAM_PUSH_BREWFATHER).c_str());
   myConfig.setInfluxDb2PushUrl(_server->arg(CFG_PARAM_PUSH_INFLUXDB2).c_str());
   myConfig.setInfluxDb2PushOrg(
       _server->arg(CFG_PARAM_PUSH_INFLUXDB2_ORG).c_str());
@@ -411,7 +411,7 @@ void WebServer::webHandleConfigGravity() {
   myConfig.setGravityFormula(_server->arg(CFG_PARAM_GRAVITY_FORMULA).c_str());
   myConfig.setGravityTempAdj(
       _server->arg(CFG_PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
-                                                                     : false);
+                                                                      : false);
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseThree", true);
   _server->send(302, "text/plain", "Gravity config updated");
@@ -663,7 +663,7 @@ bool WebServer::setupWebServer() {
   _server->on("/device.htm", std::bind(&WebServer::webReturnDeviceHtm, this));
   _server->on("/config.htm", std::bind(&WebServer::webReturnConfigHtm, this));
   _server->on("/calibration.htm",
-             std::bind(&WebServer::webReturnCalibrationHtm, this));
+              std::bind(&WebServer::webReturnCalibrationHtm, this));
   _server->on("/about.htm", std::bind(&WebServer::webReturnAboutHtm, this));
 #else
   // Show files in the filessytem at startup
@@ -703,18 +703,18 @@ bool WebServer::setupWebServer() {
 
   // Dynamic content
   _server->on("/api/config", HTTP_GET,
-             std::bind(&WebServer::webHandleConfig, this));  // Get config.json
+              std::bind(&WebServer::webHandleConfig, this));  // Get config.json
   _server->on("/api/device", HTTP_GET,
-             std::bind(&WebServer::webHandleDevice, this));  // Get device.json
+              std::bind(&WebServer::webHandleDevice, this));  // Get device.json
   _server->on("/api/formula", HTTP_GET,
-             std::bind(&WebServer::webHandleFormulaRead,
-                       this));  // Get formula.json (calibration page)
+              std::bind(&WebServer::webHandleFormulaRead,
+                        this));  // Get formula.json (calibration page)
   _server->on("/api/formula", HTTP_POST,
-             std::bind(&WebServer::webHandleFormulaWrite,
-                       this));  // Get formula.json (calibration page)
+              std::bind(&WebServer::webHandleFormulaWrite,
+                        this));  // Get formula.json (calibration page)
   _server->on("/api/calibrate", HTTP_POST,
-             std::bind(&WebServer::webHandleCalibrate,
-                       this));  // Run calibration routine (param id)
+              std::bind(&WebServer::webHandleCalibrate,
+                        this));  // Run calibration routine (param id)
   _server->on(
       "/api/factory", HTTP_GET,
       std::bind(&WebServer::webHandleFactoryReset, this));  // Reset the device
@@ -725,26 +725,26 @@ bool WebServer::setupWebServer() {
       "/api/clearwifi", HTTP_GET,
       std::bind(&WebServer::webHandleClearWIFI, this));  // Clear wifi settings
   _server->on("/api/upload", HTTP_GET,
-             std::bind(&WebServer::webHandleUpload, this));  // Get upload.json
+              std::bind(&WebServer::webHandleUpload, this));  // Get upload.json
 
   _server->on(
       "/api/upload", HTTP_POST, std::bind(&WebServer::webReturnOK, this),
       std::bind(&WebServer::webHandleUploadFile, this));  // File upload data
   _server->on("/api/status/sleepmode", HTTP_POST,
-             std::bind(&WebServer::webHandleStatusSleepmode,
-                       this));  // Change sleep mode
+              std::bind(&WebServer::webHandleStatusSleepmode,
+                        this));  // Change sleep mode
   _server->on("/api/config/device", HTTP_POST,
-             std::bind(&WebServer::webHandleConfigDevice,
-                       this));  // Change device settings
+              std::bind(&WebServer::webHandleConfigDevice,
+                        this));  // Change device settings
   _server->on("/api/config/push", HTTP_POST,
-             std::bind(&WebServer::webHandleConfigPush,
-                       this));  // Change push settings
+              std::bind(&WebServer::webHandleConfigPush,
+                        this));  // Change push settings
   _server->on("/api/config/gravity", HTTP_POST,
-             std::bind(&WebServer::webHandleConfigGravity,
-                       this));  // Change gravity settings
+              std::bind(&WebServer::webHandleConfigGravity,
+                        this));  // Change gravity settings
   _server->on("/api/config/hardware", HTTP_POST,
-             std::bind(&WebServer::webHandleConfigHardware,
-                       this));  // Change hardware settings
+              std::bind(&WebServer::webHandleConfigHardware,
+                        this));  // Change hardware settings
 
   _server->onNotFound(std::bind(&WebServer::webHandlePageNotFound, this));
   _server->begin();

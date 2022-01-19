@@ -24,14 +24,12 @@ SOFTWARE.
 #ifndef SRC_CALC_HPP_
 #define SRC_CALC_HPP_
 
-// Includes
 #include <config.hpp>
 
 #define ERR_FORMULA_NOTENOUGHVALUES -1
 #define ERR_FORMULA_INTERNAL -2
 #define ERR_FORMULA_UNABLETOFFIND -3
 
-// Functions
 double calculateGravity(double angle, double tempC,
                         const char *tempFormula = 0);
 double gravityTemperatureCorrectionC(double gravity, double tempC,

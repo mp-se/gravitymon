@@ -25,7 +25,7 @@ SOFTWARE.
 #define SRC_HELPER_HPP_
 
 // Includes
-#include <ArduinoLog.h>
+#include <main.hpp>
 
 // Sleep mode
 void deepSleep(int t);

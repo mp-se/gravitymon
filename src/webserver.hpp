@@ -24,13 +24,11 @@ SOFTWARE.
 #ifndef SRC_WEBSERVER_HPP_
 #define SRC_WEBSERVER_HPP_
 
-// Include
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <incbin.h>
 
-// Binary resouces
 #if defined(EMBED_HTML)
 INCBIN_EXTERN(IndexHtm);
 INCBIN_EXTERN(DeviceHtm);
@@ -41,7 +39,6 @@ INCBIN_EXTERN(AboutHtm);
 INCBIN_EXTERN(UploadHtm);
 #endif
 
-// classes
 class WebServer {
  private:
   ESP8266WebServer* _server = 0;
@@ -71,27 +68,29 @@ class WebServer {
   void webReturnOK() { _server->send(200); }
 #if defined(EMBED_HTML)
   void webReturnIndexHtm() {
-    _server->send_P(200, "text/html", (const char*)gIndexHtmData, gIndexHtmSize);
+    _server->send_P(200, "text/html", (const char*)gIndexHtmData,
+                    gIndexHtmSize);
   }
   void webReturnDeviceHtm() {
     _server->send_P(200, "text/html", (const char*)gDeviceHtmData,
-                   gDeviceHtmSize);
+                    gDeviceHtmSize);
   }
   void webReturnConfigHtm() {
     _server->send_P(200, "text/html", (const char*)gConfigHtmData,
-                   gConfigHtmSize);
+                    gConfigHtmSize);
   }
   void webReturnCalibrationHtm() {
     _server->send_P(200, "text/html", (const char*)gCalibrationHtmData,
-                   gCalibrationHtmSize);
+                    gCalibrationHtmSize);
   }
   void webReturnAboutHtm() {
-    _server->send_P(200, "text/html", (const char*)gAboutHtmData, gAboutHtmSize);
+    _server->send_P(200, "text/html", (const char*)gAboutHtmData,
+                    gAboutHtmSize);
   }
 #else
   void webReturnUploadHtm() {
     _server->send_P(200, "text/html", (const char*)gUploadHtmData,
-                   gUploadHtmSize);
+                    gUploadHtmSize);
   }
 #endif
 

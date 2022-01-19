@@ -27,7 +27,7 @@ SOFTWARE.
 
 #include <config.hpp>
 #include <gyro.hpp>
-#include <helper.hpp>
+#include <main.hpp>
 #include <tempsensor.hpp>
 
 OneWire myOneWire(D6);

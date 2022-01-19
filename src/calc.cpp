@@ -25,9 +25,7 @@ SOFTWARE.
 #include <tinyexpr.h>
 
 #include <calc.hpp>
-#include <config.hpp>
-#include <helper.hpp>
-#include <tempsensor.hpp>
+#include <main.hpp>
 
 #define FORMULA_MAX_DEVIATION 1.6
 

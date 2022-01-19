@@ -24,13 +24,6 @@ SOFTWARE.
 #ifndef SRC_PUSHTARGET_HPP_
 #define SRC_PUSHTARGET_HPP_
 
-// Includes
-#include <Arduino.h>
-#include <ArduinoJson.h>
-
-#include <helper.hpp>
-
-// Classes
 class PushTarget {
  private:
   uint32_t _ms;  // Used to check that we do not post to often

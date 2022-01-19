@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #include <gyro.hpp>
-#include <helper.hpp>
+#include <main.hpp>
 
 GyroSensor myGyro;
 MPU6050 accelgyro;
@@ -46,7 +46,7 @@ bool GyroSensor::setup() {
   Wire.begin(D3, D4);
   Wire.setClock(400000);  // 400kHz I2C clock. Comment this line if having
                           // compilation difficulties
-  
+
   if (!accelgyro.testConnection()) {
     Log.error(F("GYRO: Failed to connect to MPU6050 (gyro)." CR));
     _sensorConnected = false;
@@ -260,7 +260,8 @@ bool GyroSensor::read() {
 
   // The first read value is close to the DS18 value according to my tests, if
   // more reads are done then the gyro temp will increase to much
-  if (_initialSensorTemp == INVALID_TEMPERATURE) _initialSensorTemp = _sensorTemp;
+  if (_initialSensorTemp == INVALID_TEMPERATURE)
+    _initialSensorTemp = _sensorTemp;
 
   return _validValue;
 }

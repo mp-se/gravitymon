@@ -24,8 +24,10 @@ SOFTWARE.
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 
+#include <config.hpp>
 #include <gyro.hpp>
 #include <helper.hpp>
+#include <main.hpp>
 #include <tempsensor.hpp>
 #include <wifi.hpp>
 
