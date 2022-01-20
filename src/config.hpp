@@ -25,63 +25,13 @@ SOFTWARE.
 #define SRC_CONFIG_HPP_
 
 #include <helper.hpp>
+#include <resources.hpp>
 
 #define CFG_JSON_BUFSIZE 3192
 
-#define CFG_APPNAME "GravityMon "        // Name of firmware
-#define CFG_FILENAME "/gravitymon.json"  // Name of config file
-
-#define WIFI_DEFAULT_SSID "GravityMon"  // Name of created SSID
-#define WIFI_DEFAULT_PWD "password"     // Password for created SSID
-#define WIFI_MDNS "gravitymon"          // Prefix for MDNS name
-#define WIFI_PORTAL_TIMEOUT \
-  120  // Number of seconds until the config portal is closed
-
-#define CFG_PARAM_ID "id"
-#define CFG_PARAM_MDNS "mdns"  // Device name
-#define CFG_PARAM_OTA "ota-url"
-#define CFG_PARAM_SSID "wifi-ssid"
-#define CFG_PARAM_PASS "wifi-pass"
-
-#define CFG_PARAM_PUSH_BREWFATHER "brewfather-push"
-#define CFG_PARAM_PUSH_HTTP "http-push"
-#define CFG_PARAM_PUSH_HTTP2 "http-push2"
-#define CFG_PARAM_PUSH_INFLUXDB2 "influxdb2-push"
-#define CFG_PARAM_PUSH_INFLUXDB2_ORG "influxdb2-org"
-#define CFG_PARAM_PUSH_INFLUXDB2_BUCKET "influxdb2-bucket"
-#define CFG_PARAM_PUSH_INFLUXDB2_AUTH "influxdb2-auth"
-#define CFG_PARAM_PUSH_MQTT "mqtt-push"
-#define CFG_PARAM_PUSH_MQTT_USER "mqtt-user"
-#define CFG_PARAM_PUSH_MQTT_PASS "mqtt-pass"
-#define CFG_PARAM_PUSH_MQTT_TOPIC "mqtt-topic"
-#define CFG_PARAM_SLEEP_INTERVAL "sleep-interval"  // Sleep interval
-#define CFG_PARAM_TEMPFORMAT "temp-format"         // C or F
-#define CFG_PARAM_VOLTAGEFACTOR \
-  "voltage-factor"  // Factor to calculate the battery voltage
-#define CFG_PARAM_GRAVITY_FORMULA \
-  "gravity-formula"  // Formula for calculating gravity
-#define CFG_PARAM_GRAVITY_FORMAT "gravity-format"  // Gravity format G or P
-#define CFG_PARAM_GRAVITY_TEMP_ADJ \
-  "gravity-temp-adjustment"  // True/False. Adjust gravity for temperature
-#define CFG_PARAM_TEMP_ADJ \
-  "temp-adjustment-value"  // Correction value for temp sensor
-#define CFG_PARAM_GYRO_CALIBRATION "gyro-calibration-data"  // READ ONLY
-#define CFG_PARAM_GYRO_TEMP \
-  "gyro-temp"  // True/False. Use temp sensor in gyro (only in gravity mode)
-
-#define CFG_PARAM_FORMULA_DATA \
-  "formula-calculation-data"  // Raw data for the formula calculation
-
-#define CFG_PARAM_APP_NAME "app-name"
-#define CFG_PARAM_APP_VER "app-ver"
-#define CFG_PARAM_ANGLE "angle"
-#define CFG_PARAM_GRAVITY "gravity"
-#define CFG_PARAM_TEMP_C "temp-c"
-#define CFG_PARAM_TEMP_F "temp-f"
-#define CFG_PARAM_BATTERY "battery"
-#define CFG_PARAM_SLEEP_MODE "sleep-mode"
-#define CFG_PARAM_RSSI "rssi"
-#define CFG_PARAM_ERROR "error"
+#define CFG_APPNAME "GravityMon "         // Name of firmware
+#define CFG_FILENAME "/gravitymon.json"   // Name of config file
+#define CFG_HW_FILENAME "/hardware.json"  // Name of config file for hw
 
 // Used for holding sensordata or sensoroffsets
 struct RawGyroData {
@@ -100,6 +50,37 @@ struct RawGyroData {
 struct RawFormulaData {
   double a[5];
   double g[5];
+};
+
+class HardwareConfig {
+ private:
+  int _wifiPortalTimeout = 120;
+  float _maxFormulaCreationDeviation = 1.6;
+  float _defaultCalibrationTemp = 20.0;
+  int _gyroSensorMovingThreashold = 500;
+  int _gyroReadCount = 50;
+  int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
+
+ public:
+  int getWifiPortalTimeout() { return _wifiPortalTimeout; }
+  void setWifiPortalTimeout(int t) { _wifiPortalTimeout = t; }
+  float getMaxFormulaCreationDeviation() {
+    return _maxFormulaCreationDeviation;
+  }
+  void setMaxFormulaCreationDeviation(float f) {
+    _maxFormulaCreationDeviation = f;
+  }
+  float getDefaultCalibrationTemp() { return _defaultCalibrationTemp; }
+  void SetDefaultCalibrationTemp(float t) { _defaultCalibrationTemp = t; }
+  int getGyroSensorMovingThreashold() { return _gyroSensorMovingThreashold; }
+  void setGyroSensorMovingThreashold(int t) { _gyroSensorMovingThreashold = t; }
+  int getGyroReadCount() { return _gyroReadCount; }
+  void setGyroReadCount(int c) { _gyroReadCount = c; }
+  int getGyroReadDelay() { return _gyroReadDelay; }
+  void setGyroReadDelay(int d) { _gyroReadDelay = d; }
+
+  bool saveFile();
+  bool loadFile();
 };
 
 class Config {
@@ -340,6 +321,7 @@ class Config {
 };
 
 extern Config myConfig;
+extern HardwareConfig myHardwareConfig;
 
 #endif  // SRC_CONFIG_HPP_
 

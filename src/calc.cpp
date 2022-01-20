@@ -27,8 +27,6 @@ SOFTWARE.
 #include <calc.hpp>
 #include <main.hpp>
 
-#define FORMULA_MAX_DEVIATION 1.6
-
 //
 // Use values to derive a formula
 //
@@ -94,7 +92,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
         double dev = (g - fd.g[i]) < 0 ? (fd.g[i] - g) : (g - fd.g[i]);
 
         // If the deviation is more than 2 degress we mark it as failed.
-        if (dev * 1000 > FORMULA_MAX_DEVIATION) {
+        if (dev * 1000 > myHardwareConfig.getMaxFormulaCreationDeviation()) {
 #if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
           char s[20];
           snprintf(&s[0], sizeof(s), "%.8f", dev);

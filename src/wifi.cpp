@@ -61,9 +61,9 @@ ESP_WiFiManager *myWifiManager;
 DoubleResetDetector *myDRD;
 
 WifiConnection myWifi;
+
 const char *userSSID = USER_SSID;
 const char *userPWD = USER_SSID_PWD;
-
 const int PIN_LED = 2;
 
 //
@@ -128,7 +128,8 @@ void WifiConnection::startPortal() {
   myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
   myWifiManager->setMinimumSignalQuality(-1);
   myWifiManager->setConfigPortalChannel(0);
-  myWifiManager->setConfigPortalTimeout(120);
+  myWifiManager->setConfigPortalTimeout(
+      myHardwareConfig.getWifiPortalTimeout());
 
   if (myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD)) {
     Log.notice(F("WIFI: Exited portal, connected to wifi. Rebooting..." CR));

@@ -24,20 +24,18 @@ SOFTWARE.
 #define INCBIN_OUTPUT_SECTION ".irom.text"
 #include <incbin.h>
 
-#if defined(EMBED_HTML)
+#include <resources.hpp>
 
+#if defined(EMBED_HTML)
 // Using minify to reduce memory usage. Reducing RAM memory usage with about 7%
 INCBIN(IndexHtm, "data/index.min.htm");
 INCBIN(DeviceHtm, "data/device.min.htm");
 INCBIN(ConfigHtm, "data/config.min.htm");
 INCBIN(CalibrationHtm, "data/calibration.min.htm");
 INCBIN(AboutHtm, "data/about.min.htm");
-
 #else
-
 // Minium web interface for uploading htm files
 INCBIN(UploadHtm, "data/upload.min.htm");
-
 #endif
 
 // EOF

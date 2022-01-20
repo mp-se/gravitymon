@@ -26,6 +26,10 @@ SOFTWARE.
 
 #include <ESP8266WiFi.h>
 
+#define WIFI_DEFAULT_SSID "GravityMon"  // Name of created SSID
+#define WIFI_DEFAULT_PWD "password"     // Password for created SSID
+#define WIFI_MDNS "gravitymon"          // Prefix for MDNS name
+
 // tcp cleanup, to avoid memory crash.
 struct tcp_pcb;
 extern struct tcp_pcb* tcp_tw_pcbs;

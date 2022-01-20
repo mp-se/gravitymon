@@ -120,6 +120,7 @@ void setup() {
   LOG_PERF_START("main-config-load");
   myConfig.checkFileSystem();
   myConfig.loadFile();
+  myHardwareConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
 
   // Setup watchdog

@@ -28,13 +28,12 @@ GyroSensor myGyro;
 MPU6050 accelgyro;
 
 #define GYRO_USE_INTERRUPT  // Use interrupt to detect when new sample is ready
-#define SENSOR_MOVING_THREASHOLD 500
-#define SENSOR_READ_COUNT 50
-#define SENSOR_READ_DELAY 3150  // us, empirical, to hold sampling to 200 Hz
-
-#define GYRO_SHOW_MINMAX  // Will calculate the min/max values when doing
-                          // calibration
+#define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
+                            // calibration
 // #define GYRO_CALIBRATE_STARTUP          // Will  calibrate sensor at startup
+
+#define PIN_SDA D3
+#define PIN_SCL D4
 
 //
 // Initialize the sensor chip.
@@ -43,7 +42,7 @@ bool GyroSensor::setup() {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
-  Wire.begin(D3, D4);
+  Wire.begin(PIN_SDA, PIN_SCL);
   Wire.setClock(400000);  // 400kHz I2C clock. Comment this line if having
                           // compilation difficulties
 
@@ -215,11 +214,11 @@ bool GyroSensor::isSensorMoving(RawGyroData &raw) {
 #endif
 
   int x = abs(raw.gx), y = abs(raw.gy), z = abs(raw.gz);
+  int threashold = myHardwareConfig.getGyroSensorMovingThreashold();
 
-  if (x > SENSOR_MOVING_THREASHOLD || y > SENSOR_MOVING_THREASHOLD ||
-      z > SENSOR_MOVING_THREASHOLD) {
-    Log.notice(F("GYRO: Movement detected (%d)\t%d\t%d\t%d." CR),
-               SENSOR_MOVING_THREASHOLD, x, y, z);
+  if (x > threashold || y > threashold || z > threashold) {
+    Log.notice(F("GYRO: Movement detected (%d)\t%d\t%d\t%d." CR), threashold, x,
+               y, z);
     return true;
   }
 
@@ -236,9 +235,10 @@ bool GyroSensor::read() {
 
   if (!_sensorConnected) return false;
 
-  readSensor(_lastGyroData, SENSOR_READ_COUNT,
-             SENSOR_READ_DELAY);  // Last param is unused if GYRO_USE_INTERRUPT
-                                  // is defined.
+  readSensor(
+      _lastGyroData, myHardwareConfig.getGyroReadCount(),
+      myHardwareConfig.getGyroReadDelay());  // Last param is unused if
+                                             // GYRO_USE_INTERRUPT is defined.
 
   // If the sensor is unstable we return false to signal we dont have valid
   // value

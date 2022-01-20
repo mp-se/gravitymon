@@ -60,6 +60,7 @@ class WebServer {
   void webHandleUploadFile();
   void webHandleUpload();
   void webHandleDevice();
+  void webHandleDeviceParam();
   void webHandlePageNotFound();
 
   String getRequestArguments();
