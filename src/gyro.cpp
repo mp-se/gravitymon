@@ -32,9 +32,6 @@ MPU6050 accelgyro;
                             // calibration
 // #define GYRO_CALIBRATE_STARTUP          // Will  calibrate sensor at startup
 
-#define PIN_SDA D3
-#define PIN_SCL D4
-
 //
 // Initialize the sensor chip.
 //

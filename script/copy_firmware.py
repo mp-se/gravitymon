@@ -18,6 +18,8 @@ def after_build(source, target, env):
         target = dir + "/bin/firmware.bin"
     if name == "gravity-perf" :
         target = dir + "/bin/firmware-perf.bin"
+    if name == "gravity32-perf" :
+        target = dir + "/bin/firmware32-perf.bin"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 

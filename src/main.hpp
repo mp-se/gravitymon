@@ -27,7 +27,25 @@ SOFTWARE.
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ArduinoLog.h>
-#include <LittleFS.h>
 #include <stdlib.h>
+
+#if defined (ESP8266)
+#include <LittleFS.h>
+#define ESP_RESET ESP.reset
+#define PIN_SDA D3
+#define PIN_SCL D4
+#define PIN_DS D6
+#else // defined (ESP32)
+#define LittleFS SPIFFS
+#define ESPhttpUpdate httpUpdate
+#define ESP_RESET ESP.restart
+#define ESP8266WebServer WebServer
+#include <spiffs.h>
+#define PIN_SDA 17
+#define PIN_SCL 16
+#define PIN_DS 19
+#endif
+
+#define PIN_LED 2
 
 #endif  // SRC_MAIN_HPP_

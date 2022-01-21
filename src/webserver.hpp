@@ -24,9 +24,15 @@ SOFTWARE.
 #ifndef SRC_WEBSERVER_HPP_
 #define SRC_WEBSERVER_HPP_
 
+#if defined (ESP8266)
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#else // defined (ESP32)
+#include <WebServer.h>
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#endif
 #include <incbin.h>
 
 #if defined(EMBED_HTML)
@@ -39,7 +45,7 @@ INCBIN_EXTERN(AboutHtm);
 INCBIN_EXTERN(UploadHtm);
 #endif
 
-class WebServer {
+class WebServerHandler {
  private:
   ESP8266WebServer* _server = 0;
   File _uploadFile;
@@ -111,7 +117,7 @@ class WebServer {
 };
 
 // Global instance created
-extern WebServer myWebServer;
+extern WebServerHandler myWebServerHandler;
 
 #endif  // SRC_WEBSERVER_HPP_
 

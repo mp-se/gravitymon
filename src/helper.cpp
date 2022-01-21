@@ -21,8 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#if defined (ESP8266)
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
+#else // defined (ESP32)
+#include <WiFi.h>
+#include <HTTPClient.h>
+#endif
 
 #include <config.hpp>
 #include <gyro.hpp>
@@ -59,9 +64,14 @@ float convertFtoC(float f) { return (f - 32.0) / 1.8; }
 //
 void printHeap() {
 #if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
+#if defined (ESP8266)
   Log.verbose(F("HELP: Heap %d kb, HeapFrag %d %%, FreeSketch %d kb." CR),
               ESP.getFreeHeap() / 1024, ESP.getHeapFragmentation(),
               ESP.getFreeSketchSpace() / 1024);
+#else // defined (ESP32)
+  Log.verbose(F("HELP: Heap %d kb, FreeSketch %d kb." CR),
+              ESP.getFreeHeap() / 1024, ESP.getFreeSketchSpace() / 1024);
+#endif
 #endif
 }
 
@@ -127,7 +137,15 @@ void BatteryVoltage::read() {
   // the voltage (from max 5V)
   float factor = myConfig.getVoltageFactor();  // Default value is 1.63
   int v = analogRead(A0);
+
+  // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
+  // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
+
+#if defined (ESP8266)
   _batteryLevel = ((3.3 / 1023) * v) * factor;
+#else // defined (ESP32)
+  _batteryLevel = ((3.3 / 4095) * v) * factor;
+#endif 
 #if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),

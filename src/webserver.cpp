@@ -31,14 +31,14 @@ SOFTWARE.
 #include <webserver.hpp>
 #include <wifi.hpp>
 
-WebServer myWebServer;  // My wrapper class fr webserver functions
+WebServerHandler myWebServerHandler;  // My wrapper class fr webserver functions
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleDevice() {
+void WebServerHandler::webHandleDevice() {
   LOG_PERF_START("webserver-api-device");
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   Log.verbose(F("WEB : webServer callback for /api/device." CR));
@@ -62,7 +62,7 @@ void WebServer::webHandleDevice() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleConfig() {
+void WebServerHandler::webHandleConfig() {
   LOG_PERF_START("webserver-api-config");
   Log.notice(F("WEB : webServer callback for /api/config." CR));
 
@@ -105,16 +105,16 @@ void WebServer::webHandleConfig() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleUpload() {
+void WebServerHandler::webHandleUpload() {
   LOG_PERF_START("webserver-api-upload");
   Log.notice(F("WEB : webServer callback for /api/upload." CR));
   DynamicJsonDocument doc(100);
 
-  doc["index"] = myWebServer.checkHtmlFile(WebServer::HTML_INDEX);
-  doc["device"] = myWebServer.checkHtmlFile(WebServer::HTML_DEVICE);
-  doc["config"] = myWebServer.checkHtmlFile(WebServer::HTML_CONFIG);
-  doc["calibration"] = myWebServer.checkHtmlFile(WebServer::HTML_CALIBRATION);
-  doc["about"] = myWebServer.checkHtmlFile(WebServer::HTML_ABOUT);
+  doc["index"] = checkHtmlFile(WebServerHandler::HTML_INDEX);
+  doc["device"] = checkHtmlFile(WebServerHandler::HTML_DEVICE);
+  doc["config"] = checkHtmlFile(WebServerHandler::HTML_CONFIG);
+  doc["calibration"] = checkHtmlFile(WebServerHandler::HTML_CALIBRATION);
+  doc["about"] = checkHtmlFile(WebServerHandler::HTML_ABOUT);
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -130,7 +130,7 @@ void WebServer::webHandleUpload() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleUploadFile() {
+void WebServerHandler::webHandleUploadFile() {
   LOG_PERF_START("webserver-api-upload-file");
   Log.notice(F("WEB : webServer callback for /api/upload/file." CR));
   HTTPUpload& upload = _server->upload();
@@ -177,7 +177,7 @@ void WebServer::webHandleUploadFile() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleCalibrate() {
+void WebServerHandler::webHandleCalibrate() {
   LOG_PERF_START("webserver-api-calibrate");
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/calibrate." CR));
@@ -197,7 +197,7 @@ void WebServer::webHandleCalibrate() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleFactoryReset() {
+void WebServerHandler::webHandleFactoryReset() {
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
 
@@ -206,7 +206,7 @@ void WebServer::webHandleFactoryReset() {
     LittleFS.remove(CFG_FILENAME);
     LittleFS.end();
     delay(500);
-    ESP.reset();
+    ESP_RESET();
   } else {
     _server->send(400, "text/plain", "Unknown ID.");
   }
@@ -215,7 +215,7 @@ void WebServer::webHandleFactoryReset() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleStatus() {
+void WebServerHandler::webHandleStatus() {
   LOG_PERF_START("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status." CR));
 
@@ -257,7 +257,7 @@ void WebServer::webHandleStatus() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleClearWIFI() {
+void WebServerHandler::webHandleClearWIFI() {
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/clearwifi." CR));
 
@@ -266,7 +266,7 @@ void WebServer::webHandleClearWIFI() {
                   "Clearing WIFI credentials and doing reset...");
     delay(1000);
     WiFi.disconnect();  // Clear credentials
-    ESP.reset();
+    ESP_RESET();
   } else {
     _server->send(400, "text/plain", "Unknown ID.");
   }
@@ -275,7 +275,7 @@ void WebServer::webHandleClearWIFI() {
 //
 // Used to force the device to never sleep.
 //
-void WebServer::webHandleStatusSleepmode() {
+void WebServerHandler::webHandleStatusSleepmode() {
   LOG_PERF_START("webserver-api-sleepmode");
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/status/sleepmode." CR));
@@ -303,7 +303,7 @@ void WebServer::webHandleStatusSleepmode() {
 //
 // Update device settings.
 //
-void WebServer::webHandleConfigDevice() {
+void WebServerHandler::webHandleConfigDevice() {
   LOG_PERF_START("webserver-api-config-device");
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/config/device." CR));
@@ -332,7 +332,7 @@ void WebServer::webHandleConfigDevice() {
 //
 // Update push settings.
 //
-void WebServer::webHandleConfigPush() {
+void WebServerHandler::webHandleConfigPush() {
   LOG_PERF_START("webserver-api-config-push");
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/config/push." CR));
@@ -370,7 +370,7 @@ void WebServer::webHandleConfigPush() {
 //
 // Get string with all received arguments. Used for debugging only.
 //
-String WebServer::getRequestArguments() {
+String WebServerHandler::getRequestArguments() {
   String debug;
 
   for (int i = 0; i < _server->args(); i++) {
@@ -389,7 +389,7 @@ String WebServer::getRequestArguments() {
 //
 // Update gravity settings.
 //
-void WebServer::webHandleConfigGravity() {
+void WebServerHandler::webHandleConfigGravity() {
   LOG_PERF_START("webserver-api-config-gravity");
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/config/gravity." CR));
@@ -420,7 +420,7 @@ void WebServer::webHandleConfigGravity() {
 //
 // Update hardware settings.
 //
-void WebServer::webHandleConfigHardware() {
+void WebServerHandler::webHandleConfigHardware() {
   LOG_PERF_START("webserver-api-config-hardware");
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/config/hardware." CR));
@@ -455,7 +455,7 @@ void WebServer::webHandleConfigHardware() {
 //
 // Update device parameters.
 //
-void WebServer::webHandleDeviceParam() {
+void WebServerHandler::webHandleDeviceParam() {
   LOG_PERF_START("webserver-api-device-param");
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/device/param." CR));
@@ -520,7 +520,7 @@ void WebServer::webHandleDeviceParam() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServer::webHandleFormulaRead() {
+void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_START("webserver-api-formula-read");
   Log.notice(F("WEB : webServer callback for /api/formula/get." CR));
 
@@ -586,7 +586,7 @@ void WebServer::webHandleFormulaRead() {
 //
 // Update hardware settings.
 //
-void WebServer::webHandleFormulaWrite() {
+void WebServerHandler::webHandleFormulaWrite() {
   LOG_PERF_START("webserver-api-formula-write");
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/formula/post." CR));
@@ -665,7 +665,7 @@ void WebServer::webHandleFormulaWrite() {
 //
 // Helper function to check if files exist on file system.
 //
-const char* WebServer::getHtmlFileName(HtmlFile item) {
+const char* WebServerHandler::getHtmlFileName(HtmlFile item) {
   Log.notice(F("WEB : Looking up filename for %d." CR), item);
 
   switch (item) {
@@ -687,7 +687,7 @@ const char* WebServer::getHtmlFileName(HtmlFile item) {
 //
 // Helper function to check if files exist on file system.
 //
-bool WebServer::checkHtmlFile(HtmlFile item) {
+bool WebServerHandler::checkHtmlFile(HtmlFile item) {
   const char* fn = getHtmlFileName(item);
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -703,7 +703,7 @@ bool WebServer::checkHtmlFile(HtmlFile item) {
 //
 // Handler for page not found
 //
-void WebServer::webHandlePageNotFound() {
+void WebServerHandler::webHandlePageNotFound() {
   Log.error(F("WEB : URL not found %s received." CR), _server->uri().c_str());
   _server->send(404, "text/plain", F("URL not found"));
 }
@@ -711,7 +711,7 @@ void WebServer::webHandlePageNotFound() {
 //
 // Setup the Web Server callbacks and start it
 //
-bool WebServer::setupWebServer() {
+bool WebServerHandler::setupWebServer() {
   Log.notice(F("WEB : Configuring web server." CR));
 
   _server = new ESP8266WebServer();
@@ -721,13 +721,13 @@ bool WebServer::setupWebServer() {
 
   // Static content
 #if defined(EMBED_HTML)
-  _server->on("/", std::bind(&WebServer::webReturnIndexHtm, this));
-  _server->on("/index.htm", std::bind(&WebServer::webReturnIndexHtm, this));
-  _server->on("/device.htm", std::bind(&WebServer::webReturnDeviceHtm, this));
-  _server->on("/config.htm", std::bind(&WebServer::webReturnConfigHtm, this));
+  _server->on("/", std::bind(&WebServerHandler::webReturnIndexHtm, this));
+  _server->on("/index.htm", std::bind(&WebServerHandler::webReturnIndexHtm, this));
+  _server->on("/device.htm", std::bind(&WebServerHandler::webReturnDeviceHtm, this));
+  _server->on("/config.htm", std::bind(&WebServerHandler::webReturnConfigHtm, this));
   _server->on("/calibration.htm",
-              std::bind(&WebServer::webReturnCalibrationHtm, this));
-  _server->on("/about.htm", std::bind(&WebServer::webReturnAboutHtm, this));
+              std::bind(&WebServerHandler::webReturnCalibrationHtm, this));
+  _server->on("/about.htm", std::bind(&WebServerHandler::webReturnAboutHtm, this));
 #else
   // Show files in the filessytem at startup
 
@@ -757,62 +757,62 @@ bool WebServer::setupWebServer() {
 
     // Also add the static upload view in case we we have issues that needs to
     // be fixed.
-    _server->on("/upload.htm", std::bind(&WebServer::webReturnUploadHtm, this));
+    _server->on("/upload.htm", std::bind(&WebServerHandler::webReturnUploadHtm, this));
   } else {
     Log.error(F("WEB : Missing html files, starting with upload UI." CR));
-    _server->on("/", std::bind(&WebServer::webReturnUploadHtm, this));
+    _server->on("/", std::bind(&WebServerHandler::webReturnUploadHtm, this));
   }
 #endif
 
   // Dynamic content
   _server->on("/api/config", HTTP_GET,
-              std::bind(&WebServer::webHandleConfig, this));  // Get config.json
+              std::bind(&WebServerHandler::webHandleConfig, this));  // Get config.json
   _server->on("/api/device", HTTP_GET,
-              std::bind(&WebServer::webHandleDevice, this));  // Get device.json
+              std::bind(&WebServerHandler::webHandleDevice, this));  // Get device.json
   _server->on("/api/formula", HTTP_GET,
-              std::bind(&WebServer::webHandleFormulaRead,
+              std::bind(&WebServerHandler::webHandleFormulaRead,
                         this));  // Get formula.json (calibration page)
   _server->on("/api/formula", HTTP_POST,
-              std::bind(&WebServer::webHandleFormulaWrite,
+              std::bind(&WebServerHandler::webHandleFormulaWrite,
                         this));  // Get formula.json (calibration page)
   _server->on("/api/calibrate", HTTP_POST,
-              std::bind(&WebServer::webHandleCalibrate,
+              std::bind(&WebServerHandler::webHandleCalibrate,
                         this));  // Run calibration routine (param id)
   _server->on(
       "/api/factory", HTTP_GET,
-      std::bind(&WebServer::webHandleFactoryReset, this));  // Reset the device
+      std::bind(&WebServerHandler::webHandleFactoryReset, this));  // Reset the device
   _server->on(
       "/api/status", HTTP_GET,
-      std::bind(&WebServer::webHandleStatus, this));  // Get the status.json
+      std::bind(&WebServerHandler::webHandleStatus, this));  // Get the status.json
   _server->on(
       "/api/clearwifi", HTTP_GET,
-      std::bind(&WebServer::webHandleClearWIFI, this));  // Clear wifi settings
+      std::bind(&WebServerHandler::webHandleClearWIFI, this));  // Clear wifi settings
   _server->on("/api/upload", HTTP_GET,
-              std::bind(&WebServer::webHandleUpload, this));  // Get upload.json
+              std::bind(&WebServerHandler::webHandleUpload, this));  // Get upload.json
 
   _server->on(
-      "/api/upload", HTTP_POST, std::bind(&WebServer::webReturnOK, this),
-      std::bind(&WebServer::webHandleUploadFile, this));  // File upload data
+      "/api/upload", HTTP_POST, std::bind(&WebServerHandler::webReturnOK, this),
+      std::bind(&WebServerHandler::webHandleUploadFile, this));  // File upload data
   _server->on("/api/status/sleepmode", HTTP_POST,
-              std::bind(&WebServer::webHandleStatusSleepmode,
+              std::bind(&WebServerHandler::webHandleStatusSleepmode,
                         this));  // Change sleep mode
   _server->on("/api/config/device", HTTP_POST,
-              std::bind(&WebServer::webHandleConfigDevice,
+              std::bind(&WebServerHandler::webHandleConfigDevice,
                         this));  // Change device settings
   _server->on("/api/config/push", HTTP_POST,
-              std::bind(&WebServer::webHandleConfigPush,
+              std::bind(&WebServerHandler::webHandleConfigPush,
                         this));  // Change push settings
   _server->on("/api/config/gravity", HTTP_POST,
-              std::bind(&WebServer::webHandleConfigGravity,
+              std::bind(&WebServerHandler::webHandleConfigGravity,
                         this));  // Change gravity settings
   _server->on("/api/config/hardware", HTTP_POST,
-              std::bind(&WebServer::webHandleConfigHardware,
+              std::bind(&WebServerHandler::webHandleConfigHardware,
                         this));  // Change hardware settings
   _server->on("/api/device/param", HTTP_GET,
-              std::bind(&WebServer::webHandleDeviceParam,
+              std::bind(&WebServerHandler::webHandleDeviceParam,
                         this));  // Change device params
 
-  _server->onNotFound(std::bind(&WebServer::webHandlePageNotFound, this));
+  _server->onNotFound(std::bind(&WebServerHandler::webHandlePageNotFound, this));
   _server->begin();
   Log.notice(F("WEB : Web server started." CR));
   return true;
@@ -821,8 +821,10 @@ bool WebServer::setupWebServer() {
 //
 // called from main loop
 //
-void WebServer::loop() {
+void WebServerHandler::loop() {
+#if defined (ESP8266)
   MDNS.update();
+#endif
   _server->handleClient();
 }
 

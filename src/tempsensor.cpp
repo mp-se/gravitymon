@@ -30,7 +30,7 @@ SOFTWARE.
 #include <main.hpp>
 #include <tempsensor.hpp>
 
-OneWire myOneWire(D6);
+OneWire myOneWire(PIN_DS);
 DallasTemperature mySensors(&myOneWire);
 #define TEMPERATURE_PRECISION 9
 

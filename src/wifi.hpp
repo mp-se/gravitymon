@@ -24,7 +24,12 @@ SOFTWARE.
 #ifndef SRC_WIFI_HPP_
 #define SRC_WIFI_HPP_
 
+#if defined (ESP8266)
 #include <ESP8266WiFi.h>
+#else // defined (ESP32)
+#include <WiFiClient.h>
+#include <WiFiClientSecure.h>
+#endif
 
 #define WIFI_DEFAULT_SSID "GravityMon"  // Name of created SSID
 #define WIFI_DEFAULT_PWD "password"     // Password for created SSID
@@ -50,7 +55,7 @@ class WifiConnection {
 
  public:
   // WIFI
-  WifiConnection();
+  void init();
 
   bool connect();
   bool disconnect();
@@ -65,8 +70,8 @@ class WifiConnection {
   WiFiClient& getWifiClient() { return _client; }
   WiFiClientSecure& getWifiClientSecure() { return _secureClient; }
   void closeWifiClient() {
-    _client.stopAll();
-    _secureClient.stopAll();
+    _client.stop();
+    _secureClient.stop();
 
     // Cleanup memory allocated by open tcp connetions.
     while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);

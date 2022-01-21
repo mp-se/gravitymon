@@ -34,7 +34,15 @@ HardwareConfig myHardwareConfig;
 Config::Config() {
   // Assiging default values
   char buf[30];
+#if defined (ESP8266)
   snprintf(&buf[0], sizeof(buf), "%6x", (unsigned int)ESP.getChipId());
+#else // defined (ESP32)
+  uint32_t chipId = 0;
+  for (int i = 0; i < 17; i = i+8) {
+    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+  }
+  snprintf(&buf[0], sizeof(buf), "%6x", chipId);
+#endif
   _id = String(&buf[0]);
   snprintf(&buf[0], sizeof(buf), "" WIFI_MDNS "%s", getID());
   _mDNS = String(&buf[0]);
@@ -47,7 +55,11 @@ Config::Config() {
   setTempFormat('C');
   setGravityFormat('G');
   setSleepInterval(900);   // 15 minutes
-  setVoltageFactor(1.59);  // Conversion factor for battery
+#if defined (ESP8266)
+  setVoltageFactor(1.59);  // Conversion factor for battery on ESP8266
+#else // defined (ESP32)
+  setVoltageFactor(1.43);  // Conversion factor for battery on ESP32
+#endif
   setTempSensorAdjC(0.0);
   setGravityTempAdj(false);
   _gyroCalibration = {0, 0, 0, 0, 0, 0};

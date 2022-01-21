@@ -21,18 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#if defined (ESP8266)
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
-#include <LittleFS.h>
+#else // defined (ESP32)
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <HTTPUpdate.h>
+#endif
 #include <incbin.h>
-
 #include <config.hpp>
 #include <main.hpp>
 #include <wifi.hpp>
 
 // Settings for DRD
+#if defined (ESP8266)
 #define ESP_DRD_USE_LITTLEFS true
 #define ESP_DRD_USE_SPIFFS false
+#else // defined (ESP32)
+#define ESP_DRD_USE_LITTLEFS false
+#define ESP_DRD_USE_SPIFFS true
+#endif
 #define ESP_DRD_USE_EEPROM false
 #include <ESP_DoubleResetDetector.h>
 #define DRD_TIMEOUT 3
@@ -64,12 +73,11 @@ WifiConnection myWifi;
 
 const char *userSSID = USER_SSID;
 const char *userPWD = USER_SSID_PWD;
-const int PIN_LED = 2;
 
 //
-// Constructor
+// Initialize
 //
-WifiConnection::WifiConnection() {
+void WifiConnection::init() {
   myDRD = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
 }
 
@@ -143,7 +151,7 @@ void WifiConnection::startPortal() {
 
   stopDoubleReset();
   delay(500);
-  ESP.reset();
+  ESP_RESET();
 }
 
 //
@@ -252,7 +260,7 @@ bool WifiConnection::updateFirmware() {
     case HTTP_UPDATE_OK:
       Log.notice("WIFI: OTA Update sucesfull, rebooting.");
       delay(100);
-      ESP.reset();
+      ESP_RESET();
       break;
   }
   return false;

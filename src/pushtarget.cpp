@@ -21,7 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#if defined (ESP8266)
 #include <ESP8266HTTPClient.h>
+#else // defined (ESP32)
+#include <HTTPClient.h>
+#endif
 #include <MQTT.h>
 
 #include <config.hpp>
