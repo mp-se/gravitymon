@@ -16,6 +16,7 @@ Development version (dev branch)
   enabled this function using F you will need to go into 
   the configuration and update the factor again.
 * Added error handling for calibration page.
+* Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266)
 
 TODO: 
 Update docs, MQTT ssl is enabled using :8883 at end, http targets enables using prefix https://

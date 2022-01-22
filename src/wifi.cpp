@@ -198,7 +198,6 @@ bool WifiConnection::waitForConnection(int maxTime) {
       return false;  // Return to main that we have failed to connect.
     }
   }
-
   Serial.print(CR);
   Log.notice(F("WIFI: Connected to wifi ip=%s." CR), getIPAddress().c_str());
   Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS());
