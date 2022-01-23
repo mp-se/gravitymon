@@ -39,6 +39,10 @@ double convertToSG(double plato);
 float convertCtoF(float c);
 float convertFtoC(float f);
 
+// url encode/decode
+String urldecode(String str);
+String urlencode(String str);
+
 // Float to String
 char* convertFloatToString(float f, char* buf, int dec = 2);
 float reduceFloatPrecision(float f, int dec = 2);

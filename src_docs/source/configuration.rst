@@ -229,6 +229,96 @@ Hardware Settings
    http://192.168.1.1/firmware/gravmon/
   
 
+.. _format-editor:
+
+Format editor
+#############
+
+To reduce the need for adding custom endpoints for various services there is an built in format editor that allows the user to customize the format being sent to the push target. 
+
+.. warning::
+
+   Since the format templates can be big this function can be quite slow on a small device such as the esp8266. 
+
+.. image:: images/format.png
+  :width: 800
+  :alt: Format editor
+
+You enter the format data in the text field and the test button will show an example on what the output would look like. If the data cannot be formatted in json it will just be displayed as a long string.
+The save button will save the current formla and reload the data from the device. 
+
+.. tip::
+
+   If you save a blank string the default template will be loaded.
+
+These are the format keys available for use in the format.
+
+.. list-table:: Directory structure
+   :widths: 30 50 20
+   :header-rows: 1
+
+   * - key 
+     - description
+     - example
+   * - ${mdns}
+     - Name of the device
+     - gravmon2
+   * - ${id}
+     - Unique id of the device
+     - e422a3
+   * - ${sleep-interval}
+     - Seconds between data is pushed
+     - 900
+   * - ${temp}
+     - Temperature in format configured on device, one decimal
+     - 21.2
+   * - ${temp-c}
+     - Temperature in C, one decimal
+     - 21.2
+   * - ${temp-f}
+     - Temperature in F, one decimal
+     - 58.0
+   * - ${temp-unit}
+     - Temperature format `C` or `F`
+     - C
+   * - ${battery}
+     - Battery voltage, two decimals
+     - 3.89
+   * - ${rssi}
+     - Wifi signal strength
+     - -75
+   * - ${run-time}
+     - How long the last measurement took, two decimals
+     - 3.87
+   * - ${angle}
+     - Angle of the gyro, two decimals
+     - 28.67
+   * - ${tilt}
+     - Same as angle.
+     - 28.67
+   * - ${gravity}
+     - Calculated gravity, 4 decimals for SG and 1 for Plato.
+     - 1.0456
+   * - ${gravity-sg}
+     - Calculated gravity in SG, 4 decimals
+     - 1.0456
+   * - ${gravity-plato}
+     - Calculated gravity in Plato, 1 decimal
+     - 8.5
+   * - ${corr-gravity}
+     - Temperature corrected gravity, 4 decimals for SG and 1 for Plato.
+     - 1.0456
+   * - ${corr-gravity-sg}
+     - Temperature corrected gravity in SG, 4 decimals
+     - 1.0456
+   * - ${corr-gravity-plato}
+     - Temperature corrected gravity in Plato, 1 decimal
+     - 8.5
+   * - ${gravity-unit}
+     - Gravity format, `G` or `P`
+     - G
+
+
 .. _create-formula:
 
 Create formula
@@ -590,7 +680,27 @@ This is the format used for standard http posts.
       "gravity-unit": "G",
       "run-time": 6
    }
-   
+
+This is the format template used to create the json above. 
+
+.. code-block::
+
+  {
+   "name" : "gravmon", "
+   "ID": "${id}", "
+   "token" : "gravmon", "
+   "interval": ${sleep-interval}, "
+   "temperature": ${temp}, "
+   "temp-units": "${temp-unit}", "
+   "gravity": ${gravity}, "
+   "angle": ${angle}, "
+   "battery": ${battery}, "
+   "rssi": ${rssi}, "
+   "corr-gravity": ${corr-gravity}, "
+   "gravity-unit": "${gravity-unit}", "
+   "run-time": ${run-time} "
+  }
+
 
 .. _data-formats-brewfather:
 
@@ -621,7 +731,13 @@ This is the format for InfluxDB v2
 .. code-block::
    
    measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG,gravity=1.0004,corr-gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
-   
+
+
+This is the format template used to create the json above. 
+
+.. code-block::
+
+  measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
 
 version.json
 ============

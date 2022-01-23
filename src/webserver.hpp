@@ -40,6 +40,7 @@ INCBIN_EXTERN(IndexHtm);
 INCBIN_EXTERN(DeviceHtm);
 INCBIN_EXTERN(ConfigHtm);
 INCBIN_EXTERN(CalibrationHtm);
+INCBIN_EXTERN(FormatHtm);
 INCBIN_EXTERN(AboutHtm);
 #else
 INCBIN_EXTERN(UploadHtm);
@@ -58,6 +59,8 @@ class WebServerHandler {
   void webHandleConfigGravity();
   void webHandleConfigPush();
   void webHandleConfigDevice();
+  void webHandleConfigFormatRead();
+  void webHandleConfigFormatWrite();
   void webHandleStatusSleepmode();
   void webHandleClearWIFI();
   void webHandleStatus();
@@ -68,6 +71,9 @@ class WebServerHandler {
   void webHandleDevice();
   void webHandleDeviceParam();
   void webHandlePageNotFound();
+
+  String readFile(String fname);
+  bool writeFile(String fname, String data);
 
   String getRequestArguments();
 
@@ -90,6 +96,10 @@ class WebServerHandler {
     _server->send_P(200, "text/html", (const char*)gCalibrationHtmData,
                     gCalibrationHtmSize);
   }
+  void webReturnFormatHtm() {
+    _server->send_P(200, "text/html", (const char*)gFormatHtmData,
+                    gFormatHtmSize);
+  }
   void webReturnAboutHtm() {
     _server->send_P(200, "text/html", (const char*)gAboutHtmData,
                     gAboutHtmSize);
@@ -107,7 +117,8 @@ class WebServerHandler {
     HTML_DEVICE = 1,
     HTML_CONFIG = 2,
     HTML_ABOUT = 3,
-    HTML_CALIBRATION = 4
+    HTML_CALIBRATION = 4,
+    HTML_FORMAT = 5
   };
 
   bool setupWebServer();

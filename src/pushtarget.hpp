@@ -24,25 +24,20 @@ SOFTWARE.
 #ifndef SRC_PUSHTARGET_HPP_
 #define SRC_PUSHTARGET_HPP_
 
+#include <templating.hpp>
+
 class PushTarget {
  private:
   uint32_t _ms;  // Used to check that we do not post to often
 
-  void sendBrewfather(float angle, float gravity, float corrGravity,
-                      float tempC);
-  void sendHttp(String serverPath, float angle, float gravity,
-                float corrGravity, float tempC, float runTime);
-  void sendInfluxDb2(float angle, float gravity, float corrGravity, float tempC,
-                     float runTime);
-  void sendMqtt(float angle, float gravity, float corrGravity, float tempC,
-                float runTime);
-  void createIspindleFormat(DynamicJsonDocument &doc, float angle,
-                            float gravity, float corrGravity, float tempC,
-                            float runTime);
+  void sendBrewfather(TemplatingEngine& engine);
+  void sendHttp(TemplatingEngine& engine, int index);
+  void sendInfluxDb2(TemplatingEngine& engine);
+  void sendMqtt(TemplatingEngine& engine);
 
  public:
   PushTarget() { _ms = millis(); }
-  void send(float angle, float gravity, float corrGravity, float temp,
+  void send(float angle, float gravitySG, float corrGravitySG, float tempC,
             float runTime, bool force = false);
 };
 

@@ -34,6 +34,7 @@ INCBIN(IndexHtm, "data/index.min.htm");
 INCBIN(DeviceHtm, "data/device.min.htm");
 INCBIN(ConfigHtm, "data/config.min.htm");
 INCBIN(CalibrationHtm, "data/calibration.min.htm");
+INCBIN(FormatHtm, "data/format.min.htm");
 INCBIN(AboutHtm, "data/about.min.htm");
 #else
 // Minium web interface for uploading htm files

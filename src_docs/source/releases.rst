@@ -17,6 +17,9 @@ Development version (dev branch)
   the configuration and update the factor again.
 * Added error handling for calibration page.
 * Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266)
+* Added experimental format editor so users can customize their data format used for pushing data. 
+  This will reduce the need for custom push targets. As long as the service is supporting http 
+  or https then the data format can be customized.
 
 TODO: 
 Update docs, MQTT ssl is enabled using :8883 at end, http targets enables using prefix https://

@@ -235,8 +235,8 @@ bool loopReadGravity() {
     float tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
     LOG_PERF_STOP("loop-temp-read");
 
-    float gravity = calculateGravity(angle, tempC);
-    float corrGravity = gravityTemperatureCorrectionC(gravity, tempC);
+    float gravitySG = calculateGravity(angle, tempC);
+    float corrGravitySG = gravityTemperatureCorrectionC(gravitySG, tempC);
 
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
@@ -246,7 +246,7 @@ bool loopReadGravity() {
 
     LOG_PERF_START("loop-push");
     // Force the transmission if we are going to sleep
-    myPushTarget.send(angle, gravity, corrGravity, tempC,
+    myPushTarget.send(angle, gravitySG, corrGravitySG, tempC,
                       (millis() - runtimeMillis) / 1000,
                       runMode == RunMode::gravityMode ? true : false);
     LOG_PERF_STOP("loop-push");

@@ -254,6 +254,13 @@
               </div>
             </div>
           </form>
+
+          <div class="form-group row">
+            <div class="col-sm-8 offset-sm-2">
+              <button class="btn btn-secondary" id="format-btn">Format editor</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -393,6 +400,11 @@
     } );
   });
 
+  // Open the format editor
+  $("#format-btn").click(function(e){
+    window.location.href = "/format.htm";
+  });
+
   function updateSleepInfo() {
     var i = $("#sleep-interval").val()
     $("#sleep-interval-info").text( Math.floor(i/60) + " m " + (i%60) + " s" )
@@ -417,6 +429,7 @@
     $("#push-btn").prop("disabled", b);
     $("#gravity-btn").prop("disabled", b);
     $("#hardware-btn").prop("disabled", b);
+    $("#format-btn").prop("disabled", b);
   }
 
   // Get the configuration values from the API

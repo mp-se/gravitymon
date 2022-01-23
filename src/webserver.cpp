@@ -29,6 +29,7 @@ SOFTWARE.
 #include <resources.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
+#include <templating.hpp>
 #include <wifi.hpp>
 
 WebServerHandler myWebServerHandler;  // My wrapper class fr webserver functions
@@ -114,6 +115,7 @@ void WebServerHandler::webHandleUpload() {
   doc["device"] = checkHtmlFile(WebServerHandler::HTML_DEVICE);
   doc["config"] = checkHtmlFile(WebServerHandler::HTML_CONFIG);
   doc["calibration"] = checkHtmlFile(WebServerHandler::HTML_CALIBRATION);
+  doc["format"] = checkHtmlFile(WebServerHandler::HTML_FORMAT);
   doc["about"] = checkHtmlFile(WebServerHandler::HTML_ABOUT);
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -522,7 +524,7 @@ void WebServerHandler::webHandleDeviceParam() {
 //
 void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_START("webserver-api-formula-read");
-  Log.notice(F("WEB : webServer callback for /api/formula/get." CR));
+  Log.notice(F("WEB : webServer callback for /api/formula(get)." CR));
 
   DynamicJsonDocument doc(250);
   const RawFormulaData& fd = myConfig.getFormulaData();
@@ -584,12 +586,149 @@ void WebServerHandler::webHandleFormulaRead() {
 }
 
 //
+// Update format template
+//
+void WebServerHandler::webHandleConfigFormatWrite() {
+  LOG_PERF_START("webserver-api-config-format-write");
+  String id = _server->arg(PARAM_ID);
+  Log.notice(F("WEB : webServer callback for /api/config/format(post)." CR));
+
+  if (!id.equalsIgnoreCase(myConfig.getID())) {
+    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
+              myConfig.getID());
+    _server->send(400, "text/plain", "Invalid ID.");
+    LOG_PERF_STOP("webserver-api-config-format-write");
+    return;
+  }
+
+#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
+#endif
+  bool success = false;
+
+  // Only one option is posted so we done need to check them all.
+  if (_server->hasArg(PARAM_FORMAT_HTTP1)) {
+    success = writeFile(TPL_FNAME_HTTP1, _server->arg(PARAM_FORMAT_HTTP1));
+  } else if (_server->hasArg(PARAM_FORMAT_HTTP2)) {
+    success = writeFile(TPL_FNAME_HTTP2, _server->arg(PARAM_FORMAT_HTTP2));
+  } else if (_server->hasArg(PARAM_FORMAT_INFLUXDB)) {
+    success = writeFile(TPL_FNAME_INFLUXDB, _server->arg(PARAM_FORMAT_INFLUXDB));
+  } else if (_server->hasArg(PARAM_FORMAT_MQTT)) {
+    success = writeFile(TPL_FNAME_MQTT, _server->arg(PARAM_FORMAT_MQTT));
+  }
+  /*else if (_server->hasArg(PARAM_FORMAT_BREWFATHER)) {
+    success = writeFile(TPL_FNAME_BREWFATHER, _server->arg(PARAM_FORMAT_BREWFATHER)); 
+  }*/
+ 
+  if (success) {
+    _server->sendHeader("Location", "/format.htm", true);
+    _server->send(302, "text/plain", "Format updated");
+  } else {
+    Log.error(F("WEB : Unable to store format file" CR));
+    _server->send(400, "text/plain", "Unable to store format in file.");
+  }
+
+  LOG_PERF_STOP("webserver-api-config-format-write");
+}
+
+//
+// Write file to disk, if there is no data then delete the current file (if it exists) = reset to default.
+//
+bool WebServerHandler::writeFile(String fname, String data) {
+  if (data.length()) {
+    data = urldecode(data);
+    File file = LittleFS.open(fname, "w");
+    if (file) {
+      Log.notice(F("WEB : Storing template data in %s." CR), fname.c_str());
+      file.write(data.c_str());
+      file.close();
+      return true;
+    }
+  } else {
+    Log.notice(F("WEB : No template data to store in %s, reverting to default." CR), fname.c_str());
+    LittleFS.remove(fname);
+    return true;
+  }
+
+  return false;
+}
+
+//
+// Read file from disk 
+//
+String WebServerHandler::readFile(String fname) {
+  File file = LittleFS.open(fname, "r");
+  if (file) {
+    char buf[file.size()+1];
+    memset(&buf[0], 0, file.size()+1);
+    file.readBytes(&buf[0], file.size());
+    file.close();
+    Log.notice(F("WEB : Read template data from %s." CR), fname.c_str());
+    return String(&buf[0]);
+  }  
+  return "";
+}
+
+//
+// Get format templates
+//
+void WebServerHandler::webHandleConfigFormatRead() {
+
+  LOG_PERF_START("webserver-api-config-format-read");
+  Log.notice(F("WEB : webServer callback for /api/config/formula(get)." CR));
+
+  DynamicJsonDocument doc(2048);
+
+  doc[PARAM_ID] = myConfig.getID();
+
+  String s = readFile(TPL_FNAME_HTTP1);
+  if (s.length()) 
+    doc[PARAM_FORMAT_HTTP1] = urlencode(s);
+  else 
+    doc[PARAM_FORMAT_HTTP1] = urlencode(&iSpindleFormat[0]);
+
+  s = readFile(TPL_FNAME_HTTP2);
+  if (s.length()) 
+    doc[PARAM_FORMAT_HTTP2] = urlencode(s);
+  else 
+    doc[PARAM_FORMAT_HTTP2] = urlencode(&iSpindleFormat[0]);
+
+  /*s = readFile(TPL_FNAME_BREWFATHER);
+  if (s.length()) 
+    doc[PARAM_FORMAT_BREWFATHER] = urlencode(s);
+  else 
+    doc[PARAM_FORMAT_BREWFATHER] = urlencode(&brewfatherFormat[0]);*/
+
+  s = readFile(TPL_FNAME_INFLUXDB);
+  if (s.length()) 
+    doc[PARAM_FORMAT_INFLUXDB] = urlencode(s);
+  else 
+    doc[PARAM_FORMAT_INFLUXDB] = urlencode(&influxDbFormat[0]);
+
+  s = readFile(TPL_FNAME_MQTT);
+  if (s.length()) 
+    doc[PARAM_FORMAT_MQTT] = urlencode(s);
+  else 
+    doc[PARAM_FORMAT_MQTT] = urlencode(&iSpindleFormat[0]);
+
+#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
+  serializeJson(doc, Serial);
+  Serial.print(CR);
+#endif
+
+  String out;
+  serializeJson(doc, out);
+  _server->send(200, "application/json", out.c_str());
+  LOG_PERF_STOP("webserver-api-config-format-read");
+}
+
+//
 // Update hardware settings.
 //
 void WebServerHandler::webHandleFormulaWrite() {
   LOG_PERF_START("webserver-api-formula-write");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/formula/post." CR));
+  Log.notice(F("WEB : webServer callback for /api/formula(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
@@ -677,6 +816,8 @@ const char* WebServerHandler::getHtmlFileName(HtmlFile item) {
       return "config.min.htm";
     case HTML_CALIBRATION:
       return "calibration.min.htm";
+    case HTML_FORMAT:
+      return "format.min.htm";
     case HTML_ABOUT:
       return "about.min.htm";
   }
@@ -727,6 +868,7 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/config.htm", std::bind(&WebServerHandler::webReturnConfigHtm, this));
   _server->on("/calibration.htm",
               std::bind(&WebServerHandler::webReturnCalibrationHtm, this));
+  _server->on("/format.htm", std::bind(&WebServerHandler::webReturnFormatHtm, this));
   _server->on("/about.htm", std::bind(&WebServerHandler::webReturnAboutHtm, this));
 #else
   // Show files in the filessytem at startup
@@ -745,7 +887,7 @@ bool WebServerHandler::setupWebServer() {
   // upload page.
   if (checkHtmlFile(HTML_INDEX) && checkHtmlFile(HTML_DEVICE) &&
       checkHtmlFile(HTML_CONFIG) && checkHtmlFile(HTML_CALIBRATION) &&
-      checkHtmlFile(HTML_ABOUT)) {
+      checkHtmlFile(HTML_FORMAT) && checkHtmlFile(HTML_ABOUT)) {
     Log.notice(F("WEB : All html files exist, starting in normal mode." CR));
 
     _server->serveStatic("/", LittleFS, "/index.min.htm");
@@ -754,6 +896,7 @@ bool WebServerHandler::setupWebServer() {
     _server->serveStatic("/config.htm", LittleFS, "/config.min.htm");
     _server->serveStatic("/about.htm", LittleFS, "/about.min.htm");
     _server->serveStatic("/calibration.htm", LittleFS, "/calibration.min.htm");
+    _server->serveStatic("/format.htm", LittleFS, "/format.min.htm");
 
     // Also add the static upload view in case we we have issues that needs to
     // be fixed.
@@ -808,6 +951,12 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/config/hardware", HTTP_POST,
               std::bind(&WebServerHandler::webHandleConfigHardware,
                         this));  // Change hardware settings
+  _server->on("/api/config/format", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleConfigFormatRead,
+                        this));  // Change template formats
+  _server->on("/api/config/format", HTTP_POST,
+              std::bind(&WebServerHandler::webHandleConfigFormatWrite,
+                        this));  // Change template formats
   _server->on("/api/device/param", HTTP_GET,
               std::bind(&WebServerHandler::webHandleDeviceParam,
                         this));  // Change device params

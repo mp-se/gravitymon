@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <title>Beer Gravity Monitor</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head> 
+<body class="py-4">
+
+<!-- START MENU -->
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+
+  <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbar"> 
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/config.htm">Back to configuration</a>
+      </li>
+    </ul>
+  </div>
+  <div class="spinner-border text-light" id="spinner" role="status"></div>
+</nav>
+
+<!-- START MAIN INDEX -->
+
+<div class="container">
+
+  <hr class="my-2">
+
+  <div class="alert alert-success alert-dismissible fade hide show d-none" role="alert" id="alert">
+    <div id="alert-msg">...</div>
+    <button type="button" id="alert-btn" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <script type="text/javascript">
+    function showError( msg ) {
+      $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show');
+      $('#alert-msg').text( msg );
+    }
+
+    function showSuccess( msg ) {
+      $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show');
+      $('#alert-msg').text( msg );
+    }
+
+    $("#alert-btn").click(function(e){
+      $('#alert').addClass('d-none').removeClass('show');
+    });    
+  </script>
+
+  <div class="accordion" id="accordion">
+
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h2 class="mb-0">
+          <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Push Format Templates
+          </button>
+        </h2>
+      </div>  
+      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+            <input type="text" name="id" id="id" hidden>
+            <input type="text" name="http-1" id="http-1" hidden>
+            <input type="text" name="http-2" id="http-2" hidden>
+            <!--<input type="text" name="brewfather" id="brewfather" hidden>-->
+            <input type="text" name="influxdb" id="influxdb" hidden>
+            <input type="text" name="mqtt" id="mqtt" hidden>
+
+            <div class="form-group row">
+              <label for="push-target" class="col-sm-2 col-form-label">Push target:</label>
+              <select class="custom-select col-sm-4" required name="push-target" id="push-target">
+                <option value="http-1">HTTP option 1</option>
+                <option value="http-2">HTTP option 2</option>
+                <!--<option value="brewfather">Brewfather</option>-->
+                <option value="influxdb">Influx DB</option>
+                <option value="mqtt">MQTT</option>
+              </select>
+            </div>
+          
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <textarea rows="5" class="form-control" name="format" id="format">  
+                </textarea>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-sm-8 offset-sm-2">
+                <button class="btn btn-primary" id="format-btn">Save</button>
+                <button class="btn btn-secondary" id="test-btn">Test</button>
+              </div>
+            </div>
+
+            <pre class="card-preview" id="preview" name="preview"></pre> 
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-4">
+</div>
+
+<script type="text/javascript">
+  window.onload = getConfig;
+
+  setButtonDisabled( true );
+
+  // Opens the targetet according (if URL has #collapseOne to #collapseFour)
+  $(document).ready(function () {
+    if(location.hash != null && location.hash != ""){
+      $('.collapse').removeClass('in');
+      $(location.hash + '.collapse').collapse('show');
+    }
+  });
+
+  $("#push-target").change(function(e){
+    console.log(e)
+    selectFormat();
+  });
+
+  // Store the format
+  $("#format-btn").click(function(e) {
+    var obj = 'id=' + $("#id").val() + '&' + $("#push-target").val() + '=' + encodeURIComponent($("#format").val());
+    console.log(obj);
+
+    $.ajax( { 
+      type: "POST",  
+      url: "/api/config/format", 
+      data: obj, 
+      success: function(result) { showSuccess('Format stored successfully.'); getConfig(); },
+      error: function(result) { showError('Unable to store format.'); }
+    } );
+  });
+  
+  // Test the calibration
+  $("#test-btn").click(function(e) {
+    var doc = $("#format").val();
+    doc = doc.replaceAll("${mdns}", "gravmon2");
+    doc = doc.replaceAll("${id}", "e4a344");
+    doc = doc.replaceAll("${sleep-interval}", "300");
+    doc = doc.replaceAll("${temp}", "21.1");
+    doc = doc.replaceAll("${temp-c}", "21.1");
+    doc = doc.replaceAll("${temp-f}", "51.3");
+    doc = doc.replaceAll("${temp-unit}", "C");
+    doc = doc.replaceAll("${battery}", "3.86");
+    doc = doc.replaceAll("${rssi}", "-76");
+    doc = doc.replaceAll("${run-time}", "4.32");
+    doc = doc.replaceAll("${gravity}", "1.044");
+    doc = doc.replaceAll("${gravity-sg}", "1.044");
+    doc = doc.replaceAll("${gravity-plato}", "9.5");
+    doc = doc.replaceAll("${gravity-unit}", "G");
+    doc = doc.replaceAll("${corr-gravity}", "1.044");
+    doc = doc.replaceAll("${corr-gravity-sg}", "1.044");
+    doc = doc.replaceAll("${corr-gravity-plato}", "9.5");
+    doc = doc.replaceAll("${angle}", "54.5");
+    doc = doc.replaceAll("${tilt}", "54.5");
+
+    // Format in a readable json string.
+    try {
+      var json = JSON.parse(doc);
+      doc = JSON.stringify(json, null, 2);
+    } catch(e) {
+      console.log("Not a javascript object!")
+    }
+
+    $("#preview").text(doc);
+  });
+
+  function setButtonDisabled( b ) {
+    $("#format-btn").prop("disabled", b);
+    $("#test-btn").prop("disabled", b);
+  }
+
+  function selectFormat() {
+    var s = "#" + $("#push-target").val()
+    console.log(s);
+    $("#format").val(decodeURIComponent($(s).val()));
+    $("#preview").text("");
+  }
+
+  // Get the configuration values from the API
+  function getConfig() {
+    setButtonDisabled( true );
+
+    var url = "/api/config/format";
+    //var url = "/test/format.json";
+    $('#spinner').show(); 
+    $.getJSON(url, function (cfg) {
+      console.log( cfg );
+      $("#id").val(cfg["id"]);
+
+      $("#http-1").val(cfg["http-1"]);
+      $("#http-2").val(cfg["http-2"]);
+      //$("#brewfather").val(cfg["brewfather"]);
+      $("#influxdb").val(cfg["influxdb"]);
+      $("#mqtt").val(cfg["mqtt"]);
+      selectFormat();
+    })
+    .fail(function () {
+      showError('Unable to get data from the device.');
+    })
+    .always(function() {
+      $('#spinner').hide(); 
+      setButtonDisabled( false );
+    });
+  }
+</script>
+
+<!-- START FOOTER -->
+
+<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div>
+</body>
+</html>
