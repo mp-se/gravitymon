@@ -11,19 +11,17 @@ Development version (dev branch)
 * SSL support for HTTP targets (no validation of CA)
 * SSL support for MQTT targets (no validation of CA)
 * SSL support for OTA (no validation of CA)
-* Breaking change: To simplify the internal structure the 
+* **Breaking change**: To simplify the internal structure the 
   temp sensor adjustment is now stored in C. So if you have 
   enabled this function using F you will need to go into 
   the configuration and update the factor again.
+* **Breaking change**: The MQTT push option has been changed to match the iSpindle behaviour. If 
+  the behaviour in v0.6 is wanted this can be done via the format editor.
 * Added error handling for calibration page.
 * Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266)
 * Added experimental format editor so users can customize their data format used for pushing data. 
   This will reduce the need for custom push targets. As long as the service is supporting http 
   or https then the data format can be customized.
-
-TODO: 
-Update docs, MQTT ssl is enabled using :8883 at end, http targets enables using prefix https://
-Note! Brewfather don't support SSL.
 
 v0.6.0
 ------

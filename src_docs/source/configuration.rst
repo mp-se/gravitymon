@@ -106,13 +106,13 @@ Push Settings
 
 * **HTTP URL 1:**
 
-   Endpoint to send data via http. Format used Format used :ref:`data-formats-ispindle`
+   Endpoint to send data via http. Default format used Format used :ref:`data-formats-ispindle`. You can customize the format using :ref:`format-editor`.
 
    If you add the prefix `https://` then the device will use SSL when sending data.
 
 * **HTTP URL 2:**
 
-   Endpoint to send data via http. Format used :ref:`data-formats-ispindle`
+   Endpoint to send data via http. Default format used :ref:`data-formats-ispindle`. You can customize the format using :ref:`format-editor`.
 
    If you add the prefix `https://` then the device will use SSL when sending data. 
 
@@ -124,7 +124,7 @@ Push Settings
 
 * **Influx DB v2 URL:**
 
-   Endpoint to send data via http to InfluxDB. Format used :ref:`data-formats-influxdb2`
+   Endpoint to send data via http to InfluxDB. Format used :ref:`data-formats-influxdb2`. You can customize the format using :ref:`format-editor`.
 
    SSL is not supported for this target. Raise a issue on github if this is wanted.
 
@@ -142,7 +142,7 @@ Push Settings
 
 * **MQTT server:**
 
-   IP or name of server to send data to. Format used :ref:`data-formats-ispindle`
+   IP or name of server to send data to. Default format used :ref:`data-formats-mqtt`. You can customize the format using :ref:`format-editor`.
 
 * **MQTT Port:**
 
@@ -737,6 +737,9 @@ This is the format template used to create the json above.
 
   measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
 
+
+.. _data-formats-mqtt:
+
 MQTT
 ====
 
@@ -757,7 +760,7 @@ This is the format template used to create the json above.
 
 .. tip::
 
-   Each line in the format is treated as one topic. The `|` is used as separator between lines and `:` between topic and value. Each line is formatted as `<topic>:<value>`
+   Each line in the format is treated as one topic. The `|` is used as separator between lines and the first `:` is used as separator between topic and value. Each line is formatted as `<topic>:<value>`
 
 .. code-block::
 
@@ -768,6 +771,12 @@ This is the format template used to create the json above.
   ispindel/${mdns}/gravity:${gravity}|
   ispindel/${mdns}/interval:${sleep-interval}|
   ispindel/${mdns}/RSSI:${rssi}|
+
+This is a format template that is compatible with v0.6.
+
+.. code-block::
+   
+   topic:{"name":"gravmon","ID":"${id}","token":"gravmon","interval": ${sleep-interval},"temperature": ${temp},"temp-units": "${temp-unit}","gravity":${gravity},"angle": ${angle},"battery":${battery},"rssi": ${rssi},"corr-gravity":${corr-gravity},"gravity-unit": "${gravity-unit}","run-time": ${run-time}}|
 
 
 version.json

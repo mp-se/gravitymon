@@ -3,8 +3,8 @@
 Functionallity
 ==============
 
-The main differences
---------------------
+The main features
+-----------------
 
 * **Operates in two modes gravity monitoring and configuration mode**
 
@@ -26,9 +26,22 @@ The main differences
 
   If you want additional targets please raise a feature request in the github repo.
 
-* **Build in function to create gravity formulas, so no need for using other tools for this part**
+* **Create gravity formulas on the device**
 
   Another big difference is that this software can create the gravity formula in the device, just enter the angle/gravity data that you have collected. You will also see a graph simulating how the formula would work. 
+
+.. note::
+
+  This feature needs more testing to be validated.
+
+* **Customize the data format beeing sent to push targets**
+
+  In order to make it easier to support more targets there is a built in format editor that can be used to customize the data that is to be sent. This way you can easily adapt the software to new targets without coding. If you have 
+  a good template please share it on the girhub repository and I will add it to the documentation for other users to enjoy. See the :ref:`format-editor` for more information.
+
+.. note::
+
+  This feature needs more testing to be validated.
 
 * **Automatic temperature adjustment of gravity reading**
 

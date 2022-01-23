@@ -15,4 +15,4 @@ Code
 - Support for plato
 - Use pre-commit for validating check-in
 - Show indicated battery life based on interval (check if its feasable)
-- Use brewflasher for flashing
+- Add possibility to add one certificate for proper SSL authentication.
