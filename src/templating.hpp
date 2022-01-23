@@ -60,6 +60,7 @@ SOFTWARE.
 extern const char iSpindleFormat[] PROGMEM;
 extern const char brewfatherFormat[] PROGMEM;
 extern const char influxDbFormat[] PROGMEM;
+extern const char mqttFormat[] PROGMEM;
 
 // Classes
 class TemplatingEngine {

@@ -40,7 +40,7 @@ SOFTWARE.
 #define PARAM_PUSH_MQTT "mqtt-push"
 #define PARAM_PUSH_MQTT_USER "mqtt-user"
 #define PARAM_PUSH_MQTT_PASS "mqtt-pass"
-#define PARAM_PUSH_MQTT_TOPIC "mqtt-topic"
+#define PARAM_PUSH_MQTT_PORT "mqtt-port"
 #define PARAM_SLEEP_INTERVAL "sleep-interval"
 #define PARAM_TEMPFORMAT "temp-format"
 #define PARAM_VOLTAGEFACTOR "voltage-factor"

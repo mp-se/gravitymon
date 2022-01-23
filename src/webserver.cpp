@@ -360,7 +360,7 @@ void WebServerHandler::webHandleConfigPush() {
   myConfig.setInfluxDb2PushToken(
       _server->arg(PARAM_PUSH_INFLUXDB2_AUTH).c_str());
   myConfig.setMqttUrl(_server->arg(PARAM_PUSH_MQTT).c_str());
-  myConfig.setMqttTopic(_server->arg(PARAM_PUSH_MQTT_TOPIC).c_str());
+  myConfig.setMqttPort(_server->arg(PARAM_PUSH_MQTT_PORT).c_str());
   myConfig.setMqttUser(_server->arg(PARAM_PUSH_MQTT_USER).c_str());
   myConfig.setMqttPass(_server->arg(PARAM_PUSH_MQTT_PASS).c_str());
   myConfig.saveFile();
@@ -685,13 +685,13 @@ void WebServerHandler::webHandleConfigFormatRead() {
   if (s.length()) 
     doc[PARAM_FORMAT_HTTP1] = urlencode(s);
   else 
-    doc[PARAM_FORMAT_HTTP1] = urlencode(&iSpindleFormat[0]);
+    doc[PARAM_FORMAT_HTTP1] = urlencode(String(&iSpindleFormat[0]));
 
   s = readFile(TPL_FNAME_HTTP2);
   if (s.length()) 
     doc[PARAM_FORMAT_HTTP2] = urlencode(s);
   else 
-    doc[PARAM_FORMAT_HTTP2] = urlencode(&iSpindleFormat[0]);
+    doc[PARAM_FORMAT_HTTP2] = urlencode(String(&iSpindleFormat[0]));
 
   /*s = readFile(TPL_FNAME_BREWFATHER);
   if (s.length()) 
@@ -703,13 +703,13 @@ void WebServerHandler::webHandleConfigFormatRead() {
   if (s.length()) 
     doc[PARAM_FORMAT_INFLUXDB] = urlencode(s);
   else 
-    doc[PARAM_FORMAT_INFLUXDB] = urlencode(&influxDbFormat[0]);
+    doc[PARAM_FORMAT_INFLUXDB] = urlencode(String(&influxDbFormat[0]));
 
   s = readFile(TPL_FNAME_MQTT);
   if (s.length()) 
     doc[PARAM_FORMAT_MQTT] = urlencode(s);
   else 
-    doc[PARAM_FORMAT_MQTT] = urlencode(&iSpindleFormat[0]);
+    doc[PARAM_FORMAT_MQTT] = urlencode(String(&mqttFormat[0]));
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);

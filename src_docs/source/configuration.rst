@@ -144,11 +144,9 @@ Push Settings
 
    IP or name of server to send data to. Format used :ref:`data-formats-ispindle`
 
-   If you add the suffix `:8883` to the server name, then the device will use SSL when sending data.
+* **MQTT Port:**
 
-* **MQTT Topic:**
-
-   Name of topic to publish sensor readings to, iSpindle format is used.
+   Which port should be used for communication, default is 1883 (standard port). For SSL use 8883 (any port over 8000 is treated as SSL). 
 
 * **MQTT user:**
 
@@ -368,7 +366,7 @@ Other parameters are the same as in the configuration guide.
       "influxdb2-bucket": "Qwerty",
       "influxdb2-auth": "Qwerty",
       "mqtt-push": "192.168.1.50",
-      "mqtt-topic": "Qwerty",
+      "mqtt-port": 1883,
       "mqtt-user": "Qwerty",
       "mqtt-pass": "Qwerty",
       "sleep-interval": 30,
@@ -493,7 +491,7 @@ Used to update push settings via an HTTP POST command. Payload is in JSON format
       "influxdb2-bucket": "Qwerty",
       "influxdb2-auth": "Qwerty" 
       "mqtt-push": "192.168.1.50",
-      "mqtt-topic": "Qwerty",
+      "mqtt-port": 1883,
       "mqtt-user": "Qwerty",
       "mqtt-pass": "Qwerty",
    }  
@@ -607,7 +605,7 @@ present or the API call will fail.
             "influxdb2-bucket": "",
             "influxdb2-auth": "",
             "mqtt-push": "192.168.1.50",
-            "mqtt-topic": "Qwerty",
+            "mqtt-port": 1883,
             "mqtt-user": "Qwerty",
             "mqtt-pass": "Qwerty"
             }  
@@ -738,6 +736,39 @@ This is the format template used to create the json above.
 .. code-block::
 
   measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
+
+MQTT
+====
+
+This is the format used to send data to MQTT. Each of the lines are specific topics
+
+.. code-block::
+   
+   ispindel/device_name/tilt 89.96796
+   ispindel/device_name/temperature 21.375
+   ispindel/device_name/temp_units C
+   ispindel/device_name/battery 0.04171
+   ispindel/device_name/gravity 33.54894
+   ispindel/device_name/interval 1
+   ispindel/device_name/RSSI -58
+
+
+This is the format template used to create the json above. 
+
+.. tip::
+
+   Each line in the format is treated as one topic. The `|` is used as separator between lines and `:` between topic and value. Each line is formatted as `<topic>:<value>`
+
+.. code-block::
+
+  ispindel/${mdns}/tilt:${angle}|
+  ispindel/${mdns}/temperature:${temp}|
+  ispindel/${mdns}/temp_units:${temp-unit}|
+  ispindel/${mdns}/battery:${battery}|
+  ispindel/${mdns}/gravity:${gravity}|
+  ispindel/${mdns}/interval:${sleep-interval}|
+  ispindel/${mdns}/RSSI:${rssi}|
+
 
 version.json
 ============

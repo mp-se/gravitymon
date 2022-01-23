@@ -3,5 +3,6 @@
     "device": false,
     "config": false,
     "calibration": false,
+    "format": false,
     "about": true
 }

@@ -66,6 +66,7 @@ Config::Config() {
   _formulaData = {{0, 0, 0, 0, 0}, {1, 1, 1, 1, 1}};
   _gyroTemp = false;
   _saveNeeded = false;
+  _mqttPort = 1883;
 }
 
 //
@@ -87,7 +88,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_PUSH_INFLUXDB2_BUCKET] = getInfluxDb2PushBucket();
   doc[PARAM_PUSH_INFLUXDB2_AUTH] = getInfluxDb2PushToken();
   doc[PARAM_PUSH_MQTT] = getMqttUrl();
-  doc[PARAM_PUSH_MQTT_TOPIC] = getMqttTopic();
+  doc[PARAM_PUSH_MQTT_PORT] = getMqttPort();
   doc[PARAM_PUSH_MQTT_USER] = getMqttUser();
   doc[PARAM_PUSH_MQTT_PASS] = getMqttPass();
   doc[PARAM_SLEEP_INTERVAL] = getSleepInterval();
@@ -227,8 +228,8 @@ bool Config::loadFile() {
     setInfluxDb2PushToken(doc[PARAM_PUSH_INFLUXDB2_AUTH]);
 
   if (!doc[PARAM_PUSH_MQTT].isNull()) setMqttUrl(doc[PARAM_PUSH_MQTT]);
-  if (!doc[PARAM_PUSH_MQTT_TOPIC].isNull())
-    setMqttTopic(doc[PARAM_PUSH_MQTT_TOPIC]);
+  if (!doc[PARAM_PUSH_MQTT_PORT].isNull())
+    setMqttPort(doc[PARAM_PUSH_MQTT_PORT].as<int>());
   if (!doc[PARAM_PUSH_MQTT_USER].isNull())
     setMqttUser(doc[PARAM_PUSH_MQTT_USER]);
   if (!doc[PARAM_PUSH_MQTT_PASS].isNull())

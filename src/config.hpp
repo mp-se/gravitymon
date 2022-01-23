@@ -113,7 +113,7 @@ class Config {
   String _influxDb2Token;
 
   String _mqttUrl;
-  String _mqttTopic;
+  int _mqttPort;
   String _mqttUser;
   String _mqttPass;
 
@@ -217,9 +217,13 @@ class Config {
     _mqttUrl = s;
     _saveNeeded = true;
   }
-  const char* getMqttTopic() { return _mqttTopic.c_str(); }
-  void setMqttTopic(String s) {
-    _mqttTopic = s;
+  int getMqttPort() { return _mqttPort; }
+  void setMqttPort(String s) {
+    _mqttPort = s.toInt();
+    _saveNeeded = true;
+  }
+  void setMqttPort(int i) {
+    _mqttPort = i;
     _saveNeeded = true;
   }
   const char* getMqttUser() { return _mqttUser.c_str(); }

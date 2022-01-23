@@ -131,7 +131,9 @@
 
   // Store the format
   $("#format-btn").click(function(e) {
-    var obj = 'id=' + $("#id").val() + '&' + $("#push-target").val() + '=' + encodeURIComponent($("#format").val());
+    var s = $("#format").val();
+    s = s.replaceAll("\n", "");
+    var obj = 'id=' + $("#id").val() + '&' + $("#push-target").val() + '=' + encodeURIComponent(s);
     console.log(obj);
 
     $.ajax( { 
@@ -185,7 +187,11 @@
   function selectFormat() {
     var s = "#" + $("#push-target").val()
     console.log(s);
-    $("#format").val(decodeURIComponent($(s).val()));
+    s = decodeURIComponent($(s).val());
+    console.log(s);
+    s = s.replaceAll("|", "|\n");
+    console.log(s);
+    $("#format").val(s);
     $("#preview").text("");
   }
 

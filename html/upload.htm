@@ -79,6 +79,10 @@
     <div class="col-md-6 themed-grid-col bg-light" id="calibration">Checking...</div>
   </div>
   <div class="row mb-3">
+    <div class="col-md-2 themed-grid-col bg-light">format.min.htm</div>
+    <div class="col-md-6 themed-grid-col bg-light" id="format">Checking...</div>
+  </div>
+  <div class="row mb-3">
     <div class="col-md-2 themed-grid-col bg-light">about.min.htm</div>
     <div class="col-md-6 themed-grid-col bg-light" id="about">Checking...</div>
   </div>
@@ -131,6 +135,11 @@ function getUpload() {
         $("#calibration").text("Completed.");
       else
         $("#calibration").text("File is missing.");
+
+      if( cfg["format"] )
+        $("#format").text("Completed.");
+      else
+        $("#format").text("File is missing.");
 
       if( cfg["about"] )
         $("#about").text("Completed.");

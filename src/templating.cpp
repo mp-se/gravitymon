@@ -71,6 +71,15 @@ const char influxDbFormat[] PROGMEM =
   "gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},"
   "rssi=${rssi}\n";
 
+const char mqttFormat[] PROGMEM = 
+  "ispindel/${mdns}/tilt:${angle}|"
+  "ispindel/${mdns}/temperature:${temp}|"
+  "ispindel/${mdns}/temp_units:${temp-unit}|"
+  "ispindel/${mdns}/battery:${battery}|"
+  "ispindel/${mdns}/gravity:${gravity}|"
+  "ispindel/${mdns}/interval:${sleep-interval}|"
+  "ispindel/${mdns}/RSSI:${rssi}|";
+
 //
 // Initialize the variables
 //
@@ -119,8 +128,8 @@ void TemplatingEngine::initialize(float angle, float gravitySG, float corrGravit
   setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG), 1);
   setVal(TPL_GRAVITY_UNIT, myConfig.getGravityFormat());
 
-#if LOG_DEBUG == 6
-  dumpAll();
+#if LOG_LEVEL == 6
+  // dumpAll();
 #endif
 }
 
@@ -133,23 +142,23 @@ const String& TemplatingEngine::create(TemplatingEngine::Templates idx) {
   // Load templates from memory
   switch (idx) {
     case TEMPLATE_HTTP1:
-      baseTemplate = iSpindleFormat;
+      baseTemplate = String(iSpindleFormat);
       fname = TPL_FNAME_HTTP1;
     break;
     case TEMPLATE_HTTP2:
-      baseTemplate = iSpindleFormat;
+      baseTemplate = String(iSpindleFormat);
       fname = TPL_FNAME_HTTP2;
     break;
     case TEMPLATE_BREWFATHER:
-      baseTemplate = brewfatherFormat;
+      baseTemplate = String(brewfatherFormat);
       //fname = TPL_FNAME_BREWFATHER;
     break;
     case TEMPLATE_INFLUX:
-      baseTemplate = influxDbFormat;
+      baseTemplate = String(influxDbFormat);
       fname = TPL_FNAME_INFLUXDB;
     break;
     case TEMPLATE_MQTT:
-      baseTemplate = iSpindleFormat;
+      baseTemplate = String(mqttFormat);
       fname = TPL_FNAME_MQTT;
     break;
   }
@@ -165,8 +174,17 @@ const String& TemplatingEngine::create(TemplatingEngine::Templates idx) {
     Log.notice(F("TPL : Template loaded from disk %s." CR), fname.c_str());
   }
 
+#if LOG_LEVEL == 6
+  //Log.verbose(F("TPL : Base '%s'." CR), baseTemplate.c_str());
+#endif
+
   // Insert data into template.
   transform(baseTemplate);
+
+#if LOG_LEVEL == 6
+  //Log.verbose(F("TPL : Transformed '%s'." CR), baseTemplate.c_str());
+#endif
+
   return baseTemplate;
 }
 

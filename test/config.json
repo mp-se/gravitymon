@@ -11,7 +11,7 @@
     "influxdb2-bucket": "spann",
     "influxdb2-auth": "OijkU((jhfkh",
     "mqtt-push": "192.168.1.10",
-    "mqtt-topic": "mytopic",
+    "mqtt-port": 1883,
     "mqtt-user": "user",
     "mqtt-pass": "pass",
     "sleep-interval": 30,

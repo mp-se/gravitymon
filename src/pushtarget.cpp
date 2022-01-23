@@ -30,7 +30,6 @@ SOFTWARE.
 
 #include <config.hpp>
 #include <helper.hpp>
-#include <main.hpp>
 #include <pushtarget.hpp>
 #include <wifi.hpp>
 
@@ -46,8 +45,8 @@ void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
 
   if ((timePassed < interval) && !force) {
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-    Log.verbose(F("PUSH: Timer has not expired %l vs %l." CR), timePassed,
-                interval);
+/*    Log.verbose(F("PUSH: Timer has not expired %l vs %l." CR), timePassed,
+                interval);*/
 #endif
     return;
   }
@@ -222,8 +221,10 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
   MQTTClient mqtt(512);
   String url = myConfig.getMqttUrl();
   String doc = engine.create(TemplatingEngine::TEMPLATE_MQTT);
+  int port = myConfig.getMqttPort();
 
-  if (url.endsWith(":8883")) {
+  //if (url.endsWith(":8883")) {
+  if (port>8000) {
     // Allow secure channel, but without certificate validation
     myWifi.getWifiClientSecure().setInsecure();
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
@@ -238,16 +239,39 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), myConfig.getMqttUrl());
-  Log.verbose(F("PUSH: json %s." CR), doc.c_str());
+  Log.verbose(F("PUSH: data %s." CR), doc.c_str());
 #endif
 
-  // Send MQQT message
+  // Send MQQT message(s)
   mqtt.setTimeout(10);  // 10 seconds timeout
-  if (mqtt.publish(myConfig.getMqttTopic(), doc)) {
-    Log.notice(F("PUSH: MQTT publish successful" CR));
-  } else {
-    Log.error(F("PUSH: MQTT publish failed err=%d, ret=%d" CR),
-              mqtt.lastError(), mqtt.returnCode());
+
+  int lines = 1;
+  // Find out how many lines are in the document. Each line is one topic/message. | is used as new line.
+  for (unsigned int i = 0; i<doc.length()-1; i++ ) {
+    if (doc.charAt(i) == '|')
+      lines++;
+  }
+
+  int index = 0;
+  while (lines) {
+    int next = doc.indexOf('|', index);
+    String line = doc.substring(index, next);
+
+    // Each line equals one topic post, format is <topic>:<value>
+    String topic = line.substring(0, line.indexOf(":"));
+    String value = line.substring(line.indexOf(":")+1);
+#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
+    Log.verbose(F("PUSH: topic '%s', value '%s'." CR), topic.c_str(), value.c_str());
+#endif 
+    if (mqtt.publish(topic, value)) {
+      Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
+    } else {
+      Log.error(F("PUSH: MQTT publish failed err=%d, ret=%d" CR),
+                mqtt.lastError(), mqtt.returnCode());
+    }
+
+    index = next+1;
+    lines--;
   }
 
   mqtt.disconnect();

@@ -230,9 +230,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="mqtt-topic" class="col-sm-2 col-form-label">MQTT Topic:</label>
+              <label for="mqtt-topic" class="col-sm-2 col-form-label">MQTT Port:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="30" class="form-control" name="mqtt-topic" id="mqtt-topic">
+                <input type="number" min="1" max="65535" class="form-control" name="mqtt-port" id="mqtt-port">
               </div>
             </div>
             <div class="form-group row">
@@ -459,7 +459,7 @@
       $("#influxdb2-bucket").val(cfg["influxdb2-bucket"]);
       $("#influxdb2-auth").val(cfg["influxdb2-auth"]);
       $("#mqtt-push").val(cfg["mqtt-push"]);
-      $("#mqtt-topic").val(cfg["mqtt-topic"]);
+      $("#mqtt-port").val(cfg["mqtt-port"]);
       $("#mqtt-user").val(cfg["mqtt-user"]);
       $("#mqtt-pass").val(cfg["mqtt-pass"]);
       $("#sleep-interval").val(cfg["sleep-interval"]);
