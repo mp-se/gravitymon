@@ -27,9 +27,9 @@ SOFTWARE.
 #include <helper.hpp>
 #include <main.hpp>
 #include <resources.hpp>
+#include <templating.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
-#include <templating.hpp>
 #include <wifi.hpp>
 
 WebServerHandler myWebServerHandler;  // My wrapper class fr webserver functions
@@ -612,14 +612,16 @@ void WebServerHandler::webHandleConfigFormatWrite() {
   } else if (_server->hasArg(PARAM_FORMAT_HTTP2)) {
     success = writeFile(TPL_FNAME_HTTP2, _server->arg(PARAM_FORMAT_HTTP2));
   } else if (_server->hasArg(PARAM_FORMAT_INFLUXDB)) {
-    success = writeFile(TPL_FNAME_INFLUXDB, _server->arg(PARAM_FORMAT_INFLUXDB));
+    success =
+        writeFile(TPL_FNAME_INFLUXDB, _server->arg(PARAM_FORMAT_INFLUXDB));
   } else if (_server->hasArg(PARAM_FORMAT_MQTT)) {
     success = writeFile(TPL_FNAME_MQTT, _server->arg(PARAM_FORMAT_MQTT));
   }
   /*else if (_server->hasArg(PARAM_FORMAT_BREWFATHER)) {
-    success = writeFile(TPL_FNAME_BREWFATHER, _server->arg(PARAM_FORMAT_BREWFATHER)); 
+    success = writeFile(TPL_FNAME_BREWFATHER,
+  _server->arg(PARAM_FORMAT_BREWFATHER));
   }*/
- 
+
   if (success) {
     _server->sendHeader("Location", "/format.htm", true);
     _server->send(302, "text/plain", "Format updated");
@@ -632,7 +634,8 @@ void WebServerHandler::webHandleConfigFormatWrite() {
 }
 
 //
-// Write file to disk, if there is no data then delete the current file (if it exists) = reset to default.
+// Write file to disk, if there is no data then delete the current file (if it
+// exists) = reset to default.
 //
 bool WebServerHandler::writeFile(String fname, String data) {
   if (data.length()) {
@@ -640,12 +643,18 @@ bool WebServerHandler::writeFile(String fname, String data) {
     File file = LittleFS.open(fname, "w");
     if (file) {
       Log.notice(F("WEB : Storing template data in %s." CR), fname.c_str());
+#if defined(ESP8266)
       file.write(data.c_str());
+#else  // defined (ESP32)
+      file.write((unsigned char*)data.c_str(), data.length());
+#endif
       file.close();
       return true;
     }
   } else {
-    Log.notice(F("WEB : No template data to store in %s, reverting to default." CR), fname.c_str());
+    Log.notice(
+        F("WEB : No template data to store in %s, reverting to default." CR),
+        fname.c_str());
     LittleFS.remove(fname);
     return true;
   }
@@ -654,18 +663,18 @@ bool WebServerHandler::writeFile(String fname, String data) {
 }
 
 //
-// Read file from disk 
+// Read file from disk
 //
 String WebServerHandler::readFile(String fname) {
   File file = LittleFS.open(fname, "r");
   if (file) {
-    char buf[file.size()+1];
-    memset(&buf[0], 0, file.size()+1);
+    char buf[file.size() + 1];
+    memset(&buf[0], 0, file.size() + 1);
     file.readBytes(&buf[0], file.size());
     file.close();
     Log.notice(F("WEB : Read template data from %s." CR), fname.c_str());
     return String(&buf[0]);
-  }  
+  }
   return "";
 }
 
@@ -673,7 +682,6 @@ String WebServerHandler::readFile(String fname) {
 // Get format templates
 //
 void WebServerHandler::webHandleConfigFormatRead() {
-
   LOG_PERF_START("webserver-api-config-format-read");
   Log.notice(F("WEB : webServer callback for /api/config/formula(get)." CR));
 
@@ -682,33 +690,33 @@ void WebServerHandler::webHandleConfigFormatRead() {
   doc[PARAM_ID] = myConfig.getID();
 
   String s = readFile(TPL_FNAME_HTTP1);
-  if (s.length()) 
+  if (s.length())
     doc[PARAM_FORMAT_HTTP1] = urlencode(s);
-  else 
+  else
     doc[PARAM_FORMAT_HTTP1] = urlencode(String(&iSpindleFormat[0]));
 
   s = readFile(TPL_FNAME_HTTP2);
-  if (s.length()) 
+  if (s.length())
     doc[PARAM_FORMAT_HTTP2] = urlencode(s);
-  else 
+  else
     doc[PARAM_FORMAT_HTTP2] = urlencode(String(&iSpindleFormat[0]));
 
   /*s = readFile(TPL_FNAME_BREWFATHER);
-  if (s.length()) 
+  if (s.length())
     doc[PARAM_FORMAT_BREWFATHER] = urlencode(s);
-  else 
+  else
     doc[PARAM_FORMAT_BREWFATHER] = urlencode(&brewfatherFormat[0]);*/
 
   s = readFile(TPL_FNAME_INFLUXDB);
-  if (s.length()) 
+  if (s.length())
     doc[PARAM_FORMAT_INFLUXDB] = urlencode(s);
-  else 
+  else
     doc[PARAM_FORMAT_INFLUXDB] = urlencode(String(&influxDbFormat[0]));
 
   s = readFile(TPL_FNAME_MQTT);
-  if (s.length()) 
+  if (s.length())
     doc[PARAM_FORMAT_MQTT] = urlencode(s);
-  else 
+  else
     doc[PARAM_FORMAT_MQTT] = urlencode(String(&mqttFormat[0]));
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -863,13 +871,18 @@ bool WebServerHandler::setupWebServer() {
   // Static content
 #if defined(EMBED_HTML)
   _server->on("/", std::bind(&WebServerHandler::webReturnIndexHtm, this));
-  _server->on("/index.htm", std::bind(&WebServerHandler::webReturnIndexHtm, this));
-  _server->on("/device.htm", std::bind(&WebServerHandler::webReturnDeviceHtm, this));
-  _server->on("/config.htm", std::bind(&WebServerHandler::webReturnConfigHtm, this));
+  _server->on("/index.htm",
+              std::bind(&WebServerHandler::webReturnIndexHtm, this));
+  _server->on("/device.htm",
+              std::bind(&WebServerHandler::webReturnDeviceHtm, this));
+  _server->on("/config.htm",
+              std::bind(&WebServerHandler::webReturnConfigHtm, this));
   _server->on("/calibration.htm",
               std::bind(&WebServerHandler::webReturnCalibrationHtm, this));
-  _server->on("/format.htm", std::bind(&WebServerHandler::webReturnFormatHtm, this));
-  _server->on("/about.htm", std::bind(&WebServerHandler::webReturnAboutHtm, this));
+  _server->on("/format.htm",
+              std::bind(&WebServerHandler::webReturnFormatHtm, this));
+  _server->on("/about.htm",
+              std::bind(&WebServerHandler::webReturnAboutHtm, this));
 #else
   // Show files in the filessytem at startup
 
@@ -900,7 +913,8 @@ bool WebServerHandler::setupWebServer() {
 
     // Also add the static upload view in case we we have issues that needs to
     // be fixed.
-    _server->on("/upload.htm", std::bind(&WebServerHandler::webReturnUploadHtm, this));
+    _server->on("/upload.htm",
+                std::bind(&WebServerHandler::webReturnUploadHtm, this));
   } else {
     Log.error(F("WEB : Missing html files, starting with upload UI." CR));
     _server->on("/", std::bind(&WebServerHandler::webReturnUploadHtm, this));
@@ -908,10 +922,12 @@ bool WebServerHandler::setupWebServer() {
 #endif
 
   // Dynamic content
-  _server->on("/api/config", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleConfig, this));  // Get config.json
-  _server->on("/api/device", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleDevice, this));  // Get device.json
+  _server->on(
+      "/api/config", HTTP_GET,
+      std::bind(&WebServerHandler::webHandleConfig, this));  // Get config.json
+  _server->on(
+      "/api/device", HTTP_GET,
+      std::bind(&WebServerHandler::webHandleDevice, this));  // Get device.json
   _server->on("/api/formula", HTTP_GET,
               std::bind(&WebServerHandler::webHandleFormulaRead,
                         this));  // Get formula.json (calibration page)
@@ -921,21 +937,23 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/calibrate", HTTP_POST,
               std::bind(&WebServerHandler::webHandleCalibrate,
                         this));  // Run calibration routine (param id)
+  _server->on("/api/factory", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleFactoryReset,
+                        this));  // Reset the device
+  _server->on("/api/status", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleStatus,
+                        this));  // Get the status.json
+  _server->on("/api/clearwifi", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleClearWIFI,
+                        this));  // Clear wifi settings
   _server->on(
-      "/api/factory", HTTP_GET,
-      std::bind(&WebServerHandler::webHandleFactoryReset, this));  // Reset the device
-  _server->on(
-      "/api/status", HTTP_GET,
-      std::bind(&WebServerHandler::webHandleStatus, this));  // Get the status.json
-  _server->on(
-      "/api/clearwifi", HTTP_GET,
-      std::bind(&WebServerHandler::webHandleClearWIFI, this));  // Clear wifi settings
-  _server->on("/api/upload", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleUpload, this));  // Get upload.json
+      "/api/upload", HTTP_GET,
+      std::bind(&WebServerHandler::webHandleUpload, this));  // Get upload.json
 
-  _server->on(
-      "/api/upload", HTTP_POST, std::bind(&WebServerHandler::webReturnOK, this),
-      std::bind(&WebServerHandler::webHandleUploadFile, this));  // File upload data
+  _server->on("/api/upload", HTTP_POST,
+              std::bind(&WebServerHandler::webReturnOK, this),
+              std::bind(&WebServerHandler::webHandleUploadFile,
+                        this));  // File upload data
   _server->on("/api/status/sleepmode", HTTP_POST,
               std::bind(&WebServerHandler::webHandleStatusSleepmode,
                         this));  // Change sleep mode
@@ -961,7 +979,8 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webHandleDeviceParam,
                         this));  // Change device params
 
-  _server->onNotFound(std::bind(&WebServerHandler::webHandlePageNotFound, this));
+  _server->onNotFound(
+      std::bind(&WebServerHandler::webHandlePageNotFound, this));
   _server->begin();
   Log.notice(F("WEB : Web server started." CR));
   return true;
@@ -971,7 +990,7 @@ bool WebServerHandler::setupWebServer() {
 // called from main loop
 //
 void WebServerHandler::loop() {
-#if defined (ESP8266)
+#if defined(ESP8266)
   MDNS.update();
 #endif
   _server->handleClient();

@@ -21,11 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined (ESP8266)
-#include <ESP8266HTTPClient.h>
+#if defined(ESP8266)
 #include <ESP8266HTTPClient.h>
 #include <ESP8266mDNS.h>
-#else // defined (ESP32)
+#else  // defined (ESP32)
 #include <HTTPClient.h>
 #endif
 #include <MQTT.h>
@@ -55,13 +54,15 @@ void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
 
   _ms = millis();
 
+#if defined(ESP8266)
   if (ESP.getFreeContStack() < 1500) {
-    Log.error(F("PUSH: Low on memory, skipping push since it will crasch. (stack=%d, heap=%d)." CR), ESP.getFreeContStack(), ESP.getFreeHeap());
+    Log.error(F("PUSH: Low on memory, skipping push since it will crasch. "
+                "(stack=%d, heap=%d)." CR),
+              ESP.getFreeContStack(), ESP.getFreeHeap());
     myWifi.closeWifiClient();
     return;
   }
-
-  //MDNS.close();
+#endif
 
   TemplatingEngine engine;
   engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime);
@@ -179,16 +180,16 @@ void PushTarget::sendBrewfather(TemplatingEngine& engine) {
 //
 void PushTarget::sendHttp(TemplatingEngine& engine, int index) {
 #if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to http (%s)" CR), index ? "http2" : "http1");
+  Log.notice(F("PUSH: Sending values to http (%s)" CR),
+             index ? "http2" : "http1");
 #endif
 
   String serverPath, doc;
 
-  if (index == 0)  {
+  if (index == 0) {
     serverPath = myConfig.getHttpPushUrl();
     doc = engine.create(TemplatingEngine::TEMPLATE_HTTP1);
-  }
-  else {
+  } else {
     serverPath = myConfig.getHttpPushUrl2();
     doc = engine.create(TemplatingEngine::TEMPLATE_HTTP2);
   }
@@ -235,8 +236,8 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
   String doc = engine.create(TemplatingEngine::TEMPLATE_MQTT);
   int port = myConfig.getMqttPort();
 
-  //if (url.endsWith(":8883")) {
-  if (port>8000) {
+  // if (url.endsWith(":8883")) {
+  if (port > 8000) {
     // Allow secure channel, but without certificate validation
     myWifi.getWifiClientSecure().setInsecure();
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
@@ -258,10 +259,10 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
   mqtt.setTimeout(10);  // 10 seconds timeout
 
   int lines = 1;
-  // Find out how many lines are in the document. Each line is one topic/message. | is used as new line.
-  for (unsigned int i = 0; i<doc.length()-1; i++ ) {
-    if (doc.charAt(i) == '|')
-      lines++;
+  // Find out how many lines are in the document. Each line is one
+  // topic/message. | is used as new line.
+  for (unsigned int i = 0; i < doc.length() - 1; i++) {
+    if (doc.charAt(i) == '|') lines++;
   }
 
   int index = 0;
@@ -271,10 +272,11 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
 
     // Each line equals one topic post, format is <topic>:<value>
     String topic = line.substring(0, line.indexOf(":"));
-    String value = line.substring(line.indexOf(":")+1);
+    String value = line.substring(line.indexOf(":") + 1);
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-    Log.verbose(F("PUSH: topic '%s', value '%s'." CR), topic.c_str(), value.c_str());
-#endif 
+    Log.verbose(F("PUSH: topic '%s', value '%s'." CR), topic.c_str(),
+                value.c_str());
+#endif
     if (mqtt.publish(topic, value)) {
       Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
     } else {
@@ -282,7 +284,7 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
                 mqtt.lastError(), mqtt.returnCode());
     }
 
-    index = next+1;
+    index = next + 1;
     lines--;
   }
 
