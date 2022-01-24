@@ -36,7 +36,11 @@ json = { "id": id,
          "influxdb2-push": "",                          # InfluxDB2 settings
          "influxdb2-org": "",
          "influxdb2-bucket": "",
-         "influxdb2-auth": "" 
+         "influxdb2-auth": "" ,
+         "mqtt-push": "",
+         "mqtt-port": 1883,
+         "mqtt-user": "",
+         "mqtt-pass": ""
          }  
 set_config( url, json )
 

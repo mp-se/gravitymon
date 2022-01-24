@@ -271,7 +271,6 @@ void loopGravityOnInterval() {
     LOG_PERF_STOP("loop-gyro-read");
     myBatteryVoltage.read();
     checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
-    LOG_PERF_PUSH();
   }
 }
 

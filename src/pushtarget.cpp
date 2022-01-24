@@ -23,6 +23,8 @@ SOFTWARE.
  */
 #if defined (ESP8266)
 #include <ESP8266HTTPClient.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266mDNS.h>
 #else // defined (ESP32)
 #include <HTTPClient.h>
 #endif
@@ -45,13 +47,21 @@ void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
 
   if ((timePassed < interval) && !force) {
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-/*    Log.verbose(F("PUSH: Timer has not expired %l vs %l." CR), timePassed,
-                interval);*/
+    Log.verbose(F("PUSH: Timer has not expired %l vs %l." CR), timePassed,
+                interval);
 #endif
     return;
   }
 
   _ms = millis();
+
+  if (ESP.getFreeContStack() < 1500) {
+    Log.error(F("PUSH: Low on memory, skipping push since it will crasch. (stack=%d, heap=%d)." CR), ESP.getFreeContStack(), ESP.getFreeHeap());
+    myWifi.closeWifiClient();
+    return;
+  }
+
+  //MDNS.close();
 
   TemplatingEngine engine;
   engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime);
@@ -85,6 +95,8 @@ void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
     sendMqtt(engine);
     LOG_PERF_STOP("push-mqtt");
   }
+
+  LOG_PERF_PUSH();
 }
 
 //
