@@ -772,7 +772,7 @@ This is the format template used to create the json above.
   ispindel/${mdns}/interval:${sleep-interval}|
   ispindel/${mdns}/RSSI:${rssi}|
 
-This is a format template that is compatible with v0.6.
+This is a format template that is compatible with v0.6. Just replace the `topic` with the topic you want to post data to.
 
 .. code-block::
    
@@ -790,11 +790,12 @@ they can be uploaded manually afterwards.
 
    { 
       "project":"gravmon", 
-      "version":"0.4.10",  
+      "version":"0.7.0",  
       "html": [ 
          "index.min.htm", 
          "device.min.htm", 
          "config.min.htm", 
+         "format.min.htm", 
          "calibration.min.htm", 
          "about.min.htm" 
       ] 

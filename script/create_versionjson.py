@@ -42,13 +42,19 @@ def after_build(source, target, env):
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
+    # Copy file 6
+    source = dir + "/data/format.min.htm"
+    target = dir + "/bin/format.min.htm"
+    print( "Copy file : " + source + " -> " + target )
+    shutil.copyfile( source, target )
+
     target = dir + "/bin/version.json"
     ver = get_build_flag_value("CFG_APPVER")
 
     print( "Creating version.json" )
     f = open( target, "w" )
     f.write( "{ \"project\":\"gravmon\", \"version\":" + ver + ", " ) 
-    f.write( " \"html\": [ \"index.min.htm\", \"device.min.htm\", \"config.min.htm\", \"calibration.min.htm\", \"about.min.htm\" ] }" )
+    f.write( " \"html\": [ \"index.min.htm\", \"device.min.htm\", \"config.min.htm\", \"calibration.min.htm\", \"format.min.htm\", \"about.min.htm\" ] }" )
     f.close()
 
 

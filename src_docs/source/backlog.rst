@@ -8,6 +8,7 @@ Documentation
 
 - Write contribution instructions
 - Example project for creating integrations and instructions
+- Add instructions for other services
 
 Code
 ----
@@ -16,3 +17,4 @@ Code
 - Use pre-commit for validating check-in
 - Show indicated battery life based on interval (check if its feasable)
 - Add possibility to add one certificate for proper SSL authentication.
+- Add configurable Authentication/Token header to http/https requests
