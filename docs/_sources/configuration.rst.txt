@@ -684,19 +684,19 @@ This is the format template used to create the json above.
 .. code-block::
 
   {
-   "name" : "gravmon", "
-   "ID": "${id}", "
-   "token" : "gravmon", "
-   "interval": ${sleep-interval}, "
-   "temperature": ${temp}, "
-   "temp-units": "${temp-unit}", "
-   "gravity": ${gravity}, "
-   "angle": ${angle}, "
-   "battery": ${battery}, "
-   "rssi": ${rssi}, "
-   "corr-gravity": ${corr-gravity}, "
-   "gravity-unit": "${gravity-unit}", "
-   "run-time": ${run-time} "
+   "name" : "gravmon",
+   "ID": "${id}",
+   "token" : "gravmon",
+   "interval": ${sleep-interval}, 
+   "temperature": ${temp},
+   "temp-units": "${temp-unit}",
+   "gravity": ${gravity},
+   "angle": ${angle},
+   "battery": ${battery},
+   "rssi": ${rssi},
+   "corr-gravity": ${corr-gravity},
+   "gravity-unit": "${gravity-unit}",
+   "run-time": ${run-time}
   }
 
 
