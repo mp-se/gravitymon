@@ -11,13 +11,14 @@ Latest stable version. `Release v0.6 on Github <https://github.com/mp-se/gravity
 * SSL support for HTTP targets
 * SSL support for MQTT targets
 * SSL support for OTA
+* Added support for Plato
 * Added error handling for calibration page.
 * Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266). Not 
   really usable since wifi connection is extreamly slow with current Arduino releases (3-8 seconds).
 * Added experimental format editor so users can customize their data format used for pushing data. 
   This will reduce the need for custom push targets. As long as the service is supporting http 
   or https then the data format can be customized.
-* Added check so that pushing data is not done if memory is low (this will make it crash)
+* Added check so that pushing data is not done if memory is low (this will avoid crashes)
 * MQTT topic has been removed from config (handled via format templates)
 * MQTT port port number added. Port over 8000 will activate SSL.
 
