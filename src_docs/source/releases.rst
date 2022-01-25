@@ -6,7 +6,7 @@ Releases
 v0.7.0
 ------
 
-Latest stable version. `Release v0.6 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.6.0>`_
+Latest stable version. `Release v0.7 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.7.0>`_
 
 * SSL support for HTTP targets
 * SSL support for MQTT targets
