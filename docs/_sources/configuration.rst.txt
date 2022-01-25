@@ -12,6 +12,7 @@ One of the following conditions will place the device in ``configuration mode``:
 - Placed in horizontal mode 85-90 degrees
 - Charger connected >4.15V
 
+
 Status 
 ======
 
@@ -97,21 +98,35 @@ Push Settings
   :width: 800
   :alt: Push Settings
 
+.. note::
+
+   When enabling SSL this will not validate the root CA of the remote service, this is a design decision based on two aspects. Enabling CA validation will take 3-4s extra on each connection which means way less 
+   battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I belive this is a good balance.
+
+
 * **HTTP URL 1:**
 
-   Endpoint to send data via http. Format used Format used :ref:`data-formats-ispindle`
+   Endpoint to send data via http. Default format used Format used :ref:`data-formats-ispindle`. You can customize the format using :ref:`format-editor`.
+
+   If you add the prefix `https://` then the device will use SSL when sending data.
 
 * **HTTP URL 2:**
 
-   Endpoint to send data via http. Format used :ref:`data-formats-ispindle`
+   Endpoint to send data via http. Default format used :ref:`data-formats-ispindle`. You can customize the format using :ref:`format-editor`.
+
+   If you add the prefix `https://` then the device will use SSL when sending data. 
 
 * **Brewfather URL:**
 
    Endpoint to send data via http to brewfather. Format used :ref:`data-formats-brewfather`
 
+   SSL is not supported for this target.
+
 * **Influx DB v2 URL:**
 
-   Endpoint to send data via http to InfluxDB. Format used :ref:`data-formats-influxdb2`
+   Endpoint to send data via http to InfluxDB. Format used :ref:`data-formats-influxdb2`. You can customize the format using :ref:`format-editor`.
+
+   SSL is not supported for this target. Raise a issue on github if this is wanted.
 
 * **Influx DB v2 Organisation:**
 
@@ -127,11 +142,11 @@ Push Settings
 
 * **MQTT server:**
 
-   IP or name of server to send data to. Format used :ref:`data-formats-ispindle`
+   IP or name of server to send data to. Default format used :ref:`data-formats-mqtt`. You can customize the format using :ref:`format-editor`.
 
-* **MQTT Topic:**
+* **MQTT Port:**
 
-   Name of topic to publish sensor readings to, iSpindle format is used.
+   Which port should be used for communication, default is 1883 (standard port). For SSL use 8883 (any port over 8000 is treated as SSL). 
 
 * **MQTT user:**
 
@@ -149,6 +164,10 @@ Gravity Settings
   :width: 800
   :alt: Gravity Settings
 
+* **Gravity format:**
+
+   Gravity format can be eihter `SG` or `Plato`. The device will use SG Internally and convert to Plato when displaying data.
+
 * **Gravity formula:**
 
    Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use 
@@ -159,9 +178,9 @@ Gravity Settings
    Will apply a temperature calibration formula to the gravity as a second step. 
 
 .. warning::
-   This formula assumes that the calibration has been done at 20C.
+   This formula assumes that the calibration has been done at 20°C / 68°F.
 
-Formula used in temperature correction:
+Formula used in temperature correction. 
 
 ::
 
@@ -199,12 +218,104 @@ Hardware Settings
    For the OTA to work, place the following files (version.json + firmware.bin) at the location that you pointed out in OTA URL. If the version number in the json file is newer than in the 
    code the update will be done during startup.
 
+   If you have the previx `https://` then the device will use secure transfer without CA validation.
+
    Example; OTA URL (don't forget trailing dash), the name of the file should be firmware.bin
 
 .. code-block::
 
    http://192.168.1.1/firmware/gravmon/
   
+
+.. _format-editor:
+
+Format editor
+#############
+
+To reduce the need for adding custom endpoints for various services there is an built in format editor that allows the user to customize the format being sent to the push target. 
+
+.. warning::
+
+   Since the format templates can be big this function can be quite slow on a small device such as the esp8266. 
+
+.. image:: images/format.png
+  :width: 800
+  :alt: Format editor
+
+You enter the format data in the text field and the test button will show an example on what the output would look like. If the data cannot be formatted in json it will just be displayed as a long string.
+The save button will save the current formla and reload the data from the device. 
+
+.. tip::
+
+   If you save a blank string the default template will be loaded.
+
+These are the format keys available for use in the format.
+
+.. list-table:: Directory structure
+   :widths: 30 50 20
+   :header-rows: 1
+
+   * - key 
+     - description
+     - example
+   * - ${mdns}
+     - Name of the device
+     - gravmon2
+   * - ${id}
+     - Unique id of the device
+     - e422a3
+   * - ${sleep-interval}
+     - Seconds between data is pushed
+     - 900
+   * - ${temp}
+     - Temperature in format configured on device, one decimal
+     - 21.2
+   * - ${temp-c}
+     - Temperature in C, one decimal
+     - 21.2
+   * - ${temp-f}
+     - Temperature in F, one decimal
+     - 58.0
+   * - ${temp-unit}
+     - Temperature format `C` or `F`
+     - C
+   * - ${battery}
+     - Battery voltage, two decimals
+     - 3.89
+   * - ${rssi}
+     - Wifi signal strength
+     - -75
+   * - ${run-time}
+     - How long the last measurement took, two decimals
+     - 3.87
+   * - ${angle}
+     - Angle of the gyro, two decimals
+     - 28.67
+   * - ${tilt}
+     - Same as angle.
+     - 28.67
+   * - ${gravity}
+     - Calculated gravity, 4 decimals for SG and 1 for Plato.
+     - 1.0456
+   * - ${gravity-sg}
+     - Calculated gravity in SG, 4 decimals
+     - 1.0456
+   * - ${gravity-plato}
+     - Calculated gravity in Plato, 1 decimal
+     - 8.5
+   * - ${corr-gravity}
+     - Temperature corrected gravity, 4 decimals for SG and 1 for Plato.
+     - 1.0456
+   * - ${corr-gravity-sg}
+     - Temperature corrected gravity in SG, 4 decimals
+     - 1.0456
+   * - ${corr-gravity-plato}
+     - Temperature corrected gravity in Plato, 1 decimal
+     - 8.5
+   * - ${gravity-unit}
+     - Gravity format, `G` or `P`
+     - G
+
 
 .. _create-formula:
 
@@ -255,7 +366,7 @@ Other parameters are the same as in the configuration guide.
       "influxdb2-bucket": "Qwerty",
       "influxdb2-auth": "Qwerty",
       "mqtt-push": "192.168.1.50",
-      "mqtt-topic": "Qwerty",
+      "mqtt-port": 1883,
       "mqtt-user": "Qwerty",
       "mqtt-pass": "Qwerty",
       "sleep-interval": 30,
@@ -325,7 +436,7 @@ GET: /api/config/formula
 Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
 
 * ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
-* ``g1``-``g4`` are the corresponding gravity reaadings (in SG)
+* ``g1``-``g4`` are the corresponding gravity reaadings in SG or Plato depending on the device-format.
 
 .. code-block:: json
 
@@ -340,8 +451,9 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
       "g2": 1.053, 
       "g3": 1.062, 
       "g4": 1, 
-      "g5": 1 
-      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
+      "g5": 1,
+      "gravity-format": "G", 
+      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"
    }
 
 
@@ -350,7 +462,7 @@ POST: /api/config/device
 
 Used to update device settings via an HTTP POST command. Payload is in JSON format.
 
-* ``temp-format`` can be either ``C`` or ``F``
+* ``temp-format`` can be either ``C`` (Celcius) or ``F`` (Farenheight)
 
 .. code-block:: json
 
@@ -379,7 +491,7 @@ Used to update push settings via an HTTP POST command. Payload is in JSON format
       "influxdb2-bucket": "Qwerty",
       "influxdb2-auth": "Qwerty" 
       "mqtt-push": "192.168.1.50",
-      "mqtt-topic": "Qwerty",
+      "mqtt-port": 1883,
       "mqtt-user": "Qwerty",
       "mqtt-pass": "Qwerty",
    }  
@@ -391,6 +503,7 @@ POST: /api/config/gravity
 Used to update gravity settings via an HTTP POST command. Payload is in JSON format.
 
 * ``gravity-formula`` keywords ``temp`` and ``tilt`` are supported.
+* ``gravity-format`` can be either ``G`` (SG) or ``P`` (PLATO)
 
 .. note::
   ``gravity-temp-adjustment`` is defined as "on" or "off" when posting since this is the output values 
@@ -401,6 +514,7 @@ Used to update gravity settings via an HTTP POST command. Payload is in JSON for
    { 
       "id": "ee1bfc",                                                   
       "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
+      "gravity-format": "P",
       "gravity-temp-adjustment": "off"                                  
    }
 
@@ -491,7 +605,7 @@ present or the API call will fail.
             "influxdb2-bucket": "",
             "influxdb2-auth": "",
             "mqtt-push": "192.168.1.50",
-            "mqtt-topic": "Qwerty",
+            "mqtt-port": 1883,
             "mqtt-user": "Qwerty",
             "mqtt-pass": "Qwerty"
             }  
@@ -500,6 +614,7 @@ present or the API call will fail.
    url = "http://" + host + "/api/config/gravity"
    json = { "id": id, 
             "gravity-formula": "",                  
+            "gravity-format": "P",
             "gravity-temp-adjustment": "off"        # Adjust gravity (on/off)
             }
    set_config( url, json )
@@ -542,6 +657,7 @@ iSpindle format
 This is the format used for standard http posts. 
 
 * ``corr-gravity`` is an extended parameter containing a temperature corrected gravity reading.
+* ``gravity-format`` is an extended parameter containing the gravity format (G or P).
 * ``run-time`` is an extended parameter containing the number of seconds the execution took.
 
 .. code-block:: json
@@ -554,27 +670,49 @@ This is the format used for standard http posts.
       "temperature": 20.5,
       "temp-units": "C",
       "gravity": 1.0050,
-      "corr-gravity": 1.0050,
       "angle": 45.34,
       "battery": 3.67,
       "rssi": -12,
+
+      "corr-gravity": 1.0050,
+      "gravity-unit": "G",
       "run-time": 6
    }
-   
+
+This is the format template used to create the json above. 
+
+.. code-block::
+
+  {
+   "name" : "gravmon", "
+   "ID": "${id}", "
+   "token" : "gravmon", "
+   "interval": ${sleep-interval}, "
+   "temperature": ${temp}, "
+   "temp-units": "${temp-unit}", "
+   "gravity": ${gravity}, "
+   "angle": ${angle}, "
+   "battery": ${battery}, "
+   "rssi": ${rssi}, "
+   "corr-gravity": ${corr-gravity}, "
+   "gravity-unit": "${gravity-unit}", "
+   "run-time": ${run-time} "
+  }
+
 
 .. _data-formats-brewfather:
 
 Brewfather format 
 =================
 
-This is the format for Brewfather
+This is the format for Brewfather. See: `Brewfather API docs <https://docs.brewfather.app/integrations/custom-stream>`_
 
 .. code-block:: json
 
    { 
       "name" : "gravmon",     
       "temp": 20.5,
-      "temp-unit": "C",
+      "temp_unit": "C",
       "battery": 3.67,
       "gravity": 1.0050,
       "gravity_unit": "G",
@@ -591,7 +729,55 @@ This is the format for InfluxDB v2
 .. code-block::
    
    measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG,gravity=1.0004,corr-gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
+
+
+This is the format template used to create the json above. 
+
+.. code-block::
+
+  measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
+
+
+.. _data-formats-mqtt:
+
+MQTT
+====
+
+This is the format used to send data to MQTT. Each of the lines are specific topics
+
+.. code-block::
    
+   ispindel/device_name/tilt 89.96796
+   ispindel/device_name/temperature 21.375
+   ispindel/device_name/temp_units C
+   ispindel/device_name/battery 0.04171
+   ispindel/device_name/gravity 33.54894
+   ispindel/device_name/interval 1
+   ispindel/device_name/RSSI -58
+
+
+This is the format template used to create the json above. 
+
+.. tip::
+
+   Each line in the format is treated as one topic. The `|` is used as separator between lines and the first `:` is used as separator between topic and value. Each line is formatted as `<topic>:<value>`
+
+.. code-block::
+
+  ispindel/${mdns}/tilt:${angle}|
+  ispindel/${mdns}/temperature:${temp}|
+  ispindel/${mdns}/temp_units:${temp-unit}|
+  ispindel/${mdns}/battery:${battery}|
+  ispindel/${mdns}/gravity:${gravity}|
+  ispindel/${mdns}/interval:${sleep-interval}|
+  ispindel/${mdns}/RSSI:${rssi}|
+
+This is a format template that is compatible with v0.6. Just replace the `topic` with the topic you want to post data to.
+
+.. code-block::
+   
+   topic:{"name":"gravmon","ID":"${id}","token":"gravmon","interval": ${sleep-interval},"temperature": ${temp},"temp-units": "${temp-unit}","gravity":${gravity},"angle": ${angle},"battery":${battery},"rssi": ${rssi},"corr-gravity":${corr-gravity},"gravity-unit": "${gravity-unit}","run-time": ${run-time}}|
+
 
 version.json
 ============
@@ -604,11 +790,12 @@ they can be uploaded manually afterwards.
 
    { 
       "project":"gravmon", 
-      "version":"0.4.10",  
+      "version":"0.7.0",  
       "html": [ 
          "index.min.htm", 
          "device.min.htm", 
          "config.min.htm", 
+         "format.min.htm", 
          "calibration.min.htm", 
          "about.min.htm" 
       ] 

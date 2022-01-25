@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Licence" href="license.html" />
 
-    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>GravityMon 0.6.0 documentation</title>
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>GravityMon 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">GravityMon 0.6.0 documentation</div></a>
+      <a href="#"><div class="brand">GravityMon 0.7.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.6.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.7.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,6 +160,7 @@
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Setting up device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#format-editor">Format editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a></li>
@@ -197,10 +198,11 @@
 <h1>Welcome to GravityMon’s documentation!<a class="headerlink" href="#welcome-to-gravitymon-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v0.6</strong>. Last updated 2022-01-15</p>
+<p>This documentation reflects <strong>v0.7</strong>. Last updated 2022-01-23</p>
 </div>
 <p>GravityMon is a replacement firmare for the iSpindle firmware, it uses the same hardware configuration so
-you can easily switch between them. It’s used to measure gravity in beer and show the progress of fermentation.</p>
+you can easily switch between them.</p>
+<p>It’s used to measure gravity in beer and show the progress of fermentation.</p>
 <p>For more information on this topic and function please visit <a class="reference external" href="https://www.ispindel.de">iSpindel Homepage</a> .</p>
 <p>I started GravityMon because i like to create software and wanted to do some low level programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural.</p>
@@ -227,6 +229,8 @@ over the last 6 months without any issues.</p>
 <li><p>Visual graph showing how formula will be interpreted</p></li>
 <li><p>Using the temperature sensor in gyro instead of DS18B20 (faster)</p></li>
 <li><p>Built in performance measurements (used to optimise code)</p></li>
+<li><p>SSL support in standard HTTP and MQTT connections.</p></li>
+<li><p>Option to customize data posted to endpoints using template from the UI.</p></li>
 </ul>
 <p>For a complete breakdown see the <a class="reference internal" href="functionallity.html#functionallity"><span class="std std-ref">Functionallity</span></a></p>
 <p>This is a simple overview of the different components that the software contains. The green ones are only active during <cite>configuration mode</cite> in
@@ -283,13 +287,14 @@ the following libraries and without these this would have been much more difficu
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-0">v0.7.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-6-0">v0.6.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-5-0">v0.5.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-4-0">v0.4.0</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="functionallity.html#the-main-differences">The main differences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functionallity.html#the-main-features">The main features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functionallity.html#other-features">Other features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functionallity.html#experimental-features">Experimental features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functionallity.html#battery-life">Battery life</a></li>
@@ -309,6 +314,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration">Configuration</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#format-editor">Format editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-config">GET: /api/config</a></li>
@@ -327,6 +333,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#ispindle-format">iSpindle format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#brewfather-format">Brewfather format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#influx-db-v2">Influx DB v2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#mqtt">MQTT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#version-json">version.json</a></li>
 </ul>
 </li>

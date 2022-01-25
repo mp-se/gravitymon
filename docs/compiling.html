@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="Setting up device" href="configuration.html" />
 
-    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Compiling the software - GravityMon 0.6.0 documentation</title>
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>Compiling the software - GravityMon 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.6.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 0.7.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.6.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.7.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,6 +160,7 @@
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Setting up device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#format-editor">Format editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a></li>
@@ -221,13 +222,18 @@
 <li><p>gravity-debug; Maximum logging for trouble shooting, deep sleep is disabled.</p></li>
 <li><p>gravity-release; Standard release</p></li>
 <li><p>gravity-perf; Standard release but contains code for measuring performance</p></li>
+<li><p>gravity32-perf: Experimental version for ESP32.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is an experimental ESP32 target but since platformio only supports SDK 1.0.6 and the WIFI connection is really slow compared to ESP8266,
+so the recommendation is to wait for support on 2.0.x branch. With the tested version an wifi connection takes 3-8s on a ESP32 compared
+to 0.5s on an ESP8266. There is also a bug in OneWire connected to ESP32 that has not been fixed in the main repository yet.</p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The debug target can be unsable and crash the device under certain circumstanses.
-Excessive logging to the serial port can cause corruption and crashes. I’m still
-trying to figure out what causes these issues in the debug target. Other targets are
-stable and works fine.</p>
+<p>The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes.
+So only enable enough debugging to troubleshoot your changes.</p>
 </div>
 </div>
 <div class="section" id="source-structure">
@@ -299,39 +305,24 @@ stable and works fine.</p>
 <td><p>Enables the OTA functionallity in the code</p></td>
 </tr>
 <tr class="row-odd"><td><p>SKIP_SLEEPMODE</p></td>
-<td><p>THe device never goes into sleep mode, useful when developing.</p></td>
+<td><p>The device never goes into sleep mode, useful when developing.</p></td>
 </tr>
-<tr class="row-even"><td><p>CFG_DISABLE_LOGGING</p></td>
-<td><p>Done include verbose logging in Config class. Excessive logging may crash device.</p></td>
+<tr class="row-even"><td><p>xxx_DISABLE_LOGGING</p></td>
+<td><p>Done include verbose logging in the corresponding class. Excessive logging may crash device.</p></td>
 </tr>
-<tr class="row-odd"><td><p>GYRO_DISABLE_LOGGING</p></td>
-<td><p>Done include verbose logging in Gyro class. Excessive logging may crash device.</p></td>
-</tr>
-<tr class="row-even"><td><p>PUSH_DISABLE_LOGGING</p></td>
-<td><p>Done include verbose logging in PushTarget class. Excessive logging may crash device.</p></td>
-</tr>
-<tr class="row-odd"><td><p>TSEN_DISABLE_LOGGING</p></td>
-<td><p>Done include verbose logging in TempSensor class. Excessive logging may crash device.</p></td>
-</tr>
-<tr class="row-even"><td><p>WEB_DISABLE_LOGGING</p></td>
-<td><p>Done include verbose logging in WebServer class. Excessive logging may crash device.</p></td>
-</tr>
-<tr class="row-odd"><td><p>MAIN_DISABLE_LOGGING</p></td>
-<td><p>Done include verbose logging in Main class. Excessive logging may crash device.</p></td>
-</tr>
-<tr class="row-even"><td><p>USE_LITTLEFS</p></td>
+<tr class="row-odd"><td><p>USE_LITTLEFS</p></td>
 <td><p>Use the new filesystem in Ardurino</p></td>
 </tr>
-<tr class="row-odd"><td><p>EMBED_HTML</p></td>
+<tr class="row-even"><td><p>EMBED_HTML</p></td>
 <td><p>Html files are included in code, if not defined they are served from the file system.</p></td>
 </tr>
-<tr class="row-even"><td><p>USER_SSID</p></td>
+<tr class="row-odd"><td><p>USER_SSID</p></td>
 <td><p>If defined the device will always use this SSID</p></td>
 </tr>
-<tr class="row-odd"><td><p>USER_SSID_PWD</p></td>
+<tr class="row-even"><td><p>USER_SSID_PWD</p></td>
 <td><p>Password to the SSID</p></td>
 </tr>
-<tr class="row-even"><td><p>CFG_APPVER</p></td>
+<tr class="row-odd"><td><p>CFG_APPVER</p></td>
 <td><p>Defines the version of the compiled software</p></td>
 </tr>
 </tbody>

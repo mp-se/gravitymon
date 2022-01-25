@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Compiling the software" href="compiling.html" /><link rel="prev" title="Installation" href="installation.html" />
 
-    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Setting up device - GravityMon 0.6.0 documentation</title>
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>Setting up device - GravityMon 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.6.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 0.7.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.6.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.7.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,6 +160,7 @@
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Setting up device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#format-editor">Format editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#create-formula">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#rest-api">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#data-formats">Data Formats</a></li>
@@ -279,25 +280,34 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 <div class="section" id="push-settings">
 <h3>Push Settings<a class="headerlink" href="#push-settings" title="Permalink to this headline">¶</a></h3>
 <a class="reference internal image-reference" href="_images/config2.png"><img alt="Push Settings" src="_images/config2.png" style="width: 800px;"/></a>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When enabling SSL this will not validate the root CA of the remote service, this is a design decision based on two aspects. Enabling CA validation will take 3-4s extra on each connection which means way less
+battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I belive this is a good balance.</p>
+</div>
 <ul>
 <li><p><strong>HTTP URL 1:</strong></p>
 <blockquote>
-<div><p>Endpoint to send data via http. Format used Format used <a class="reference internal" href="#data-formats-ispindle"><span class="std std-ref">iSpindle format</span></a></p>
+<div><p>Endpoint to send data via http. Default format used Format used <a class="reference internal" href="#data-formats-ispindle"><span class="std std-ref">iSpindle format</span></a>. You can customize the format using <a class="reference internal" href="#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
+<p>If you add the prefix <cite>https://</cite> then the device will use SSL when sending data.</p>
 </div></blockquote>
 </li>
 <li><p><strong>HTTP URL 2:</strong></p>
 <blockquote>
-<div><p>Endpoint to send data via http. Format used <a class="reference internal" href="#data-formats-ispindle"><span class="std std-ref">iSpindle format</span></a></p>
+<div><p>Endpoint to send data via http. Default format used <a class="reference internal" href="#data-formats-ispindle"><span class="std std-ref">iSpindle format</span></a>. You can customize the format using <a class="reference internal" href="#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
+<p>If you add the prefix <cite>https://</cite> then the device will use SSL when sending data.</p>
 </div></blockquote>
 </li>
 <li><p><strong>Brewfather URL:</strong></p>
 <blockquote>
 <div><p>Endpoint to send data via http to brewfather. Format used <a class="reference internal" href="#data-formats-brewfather"><span class="std std-ref">Brewfather format</span></a></p>
+<p>SSL is not supported for this target.</p>
 </div></blockquote>
 </li>
 <li><p><strong>Influx DB v2 URL:</strong></p>
 <blockquote>
-<div><p>Endpoint to send data via http to InfluxDB. Format used <a class="reference internal" href="#data-formats-influxdb2"><span class="std std-ref">Influx DB v2</span></a></p>
+<div><p>Endpoint to send data via http to InfluxDB. Format used <a class="reference internal" href="#data-formats-influxdb2"><span class="std std-ref">Influx DB v2</span></a>. You can customize the format using <a class="reference internal" href="#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
+<p>SSL is not supported for this target. Raise a issue on github if this is wanted.</p>
 </div></blockquote>
 </li>
 <li><p><strong>Influx DB v2 Organisation:</strong></p>
@@ -317,12 +327,12 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 </li>
 <li><p><strong>MQTT server:</strong></p>
 <blockquote>
-<div><p>IP or name of server to send data to. Format used <a class="reference internal" href="#data-formats-ispindle"><span class="std std-ref">iSpindle format</span></a></p>
+<div><p>IP or name of server to send data to. Default format used <a class="reference internal" href="#data-formats-mqtt"><span class="std std-ref">MQTT</span></a>. You can customize the format using <a class="reference internal" href="#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
 </div></blockquote>
 </li>
-<li><p><strong>MQTT Topic:</strong></p>
+<li><p><strong>MQTT Port:</strong></p>
 <blockquote>
-<div><p>Name of topic to publish sensor readings to, iSpindle format is used.</p>
+<div><p>Which port should be used for communication, default is 1883 (standard port). For SSL use 8883 (any port over 8000 is treated as SSL).</p>
 </div></blockquote>
 </li>
 <li><p><strong>MQTT user:</strong></p>
@@ -341,6 +351,11 @@ you are collecting angle/tilt for calibration. If this is unchecked the device w
 <h3>Gravity Settings<a class="headerlink" href="#gravity-settings" title="Permalink to this headline">¶</a></h3>
 <a class="reference internal image-reference" href="_images/config3.png"><img alt="Gravity Settings" src="_images/config3.png" style="width: 800px;"/></a>
 <ul>
+<li><p><strong>Gravity format:</strong></p>
+<blockquote>
+<div><p>Gravity format can be eihter <cite>SG</cite> or <cite>Plato</cite>. The device will use SG Internally and convert to Plato when displaying data.</p>
+</div></blockquote>
+</li>
 <li><p><strong>Gravity formula:</strong></p>
 <blockquote>
 <div><p>Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use
@@ -355,9 +370,9 @@ the feature to create the formula by supplying the raw data. See <a class="refer
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This formula assumes that the calibration has been done at 20C.</p>
+<p>This formula assumes that the calibration has been done at 20°C / 68°F.</p>
 </div>
-<p>Formula used in temperature correction:</p>
+<p>Formula used in temperature correction.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gravity</span><span class="o">*</span><span class="p">((</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">temp</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span>
 <span class="p">(</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">cal</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
@@ -391,6 +406,7 @@ been running the value would be totally off.</p>
 <div><p>Should point to a URL where the .bin file + version.json file is located.</p>
 <p>For the OTA to work, place the following files (version.json + firmware.bin) at the location that you pointed out in OTA URL. If the version number in the json file is newer than in the
 code the update will be done during startup.</p>
+<p>If you have the previx <cite>https://</cite> then the device will use secure transfer without CA validation.</p>
 <p>Example; OTA URL (don’t forget trailing dash), the name of the file should be firmware.bin</p>
 </div></blockquote>
 </li>
@@ -401,15 +417,123 @@ code the update will be done during startup.</p>
 </div>
 </div>
 </div>
+<div class="section" id="format-editor">
+<span id="id2"></span><h1>Format editor<a class="headerlink" href="#format-editor" title="Permalink to this headline">¶</a></h1>
+<p>To reduce the need for adding custom endpoints for various services there is an built in format editor that allows the user to customize the format being sent to the push target.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Since the format templates can be big this function can be quite slow on a small device such as the esp8266.</p>
+</div>
+<a class="reference internal image-reference" href="_images/format.png"><img alt="Format editor" src="_images/format.png" style="width: 800px;"/></a>
+<p>You enter the format data in the text field and the test button will show an example on what the output would look like. If the data cannot be formatted in json it will just be displayed as a long string.
+The save button will save the current formla and reload the data from the device.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you save a blank string the default template will be loaded.</p>
+</div>
+<p>These are the format keys available for use in the format.</p>
+<div class="table-wrapper"><table class="colwidths-given docutils align-default" id="id6">
+<caption><span class="caption-text">Directory structure</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 30%"/>
+<col style="width: 50%"/>
+<col style="width: 20%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>key</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>${mdns}</p></td>
+<td><p>Name of the device</p></td>
+<td><p>gravmon2</p></td>
+</tr>
+<tr class="row-odd"><td><p>${id}</p></td>
+<td><p>Unique id of the device</p></td>
+<td><p>e422a3</p></td>
+</tr>
+<tr class="row-even"><td><p>${sleep-interval}</p></td>
+<td><p>Seconds between data is pushed</p></td>
+<td><p>900</p></td>
+</tr>
+<tr class="row-odd"><td><p>${temp}</p></td>
+<td><p>Temperature in format configured on device, one decimal</p></td>
+<td><p>21.2</p></td>
+</tr>
+<tr class="row-even"><td><p>${temp-c}</p></td>
+<td><p>Temperature in C, one decimal</p></td>
+<td><p>21.2</p></td>
+</tr>
+<tr class="row-odd"><td><p>${temp-f}</p></td>
+<td><p>Temperature in F, one decimal</p></td>
+<td><p>58.0</p></td>
+</tr>
+<tr class="row-even"><td><p>${temp-unit}</p></td>
+<td><p>Temperature format <cite>C</cite> or <cite>F</cite></p></td>
+<td><p>C</p></td>
+</tr>
+<tr class="row-odd"><td><p>${battery}</p></td>
+<td><p>Battery voltage, two decimals</p></td>
+<td><p>3.89</p></td>
+</tr>
+<tr class="row-even"><td><p>${rssi}</p></td>
+<td><p>Wifi signal strength</p></td>
+<td><p>-75</p></td>
+</tr>
+<tr class="row-odd"><td><p>${run-time}</p></td>
+<td><p>How long the last measurement took, two decimals</p></td>
+<td><p>3.87</p></td>
+</tr>
+<tr class="row-even"><td><p>${angle}</p></td>
+<td><p>Angle of the gyro, two decimals</p></td>
+<td><p>28.67</p></td>
+</tr>
+<tr class="row-odd"><td><p>${tilt}</p></td>
+<td><p>Same as angle.</p></td>
+<td><p>28.67</p></td>
+</tr>
+<tr class="row-even"><td><p>${gravity}</p></td>
+<td><p>Calculated gravity, 4 decimals for SG and 1 for Plato.</p></td>
+<td><p>1.0456</p></td>
+</tr>
+<tr class="row-odd"><td><p>${gravity-sg}</p></td>
+<td><p>Calculated gravity in SG, 4 decimals</p></td>
+<td><p>1.0456</p></td>
+</tr>
+<tr class="row-even"><td><p>${gravity-plato}</p></td>
+<td><p>Calculated gravity in Plato, 1 decimal</p></td>
+<td><p>8.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>${corr-gravity}</p></td>
+<td><p>Temperature corrected gravity, 4 decimals for SG and 1 for Plato.</p></td>
+<td><p>1.0456</p></td>
+</tr>
+<tr class="row-even"><td><p>${corr-gravity-sg}</p></td>
+<td><p>Temperature corrected gravity in SG, 4 decimals</p></td>
+<td><p>1.0456</p></td>
+</tr>
+<tr class="row-odd"><td><p>${corr-gravity-plato}</p></td>
+<td><p>Temperature corrected gravity in Plato, 1 decimal</p></td>
+<td><p>8.5</p></td>
+</tr>
+<tr class="row-even"><td><p>${gravity-unit}</p></td>
+<td><p>Gravity format, <cite>G</cite> or <cite>P</cite></p></td>
+<td><p>G</p></td>
+</tr>
+</tbody>
+</table></div>
+</div>
 <div class="section" id="create-formula">
-<span id="id2"></span><h1>Create formula<a class="headerlink" href="#create-formula" title="Permalink to this headline">¶</a></h1>
+<span id="id3"></span><h1>Create formula<a class="headerlink" href="#create-formula" title="Permalink to this headline">¶</a></h1>
 <a class="reference internal image-reference" href="_images/formula1.png"><img alt="Formula data" src="_images/formula1.png" style="width: 800px;"/></a>
 <p>Here you can enter up to 5 values (angles + gravity) that is then used to create the formula. Angles equal to zero will be regarded as empty even if there is a gravity reading.</p>
 <a class="reference internal image-reference" href="_images/formula2.png"><img alt="Formula graph" src="_images/formula2.png" style="width: 800px;"/></a>
 <p>Once the formula is created a graph over the entered values and a simulation of the formula will give you a nice overview on how the formula will work.</p>
 </div>
 <div class="section" id="rest-api">
-<span id="id3"></span><h1>REST API<a class="headerlink" href="#rest-api" title="Permalink to this headline">¶</a></h1>
+<span id="id4"></span><h1>REST API<a class="headerlink" href="#rest-api" title="Permalink to this headline">¶</a></h1>
 <p>All the API’s use a key called <code class="docutils literal notranslate"><span class="pre">ID</span></code> which is the unique device id (chip id). This is used as an API key when sending requests to the device.</p>
 <div class="section" id="get-api-config">
 <h2>GET: /api/config<a class="headerlink" href="#get-api-config" title="Permalink to this headline">¶</a></h2>
@@ -432,7 +556,7 @@ code the update will be done during startup.</p>
 <span class="w">   </span><span class="nt">"influxdb2-bucket"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-auth"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"mqtt-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"192.168.1.50"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"mqtt-topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-port"</span><span class="p">:</span><span class="w"> </span><span class="mi">1883</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"mqtt-user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"mqtt-pass"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"sleep-interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"></span>
@@ -496,7 +620,7 @@ code the update will be done during startup.</p>
 <p>Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a4</span></code> are the angles/tilt readings (up to 5 are currently supported)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g4</span></code> are the corresponding gravity reaadings (in SG)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g4</span></code> are the corresponding gravity reaadings in SG or Plato depending on the device-format.</p></li>
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ee1bfc"</span><span class="p">,</span><span class="w"></span>
@@ -509,8 +633,9 @@ code the update will be done during startup.</p>
 <span class="w">   </span><span class="nt">"g2"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.053</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"g3"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.062</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"g4"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"g5"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"gravity-formula"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"g5"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gravity-format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gravity-formula"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
@@ -519,7 +644,7 @@ code the update will be done during startup.</p>
 <h2>POST: /api/config/device<a class="headerlink" href="#post-api-config-device" title="Permalink to this headline">¶</a></h2>
 <p>Used to update device settings via an HTTP POST command. Payload is in JSON format.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> (Celcius) or <code class="docutils literal notranslate"><span class="pre">F</span></code> (Farenheight)</p></li>
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ee1bfc"</span><span class="p">,</span><span class="w"></span>
@@ -543,7 +668,7 @@ code the update will be done during startup.</p>
 <span class="w">   </span><span class="nt">"influxdb2-bucket"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-auth"</span><span class="p">:</span><span class="w"> </span><span class="nt">"Qwerty"</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"mqtt-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"192.168.1.50"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"mqtt-topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mqtt-port"</span><span class="p">:</span><span class="w"> </span><span class="mi">1883</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"mqtt-user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"mqtt-pass"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -555,6 +680,7 @@ code the update will be done during startup.</p>
 <p>Used to update gravity settings via an HTTP POST command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">gravity-formula</span></code> keywords <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">tilt</span></code> are supported.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gravity-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">G</span></code> (SG) or <code class="docutils literal notranslate"><span class="pre">P</span></code> (PLATO)</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -564,6 +690,7 @@ from a checkbox, when reading data it’s sent as boolean (true,false).</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ee1bfc"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity-formula"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gravity-format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"P"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity-temp-adjustment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"off"</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
@@ -647,7 +774,7 @@ present or the API call will fail.</p>
          <span class="s2">"influxdb2-bucket"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"influxdb2-auth"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"mqtt-push"</span><span class="p">:</span> <span class="s2">"192.168.1.50"</span><span class="p">,</span>
-         <span class="s2">"mqtt-topic"</span><span class="p">:</span> <span class="s2">"Qwerty"</span><span class="p">,</span>
+         <span class="s2">"mqtt-port"</span><span class="p">:</span> <span class="mi">1883</span><span class="p">,</span>
          <span class="s2">"mqtt-user"</span><span class="p">:</span> <span class="s2">"Qwerty"</span><span class="p">,</span>
          <span class="s2">"mqtt-pass"</span><span class="p">:</span> <span class="s2">"Qwerty"</span>
          <span class="p">}</span>
@@ -656,6 +783,7 @@ present or the API call will fail.</p>
 <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://"</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">"/api/config/gravity"</span>
 <span class="n">json</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"id"</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
          <span class="s2">"gravity-formula"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+         <span class="s2">"gravity-format"</span><span class="p">:</span> <span class="s2">"P"</span><span class="p">,</span>
          <span class="s2">"gravity-temp-adjustment"</span><span class="p">:</span> <span class="s2">"off"</span>        <span class="c1"># Adjust gravity (on/off)</span>
          <span class="p">}</span>
 <span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
@@ -688,12 +816,13 @@ present or the API call will fail.</p>
 </div>
 </div>
 <div class="section" id="data-formats">
-<span id="id4"></span><h1>Data Formats<a class="headerlink" href="#data-formats" title="Permalink to this headline">¶</a></h1>
+<span id="id5"></span><h1>Data Formats<a class="headerlink" href="#data-formats" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="ispindle-format">
 <span id="data-formats-ispindle"></span><h2>iSpindle format<a class="headerlink" href="#ispindle-format" title="Permalink to this headline">¶</a></h2>
 <p>This is the format used for standard http posts.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">corr-gravity</span></code> is an extended parameter containing a temperature corrected gravity reading.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gravity-format</span></code> is an extended parameter containing the gravity format (G or P).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">run-time</span></code> is an extended parameter containing the number of seconds the execution took.</p></li>
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
@@ -704,22 +833,42 @@ present or the API call will fail.</p>
 <span class="w">   </span><span class="nt">"temperature"</span><span class="p">:</span><span class="w"> </span><span class="mf">20.5</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp-units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"corr-gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"angle"</span><span class="p">:</span><span class="w"> </span><span class="mf">45.34</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"rssi"</span><span class="p">:</span><span class="w"> </span><span class="mi">-12</span><span class="p">,</span><span class="w"></span>
+
+<span class="w">   </span><span class="nt">"corr-gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gravity-unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"run-time"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This is the format template used to create the json above.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
+ "name" : "gravmon", "
+ "ID": "${id}", "
+ "token" : "gravmon", "
+ "interval": ${sleep-interval}, "
+ "temperature": ${temp}, "
+ "temp-units": "${temp-unit}", "
+ "gravity": ${gravity}, "
+ "angle": ${angle}, "
+ "battery": ${battery}, "
+ "rssi": ${rssi}, "
+ "corr-gravity": ${corr-gravity}, "
+ "gravity-unit": "${gravity-unit}", "
+ "run-time": ${run-time} "
+}
 </pre></div>
 </div>
 </div>
 <div class="section" id="brewfather-format">
 <span id="data-formats-brewfather"></span><h2>Brewfather format<a class="headerlink" href="#brewfather-format" title="Permalink to this headline">¶</a></h2>
-<p>This is the format for Brewfather</p>
+<p>This is the format for Brewfather. See: <a class="reference external" href="https://docs.brewfather.app/integrations/custom-stream">Brewfather API docs</a></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp"</span><span class="p">:</span><span class="w"> </span><span class="mf">20.5</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"temp-unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"temp_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w"></span>
@@ -733,6 +882,41 @@ present or the API call will fail.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">measurement</span><span class="p">,</span><span class="n">host</span><span class="o">=&lt;</span><span class="n">mdns</span><span class="o">&gt;</span><span class="p">,</span><span class="n">device</span><span class="o">=&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="p">,</span><span class="n">temp</span><span class="o">-</span><span class="nb">format</span><span class="o">=&lt;</span><span class="n">C</span><span class="o">|</span><span class="n">F</span><span class="o">&gt;</span><span class="p">,</span><span class="n">gravity</span><span class="o">-</span><span class="nb">format</span><span class="o">=</span><span class="n">SG</span><span class="p">,</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">corr</span><span class="o">-</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">angle</span><span class="o">=</span><span class="mf">45.45</span><span class="p">,</span><span class="n">temp</span><span class="o">=</span><span class="mf">20.1</span><span class="p">,</span><span class="n">battery</span><span class="o">=</span><span class="mf">3.96</span><span class="p">,</span><span class="n">rssi</span><span class="o">=-</span><span class="mi">18</span>
 </pre></div>
 </div>
+<p>This is the format template used to create the json above.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
+</pre></div>
+</div>
+</div>
+<div class="section" id="mqtt">
+<span id="data-formats-mqtt"></span><h2>MQTT<a class="headerlink" href="#mqtt" title="Permalink to this headline">¶</a></h2>
+<p>This is the format used to send data to MQTT. Each of the lines are specific topics</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">tilt</span> <span class="mf">89.96796</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">temperature</span> <span class="mf">21.375</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">temp_units</span> <span class="n">C</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">battery</span> <span class="mf">0.04171</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">gravity</span> <span class="mf">33.54894</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">interval</span> <span class="mi">1</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">RSSI</span> <span class="o">-</span><span class="mi">58</span>
+</pre></div>
+</div>
+<p>This is the format template used to create the json above.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Each line in the format is treated as one topic. The <cite>|</cite> is used as separator between lines and the first <cite>:</cite> is used as separator between topic and value. Each line is formatted as <cite>&lt;topic&gt;:&lt;value&gt;</cite></p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ispindel/${mdns}/tilt:${angle}|
+ispindel/${mdns}/temperature:${temp}|
+ispindel/${mdns}/temp_units:${temp-unit}|
+ispindel/${mdns}/battery:${battery}|
+ispindel/${mdns}/gravity:${gravity}|
+ispindel/${mdns}/interval:${sleep-interval}|
+ispindel/${mdns}/RSSI:${rssi}|
+</pre></div>
+</div>
+<p>This is a format template that is compatible with v0.6. Just replace the <cite>topic</cite> with the topic you want to post data to.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>topic:{"name":"gravmon","ID":"${id}","token":"gravmon","interval": ${sleep-interval},"temperature": ${temp},"temp-units": "${temp-unit}","gravity":${gravity},"angle": ${angle},"battery":${battery},"rssi": ${rssi},"corr-gravity":${corr-gravity},"gravity-unit": "${gravity-unit}","run-time": ${run-time}}|
+</pre></div>
+</div>
 </div>
 <div class="section" id="version-json">
 <h2>version.json<a class="headerlink" href="#version-json" title="Permalink to this headline">¶</a></h2>
@@ -741,11 +925,12 @@ upgrade to a version that serve the html files from the file system. If they don
 they can be uploaded manually afterwards.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"project"</span><span class="p">:</span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"0.4.10"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"0.7.0"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"html"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"index.min.htm"</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"device.min.htm"</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"config.min.htm"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">"format.min.htm"</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"calibration.min.htm"</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"about.min.htm"</span><span class="w"></span>
 <span class="w">   </span><span class="p">]</span><span class="w"></span>
@@ -814,6 +999,7 @@ they can be uploaded manually afterwards.</p>
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#format-editor">Format editor</a></li>
 <li><a class="reference internal" href="#create-formula">Create formula</a></li>
 <li><a class="reference internal" href="#rest-api">REST API</a><ul>
 <li><a class="reference internal" href="#get-api-config">GET: /api/config</a></li>
@@ -832,6 +1018,7 @@ they can be uploaded manually afterwards.</p>
 <li><a class="reference internal" href="#ispindle-format">iSpindle format</a></li>
 <li><a class="reference internal" href="#brewfather-format">Brewfather format</a></li>
 <li><a class="reference internal" href="#influx-db-v2">Influx DB v2</a></li>
+<li><a class="reference internal" href="#mqtt">MQTT</a></li>
 <li><a class="reference internal" href="#version-json">version.json</a></li>
 </ul>
 </li>

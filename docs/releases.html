@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionallity" href="functionallity.html" /><link rel="prev" title="Licence" href="license.html" />
 
-    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Releases - GravityMon 0.6.0 documentation</title>
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>Releases - GravityMon 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.6.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 0.7.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.6.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.7.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -160,6 +160,7 @@
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Setting up device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html#format-editor">Format editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a></li>
@@ -195,9 +196,33 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="v0-7-0">
+<h2>v0.7.0<a class="headerlink" href="#v0-7-0" title="Permalink to this headline">¶</a></h2>
+<p>Latest stable version. <a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.6.0">Release v0.6 on Github</a></p>
+<ul class="simple">
+<li><p>SSL support for HTTP targets</p></li>
+<li><p>SSL support for MQTT targets</p></li>
+<li><p>SSL support for OTA</p></li>
+<li><p>Added error handling for calibration page.</p></li>
+<li><p>Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266). Not
+really usable since wifi connection is extreamly slow with current Arduino releases (3-8 seconds).</p></li>
+<li><p>Added experimental format editor so users can customize their data format used for pushing data.
+This will reduce the need for custom push targets. As long as the service is supporting http
+or https then the data format can be customized.</p></li>
+<li><p>Added check so that pushing data is not done if memory is low (this will make it crash)</p></li>
+<li><p>MQTT topic has been removed from config (handled via format templates)</p></li>
+<li><p>MQTT port port number added. Port over 8000 will activate SSL.</p></li>
+<li><p><strong>Breaking change</strong>: To simplify the internal structure the
+temp sensor adjustment is now stored in C. So if you have
+enabled this function using F you will need to go into
+the configuration and update the adjustment factor again (hardware config).</p></li>
+<li><p><strong>Breaking change</strong>: The MQTT push option has been changed to match the iSpindle behaviour. If
+the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
+</ul>
+</div>
 <div class="section" id="v0-6-0">
 <h2>v0.6.0<a class="headerlink" href="#v0-6-0" title="Permalink to this headline">¶</a></h2>
-<p>Latest stable version.</p>
+<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.6.0">Release v0.6 on Github</a></p>
 <ul class="simple">
 <li><p>Changed the wifi manager and refactored wifi.cpp</p></li>
 <li><p>LED is now turned on when Wifi Portal is open</p></li>
@@ -210,10 +235,10 @@
 <li><p>Added support for MQTT</p></li>
 <li><p>Bug: MPU init sometimes caused crash during startup.</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.6.0">Release v0.6 on Github</a></p>
 </div>
 <div class="section" id="v0-5-0">
 <h2>v0.5.0<a class="headerlink" href="#v0-5-0" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.5.0">Release v0.5 on Github</a></p>
 <ul class="simple">
 <li><p>Added feature to calcuate formula on device</p></li>
 <li><p>Total rewrite of documentation</p></li>
@@ -222,11 +247,13 @@
 <li><p>Cleanup of code</p></li>
 <li><p>Refactor code from C to C++</p></li>
 </ul>
-<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.5.0">Release v0.5 on Github</a></p>
 </div>
 <div class="section" id="v0-4-0">
 <h2>v0.4.0<a class="headerlink" href="#v0-4-0" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.4.0">Release v0.4 on Github</a></p>
+<ul class="simple">
+<li><p>First release</p></li>
+</ul>
 </div>
 </div>
 
@@ -278,6 +305,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
+<li><a class="reference internal" href="#v0-7-0">v0.7.0</a></li>
 <li><a class="reference internal" href="#v0-6-0">v0.6.0</a></li>
 <li><a class="reference internal" href="#v0-5-0">v0.5.0</a></li>
 <li><a class="reference internal" href="#v0-4-0">v0.4.0</a></li>
