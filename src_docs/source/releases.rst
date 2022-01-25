@@ -6,25 +6,19 @@ Releases
 v0.7.0
 ------
 
-Development version (dev branch)
+Latest stable version. `Release v0.6 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.6.0>`_
 
 * SSL support for HTTP targets
 * SSL support for MQTT targets
 * SSL support for OTA
-
 * Added error handling for calibration page.
-
 * Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266). Not 
   really usable since wifi connection is extreamly slow with current Arduino releases (3-8 seconds).
-
 * Added experimental format editor so users can customize their data format used for pushing data. 
   This will reduce the need for custom push targets. As long as the service is supporting http 
   or https then the data format can be customized.
-
 * Added check so that pushing data is not done if memory is low (this will make it crash)
-
 * MQTT topic has been removed from config (handled via format templates)
-
 * MQTT port port number added. Port over 8000 will activate SSL.
 
 * **Breaking change**: To simplify the internal structure the 
@@ -38,7 +32,7 @@ Development version (dev branch)
 v0.6.0
 ------
 
-Latest stable version.
+`Release v0.6 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.6.0>`_
 
 * Changed the wifi manager and refactored wifi.cpp
 * LED is now turned on when Wifi Portal is open
@@ -51,10 +45,10 @@ Latest stable version.
 * Added support for MQTT
 * Bug: MPU init sometimes caused crash during startup.
 
-`Release v0.6 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.6.0>`_
-
 v0.5.0
 ------
+
+`Release v0.5 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.5.0>`_
 
 * Added feature to calcuate formula on device
 * Total rewrite of documentation
@@ -63,9 +57,9 @@ v0.5.0
 * Cleanup of code
 * Refactor code from C to C++
 
-`Release v0.5 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.5.0>`_
-
 v0.4.0
 ------
 
 `Release v0.4 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.4.0>`_
+
+* First release

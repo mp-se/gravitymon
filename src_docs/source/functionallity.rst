@@ -8,27 +8,32 @@ The main features
 
 * **Operates in two modes gravity monitoring and configuration mode**
 
-  In ``gravity monitoring`` mode it behaves just like the iSpindle, it wakes up at regular intervals, measures angle/tile, temperature, calculates gravity and pushes the data to defined endpoints. 
+  In ``gravity monitoring`` mode it behaves just like the iSpindle, it wakes up at regular intervals, measures 
+  angle/tile, temperature, calculates gravity and pushes the data to defined endpoints. 
 
-  In ``configuration mode`` the device is always active and the webserver is active. Here you can view the angle/tilt values, change configuration options and more. When in this mode you can also interact with the device
+  In ``configuration mode`` the device is always active and the webserver is active. Here you can view the 
+  angle/tilt values, change configuration options and more. When in this mode you can also interact with the device
   via an REST API so data can be pushed to the device via scripts (see API section for more information).
 
-  You can force the device into ``configuration mode`` while measuring gravity. This is useful when calibrating the device so you don't needs to wait for the device to wake up and push the data. The entire calibration
+  You can force the device into ``configuration mode`` while measuring gravity. This is useful when calibrating 
+  the device so you don't needs to wait for the device to wake up and push the data. The entire calibration
   sequence can be handled via the web interface without need for additional software tools.
 
   See the :ref:`setting-up-device` section for more information on how to trigger the configuration mode.
 
 * **Can send data to multiple endpoints at once**
 
-  The original iSpindle can only have one destination, this software will push data to all defined endpoints so in theory you can use them all. However this will consume a lot of battery power so use only as many as needed. 
+  The original iSpindle can only have one destination, this software will push data to all defined endpoints so 
+  in theory you can use them all. However this will consume more battery power so use only as many as needed. 
 
-  Currently the device supports the following endpoints: http (2 different), influxdb2 and Brewfather
+  Currently the device supports the following endpoints: http (2 different), influxdb2, Brewfather and MQTT.
 
   If you want additional targets please raise a feature request in the github repo.
 
 * **Create gravity formulas on the device**
 
-  Another big difference is that this software can create the gravity formula in the device, just enter the angle/gravity data that you have collected. You will also see a graph simulating how the formula would work. 
+  Another big difference is that this software can create the gravity formula in the device, just enter the 
+  angle/gravity data that you have collected. You will also see a graph simulating how the formula would work. 
 
 .. note::
 
@@ -36,8 +41,10 @@ The main features
 
 * **Customize the data format beeing sent to push targets**
 
-  In order to make it easier to support more targets there is a built in format editor that can be used to customize the data that is to be sent. This way you can easily adapt the software to new targets without coding. If you have 
-  a good template please share it on the girhub repository and I will add it to the documentation for other users to enjoy. See the :ref:`format-editor` for more information.
+  In order to make it easier to support more targets there is a built in format editor that can be used to 
+  customize the data that is to be sent. This way you can easily adapt the software to new targets without coding. 
+  If you have a good template please share it on the girhub repository and I will add it to the documentation 
+  for other users to enjoy. See the :ref:`format-editor` for more information.
 
 .. note::
 
@@ -45,7 +52,8 @@ The main features
 
 * **Automatic temperature adjustment of gravity reading**
 
-  If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice feature that can correct the gravity as a second step making this independant of the formula. 
+  If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice 
+  feature that can correct the gravity as a second step making this independant of the formula. 
 
 .. note::
 
@@ -111,10 +119,15 @@ Experimental features
 Battery life
 ------------
 
-I'm currently measuring battery life of v0.5 but previous versions have been able to measure gravity for a 2-3 weeks without issues (Using 900 seconds as interval). 
+I'm currently measuring battery life of v0.5 but previous versions have been able to measure gravity for 
+a 2-3 weeks without issues (Using 900 seconds as interval). 
+
+I had a device running with an sleep interval of only 30s with ok wifi connection. The device lasted 
+12 days which i think is excellent considering the short sleep interval. From what I have discovered 
+it's the WIFI connection that has the most impact on the battery life. In a perfect scenario it 
+can take around 400ms but can in some cases take up to 8 seconds. 
 
 *More on this topics once my tests are done*
-
 
 Performance 
 -----------
