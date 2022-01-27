@@ -125,10 +125,14 @@ the following libraries and without these this would have been much more difficu
    functionallity
    installation
    configuration
+   formula
+   services
+   advanced
+   api
+   data
    compiling
    contributing
    q_and_a
-   backlog
 
 Indices and tables
 ==================

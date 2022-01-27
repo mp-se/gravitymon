@@ -29,7 +29,7 @@ SOFTWARE.
 
 #define CFG_JSON_BUFSIZE 3192
 
-#define CFG_APPNAME "GravityMon "         // Name of firmware
+#define CFG_APPNAME "GravityMon"          // Name of firmware
 #define CFG_FILENAME "/gravitymon.json"   // Name of config file
 #define CFG_HW_FILENAME "/hardware.json"  // Name of config file for hw
 
