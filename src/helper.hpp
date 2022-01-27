@@ -27,6 +27,9 @@ SOFTWARE.
 // Includes
 #include <main.hpp>
 
+#define ERR_FILENAME "/error.log"
+#define ERR_COUNT 15
+
 // Sleep mode
 void deepSleep(int t);
 
@@ -57,6 +60,17 @@ class SerialDebug {
  public:
   explicit SerialDebug(const uint32_t serialSpeed = 115200L);
   static Logging* getLog() { return &Log; }
+};
+
+class ErrorFileLog {
+ private:
+  String errors[ERR_COUNT];
+
+ public:
+  ErrorFileLog();
+  const char* getEntry(int idx);
+  void addEntry(String error);
+  void save();
 };
 
 class BatteryVoltage {
@@ -156,6 +170,7 @@ extern PerfLogging myPerfLogging;
 
 // Global instance created
 extern SerialDebug mySerial;
+extern ErrorFileLog myLastErrors;
 extern BatteryVoltage myBatteryVoltage;
 
 #endif  // SRC_HELPER_HPP_

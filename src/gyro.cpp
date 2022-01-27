@@ -44,7 +44,7 @@ bool GyroSensor::setup() {
                           // compilation difficulties
 
   if (!accelgyro.testConnection()) {
-    Log.error(F("GYRO: Failed to connect to MPU6050 (gyro)." CR));
+    myLastErrors.addEntry(F("GYRO: Failed to connect to gyro"));
     _sensorConnected = false;
   } else {
 #if !defined(GYRO_DISABLE_LOGGING)
@@ -286,7 +286,7 @@ void GyroSensor::applyCalibration() {
   if ((_calibrationOffset.ax + _calibrationOffset.ay + _calibrationOffset.az +
        _calibrationOffset.gx + _calibrationOffset.gy + _calibrationOffset.gz) ==
       0) {
-    Log.error(F("GYRO: No valid calibraion values exist, aborting." CR));
+    myLastErrors.addEntry(F("GYRO: No valid calibration values, aborting"));
     return;
   }
 

@@ -26,9 +26,10 @@ SOFTWARE.
 
 // Includes
 #include <Arduino.h>
-#include <main.hpp>
-#include <helper.hpp>
+
 #include <algorithm>
+#include <helper.hpp>
+#include <main.hpp>
 
 // Templating variables
 #define TPL_MDNS "${mdns}"
@@ -37,19 +38,19 @@ SOFTWARE.
 #define TPL_TEMP "${temp}"
 #define TPL_TEMP_C "${temp-c}"
 #define TPL_TEMP_F "${temp-f}"
-#define TPL_TEMP_UNITS "${temp-unit}" // C or F
+#define TPL_TEMP_UNITS "${temp-unit}"  // C or F
 #define TPL_BATTERY "${battery}"
 #define TPL_RSSI "${rssi}"
 #define TPL_RUN_TIME "${run-time}"
 #define TPL_ANGLE "${angle}"
-#define TPL_TILT "${tilt}" // same as angle
+#define TPL_TILT "${tilt}"  // same as angle
 #define TPL_GRAVITY "${gravity}"
 #define TPL_GRAVITY_G "${gravity-sg}"
 #define TPL_GRAVITY_P "${gravity-plato}"
 #define TPL_GRAVITY_CORR "${corr-gravity}"
 #define TPL_GRAVITY_CORR_G "${corr-gravity-sg}"
 #define TPL_GRAVITY_CORR_P "${corr-gravity-plato}"
-#define TPL_GRAVITY_UNIT "${gravity-unit}" // G or P
+#define TPL_GRAVITY_UNIT "${gravity-unit}"  // G or P
 
 #define TPL_FNAME_HTTP1 "/http-1.tpl"
 #define TPL_FNAME_HTTP2 "/http-2.tpl"
@@ -70,36 +71,29 @@ class TemplatingEngine {
     String val;
   };
 
-  KeyVal items[19] = { 
-    { TPL_MDNS, "" }, 
-    { TPL_ID, "" }, 
-    { TPL_SLEEP_INTERVAL, "" }, 
-    { TPL_TEMP, "" }, 
-    { TPL_TEMP_C, "" }, 
-    { TPL_TEMP_F, "" }, 
-    { TPL_TEMP_UNITS, "" }, 
-    { TPL_BATTERY, "" }, 
-    { TPL_RSSI, "" }, 
-    { TPL_RUN_TIME, "" }, 
-    { TPL_ANGLE, "" }, 
-    { TPL_TILT, "" }, 
-    { TPL_GRAVITY, "" }, 
-    { TPL_GRAVITY_G, "" }, 
-    { TPL_GRAVITY_P, "" }, 
-    { TPL_GRAVITY_CORR, "" }, 
-    { TPL_GRAVITY_CORR_G, "" }, 
-    { TPL_GRAVITY_CORR_P, "" }, 
-    { TPL_GRAVITY_UNIT, "" }
-  };
+  KeyVal items[19] = {{TPL_MDNS, ""},           {TPL_ID, ""},
+                      {TPL_SLEEP_INTERVAL, ""}, {TPL_TEMP, ""},
+                      {TPL_TEMP_C, ""},         {TPL_TEMP_F, ""},
+                      {TPL_TEMP_UNITS, ""},     {TPL_BATTERY, ""},
+                      {TPL_RSSI, ""},           {TPL_RUN_TIME, ""},
+                      {TPL_ANGLE, ""},          {TPL_TILT, ""},
+                      {TPL_GRAVITY, ""},        {TPL_GRAVITY_G, ""},
+                      {TPL_GRAVITY_P, ""},      {TPL_GRAVITY_CORR, ""},
+                      {TPL_GRAVITY_CORR_G, ""}, {TPL_GRAVITY_CORR_P, ""},
+                      {TPL_GRAVITY_UNIT, ""}};
 
   char buffer[20];
   String baseTemplate;
 
-  void setVal(String key, float val, int dec = 2) { String s = convertFloatToString(val, &buffer[0], dec); s.trim(); setVal(key, s); }
+  void setVal(String key, float val, int dec = 2) {
+    String s = convertFloatToString(val, &buffer[0], dec);
+    s.trim();
+    setVal(key, s);
+  }
   void setVal(String key, int val) { setVal(key, String(val)); }
   void setVal(String key, char val) { setVal(key, String(val)); }
   void setVal(String key, String val) {
-    int max = sizeof(items)/sizeof(KeyVal);
+    int max = sizeof(items) / sizeof(KeyVal);
     for (int i = 0; i < max; i++) {
       if (items[i].key.equals(key)) {
         items[i].val = val;
@@ -107,11 +101,11 @@ class TemplatingEngine {
       }
     }
 
-    Log.error(F("TPL : Key not found %s." CR), key.c_str());
+    Log.warning(F("TPL : Key not found %s." CR), key.c_str());
   }
 
   void transform(String& s) {
-    int max = sizeof(items)/sizeof(KeyVal);
+    int max = sizeof(items) / sizeof(KeyVal);
     for (int i = 0; i < max; i++) {
       while (s.indexOf(items[i].key) != -1)
         s.replace(items[i].key, items[i].val);
@@ -119,13 +113,13 @@ class TemplatingEngine {
   }
 
   void dumpAll() {
-    int max = sizeof(items)/sizeof(KeyVal);
+    int max = sizeof(items) / sizeof(KeyVal);
     for (int i = 0; i < max; i++) {
-        Serial.print( "Key=\'" );
-        Serial.print( items[i].key.c_str() );
-        Serial.print( "\', Val=\'" );
-        Serial.print( items[i].val.c_str() );
-        Serial.println( "\'" );
+      Serial.print("Key=\'");
+      Serial.print(items[i].key.c_str());
+      Serial.print("\', Val=\'");
+      Serial.print(items[i].val.c_str());
+      Serial.println("\'");
     }
   }
 
@@ -138,7 +132,8 @@ class TemplatingEngine {
     TEMPLATE_MQTT = 4
   };
 
-  void initialize(float angle, float gravitySG, float corrGravitySG, float tempC, float runTime);
+  void initialize(float angle, float gravitySG, float corrGravitySG,
+                  float tempC, float runTime);
   const String& create(TemplatingEngine::Templates idx);
 };
 

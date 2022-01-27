@@ -170,16 +170,27 @@
         <div class="card-body">
           <form action="/api/config/push" method="post">
             <input type="text" name="id" id="id2" hidden>
+            <input type="text" name="http-push-h1" id="http-push-h1" hidden>
+            <input type="text" name="http-push-h2" id="http-push-h2" hidden>
+            <input type="text" name="http-push2-h1" id="http-push2-h1" hidden>
+            <input type="text" name="http-push2-h2" id="http-push2-h2" hidden>
+
             <div class="form-group row">
               <label for="http-push" class="col-sm-2 col-form-label">Http URL 1:</label>
-              <div class="col-sm-10">
+              <div class="col-sm-8">
                 <input type="url" maxlength="120" class="form-control" name="http-push" id="http-push">
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-info" data-field1="#http-push-h1" data-field2="#http-push-h2" data-toggle="modal" data-target="#modal-http">Headers</button>
               </div>
             </div>
             <div class="form-group row">
               <label for="http-push2" class="col-sm-2 col-form-label">Http URL 2:</label>
-              <div class="col-sm-10">
+              <div class="col-sm-8">
                 <input type="url" maxlength="120" class="form-control" name="http-push2" id="http-push2">
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-info" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-toggle="modal" data-target="#modal-http">Headers</button>
               </div>
             </div>
 
@@ -257,7 +268,7 @@
 
           <div class="form-group row">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="format-btn">Format editor</button>
+              <button class="btn btn-info" id="format-btn">Format editor</button>
             </div>
           </div>
 
@@ -375,6 +386,47 @@
   <hr class="my-4">
 </div>
 
+<div class="modal fade" id="modal-http" tabindex="-1" role="dialog" aria-labelledby="modal-header" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-header">Define HTTP headers</h5>
+      </div>
+      <div class="modal-body">
+        <label for="http-header" class="col-form-label">Header 1 (Header: value)</label>
+        <input type="text" maxlength="100" class="form-control" id="header1">
+        <label for="http-header" class="col-form-label">Header 2 (Header: value)</label>
+        <input type="text" maxlength="100" class="form-control" id="header2">
+        <input type="text" id="field1" hidden>
+        <input type="text" id="field2" hidden>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#modal-http').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) 
+  var field1 = button.data('field1') 
+  var field2 = button.data('field2') 
+  var modal = $(this)
+  modal.find('.modal-body #header1').val($(field1).val())
+  modal.find('.modal-body #header2').val($(field2).val())
+  modal.find('.modal-body #field1').val(field1)
+  modal.find('.modal-body #field2').val(field2)
+})
+$('#modal-http').on('hide.bs.modal', function (event) {
+  var modal = $(this)
+  field1 = modal.find('.modal-body #field1').val()
+  field2 = modal.find('.modal-body #field2').val()
+  $(field1).val(modal.find('.modal-body #header1').val())
+  $(field2).val(modal.find('.modal-body #header2').val())
+})
+</script>
+
 <script type="text/javascript">
   window.onload = getConfig;
 
@@ -452,7 +504,11 @@
       else $("#gravity-format-p").click();
       $("#ota-url").val(cfg["ota-url"]);
       $("#http-push").val(cfg["http-push"]);
+      $("#http-push-h1").val(cfg["http-push-h1"]);
+      $("#http-push-h2").val(cfg["http-push-h2"]);
       $("#http-push2").val(cfg["http-push2"]);
+      $("#http-push2-h1").val(cfg["http-push2-h1"]);
+      $("#http-push2-h2").val(cfg["http-push2-h2"]);
       $("#brewfather-push").val(cfg["brewfather-push"]);
       $("#influxdb2-push").val(cfg["influxdb2-push"]);
       $("#influxdb2-org").val(cfg["influxdb2-org"]);

@@ -104,8 +104,10 @@ class Config {
   // Push target settings
   String _brewfatherPushUrl;
 
-  String _httpPushUrl;
-  String _httpPushUrl2;
+  String _httpUrl;
+  String _httpHeader[2];
+  String _http2Url;
+  String _http2Header[2];
 
   String _influxDb2Url;
   String _influxDb2Org;
@@ -126,7 +128,6 @@ class Config {
   RawGyroData _gyroCalibration;
   RawFormulaData _formulaData;
 
-  void debug();
   void formatFileSystem();
 
  public:
@@ -174,18 +175,29 @@ class Config {
   }
 
   // Standard HTTP
-  const char* getHttpPushUrl() { return _httpPushUrl.c_str(); }
-  void setHttpPushUrl(String s) {
-    _httpPushUrl = s;
+  const char* getHttpUrl() { return _httpUrl.c_str(); }
+  void setHttpUrl(String s) {
+    _httpUrl = s;
     _saveNeeded = true;
   }
-  bool isHttpActive() { return _httpPushUrl.length() ? true : false; }
-  const char* getHttpPushUrl2() { return _httpPushUrl2.c_str(); }
-  void setHttpPushUrl2(String s) {
-    _httpPushUrl2 = s;
+  const char* getHttpHeader(int idx) { return _httpHeader[idx].c_str(); }
+  void setHttpHeader(String s, int idx) {
+    _httpHeader[idx] = s;
     _saveNeeded = true;
   }
-  bool isHttpActive2() { return _httpPushUrl2.length() ? true : false; }
+  bool isHttpActive() { return _httpUrl.length() ? true : false; }
+
+  const char* getHttp2Url() { return _http2Url.c_str(); }
+  void setHttp2Url(String s) {
+    _http2Url = s;
+    _saveNeeded = true;
+  }
+  const char* getHttp2Header(int idx) { return _http2Header[idx].c_str(); }
+  void setHttp2Header(String s, int idx) {
+    _http2Header[idx] = s;
+    _saveNeeded = true;
+  }
+  bool isHttpActive2() { return _http2Url.length() ? true : false; }
 
   // InfluxDB2
   const char* getInfluxDb2PushUrl() { return _influxDb2Url.c_str(); }

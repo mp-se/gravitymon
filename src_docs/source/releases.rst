@@ -3,6 +3,18 @@
 Releases 
 ########
 
+v0.8.0
+------
+
+* Added option to set http headers (2 per endpoint)
+* Added possibility to view last 10 errors on device page. 
+
+v0.7.1
+------
+
+* Defined mqtt port was ignored, used default values.
+* Extended length of HTTP url fields from 100 to 120 chars. 
+
 v0.7.0
 ------
 

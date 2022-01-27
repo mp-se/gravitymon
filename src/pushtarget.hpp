@@ -26,14 +26,23 @@ SOFTWARE.
 
 #include <templating.hpp>
 
+#if defined(ESP8266)
+#include <ESP8266HTTPClient.h>
+#else  // defined (ESP32)
+#include <HTTPClient.h>
+#endif
+
 class PushTarget {
  private:
   uint32_t _ms;  // Used to check that we do not post to often
+  bool _memErrorReported =
+      false;  // Avoid filling the error log with memory errors.
 
   void sendBrewfather(TemplatingEngine& engine);
   void sendHttp(TemplatingEngine& engine, int index);
   void sendInfluxDb2(TemplatingEngine& engine);
   void sendMqtt(TemplatingEngine& engine);
+  void addHttpHeader(HTTPClient& http, String header);
 
  public:
   PushTarget() { _ms = millis(); }

@@ -41,6 +41,8 @@ URL: (http://gravmon.local/device)
   :width: 800
   :alt: Device Settings
 
+The button `view error log` will show the last 15 errors on the device. This can be useful for checking errors without
+the need to connect to the serial port. 
 
 * **Version:** 
 
@@ -155,6 +157,20 @@ Push Settings
 * **MQTT password:**
 
    Password or blank if anonymous is accepted
+
+* **HTTP Headers**
+
+   .. image:: images/config-popup1.png
+      :width: 300
+      :alt: HTTP Headers
+
+   Its now possible to define 2 http headers per push target. This is avaialble via a pop-up window but dont forget
+   to press the save buttons on the post section to save the values.
+
+   Mozilla has a good guide on what options exist; `HTTP Headers <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers>`_ 
+   Refer to the documentation on what headers would be needed for a specific service target.
+
+   
 
 
 Gravity Settings
@@ -360,7 +376,11 @@ Other parameters are the same as in the configuration guide.
       "temp-format": "C",
       "brewfather-push": "http://log.brewfather.net/stream?id=Qwerty",
       "http-push": "http://192.168.1.50:9090/api/v1/Qwerty/telemetry",
+      "http-push-h1": "",                           
+      "http-push-h2": "",                           
       "http-push2": "http://192.168.1.50/ispindel",
+      "http-push2-h1": "",                           
+      "http-push2-h2": "",                           
       "influxdb2-push": "http://192.168.1.50:8086",
       "influxdb2-org": "Qwerty",
       "influxdb2-bucket": "Qwerty",
@@ -485,6 +505,10 @@ Used to update push settings via an HTTP POST command. Payload is in JSON format
       "id": "ee1bfc",                                 
       "http-push": "http://192.168.1.50/ispindel", 
       "http-push2": "", 
+      "http-push-h1": "",                           
+      "http-push-h2": "",                           
+      "http-push2-h1": "",                           
+      "http-push2-h2": "",                           
       "brewfather-push": "",
       "influxdb2-push": "http://192.168.1.50:8086",
       "influxdb2-org": "Qwerty",
@@ -599,6 +623,10 @@ present or the API call will fail.
    json = { "id": id, 
             "http-push": "http://192.168.1.1/ispindel",  
             "http-push2": "",                           
+            "http-push-h1": "",                           
+            "http-push-h2": "",                           
+            "http-push2-h1": "",                           
+            "http-push2-h2": "",                           
             "brewfather-push": "",                      
             "influxdb2-push": "",                       
             "influxdb2-org": "",

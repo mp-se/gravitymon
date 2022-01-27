@@ -22,10 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #if defined(ESP8266)
-#include <ESP8266HTTPClient.h>
 #include <ESP8266mDNS.h>
 #else  // defined (ESP32)
-#include <HTTPClient.h>
 #endif
 #include <MQTT.h>
 
@@ -56,9 +54,14 @@ void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
 
 #if defined(ESP8266)
   if (ESP.getFreeContStack() < 1500) {
-    Log.error(F("PUSH: Low on memory, skipping push since it will crasch. "
-                "(stack=%d, heap=%d)." CR),
-              ESP.getFreeContStack(), ESP.getFreeHeap());
+    if (!_memErrorReported) {
+      myLastErrors.addEntry(F("PUSH: Low on memory, skipping push ") +
+                            String(ESP.getFreeContStack()));
+    } else {
+      Log.error(F("PUSH: Low on memory, skipping push %d" CR),
+                ESP.getFreeContStack());
+    }
+    _memErrorReported = true;  // Dont report this again unti restarted.
     myWifi.closeWifiClient();
     return;
   }
@@ -131,8 +134,8 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
     Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR),
                httpResponseCode);
   } else {
-    Log.error(F("PUSH: InfluxDB2 push failed, response=%d" CR),
-              httpResponseCode);
+    myLastErrors.addEntry("PUSH: Influxdb push failed response=" +
+                          String(httpResponseCode));
   }
 
   http.end();
@@ -167,12 +170,31 @@ void PushTarget::sendBrewfather(TemplatingEngine& engine) {
     Log.notice(F("PUSH: Brewfather push successful, response=%d" CR),
                httpResponseCode);
   } else {
-    Log.error(F("PUSH: Brewfather push failed, response=%d" CR),
-              httpResponseCode);
+    myLastErrors.addEntry("PUSH: Brewfather push failed response=" +
+                          String(httpResponseCode));
   }
 
   http.end();
   myWifi.closeWifiClient();
+}
+
+//
+//
+//
+void PushTarget::addHttpHeader(HTTPClient& http, String header) {
+  if (!header.length()) return;
+
+  int i = header.indexOf(":");
+  if (i) {
+    String name = header.substring(0, i);
+    String value = header.substring(i + 1);
+    value.trim();
+    Log.notice(F("PUSH: Adding header '%s': '%s'" CR), name.c_str(),
+               value.c_str());
+    http.addHeader(name, value);
+  } else {
+    myLastErrors.addEntry("PUSH: Invalid http header " + header);
+  }
 }
 
 //
@@ -181,20 +203,20 @@ void PushTarget::sendBrewfather(TemplatingEngine& engine) {
 void PushTarget::sendHttp(TemplatingEngine& engine, int index) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to http (%s)" CR),
-             index ? "http2" : "http1");
+             index ? "http2" : "http");
 #endif
 
   String serverPath, doc;
+  HTTPClient http;
 
   if (index == 0) {
-    serverPath = myConfig.getHttpPushUrl();
+    serverPath = myConfig.getHttpUrl();
     doc = engine.create(TemplatingEngine::TEMPLATE_HTTP1);
   } else {
-    serverPath = myConfig.getHttpPushUrl2();
+    serverPath = myConfig.getHttp2Url();
     doc = engine.create(TemplatingEngine::TEMPLATE_HTTP2);
   }
 
-  HTTPClient http;
   if (serverPath.startsWith("https://")) {
     myWifi.getWifiClientSecure().setInsecure();
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
@@ -203,20 +225,30 @@ void PushTarget::sendHttp(TemplatingEngine& engine, int index) {
     http.begin(myWifi.getWifiClient(), serverPath);
   }
 
+  if (index == 0) {
+    addHttpHeader(http, myConfig.getHttpHeader(0));
+    addHttpHeader(http, myConfig.getHttpHeader(1));
+  } else {
+    addHttpHeader(http, myConfig.getHttp2Header(0));
+    addHttpHeader(http, myConfig.getHttp2Header(1));
+  }
+
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
   Log.verbose(F("PUSH: json %s." CR), doc.c_str());
 #endif
 
   // Send HTTP POST request
-  http.addHeader(F("Content-Type"), F("application/json"));
+  // http.addHeader(F("Content-Type"), F("application/json"));
   int httpResponseCode = http.POST(doc);
 
   if (httpResponseCode == 200) {
     Log.notice(F("PUSH: HTTP push successful, response=%d" CR),
                httpResponseCode);
   } else {
-    Log.error(F("PUSH: HTTP push failed, response=%d" CR), httpResponseCode);
+    myLastErrors.addEntry(
+        "PUSH: HTTP push failed response=" + String(httpResponseCode) +
+        String(index == 0 ? " (http)" : " (http2)"));
   }
 
   http.end();
@@ -236,15 +268,13 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
   String doc = engine.create(TemplatingEngine::TEMPLATE_MQTT);
   int port = myConfig.getMqttPort();
 
-  // if (url.endsWith(":8883")) {
   if (port > 8000) {
     // Allow secure channel, but without certificate validation
     myWifi.getWifiClientSecure().setInsecure();
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
-    url.replace(":8883", "");
-    mqtt.begin(url.c_str(), 8883, myWifi.getWifiClientSecure());
+    mqtt.begin(url.c_str(), port, myWifi.getWifiClientSecure());
   } else {
-    mqtt.begin(myConfig.getMqttUrl(), myWifi.getWifiClient());
+    mqtt.begin(myConfig.getMqttUrl(), port, myWifi.getWifiClient());
   }
 
   mqtt.connect(myConfig.getMDNS(), myConfig.getMqttUser(),
@@ -280,8 +310,8 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
     if (mqtt.publish(topic, value)) {
       Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
     } else {
-      Log.error(F("PUSH: MQTT publish failed err=%d, ret=%d" CR),
-                mqtt.lastError(), mqtt.returnCode());
+      myLastErrors.addEntry("PUSH: MQTT push on " + topic +
+                            " failed error=" + String(mqtt.lastError()));
     }
 
     index = next + 1;

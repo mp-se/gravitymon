@@ -21,12 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined (ESP8266)
+#if defined(ESP8266)
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
-#else // defined (ESP32)
-#include <WiFi.h>
+#else  // defined (ESP32)
 #include <HTTPClient.h>
+#include <WiFi.h>
 #endif
 
 #include <config.hpp>
@@ -37,6 +37,7 @@ SOFTWARE.
 #include <wifi.hpp>
 
 SerialDebug mySerial;
+ErrorFileLog myLastErrors;
 BatteryVoltage myBatteryVoltage;
 
 //
@@ -60,15 +61,60 @@ float convertCtoF(float c) { return (c * 1.8) + 32.0; }
 float convertFtoC(float f) { return (f - 32.0) / 1.8; }
 
 //
+//
+//
+ErrorFileLog::ErrorFileLog() {
+  File errFile = LittleFS.open(ERR_FILENAME, "r");
+  int i = 0;
+
+  if (errFile) {
+    do {
+      errors[i] = errFile.readStringUntil('\n');
+    } while (errors[i++].length());
+    errFile.close();
+  }
+}
+
+//
+//
+//
+const char* ErrorFileLog::getEntry(int idx) { return errors[idx].c_str(); }
+
+//
+//
+//
+void ErrorFileLog::addEntry(String err) {
+  for (int i = (ERR_COUNT - 1); i > 0; i--) {
+    errors[i] = errors[i - 1];
+  }
+  errors[0] = err;
+  Log.errorln(err.c_str());
+  save();
+}
+
+//
+//
+//
+void ErrorFileLog::save() {
+  File errFile = LittleFS.open(ERR_FILENAME, "w");
+  if (errFile) {
+    for (int i = 0; i < ERR_COUNT; i++) {
+      errFile.println(errors[i]);
+    }
+    errFile.close();
+  }
+}
+
+//
 // Print the heap information.
 //
 void printHeap() {
 #if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
-#if defined (ESP8266)
+#if defined(ESP8266)
   Log.verbose(F("HELP: Heap %d kb, HeapFrag %d %%, FreeSketch %d kb." CR),
               ESP.getFreeHeap() / 1024, ESP.getHeapFragmentation(),
               ESP.getFreeSketchSpace() / 1024);
-#else // defined (ESP32)
+#else  // defined (ESP32)
   Log.verbose(F("HELP: Heap %d kb, FreeSketch %d kb." CR),
               ESP.getFreeHeap() / 1024, ESP.getFreeSketchSpace() / 1024);
 #endif
@@ -141,11 +187,11 @@ void BatteryVoltage::read() {
   // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
 
-#if defined (ESP8266)
+#if defined(ESP8266)
   _batteryLevel = ((3.3 / 1023) * v) * factor;
-#else // defined (ESP32)
+#else  // defined (ESP32)
   _batteryLevel = ((3.3 / 4095) * v) * factor;
-#endif 
+#endif
 #if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
@@ -319,40 +365,40 @@ String urlencode(String str) {
   char c;
   char code0;
   char code1;
-  for (int i =0; i < static_cast<int>(str.length()); i++) {
+  for (int i = 0; i < static_cast<int>(str.length()); i++) {
     c = str.charAt(i);
-    if (isalnum(c)){
+    if (isalnum(c)) {
       encodedString += c;
     } else {
       code1 = (c & 0xf) + '0';
-      if ((c & 0xf) >9) {
-          code1 = (c & 0xf) - 10 + 'A';
+      if ((c & 0xf) > 9) {
+        code1 = (c & 0xf) - 10 + 'A';
       }
-      c = (c>>4) & 0xf;
+      c = (c >> 4) & 0xf;
       code0 = c + '0';
       if (c > 9) {
-          code0 = c - 10 + 'A';
+        code0 = c - 10 + 'A';
       }
       encodedString += '%';
       encodedString += code0;
       encodedString += code1;
     }
   }
-  //Log.verbose(F("HELP: encode=%s" CR), encodedString.c_str());
-  return encodedString; 
+  // Log.verbose(F("HELP: encode=%s" CR), encodedString.c_str());
+  return encodedString;
 }
 
 unsigned char h2int(char c) {
-  if (c >= '0' && c <='9') {
-    return((unsigned char)c - '0');
+  if (c >= '0' && c <= '9') {
+    return ((unsigned char)c - '0');
   }
-  if (c >= 'a' && c <='f') {
-    return((unsigned char)c - 'a' + 10);
+  if (c >= 'a' && c <= 'f') {
+    return ((unsigned char)c - 'a' + 10);
   }
-  if (c >= 'A' && c <='F') {
-    return((unsigned char)c - 'A' + 10);
+  if (c >= 'A' && c <= 'F') {
+    return ((unsigned char)c - 'A' + 10);
   }
-  return(0);
+  return (0);
 }
 
 String urldecode(String str) {
@@ -360,7 +406,7 @@ String urldecode(String str) {
   char c;
   char code0;
   char code1;
-  for (int i = 0; i < static_cast<int>(str.length()); i++){
+  for (int i = 0; i < static_cast<int>(str.length()); i++) {
     c = str.charAt(i);
     if (c == '%') {
       i++;
@@ -372,9 +418,9 @@ String urldecode(String str) {
     } else {
       encodedString += c;
     }
-  }   
+  }
 
-  //Log.verbose(F("HELP: decode=%s" CR), encodedString.c_str());
+  // Log.verbose(F("HELP: decode=%s" CR), encodedString.c_str());
   return encodedString;
 }
 

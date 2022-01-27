@@ -350,8 +350,12 @@ void WebServerHandler::webHandleConfigPush() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setHttpPushUrl(_server->arg(PARAM_PUSH_HTTP).c_str());
-  myConfig.setHttpPushUrl2(_server->arg(PARAM_PUSH_HTTP2).c_str());
+  myConfig.setHttpUrl(_server->arg(PARAM_PUSH_HTTP).c_str());
+  myConfig.setHttpHeader(_server->arg(PARAM_PUSH_HTTP_H1).c_str(), 0);
+  myConfig.setHttpHeader(_server->arg(PARAM_PUSH_HTTP_H2).c_str(), 1);
+  myConfig.setHttp2Url(_server->arg(PARAM_PUSH_HTTP2).c_str());
+  myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H1).c_str(), 0);
+  myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H2).c_str(), 1);
   myConfig.setBrewfatherPushUrl(_server->arg(PARAM_PUSH_BREWFATHER).c_str());
   myConfig.setInfluxDb2PushUrl(_server->arg(PARAM_PUSH_INFLUXDB2).c_str());
   myConfig.setInfluxDb2PushOrg(_server->arg(PARAM_PUSH_INFLUXDB2_ORG).c_str());
@@ -626,7 +630,7 @@ void WebServerHandler::webHandleConfigFormatWrite() {
     _server->sendHeader("Location", "/format.htm", true);
     _server->send(302, "text/plain", "Format updated");
   } else {
-    Log.error(F("WEB : Unable to store format file" CR));
+    myLastErrors.addEntry(F("WEB : Unable to store format file"));
     _server->send(400, "text/plain", "Unable to store format in file.");
   }
 
@@ -920,6 +924,7 @@ bool WebServerHandler::setupWebServer() {
     _server->on("/", std::bind(&WebServerHandler::webReturnUploadHtm, this));
   }
 #endif
+  _server->serveStatic("/log", LittleFS, ERR_FILENAME);
 
   // Dynamic content
   _server->on(

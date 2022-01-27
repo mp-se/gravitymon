@@ -110,19 +110,19 @@ void setup() {
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
   // Add a delay so that serial is started.
   // delay(3000);
-#if defined (ESP8266)
+#if defined(ESP8266)
   Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str());
-#else // defined (ESP32)
+#else  // defined (ESP32)
 #endif
 #endif
   // Main startup
-#if defined (ESP8266)
+#if defined(ESP8266)
   Log.notice(F("Main: Started setup for %s." CR),
              String(ESP.getChipId(), HEX).c_str());
-#else // defined (ESP32)
+#else  // defined (ESP32)
   char buf[20];
   uint32_t chipId = 0;
-  for (int i = 0; i < 17; i = i+8) {
+  for (int i = 0; i < 17; i = i + 8) {
     chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
   }
   snprintf(&buf[0], sizeof(buf), "%6x", chipId);
@@ -138,10 +138,10 @@ void setup() {
   LOG_PERF_STOP("main-config-load");
 
   // Setup watchdog
-#if defined (ESP8266)
+#if defined(ESP8266)
   ESP.wdtDisable();
   ESP.wdtEnable(5000);  // 5 seconds
-#else // defined (ESP32)
+#else                   // defined (ESP32)
 #endif
 
   // No stored config, move to portal
@@ -173,7 +173,7 @@ void setup() {
       LOG_PERF_STOP("main-temp-setup");
 
       if (!myGyro.setup()) {
-        Log.error(F("Main: Failed to initialize the gyro." CR));
+        myLastErrors.addEntry(F("MAIN: Failed to initialize the gyro"));
       } else {
         LOG_PERF_START("main-gyro-read");
         myGyro.read();
@@ -252,7 +252,7 @@ bool loopReadGravity() {
     LOG_PERF_STOP("loop-push");
     return true;
   } else {
-    Log.error(F("Main: No gyro value." CR));
+    myLastErrors.addEntry(F("MAIN: No gyro value"));
   }
   return false;
 }

@@ -21,24 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined (ESP8266)
+#if defined(ESP8266)
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
-#else // defined (ESP32)
-#include <WiFi.h>
+#else  // defined (ESP32)
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
+#include <WiFi.h>
 #endif
 #include <incbin.h>
+
 #include <config.hpp>
 #include <main.hpp>
 #include <wifi.hpp>
 
 // Settings for DRD
-#if defined (ESP8266)
+#if defined(ESP8266)
 #define ESP_DRD_USE_LITTLEFS true
 #define ESP_DRD_USE_SPIFFS false
-#else // defined (ESP32)
+#else  // defined (ESP32)
 #define ESP_DRD_USE_LITTLEFS false
 #define ESP_DRD_USE_SPIFFS true
 #endif
@@ -191,8 +192,8 @@ bool WifiConnection::waitForConnection(int maxTime) {
 
     if (i++ >
         (maxTime * 10)) {  // Try for maxTime seconds. Since delay is 100ms.
-      Log.error(F("WIFI: Failed to connect to wifi %d, aborting %s." CR),
-                WiFi.status(), getIPAddress().c_str());
+      myLastErrors.addEntry("WIFI: Failed to connect to wifi " +
+                            String(WiFi.status()));
       WiFi.disconnect();
       Serial.print(CR);
       return false;  // Return to main that we have failed to connect.
@@ -250,9 +251,8 @@ bool WifiConnection::updateFirmware() {
 
   switch (ret) {
     case HTTP_UPDATE_FAILED:
-      Log.error(F("WIFI: OTA update failed %d, %s." CR),
-                ESPhttpUpdate.getLastError(),
-                ESPhttpUpdate.getLastErrorString().c_str());
+      myLastErrors.addEntry("WIFI: OTA update failed " +
+                            String(ESPhttpUpdate.getLastError()));
       break;
     case HTTP_UPDATE_NO_UPDATES:
       break;
@@ -292,8 +292,8 @@ void WifiConnection::downloadFile(const char *fname) {
     f.close();
     Log.notice(F("WIFI: Downloaded file %s." CR), fname);
   } else {
-    Log.error(F("WIFI: Failed to download file, respone=%d" CR),
-              httpResponseCode);
+    myLastErrors.addEntry("WIFI: Failed to download html-file " +
+                          String(httpResponseCode));
   }
   http.end();
   myWifi.closeWifiClient();
@@ -332,7 +332,7 @@ bool WifiConnection::checkFirmwareVersion() {
     DynamicJsonDocument ver(300);
     DeserializationError err = deserializeJson(ver, payload);
     if (err) {
-      Log.error(F("WIFI: Failed to parse version.json, %s" CR), err);
+      myLastErrors.addEntry(F("WIFI: Failed to parse version.json"));
     } else {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
       Log.verbose(F("WIFI: Project %s version %s." CR),

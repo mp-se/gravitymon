@@ -34,11 +34,11 @@ HardwareConfig myHardwareConfig;
 Config::Config() {
   // Assiging default values
   char buf[30];
-#if defined (ESP8266)
+#if defined(ESP8266)
   snprintf(&buf[0], sizeof(buf), "%6x", (unsigned int)ESP.getChipId());
-#else // defined (ESP32)
+#else  // defined (ESP32)
   uint32_t chipId = 0;
-  for (int i = 0; i < 17; i = i+8) {
+  for (int i = 0; i < 17; i = i + 8) {
     chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
   }
   snprintf(&buf[0], sizeof(buf), "%6x", chipId);
@@ -54,10 +54,10 @@ Config::Config() {
 
   setTempFormat('C');
   setGravityFormat('G');
-  setSleepInterval(900);   // 15 minutes
-#if defined (ESP8266)
+  setSleepInterval(900);  // 15 minutes
+#if defined(ESP8266)
   setVoltageFactor(1.59);  // Conversion factor for battery on ESP8266
-#else // defined (ESP32)
+#else                      // defined (ESP32)
   setVoltageFactor(1.43);  // Conversion factor for battery on ESP32
 #endif
   setTempSensorAdjC(0.0);
@@ -67,6 +67,8 @@ Config::Config() {
   _gyroTemp = false;
   _saveNeeded = false;
   _mqttPort = 1883;
+  _httpHeader[0] = F("Content-Type:	application/json");
+  _http2Header[0] = F("Content-Type:	application/json");
 }
 
 //
@@ -81,8 +83,12 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_PASS] = getWifiPass();
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
   doc[PARAM_PUSH_BREWFATHER] = getBrewfatherPushUrl();
-  doc[PARAM_PUSH_HTTP] = getHttpPushUrl();
-  doc[PARAM_PUSH_HTTP2] = getHttpPushUrl2();
+  doc[PARAM_PUSH_HTTP] = getHttpUrl();
+  doc[PARAM_PUSH_HTTP_H1] = getHttpHeader(0);
+  doc[PARAM_PUSH_HTTP_H2] = getHttpHeader(1);
+  doc[PARAM_PUSH_HTTP2] = getHttp2Url();
+  doc[PARAM_PUSH_HTTP2_H1] = getHttp2Header(0);
+  doc[PARAM_PUSH_HTTP2_H2] = getHttp2Header(1);
   doc[PARAM_PUSH_INFLUXDB2] = getInfluxDb2PushUrl();
   doc[PARAM_PUSH_INFLUXDB2_ORG] = getInfluxDb2PushOrg();
   doc[PARAM_PUSH_INFLUXDB2_BUCKET] = getInfluxDb2PushBucket();
@@ -139,7 +145,7 @@ bool Config::saveFile() {
   File configFile = LittleFS.open(CFG_FILENAME, "w");
 
   if (!configFile) {
-    Log.error(F("CFG : Failed to open file " CFG_FILENAME " for save." CR));
+    myLastErrors.addEntry(F("CFG : Failed to save configuration."));
     return false;
   }
 
@@ -156,7 +162,6 @@ bool Config::saveFile() {
   configFile.close();
 
   _saveNeeded = false;
-  myConfig.debug();
   Log.notice(F("CFG : Configuration saved to " CFG_FILENAME "." CR));
   return true;
 }
@@ -170,15 +175,14 @@ bool Config::loadFile() {
 #endif
 
   if (!LittleFS.exists(CFG_FILENAME)) {
-    Log.error(
-        F("CFG : Configuration file does not exist " CFG_FILENAME "." CR));
+    myLastErrors.addEntry(F("CFG : Configuration file does not exist."));
     return false;
   }
 
   File configFile = LittleFS.open(CFG_FILENAME, "r");
 
   if (!configFile) {
-    Log.error(F("CFG : Failed to open " CFG_FILENAME "." CR));
+    myLastErrors.addEntry(F("CFG : Failed to load configuration."));
     return false;
   }
 
@@ -194,8 +198,7 @@ bool Config::loadFile() {
   configFile.close();
 
   if (err) {
-    Log.error(F("CFG : Failed to parse " CFG_FILENAME " file, Err: %s, %d." CR),
-              err.c_str(), doc.capacity());
+    myLastErrors.addEntry(F("CFG : Failed to parse configuration (json)"));
     return false;
   }
 
@@ -215,8 +218,16 @@ bool Config::loadFile() {
   if (!doc[PARAM_PUSH_BREWFATHER].isNull())
     setBrewfatherPushUrl(doc[PARAM_PUSH_BREWFATHER]);
 
-  if (!doc[PARAM_PUSH_HTTP].isNull()) setHttpPushUrl(doc[PARAM_PUSH_HTTP]);
-  if (!doc[PARAM_PUSH_HTTP2].isNull()) setHttpPushUrl2(doc[PARAM_PUSH_HTTP2]);
+  if (!doc[PARAM_PUSH_HTTP].isNull()) setHttpUrl(doc[PARAM_PUSH_HTTP]);
+  if (!doc[PARAM_PUSH_HTTP_H1].isNull())
+    setHttpHeader(doc[PARAM_PUSH_HTTP_H1], 0);
+  if (!doc[PARAM_PUSH_HTTP_H2].isNull())
+    setHttpHeader(doc[PARAM_PUSH_HTTP_H2], 1);
+  if (!doc[PARAM_PUSH_HTTP2].isNull()) setHttp2Url(doc[PARAM_PUSH_HTTP2]);
+  if (!doc[PARAM_PUSH_HTTP2_H1].isNull())
+    setHttp2Header(doc[PARAM_PUSH_HTTP2_H1], 0);
+  if (!doc[PARAM_PUSH_HTTP2_H2].isNull())
+    setHttp2Header(doc[PARAM_PUSH_HTTP2_H2], 1);
 
   if (!doc[PARAM_PUSH_INFLUXDB2].isNull())
     setInfluxDb2PushUrl(doc[PARAM_PUSH_INFLUXDB2]);
@@ -287,7 +298,6 @@ bool Config::loadFile() {
   if (!doc[PARAM_FORMULA_DATA]["g5"].isNull())
     _formulaData.g[4] = doc[PARAM_FORMULA_DATA]["g5"].as<double>();
 
-  myConfig.debug();
   _saveNeeded = false;  // Reset save flag
   Log.notice(F("CFG : Configuration file " CFG_FILENAME " loaded." CR));
   return true;
@@ -318,34 +328,6 @@ void Config::checkFileSystem() {
 }
 
 //
-// Dump the configuration to the serial port
-//
-void Config::debug() {
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Dumping configration " CFG_FILENAME "." CR));
-  Log.verbose(F("CFG : ID; '%s'." CR), getID());
-  Log.verbose(F("CFG : WIFI; '%s', '%s'." CR), getWifiSSID(), getWifiPass());
-  Log.verbose(F("CFG : mDNS; '%s'." CR), getMDNS());
-  Log.verbose(F("CFG : Sleep interval; %d." CR), getSleepInterval());
-  Log.verbose(F("CFG : OTA; '%s'." CR), getOtaURL());
-  Log.verbose(F("CFG : Temp Format; %c." CR), getTempFormat());
-  Log.verbose(F("CFG : Temp Adj; %F." CR), getTempSensorAdjC());
-  Log.verbose(F("CFG : VoltageFactor; %F." CR), getVoltageFactor());
-  Log.verbose(F("CFG : Gravity formula; '%s'." CR), getGravityFormula());
-  Log.verbose(F("CFG : Gravity format; '%c'." CR), getGravityFormat());
-  Log.verbose(F("CFG : Gravity temp adj; %s." CR),
-              isGravityTempAdj() ? "true" : "false");
-  Log.verbose(F("CFG : Gyro temp; %s." CR), isGyroTemp() ? "true" : "false");
-  Log.verbose(F("CFG : Push brewfather; '%s'." CR), getBrewfatherPushUrl());
-  Log.verbose(F("CFG : Push http; '%s'." CR), getHttpPushUrl());
-  Log.verbose(F("CFG : Push http2; '%s'." CR), getHttpPushUrl2());
-  Log.verbose(F("CFG : InfluxDb2; '%s', '%s', '%s', '%s'." CR),
-              getInfluxDb2PushUrl(), getInfluxDb2PushOrg(),
-              getInfluxDb2PushBucket(), getInfluxDb2PushToken());
-#endif
-}
-
-//
 // Save json document to file
 //
 bool HardwareConfig::saveFile() {
@@ -356,7 +338,7 @@ bool HardwareConfig::saveFile() {
   File configFile = LittleFS.open(CFG_HW_FILENAME, "w");
 
   if (!configFile) {
-    Log.error(F("CFG : Failed to open file " CFG_HW_FILENAME " for save." CR));
+    myLastErrors.addEntry(F("CFG : Failed to write hardware configuration "));
     return false;
   }
 
@@ -399,7 +381,7 @@ bool HardwareConfig::loadFile() {
   File configFile = LittleFS.open(CFG_HW_FILENAME, "r");
 
   if (!configFile) {
-    Log.error(F("CFG : Failed to open " CFG_HW_FILENAME "." CR));
+    myLastErrors.addEntry(F("CFG : Failed to read hardware configuration "));
     return false;
   }
 
@@ -415,9 +397,8 @@ bool HardwareConfig::loadFile() {
   configFile.close();
 
   if (err) {
-    Log.error(
-        F("CFG : Failed to parse " CFG_HW_FILENAME " file, Err: %s, %d." CR),
-        err.c_str(), doc.capacity());
+    myLastErrors.addEntry(
+        F("CFG : Failed to parse hardware configuration (json)"));
     return false;
   }
 
