@@ -28,6 +28,7 @@ GravityMon can be installed and used as an iSpindle. Just register the device as
 
    http://myservername/ispindel
 
+
 UBIdots
 +++++++
 
@@ -78,4 +79,41 @@ format template that can be used. For information on customizing the format see 
       "battery": ${battery}, 
       "rssi": ${rssi} 
    }
+
+
+Home Assistant
++++++++++++++++
+
+`HomeAssistant <https://www.homeassistant.com>`_ is a platform for home automation and can collect sensor data
+from multiple devices. 
+
+This setup uses the MQTT integration with home assistant to collect values from the device.
+
+This part of the configuration goes into the home assistant configuration.yaml file. The example assumes that the
+device is named `gravmon2`
+
+::
+
+   sensor:
+   - platform: mqtt
+      name: "gravmon2_gravity"
+      state_topic: "gravmon/gravmon2/gravity"
+   - platform: mqtt
+      name: "gravmon2_battery"
+      state_topic: "gravmon/gravmon2/battery"
+   - platform: mqtt
+      name: "gravmon2_rssi"
+      state_topic: "gravmon/gravmon2/rssi"
+
+
+Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option 
+first. This is the format needed to submit the data to the correct topics as needed above. You can add as 
+many sensors / topics as you want.
+
+::
+
+   gravmon/${mdns}/tilt:${angle}|
+   gravmon/${mdns}/temperature:${temp}|
+   gravmon/${mdns}/temp_units:${temp-unit}|
+
 

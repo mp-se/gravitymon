@@ -128,18 +128,18 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
 POST: /api/config/device
 ========================
 
-Used to update device settings via an HTTP POST command. Payload is in JSON format.
+Used to update device settings via an HTTP POST command. 
+
+Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
 * ``temp-format`` can be either ``C`` (Celcius) or ``F`` (Farenheight)
 
-.. code-block:: json
+.. code-block:: 
 
-   { 
-      "id": "ee1bfc",            
-      "mdns": "gravmon",         
-      "temp-format": "C",        
-      "sleep-interval": 30       
-   }
+   id=ee1bfc
+   mdns=gravmon
+   temp-format=C
+   sleep-interval=30
 
 
 POST: /api/config/push
@@ -147,26 +147,26 @@ POST: /api/config/push
 
 Used to update push settings via an HTTP POST command. Payload is in JSON format.
 
-.. code-block:: json
+Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
-   { 
-      "id": "ee1bfc",                                 
-      "http-push": "http://192.168.1.50/ispindel", 
-      "http-push2": "", 
-      "http-push-h1": "",                           
-      "http-push-h2": "",                           
-      "http-push2-h1": "",                           
-      "http-push2-h2": "",                           
-      "brewfather-push": "",
-      "influxdb2-push": "http://192.168.1.50:8086",
-      "influxdb2-org": "Qwerty",
-      "influxdb2-bucket": "Qwerty",
-      "influxdb2-auth": "Qwerty" 
-      "mqtt-push": "192.168.1.50",
-      "mqtt-port": 1883,
-      "mqtt-user": "Qwerty",
-      "mqtt-pass": "Qwerty",
-   }  
+.. code-block::
+
+   id=ee1bfc
+   http-push=http://192.168.1.50/ispindel
+   http-push2=
+   http-push-h1=
+   http-push-h2=
+   http-push2-h1=
+   http-push2-h2=
+   brewfather-push=
+   influxdb2-push=http://192.168.1.50:8086
+   influxdb2-org=
+   influxdb2-bucket=
+   influxdb2-auth=
+   mqtt-push=192.168.1.50
+   mqtt-port=1883
+   mqtt-user=
+   mqtt-pass=
 
 
 POST: /api/config/gravity
@@ -181,14 +181,14 @@ Used to update gravity settings via an HTTP POST command. Payload is in JSON for
   ``gravity-temp-adjustment`` is defined as "on" or "off" when posting since this is the output values 
   from a checkbox, when reading data it's sent as boolean (true,false).
 
-.. code-block:: json
+Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
-   { 
-      "id": "ee1bfc",                                                   
-      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
-      "gravity-format": "P",
-      "gravity-temp-adjustment": "off"                                  
-   }
+.. code-block:: 
+
+   id=ee1bfc                                              
+   gravity-formula=0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436,
+   gravity-format=P
+   gravity-temp-adjustment=off                                  
 
 
 POST: /api/config/hardware
@@ -200,15 +200,15 @@ Used to update hardware settings via an HTTP POST command. Payload is in JSON fo
   ``gyro-temp`` is defined as "on" or "off" when posting since this is the output values from a checkbox, when
   reading data it's sent as boolean (true,false).
 
-.. code-block:: json
+Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
-   { 
-      "id": "ee1bfc",                                   
-      "voltage-factor": 1.59, 
-      "temp-adjustment": 0, 
-      "gyro-temp": "off",
-      "ota-url": "http://192.168.1.50/firmware/gravmon/" 
-   }
+.. code-block:: 
+
+   id=ee1bfc
+   voltage-factor=1.59
+   temp-adjustment=0 
+   gyro-temp=off
+   ota-url=http://192.168.1.50/firmware/gravmon/
 
 
 POST: /api/config/formula
@@ -219,21 +219,21 @@ Used to update formula calculation data via an HTTP POST command. Payload is in 
 * ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
 * ``g1``-``g4`` are the corresponding gravity reaadings (in SG)
 
-.. code-block:: json
+Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
-   { 
-      "id": "ee1bfc",   
-      "a1": 22.4,       
-      "a2": 54.4, 
-      "a3": 58, 
-      "a4": 0, 
-      "a5": 0, 
-      "g1": 1.000,      
-      "g2": 1.053, 
-      "g3": 1.062, 
-      "g4": 1, 
-      "g5": 1 
-   }
+.. code-block::
+
+   id=ee1bfc
+   a1=22.4
+   a2=54.4
+   a3=58
+   a4=0
+   a5=0
+   g1=1.000      
+   g2=1.053 
+   g3=1.062
+   g4=1
+   g5=1 
 
 
 Calling the API's from Python
@@ -241,6 +241,8 @@ Calling the API's from Python
 
 Here is some example code for how to access the API's from a python script. Keys should always be 
 present or the API call will fail.
+
+The requests package converts the json to standard form post format. 
 
 .. code-block:: python
 
