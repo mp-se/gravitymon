@@ -8,6 +8,8 @@ This chapter contains a list of targets and what configuration is needed to inte
 Brewfather
 ++++++++++
 
+Brewfather is an all in one service that allows you to manage you recepies and brews. 
+
 Just enter the http adress found on brewfather, not other settings are needed. The endpoint has the following format:
 
 .. code-block::
@@ -117,3 +119,39 @@ many sensors / topics as you want.
    gravmon/${mdns}/temp_units:${temp-unit}|
 
 
+Brewer's Friend
++++++++++++++++
+
+Brewer's friend is an all in one service that allows you to manage you recepies and brews. 
+
+.. warning::
+  I dont have an account for brewers friend so I have not been able to verfy this completely. Its based on
+  the available documentation.
+
+You can find you API key when logged in to the service. Follow these `instructions <https://docs.brewersfriend.com/devices/ispindel>`_
+
+**Note there are different URLs if you are using plato or specific gravity!**
+
+.. code-block::
+
+   http://log.brewersfriend.com/ispindel/[API KEY]
+   http://log.brewersfriend.com/ispindel_sg/[API KEY]
+
+
+From what I can read in the documentation you need to add the API key as a token as well. This can be done using a custom 
+format for the endpoint. Just add you API key after token.
+
+.. code-block:: 
+
+  {
+   "name" : "${mdns}",
+   "ID": "${id}",
+   "token" : "[API KEY]",
+   "interval": ${sleep-interval}, 
+   "temperature": ${temp},
+   "temp-units": "${temp-unit}",
+   "gravity": ${gravity},
+   "angle": ${angle},
+   "battery": ${battery},
+   "rssi": ${rssi}
+  }

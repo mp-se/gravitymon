@@ -38,7 +38,7 @@ This is the format template used to create the json above.
 .. code-block::
 
   {
-   "name" : "gravmon",
+   "name" : "${mdns}",
    "ID": "${id}",
    "token" : "gravmon",
    "interval": ${sleep-interval}, 

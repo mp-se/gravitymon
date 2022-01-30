@@ -44,7 +44,7 @@ bool GyroSensor::setup() {
                           // compilation difficulties
 
   if (!accelgyro.testConnection()) {
-    myLastErrors.addEntry(F("GYRO: Failed to connect to gyro"));
+    myLastErrors.addEntry(F("GYRO: Failed to connect to gyro, is it connected?"));
     _sensorConnected = false;
   } else {
 #if !defined(GYRO_DISABLE_LOGGING)
@@ -286,7 +286,7 @@ void GyroSensor::applyCalibration() {
   if ((_calibrationOffset.ax + _calibrationOffset.ay + _calibrationOffset.az +
        _calibrationOffset.gx + _calibrationOffset.gy + _calibrationOffset.gz) ==
       0) {
-    myLastErrors.addEntry(F("GYRO: No valid calibration values, aborting"));
+    myLastErrors.addEntry(F("GYRO: No valid calibration values, please calibrate the device."));
     return;
   }
 

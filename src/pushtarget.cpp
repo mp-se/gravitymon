@@ -55,7 +55,7 @@ void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
 #if defined(ESP8266)
   if (ESP.getFreeContStack() < 1500) {
     if (!_memErrorReported) {
-      myLastErrors.addEntry(F("PUSH: Low on memory, skipping push ") +
+      myLastErrors.addEntry("PUSH: Low on memory, skipping push " +
                             String(ESP.getFreeContStack()));
     } else {
       Log.error(F("PUSH: Low on memory, skipping push %d" CR),
@@ -193,7 +193,7 @@ void PushTarget::addHttpHeader(HTTPClient& http, String header) {
                value.c_str());
     http.addHeader(name, value);
   } else {
-    myLastErrors.addEntry("PUSH: Invalid http header " + header);
+    myLastErrors.addEntry("PUSH: Unable to set header, invalid value " + header);
   }
 }
 

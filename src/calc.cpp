@@ -103,7 +103,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
       }
 
       if (!valid) {
-        myLastErrors.addEntry(F("CALC: Deviation to large, formula rejected."));
+        myLastErrors.addEntry(F("CALC: Error validating created formula. Deviation to large, formula rejected."));
         return ERR_FORMULA_UNABLETOFFIND;
       }
 
@@ -157,7 +157,7 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
     return g;
   }
 
-  myLastErrors.addEntry("CALC: Failed to parse expression " + String(err));
+  myLastErrors.addEntry("CALC: Failed to parse gravity expression " + String(err));
   return 0;
 }
 
@@ -204,7 +204,7 @@ double gravityTemperatureCorrectionC(double gravity, double tempC,
   }
 
   myLastErrors.addEntry(
-      "CALC: Failed to parse expression for gravity correction " + String(err));
+      "CALC: Failed to parse expression for gravity temperature correction " + String(err));
   return gravity;
 }
 

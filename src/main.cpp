@@ -173,7 +173,7 @@ void setup() {
       LOG_PERF_STOP("main-temp-setup");
 
       if (!myGyro.setup()) {
-        myLastErrors.addEntry(F("MAIN: Failed to initialize the gyro"));
+        myLastErrors.addEntry(F("MAIN: Failed to initialize the gyro, is it connected?"));
       } else {
         LOG_PERF_START("main-gyro-read");
         myGyro.read();
@@ -252,7 +252,7 @@ bool loopReadGravity() {
     LOG_PERF_STOP("loop-push");
     return true;
   } else {
-    myLastErrors.addEntry(F("MAIN: No gyro value"));
+    Log.error(F("MAIN: No gyro value found, the device might be moving."));
   }
   return false;
 }
