@@ -121,9 +121,10 @@ the following libraries and without these this would have been much more difficu
    :caption: Contents:
 
    license
-   releases
    functionallity
+   intro
    installation
+   releases
    configuration
    formula
    services
