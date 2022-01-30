@@ -17,7 +17,7 @@ Step 2 - Setup WIFI
 -------------------
 
 When the device starts up the first time it will first start an WIFI access point so that the WIFI Settings 
-can be configured. The instructions for that can be found here :ref:`_setup_wifi`
+can be configured. The instructions for that can be found here :ref:`setup_wifi`
 
 Step 3 - Configuration
 ----------------------
