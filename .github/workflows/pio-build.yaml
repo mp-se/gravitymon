@@ -47,7 +47,7 @@ jobs:
           author_name: GitHub Action
           author_email: mp-se@noreply.github.com
 
-          branch: dev
+          branch: ${GITHUB_REF##*/}
 
           default_author: github_actor
           message: 'GitHub Action Build'
