@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionallity" href="functionallity.html" /><link rel="prev" title="Welcome to GravityMon’s documentation!" href="index.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" /><link rel="prev" title="Functionallity" href="functionallity.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>Licence - GravityMon 0.7.1 documentation</title>
+        <title>Getting started - GravityMon 0.7.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -133,7 +133,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -155,9 +155,9 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -189,31 +189,64 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <div class="section" id="licence">
-<span id="id1"></span><h1>Licence<a class="headerlink" href="#licence" title="Permalink to this headline">¶</a></h1>
-<p>MIT License</p>
-<p>Copyright (c) 2021-22 Magnus</p>
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
+          <div class="section" id="getting-started">
+<span id="id1"></span><h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>First you need a completed iSpindle hardware, there are several resouces around that topic so it
+will not be covered in this documentation. Please visit <a class="reference external" href="https://www.ispindel.de">iSpindel Homepage</a>  for
+more information.</p>
+<div class="section" id="step-1-flash-the-device">
+<h2>Step 1 - Flash the device<a class="headerlink" href="#step-1-flash-the-device" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to flash the firmware, I recommend using Brewflasher as the easy option. Detailed
+instructions can be found here <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a></p>
+</div>
+<div class="section" id="step-2-setup-wifi">
+<h2>Step 2 - Setup WIFI<a class="headerlink" href="#step-2-setup-wifi" title="Permalink to this headline">¶</a></h2>
+<p>When the device starts up the first time it will first start an WIFI access point so that the WIFI Settings
+can be configured. The instructions for that can be found here <span class="xref std std-ref">_setup_wifi</span></p>
+</div>
+<div class="section" id="step-3-configuration">
+<h2>Step 3 - Configuration<a class="headerlink" href="#step-3-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Once the device can connect to WIFI it will go into <cite>configuration mode</cite> and start a web server for
+doing the initial configuration. In order to access the device you will need to find its name or ip adress.</p>
+<p>It will broadcast a name like gravitymonXXXXXX.local over mDNS. Where the XXXXXX is the unique device id. You can
+find the name via an mDNS browser, check your router or connect the device to a serial monitor. On windows mDNS
+might not work so then use the IP address instead. Once connected you will meet a web interface that looks like this.</p>
+<a class="reference internal image-reference" href="_images/index.png"><img alt="Index page" src="_images/index.png" style="width: 800px;"/></a>
+<p>The next step is then to configure the device, most settings should work but there are a few that should be changed.</p>
+<div class="section" id="configuration-device-settings-device-name">
+<h3>Configuration - Device Settings - Device Name<a class="headerlink" href="#configuration-device-settings-device-name" title="Permalink to this headline">¶</a></h3>
+<p>Give your device a good name.</p>
+</div>
+<div class="section" id="configuration-device-settings-calibration">
+<h3>Configuration - Device Settings - Calibration<a class="headerlink" href="#configuration-device-settings-calibration" title="Permalink to this headline">¶</a></h3>
+<p>You need to place the device on a flat surface and then press the
+calibrate button. It will take a few seconds for this to complete and the angle should be close to 90 degress. Without
+calibration the device will not go into gravity mode.</p>
+</div>
+<div class="section" id="configuration-push-settings">
+<h3>Configuration - Push Settings<a class="headerlink" href="#configuration-push-settings" title="Permalink to this headline">¶</a></h3>
+<p>Add the endpoints where you want data to be transmitted. All URLs that contain a
+valid endpoint will receive the data.</p>
+</div>
+<div class="section" id="calibration">
+<h3>Calibration<a class="headerlink" href="#calibration" title="Permalink to this headline">¶</a></h3>
+<p>I recommend to use the calibration feature to create a gravity formula. If you have values from a
+previous calibration then you can add them here, if not follow the calibration guidelines on the iSpindle site.</p>
+</div>
+</div>
+<div class="section" id="step-4-completed">
+<h2>Step 4 - Completed<a class="headerlink" href="#step-4-completed" title="Permalink to this headline">¶</a></h2>
+<p>You are now done and can enjoy the GravityMon software. Check out the <a class="reference internal" href="configuration.html#setting-up-device"><span class="std std-ref">Configuration</span></a> section for other configuration options.</p>
+<p>If you want to enter the configuration mode place the device flat on a surface and do a reset (or wait until it wakes up).
+Its recommended to attach the device to power when you have it in <cite>configuration mode</cite> so the battery is not drained.</p>
+<p><strong>If you have suggestions for more awesome features, head over to the github repository and make a request.</strong></p>
+</div>
 </div>
 
         </article>
@@ -221,23 +254,23 @@ SOFTWARE.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="functionallity.html">
+          <a class="next-page" href="installation.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Functionallity</div>
+                <div class="title">Installation</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="index.html">
+          <a class="prev-page" href="functionallity.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Home</div>
+                <div class="title">Functionallity</div>
                 
               </div>
             </a>
@@ -251,8 +284,36 @@ SOFTWARE.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#step-1-flash-the-device">Step 1 - Flash the device</a></li>
+<li><a class="reference internal" href="#step-2-setup-wifi">Step 2 - Setup WIFI</a></li>
+<li><a class="reference internal" href="#step-3-configuration">Step 3 - Configuration</a><ul>
+<li><a class="reference internal" href="#configuration-device-settings-device-name">Configuration - Device Settings - Device Name</a></li>
+<li><a class="reference internal" href="#configuration-device-settings-calibration">Configuration - Device Settings - Calibration</a></li>
+<li><a class="reference internal" href="#configuration-push-settings">Configuration - Push Settings</a></li>
+<li><a class="reference internal" href="#calibration">Calibration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#step-4-completed">Step 4 - Completed</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
