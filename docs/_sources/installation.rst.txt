@@ -59,6 +59,7 @@ Just select a baud rate of 115200, 8N1.
   :width: 800
   :alt: Serial output
 
+
 .. _setup_wifi:
 
 Configuring WIFI
