@@ -1,9 +1,9 @@
-name: PlatformIO CI
+name: PlatformIO CI Patch
 
 on: 
   push:
     branches: 
-      - dev
+      - patch
 
 jobs:
   build:
@@ -46,7 +46,7 @@ jobs:
           author_name: GitHub Action
           author_email: mp-se@noreply.github.com
 
-          branch: dev
+          branch: patch
 
           default_author: github_actor
           message: 'GitHub Action Build'
