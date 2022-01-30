@@ -42,7 +42,7 @@ extern bool sleepModeAlwaysSkip;
 void WebServerHandler::webHandleDevice() {
   LOG_PERF_START("webserver-api-device");
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : webServer callback for /api/device." CR));
+  Log.verbose(F("WEB : webServer callback for /api/device(get)." CR));
 #endif
 
   DynamicJsonDocument doc(100);
@@ -65,7 +65,7 @@ void WebServerHandler::webHandleDevice() {
 //
 void WebServerHandler::webHandleConfig() {
   LOG_PERF_START("webserver-api-config");
-  Log.notice(F("WEB : webServer callback for /api/config." CR));
+  Log.notice(F("WEB : webServer callback for /api/config(get)." CR));
 
   DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
   myConfig.createJson(doc);
@@ -219,7 +219,7 @@ void WebServerHandler::webHandleFactoryReset() {
 //
 void WebServerHandler::webHandleStatus() {
   LOG_PERF_START("webserver-api-status");
-  Log.notice(F("WEB : webServer callback for /api/status." CR));
+  Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
 
   DynamicJsonDocument doc(256);
 
@@ -280,7 +280,7 @@ void WebServerHandler::webHandleClearWIFI() {
 void WebServerHandler::webHandleStatusSleepmode() {
   LOG_PERF_START("webserver-api-sleepmode");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/status/sleepmode." CR));
+  Log.notice(F("WEB : webServer callback for /api/status/sleepmode(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
@@ -308,7 +308,7 @@ void WebServerHandler::webHandleStatusSleepmode() {
 void WebServerHandler::webHandleConfigDevice() {
   LOG_PERF_START("webserver-api-config-device");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/device." CR));
+  Log.notice(F("WEB : webServer callback for /api/config/device(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
@@ -322,9 +322,12 @@ void WebServerHandler::webHandleConfigDevice() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setMDNS(_server->arg(PARAM_MDNS).c_str());
-  myConfig.setTempFormat(_server->arg(PARAM_TEMPFORMAT).charAt(0));
-  myConfig.setSleepInterval(_server->arg(PARAM_SLEEP_INTERVAL).c_str());
+  if (_server->hasArg(PARAM_MDNS))
+    myConfig.setMDNS(_server->arg(PARAM_MDNS).c_str());
+  if (_server->hasArg(PARAM_TEMPFORMAT))
+    myConfig.setTempFormat(_server->arg(PARAM_TEMPFORMAT).charAt(0));
+  if (_server->hasArg(PARAM_SLEEP_INTERVAL))
+    myConfig.setSleepInterval(_server->arg(PARAM_SLEEP_INTERVAL).c_str());
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseOne", true);
   _server->send(302, "text/plain", "Device config updated");
@@ -337,7 +340,7 @@ void WebServerHandler::webHandleConfigDevice() {
 void WebServerHandler::webHandleConfigPush() {
   LOG_PERF_START("webserver-api-config-push");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/push." CR));
+  Log.notice(F("WEB : webServer callback for /api/config/push(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
@@ -350,23 +353,38 @@ void WebServerHandler::webHandleConfigPush() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setHttpUrl(_server->arg(PARAM_PUSH_HTTP).c_str());
-  myConfig.setHttpHeader(_server->arg(PARAM_PUSH_HTTP_H1).c_str(), 0);
-  myConfig.setHttpHeader(_server->arg(PARAM_PUSH_HTTP_H2).c_str(), 1);
-  myConfig.setHttp2Url(_server->arg(PARAM_PUSH_HTTP2).c_str());
-  myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H1).c_str(), 0);
-  myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H2).c_str(), 1);
-  myConfig.setBrewfatherPushUrl(_server->arg(PARAM_PUSH_BREWFATHER).c_str());
-  myConfig.setInfluxDb2PushUrl(_server->arg(PARAM_PUSH_INFLUXDB2).c_str());
-  myConfig.setInfluxDb2PushOrg(_server->arg(PARAM_PUSH_INFLUXDB2_ORG).c_str());
-  myConfig.setInfluxDb2PushBucket(
+  if (_server->hasArg(PARAM_PUSH_HTTP))
+    myConfig.setHttpUrl(_server->arg(PARAM_PUSH_HTTP).c_str());
+  if (_server->hasArg(PARAM_PUSH_HTTP_H1))
+    myConfig.setHttpHeader(_server->arg(PARAM_PUSH_HTTP_H1).c_str(), 0);
+  if (_server->hasArg(PARAM_PUSH_HTTP_H2))
+    myConfig.setHttpHeader(_server->arg(PARAM_PUSH_HTTP_H2).c_str(), 1);
+  if (_server->hasArg(PARAM_PUSH_HTTP2))
+    myConfig.setHttp2Url(_server->arg(PARAM_PUSH_HTTP2).c_str());
+  if (_server->hasArg(PARAM_PUSH_HTTP2_H1))
+    myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H1).c_str(), 0);
+  if (_server->hasArg(PARAM_PUSH_HTTP2_H2))
+    myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H2).c_str(), 1);
+  if (_server->hasArg(PARAM_PUSH_BREWFATHER))
+    myConfig.setBrewfatherPushUrl(_server->arg(PARAM_PUSH_BREWFATHER).c_str());
+  if (_server->hasArg(PARAM_PUSH_INFLUXDB2))
+    myConfig.setInfluxDb2PushUrl(_server->arg(PARAM_PUSH_INFLUXDB2).c_str());
+  if (_server->hasArg(PARAM_PUSH_INFLUXDB2_ORG))
+    myConfig.setInfluxDb2PushOrg(_server->arg(PARAM_PUSH_INFLUXDB2_ORG).c_str());
+  if (_server->hasArg(PARAM_PUSH_INFLUXDB2_BUCKET))
+    myConfig.setInfluxDb2PushBucket(
       _server->arg(PARAM_PUSH_INFLUXDB2_BUCKET).c_str());
-  myConfig.setInfluxDb2PushToken(
+  if (_server->hasArg(PARAM_PUSH_INFLUXDB2_AUTH))
+    myConfig.setInfluxDb2PushToken(
       _server->arg(PARAM_PUSH_INFLUXDB2_AUTH).c_str());
-  myConfig.setMqttUrl(_server->arg(PARAM_PUSH_MQTT).c_str());
-  myConfig.setMqttPort(_server->arg(PARAM_PUSH_MQTT_PORT).c_str());
-  myConfig.setMqttUser(_server->arg(PARAM_PUSH_MQTT_USER).c_str());
-  myConfig.setMqttPass(_server->arg(PARAM_PUSH_MQTT_PASS).c_str());
+  if (_server->hasArg(PARAM_PUSH_MQTT))
+    myConfig.setMqttUrl(_server->arg(PARAM_PUSH_MQTT).c_str());
+  if (_server->hasArg(PARAM_PUSH_MQTT_PORT))
+    myConfig.setMqttPort(_server->arg(PARAM_PUSH_MQTT_PORT).c_str());
+  if (_server->hasArg(PARAM_PUSH_MQTT_USER))
+    myConfig.setMqttUser(_server->arg(PARAM_PUSH_MQTT_USER).c_str());
+  if (_server->hasArg(PARAM_PUSH_MQTT_PASS))
+    myConfig.setMqttPass(_server->arg(PARAM_PUSH_MQTT_PASS).c_str());
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseTwo", true);
   _server->send(302, "text/plain", "Push config updated");
@@ -398,7 +416,7 @@ String WebServerHandler::getRequestArguments() {
 void WebServerHandler::webHandleConfigGravity() {
   LOG_PERF_START("webserver-api-config-gravity");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/gravity." CR));
+  Log.notice(F("WEB : webServer callback for /api/config/gravity(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
@@ -412,9 +430,12 @@ void WebServerHandler::webHandleConfigGravity() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setGravityFormat(_server->arg(PARAM_GRAVITY_FORMAT).charAt(0));
-  myConfig.setGravityFormula(_server->arg(PARAM_GRAVITY_FORMULA).c_str());
-  myConfig.setGravityTempAdj(
+  if (_server->hasArg(PARAM_GRAVITY_FORMAT))
+    myConfig.setGravityFormat(_server->arg(PARAM_GRAVITY_FORMAT).charAt(0));
+  if (_server->hasArg(PARAM_GRAVITY_FORMULA))
+    myConfig.setGravityFormula(_server->arg(PARAM_GRAVITY_FORMULA).c_str());
+  if (_server->hasArg(PARAM_GRAVITY_TEMP_ADJ))
+    myConfig.setGravityTempAdj(
       _server->arg(PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
                                                                   : false);
   myConfig.saveFile();
@@ -429,7 +450,7 @@ void WebServerHandler::webHandleConfigGravity() {
 void WebServerHandler::webHandleConfigHardware() {
   LOG_PERF_START("webserver-api-config-hardware");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/hardware." CR));
+  Log.notice(F("WEB : webServer callback for /api/config/hardware(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
@@ -443,14 +464,19 @@ void WebServerHandler::webHandleConfigHardware() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  myConfig.setVoltageFactor(_server->arg(PARAM_VOLTAGEFACTOR).toFloat());
-  if (myConfig.isTempC()) {
-    myConfig.setTempSensorAdjC(_server->arg(PARAM_TEMP_ADJ));
-  } else {
-    myConfig.setTempSensorAdjF(_server->arg(PARAM_TEMP_ADJ));
+  if (_server->hasArg(PARAM_VOLTAGEFACTOR))
+    myConfig.setVoltageFactor(_server->arg(PARAM_VOLTAGEFACTOR).toFloat());
+  if (_server->hasArg(PARAM_TEMP_ADJ)) {
+    if (myConfig.isTempC()) {
+      myConfig.setTempSensorAdjC(_server->arg(PARAM_TEMP_ADJ));
+    } else {
+      myConfig.setTempSensorAdjF(_server->arg(PARAM_TEMP_ADJ));
+    }
   }
-  myConfig.setOtaURL(_server->arg(PARAM_OTA).c_str());
-  myConfig.setGyroTemp(
+  if (_server->hasArg(PARAM_OTA))
+    myConfig.setOtaURL(_server->arg(PARAM_OTA).c_str());
+  if (_server->hasArg(PARAM_GYRO_TEMP))
+    myConfig.setGyroTemp(
       _server->arg(PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseFour", true);
@@ -464,7 +490,7 @@ void WebServerHandler::webHandleConfigHardware() {
 void WebServerHandler::webHandleDeviceParam() {
   LOG_PERF_START("webserver-api-device-param");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/device/param." CR));
+  Log.notice(F("WEB : webServer callback for /api/device/param(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
