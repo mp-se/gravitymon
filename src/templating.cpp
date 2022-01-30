@@ -33,7 +33,7 @@ SOFTWARE.
 // Use iSpindle format for compatibility
 const char iSpindleFormat[] PROGMEM = 
   "{"
-    "\"name\" : \"gravmon\", "
+    "\"name\" : \"${mdns}\", "
      "\"ID\": \"${id}\", "
      "\"token\" : \"gravmon\", "
      "\"interval\": ${sleep-interval}, "

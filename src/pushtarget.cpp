@@ -241,10 +241,9 @@ void PushTarget::sendMqtt(TemplatingEngine& engine) {
     // Allow secure channel, but without certificate validation
     myWifi.getWifiClientSecure().setInsecure();
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
-    url.replace(":8883", "");
-    mqtt.begin(url.c_str(), 8883, myWifi.getWifiClientSecure());
+    mqtt.begin(url.c_str(), port, myWifi.getWifiClientSecure());
   } else {
-    mqtt.begin(myConfig.getMqttUrl(), myWifi.getWifiClient());
+    mqtt.begin(myConfig.getMqttUrl(), port, myWifi.getWifiClient());
   }
 
   mqtt.connect(myConfig.getMDNS(), myConfig.getMqttUser(),
