@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Licence" href="license.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>GravityMon 0.7.0 documentation</title>
+        <title>GravityMon 0.7.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">GravityMon 0.7.0 documentation</div></a>
+      <a href="#"><div class="brand">GravityMon 0.7.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.7.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.7.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -159,15 +159,15 @@
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Setting up device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html#format-editor">Format editor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backlog.html">Backlog of changes</a></li>
 </ul>
 
 </div>
@@ -198,7 +198,7 @@
 <h1>Welcome to GravityMon’s documentation!<a class="headerlink" href="#welcome-to-gravitymon-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v0.7</strong>. Last updated 2022-01-23</p>
+<p>This documentation reflects <strong>v0.7.1</strong>. Last updated 2022-01-30</p>
 </div>
 <p>GravityMon is a replacement firmare for the iSpindle firmware, it uses the same hardware configuration so
 you can easily switch between them.</p>
@@ -287,6 +287,7 @@ the following libraries and without these this would have been much more difficu
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-1">v0.7.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-0">v0.7.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-6-0">v0.6.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-5-0">v0.5.0</a></li>
@@ -308,33 +309,44 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="installation.html#configuring-wifi">Configuring WIFI</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Setting up device</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#status">Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#device">Device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#id1">Configuration</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html#format-editor">Format editor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html#create-formula">Create formula</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html#rest-api">REST API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-config">GET: /api/config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-device">GET: /api/device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-status">GET: /api/status</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#get-api-config-formula">GET: /api/config/formula</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-device">POST: /api/config/device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-push">POST: /api/config/push</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-gravity">POST: /api/config/gravity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-hardware">POST: /api/config/hardware</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#post-api-config-formula">POST: /api/config/formula</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#calling-the-api-s-from-python">Calling the API’s from Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="services.html#brewfather">Brewfather</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#fermentrack">Fermentrack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#ubidots">UBIdots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#home-assistant">Home Assistant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#brewer-s-friend">Brewer’s Friend</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html#data-formats">Data Formats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#ispindle-format">iSpindle format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#brewfather-format">Brewfather format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#influx-db-v2">Influx DB v2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#mqtt">MQTT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#version-json">version.json</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced.html#format-editor">Format editor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-config">GET: /api/config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-device">GET: /api/device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-status">GET: /api/status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-config-formula">GET: /api/config/formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-device">POST: /api/config/device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-push">POST: /api/config/push</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-gravity">POST: /api/config/gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-hardware">POST: /api/config/hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-formula">POST: /api/config/formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#calling-the-api-s-from-python">Calling the API’s from Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data.html#ispindle-format">iSpindle format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#brewfather-format">Brewfather format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#influx-db-v2">Influx DB v2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#mqtt">MQTT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#version-json">version.json</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a><ul>
@@ -348,11 +360,6 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="backlog.html">Backlog of changes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="backlog.html#documentation">Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backlog.html#code">Code</a></li>
 </ul>
 </li>
 </ul>

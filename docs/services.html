@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionallity" href="functionallity.html" /><link rel="prev" title="Licence" href="license.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Advanced Configuration" href="advanced.html" /><link rel="prev" title="Create formula" href="formula.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>Releases - GravityMon 0.7.1 documentation</title>
+        <title>Service Integration - GravityMon 0.7.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -156,12 +156,12 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
-<li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
@@ -194,79 +194,106 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="releases">
-<span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v0-7-1">
-<h2>v0.7.1<a class="headerlink" href="#v0-7-1" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Added instructions for how to configure integration with Fermentrack</p></li>
-<li><p>Added instructions for how to configure integration with Ubidots</p></li>
-<li><p>Added instructions for how to configure integration with HomeAssistant</p></li>
-<li><p>Added instructions for how to configure integration with Brewers Friend (not verified)</p></li>
-<li><p>BUG: Defined mqtt port was ignored, used default values.</p></li>
-<li><p>BUG: Extended length of HTTP url fields from 100 to 120 chars.</p></li>
-<li><p>BUG: Fixed issue with default template so it now includes the device name correctly.</p></li>
-</ul>
+          <div class="section" id="service-integration">
+<span id="services"></span><h1>Service Integration<a class="headerlink" href="#service-integration" title="Permalink to this headline">¶</a></h1>
+<p>This chapter contains a list of targets and what configuration is needed to interact with them.</p>
+<div class="section" id="brewfather">
+<h2>Brewfather<a class="headerlink" href="#brewfather" title="Permalink to this headline">¶</a></h2>
+<p>Brewfather is an all in one service that allows you to manage you recepies and brews.</p>
+<p>Just enter the http adress found on brewfather, not other settings are needed. The endpoint has the following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://log.brewfather.net/http://log.brewfather.net/stream?id=&lt;yourid&gt;
+</pre></div>
 </div>
-<div class="section" id="v0-7-0">
-<h2>v0.7.0<a class="headerlink" href="#v0-7-0" title="Permalink to this headline">¶</a></h2>
-<p>Latest stable version. <a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.7.0">Release v0.7 on Github</a></p>
-<ul class="simple">
-<li><p>SSL support for HTTP targets</p></li>
-<li><p>SSL support for MQTT targets</p></li>
-<li><p>SSL support for OTA</p></li>
-<li><p>Added support for Plato</p></li>
-<li><p>Added error handling for calibration page.</p></li>
-<li><p>Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266). Not
-really usable since wifi connection is extreamly slow with current Arduino releases (3-8 seconds).</p></li>
-<li><p>Added experimental format editor so users can customize their data format used for pushing data.
-This will reduce the need for custom push targets. As long as the service is supporting http
-or https then the data format can be customized.</p></li>
-<li><p>Added check so that pushing data is not done if memory is low (this will avoid crashes)</p></li>
-<li><p>MQTT topic has been removed from config (handled via format templates)</p></li>
-<li><p>MQTT port port number added. Port over 8000 will activate SSL.</p></li>
-<li><p><strong>Breaking change</strong>: To simplify the internal structure the
-temp sensor adjustment is now stored in C. So if you have
-enabled this function using F you will need to go into
-the configuration and update the adjustment factor again (hardware config).</p></li>
-<li><p><strong>Breaking change</strong>: The MQTT push option has been changed to match the iSpindle behaviour. If
-the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
-</ul>
+<p>The URL is found under settings.</p>
 </div>
-<div class="section" id="v0-6-0">
-<h2>v0.6.0<a class="headerlink" href="#v0-6-0" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.6.0">Release v0.6 on Github</a></p>
-<ul class="simple">
-<li><p>Changed the wifi manager and refactored wifi.cpp</p></li>
-<li><p>LED is now turned on when Wifi Portal is open</p></li>
-<li><p>Refactored main.cpp to make it easier to read</p></li>
-<li><p>Tested runtime performance</p></li>
-<li><p>Improved documentation</p></li>
-<li><p>Added warning on config page when sleep is &lt;300</p></li>
-<li><p>Enabled selection of gyro temperature sensor under Hardware settings</p></li>
-<li><p>Added warning when short sleep interval and gyro temp is enabled</p></li>
-<li><p>Added support for MQTT</p></li>
-<li><p>Bug: MPU init sometimes caused crash during startup.</p></li>
-</ul>
+<div class="section" id="fermentrack">
+<h2>Fermentrack<a class="headerlink" href="#fermentrack" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://www.fermentrack.com">Fermentrack</a> is a open source brewing software to monitor and control fermentation.</p>
+<p>GravityMon can be installed and used as an iSpindle. Just register the device as an iSpindle and use the defined endpoint which normally is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">myservername</span><span class="o">/</span><span class="n">ispindel</span>
+</pre></div>
 </div>
-<div class="section" id="v0-5-0">
-<h2>v0.5.0<a class="headerlink" href="#v0-5-0" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.5.0">Release v0.5 on Github</a></p>
-<ul class="simple">
-<li><p>Added feature to calcuate formula on device</p></li>
-<li><p>Total rewrite of documentation</p></li>
-<li><p>WIFI settings are now stored in config file</p></li>
-<li><p>Defined version numbers for all dependant libraries to avoid updates breaking build.</p></li>
-<li><p>Cleanup of code</p></li>
-<li><p>Refactor code from C to C++</p></li>
-</ul>
 </div>
-<div class="section" id="v0-4-0">
-<h2>v0.4.0<a class="headerlink" href="#v0-4-0" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.4.0">Release v0.4 on Github</a></p>
-<ul class="simple">
-<li><p>First release</p></li>
-</ul>
+<div class="section" id="ubidots">
+<h2>UBIdots<a class="headerlink" href="#ubidots" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://www.ubidots.com">UBIdots</a> is a IoT service that display data collected various sources.</p>
+<p>For this service there are two options to configure the integration. First you will need your default token which is found under <cite>API Credentials</cite> (&lt;api-tokem&gt; in the example below).
+Swap the text &lt;devicename&gt; with the name you want to show in ubidots.</p>
+<p><strong>Option 1</strong> - token as an URL parameter</p>
+<p>Enter the following as URL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://industrial.api.ubidots.com/api/v1.6/devices/&lt;devicename&gt;/?token=&lt;api-token&gt;
+</pre></div>
+</div>
+<p>Even though ubidots can handle the default ispindle format it probably better to just post the data you want. This is an example of a
+format template that can be used. For information on customizing the format see <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
+   "temperature": ${temp},
+   "gravity": ${gravity},
+   "angle": ${angle},
+   "battery": ${battery},
+   "rssi": ${rssi}
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="home-assistant">
+<h2>Home Assistant<a class="headerlink" href="#home-assistant" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://www.homeassistant.com">HomeAssistant</a> is a platform for home automation and can collect sensor data
+from multiple devices.</p>
+<p>This setup uses the MQTT integration with home assistant to collect values from the device.</p>
+<p>This part of the configuration goes into the home assistant configuration.yaml file. The example assumes that the
+device is named <cite>gravmon2</cite></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sensor</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">platform</span><span class="p">:</span> <span class="n">mqtt</span>
+   <span class="n">name</span><span class="p">:</span> <span class="s2">"gravmon2_gravity"</span>
+   <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/gravity"</span>
+<span class="o">-</span> <span class="n">platform</span><span class="p">:</span> <span class="n">mqtt</span>
+   <span class="n">name</span><span class="p">:</span> <span class="s2">"gravmon2_battery"</span>
+   <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/battery"</span>
+<span class="o">-</span> <span class="n">platform</span><span class="p">:</span> <span class="n">mqtt</span>
+   <span class="n">name</span><span class="p">:</span> <span class="s2">"gravmon2_rssi"</span>
+   <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/rssi"</span>
+</pre></div>
+</div>
+<p>Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option
+first. This is the format needed to submit the data to the correct topics as needed above. You can add as
+many sensors / topics as you want.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>gravmon/${mdns}/tilt:${angle}|
+gravmon/${mdns}/temperature:${temp}|
+gravmon/${mdns}/temp_units:${temp-unit}|
+</pre></div>
+</div>
+</div>
+<div class="section" id="brewer-s-friend">
+<h2>Brewer’s Friend<a class="headerlink" href="#brewer-s-friend" title="Permalink to this headline">¶</a></h2>
+<p>Brewer’s friend is an all in one service that allows you to manage you recepies and brews.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>I dont have an account for brewers friend so I have not been able to verfy this completely. Its based on
+the available documentation.</p>
+</div>
+<p>You can find you API key when logged in to the service. Follow these <a class="reference external" href="https://docs.brewersfriend.com/devices/ispindel">instructions</a></p>
+<p><strong>Note there are different URLs if you are using plato or specific gravity!</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">log</span><span class="o">.</span><span class="n">brewersfriend</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ispindel</span><span class="o">/</span><span class="p">[</span><span class="n">API</span> <span class="n">KEY</span><span class="p">]</span>
+<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">log</span><span class="o">.</span><span class="n">brewersfriend</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ispindel_sg</span><span class="o">/</span><span class="p">[</span><span class="n">API</span> <span class="n">KEY</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>From what I can read in the documentation you need to add the API key as a token as well. This can be done using a custom
+format for the endpoint. Just add you API key after token.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
+ "name" : "${mdns}",
+ "ID": "${id}",
+ "token" : "[API KEY]",
+ "interval": ${sleep-interval},
+ "temperature": ${temp},
+ "temp-units": "${temp-unit}",
+ "gravity": ${gravity},
+ "angle": ${angle},
+ "battery": ${battery},
+ "rssi": ${rssi}
+}
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -275,23 +302,23 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="functionallity.html">
+          <a class="next-page" href="advanced.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Functionallity</div>
+                <div class="title">Advanced Configuration</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="license.html">
+          <a class="prev-page" href="formula.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Licence</div>
+                <div class="title">Create formula</div>
                 
               </div>
             </a>
@@ -317,12 +344,12 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v0-7-1">v0.7.1</a></li>
-<li><a class="reference internal" href="#v0-7-0">v0.7.0</a></li>
-<li><a class="reference internal" href="#v0-6-0">v0.6.0</a></li>
-<li><a class="reference internal" href="#v0-5-0">v0.5.0</a></li>
-<li><a class="reference internal" href="#v0-4-0">v0.4.0</a></li>
+<li><a class="reference internal" href="#">Service Integration</a><ul>
+<li><a class="reference internal" href="#brewfather">Brewfather</a></li>
+<li><a class="reference internal" href="#fermentrack">Fermentrack</a></li>
+<li><a class="reference internal" href="#ubidots">UBIdots</a></li>
+<li><a class="reference internal" href="#home-assistant">Home Assistant</a></li>
+<li><a class="reference internal" href="#brewer-s-friend">Brewer’s Friend</a></li>
 </ul>
 </li>
 </ul>
