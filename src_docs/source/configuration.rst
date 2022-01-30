@@ -1,7 +1,7 @@
 .. _setting-up-device:
 
-Setting up device
-#################
+Configuration
+#############
 
 The device can operate in two modes and must be in ``configuration mode`` in order for the web server to be active.
 
@@ -48,11 +48,12 @@ URL: (http://gravmon.local/device)
 
 * **Device name:** 
 
-   This is unique name of the device. 
+   This is unique name of the device which is set in the configuration, also known as MDNS name.
 
 * **Device ID:** 
 
-   This is unique identifier for the device (ESP8266 id), this is required when using the API as an API Key to safeguard against faulty requests.
+   This is unique identifier for the device (ESP8266 id), this is required when using the API as an API Key to safeguard 
+   against faulty requests. This is the ESP8266 chip ID, so it should be unique.
 
 
 Configuration 
@@ -73,15 +74,19 @@ Device Setting
 
 * **Temperature format:** 
 
-   Choose between Celsius and Farenheight
+   Choose between Celsius and Farenheight when displaying temperature. 
 
 * **Interval:** 
 
-   This defines how long the device should be sleeping between the readings when in `gravity monitoring` mode. You will also see the values in minutes/seconds to easier set the interval. 900s is a recommended interval.
+   This defines how long the device should be sleeping between the readings when in `gravity monitoring` mode. You will also see 
+   the values in minutes/seconds to easier set the interval. 900s is a recommended interval.  The sleep interval can 
+   be set between 10 - 3600 seconds (60 minutes). 
 
 .. note::
 
-   The sleep interval can be set between 10 - 3600 seconds (60 minutes). 
+   A low value such as 30s will give a lifespan of 1-2 weeks and 300s (5 min) would last for 3+ weeks. This assumes that 
+   there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain.
+   
 
 * **Calibration values:** 
 
@@ -166,16 +171,20 @@ Gravity Settings
 
 * **Gravity format:**
 
-   Gravity format can be eihter `SG` or `Plato`. The device will use SG Internally and convert to Plato when displaying data.
+   Gravity format can be eihter `SG` or `Plato`. The device will use SG Internally and convert to Plato when displaying or sending data.
 
 * **Gravity formula:**
 
    Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use 
    the feature to create the formula by supplying the raw data. See :ref:`create-formula`
 
+   The gravity formula accepts to paramaters, **tilt** for the angle or **temp** for temperature (temperature inserted into the formula 
+   will be in celsius). I would recommend to use the formula calculation feature instead since this is much easier.
+
 * **Temperature correct gravity:**
 
-   Will apply a temperature calibration formula to the gravity as a second step. 
+   Will apply a temperature calibration formula to the gravity as a second step after gravity has been calculated. It's also possible to 
+   build this into the gravity formula.
 
 .. warning::
    This formula assumes that the calibration has been done at 20°C / 68°F.
@@ -213,7 +222,7 @@ Hardware Settings
 
 * **OTA URL:**
 
-   Should point to a URL where the .bin file + version.json file is located. 
+   Should point to a URL where the firmware.bin file + version.json file are located. 
 
    For the OTA to work, place the following files (version.json + firmware.bin) at the location that you pointed out in OTA URL. If the version number in the json file is newer than in the 
    code the update will be done during startup.
@@ -225,578 +234,5 @@ Hardware Settings
 .. code-block::
 
    http://192.168.1.1/firmware/gravmon/
-  
 
-.. _format-editor:
 
-Format editor
-#############
-
-To reduce the need for adding custom endpoints for various services there is an built in format editor that allows the user to customize the format being sent to the push target. 
-
-.. warning::
-
-   Since the format templates can be big this function can be quite slow on a small device such as the esp8266. 
-
-.. image:: images/format.png
-  :width: 800
-  :alt: Format editor
-
-You enter the format data in the text field and the test button will show an example on what the output would look like. If the data cannot be formatted in json it will just be displayed as a long string.
-The save button will save the current formla and reload the data from the device. 
-
-.. tip::
-
-   If you save a blank string the default template will be loaded.
-
-These are the format keys available for use in the format.
-
-.. list-table:: Directory structure
-   :widths: 30 50 20
-   :header-rows: 1
-
-   * - key 
-     - description
-     - example
-   * - ${mdns}
-     - Name of the device
-     - gravmon2
-   * - ${id}
-     - Unique id of the device
-     - e422a3
-   * - ${sleep-interval}
-     - Seconds between data is pushed
-     - 900
-   * - ${temp}
-     - Temperature in format configured on device, one decimal
-     - 21.2
-   * - ${temp-c}
-     - Temperature in C, one decimal
-     - 21.2
-   * - ${temp-f}
-     - Temperature in F, one decimal
-     - 58.0
-   * - ${temp-unit}
-     - Temperature format `C` or `F`
-     - C
-   * - ${battery}
-     - Battery voltage, two decimals
-     - 3.89
-   * - ${rssi}
-     - Wifi signal strength
-     - -75
-   * - ${run-time}
-     - How long the last measurement took, two decimals
-     - 3.87
-   * - ${angle}
-     - Angle of the gyro, two decimals
-     - 28.67
-   * - ${tilt}
-     - Same as angle.
-     - 28.67
-   * - ${gravity}
-     - Calculated gravity, 4 decimals for SG and 1 for Plato.
-     - 1.0456
-   * - ${gravity-sg}
-     - Calculated gravity in SG, 4 decimals
-     - 1.0456
-   * - ${gravity-plato}
-     - Calculated gravity in Plato, 1 decimal
-     - 8.5
-   * - ${corr-gravity}
-     - Temperature corrected gravity, 4 decimals for SG and 1 for Plato.
-     - 1.0456
-   * - ${corr-gravity-sg}
-     - Temperature corrected gravity in SG, 4 decimals
-     - 1.0456
-   * - ${corr-gravity-plato}
-     - Temperature corrected gravity in Plato, 1 decimal
-     - 8.5
-   * - ${gravity-unit}
-     - Gravity format, `G` or `P`
-     - G
-
-
-.. _create-formula:
-
-Create formula
-##############
-
-.. image:: images/formula1.png
-  :width: 800
-  :alt: Formula data
-
-Here you can enter up to 5 values (angles + gravity) that is then used to create the formula. Angles equal to zero will be regarded as empty even if there is a gravity reading.
-
-.. image:: images/formula2.png
-  :width: 800
-  :alt: Formula graph
-
-Once the formula is created a graph over the entered values and a simulation of the formula will give you a nice overview on how the formula will work.
-
-.. _rest-api:
-
-REST API
-########
-
-All the API's use a key called ``ID`` which is the unique device id (chip id). This is used as an API key when sending requests to the device. 
-
-GET: /api/config
-================
-
-Retrive the current configuation of the device via an HTTP GET command. Payload is in JSON format.
-
-* ``temp-format`` can be either ``C`` or ``F``
-* ``gravity-format`` is always ``G`` (plato is not yet supported)
-
-Other parameters are the same as in the configuration guide.
-
-.. code-block:: json
-
-   {
-      "mdns": "gravmon",
-      "id": "ee1bfc",
-      "ota-url": "http://192.168.1.50:80/firmware/gravmon/",
-      "temp-format": "C",
-      "brewfather-push": "http://log.brewfather.net/stream?id=Qwerty",
-      "http-push": "http://192.168.1.50:9090/api/v1/Qwerty/telemetry",
-      "http-push2": "http://192.168.1.50/ispindel",
-      "influxdb2-push": "http://192.168.1.50:8086",
-      "influxdb2-org": "Qwerty",
-      "influxdb2-bucket": "Qwerty",
-      "influxdb2-auth": "Qwerty",
-      "mqtt-push": "192.168.1.50",
-      "mqtt-port": 1883,
-      "mqtt-user": "Qwerty",
-      "mqtt-pass": "Qwerty",
-      "sleep-interval": 30,
-      "voltage-factor": 1.59,
-      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
-      "gravity-format": "G",
-      "temp-adjustment-value": 0,
-      "gravity-temp-adjustment": false,
-      "gyro-temp": true,
-      "gyro-calibration-data": {
-         "ax": -330,
-         "ay": -2249,
-         "az": 1170,
-         "gx": 99,
-         "gy": -6,
-         "gz": 4
-      },
-      "angle": 90.93,
-      "gravity": 1.105,
-      "battery": 0.04
-   }
-
-
-GET: /api/device
-================
-
-Retrive the current device settings via an HTTP GET command. Payload is in JSON format.
-
-.. code-block:: json
-
-   {
-      "app-name": "GravityMon ",
-      "app-ver": "0.0.0",
-      "id": "ee1bfc",
-      "mdns": "gravmon"
-   }
-
-
-GET: /api/status
-================
-
-Retrive the current device status via an HTTP GET command. Payload is in JSON format.
-
-* ``temp-format`` can be either ``C`` or ``F``
-
-Other parameters are the same as in the configuration guide.
-
-.. code-block:: json
-
-   {
-      "id": "ee1bfc",
-      "angle": 89.86,
-      "gravity": 1.1052,
-      "gravity-tempcorr": 1.1031,
-      "temp-c": 0,
-      "temp-f": 32,
-      "battery": 0,
-      "temp-format": "C",
-      "sleep-mode": false,
-      "rssi": -56
-   }
-
-
-GET: /api/config/formula
-========================
-
-Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
-
-* ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
-* ``g1``-``g4`` are the corresponding gravity reaadings in SG or Plato depending on the device-format.
-
-.. code-block:: json
-
-   { 
-      "id": "ee1bfc",   
-      "a1": 22.4,       
-      "a2": 54.4, 
-      "a3": 58, 
-      "a4": 0, 
-      "a5": 0, 
-      "g1": 1.000,      
-      "g2": 1.053, 
-      "g3": 1.062, 
-      "g4": 1, 
-      "g5": 1,
-      "gravity-format": "G", 
-      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"
-   }
-
-
-POST: /api/config/device
-========================
-
-Used to update device settings via an HTTP POST command. Payload is in JSON format.
-
-* ``temp-format`` can be either ``C`` (Celcius) or ``F`` (Farenheight)
-
-.. code-block:: json
-
-   { 
-      "id": "ee1bfc",            
-      "mdns": "gravmon",         
-      "temp-format": "C",        
-      "sleep-interval": 30       
-   }
-
-
-POST: /api/config/push
-======================
-
-Used to update push settings via an HTTP POST command. Payload is in JSON format.
-
-.. code-block:: json
-
-   { 
-      "id": "ee1bfc",                                 
-      "http-push": "http://192.168.1.50/ispindel", 
-      "http-push2": "", 
-      "brewfather-push": "",
-      "influxdb2-push": "http://192.168.1.50:8086",
-      "influxdb2-org": "Qwerty",
-      "influxdb2-bucket": "Qwerty",
-      "influxdb2-auth": "Qwerty" 
-      "mqtt-push": "192.168.1.50",
-      "mqtt-port": 1883,
-      "mqtt-user": "Qwerty",
-      "mqtt-pass": "Qwerty",
-   }  
-
-
-POST: /api/config/gravity
-=========================
-
-Used to update gravity settings via an HTTP POST command. Payload is in JSON format.
-
-* ``gravity-formula`` keywords ``temp`` and ``tilt`` are supported.
-* ``gravity-format`` can be either ``G`` (SG) or ``P`` (PLATO)
-
-.. note::
-  ``gravity-temp-adjustment`` is defined as "on" or "off" when posting since this is the output values 
-  from a checkbox, when reading data it's sent as boolean (true,false).
-
-.. code-block:: json
-
-   { 
-      "id": "ee1bfc",                                                   
-      "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436",
-      "gravity-format": "P",
-      "gravity-temp-adjustment": "off"                                  
-   }
-
-
-POST: /api/config/hardware
-==========================
-
-Used to update hardware settings via an HTTP POST command. Payload is in JSON format.
-
-.. note::
-  ``gyro-temp`` is defined as "on" or "off" when posting since this is the output values from a checkbox, when
-  reading data it's sent as boolean (true,false).
-
-.. code-block:: json
-
-   { 
-      "id": "ee1bfc",                                   
-      "voltage-factor": 1.59, 
-      "temp-adjustment": 0, 
-      "gyro-temp": "off",
-      "ota-url": "http://192.168.1.50/firmware/gravmon/" 
-   }
-
-
-POST: /api/config/formula
-=========================
-
-Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.
-
-* ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
-* ``g1``-``g4`` are the corresponding gravity reaadings (in SG)
-
-.. code-block:: json
-
-   { 
-      "id": "ee1bfc",   
-      "a1": 22.4,       
-      "a2": 54.4, 
-      "a3": 58, 
-      "a4": 0, 
-      "a5": 0, 
-      "g1": 1.000,      
-      "g2": 1.053, 
-      "g3": 1.062, 
-      "g4": 1, 
-      "g5": 1 
-   }
-
-
-Calling the API's from Python
-=============================
-
-Here is some example code for how to access the API's from a python script. Keys should always be 
-present or the API call will fail.
-
-.. code-block:: python
-
-   import requests
-   import json
-
-   host = "192.168.1.1"           # IP adress (or name) of the device to send these settings to
-   id = "ee1bfc"                  # Device ID (shown in serial console during startup or in UI)
-
-   def set_config( url, json ):
-      headers = { "ContentType": "application/json" }
-      print( url )
-      resp = requests.post( url, headers=headers, data=json )
-      if resp.status_code != 200 :
-         print ( "Failed "  )
-      else :
-         print ( "Success "  )
-
-   url = "http://" + host + "/api/config/device"
-   json = { "id": id, 
-            "mdns": "gravmon",             # Name of the device
-            "temp-format": "C",            # Temperature format C or F
-            "sleep-interval": 30           # Sleep interval in seconds
-         }
-   set_config( url, json )
-
-   url = "http://" + host + "/api/config/push"
-   json = { "id": id, 
-            "http-push": "http://192.168.1.1/ispindel",  
-            "http-push2": "",                           
-            "brewfather-push": "",                      
-            "influxdb2-push": "",                       
-            "influxdb2-org": "",
-            "influxdb2-bucket": "",
-            "influxdb2-auth": "",
-            "mqtt-push": "192.168.1.50",
-            "mqtt-port": 1883,
-            "mqtt-user": "Qwerty",
-            "mqtt-pass": "Qwerty"
-            }  
-   set_config( url, json )
-
-   url = "http://" + host + "/api/config/gravity"
-   json = { "id": id, 
-            "gravity-formula": "",                  
-            "gravity-format": "P",
-            "gravity-temp-adjustment": "off"        # Adjust gravity (on/off)
-            }
-   set_config( url, json )
-
-   url = "http://" + host + "/api/config/hardware"
-   json = { "id": id, 
-            "voltage-factor": 1.59,                 # Default value for voltage calculation
-            "temp-adjustment": 0,                   # If temp sensor needs to be corrected
-            "gyro-temp": "on",                      # Use the temp sensor in the gyro instead (on/off)
-            "ota-url": ""                           # if the device should seach for a new update when active
-         }
-   set_config( url, json )
-
-   url = "http://" + host + "/api/formula"
-   json = { "id": id, 
-            "a1": 22.4, 
-            "a2": 54.4, 
-            "a3": 58, 
-            "a4": 0, 
-            "a5": 0, 
-            "g1": 1.000, 
-            "g2": 1.053, 
-            "g3": 1.062, 
-            "g4": 1, 
-            "g5": 1 
-            }
-   set_config( url, json )
-
-
-.. _data-formats:
-
-Data Formats
-############
-
-.. _data-formats-ispindle:
-
-iSpindle format 
-===============
-
-This is the format used for standard http posts. 
-
-* ``corr-gravity`` is an extended parameter containing a temperature corrected gravity reading.
-* ``gravity-format`` is an extended parameter containing the gravity format (G or P).
-* ``run-time`` is an extended parameter containing the number of seconds the execution took.
-
-.. code-block:: json
-
-   { 
-      "name" : "gravmon",
-      "ID": "2E6753",
-      "token" : "gravmon",
-      "interval": 900,
-      "temperature": 20.5,
-      "temp-units": "C",
-      "gravity": 1.0050,
-      "angle": 45.34,
-      "battery": 3.67,
-      "rssi": -12,
-
-      "corr-gravity": 1.0050,
-      "gravity-unit": "G",
-      "run-time": 6
-   }
-
-This is the format template used to create the json above. 
-
-.. code-block::
-
-  {
-   "name" : "gravmon",
-   "ID": "${id}",
-   "token" : "gravmon",
-   "interval": ${sleep-interval}, 
-   "temperature": ${temp},
-   "temp-units": "${temp-unit}",
-   "gravity": ${gravity},
-   "angle": ${angle},
-   "battery": ${battery},
-   "rssi": ${rssi},
-   "corr-gravity": ${corr-gravity},
-   "gravity-unit": "${gravity-unit}",
-   "run-time": ${run-time}
-  }
-
-
-.. _data-formats-brewfather:
-
-Brewfather format 
-=================
-
-This is the format for Brewfather. See: `Brewfather API docs <https://docs.brewfather.app/integrations/custom-stream>`_
-
-.. code-block:: json
-
-   { 
-      "name" : "gravmon",     
-      "temp": 20.5,
-      "temp_unit": "C",
-      "battery": 3.67,
-      "gravity": 1.0050,
-      "gravity_unit": "G",
-   }
-
-
-.. _data-formats-influxdb2:
-
-Influx DB v2
-============
-
-This is the format for InfluxDB v2
-
-.. code-block::
-   
-   measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG,gravity=1.0004,corr-gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
-
-
-This is the format template used to create the json above. 
-
-.. code-block::
-
-  measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
-
-
-.. _data-formats-mqtt:
-
-MQTT
-====
-
-This is the format used to send data to MQTT. Each of the lines are specific topics
-
-.. code-block::
-   
-   ispindel/device_name/tilt 89.96796
-   ispindel/device_name/temperature 21.375
-   ispindel/device_name/temp_units C
-   ispindel/device_name/battery 0.04171
-   ispindel/device_name/gravity 33.54894
-   ispindel/device_name/interval 1
-   ispindel/device_name/RSSI -58
-
-
-This is the format template used to create the json above. 
-
-.. tip::
-
-   Each line in the format is treated as one topic. The `|` is used as separator between lines and the first `:` is used as separator between topic and value. Each line is formatted as `<topic>:<value>`
-
-.. code-block::
-
-  ispindel/${mdns}/tilt:${angle}|
-  ispindel/${mdns}/temperature:${temp}|
-  ispindel/${mdns}/temp_units:${temp-unit}|
-  ispindel/${mdns}/battery:${battery}|
-  ispindel/${mdns}/gravity:${gravity}|
-  ispindel/${mdns}/interval:${sleep-interval}|
-  ispindel/${mdns}/RSSI:${rssi}|
-
-This is a format template that is compatible with v0.6. Just replace the `topic` with the topic you want to post data to.
-
-.. code-block::
-   
-   topic:{"name":"gravmon","ID":"${id}","token":"gravmon","interval": ${sleep-interval},"temperature": ${temp},"temp-units": "${temp-unit}","gravity":${gravity},"angle": ${angle},"battery":${battery},"rssi": ${rssi},"corr-gravity":${corr-gravity},"gravity-unit": "${gravity-unit}","run-time": ${run-time}}|
-
-
-version.json
-============
-
-Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it's easy to 
-upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system 
-they can be uploaded manually afterwards. 
-
-.. code-block:: json
-
-   { 
-      "project":"gravmon", 
-      "version":"0.7.0",  
-      "html": [ 
-         "index.min.htm", 
-         "device.min.htm", 
-         "config.min.htm", 
-         "format.min.htm", 
-         "calibration.min.htm", 
-         "about.min.htm" 
-      ] 
-   }

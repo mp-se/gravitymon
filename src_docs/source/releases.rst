@@ -3,6 +3,17 @@
 Releases 
 ########
 
+v0.7.1
+------
+
+* Added instructions for how to configure integration with Fermentrack
+* Added instructions for how to configure integration with Ubidots
+* Added instructions for how to configure integration with HomeAssistant
+* Added instructions for how to configure integration with Brewers Friend (not verified)
+* BUG: Defined mqtt port was ignored, used default values.
+* BUG: Extended length of HTTP url fields from 100 to 120 chars.
+* BUG: Fixed issue with default template so it now includes the device name correctly. 
+
 v0.7.0
 ------
 
