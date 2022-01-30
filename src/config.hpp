@@ -85,48 +85,48 @@ class HardwareConfig {
 
 class Config {
  private:
-  bool _saveNeeded;
+  bool _saveNeeded = false;
 
   // Device configuration
-  String _id;
-  String _mDNS;
-  String _otaURL;
-  char _tempFormat;
-  float _voltageFactor;
-  float _tempSensorAdjC;
-  int _sleepInterval;
-  bool _gyroTemp;
+  String _id = "";
+  String _mDNS = "";
+  String _otaURL = "";
+  char _tempFormat = 'C';
+  float _voltageFactor = 0;
+  float _tempSensorAdjC = 0;
+  int _sleepInterval = 900;
+  bool _gyroTemp = false;
 
   // Wifi Config
-  String _wifiSSID;
-  String _wifiPASS;
+  String _wifiSSID = "";
+  String _wifiPASS = "";
 
   // Push target settings
-  String _brewfatherPushUrl;
+  String _brewfatherPushUrl = "";
 
-  String _httpUrl;
-  String _httpHeader[2];
-  String _http2Url;
-  String _http2Header[2];
+  String _httpUrl = "";
+  String _httpHeader[2] = { "Content-Type: application/json", "" };
+  String _http2Url = "";
+  String _http2Header[2] = { "Content-Type: application/json", "" };
 
-  String _influxDb2Url;
-  String _influxDb2Org;
-  String _influxDb2Bucket;
-  String _influxDb2Token;
+  String _influxDb2Url = "";
+  String _influxDb2Org = "";
+  String _influxDb2Bucket = "";
+  String _influxDb2Token = "";
 
-  String _mqttUrl;
-  int _mqttPort;
-  String _mqttUser;
-  String _mqttPass;
+  String _mqttUrl = "";
+  int _mqttPort = 1883;
+  String _mqttUser = "";
+  String _mqttPass = "";
 
   // Gravity and temperature calculations
-  String _gravityFormula;
-  bool _gravityTempAdj;
-  char _gravityFormat;
+  String _gravityFormula = "";
+  bool _gravityTempAdj = false;
+  char _gravityFormat = 'G';
 
   // Gyro calibration and formula calculation data
-  RawGyroData _gyroCalibration;
-  RawFormulaData _formulaData;
+  RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
+  RawFormulaData _formulaData = {{0, 0, 0, 0, 0}, {1, 1, 1, 1, 1}};
 
   void formatFileSystem();
 

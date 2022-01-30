@@ -30,6 +30,8 @@ SOFTWARE.
 #define ERR_FILENAME "/error.log"
 #define ERR_COUNT 15
 
+#define RUNTIME_FILENAME "/runtime.log"
+
 // Sleep mode
 void deepSleep(int t);
 
@@ -64,13 +66,26 @@ class SerialDebug {
 
 class ErrorFileLog {
  private:
-  String errors[ERR_COUNT];
+  String _errors[ERR_COUNT];
 
  public:
   ErrorFileLog();
-  const char* getEntry(int idx);
   void addEntry(String error);
   void save();
+};
+
+class FloatHistoryLog {
+ private:
+  String _fName;
+  float _average = 0;
+  float _runTime[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  int _count = 0;
+  void save();
+
+ public:
+  FloatHistoryLog(String fName);
+  void addEntry(float time);
+  float getAverage() { return _average; }
 };
 
 class BatteryVoltage {

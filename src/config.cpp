@@ -52,23 +52,11 @@ Config::Config() {
               _mDNS.c_str());
 #endif
 
-  setTempFormat('C');
-  setGravityFormat('G');
-  setSleepInterval(900);  // 15 minutes
 #if defined(ESP8266)
   setVoltageFactor(1.59);  // Conversion factor for battery on ESP8266
 #else                      // defined (ESP32)
   setVoltageFactor(1.43);  // Conversion factor for battery on ESP32
 #endif
-  setTempSensorAdjC(0.0);
-  setGravityTempAdj(false);
-  _gyroCalibration = {0, 0, 0, 0, 0, 0};
-  _formulaData = {{0, 0, 0, 0, 0}, {1, 1, 1, 1, 1}};
-  _gyroTemp = false;
-  _saveNeeded = false;
-  _mqttPort = 1883;
-  _httpHeader[0] = F("Content-Type:	application/json");
-  _http2Header[0] = F("Content-Type:	application/json");
 }
 
 //

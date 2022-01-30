@@ -274,12 +274,19 @@ void loopGravityOnInterval() {
   }
 }
 
+bool skipRunTimeLog = false;
+
 //
 // Main loop that determines if device should go to sleep
 //
 void goToSleep(int sleepInterval) {
   float volt = myBatteryVoltage.getVoltage();
   float runtime = (millis() - runtimeMillis);
+
+  if (!skipRunTimeLog) {
+    FloatHistoryLog runLog(RUNTIME_FILENAME);
+    runLog.addEntry(runtime);
+  }
 
   Log.notice(F("MAIN: Entering deep sleep for %ds, run time %Fs, "
                "battery=%FV." CR),
@@ -301,6 +308,10 @@ void loop() {
       myWebServerHandler.loop();
       myWifi.loop();
       loopGravityOnInterval();
+
+      // If we switched mode, dont include this in the log.
+      if (runMode!=RunMode::configurationMode)
+        skipRunTimeLog = true;
       break;
 
     case RunMode::gravityMode:

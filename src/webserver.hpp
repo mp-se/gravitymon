@@ -64,7 +64,7 @@ class WebServerHandler {
   void webHandleStatusSleepmode();
   void webHandleClearWIFI();
   void webHandleStatus();
-  void webHandleFactoryReset();
+  void webHandleFactoryDefaults();
   void webHandleCalibrate();
   void webHandleUploadFile();
   void webHandleUpload();

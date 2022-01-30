@@ -199,13 +199,20 @@ void WebServerHandler::webHandleCalibrate() {
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServerHandler::webHandleFactoryReset() {
+void WebServerHandler::webHandleFactoryDefaults() {
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
 
   if (!id.compareTo(myConfig.getID())) {
-    _server->send(200, "text/plain", "Doing reset...");
+    _server->send(200, "text/plain", "Removing configuration and restarting...");
     LittleFS.remove(CFG_FILENAME);
+    LittleFS.remove(CFG_HW_FILENAME);
+    LittleFS.remove(ERR_FILENAME);
+    LittleFS.remove(RUNTIME_FILENAME);
+    LittleFS.remove(TPL_FNAME_HTTP1);
+    LittleFS.remove(TPL_FNAME_HTTP2);
+    LittleFS.remove(TPL_FNAME_INFLUXDB);
+    LittleFS.remove(TPL_FNAME_MQTT);
     LittleFS.end();
     delay(500);
     ESP_RESET();
@@ -951,6 +958,7 @@ bool WebServerHandler::setupWebServer() {
   }
 #endif
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
+  _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
 
   // Dynamic content
   _server->on(
@@ -969,7 +977,7 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webHandleCalibrate,
                         this));  // Run calibration routine (param id)
   _server->on("/api/factory", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleFactoryReset,
+              std::bind(&WebServerHandler::webHandleFactoryDefaults,
                         this));  // Reset the device
   _server->on("/api/status", HTTP_GET,
               std::bind(&WebServerHandler::webHandleStatus,

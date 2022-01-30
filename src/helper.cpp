@@ -69,8 +69,8 @@ ErrorFileLog::ErrorFileLog() {
 
   if (errFile) {
     do {
-      errors[i] = errFile.readStringUntil('\n');
-    } while (errors[i++].length());
+      _errors[i] = errFile.readStringUntil('\n');
+    } while (_errors[i++].length());
     errFile.close();
   }
 }
@@ -78,16 +78,11 @@ ErrorFileLog::ErrorFileLog() {
 //
 //
 //
-const char* ErrorFileLog::getEntry(int idx) { return errors[idx].c_str(); }
-
-//
-//
-//
 void ErrorFileLog::addEntry(String err) {
   for (int i = (ERR_COUNT - 1); i > 0; i--) {
-    errors[i] = errors[i - 1];
+    _errors[i] = _errors[i - 1];
   }
-  errors[0] = err;
+  _errors[0] = err;
   Log.errorln(err.c_str());
   save();
 }
@@ -99,9 +94,59 @@ void ErrorFileLog::save() {
   File errFile = LittleFS.open(ERR_FILENAME, "w");
   if (errFile) {
     for (int i = 0; i < ERR_COUNT; i++) {
-      errFile.println(errors[i]);
+      errFile.println(_errors[i]);
     }
     errFile.close();
+  }
+}
+
+//
+//
+//
+FloatHistoryLog::FloatHistoryLog(String fName) {
+  /*File debug = LittleFS.open(fName, "r");
+  String s = debug.readString();
+  Serial.println( s.c_str() );
+  debug.close();*/
+  _fName = fName;
+
+  File runFile = LittleFS.open(_fName, "r");
+  int i = 0;
+
+  if (runFile) {
+    for(int i = 0; i<10; i++) {
+      _runTime[i] = runFile.readStringUntil('\n').toFloat();
+      if (_runTime[i]) {
+        _average += _runTime[i];
+        _count++;
+      }
+    }
+    runFile.close();
+    _average = _average/_count;
+  }
+}
+
+//
+//
+//
+void FloatHistoryLog::addEntry(float time) {
+  for (int i = (10 - 1); i > 0; i--) {
+    _runTime[i] = _runTime[i - 1];
+  }
+  _runTime[0] = time;
+  save();
+}
+
+//
+//
+//
+void FloatHistoryLog::save() {
+  File runFile = LittleFS.open(_fName, "w");
+  if (runFile) {
+    for (int i = 0; i < 10; i++) {
+      runFile.println(_runTime[i], 2);
+    }
+    runFile.close();
   }
 }
 
