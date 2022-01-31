@@ -88,6 +88,14 @@
     <div class="col-md-8 themed-grid-col bg-light">Device ID:</div>
     <div class="col-md-4 themed-grid-col bg-light" id="id">Loading...</div>
   </div>
+  <div class="row mb-3">
+    <div class="col-md-8 themed-grid-col bg-light">Battery voltage:</div>
+    <div class="col-md-4 themed-grid-col bg-light" id="battery">Loading...</div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-8 themed-grid-col bg-light">Average runtime:</div>
+    <div class="col-md-4 themed-grid-col bg-light" id="runtime">Loading...</div>
+  </div>
 
   <div class="row mb-3">
     <a class="badge badge-primary" data-toggle="collapse" href="#collapseLog" role="button" aria-expanded="false" aria-controls="collapseLog" id="log-btn">
@@ -131,6 +139,8 @@
         $("#app-ver").text(cfg["app-ver"] + " (html 0.7.9)");
         $("#mdns").text(cfg["mdns"]);
         $("#id").text(cfg["id"]);
+        $("#battery").text(cfg["battery"] + " V");
+        $("#runtime").text(cfg["runtime-average"] + " seconds");
     })
     .fail(function () {
       showError('Unable to get data from the device.');

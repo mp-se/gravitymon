@@ -111,8 +111,6 @@ FloatHistoryLog::FloatHistoryLog(String fName) {
   _fName = fName;
 
   File runFile = LittleFS.open(_fName, "r");
-  int i = 0;
-
   if (runFile) {
     for(int i = 0; i<10; i++) {
       _runTime[i] = runFile.readStringUntil('\n').toFloat();

@@ -30,6 +30,7 @@ SOFTWARE.
 #define PARAM_OTA "ota-url"
 #define PARAM_SSID "wifi-ssid"
 #define PARAM_PASS "wifi-pass"
+#define PARAM_RUNTIME_AVERAGE "runtime-average"
 #define PARAM_PUSH_BREWFATHER "brewfather-push"
 #define PARAM_PUSH_HTTP "http-push"
 #define PARAM_PUSH_HTTP_H1 "http-push-h1"
