@@ -129,7 +129,22 @@
       else
         $("#gravity").text(cfg["gravity"] + " °P");
 
-      $("#battery").text(cfg["battery"] + " V");
+      var batt = cfg["battery"];
+      var charge = 0;
+
+      if(batt>4.15) charge = 100;
+      else if(batt>4.05) charge = 90;
+      else if(batt>3.97) charge = 80;
+      else if(batt>3.91) charge = 70;
+      else if(batt>3.86) charge = 60;
+      else if(batt>3.81) charge = 50;
+      else if(batt>3.78) charge = 40;
+      else if(batt>3.76) charge = 30;
+      else if(batt>3.73) charge = 20;
+      else if(batt>3.67) charge = 10;
+      else if(batt>3.44) charge = 5;
+
+      $("#battery").text(batt + " V (" + charge + "%)" );
 
       if( cfg["temp-format"] == "C") 
         $("#temp").text(cfg["temp-c"] + " C");
