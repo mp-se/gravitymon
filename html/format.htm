@@ -148,10 +148,11 @@
   // Test the calibration
   $("#test-btn").click(function(e) {
     var doc = $("#format").val();
-    doc = doc.replaceAll("${mdns}", "gravmon2");
+    doc = doc.replaceAll("${mdns}", "testing");
     doc = doc.replaceAll("${id}", "e4a344");
     doc = doc.replaceAll("${sleep-interval}", "300");
     doc = doc.replaceAll("${temp}", "21.1");
+    doc = doc.replaceAll("${token}", "a-token");
     doc = doc.replaceAll("${temp-c}", "21.1");
     doc = doc.replaceAll("${temp-f}", "51.3");
     doc = doc.replaceAll("${temp-unit}", "C");

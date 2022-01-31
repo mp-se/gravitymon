@@ -197,6 +197,15 @@
             <hr class="my-2">
 
             <div class="form-group row">
+              <label for="token" class="col-sm-2 col-form-label">Token:</label>
+              <div class="col-sm-4">
+                <input type="text" maxlength="50" class="form-control" name="token" id="token">
+              </div>
+            </div>
+
+            <hr class="my-2">
+
+            <div class="form-group row">
               <label for="inputBrewfatherPush" class="col-sm-2 col-form-label">Brewfather URL:</label>
               <div class="col-sm-10">
                 <input type="url" maxlength="100" class="form-control" name="brewfather-push" id="brewfather-push">
@@ -222,8 +231,6 @@
               <div class="col-sm-4">
                 <input type="text" maxlength="50" class="form-control" name="influxdb2-bucket" id="influxdb2-bucket">
               </div>
-            </div>
-            <div class="form-group row">
             </div>
             <div class="form-group row">
               <label for="influxdb2-auth" class="col-sm-2 col-form-label">InfluxDB v2 Auth:</label>
@@ -503,6 +510,7 @@ $('#modal-http').on('hide.bs.modal', function (event) {
       if( cfg["gravity-format"] == "G" ) $("#gravity-format-g").click();
       else $("#gravity-format-p").click();
       $("#ota-url").val(cfg["ota-url"]);
+      $("#token").val(cfg["token"]);
       $("#http-push").val(cfg["http-push"]);
       $("#http-push-h1").val(cfg["http-push-h1"]);
       $("#http-push-h2").val(cfg["http-push-h2"]);

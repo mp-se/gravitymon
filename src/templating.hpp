@@ -34,6 +34,7 @@ SOFTWARE.
 // Templating variables
 #define TPL_MDNS "${mdns}"
 #define TPL_ID "${id}"
+#define TPL_TOKEN "${token}"
 #define TPL_SLEEP_INTERVAL "${sleep-interval}"
 #define TPL_TEMP "${temp}"
 #define TPL_TEMP_C "${temp-c}"
@@ -71,7 +72,7 @@ class TemplatingEngine {
     String val;
   };
 
-  KeyVal items[19] = {{TPL_MDNS, ""},           {TPL_ID, ""},
+  KeyVal items[20] = {{TPL_MDNS, ""},           {TPL_ID, ""},
                       {TPL_SLEEP_INTERVAL, ""}, {TPL_TEMP, ""},
                       {TPL_TEMP_C, ""},         {TPL_TEMP_F, ""},
                       {TPL_TEMP_UNITS, ""},     {TPL_BATTERY, ""},
@@ -80,7 +81,7 @@ class TemplatingEngine {
                       {TPL_GRAVITY, ""},        {TPL_GRAVITY_G, ""},
                       {TPL_GRAVITY_P, ""},      {TPL_GRAVITY_CORR, ""},
                       {TPL_GRAVITY_CORR_G, ""}, {TPL_GRAVITY_CORR_P, ""},
-                      {TPL_GRAVITY_UNIT, ""}};
+                      {TPL_GRAVITY_UNIT, ""},   {TPL_TOKEN, ""}};
 
   char buffer[20];
   String baseTemplate;

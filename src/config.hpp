@@ -104,6 +104,8 @@ class Config {
   // Push target settings
   String _brewfatherPushUrl = "";
 
+  String _token = "";
+
   String _httpUrl = "";
   String _httpHeader[2] = { "Content-Type: application/json", "" };
   String _http2Url = "";
@@ -172,6 +174,13 @@ class Config {
   }
   bool isBrewfatherActive() {
     return _brewfatherPushUrl.length() ? true : false;
+  }
+
+  // Token parameter
+  const char* getToken() { return _token.c_str(); }
+  void setToken(String s) {
+    _token = s;
+    _saveNeeded = true;
   }
 
   // Standard HTTP

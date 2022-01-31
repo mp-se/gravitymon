@@ -35,7 +35,7 @@ const char iSpindleFormat[] PROGMEM =
   "{"
     "\"name\" : \"${mdns}\", "
      "\"ID\": \"${id}\", "
-     "\"token\" : \"gravmon\", "
+     "\"token\" : \"${token}\", "
      "\"interval\": ${sleep-interval}, "
      "\"temperature\": ${temp}, "
      "\"temp-units\": \"${temp-unit}\", "
@@ -88,6 +88,7 @@ void TemplatingEngine::initialize(float angle, float gravitySG, float corrGravit
   // Names
   setVal(TPL_MDNS, myConfig.getMDNS());
   setVal(TPL_ID, myConfig.getID());
+  setVal(TPL_TOKEN, myConfig.getToken());
 
   // Temperature
   if (myConfig.isTempC()) {

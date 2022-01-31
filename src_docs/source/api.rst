@@ -23,6 +23,7 @@ Other parameters are the same as in the configuration guide.
       "ota-url": "http://192.168.1.50:80/firmware/gravmon/",
       "temp-format": "C",
       "brewfather-push": "http://log.brewfather.net/stream?id=Qwerty",
+      "token": "token",
       "http-push": "http://192.168.1.50:9090/api/v1/Qwerty/telemetry",
       "http-push-h1": "header: value",                           
       "http-push-h2": "header: value",                           
@@ -273,6 +274,7 @@ The requests package converts the json to standard form post format.
 
    url = "http://" + host + "/api/config/push"
    json = { "id": id, 
+            "token": "",                           
             "http-push": "http://192.168.1.1/ispindel",  
             "http-push2": "",                           
             "http-push-h1": "",                           

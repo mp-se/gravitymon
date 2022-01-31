@@ -365,6 +365,8 @@ void WebServerHandler::webHandleConfigPush() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
+  if (_server->hasArg(PARAM_TOKEN))
+    myConfig.setToken(_server->arg(PARAM_TOKEN).c_str());
   if (_server->hasArg(PARAM_PUSH_HTTP))
     myConfig.setHttpUrl(_server->arg(PARAM_PUSH_HTTP).c_str());
   if (_server->hasArg(PARAM_PUSH_HTTP_H1))
