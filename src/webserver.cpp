@@ -50,7 +50,6 @@ void WebServerHandler::webHandleDevice() {
   doc[PARAM_APP_NAME] = CFG_APPNAME;
   doc[PARAM_APP_VER] = CFG_APPVER;
   doc[PARAM_MDNS] = myConfig.getMDNS();
-  doc[PARAM_BATTERY] = reduceFloatPrecision(myBatteryVoltage.getVoltage());
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
   doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(runLog.getAverage()?runLog.getAverage()/1000:0, 1);

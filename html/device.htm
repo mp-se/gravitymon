@@ -89,10 +89,6 @@
     <div class="col-md-4 themed-grid-col bg-light" id="id">Loading...</div>
   </div>
   <div class="row mb-3">
-    <div class="col-md-8 themed-grid-col bg-light">Battery voltage:</div>
-    <div class="col-md-4 themed-grid-col bg-light" id="battery">Loading...</div>
-  </div>
-  <div class="row mb-3">
     <div class="col-md-8 themed-grid-col bg-light">Average runtime:</div>
     <div class="col-md-4 themed-grid-col bg-light" id="runtime">Loading...</div>
   </div>
@@ -132,14 +128,13 @@
 
   function getConfig() {
     var url = "/api/device";
-    //var url = "/test/device.json";
+    var url = "/test/device.json";
     $('#spinner').show(); 
     $.getJSON(url, function (cfg) {
         console.log( cfg );
         $("#app-ver").text(cfg["app-ver"] + " (html 0.7.9)");
         $("#mdns").text(cfg["mdns"]);
         $("#id").text(cfg["id"]);
-        $("#battery").text(cfg["battery"] + " V");
         $("#runtime").text(cfg["runtime-average"] + " seconds");
     })
     .fail(function () {

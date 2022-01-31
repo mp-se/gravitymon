@@ -71,7 +71,6 @@ Retrive the current device settings via an HTTP GET command. Payload is in JSON 
       "app-ver": "0.0.0",
       "id": "ee1bfc",
       "mdns": "gravmon",
-      "battery": 3.89,
       "runtime-average": 3.12
    }
 
