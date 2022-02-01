@@ -12,7 +12,8 @@ v0.8.0
 * Added possibility to define token parameter used in iSpindle format.
 * Added instructions for how to configure integration with Brewspy
 * Logging the runtime, how long a measurement take (last 10 are stored). This can be 
-  used to check how good the wifi connection is and estimate the lifetime when on battery.
+  used to check how good the wifi connection is and estimate the lifetime when on battery. 
+  Check the device page in the UI for this information.
 
 v0.7.1
 ------
