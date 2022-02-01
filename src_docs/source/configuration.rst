@@ -59,6 +59,12 @@ URL: (http://gravmon.local/device)
    This is unique identifier for the device (ESP8266 id), this is required when using the API as an API Key to safeguard 
    against faulty requests. This is the ESP8266 chip ID, so it should be unique.
 
+* **Average runtime:** 
+
+   This shows the average time a gravity measurement takes. Under optimal setting this should be 
+   around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likley connected to slow wifi 
+   connection. It will show 0 if data has not been collected yet.
+
 
 Configuration 
 =============
@@ -124,6 +130,11 @@ Push Settings
    Endpoint to send data via http. Default format used :ref:`data-formats-ispindle`. You can customize the format using :ref:`format-editor`.
 
    If you add the prefix `https://` then the device will use SSL when sending data. 
+
+* **Token:**
+
+   The token is included in the iSpindle JSON format and will be used for both HTTP targets. If you 
+   need to have 2 different tokens please use the :ref:`format-editor` to customize the data format. 
 
 * **Brewfather URL:**
 
@@ -260,5 +271,6 @@ Hardware Settings
 .. code-block::
 
    http://192.168.1.1/firmware/gravmon/
+   https://192.168.1.1/firmware/gravmon/
 
 

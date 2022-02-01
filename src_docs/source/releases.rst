@@ -6,8 +6,13 @@ Releases
 v0.8.0
 ------
 
-* Added option to set http headers (2 per http endpoint)
+* Added option to set http headers (2 per http endpoint), these can be used for 
+  other formats and authentication with services.
 * Added possibility to view last 10 errors on device page. 
+* Added possibility to define token parameter used in iSpindle format.
+* Added instructions for how to configure integration with Brewspy
+* Logging the runtime, how long a measurement take (last 10 are stored). This can be 
+  used to check how good the wifi connection is and estimate the lifetime when on battery.
 
 v0.7.1
 ------

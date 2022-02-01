@@ -155,3 +155,15 @@ format for the endpoint. Just add you API key after token.
    "battery": ${battery},
    "rssi": ${rssi}
   }
+
+
+Brewspy
++++++++
+
+BrewSpy is a service that can show the history and manage the brew.
+
+You need to enter the Token found in brewspy into the UI under Token and enter the following URL under http.
+
+.. code-block::
+
+   http://brew-spy.com/api/ispindel
