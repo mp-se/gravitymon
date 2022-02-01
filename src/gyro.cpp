@@ -248,7 +248,7 @@ bool GyroSensor::read() {
     _validValue = true;
     _angle = calculateAngle(_lastGyroData);
 #if !defined(GYRO_DISABLE_LOGGING)
-    Log.notice(F("GYRO: Sensor values %d,%d,%d\t%F" CR), _lastGyroData.ax,
+    Log.verbose(F("GYRO: Sensor values %d,%d,%d\t%F" CR), _lastGyroData.ax,
                _lastGyroData.ay, _lastGyroData.az, _angle);
 #endif
   }

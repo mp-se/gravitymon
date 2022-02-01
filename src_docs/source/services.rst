@@ -162,8 +162,36 @@ Brewspy
 
 BrewSpy is a service that can show the history and manage the brew.
 
-You need to enter the Token found in brewspy into the UI under Token and enter the following URL under http.
+You need to enter the Token found in brewspy. The field is found under the field for http configuration.
 
 .. code-block::
 
    http://brew-spy.com/api/ispindel
+
+
+Thingspeak
+++++++++++
+
+Thingspeak is an IoT platform for receiving data which can be visualized.
+
+In order to use this platform you need to create a channel (channel = device) and get the APIKEY for 
+writing to the channel. Each channel can handle up to 8 measurements. In the http field enter the following URL.
+
+.. code-block::
+
+   http://api.thingspeak.com/update.json
+
+
+You also need to create a custom format for the selected endpoint where the field1-field8 contains the data 
+you want to include. The example below sends 5 different values to the channel identified by the API key.
+
+.. code-block::
+
+   { 
+      "api_key": "<your write api key for channel>",
+      "field1": ${gravity}, 
+      "field2": ${temp},
+      "field3": ${angle},
+      "field4": ${battery},
+      "field5": ${rssi}
+   }

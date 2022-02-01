@@ -128,6 +128,18 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
    }
 
 
+GET: /api/factory
+================
+
+Will do a reset to factory defaults and delete all data except wifi settings.
+
+For this to work you will need to supply the device id as a parameter in the request:
+
+:: 
+
+   http://mygravity.local/api/factory?id=<mydeviceid>
+
+
 POST: /api/config/device
 ========================
 
