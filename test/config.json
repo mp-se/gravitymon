@@ -36,5 +36,6 @@
     },
     "angle": 90.93,
     "gravity": 1.105,
-    "battery": 0.04
+    "battery": 0.04,
+    "runtime-average": 2.0
 }

@@ -55,7 +55,8 @@ Other parameters are the same as in the configuration guide.
       },
       "angle": 90.93,
       "gravity": 1.105,
-      "battery": 0.04
+      "battery": 0.04,
+      "runtime-average": 3.12
    }
 
 

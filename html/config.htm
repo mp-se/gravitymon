@@ -93,6 +93,7 @@
   </script>
 
   <div class="accordion" id="accordion">
+    <input type="text" name="runtime-average" id="runtime-average" hidden>
 
     <div class="card">
       <div class="card-header" id="headingOne">
@@ -134,7 +135,7 @@
               <div class="col-sm-2">
                 <input type="number" min="10" max="3600" class="form-control" name="sleep-interval" id="sleep-interval">
               </div>
-              <label for="sleep-interval" class="col-sm-3 col-form-label" id="sleep-interval-info"></label>
+              <label for="sleep-interval" class="col-sm-7 col-form-label" id="sleep-interval-info"></label>
             </div>
             <div class="form-group row">
               <div class="col-sm-8 offset-sm-3">
@@ -464,9 +465,34 @@ $('#modal-http').on('hide.bs.modal', function (event) {
     window.location.href = "/format.htm";
   });
 
+  function estimateBatteryLife(interval) {
+    // ESP8266 consumes between 140-170mA when WIFI is on. Deep sleep is 20uA. 
+    // MPU-6050 consumes 4mA
+    // DS18B20 consumes 1mA
+    // For this estimation we use an average of 160mA
+
+    var pwr = 160; // mA
+    var batt = 2200; // mA
+    var rt = parseInt($("#runtime-average").val());
+
+    if(rt<1) rt = 2;
+
+    // The deep sleep will consume approx 1mA per day.
+    var powerPerDay = (24*3600)/(interval+rt)*(rt/3600)*pwr + 1; 
+    return batt/powerPerDay;
+  }
+
   function updateSleepInfo() {
-    var i = $("#sleep-interval").val()
-    $("#sleep-interval-info").text( Math.floor(i/60) + " m " + (i%60) + " s" )
+    var i = parseInt($("#sleep-interval").val());
+
+    var j = estimateBatteryLife(i);
+
+    var t1 = Math.floor(i/60) + " m " + (i%60) + " s";
+    var t2 = Math.floor(j/7) + " weeks " + (i%7) + " days";
+
+    $("#sleep-interval-info").text(t1);
+    //$("#sleep-interval-info").text( t1 + " - Estimated life: " + t2);
+    console.log( "Estimated life: " + t2);
 
     hideWarningGyro();
     if(i>0 && i<300) {
@@ -535,6 +561,7 @@ $('#modal-http').on('hide.bs.modal', function (event) {
       $("#gyro-calibration-data").text( cfg["gyro-calibration-data"]["ax"] + "," + cfg["gyro-calibration-data"]["ay"] + "," + cfg["gyro-calibration-data"]["az"] + "," + cfg["gyro-calibration-data"]["gx"] + "," + cfg["gyro-calibration-data"]["gy"] + "," + cfg["gyro-calibration-data"]["gz"] );
       $("#battery").text(cfg["battery"] + " V");
       $("#angle").text(cfg["angle"]);
+      $("#runtime-average").val(cfg["runtime-average"]);
       //$("#gravity").text(cfg["gravity"] + " SG");
     })
     .fail(function () {
