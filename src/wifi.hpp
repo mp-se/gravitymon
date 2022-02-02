@@ -24,28 +24,14 @@ SOFTWARE.
 #ifndef SRC_WIFI_HPP_
 #define SRC_WIFI_HPP_
 
-#if defined (ESP8266)
-#include <ESP8266WiFi.h>
-#else // defined (ESP32)
-#include <WiFiClient.h>
-#include <WiFiClientSecure.h>
-#endif
-
 #define WIFI_DEFAULT_SSID "GravityMon"  // Name of created SSID
 #define WIFI_DEFAULT_PWD "password"     // Password for created SSID
 #define WIFI_MDNS "gravitymon"          // Prefix for MDNS name
 
 // tcp cleanup, to avoid memory crash.
-struct tcp_pcb;
-extern struct tcp_pcb* tcp_tw_pcbs;
-extern "C" void tcp_abort(struct tcp_pcb* pcb);
 
 class WifiConnection {
  private:
-  // WIFI
-  WiFiClient _client;
-  WiFiClientSecure _secureClient;
-
   // OTA
   bool _newFirmware = false;
   bool parseFirmwareVersionString(int (&num)[3], const char* version);
@@ -66,16 +52,6 @@ class WifiConnection {
   String getIPAddress();
   void startPortal();
   void loop();
-
-  WiFiClient& getWifiClient() { return _client; }
-  WiFiClientSecure& getWifiClientSecure() { return _secureClient; }
-  void closeWifiClient() {
-    _client.stop();
-    _secureClient.stop();
-
-    // Cleanup memory allocated by open tcp connetions.
-    while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
-  }
 
   // OTA
   bool updateFirmware();

@@ -37,8 +37,15 @@ SOFTWARE.
 #include <wifi.hpp>
 
 SerialDebug mySerial;
-ErrorFileLog myLastErrors;
 BatteryVoltage myBatteryVoltage;
+
+// tcp cleanup, to avoid memory crash.
+struct tcp_pcb;
+extern struct tcp_pcb* tcp_tw_pcbs;
+extern "C" void tcp_abort(struct tcp_pcb* pcb);
+void tcp_cleanup() {
+  while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
+}
 
 //
 // Convert sg to plato
@@ -61,7 +68,7 @@ float convertCtoF(float c) { return (c * 1.8) + 32.0; }
 float convertFtoC(float f) { return (f - 32.0) / 1.8; }
 
 //
-//
+// Load error log from disk
 //
 ErrorFileLog::ErrorFileLog() {
   File errFile = LittleFS.open(ERR_FILENAME, "r");
@@ -76,7 +83,7 @@ ErrorFileLog::ErrorFileLog() {
 }
 
 //
-//
+// Add new entry to top of error log
 //
 void ErrorFileLog::addEntry(String err) {
   for (int i = (ERR_COUNT - 1); i > 0; i--) {
@@ -88,7 +95,7 @@ void ErrorFileLog::addEntry(String err) {
 }
 
 //
-//
+// Save error log
 //
 void ErrorFileLog::save() {
   File errFile = LittleFS.open(ERR_FILENAME, "w");
@@ -101,18 +108,14 @@ void ErrorFileLog::save() {
 }
 
 //
-//
+// Load history log of floats
 //
 FloatHistoryLog::FloatHistoryLog(String fName) {
-  /*File debug = LittleFS.open(fName, "r");
-  String s = debug.readString();
-  Serial.println( s.c_str() );
-  debug.close();*/
   _fName = fName;
 
   File runFile = LittleFS.open(_fName, "r");
   if (runFile) {
-    for(int i = 0; i<10; i++) {
+    for (int i = 0; i < 10; i++) {
       _runTime[i] = runFile.readStringUntil('\n').toFloat();
       if (_runTime[i]) {
         _average += _runTime[i];
@@ -120,12 +123,12 @@ FloatHistoryLog::FloatHistoryLog(String fName) {
       }
     }
     runFile.close();
-    _average = _average/_count;
+    _average = _average / _count;
   }
 }
 
 //
-//
+// Add entry to top of log
 //
 void FloatHistoryLog::addEntry(float time) {
   for (int i = (10 - 1); i > 0; i--) {
@@ -136,7 +139,7 @@ void FloatHistoryLog::addEntry(float time) {
 }
 
 //
-//
+// Save log
 //
 void FloatHistoryLog::save() {
   File runFile = LittleFS.open(_fName, "w");
@@ -151,12 +154,16 @@ void FloatHistoryLog::save() {
 //
 // Print the heap information.
 //
-void printHeap() {
-#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
+void printHeap(String prefix) {
+#if LOG_LEVEL == 6 || LOG_LEVEL == 5
 #if defined(ESP8266)
-  Log.verbose(F("HELP: Heap %d kb, HeapFrag %d %%, FreeSketch %d kb." CR),
-              ESP.getFreeHeap() / 1024, ESP.getHeapFragmentation(),
-              ESP.getFreeSketchSpace() / 1024);
+  Log.notice(
+      F("%s: Free-heap %d kb, Heap-rag %d %%, Max-block %d kb Stack=%d b." CR),
+      prefix.c_str(), ESP.getFreeHeap() / 1024, ESP.getHeapFragmentation(),
+      ESP.getMaxFreeBlockSize() / 1024, ESP.getFreeContStack());
+  // Log.notice(F("%s: Heap %d kb, HeapFrag %d %%, FreeSketch %d kb." CR),
+  //            prefix.c_str(), ESP.getFreeHeap() / 1024,
+  //            ESP.getHeapFragmentation(), ESP.getFreeSketchSpace() / 1024);
 #else  // defined (ESP32)
   Log.verbose(F("HELP: Heap %d kb, FreeSketch %d kb." CR),
               ESP.getFreeHeap() / 1024, ESP.getFreeSketchSpace() / 1024);
@@ -306,13 +313,14 @@ void PerfLogging::print() {
 void PerfLogging::pushInflux() {
   if (!myConfig.isInfluxDb2Active()) return;
 
+  WiFiClient wifi;
   HTTPClient http;
   String serverPath =
       String(myConfig.getInfluxDb2PushUrl()) +
       "/api/v2/write?org=" + String(myConfig.getInfluxDb2PushOrg()) +
       "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
 
-  http.begin(myWifi.getWifiClient(), serverPath);
+  http.begin(wifi, serverPath);
 
   // Create body for influxdb2, format used
   // key,host=mdns value=0.0
@@ -375,7 +383,8 @@ void PerfLogging::pushInflux() {
   }
 
   http.end();
-  myWifi.closeWifiClient();
+  wifi.stop();
+  tcp_cleanup();
 }
 
 #endif  // COLLECT_PERFDATA

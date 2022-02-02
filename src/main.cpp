@@ -40,6 +40,7 @@ int interval = 200;  // ms, time to wait between changes to output
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
 uint32_t loopMillis = 0;  // Used for main loop to run the code every _interval_
+uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 uint32_t stableGyroMillis;  // Used to calculate the total time since last
                             // stable gyro reading
@@ -173,7 +174,9 @@ void setup() {
       LOG_PERF_STOP("main-temp-setup");
 
       if (!myGyro.setup()) {
-        myLastErrors.addEntry(F("MAIN: Failed to initialize the gyro, is it connected?"));
+        ErrorFileLog errLog;
+        errLog.addEntry(
+            F("MAIN: Failed to initialize the gyro, is it connected?"));
       } else {
         LOG_PERF_START("main-gyro-read");
         myGyro.read();
@@ -207,7 +210,8 @@ void setup() {
 
   LOG_PERF_STOP("main-setup");
   Log.notice(F("Main: Setup completed." CR));
-  stableGyroMillis = millis();  // Dont include time for wifi connection
+  pushMillis = stableGyroMillis =
+      millis();  // Dont include time for wifi connection
 }
 
 //
@@ -245,10 +249,15 @@ bool loopReadGravity() {
 #endif
 
     LOG_PERF_START("loop-push");
-    // Force the transmission if we are going to sleep
-    myPushTarget.send(angle, gravitySG, corrGravitySG, tempC,
-                      (millis() - runtimeMillis) / 1000,
-                      runMode == RunMode::gravityMode ? true : false);
+    bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
+                        (myConfig.getSleepInterval() * 1000));
+
+    if (pushExpired || runMode == RunMode::gravityMode) {
+      pushMillis = millis();
+      PushTarget push;
+      push.send(angle, gravitySG, corrGravitySG, tempC,
+                (millis() - runtimeMillis) / 1000);
+    }
     LOG_PERF_STOP("loop-push");
     return true;
   } else {
@@ -265,7 +274,7 @@ void loopGravityOnInterval() {
   if (abs((int32_t)(millis() - loopMillis)) > interval) {
     loopReadGravity();
     loopMillis = millis();
-    printHeap();
+    // printHeap("MAIN");
     LOG_PERF_START("loop-gyro-read");
     myGyro.read();
     LOG_PERF_STOP("loop-gyro-read");
@@ -310,8 +319,7 @@ void loop() {
       loopGravityOnInterval();
 
       // If we switched mode, dont include this in the log.
-      if (runMode!=RunMode::configurationMode)
-        skipRunTimeLog = true;
+      if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
       break;
 
     case RunMode::gravityMode:

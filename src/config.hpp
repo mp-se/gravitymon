@@ -107,9 +107,9 @@ class Config {
   String _token = "";
 
   String _httpUrl = "";
-  String _httpHeader[2] = { "Content-Type: application/json", "" };
+  String _httpHeader[2] = {"Content-Type: application/json", ""};
   String _http2Url = "";
-  String _http2Header[2] = { "Content-Type: application/json", "" };
+  String _http2Header[2] = {"Content-Type: application/json", ""};
 
   String _influxDb2Url = "";
   String _influxDb2Org = "";
@@ -154,6 +154,7 @@ class Config {
     _saveNeeded = true;
   }
   bool isOtaActive() { return _otaURL.length() ? true : false; }
+  bool isOtaSSL() { return _otaURL.startsWith("https://"); }
 
   const char* getWifiSSID() { return _wifiSSID.c_str(); }
   void setWifiSSID(String s) {
@@ -195,6 +196,7 @@ class Config {
     _saveNeeded = true;
   }
   bool isHttpActive() { return _httpUrl.length() ? true : false; }
+  bool isHttpSSL() { return _httpUrl.startsWith("https://"); }
 
   const char* getHttp2Url() { return _http2Url.c_str(); }
   void setHttp2Url(String s) {
@@ -206,7 +208,8 @@ class Config {
     _http2Header[idx] = s;
     _saveNeeded = true;
   }
-  bool isHttpActive2() { return _http2Url.length() ? true : false; }
+  bool isHttp2Active() { return _http2Url.length() ? true : false; }
+  bool isHttp2SSL() { return _http2Url.startsWith("https://"); }
 
   // InfluxDB2
   const char* getInfluxDb2PushUrl() { return _influxDb2Url.c_str(); }
@@ -232,12 +235,14 @@ class Config {
   }
 
   // MQTT
-  bool isMqttActive() { return _mqttUrl.length() ? true : false; }
   const char* getMqttUrl() { return _mqttUrl.c_str(); }
   void setMqttUrl(String s) {
     _mqttUrl = s;
     _saveNeeded = true;
   }
+  bool isMqttActive() { return _mqttUrl.length() ? true : false; }
+  bool isMqttSSL() { return _mqttPort > 8000 ? true : false; }
+
   int getMqttPort() { return _mqttPort; }
   void setMqttPort(String s) {
     _mqttPort = s.toInt();

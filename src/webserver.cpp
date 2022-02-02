@@ -52,7 +52,8 @@ void WebServerHandler::webHandleDevice() {
   doc[PARAM_MDNS] = myConfig.getMDNS();
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(runLog.getAverage()?runLog.getAverage()/1000:0, 1);
+  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
+      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, 1);
 
 #if LOG_LEVEL == 6
   serializeJson(doc, Serial);
@@ -97,7 +98,8 @@ void WebServerHandler::webHandleConfig() {
   doc[PARAM_BATTERY] = reduceFloatPrecision(myBatteryVoltage.getVoltage());
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(runLog.getAverage()?runLog.getAverage()/1000:0, 1);
+  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
+      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, 1);
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -211,7 +213,8 @@ void WebServerHandler::webHandleFactoryDefaults() {
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
 
   if (!id.compareTo(myConfig.getID())) {
-    _server->send(200, "text/plain", "Removing configuration and restarting...");
+    _server->send(200, "text/plain",
+                  "Removing configuration and restarting...");
     LittleFS.remove(CFG_FILENAME);
     LittleFS.remove(CFG_HW_FILENAME);
     LittleFS.remove(ERR_FILENAME);
@@ -386,13 +389,14 @@ void WebServerHandler::webHandleConfigPush() {
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2))
     myConfig.setInfluxDb2PushUrl(_server->arg(PARAM_PUSH_INFLUXDB2).c_str());
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2_ORG))
-    myConfig.setInfluxDb2PushOrg(_server->arg(PARAM_PUSH_INFLUXDB2_ORG).c_str());
+    myConfig.setInfluxDb2PushOrg(
+        _server->arg(PARAM_PUSH_INFLUXDB2_ORG).c_str());
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2_BUCKET))
     myConfig.setInfluxDb2PushBucket(
-      _server->arg(PARAM_PUSH_INFLUXDB2_BUCKET).c_str());
+        _server->arg(PARAM_PUSH_INFLUXDB2_BUCKET).c_str());
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2_AUTH))
     myConfig.setInfluxDb2PushToken(
-      _server->arg(PARAM_PUSH_INFLUXDB2_AUTH).c_str());
+        _server->arg(PARAM_PUSH_INFLUXDB2_AUTH).c_str());
   if (_server->hasArg(PARAM_PUSH_MQTT))
     myConfig.setMqttUrl(_server->arg(PARAM_PUSH_MQTT).c_str());
   if (_server->hasArg(PARAM_PUSH_MQTT_PORT))
@@ -452,8 +456,8 @@ void WebServerHandler::webHandleConfigGravity() {
     myConfig.setGravityFormula(_server->arg(PARAM_GRAVITY_FORMULA).c_str());
   if (_server->hasArg(PARAM_GRAVITY_TEMP_ADJ))
     myConfig.setGravityTempAdj(
-      _server->arg(PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
-                                                                  : false);
+        _server->arg(PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
+                                                                    : false);
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseThree", true);
   _server->send(302, "text/plain", "Gravity config updated");
@@ -493,7 +497,7 @@ void WebServerHandler::webHandleConfigHardware() {
     myConfig.setOtaURL(_server->arg(PARAM_OTA).c_str());
   if (_server->hasArg(PARAM_GYRO_TEMP))
     myConfig.setGyroTemp(
-      _server->arg(PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
+        _server->arg(PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseFour", true);
   _server->send(302, "text/plain", "Hardware config updated");
@@ -672,7 +676,8 @@ void WebServerHandler::webHandleConfigFormatWrite() {
     _server->sendHeader("Location", "/format.htm", true);
     _server->send(302, "text/plain", "Format updated");
   } else {
-    myLastErrors.addEntry(F("WEB : Unable to store format file"));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("WEB : Unable to store format file"));
     _server->send(400, "text/plain", "Unable to store format in file.");
   }
 

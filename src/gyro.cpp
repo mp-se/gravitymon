@@ -44,7 +44,8 @@ bool GyroSensor::setup() {
                           // compilation difficulties
 
   if (!accelgyro.testConnection()) {
-    myLastErrors.addEntry(F("GYRO: Failed to connect to gyro, is it connected?"));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("GYRO: Failed to connect to gyro, is it connected?"));
     _sensorConnected = false;
   } else {
 #if !defined(GYRO_DISABLE_LOGGING)
@@ -240,16 +241,16 @@ bool GyroSensor::read() {
   // If the sensor is unstable we return false to signal we dont have valid
   // value
   if (isSensorMoving(_lastGyroData)) {
-#if !defined(GYRO_DISABLE_LOGGING)
+#if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
     Log.notice(F("GYRO: Sensor is moving." CR));
 #endif
     _validValue = false;
   } else {
     _validValue = true;
     _angle = calculateAngle(_lastGyroData);
-#if !defined(GYRO_DISABLE_LOGGING)
+#if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
     Log.verbose(F("GYRO: Sensor values %d,%d,%d\t%F" CR), _lastGyroData.ax,
-               _lastGyroData.ay, _lastGyroData.az, _angle);
+                _lastGyroData.ay, _lastGyroData.az, _angle);
 #endif
   }
 
@@ -286,7 +287,9 @@ void GyroSensor::applyCalibration() {
   if ((_calibrationOffset.ax + _calibrationOffset.ay + _calibrationOffset.az +
        _calibrationOffset.gx + _calibrationOffset.gy + _calibrationOffset.gz) ==
       0) {
-    myLastErrors.addEntry(F("GYRO: No valid calibration values, please calibrate the device."));
+    ErrorFileLog errLog;
+    errLog.addEntry(
+        F("GYRO: No valid calibration values, please calibrate the device."));
     return;
   }
 

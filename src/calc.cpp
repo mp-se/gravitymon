@@ -49,7 +49,8 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
 #endif
 
   if (!noAngles) {
-    myLastErrors.addEntry(F("CALC: Not enough values for deriving formula"));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("CALC: Not enough values for deriving formula"));
     return ERR_FORMULA_NOTENOUGHVALUES;
   } else {
     double coeffs[order + 1];
@@ -103,7 +104,10 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
       }
 
       if (!valid) {
-        myLastErrors.addEntry(F("CALC: Error validating created formula. Deviation to large, formula rejected."));
+        ErrorFileLog errLog;
+        errLog.addEntry(
+            F("CALC: Error validating created formula. Deviation to large, "
+              "formula rejected."));
         return ERR_FORMULA_UNABLETOFFIND;
       }
 
@@ -112,7 +116,8 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
     }
   }
 
-  myLastErrors.addEntry(F("CALC: Internal error finding formula."));
+  ErrorFileLog errLog;
+  errLog.addEntry(F("CALC: Internal error finding formula."));
   return ERR_FORMULA_INTERNAL;
 }
 
@@ -157,7 +162,8 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
     return g;
   }
 
-  myLastErrors.addEntry("CALC: Failed to parse gravity expression " + String(err));
+  ErrorFileLog errLog;
+  errLog.addEntry("CALC: Failed to parse gravity expression " + String(err));
   return 0;
 }
 
@@ -203,8 +209,10 @@ double gravityTemperatureCorrectionC(double gravity, double tempC,
     return g;
   }
 
-  myLastErrors.addEntry(
-      "CALC: Failed to parse expression for gravity temperature correction " + String(err));
+  ErrorFileLog errLog;
+  errLog.addEntry(
+      "CALC: Failed to parse expression for gravity temperature correction " +
+      String(err));
   return gravity;
 }
 

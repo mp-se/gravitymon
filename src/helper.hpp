@@ -32,6 +32,9 @@ SOFTWARE.
 
 #define RUNTIME_FILENAME "/runtime.log"
 
+// tcp cleanup
+void tcp_cleanup();
+
 // Sleep mode
 void deepSleep(int t);
 
@@ -55,7 +58,7 @@ float reduceFloatPrecision(float f, int dec = 2);
 // Logging via serial
 void printTimestamp(Print* _logOutput, int _logLevel);
 void printNewline(Print* _logOutput);
-void printHeap();
+void printHeap(String prefix = "HELP");
 
 // Classes
 class SerialDebug {
@@ -78,12 +81,12 @@ class FloatHistoryLog {
  private:
   String _fName;
   float _average = 0;
-  float _runTime[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  float _runTime[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   int _count = 0;
   void save();
 
  public:
-  FloatHistoryLog(String fName);
+  explicit FloatHistoryLog(String fName);
   void addEntry(float time);
   float getAverage() { return _average; }
 };
@@ -167,7 +170,7 @@ extern PerfLogging myPerfLogging;
 // Use these to collect performance data from various parts of the code
 #define LOG_PERF_START(s) myPerfLogging.start(s)
 #define LOG_PERF_STOP(s) myPerfLogging.stop(s)
-// #define LOG_PERF_PRINT()    myPerfLogging.print()
+// #define LOG_PERF_PRINT() myPerfLogging.print()
 #define LOG_PERF_PRINT()
 #define LOG_PERF_CLEAR() myPerfLogging.clear()
 #define LOG_PERF_PUSH() myPerfLogging.pushInflux()
@@ -185,7 +188,6 @@ extern PerfLogging myPerfLogging;
 
 // Global instance created
 extern SerialDebug mySerial;
-extern ErrorFileLog myLastErrors;
 extern BatteryVoltage myBatteryVoltage;
 
 #endif  // SRC_HELPER_HPP_

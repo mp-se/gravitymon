@@ -28,29 +28,28 @@ SOFTWARE.
 
 #if defined(ESP8266)
 #include <ESP8266HTTPClient.h>
+#include <WiFiClientSecure.h>
 #else  // defined (ESP32)
 #include <HTTPClient.h>
 #endif
 
 class PushTarget {
  private:
-  uint32_t _ms;  // Used to check that we do not post to often
-  bool _memErrorReported =
-      false;  // Avoid filling the error log with memory errors.
+  WiFiClient wifi;
+  WiFiClientSecure wifiSecure;
+  HTTPClient http;
+  HTTPClient httpSecure;
 
   void sendBrewfather(TemplatingEngine& engine);
-  void sendHttp(TemplatingEngine& engine, int index);
+  void sendHttp(TemplatingEngine& engine, bool isSecure, int index);
   void sendInfluxDb2(TemplatingEngine& engine);
-  void sendMqtt(TemplatingEngine& engine);
+  void sendMqtt(TemplatingEngine& engine, bool isSecure);
   void addHttpHeader(HTTPClient& http, String header);
 
  public:
-  PushTarget() { _ms = millis(); }
   void send(float angle, float gravitySG, float corrGravitySG, float tempC,
-            float runTime, bool force = false);
+            float runTime);
 };
-
-extern PushTarget myPushTarget;
 
 #endif  // SRC_PUSHTARGET_HPP_
 

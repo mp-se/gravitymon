@@ -23,11 +23,14 @@ SOFTWARE.
  */
 #if defined(ESP8266)
 #include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
 #include <ESP8266httpUpdate.h>
 #else  // defined (ESP32)
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
 #include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiClientSecure.h>
 #endif
 #include <incbin.h>
 
@@ -192,8 +195,9 @@ bool WifiConnection::waitForConnection(int maxTime) {
 
     if (i++ >
         (maxTime * 10)) {  // Try for maxTime seconds. Since delay is 100ms.
-      myLastErrors.addEntry("WIFI: Failed to connect to wifi " +
-                            String(WiFi.status()));
+      ErrorFileLog errLog;
+      errLog.addEntry("WIFI: Failed to connect to wifi " +
+                      String(WiFi.status()));
       WiFi.disconnect();
       Serial.print(CR);
       return false;  // Return to main that we have failed to connect.
@@ -237,31 +241,36 @@ bool WifiConnection::updateFirmware() {
   Log.verbose(F("WIFI: Updating firmware." CR));
 #endif
 
+  WiFiClient wifi;
+  WiFiClientSecure wifiSecure;
+  HTTPUpdateResult ret;
   String serverPath = myConfig.getOtaURL();
   serverPath += "firmware.bin";
-  HTTPUpdateResult ret;
 
   if (serverPath.startsWith("https://")) {
-    myWifi.getWifiClientSecure().setInsecure();
+    wifiSecure.setInsecure();
     Log.notice(F("WIFI: OTA, SSL enabled without validation." CR));
-    ret = ESPhttpUpdate.update(myWifi.getWifiClientSecure(), serverPath);
+    ret = ESPhttpUpdate.update(wifiSecure, serverPath);
   } else {
-    ret = ESPhttpUpdate.update(myWifi.getWifiClient(), serverPath);
+    ret = ESPhttpUpdate.update(wifi, serverPath);
   }
 
   switch (ret) {
-    case HTTP_UPDATE_FAILED:
-      myLastErrors.addEntry("WIFI: OTA update failed " +
-                            String(ESPhttpUpdate.getLastError()));
-      break;
+    case HTTP_UPDATE_FAILED: {
+      ErrorFileLog errLog;
+      errLog.addEntry("WIFI: OTA update failed " +
+                      String(ESPhttpUpdate.getLastError()));
+    } break;
     case HTTP_UPDATE_NO_UPDATES:
       break;
-    case HTTP_UPDATE_OK:
+    case HTTP_UPDATE_OK: {
       Log.notice("WIFI: OTA Update sucesfull, rebooting.");
       delay(100);
       ESP_RESET();
       break;
+    }
   }
+
   return false;
 }
 
@@ -272,16 +281,18 @@ void WifiConnection::downloadFile(const char *fname) {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Download file %s." CR), fname);
 #endif
+  WiFiClient wifi;
+  WiFiClientSecure wifiSecure;
   HTTPClient http;
   String serverPath = myConfig.getOtaURL();
   serverPath += fname;
 
-  if (serverPath.startsWith("https://")) {
-    myWifi.getWifiClientSecure().setInsecure();
+  if (myConfig.isOtaSSL()) {
+    wifiSecure.setInsecure();
     Log.notice(F("WIFI: OTA, SSL enabled without validation." CR));
-    http.begin(myWifi.getWifiClientSecure(), serverPath);
+    http.begin(wifiSecure, serverPath);
   } else {
-    http.begin(myWifi.getWifiClient(), serverPath);
+    http.begin(wifi, serverPath);
   }
 
   int httpResponseCode = http.GET();
@@ -292,11 +303,11 @@ void WifiConnection::downloadFile(const char *fname) {
     f.close();
     Log.notice(F("WIFI: Downloaded file %s." CR), fname);
   } else {
-    myLastErrors.addEntry("WIFI: Failed to download html-file " +
-                          String(httpResponseCode));
+    ErrorFileLog errLog;
+    errLog.addEntry("WIFI: Failed to download html-file " +
+                    String(httpResponseCode));
   }
   http.end();
-  myWifi.closeWifiClient();
 }
 
 //
@@ -306,17 +317,19 @@ bool WifiConnection::checkFirmwareVersion() {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Checking if new version exist." CR));
 #endif
+  WiFiClient wifi;
+  WiFiClientSecure wifiSecure;
   HTTPClient http;
   String serverPath = myConfig.getOtaURL();
   serverPath += "version.json";
 
   // Your Domain name with URL path or IP address with path
-  if (serverPath.startsWith("https://")) {
-    myWifi.getWifiClientSecure().setInsecure();
+  if (myConfig.isOtaSSL()) {
+    wifiSecure.setInsecure();
     Log.notice(F("WIFI: OTA, SSL enabled without validation." CR));
-    http.begin(myWifi.getWifiClientSecure(), serverPath);
+    http.begin(wifiSecure, serverPath);
   } else {
-    http.begin(myWifi.getWifiClient(), serverPath);
+    http.begin(wifi, serverPath);
   }
 
   // Send HTTP GET request
@@ -332,7 +345,8 @@ bool WifiConnection::checkFirmwareVersion() {
     DynamicJsonDocument ver(300);
     DeserializationError err = deserializeJson(ver, payload);
     if (err) {
-      myLastErrors.addEntry(F("WIFI: Failed to parse version.json"));
+      ErrorFileLog errLog;
+      errLog.addEntry(F("WIFI: Failed to parse version.json"));
     } else {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
       Log.verbose(F("WIFI: Project %s version %s." CR),
@@ -378,11 +392,12 @@ bool WifiConnection::checkFirmwareVersion() {
               httpResponseCode);
   }
   http.end();
-  myWifi.closeWifiClient();
+
 #if LOG_LEVEL == 6
   Log.verbose(F("WIFI: OTA found new version %s." CR),
               _newFirmware ? "true" : "false");
 #endif
+
   return _newFirmware;
 }
 

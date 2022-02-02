@@ -134,7 +134,8 @@ bool Config::saveFile() {
   File configFile = LittleFS.open(CFG_FILENAME, "w");
 
   if (!configFile) {
-    myLastErrors.addEntry(F("CFG : Failed to save configuration."));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("CFG : Failed to save configuration."));
     return false;
   }
 
@@ -164,14 +165,16 @@ bool Config::loadFile() {
 #endif
 
   if (!LittleFS.exists(CFG_FILENAME)) {
-    myLastErrors.addEntry(F("CFG : Configuration file does not exist."));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("CFG : Configuration file does not exist."));
     return false;
   }
 
   File configFile = LittleFS.open(CFG_FILENAME, "r");
 
   if (!configFile) {
-    myLastErrors.addEntry(F("CFG : Failed to load configuration."));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("CFG : Failed to load configuration."));
     return false;
   }
 
@@ -187,7 +190,8 @@ bool Config::loadFile() {
   configFile.close();
 
   if (err) {
-    myLastErrors.addEntry(F("CFG : Failed to parse configuration (json)"));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("CFG : Failed to parse configuration (json)"));
     return false;
   }
 
@@ -328,7 +332,8 @@ bool HardwareConfig::saveFile() {
   File configFile = LittleFS.open(CFG_HW_FILENAME, "w");
 
   if (!configFile) {
-    myLastErrors.addEntry(F("CFG : Failed to write hardware configuration "));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("CFG : Failed to write hardware configuration "));
     return false;
   }
 
@@ -371,7 +376,8 @@ bool HardwareConfig::loadFile() {
   File configFile = LittleFS.open(CFG_HW_FILENAME, "r");
 
   if (!configFile) {
-    myLastErrors.addEntry(F("CFG : Failed to read hardware configuration "));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("CFG : Failed to read hardware configuration "));
     return false;
   }
 
@@ -387,8 +393,8 @@ bool HardwareConfig::loadFile() {
   configFile.close();
 
   if (err) {
-    myLastErrors.addEntry(
-        F("CFG : Failed to parse hardware configuration (json)"));
+    ErrorFileLog errLog;
+    errLog.addEntry(F("CFG : Failed to parse hardware configuration (json)"));
     return false;
   }
 
