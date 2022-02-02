@@ -248,17 +248,18 @@ bool loopReadGravity() {
                 angle, tempC, gravity, corrGravity);
 #endif
 
-    LOG_PERF_START("loop-push");
     bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
                         (myConfig.getSleepInterval() * 1000));
 
     if (pushExpired || runMode == RunMode::gravityMode) {
       pushMillis = millis();
+      LOG_PERF_START("loop-push");
       PushTarget push;
       push.send(angle, gravitySG, corrGravitySG, tempC,
                 (millis() - runtimeMillis) / 1000);
+      LOG_PERF_STOP("loop-push");
+      LOG_PERF_PUSH();
     }
-    LOG_PERF_STOP("loop-push");
     return true;
   } else {
     Log.error(F("MAIN: No gyro value found, the device might be moving."));

@@ -75,8 +75,6 @@ void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
     sendMqtt(engine, myConfig.isMqttSSL());
     LOG_PERF_STOP("push-mqtt");
   }
-
-  LOG_PERF_PUSH();
 }
 
 //
