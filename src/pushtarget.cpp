@@ -37,7 +37,7 @@ SOFTWARE.
 //
 void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
                       float tempC, float runTime) {
-  printHeap("StartPush");
+  printHeap("PUSH");
   http.setReuse(false);
   httpSecure.setReuse(false);
 
@@ -50,14 +50,12 @@ void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
     LOG_PERF_STOP("push-brewfather");
   }
 
-  printHeap("http1");
   if (myConfig.isHttpActive()) {
     LOG_PERF_START("push-http");
     sendHttp(engine, myConfig.isHttpSSL(), 0);
     LOG_PERF_STOP("push-http");
   }
 
-  printHeap("http2");
   if (myConfig.isHttp2Active()) {
     LOG_PERF_START("push-http2");
     sendHttp(engine, myConfig.isHttp2SSL(), 1);
@@ -92,6 +90,7 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
   String doc = engine.create(TemplatingEngine::TEMPLATE_INFLUX);
 
   http.begin(wifi, serverPath);
+  http.setTimeout(myHardwareConfig.getPushTimeout());
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -128,6 +127,7 @@ void PushTarget::sendBrewfather(TemplatingEngine& engine) {
   String doc = engine.create(TemplatingEngine::TEMPLATE_BREWFATHER);
 
   http.begin(wifi, serverPath);
+  http.setTimeout(myHardwareConfig.getPushTimeout());
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -200,6 +200,7 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     wifiSecure.setInsecure();
     httpSecure.begin(wifiSecure, serverPath);
+    httpSecure.setTimeout(myHardwareConfig.getPushTimeout());
 
     if (index == 0) {
       addHttpHeader(httpSecure, myConfig.getHttpHeader(0));
@@ -212,6 +213,7 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
     httpResponseCode = httpSecure.POST(doc);
   } else {
     http.begin(wifi, serverPath);
+    http.setTimeout(myHardwareConfig.getPushTimeout());
 
     if (index == 0) {
       addHttpHeader(http, myConfig.getHttpHeader(0));
@@ -274,7 +276,7 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
 #endif
 
   // Send MQQT message(s)
-  mqtt.setTimeout(10);  // 10 seconds timeout
+  mqtt.setTimeout(myHardwareConfig.getPushTimeout());  // 10 seconds timeout
 
   int lines = 1;
   // Find out how many lines are in the document. Each line is one

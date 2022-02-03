@@ -155,7 +155,6 @@ void FloatHistoryLog::save() {
 // Print the heap information.
 //
 void printHeap(String prefix) {
-#if LOG_LEVEL == 6 || LOG_LEVEL == 5
 #if defined(ESP8266)
   Log.notice(
       F("%s: Free-heap %d kb, Heap-rag %d %%, Max-block %d kb Stack=%d b." CR),
@@ -167,7 +166,6 @@ void printHeap(String prefix) {
 #else  // defined (ESP32)
   Log.verbose(F("HELP: Heap %d kb, FreeSketch %d kb." CR),
               ESP.getFreeHeap() / 1024, ESP.getFreeSketchSpace() / 1024);
-#endif
 #endif
 }
 
@@ -325,11 +323,12 @@ void PerfLogging::pushInflux() {
   // Create body for influxdb2, format used
   // key,host=mdns value=0.0
   String body;
+  body.reserve(500);
 
   // Create the payload with performance data.
   // ------------------------------------------------------------------------------------------
   PerfEntry* pe = first;
-  char buf[100];
+  char buf[150];
   snprintf(&buf[0], sizeof(buf), "perf,host=%s,device=%s ", myConfig.getMDNS(),
            myConfig.getID());
   body += &buf[0];
@@ -351,15 +350,23 @@ void PerfLogging::pushInflux() {
   snprintf(&buf[0], sizeof(buf), "\ndebug,host=%s,device=%s ",
            myConfig.getMDNS(), myConfig.getID());
   body += &buf[0];
+#if defined (ESP8266)
   snprintf(
       &buf[0], sizeof(buf),
-      "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp=%.2f",
+      "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp=%.2f,heap=%d,heap-frag=%d,heap-max=%d,stack=%d",
       myGyro.getAngle(), myGyro.getLastGyroData().ax,
       myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
-      myGyro.getSensorTempC(), myTempSensor.getTempC(myConfig.isGyroTemp()));
-  body += &buf[0];
+      myGyro.getSensorTempC(), myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(), ESP.getHeapFragmentation(), ESP.getMaxFreeBlockSize(), ESP.getFreeContStack());
+#else // defined (ESP32)
+  snprintf(
+      &buf[0], sizeof(buf),
+      "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp=%.2f,heap=%d,heap-frag=%d,heap-max=%d",
+      myGyro.getAngle(), myGyro.getLastGyroData().ax,
+      myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
+      myGyro.getSensorTempC(), myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(), 0, ESP.getMaxAllocHeap());
+#endif
 
-  // Log.notice(F("PERF: data %s." CR), body.c_str() );
+  body += &buf[0];
 
 #if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(F("PERF: url %s." CR), serverPath.c_str());
@@ -369,6 +376,7 @@ void PerfLogging::pushInflux() {
   // Send HTTP POST request
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
   http.addHeader(F("Authorization"), auth.c_str());
+  http.setTimeout(myHardwareConfig.getPushTimeout());
   int httpResponseCode = http.POST(body);
 
   if (httpResponseCode == 204) {
@@ -413,7 +421,9 @@ float reduceFloatPrecision(float f, int dec) {
 // https://circuits4you.com/2019/03/21/esp8266-url-encode-decode-example/
 //
 String urlencode(String str) {
-  String encodedString = "";
+  String encodedString;
+  encodedString.reserve(str.length()*2);
+  encodedString = "";
   char c;
   char code0;
   char code1;
@@ -453,8 +463,13 @@ unsigned char h2int(char c) {
   return (0);
 }
 
+//
+// urlencode string
+//
 String urldecode(String str) {
-  String encodedString = "";
+  String encodedString;
+  encodedString.reserve(str.length());
+  encodedString = "";
   char c;
   char code0;
   char code1;

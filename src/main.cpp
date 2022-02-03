@@ -258,7 +258,10 @@ bool loopReadGravity() {
       push.send(angle, gravitySG, corrGravitySG, tempC,
                 (millis() - runtimeMillis) / 1000);
       LOG_PERF_STOP("loop-push");
-      LOG_PERF_PUSH();
+      // Send stats to influx after each push run.
+      if (runMode == RunMode::configurationMode) {
+        LOG_PERF_PUSH();
+      }
     }
     return true;
   } else {

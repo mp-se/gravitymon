@@ -417,6 +417,8 @@ bool HardwareConfig::loadFile() {
         doc[PARAM_HW_FORMULA_CALIBRATION_TEMP].as<float>());
   if (!doc[PARAM_HW_WIFI_PORTALTIMEOUT].isNull())
     this->setWifiPortalTimeout(doc[PARAM_HW_WIFI_PORTALTIMEOUT].as<int>());
+  if (!doc[PARAM_HW_PUSH_TIMEOUT].isNull())
+    this->setPushTimeout(doc[PARAM_HW_PUSH_TIMEOUT].as<int>());
 
   Log.notice(F("CFG : Configuration file " CFG_HW_FILENAME " loaded." CR));
   return true;

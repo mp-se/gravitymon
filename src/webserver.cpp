@@ -541,6 +541,8 @@ void WebServerHandler::webHandleDeviceParam() {
       myHardwareConfig.SetDefaultCalibrationTemp(s.toFloat());
     else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_WIFI_PORTALTIMEOUT))
       myHardwareConfig.setWifiPortalTimeout(s.toInt());
+    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_PUSH_TIMEOUT))
+      myHardwareConfig.setPushTimeout(s.toInt());
   }
 
   myHardwareConfig.saveFile();

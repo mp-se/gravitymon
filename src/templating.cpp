@@ -139,6 +139,7 @@ void TemplatingEngine::initialize(float angle, float gravitySG, float corrGravit
 //
 const String& TemplatingEngine::create(TemplatingEngine::Templates idx) {
   String fname;
+  baseTemplate.reserve(600);
 
   // Load templates from memory
   switch (idx) {

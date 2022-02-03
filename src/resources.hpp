@@ -73,6 +73,7 @@ SOFTWARE.
 #define PARAM_HW_FORMULA_DEVIATION "formula-max-deviation"
 #define PARAM_HW_FORMULA_CALIBRATION_TEMP "formula-calibration-temp"
 #define PARAM_HW_WIFI_PORTALTIMEOUT "wifi-portaltimeout"
+#define PARAM_HW_PUSH_TIMEOUT "push-timeout"
 #define PARAM_FORMAT_HTTP1 "http-1"
 #define PARAM_FORMAT_HTTP2 "http-2"
 #define PARAM_FORMAT_BREWFATHER "brewfather"

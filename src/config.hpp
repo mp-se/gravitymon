@@ -60,6 +60,7 @@ class HardwareConfig {
   int _gyroSensorMovingThreashold = 500;
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
+  int _pushTimeout = 10; // seconds
 
  public:
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
@@ -78,6 +79,8 @@ class HardwareConfig {
   void setGyroReadCount(int c) { _gyroReadCount = c; }
   int getGyroReadDelay() { return _gyroReadDelay; }
   void setGyroReadDelay(int d) { _gyroReadDelay = d; }
+  int getPushTimeout() { return _pushTimeout; }
+  void setPushTimeout(int t) { _pushTimeout = t; }
 
   bool saveFile();
   bool loadFile();
