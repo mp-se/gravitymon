@@ -3,7 +3,7 @@
     "angle": 89.86,
     "gravity": 1.1052,
     "gravity-tempcorr": 1.1031,
-    "temp-c": 0,
+    "temp-c": 12,
     "temp-f": 32,
     "battery": 3.81,
     "temp-format": "C",
