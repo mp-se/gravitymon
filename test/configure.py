@@ -30,8 +30,13 @@ set_config( url, json )
 #
 url = "http://" + host + "/api/config/push"
 json = { "id": id, 
+         "token": "",
          "http-push": "http://192.168.1.1/ispindel",    # HTTP endpoint 
          "http-push2": "",                              # HTTP endpoint2
+         "http-push-h1": "Content-Type: application/json",
+         "http-push-h2": "",
+         "http-push2-h1": "Content-Type: application/json",
+         "http-push2-h2": "",
          "brewfather-push": "",                         # Brewfather URL
          "influxdb2-push": "",                          # InfluxDB2 settings
          "influxdb2-org": "",
@@ -51,6 +56,7 @@ set_config( url, json )
 url = "http://" + host + "/api/config/gravity"
 json = { "id": id, 
          "gravity-formula": "",                         # If you want to set the gravity formula
+         "gravity-format": "G",
          "gravity-temp-adjustment": "off"              # on or off
          }
 set_config( url, json )
