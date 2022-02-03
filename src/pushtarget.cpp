@@ -90,7 +90,7 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
   String doc = engine.create(TemplatingEngine::TEMPLATE_INFLUX);
 
   http.begin(wifi, serverPath);
-  http.setTimeout(myHardwareConfig.getPushTimeout());
+  http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -127,7 +127,7 @@ void PushTarget::sendBrewfather(TemplatingEngine& engine) {
   String doc = engine.create(TemplatingEngine::TEMPLATE_BREWFATHER);
 
   http.begin(wifi, serverPath);
-  http.setTimeout(myHardwareConfig.getPushTimeout());
+  http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -200,7 +200,7 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     wifiSecure.setInsecure();
     httpSecure.begin(wifiSecure, serverPath);
-    httpSecure.setTimeout(myHardwareConfig.getPushTimeout());
+    httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
     if (index == 0) {
       addHttpHeader(httpSecure, myConfig.getHttpHeader(0));
@@ -213,7 +213,7 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
     httpResponseCode = httpSecure.POST(doc);
   } else {
     http.begin(wifi, serverPath);
-    http.setTimeout(myHardwareConfig.getPushTimeout());
+    http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
     if (index == 0) {
       addHttpHeader(http, myConfig.getHttpHeader(0));
