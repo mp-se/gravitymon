@@ -16,6 +16,12 @@ v0.8.0
 * Logging the runtime, how long a measurement take (last 10 are stored). This can be 
   used to check how good the wifi connection is and estimate the lifetime when on battery. 
   Check the device page in the UI for this information.
+* Refactored code to free up more RAM to make SSL more stable. 
+* Before connecting to an SSL endpoint the device will try to use a new SSL feature 
+  called MFLN (Maximum Fragment Length Negotiation) that allow us to reduce the buffers 
+  from 16k to 2k. This can make a huge difference on a device with only 40k RAM. Not all 
+  servers might support this feature.
+* Updated documentation pages.
 
 v0.7.1
 ------

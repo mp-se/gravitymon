@@ -12,8 +12,12 @@ The main features
   angle/tile, temperature, calculates gravity and pushes the data to defined endpoints. 
 
   In ``configuration mode`` the device is always active and the webserver is active. Here you can view the 
-  angle/tilt values, change configuration options and more. When in this mode you can also interact with the device
-  via an REST API so data can be pushed to the device via scripts (see API section for more information).
+  angle/tilt values, change configuration, update the gravity formula. When in this mode you can also interact 
+  with the device via an REST API so data can be pushed to the device via scripts (see API section for more information).
+
+  .. image:: images/index.png
+    :width: 700
+    :alt: UI example
 
   You can force the device into ``configuration mode`` while measuring gravity. This is useful when calibrating 
   the device so you don't needs to wait for the device to wake up and push the data. The entire calibration
@@ -21,61 +25,83 @@ The main features
 
   See the :ref:`setting-up-device` section for more information on how to trigger the configuration mode.
 
-* **Can send data to multiple endpoints at once**
+* **Can send data to multiple endpoints**
 
   The original iSpindle can only have one destination, this software will push data to all defined endpoints so 
-  in theory you can use them all. However this will consume more battery power so use only as many as needed. 
+  in theory you can use them all. However this will consume more battery power so use only as many as needed. Its much 
+  more efficient to have the endpoints on your local network than on the internet. 
 
-  Currently the device supports the following endpoints: http (2 different), influxdb2, Brewfather and MQTT.
+  Currently the device supports the following endpoints.  
 
-  If you want additional targets please raise a feature request in the github repo.
+  * http or https
+  * influxdb v2
+  * Brewfather
+  * MQTT
+  * Home Assistant
+  * Brew Spy
+  * Brewers Friend
+  * Fermentrack
+  * Ubidots
+  * Thingsspeak
+
+
+  Under the :ref:`services` section you can find guides for how to connect GravityMon to these services. For a 
+  description of what data is transmitted you can see :ref:`data-formats`. 
+  
+  The software support SSL endpoints but currently without CA validation, this means that the data is encrypted 
+  but it does not validate if the remote endpoint is who it claims to be. 
+
+  if you require CA validation please leave a comment on GitHub and I will make that a priority. Adding this function
+  will dramatically reduce the battery life of the device.
+
+.. note::
+
+  Using SSL on a small device such as the esp8266 can be unstable since it requires a lot of RAM to work. And running out
+  of RAM will cause the device to crash. So enable SSL with caution and only when you really need it. GravityMon will try
+  to minimize the needed RAM but the remote service might not support that feature.
 
 * **Create gravity formulas on the device**
 
   Another big difference is that this software can create the gravity formula in the device, just enter the 
   angle/gravity data that you have collected. You will also see a graph simulating how the formula would work. 
 
-.. note::
+  Currently the device can handle 5 data points which should be enough to get a accurate formula. At least 3 data points 
+  is needed to get an accurate formula.
 
-  This feature needs more testing to be validated.
+  If there is a need for more data points, raise a comment on github.
 
 * **Customize the data format beeing sent to push targets**
 
   In order to make it easier to support more targets there is a built in format editor that can be used to 
   customize the data that is to be sent. This way you can easily adapt the software to new targets without coding. 
-  If you have a good template please share it on the girhub repository and I will add it to the documentation 
-  for other users to enjoy. See the :ref:`format-editor` for more information.
-
-.. note::
-
-  This feature needs more testing to be validated.
+  If you have a good template please share it on the github repository and I will add it to the documentation 
+  for other users to enjoy. See the :ref:`format-editor` for more information. See :ref:`services` for a list of
+  services currently validated.
 
 * **Automatic temperature adjustment of gravity reading**
 
   If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice 
   feature that can correct the gravity as a second step making this independant of the formula. 
 
-.. note::
+* **OTA support from webserver**
 
-  This feature needs more testing to be validated.
-
-* **OTA support from local webserver**
-
-  When starting up in configuration mode the device will check for a software update from a local webserver. 
+  When starting up in configuration mode the device will check for a software update from a webserver. This is an easily
+  way to keep the software up to date. In the future I might add a hosted endpoint for providing updates.
 
 * **DS18B20 temperature adjustments**
 
-  You can adjust the temperature reading of the temperature sensor.
+  You can adjust the temperature reading of the temperature sensor. In normal cases this should not be needed since 
+  the sensors should be calibrated. 
 
 * **Gyro Movement**
 
   The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60seconds. 
-  This way we should avoid faulty measurements.
+  This way we should avoid faulty measurements and peaks in the graphs.
 
 * **WIFI connection issues**
 
   The software will not wait indefiently for a wifi connection. If it takes longer than 20 seconds to connect then
-  the device will go into deep sleep for 60 seoncds and then retry.
+  the device will go into deep sleep for 60 seoncds and then retry later. This to conserve batter as much as possible.
 
 * **Use gyro temperature sensor**
 
@@ -93,21 +119,36 @@ The main features
   :width: 800
   :alt: Gyro temp vs DS18B20
 
-Other features
---------------
+* **Celsius or Farenheigt**
 
-* Support for Celcius and Farenheigt as temperature formats.
+  You can switch between different temperature formats. GravityMon will always use C for it's internal calculations and 
+  convert to F when displayed.
 
-* Support SG (Plato is not yet supported)
+* **SG or Plato**
 
-* Gyro data is read 50 times to ensure good accuracy
+  You can switch between different gravity formats. GravityMon will always use SG for it's internal calculations and 
+  convert to Plato when displayed.
 
-Experimental features
----------------------
+* **Stable gyro data**
+
+  The device will read the gyro 50 times to get an accurate reading. If the standad deviation is to high it will not 
+  use the data since this is inacurate and the device is probably moving, probably do to active fermentation or movement of 
+  fermentation vessel. This sequence takes 900 ms seconds to execute and besides wifi connection this is what consumes the most
+  battery. With more testing this might be changes to either speed up or provide more stable readings.
 
 * **Performance measurements** 
 
-  I've also create a small library to measure execution code in some areas of the code that i know is time consuming. This way I can find a good balance between performace and quality.
+  I've also create a small library to measure execution code in some areas of the code that i know is time consuming. This 
+  way I can find a good balance between performace and quality. This is a lot of help trying to figure out where bottlenecks 
+  are in the code and where to put optimization efforts. Examples of real measurements:
+
+  * Reading the gyro: 885 ms
+  * Reading DS18B20 temperature sensor: 546 ms
+  * Connect to WIFI: 408 ms
+  * Send data to local influxdb v2: 25 ms
+  * Send data to local mqtt server: 35 ms
+  * Send data to local http server: 40 ms
+  * Send data to http server on internet: 0.2 - 5 seconds
 
   See the :ref:`compiling-the-software` for more information.
 

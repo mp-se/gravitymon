@@ -126,7 +126,7 @@ Brewer's friend is an all in one service that allows you to manage you recepies 
 
 .. warning::
   I dont have an account for brewers friend so I have not been able to verfy this completely. Its based on
-  the available documentation.
+  the available documentation. If this works please let 
 
 You can find you API key when logged in to the service. Follow these `instructions <https://docs.brewersfriend.com/devices/ispindel>`_
 
