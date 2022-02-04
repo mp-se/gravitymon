@@ -199,6 +199,17 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
   if (isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     wifiSecure.setInsecure();
+
+    String host = serverPath.substring(8); // remove the prefix or the probe will fail, it needs a pure host name.
+    int idx = host.indexOf("/");
+    if (idx!=-1)
+      host = host.substring(0, idx);
+
+    if (wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
+      Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
+      wifiSecure.setBufferSizes(512, 512);
+    }
+
     httpSecure.begin(wifiSecure, serverPath);
     httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
@@ -255,16 +266,22 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
 #endif
 
   MQTTClient mqtt(512);
-  String url = myConfig.getMqttUrl();
+  String host = myConfig.getMqttUrl();
   String doc = engine.create(TemplatingEngine::TEMPLATE_MQTT);
   int port = myConfig.getMqttPort();
 
   if (myConfig.isMqttSSL()) {
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
     wifiSecure.setInsecure();
-    mqtt.begin(url.c_str(), port, wifiSecure);
+
+    if (wifiSecure.probeMaxFragmentLength(host, port, 512)) {
+      Log.notice(F("PUSH: MQTT server supports smaller SSL buffer." CR));
+      wifiSecure.setBufferSizes(512, 512);
+    }
+
+    mqtt.begin(host.c_str(), port, wifiSecure);
   } else {
-    mqtt.begin(myConfig.getMqttUrl(), port, wifi);
+    mqtt.begin(host.c_str(), port, wifi);
   }
 
   mqtt.connect(myConfig.getMDNS(), myConfig.getMqttUser(),
