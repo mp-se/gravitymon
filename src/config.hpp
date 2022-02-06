@@ -89,6 +89,7 @@ class HardwareConfig {
 class Config {
  private:
   bool _saveNeeded = false;
+  int _configVersion = 2;
 
   // Device configuration
   String _id = "";
@@ -144,6 +145,8 @@ class Config {
     _mDNS = s;
     _saveNeeded = true;
   }
+
+  int getConfigVersion() { return _configVersion; }
 
   const bool isGyroTemp() { return _gyroTemp; }
   void setGyroTemp(bool b) {

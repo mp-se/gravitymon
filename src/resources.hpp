@@ -27,6 +27,7 @@ SOFTWARE.
 // Common strings used in json formats.
 #define PARAM_ID "id"
 #define PARAM_MDNS "mdns"
+#define PARAM_CONFIG_VER "config-version"
 #define PARAM_OTA "ota-url"
 #define PARAM_SSID "wifi-ssid"
 #define PARAM_PASS "wifi-pass"
