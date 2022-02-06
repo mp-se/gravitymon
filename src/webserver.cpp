@@ -60,6 +60,7 @@ void WebServerHandler::webHandleDevice() {
   Serial.print(CR);
 #endif
   String out;
+  out.reserve(100);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-device");
@@ -107,6 +108,7 @@ void WebServerHandler::webHandleConfig() {
 #endif
 
   String out;
+  out.reserve(CFG_JSON_BUFSIZE);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-config");
@@ -118,7 +120,7 @@ void WebServerHandler::webHandleConfig() {
 void WebServerHandler::webHandleUpload() {
   LOG_PERF_START("webserver-api-upload");
   Log.notice(F("WEB : webServer callback for /api/upload." CR));
-  DynamicJsonDocument doc(100);
+  DynamicJsonDocument doc(300);
 
   doc["index"] = checkHtmlFile(WebServerHandler::HTML_INDEX);
   doc["device"] = checkHtmlFile(WebServerHandler::HTML_DEVICE);
@@ -127,12 +129,25 @@ void WebServerHandler::webHandleUpload() {
   doc["format"] = checkHtmlFile(WebServerHandler::HTML_FORMAT);
   doc["about"] = checkHtmlFile(WebServerHandler::HTML_ABOUT);
 
+  JsonArray files = doc.createNestedArray(PARAM_FILES);
+
+  // Show files in the filessytem at startup
+  FSInfo fs;
+  LittleFS.info(fs);
+  Dir dir = LittleFS.openDir("/");
+  while (dir.next()) {
+    JsonObject obj = files.createNestedObject();
+    obj[PARAM_FILE_NAME] = dir.fileName();
+    obj[PARAM_FILE_SIZE] = dir.fileSize();
+  }
+
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
   Serial.print(CR);
 #endif
 
   String out;
+  out.reserve(300);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-upload");
@@ -268,6 +283,7 @@ void WebServerHandler::webHandleStatus() {
 #endif
 
   String out;
+  out.reserve(300);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-status");
@@ -566,6 +582,7 @@ void WebServerHandler::webHandleDeviceParam() {
 #endif
 
   String out;
+  out.reserve(512);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-device-param");
@@ -632,6 +649,7 @@ void WebServerHandler::webHandleFormulaRead() {
 #endif
 
   String out;
+  out.reserve(256);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-formula-read");
@@ -778,6 +796,7 @@ void WebServerHandler::webHandleConfigFormatRead() {
 #endif
 
   String out;
+  out.reserve(2048);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-config-format-read");
