@@ -77,6 +77,8 @@ ErrorFileLog::ErrorFileLog() {
   if (errFile) {
     do {
       _errors[i] = errFile.readStringUntil('\n');
+      _errors[i].replace("\r", "");
+      _errors[i].replace("\n", "");
     } while (_errors[i++].length());
     errFile.close();
   }
