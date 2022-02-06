@@ -129,6 +129,7 @@ void WebServerHandler::webHandleUpload() {
   doc["format"] = checkHtmlFile(WebServerHandler::HTML_FORMAT);
   doc["about"] = checkHtmlFile(WebServerHandler::HTML_ABOUT);
 
+#if defined(ESP8266)
   JsonArray files = doc.createNestedArray(PARAM_FILES);
 
   // Show files in the filessytem at startup
@@ -140,6 +141,9 @@ void WebServerHandler::webHandleUpload() {
     obj[PARAM_FILE_NAME] = dir.fileName();
     obj[PARAM_FILE_SIZE] = dir.fileSize();
   }
+#else // defined(ESP32)
+#warning "TODO: Implement file listing for ESP32"
+#endif
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);

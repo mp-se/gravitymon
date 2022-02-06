@@ -200,6 +200,7 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     wifiSecure.setInsecure();
 
+#if defined (ESP8266)
     String host = serverPath.substring(8); // remove the prefix or the probe will fail, it needs a pure host name.
     int idx = host.indexOf("/");
     if (idx!=-1)
@@ -209,6 +210,7 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
       Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
       wifiSecure.setBufferSizes(512, 512);
     }
+#endif
 
     httpSecure.begin(wifiSecure, serverPath);
     httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
@@ -274,10 +276,12 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
     wifiSecure.setInsecure();
 
+#if defined (ESP8266)
     if (wifiSecure.probeMaxFragmentLength(host, port, 512)) {
       Log.notice(F("PUSH: MQTT server supports smaller SSL buffer." CR));
       wifiSecure.setBufferSizes(512, 512);
     }
+#endif
 
     mqtt.begin(host.c_str(), port, wifiSecure);
   } else {
