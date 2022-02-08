@@ -65,7 +65,7 @@ Config::Config() {
 //
 void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_MDNS] = getMDNS();
-  doc[PARAM_CONFIG_VER] = getConfigVersion();
+  //doc[PARAM_CONFIG_VER] = getConfigVersion();
   doc[PARAM_ID] = getID();
   doc[PARAM_OTA] = getOtaURL();
   doc[PARAM_SSID] = getWifiSSID();
@@ -293,12 +293,12 @@ bool Config::loadFile() {
   if (!doc[PARAM_FORMULA_DATA]["g5"].isNull())
     _formulaData.g[4] = doc[PARAM_FORMULA_DATA]["g5"].as<double>();
 
-  if( doc[PARAM_CONFIG_VER].isNull() ) {
+  /*if( doc[PARAM_CONFIG_VER].isNull() ) {
     // If this parameter is missing we need to reset the gyrocalibaration due to bug #29
     _gyroCalibration.ax = _gyroCalibration.ay = _gyroCalibration.az = 0; 
     _gyroCalibration.gx = _gyroCalibration.gy = _gyroCalibration.gz = 0; 
     Log.warning(F("CFG : Old configuration format, clearing gyro calibration." CR));
-  }
+  }*/
 
   _saveNeeded = false;  // Reset save flag
   Log.notice(F("CFG : Configuration file " CFG_FILENAME " loaded." CR));
