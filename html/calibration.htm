@@ -274,6 +274,10 @@
   function populateChartForm(a, g) {
     if( a != 0)
       chartDataForm.push( { x: parseFloat(a), y: parseFloat(g) });
+
+    chartDataForm.sort(function (a, b) {
+      return a.x - b.x;
+    });      
   }
 
   function populateChartCalc(a, g) {
