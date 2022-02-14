@@ -1,8 +1,9 @@
 {
     "id": "7376ef",
-    "angle": 89.86,
-    "gravity": 1.1052,
-    "gravity-tempcorr": 1.1031,
+    "angle": 22.4,
+    "gravity": 1.044,
+    "gravity-tempcorr": 1.031,
+    "gravity-format": "G",
     "temp-c": 12,
     "temp-f": 32,
     "battery": 3.81,

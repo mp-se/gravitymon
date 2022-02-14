@@ -78,7 +78,11 @@ void WebServerHandler::webHandleConfig() {
 
   doc[PARAM_PASS] = "";  // dont show the wifi password
 
-  double angle = myGyro.getAngle();
+  double angle = 0;
+
+  if (myGyro.hasValue())
+    angle = myGyro.getAngle();
+  
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
 

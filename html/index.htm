@@ -122,12 +122,20 @@
     $.getJSON(url, function (cfg) {
       console.log( cfg );
       $("#id").text(cfg["id"]);
-      $("#angle").text(cfg["angle"]);
+     
+      var angle = cfg["angle"];
+
+      if(angle==0) {
+        $("#angle").text("Gyro moving"); 
+        $("#gravity").text("Gyro moving");
+      } else {
+        $("#angle").text(cfg["angle"]);
       
-      if( cfg["gravity-format"] == "G")
-        $("#gravity").text(cfg["gravity"] + " SG");
-      else
-        $("#gravity").text(cfg["gravity"] + " °P");
+        if( cfg["gravity-format"] == "G")
+          $("#gravity").text(cfg["gravity"] + " SG");
+        else
+          $("#gravity").text(cfg["gravity"] + " °P");
+      }
 
       var batt = cfg["battery"];
       var charge = 0;
