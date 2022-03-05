@@ -57,6 +57,7 @@ SOFTWARE.
 #define USING_CORS_FEATURE false
 #define NUM_WIFI_CREDENTIALS 1
 #define USE_STATIC_IP_CONFIG_IN_CP false
+#define _WIFIMGR_LOGLEVEL_ 3
 #include <ESP_WiFiManager.h>
 // Override the look and feel of the standard ui (hide secondary forms)
 const char WM_HTTP_FORM_START[] PROGMEM =
@@ -69,7 +70,6 @@ const char WM_HTTP_FORM_START[] PROGMEM =
     "placeholder='SSID1'><div></div></div><div "
     "hidden><label>Password</label><input id='p1' name='p1' length=64 "
     "placeholder='password1'><div></div></div></fieldset>";
-#include <ESP_WiFiManager-Impl.h>
 ESP_WiFiManager *myWifiManager;
 DoubleResetDetector *myDRD;
 
