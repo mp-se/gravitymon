@@ -263,7 +263,11 @@ void WebServerHandler::webHandleStatus() {
 
   DynamicJsonDocument doc(256);
 
-  double angle = myGyro.getAngle();
+  double angle = 0;
+
+  if (myGyro.hasValue())
+    angle = myGyro.getAngle();
+
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
 
