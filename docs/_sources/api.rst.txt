@@ -23,6 +23,7 @@ Other parameters are the same as in the configuration guide.
       "ota-url": "http://192.168.1.50:80/firmware/gravmon/",
       "temp-format": "C",
       "brewfather-push": "http://log.brewfather.net/stream?id=Qwerty",
+      "token": "token",
       "http-push": "http://192.168.1.50:9090/api/v1/Qwerty/telemetry",
       "http-push-h1": "header: value",                           
       "http-push-h2": "header: value",                           
@@ -54,7 +55,8 @@ Other parameters are the same as in the configuration guide.
       },
       "angle": 90.93,
       "gravity": 1.105,
-      "battery": 0.04
+      "battery": 0.04,
+      "runtime-average": 3.12
    }
 
 
@@ -69,7 +71,8 @@ Retrive the current device settings via an HTTP GET command. Payload is in JSON 
       "app-name": "GravityMon",
       "app-ver": "0.0.0",
       "id": "ee1bfc",
-      "mdns": "gravmon"
+      "mdns": "gravmon",
+      "runtime-average": 3.12
    }
 
 
@@ -123,6 +126,18 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
       "gravity-format": "G", 
       "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"
    }
+
+
+GET: /api/factory
+================
+
+Will do a reset to factory defaults and delete all data except wifi settings.
+
+For this to work you will need to supply the device id as a parameter in the request:
+
+:: 
+
+   http://mygravity.local/api/factory?id=<mydeviceid>
 
 
 POST: /api/config/device
@@ -271,6 +286,7 @@ The requests package converts the json to standard form post format.
 
    url = "http://" + host + "/api/config/push"
    json = { "id": id, 
+            "token": "",                           
             "http-push": "http://192.168.1.1/ispindel",  
             "http-push2": "",                           
             "http-push-h1": "",                           
