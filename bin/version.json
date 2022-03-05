@@ -1,1 +1,1 @@
-{ "project":"gravmon", "version":"0.7.10",  "html": [ "index.min.htm", "device.min.htm", "config.min.htm", "calibration.min.htm", "format.min.htm", "about.min.htm" ] }
+{ "project":"gravmon", "version":"0.8.0",  "html": [ "index.min.htm", "device.min.htm", "config.min.htm", "calibration.min.htm", "format.min.htm", "about.min.htm" ] }
