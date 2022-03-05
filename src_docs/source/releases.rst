@@ -22,6 +22,7 @@ v0.8.0
   from 16k to 2k. This can make a huge difference on a device with only 40k RAM. Not all 
   servers might support this feature.
 * Updated documentation pages.
+* Tested batterylife, 47 days using an update frequency of 5 min
 
 v0.7.1
 ------

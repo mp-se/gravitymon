@@ -160,15 +160,12 @@ The main features
 Battery life
 ------------
 
-I'm currently measuring battery life of v0.5 but previous versions have been able to measure gravity for 
-a 2-3 weeks without issues (Using 900 seconds as interval). 
+The long term battery test has now been completed. Using a 2200 mA battery and sending data every 5 minutes to a local server on my network. The battery lasted 47 days which is excellet battery life. 
 
-I had a device running with an sleep interval of only 30s with ok wifi connection. The device lasted 
-12 days which i think is excellent considering the short sleep interval. From what I have discovered 
-it's the WIFI connection that has the most impact on the battery life. In a perfect scenario it 
-can take around 400ms but can in some cases take up to 8 seconds. 
+In another test I had a device running with an sleep interval of only 30s with ok wifi connection. The device lasted 12 days which i think is excellent considering the short sleep interval. 
 
-*More on this topics once my tests are done*
+From what I have discovered it's the WIFI connection or latency to internet hosted that has the most impact on the battery life. The typical runtime in the tests above was around 2 seconds. 
+
 
 Performance 
 -----------
