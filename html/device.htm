@@ -132,7 +132,7 @@
     $('#spinner').show(); 
     $.getJSON(url, function (cfg) {
         console.log( cfg );
-        $("#app-ver").text(cfg["app-ver"] + " (html 0.7.9)");
+        $("#app-ver").text(cfg["app-ver"] + " (html 0.8.0)");
         $("#mdns").text(cfg["mdns"]);
         $("#id").text(cfg["id"]);
         $("#runtime").text(cfg["runtime-average"] + " seconds");
