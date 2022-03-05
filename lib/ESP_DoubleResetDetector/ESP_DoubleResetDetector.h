@@ -9,7 +9,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
   Licensed under MIT license
-  Version: 1.2.1
+  Version: 1.3.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -22,6 +22,8 @@
   1.1.2   K Hoang      10/10/2021 Update `platform.ini` and `library.json`
   1.2.0   K Hoang      26/11/2021 Auto detect ESP32 core and use either built-in LittleFS or LITTLEFS library
   1.2.1   K Hoang      26/11/2021 Fix compile error for ESP32 core v1.0.5-
+  1.3.0   K Hoang      10/02/2022 Add support to new ESP32-S3
+  1.3.1   K Hoang      04/03/2022 Add waitingForDRD() function to signal in DRD wating period
 *****************************************************************************************************************************/
 
 #pragma once
@@ -29,13 +31,26 @@
 #ifndef ESP_DoubleResetDetector_H
 #define ESP_DoubleResetDetector_H
 
+#ifndef DOUBLERESETDETECTOR_DEBUG
+  #define DOUBLERESETDETECTOR_DEBUG       false
+#endif
+
 #if defined(ARDUINO) && (ARDUINO >= 100)
   #include <Arduino.h>
 #else
   #include <WProgram.h>
 #endif
 
-#define ESP_DOUBLE_RESET_DETECTOR_VERSION       "ESP_DoubleResetDetector v1.2.1"
+#ifndef ESP_DOUBLE_RESET_DETECTOR_VERSION
+  #define ESP_DOUBLE_RESET_DETECTOR_VERSION             "ESP_DoubleResetDetector v1.3.1"
+  
+  #define ESP_DOUBLE_RESET_DETECTOR_VERSION_MAJOR       1
+  #define ESP_DOUBLE_RESET_DETECTOR_VERSION_MINOR       3
+  #define ESP_DOUBLE_RESET_DETECTOR_VERSION_PATCH       1
+
+  #define ESP_DOUBLE_RESET_DETECTOR_VERSION_INT         1003001
+#endif
+
 #define ESP_DOUBLERESETDETECTOR_VERSION         ESP_DOUBLE_RESET_DETECTOR_VERSION
 
 //#define ESP_DRD_USE_EEPROM      false
@@ -45,7 +60,11 @@
 
 #ifdef ESP32
   #if (!ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS && !ESP_DRD_USE_LITTLEFS)
-    #warning Neither EEPROM, SPIFFS nor LittleFS selected. Default to EEPROM
+  
+    #if (DOUBLERESETDETECTOR_DEBUG)
+      #warning Neither EEPROM, SPIFFS nor LittleFS selected. Default to EEPROM
+    #endif
+      
     #ifdef ESP_DRD_USE_EEPROM
       #undef ESP_DRD_USE_EEPROM
       #define ESP_DRD_USE_EEPROM      true
@@ -55,7 +74,10 @@
 
 #ifdef ESP8266
   #if (!ESP8266_DRD_USE_RTC && !ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS && !ESP_DRD_USE_LITTLEFS)
-    #warning Neither RTC, EEPROM, LITTLEFS nor SPIFFS selected. Default to EEPROM
+    #if (DOUBLERESETDETECTOR_DEBUG)
+      #warning Neither RTC, EEPROM, LITTLEFS nor SPIFFS selected. Default to EEPROM
+    #endif   
+    
     #ifdef ESP_DRD_USE_EEPROM
       #undef ESP_DRD_USE_EEPROM
       #define ESP_DRD_USE_EEPROM      true
@@ -87,14 +109,20 @@
     // Check cores/esp32/esp_arduino_version.h and cores/esp32/core_version.h
     //#if ( ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2, 0, 0) )  //(ESP_ARDUINO_VERSION_MAJOR >= 2)
     #if ( defined(ESP_ARDUINO_VERSION_MAJOR) && (ESP_ARDUINO_VERSION_MAJOR >= 2) )
-      #warning Using ESP32 Core 1.0.6 or 2.0.0+
+      #if (DOUBLERESETDETECTOR_DEBUG)
+        #warning Using ESP32 Core 1.0.6 or 2.0.0+
+      #endif 
+      
       // The library has been merged into esp32 core from release 1.0.6
       #include <LittleFS.h>
       
       #define FileFS        LittleFS
       #define FS_Name       "LittleFS"
     #else
-      #warning Using ESP32 Core 1.0.5-. You must install LITTLEFS library
+      #if (DOUBLERESETDETECTOR_DEBUG)
+        #warning Using ESP32 Core 1.0.5-. You must install LITTLEFS library
+      #endif 
+      
       // The library has been merged into esp32 core from release 1.0.6
       #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
       
@@ -125,9 +153,7 @@
 
 #endif    //#if ESP_DRD_USE_EEPROM
 
-#ifndef DOUBLERESETDETECTOR_DEBUG
-#define DOUBLERESETDETECTOR_DEBUG       false
-#endif
+
 
 #define DOUBLERESETDETECTOR_FLAG_SET    0xD0D01234
 #define DOUBLERESETDETECTOR_FLAG_CLEAR  0xD0D04321
@@ -194,6 +220,11 @@ class DoubleResetDetector
       return doubleResetDetected;
 
     };
+    
+    bool waitingForDRD()
+    {
+      return waitingForDoubleReset;
+    }
 
     void loop()
     {
