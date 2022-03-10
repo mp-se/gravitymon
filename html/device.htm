@@ -89,6 +89,10 @@
     <div class="col-md-4 themed-grid-col bg-light" id="id">Loading...</div>
   </div>
   <div class="row mb-3">
+    <div class="col-md-8 themed-grid-col bg-light">Platform:</div>
+    <div class="col-md-4 themed-grid-col bg-light" id="platform">Loading...</div>
+  </div>
+  <div class="row mb-3">
     <div class="col-md-8 themed-grid-col bg-light">Average runtime:</div>
     <div class="col-md-4 themed-grid-col bg-light" id="runtime">Loading...</div>
   </div>
@@ -135,6 +139,7 @@
         $("#app-ver").text(cfg["app-ver"] + " (html 0.8.0)");
         $("#mdns").text(cfg["mdns"]);
         $("#id").text(cfg["id"]);
+        $("#platform").text(cfg["platform"]);
         $("#runtime").text(cfg["runtime-average"] + " seconds");
     })
     .fail(function () {

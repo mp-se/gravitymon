@@ -70,6 +70,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_OTA] = getOtaURL();
   doc[PARAM_SSID] = getWifiSSID();
   doc[PARAM_PASS] = getWifiPass();
+  doc[PARAM_BLE] = getColorBLE();
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
   doc[PARAM_PUSH_BREWFATHER] = getBrewfatherPushUrl();
   doc[PARAM_TOKEN] = getToken();
@@ -203,6 +204,7 @@ bool Config::loadFile() {
   if (!doc[PARAM_MDNS].isNull()) setMDNS(doc[PARAM_MDNS]);
   if (!doc[PARAM_SSID].isNull()) setWifiSSID(doc[PARAM_SSID]);
   if (!doc[PARAM_PASS].isNull()) setWifiPass(doc[PARAM_PASS]);
+  if (!doc[PARAM_BLE].isNull()) setColorBLE(doc[PARAM_BLE]);
 
   if (!doc[PARAM_TEMPFORMAT].isNull()) {
     String s = doc[PARAM_TEMPFORMAT];

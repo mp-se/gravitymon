@@ -71,6 +71,8 @@ SOFTWARE.
 #define PARAM_SLEEP_MODE "sleep-mode"
 #define PARAM_RSSI "rssi"
 #define PARAM_ERROR "error"
+#define PARAM_PLATFORM "platform"
+#define PARAM_BLE "ble"
 #define PARAM_HW_GYRO_READ_COUNT "gyro-read-count"
 #define PARAM_HW_GYRO_READ_DELAY "gyro-read-delay"
 #define PARAM_HW_GYRO_MOVING_THREASHOLD "gyro-moving-threashold"

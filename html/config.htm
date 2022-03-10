@@ -374,7 +374,23 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row d-none" id="esp32-tilt">
+              <label class="col-sm-2 col-form-label" for="ble">Bluetooth tilt color:</label>
+              <div class="col-sm-2">
+                <select class="form-control" id="ble" name="ble">
+                  <option value="">-not active-</option>
+                  <option value="red">red</option>
+                  <option value="green">green</option>
+                  <option value="black">black</option>
+                  <option value="purple">purple</option>
+                  <option value="orange">orange</option>
+                  <option value="blue">blue</option>
+                  <option value="yellow">yellow</option>
+                  <option value="pink">pink</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row" id="esp32-ota">
               <label for="ota-url" class="col-sm-2 col-form-label">OTA base URL:</label>
               <div class="col-sm-10">
                 <input type="url" maxlength="90" class="form-control" name="ota-url" id="ota-url">
@@ -537,6 +553,13 @@ function checkHeader(input) {
     $('#spinner').show(); 
     $.getJSON(url, function (cfg) {
       console.log( cfg );
+
+      if(cfg["platform"]=="esp32") {
+        $('#esp32-tilt').removeClass('d-none');
+        $('#esp32-ota').addClass('d-none');
+        $("#ble").val(cfg["ble"]);
+      }
+
       $("#id1").val(cfg["id"]);
       $("#id2").val(cfg["id"]);
       $("#id3").val(cfg["id"]);

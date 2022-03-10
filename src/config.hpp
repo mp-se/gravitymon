@@ -130,6 +130,9 @@ class Config {
   bool _gravityTempAdj = false;
   char _gravityFormat = 'G';
 
+  // BLE (ESP32 only)
+  String _colorBLE; 
+
   // Gyro calibration and formula calculation data
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
   RawFormulaData _formulaData = {{0, 0, 0, 0, 0}, {1, 1, 1, 1, 1}};
@@ -334,6 +337,16 @@ class Config {
   }
   bool isGravitySG() { return _gravityFormat == 'G'; }
   bool isGravityPlato() { return _gravityFormat == 'P'; }
+
+  const char* getColorBLE() { return _colorBLE.c_str(); }
+  void setColorBLE(String c) {
+    _colorBLE = c;
+    _saveNeeded = true;
+  }
+  bool isBLEActive() { return _colorBLE.length() ? true : false; }
+  bool isWifiPushActive() {
+    return (isHttpActive() || isHttp2Active() || isBrewfatherActive() || isInfluxDb2Active() || isMqttActive()) ? true : false;
+  }
 
   const RawGyroData& getGyroCalibration() { return _gyroCalibration; }
   void setGyroCalibration(const RawGyroData& r) {

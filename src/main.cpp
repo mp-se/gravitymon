@@ -30,6 +30,7 @@ SOFTWARE.
 #include <tempsensor.hpp>
 #include <webserver.hpp>
 #include <wifi.hpp>
+#include <ble.hpp>
 
 // Define constats for this program
 #ifdef DEACTIVATE_SLEEPMODE
@@ -247,6 +248,14 @@ bool loopReadGravity() {
                   "corr_gravity=%F." CR),
                 angle, tempC, gravity, corrGravity);
 #endif
+
+#if defined (ESP32)
+    if (myConfig.isBLEActive()) {
+      BleSender ble(myConfig.getColorBLE());
+      ble.sendData( convertCtoF(tempC), gravitySG);
+      Log.notice(F("MAIN: Broadcast data over bluetooth." CR));
+    }
+#endif 
 
     bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
                         (myConfig.getSleepInterval() * 1000));

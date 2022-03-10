@@ -55,6 +55,12 @@ void WebServerHandler::webHandleDevice() {
   doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
       runLog.getAverage() ? runLog.getAverage() / 1000 : 0, 1);
 
+#if defined(ESP8266)
+  doc[PARAM_PLATFORM] = "esp8266";
+#else
+  doc[PARAM_PLATFORM] = "esp32";
+#endif
+
 #if LOG_LEVEL == 6
   serializeJson(doc, Serial);
   Serial.print(CR);
@@ -106,6 +112,12 @@ void WebServerHandler::webHandleConfig() {
   doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
       runLog.getAverage() ? runLog.getAverage() / 1000 : 0, 1);
 
+#if defined(ESP8266)
+  doc[PARAM_PLATFORM] = "esp8266";
+#else
+  doc[PARAM_PLATFORM] = "esp32";
+#endif
+
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
   Serial.print(CR);
@@ -146,7 +158,25 @@ void WebServerHandler::webHandleUpload() {
     obj[PARAM_FILE_SIZE] = dir.fileSize();
   }
 #else // defined(ESP32)
-#warning "TODO: Implement file listing for ESP32"
+  JsonArray files = doc.createNestedArray(PARAM_FILES);
+
+  File dir = LittleFS.open("/");
+
+  while (true) {
+    File entry =  dir.openNextFile();
+    if (!entry) {
+      // no more files
+      break;
+    }
+
+    if (!entry.isDirectory()) {
+      JsonObject obj = files.createNestedObject();
+      obj[PARAM_FILE_NAME] = entry.name();
+      obj[PARAM_FILE_SIZE] = entry.size();
+    }
+    entry.close();
+  }
+  dir.close();
 #endif
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -521,6 +551,8 @@ void WebServerHandler::webHandleConfigHardware() {
       myConfig.setTempSensorAdjF(_server->arg(PARAM_TEMP_ADJ));
     }
   }
+  if (_server->hasArg(PARAM_BLE))
+    myConfig.setColorBLE(_server->arg(PARAM_BLE).c_str());
   if (_server->hasArg(PARAM_OTA))
     myConfig.setOtaURL(_server->arg(PARAM_OTA).c_str());
   if (_server->hasArg(PARAM_GYRO_TEMP))
