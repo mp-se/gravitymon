@@ -28,22 +28,24 @@ SOFTWARE.
 #include <ArduinoJson.h>
 #include <ArduinoLog.h>
 #include <stdlib.h>
+#include <LittleFS.h>
 
 #if defined (ESP8266)
-#include <LittleFS.h>
 #define ESP_RESET ESP.reset
 #define PIN_SDA D3
 #define PIN_SCL D4
 #define PIN_DS D6
+#define PIN_A0 A0
 #else // defined (ESP32)
-#define LittleFS SPIFFS
+#include <FS.h>
+#define LittleFS LITTLEFS
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart
 #define ESP8266WebServer WebServer
-#include <spiffs.h>
 #define PIN_SDA 17
 #define PIN_SCL 16
 #define PIN_DS 19
+#define PIN_A0 36
 #endif
 
 #define PIN_LED 2

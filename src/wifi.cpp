@@ -39,13 +39,8 @@ SOFTWARE.
 #include <wifi.hpp>
 
 // Settings for DRD
-#if defined(ESP8266)
 #define ESP_DRD_USE_LITTLEFS true
 #define ESP_DRD_USE_SPIFFS false
-#else  // defined (ESP32)
-#define ESP_DRD_USE_LITTLEFS false
-#define ESP_DRD_USE_SPIFFS true
-#endif
 #define ESP_DRD_USE_EEPROM false
 #include <ESP_DoubleResetDetector.h>
 #define DRD_TIMEOUT 3
