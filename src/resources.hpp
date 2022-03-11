@@ -85,5 +85,9 @@ SOFTWARE.
 #define PARAM_FORMAT_BREWFATHER "brewfather"
 #define PARAM_FORMAT_INFLUXDB "influxdb"
 #define PARAM_FORMAT_MQTT "mqtt"
+#define PARAM_PUSH_FORMAT "format"
+#define PARAM_PUSH_SUCCESS "success"
+#define PARAM_PUSH_CODE "code"
+#define PARAM_PUSH_ENABLED "enabled"
 
 #endif  // SRC_RESOURCES_HPP_

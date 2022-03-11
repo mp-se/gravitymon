@@ -83,6 +83,10 @@
     <div class="col-md-6 themed-grid-col bg-light" id="format">Checking...</div>
   </div>
   <div class="row mb-3">
+    <div class="col-md-2 themed-grid-col bg-light">test.min.htm</div>
+    <div class="col-md-6 themed-grid-col bg-light" id="test">Checking...</div>
+  </div>
+  <div class="row mb-3">
     <div class="col-md-2 themed-grid-col bg-light">about.min.htm</div>
     <div class="col-md-6 themed-grid-col bg-light" id="about">Checking...</div>
   </div>
@@ -131,10 +135,15 @@ function getUpload() {
       else
         $("#config").text("File is missing.");
 
-        if( cfg["calibration"] )
+      if( cfg["calibration"] )
         $("#calibration").text("Completed.");
       else
         $("#calibration").text("File is missing.");
+
+      if( cfg["test"] )
+        $("#test").text("Completed.");
+      else
+        $("#test").text("File is missing.");
 
       if( cfg["format"] )
         $("#format").text("Completed.");

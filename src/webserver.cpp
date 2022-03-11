@@ -29,6 +29,7 @@ SOFTWARE.
 #include <resources.hpp>
 #include <templating.hpp>
 #include <tempsensor.hpp>
+#include <pushtarget.hpp>
 #include <webserver.hpp>
 #include <wifi.hpp>
 
@@ -144,6 +145,7 @@ void WebServerHandler::webHandleUpload() {
   doc["calibration"] = checkHtmlFile(WebServerHandler::HTML_CALIBRATION);
   doc["format"] = checkHtmlFile(WebServerHandler::HTML_FORMAT);
   doc["about"] = checkHtmlFile(WebServerHandler::HTML_ABOUT);
+  doc["test"] = checkHtmlFile(WebServerHandler::HTML_TEST);
 
 #if defined(ESP8266)
   JsonArray files = doc.createNestedArray(PARAM_FILES);
@@ -749,6 +751,67 @@ void WebServerHandler::webHandleConfigFormatWrite() {
 }
 
 //
+// Get format with real data
+//
+void WebServerHandler::webHandleTestPush() {
+  LOG_PERF_START("webserver-api-test-push");
+  String id = _server->arg(PARAM_ID);
+  Log.notice(F("WEB : webServer callback for /api/test/push." CR));
+
+  if (!id.equalsIgnoreCase(myConfig.getID())) {
+    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
+              myConfig.getID());
+    _server->send(400, "text/plain", "Invalid ID.");
+    LOG_PERF_STOP("webserver-api-test-push");
+    return;
+  }
+
+#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
+#endif
+
+  float angle = myGyro.getAngle();
+  float tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
+  float gravitySG = calculateGravity(angle, tempC);
+  float corrGravitySG = gravityTemperatureCorrectionC(gravitySG, tempC);
+
+  TemplatingEngine engine;
+  engine.initialize(angle, gravitySG, corrGravitySG, tempC, 2.1);
+
+  const String& type = _server->arg(PARAM_PUSH_FORMAT);
+  PushTarget push;
+  bool enabled = false;
+
+  if (!type.compareTo(PARAM_FORMAT_BREWFATHER) && myConfig.isBrewfatherActive()) {
+    push.sendBrewfather(engine);
+    enabled = true;
+  } else if (!type.compareTo(PARAM_FORMAT_HTTP1) && myConfig.isHttpActive()) {  
+    push.sendHttp1(engine, myConfig.isHttpSSL());
+    enabled = true;
+  } else if (!type.compareTo(PARAM_FORMAT_HTTP2) && myConfig.isHttp2Active()) {
+    push.sendHttp2(engine, myConfig.isHttp2SSL());
+    enabled = true;
+  } else if (!type.compareTo(PARAM_FORMAT_INFLUXDB) && myConfig.isInfluxDb2Active()) {
+    push.sendInfluxDb2(engine);
+    enabled = true;
+  } else if (!type.compareTo(PARAM_FORMAT_MQTT) && myConfig.isMqttActive()) {
+    push.sendMqtt(engine, myConfig.isMqttSSL());
+    enabled = true;
+  }
+
+  DynamicJsonDocument doc(20);
+  doc[PARAM_PUSH_ENABLED] = enabled;
+  doc[PARAM_PUSH_SUCCESS] = push.getLastSuccess();
+  doc[PARAM_PUSH_CODE] = push.getLastCode();
+
+  String out;
+  out.reserve(50);
+  serializeJson(doc, out);
+  _server->send(200, "application/json", out.c_str());
+  LOG_PERF_STOP("webserver-api-test-push");
+}
+
+//
 // Write file to disk, if there is no data then delete the current file (if it
 // exists) = reset to default.
 //
@@ -944,6 +1007,8 @@ const char* WebServerHandler::getHtmlFileName(HtmlFile item) {
       return "format.min.htm";
     case HTML_ABOUT:
       return "about.min.htm";
+    case HTML_TEST:
+      return "test.min.htm";
   }
 
   return "";
@@ -999,6 +1064,8 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webReturnFormatHtm, this));
   _server->on("/about.htm",
               std::bind(&WebServerHandler::webReturnAboutHtm, this));
+  _server->on("/test.htm",
+              std::bind(&WebServerHandler::webReturnTestHtm, this));
 #else
   // Show files in the filessytem at startup
 
@@ -1016,7 +1083,7 @@ bool WebServerHandler::setupWebServer() {
   // upload page.
   if (checkHtmlFile(HTML_INDEX) && checkHtmlFile(HTML_DEVICE) &&
       checkHtmlFile(HTML_CONFIG) && checkHtmlFile(HTML_CALIBRATION) &&
-      checkHtmlFile(HTML_FORMAT) && checkHtmlFile(HTML_ABOUT)) {
+      checkHtmlFile(HTML_FORMAT) && checkHtmlFile(HTML_ABOUT) && checkHtmlFile(HTML_TEST) ) {
     Log.notice(F("WEB : All html files exist, starting in normal mode." CR));
 
     _server->serveStatic("/", LittleFS, "/index.min.htm");
@@ -1024,6 +1091,7 @@ bool WebServerHandler::setupWebServer() {
     _server->serveStatic("/device.htm", LittleFS, "/device.min.htm");
     _server->serveStatic("/config.htm", LittleFS, "/config.min.htm");
     _server->serveStatic("/about.htm", LittleFS, "/about.min.htm");
+    _server->serveStatic("/test.htm", LittleFS, "/test.min.htm");
     _server->serveStatic("/calibration.htm", LittleFS, "/calibration.min.htm");
     _server->serveStatic("/format.htm", LittleFS, "/format.min.htm");
 
@@ -1096,6 +1164,9 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/device/param", HTTP_GET,
               std::bind(&WebServerHandler::webHandleDeviceParam,
                         this));  // Change device params
+  _server->on("/api/test/push", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleTestPush,
+                        this));  // 
 
   _server->onNotFound(
       std::bind(&WebServerHandler::webHandlePageNotFound, this));

@@ -29,3 +29,6 @@ shutil.copyfile( source + file, target + file )
 file = "format.min.htm"
 #print( "Copy file: " + source + file + "->" + target + file)
 shutil.copyfile( source + file, target + file )
+file = "test.min.htm"
+#print( "Copy file: " + source + file + "->" + target + file)
+shutil.copyfile( source + file, target + file )

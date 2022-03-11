@@ -41,6 +41,7 @@ INCBIN_EXTERN(DeviceHtm);
 INCBIN_EXTERN(ConfigHtm);
 INCBIN_EXTERN(CalibrationHtm);
 INCBIN_EXTERN(FormatHtm);
+INCBIN_EXTERN(TestHtm);
 INCBIN_EXTERN(AboutHtm);
 #else
 INCBIN_EXTERN(UploadHtm);
@@ -61,6 +62,7 @@ class WebServerHandler {
   void webHandleConfigDevice();
   void webHandleConfigFormatRead();
   void webHandleConfigFormatWrite();
+  void webHandleTestPush();
   void webHandleStatusSleepmode();
   void webHandleClearWIFI();
   void webHandleStatus();
@@ -104,6 +106,10 @@ class WebServerHandler {
     _server->send_P(200, "text/html", (const char*)gAboutHtmData,
                     gAboutHtmSize);
   }
+  void webReturnTestHtm() {
+    _server->send_P(200, "text/html", (const char*)gTestHtmData,
+                    gTestHtmSize);
+  }
 #else
   void webReturnUploadHtm() {
     _server->send_P(200, "text/html", (const char*)gUploadHtmData,
@@ -118,7 +124,8 @@ class WebServerHandler {
     HTML_CONFIG = 2,
     HTML_ABOUT = 3,
     HTML_CALIBRATION = 4,
-    HTML_FORMAT = 5
+    HTML_FORMAT = 5,
+    HTML_TEST = 6
   };
 
   bool setupWebServer();

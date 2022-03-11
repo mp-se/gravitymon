@@ -4,5 +4,6 @@
     "config": false,
     "calibration": false,
     "format": false,
+    "test": false,
     "about": true
 }

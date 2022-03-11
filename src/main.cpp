@@ -264,7 +264,7 @@ bool loopReadGravity() {
       pushMillis = millis();
       LOG_PERF_START("loop-push");
       PushTarget push;
-      push.send(angle, gravitySG, corrGravitySG, tempC,
+      push.sendAll(angle, gravitySG, corrGravitySG, tempC,
                 (millis() - runtimeMillis) / 1000);
       LOG_PERF_STOP("loop-push");
       // Send stats to influx after each push run.

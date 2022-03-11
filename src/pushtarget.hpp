@@ -35,20 +35,27 @@ SOFTWARE.
 
 class PushTarget {
  private:
-  WiFiClient wifi;
-  WiFiClientSecure wifiSecure;
-  HTTPClient http;
-  HTTPClient httpSecure;
+  WiFiClient _wifi;
+  WiFiClientSecure _wifiSecure;
+  HTTPClient _http;
+  HTTPClient _httpSecure;
+  int _lastCode;
+  bool _lastSuccess;
 
-  void sendBrewfather(TemplatingEngine& engine);
   void sendHttp(TemplatingEngine& engine, bool isSecure, int index);
-  void sendInfluxDb2(TemplatingEngine& engine);
-  void sendMqtt(TemplatingEngine& engine, bool isSecure);
   void addHttpHeader(HTTPClient& http, String header);
 
  public:
-  void send(float angle, float gravitySG, float corrGravitySG, float tempC,
+  void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
             float runTime);
+
+  void sendBrewfather(TemplatingEngine& engine);
+  void sendHttp1(TemplatingEngine& engine, bool isSecure) { sendHttp(engine, isSecure, 0); }
+  void sendHttp2(TemplatingEngine& engine, bool isSecure) { sendHttp(engine, isSecure, 1); }
+  void sendInfluxDb2(TemplatingEngine& engine);
+  void sendMqtt(TemplatingEngine& engine, bool isSecure);
+  int getLastCode() { return _lastCode; }
+  bool getLastSuccess() { return _lastSuccess; }
 };
 
 #endif  // SRC_PUSHTARGET_HPP_

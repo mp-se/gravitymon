@@ -277,6 +277,7 @@
           <div class="form-group row">
             <div class="col-sm-8 offset-sm-2">
               <button class="btn btn-info" id="format-btn">Format editor</button>
+              <button class="btn btn-info" id="test-btn">Test Push</button>
             </div>
           </div>
 
@@ -489,6 +490,10 @@ function checkHeader(input) {
   // Open the format editor
   $("#format-btn").click(function(e){
     window.location.href = "/format.htm";
+  });
+
+  $("#test-btn").click(function(e){
+    window.location.href = "/test.htm";
   });
 
   function estimateBatteryLife(interval) {

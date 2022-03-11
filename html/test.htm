@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <title>Beer Gravity Monitor</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+</head> 
+<body class="py-4">
+
+<!-- START MENU -->
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+
+  <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbar"> 
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/config.htm">Back to configuration</a>
+      </li>
+    </ul>
+  </div>
+  <div class="spinner-border text-light" id="spinner" role="status"></div>
+</nav>
+
+<!-- START MAIN INDEX -->
+
+<div class="container">
+
+  <hr class="my-2">
+
+  <div class="alert alert-success alert-dismissible fade hide show d-none" role="alert" id="alert">
+    <div id="alert-msg">...</div>
+    <button type="button" id="alert-btn" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <script type="text/javascript">
+    function showError( msg ) {
+      $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show');
+      $('#alert-msg').text( msg );
+    }
+
+    function showSuccess( msg ) {
+      $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show');
+      $('#alert-msg').text( msg );
+    }
+
+    $("#alert-btn").click(function(e){
+      $('#alert').addClass('d-none').removeClass('show');
+    });    
+  </script>
+
+  <div>
+    <div class="card">
+      <div class="card-body">
+          <pre class="card-preview" id="preview" name="preview"></pre> 
+    </div>
+  </div>
+
+  <hr class="my-4">
+</div>
+
+<script type="text/javascript">
+  window.onload = getConfig;
+
+  function appendLog(log) {
+    doc = $("#preview").text();
+    doc += log + "\n";
+    $("#preview").text(doc);
+  }
+
+  // Get the configuration values from the API
+  function getConfig() {
+    appendLog( "Starting test of push targets" );
+
+    var url = "/api/device";
+    //var url = "/test/device.json";
+    $('#spinner').show(); 
+    $.getJSON(url, function (cfg) {
+      var id = cfg["id"];
+      console.log( id );
+   
+      appendLog( "Testing push target http-1" );
+      testHttp( id, "http-1" );
+      appendLog( "Testing push target http-2" );
+      testHttp( id, "http-2" );
+      appendLog( "Testing push target brewfather" );
+      testHttp( id, "brewfather" );
+      appendLog( "Testing push target influxdb" );
+      testInfluxdb( id );
+      appendLog( "Testing push target mqtt" );
+      testMqtt( id );
+    })
+    .fail(function () {
+      showError('Unable to get data from the device.');
+    })
+    .always(function() {
+      $('#spinner').hide(); 
+    });
+  }
+
+  function testMqtt(id) {
+    var url = "/api/test/push";
+    url += "?id=" + id + "&format=mqtt";
+    //var url = "/test/push.json";  
+    $.ajax({
+        type: 'GET',
+        url: url,
+        async: false,
+        success: function(cfg) {
+          var code = cfg["code"];
+          var success = cfg["success"];
+          var enabled = cfg["enabled"];
+
+          if(!enabled) {
+            appendLog( "Push target 'mqtt' is not configured/used" );
+          } else if(success) {
+            appendLog( "Push target 'mqtt' successful" );
+          } else{
+            if(code==-3)
+              appendLog( "Push target 'mqtt' failed to connect" );
+            else if(code==-4)
+              appendLog( "Push target 'mqtt' failed with error timeout" );
+            else if(code==-10)
+              appendLog( "Push target 'mqtt' failed with error denied" );
+            else 
+              appendLog( "Push target 'mqtt' failed with error code " + code );
+          }
+        }
+    })
+    .fail(function () {
+      appendLog( "Failed to test push target 'influxdb'");
+    })
+  }
+ 
+  function testInfluxdb(id) {
+    var url = "/api/test/push";
+    url += "?id=" + id + "&format=influxdb";
+    //var url = "/test/push.json";  
+    $.ajax({
+        type: 'GET',
+        url: url,
+        async: false,
+        success: function(cfg) {
+          var code = cfg["code"];
+          var success = cfg["success"];
+          var enabled = cfg["enabled"];
+
+          if(!enabled) {
+            appendLog( "Push target 'influxdb' is not configured/used" );
+          } else if(success) {
+            appendLog( "Push target 'influxdb' successful" );
+          } else{
+            if(code==400)
+              appendLog( "Push target 'influxdb' failed with error code 400, bad request" );
+            else if(code==401)
+              appendLog( "Push target 'influxdb' failed with error code 401, unauthorized" );
+            else if(code==404)
+              appendLog( "Push target 'influxdb' failed with error code 404, url not found" );
+            else 
+              appendLog( "Push target 'influxdb' failed with error code " + code );
+          }
+        }
+    })
+    .fail(function () {
+      appendLog( "Failed to test push target 'influxdb'");
+    })
+  }
+
+  function testHttp(id, target) {
+    var url = "/api/test/push";
+    url += "?id=" + id + "&format=" + target;
+    //var url = "/test/push.json";  
+    $.ajax({
+        type: 'GET',
+        url: url,
+        async: false,
+        success: function(cfg) {
+          var code = cfg["code"];
+          var success = cfg["success"];
+          var enabled = cfg["enabled"];
+
+          if(!enabled) {
+            appendLog( "Push target '" + target + "' is not configured/used" );
+          } else if(success) {
+            appendLog( "Push target '" + target + "' successful" );
+          } else{
+            if(code==400)
+              appendLog( "Push target '" + target + "' failed with error code 400, bad request" );
+            else if(code==401)
+              appendLog( "Push target '" + target + "' failed with error code 401, unauthorized" );
+            else if(code==404)
+              appendLog( "Push target '" + target + "' failed with error code 404, url not found" );
+            else 
+              appendLog( "Push target '" + target + "' failed with error code " + code );
+          }
+        }
+    })
+    .fail(function () {
+      appendLog( "Failed to test push target '" + target + "'");
+    })
+  }
+</script>
+
+<!-- START FOOTER -->
+
+<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div>
+</body>
+</html>

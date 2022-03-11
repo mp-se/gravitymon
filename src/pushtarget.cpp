@@ -35,11 +35,11 @@ SOFTWARE.
 //
 // Send the data to targets
 //
-void PushTarget::send(float angle, float gravitySG, float corrGravitySG,
+void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
                       float tempC, float runTime) {
   printHeap("PUSH");
-  http.setReuse(false);
-  httpSecure.setReuse(false);
+  _http.setReuse(false);
+  _httpSecure.setReuse(false);
 
   TemplatingEngine engine;
   engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime);
@@ -82,6 +82,8 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to influxdb2." CR));
 #endif
+  _lastCode = 0;
+  _lastSuccess = false;
 
   String serverPath =
       String(myConfig.getInfluxDb2PushUrl()) +
@@ -89,8 +91,8 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
       "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
   String doc = engine.create(TemplatingEngine::TEMPLATE_INFLUX);
 
-  http.begin(wifi, serverPath);
-  http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+  _http.begin(_wifi, serverPath);
+  _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -98,20 +100,20 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
 #endif
 
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
-  http.addHeader(F("Authorization"), auth.c_str());
-  int httpResponseCode = http.POST(doc);
+  _http.addHeader(F("Authorization"), auth.c_str());
+  _lastCode = _http.POST(doc);
 
-  if (httpResponseCode == 204) {
+  if (_lastCode == 204) {
     Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR),
-               httpResponseCode);
+               _lastCode);
   } else {
     ErrorFileLog errLog;
     errLog.addEntry("PUSH: Influxdb push failed response=" +
-                    String(httpResponseCode));
+                    String(_lastCode));
   }
 
-  http.end();
-  wifi.stop();
+  _http.end();
+  _wifi.stop();
   tcp_cleanup();
 }
 
@@ -122,32 +124,35 @@ void PushTarget::sendBrewfather(TemplatingEngine& engine) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to brewfather" CR));
 #endif
+  _lastCode = 0;
+  _lastSuccess = false;
 
   String serverPath = myConfig.getBrewfatherPushUrl();
   String doc = engine.create(TemplatingEngine::TEMPLATE_BREWFATHER);
 
-  http.begin(wifi, serverPath);
-  http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+  _http.begin(_wifi, serverPath);
+  _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
   Log.verbose(F("PUSH: json %s." CR), doc.c_str());
 #endif
 
-  http.addHeader(F("Content-Type"), F("application/json"));
-  int httpResponseCode = http.POST(doc);
+  _http.addHeader(F("Content-Type"), F("application/json"));
+  _lastCode = _http.POST(doc);
 
-  if (httpResponseCode == 200) {
+  if (_lastCode == 200) {
+    _lastSuccess = true;
     Log.notice(F("PUSH: Brewfather push successful, response=%d" CR),
-               httpResponseCode);
+               _lastCode);
   } else {
     ErrorFileLog errLog;
     errLog.addEntry("PUSH: Brewfather push failed response=" +
-                    String(httpResponseCode));
+                    String(_lastCode));
   }
 
-  http.end();
-  wifi.stop();
+  _http.end();
+  _wifi.stop();
   tcp_cleanup();
 }
 
@@ -179,6 +184,9 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
   Log.notice(F("PUSH: Sending values to http (%s)" CR),
              index ? "http2" : "http");
 #endif
+  _lastCode = 0;
+  _lastSuccess = false;
+
   String serverPath, doc;
 
   if (index == 0) {
@@ -189,8 +197,6 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
     doc = engine.create(TemplatingEngine::TEMPLATE_HTTP2);
   }
 
-  int httpResponseCode;
-
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
   Log.verbose(F("PUSH: json %s." CR), doc.c_str());
@@ -198,7 +204,7 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
 
   if (isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
-    wifiSecure.setInsecure();
+    _wifiSecure.setInsecure();
 
 #if defined (ESP8266)
     String host = serverPath.substring(8); // remove the prefix or the probe will fail, it needs a pure host name.
@@ -206,55 +212,56 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
     if (idx!=-1)
       host = host.substring(0, idx);
 
-    if (wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
+    if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
       Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
-      wifiSecure.setBufferSizes(512, 512);
+      _wifiSecure.setBufferSizes(512, 512);
     }
 #endif
 
-    httpSecure.begin(wifiSecure, serverPath);
-    httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+    _httpSecure.begin(_wifiSecure, serverPath);
+    _httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
     if (index == 0) {
-      addHttpHeader(httpSecure, myConfig.getHttpHeader(0));
-      addHttpHeader(httpSecure, myConfig.getHttpHeader(1));
+      addHttpHeader(_httpSecure, myConfig.getHttpHeader(0));
+      addHttpHeader(_httpSecure, myConfig.getHttpHeader(1));
     } else {
-      addHttpHeader(httpSecure, myConfig.getHttp2Header(0));
-      addHttpHeader(httpSecure, myConfig.getHttp2Header(1));
+      addHttpHeader(_httpSecure, myConfig.getHttp2Header(0));
+      addHttpHeader(_httpSecure, myConfig.getHttp2Header(1));
     }
 
-    httpResponseCode = httpSecure.POST(doc);
+    _lastCode = _httpSecure.POST(doc);
   } else {
-    http.begin(wifi, serverPath);
-    http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+    _http.begin(_wifi, serverPath);
+    _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
     if (index == 0) {
-      addHttpHeader(http, myConfig.getHttpHeader(0));
-      addHttpHeader(http, myConfig.getHttpHeader(1));
+      addHttpHeader(_http, myConfig.getHttpHeader(0));
+      addHttpHeader(_http, myConfig.getHttpHeader(1));
     } else {
-      addHttpHeader(http, myConfig.getHttp2Header(0));
-      addHttpHeader(http, myConfig.getHttp2Header(1));
+      addHttpHeader(_http, myConfig.getHttp2Header(0));
+      addHttpHeader(_http, myConfig.getHttp2Header(1));
     }
 
-    httpResponseCode = http.POST(doc);
+    _lastCode = _http.POST(doc);
   }
 
-  if (httpResponseCode == 200) {
+  if (_lastCode == 200) {
+    _lastSuccess = true;
     Log.notice(F("PUSH: HTTP push successful, response=%d" CR),
-               httpResponseCode);
+               _lastCode);
   } else {
     ErrorFileLog errLog;
     errLog.addEntry(
-        "PUSH: HTTP push failed response=" + String(httpResponseCode) +
+        "PUSH: HTTP push failed response=" + String(_lastCode) +
         String(index == 0 ? " (http)" : " (http2)"));
   }
 
   if (isSecure) {
-    httpSecure.end();
-    wifiSecure.stop();
+    _httpSecure.end();
+    _wifiSecure.stop();
   } else {
-    http.end();
-    wifi.stop();
+    _http.end();
+    _wifi.stop();
   }
   tcp_cleanup();
 }
@@ -266,6 +273,8 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to mqtt." CR));
 #endif
+  _lastCode = 0;
+  _lastSuccess = false;
 
   MQTTClient mqtt(512);
   String host = myConfig.getMqttUrl();
@@ -274,18 +283,18 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
 
   if (myConfig.isMqttSSL()) {
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
-    wifiSecure.setInsecure();
+    _wifiSecure.setInsecure();
 
 #if defined (ESP8266)
-    if (wifiSecure.probeMaxFragmentLength(host, port, 512)) {
+    if (_wifiSecure.probeMaxFragmentLength(host, port, 512)) {
       Log.notice(F("PUSH: MQTT server supports smaller SSL buffer." CR));
-      wifiSecure.setBufferSizes(512, 512);
+      _wifiSecure.setBufferSizes(512, 512);
     }
 #endif
 
-    mqtt.begin(host.c_str(), port, wifiSecure);
+    mqtt.begin(host.c_str(), port, _wifiSecure);
   } else {
-    mqtt.begin(host.c_str(), port, wifi);
+    mqtt.begin(host.c_str(), port, _wifi);
   }
 
   mqtt.connect(myConfig.getMDNS(), myConfig.getMqttUser(),
@@ -319,8 +328,11 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
                 value.c_str());
 #endif
     if (mqtt.publish(topic, value)) {
+      _lastSuccess = true;
       Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
+      _lastCode = 0;
     } else {
+      _lastCode = mqtt.lastError();
       ErrorFileLog errLog;
       errLog.addEntry("PUSH: MQTT push on " + topic +
                       " failed error=" + String(mqtt.lastError()));
@@ -332,9 +344,9 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
 
   mqtt.disconnect();
   if (isSecure) {
-    wifiSecure.stop();
+    _wifiSecure.stop();
   } else {
-    wifi.stop();
+    _wifi.stop();
   }
   tcp_cleanup();
 }
