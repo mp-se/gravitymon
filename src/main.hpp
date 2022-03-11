@@ -28,7 +28,8 @@ SOFTWARE.
 #include <ArduinoJson.h>
 #include <ArduinoLog.h>
 #include <stdlib.h>
-#include <LittleFS.h>
+#include <LITTLEFS.h>
+//#include <LittleFS.h>
 
 #if defined (ESP8266)
 #define ESP_RESET ESP.reset
