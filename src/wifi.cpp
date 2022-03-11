@@ -240,7 +240,11 @@ bool WifiConnection::updateFirmware() {
   WiFiClientSecure wifiSecure;
   HTTPUpdateResult ret;
   String serverPath = myConfig.getOtaURL();
+#if defined (ESP8266)  
   serverPath += "firmware.bin";
+#else // defined (ESP32)
+  serverPath += "firmware32.bin";
+#endif
 
   if (serverPath.startsWith("https://")) {
     wifiSecure.setInsecure();

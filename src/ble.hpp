@@ -26,10 +26,10 @@ SOFTWARE.
 
 #if defined (ESP32)
 
+#include <NimBLEDevice.h>
+#include <NimBLEBeacon.h>
 #include <main.hpp>
 #include <config.hpp>
-#include "NimBLEDevice.h"
-#include "NimBLEBeacon.h"
 
 class BleSender {
  private:
