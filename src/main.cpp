@@ -159,6 +159,8 @@ void setup() {
     runMode = RunMode::wifiSetupMode;
   }
 
+  bool needWifi = true; // Under ESP32 we dont need wifi if only BLE is active in gravityMode
+
   // Do this setup for all modes exect wifi setup
   switch (runMode) {
     case RunMode::wifiSetupMode:
@@ -166,14 +168,6 @@ void setup() {
       break;
 
     default:
-      LOG_PERF_START("main-wifi-connect");
-      myWifi.connect();
-      LOG_PERF_STOP("main-wifi-connect");
-
-      LOG_PERF_START("main-temp-setup");
-      myTempSensor.setup();
-      LOG_PERF_STOP("main-temp-setup");
-
       if (!myGyro.setup()) {
         ErrorFileLog errLog;
         errLog.addEntry(
@@ -186,6 +180,23 @@ void setup() {
 
       myBatteryVoltage.read();
       checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+
+#if defined (ESP32)
+      if (!myConfig.isWifiPushActive() && runMode == RunMode::gravityMode) {
+        Log.notice(F("Main: Wifi is not needed in gravity mode, skipping connection." CR));
+        needWifi = false;
+      }
+#endif
+
+      if (needWifi) {
+        LOG_PERF_START("main-wifi-connect");
+        myWifi.connect();
+        LOG_PERF_STOP("main-wifi-connect");
+      }
+
+      LOG_PERF_START("main-temp-setup");
+      myTempSensor.setup();
+      LOG_PERF_STOP("main-temp-setup");
       break;
   }
 
@@ -246,16 +257,8 @@ bool loopReadGravity() {
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
                   "corr_gravity=%F." CR),
-                angle, tempC, gravity, corrGravity);
+                angle, tempC, gravitySG, corrGravitySG);
 #endif
-
-#if defined (ESP32)
-    if (myConfig.isBLEActive()) {
-      BleSender ble(myConfig.getColorBLE());
-      ble.sendData( convertCtoF(tempC), gravitySG);
-      Log.notice(F("MAIN: Broadcast data over bluetooth." CR));
-    }
-#endif 
 
     bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
                         (myConfig.getSleepInterval() * 1000));
@@ -263,10 +266,23 @@ bool loopReadGravity() {
     if (pushExpired || runMode == RunMode::gravityMode) {
       pushMillis = millis();
       LOG_PERF_START("loop-push");
-      PushTarget push;
-      push.sendAll(angle, gravitySG, corrGravitySG, tempC,
-                (millis() - runtimeMillis) / 1000);
+
+#if defined (ESP32)
+      if (myConfig.isBLEActive()) {
+        BleSender ble(myConfig.getColorBLE());
+        ble.sendData( convertCtoF(tempC), gravitySG);
+        Log.notice(F("MAIN: Broadcast data over bluetooth." CR));
+      }
+#endif 
+
+      if (myWifi.isConnected()) { // no need to try if there is no wifi connection.
+        PushTarget push;
+        push.sendAll(angle, gravitySG, corrGravitySG, tempC,
+                  (millis() - runtimeMillis) / 1000);
+      }
+
       LOG_PERF_STOP("loop-push");
+
       // Send stats to influx after each push run.
       if (runMode == RunMode::configurationMode) {
         LOG_PERF_PUSH();
@@ -338,7 +354,7 @@ void loop() {
     case RunMode::gravityMode:
       // If we didnt get a wifi connection, we enter sleep for a short time to
       // conserve battery.
-      if (!myWifi.isConnected()) {  // no connection to wifi
+      if (!myWifi.isConnected() && myConfig.isWifiPushActive()) {  // no connection to wifi and we have defined push targets.
         Log.notice(
             F("MAIN: No connection to wifi established, sleeping for 60s." CR));
         myWifi.stopDoubleReset();
