@@ -92,6 +92,7 @@ void ErrorFileLog::addEntry(String err) {
     _errors[i] = _errors[i - 1];
   }
   _errors[0] = err;
+  err += String(CR);
   Log.error(err.c_str());
   save();
 }
