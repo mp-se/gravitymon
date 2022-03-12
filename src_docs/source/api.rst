@@ -12,6 +12,7 @@ Retrive the current configuation of the device via an HTTP GET command. Payload 
 
 * ``temp-format`` can be either ``C`` or ``F``
 * ``gravity-format`` is always ``G`` (plato is not yet supported)
+* ``ble`` is used to enable ble data transmission (only on esp32) simulating a tilt. Valid color names are; red, green, black, purple, orange, blue, yellow, pink
 
 Other parameters are the same as in the configuration guide.
 
@@ -22,6 +23,7 @@ Other parameters are the same as in the configuration guide.
       "id": "ee1bfc",
       "ota-url": "http://192.168.1.50:80/firmware/gravmon/",
       "temp-format": "C",
+      "ble": "color",
       "brewfather-push": "http://log.brewfather.net/stream?id=Qwerty",
       "token": "token",
       "http-push": "http://192.168.1.50:9090/api/v1/Qwerty/telemetry",
@@ -53,9 +55,22 @@ Other parameters are the same as in the configuration guide.
          "gy": -6,
          "gz": 4
       },
+      "formula-calculation-data": {
+         "a1":25,
+         "a2":30,
+         "a3":35,
+         "a4":40,
+         "a5":45,
+         "g1":1,
+         "g2":1.01,
+         "g3":1.02,
+         "g4":1.03,
+         "g5":1.04
+      },
       "angle": 90.93,
       "gravity": 1.105,
       "battery": 0.04,
+      "platform": "esp8266",
       "runtime-average": 3.12
    }
 
@@ -65,6 +80,8 @@ GET: /api/device
 
 Retrive the current device settings via an HTTP GET command. Payload is in JSON format.
 
+* ``platform`` can be either ``esp8266`` or ``esp32``
+
 .. code-block:: json
 
    {
@@ -72,6 +89,7 @@ Retrive the current device settings via an HTTP GET command. Payload is in JSON 
       "app-ver": "0.0.0",
       "id": "ee1bfc",
       "mdns": "gravmon",
+      "platform": "esp8266",
       "runtime-average": 3.12
    }
 
@@ -128,8 +146,20 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
    }
 
 
+GET: /api/clearwifi
+===================
+
+Will reset the wifi settings, leaving the rest unused.
+
+For this to work you will need to supply the device id as a parameter in the request:
+
+:: 
+
+   http://mygravity.local/api/clearwifi?id=<mydeviceid>
+
+
 GET: /api/factory
-================
+=================
 
 Will do a reset to factory defaults and delete all data except wifi settings.
 
@@ -139,6 +169,27 @@ For this to work you will need to supply the device id as a parameter in the req
 
    http://mygravity.local/api/factory?id=<mydeviceid>
 
+
+GET: /api/test/push
+===================
+
+Trigger a push on one of the targets, used to validate the configuration from the UI. 
+
+Requires to parameters to function /api/test/push?id=<deviceid>&format=<format>
+
+* ``format`` defines which endpoint to test, valid values are; http-1, http-2, brewfather, influxdb, mqtt
+
+The response is an json message with the following values.
+
+* ``code`` is the return code from the push function, typically http responsecode or error code from mqtt library.
+
+.. code-block:: json
+
+   {
+      "success": false,
+      "enabled": true,
+      "code": -3
+   }
 
 POST: /api/config/device
 ========================
@@ -222,6 +273,7 @@ Payload should be in standard format used for posting a form. Such as as: `id=va
    id=ee1bfc
    voltage-factor=1.59
    temp-adjustment=0 
+   ble=red
    gyro-temp=off
    ota-url=http://192.168.1.50/firmware/gravmon/
 
@@ -286,15 +338,15 @@ The requests package converts the json to standard form post format.
 
    url = "http://" + host + "/api/config/push"
    json = { "id": id, 
-            "token": "",                           
+            "token": "",
             "http-push": "http://192.168.1.1/ispindel",  
-            "http-push2": "",                           
-            "http-push-h1": "",                           
-            "http-push-h2": "",                           
-            "http-push2-h1": "",                           
-            "http-push2-h2": "",                           
-            "brewfather-push": "",                      
-            "influxdb2-push": "",                       
+            "http-push2": "",
+            "http-push-h1": "",
+            "http-push-h2": "",
+            "http-push2-h1": ""
+            "http-push2-h2": "",
+            "brewfather-push": "",
+            "influxdb2-push": "",
             "influxdb2-org": "",
             "influxdb2-bucket": "",
             "influxdb2-auth": "",
@@ -318,6 +370,7 @@ The requests package converts the json to standard form post format.
             "voltage-factor": 1.59,                 # Default value for voltage calculation
             "temp-adjustment": 0,                   # If temp sensor needs to be corrected
             "gyro-temp": "on",                      # Use the temp sensor in the gyro instead (on/off)
+            "ble": "red",                           # Enable ble on esp32
             "ota-url": ""                           # if the device should seach for a new update when active
          }
    set_config( url, json )

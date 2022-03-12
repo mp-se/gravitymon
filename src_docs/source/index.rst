@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v0.8**. Last updated 2022-03-05
+  This documentation reflects **v0.9**. Last updated 2022-03-12
   
 GravityMon is used to measure gravity and temperature during fermentation of beer and report the progress. The graph below is
 an example on how the fermentation process can be tracked. This is from my last brew that was over on a few days. The graph is rendered using
@@ -20,6 +20,8 @@ Fermentrack.
 GravityMon is a replacement firmare for the iSpindle and uses the same hardware configuration and is 100% compatible. It
 implements a lot of the features that has been requested in the orginal iSpindle project but has been rejected for 
 various reasons. Here is a list of :ref:`main_features`.
+
+From v0.9 the firmware now supports a iSpindle build based on an ESP32 d1 mini (pin compatible with esp8266). See :ref:`hardware`.
 
 I started GravityMon because i like to create software and wanted to do some low level programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural. 
@@ -124,17 +126,29 @@ the following libraries and without these this would have been much more difficu
 
   CSS templates for the web page.
 
+* https://github.com/lorol/LITTLEFS
+
+  LittleFS library for ESP32 framework 1.x
+
+* https://github.com/h2zero/NimBLE-Arduino
+
+  Bluetooth library for ESP32 framework 1.x
+
+* https://github.com/spouliot/tilt-sim
+
+  Excellent project for simulating a tilt device. 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   license
-   functionallity
    intro
-   installation
    releases
+   functionallity
+   installation
    configuration
+   troubleshooting
+   q_and_a
    formula
    services
    advanced
@@ -142,8 +156,8 @@ the following libraries and without these this would have been much more difficu
    data
    compiling
    contributing
-   troubleshooting
-   q_and_a
+   hardware
+   license
 
 Indices and tables
 ==================

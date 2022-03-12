@@ -59,6 +59,10 @@ URL: (http://gravmon.local/device)
    This is unique identifier for the device (ESP8266 id), this is required when using the API as an API Key to safeguard 
    against faulty requests. This is the ESP8266 chip ID, so it should be unique.
 
+* **Platform:** 
+
+   Used to show what chip this build is for, it can be esp8266 or esp32. Some features are only available on an ESP32 platform. 
+
 * **Average runtime:** 
 
    This shows the average time a gravity measurement takes. Under optimal setting this should be 
@@ -257,9 +261,13 @@ Hardware Settings
    device is activated, since the gyro should be cool this is reflecting the surronding temperature. After it has 
    been running the value would be totally off.  
 
+* **Bluetooth: (Only ESP32)**
+
+   If the build is using an ESP32 then you can send data over BLE, simulating a Tilt device. Choose the color that you want the device to simulate.
+
 * **OTA URL:**
 
-   Should point to a URL where the firmware.bin file + version.json file are located. 
+   Should point to a URL where the firmware.bin file + version.json file are located. For an ESP32 target the firmware should be named firmware32.bin.
 
    For the OTA to work, place the following files (version.json + firmware.bin) at the location that you pointed out in OTA URL. If the version number in the json file is newer than in the 
    code the update will be done during startup.
