@@ -799,14 +799,20 @@ void WebServerHandler::webHandleTestPush() {
     enabled = true;
   }
 
-  DynamicJsonDocument doc(20);
+  DynamicJsonDocument doc(100);
   doc[PARAM_PUSH_ENABLED] = enabled;
   doc[PARAM_PUSH_SUCCESS] = push.getLastSuccess();
   doc[PARAM_PUSH_CODE] = push.getLastCode();
 
   String out;
-  out.reserve(50);
+  out.reserve(100);
   serializeJson(doc, out);
+
+#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
+  serializeJson(doc, Serial);
+  Serial.print(CR);
+#endif
+
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-test-push");
 }

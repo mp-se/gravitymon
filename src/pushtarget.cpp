@@ -104,6 +104,7 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
   _lastCode = _http.POST(doc);
 
   if (_lastCode == 204) {
+    _lastSuccess = true;
     Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR),
                _lastCode);
   } else {

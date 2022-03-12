@@ -23,7 +23,7 @@
   <div class="collapse navbar-collapse" id="navbar"> 
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="/config.htm">Back to configuration</a>
+        <a class="nav-link" href="/config.htm#collapseTwo">Back to configuration</a>
       </li>
     </ul>
   </div>
@@ -89,15 +89,10 @@
       var id = cfg["id"];
       console.log( id );
    
-      appendLog( "Testing push target http-1" );
       testHttp( id, "http-1" );
-      appendLog( "Testing push target http-2" );
       testHttp( id, "http-2" );
-      appendLog( "Testing push target brewfather" );
       testHttp( id, "brewfather" );
-      appendLog( "Testing push target influxdb" );
       testInfluxdb( id );
-      appendLog( "Testing push target mqtt" );
       testMqtt( id );
     })
     .fail(function () {
@@ -112,30 +107,25 @@
     var url = "/api/test/push";
     url += "?id=" + id + "&format=mqtt";
     //var url = "/test/push.json";  
-    $.ajax({
-        type: 'GET',
-        url: url,
-        async: false,
-        success: function(cfg) {
-          var code = cfg["code"];
-          var success = cfg["success"];
-          var enabled = cfg["enabled"];
+    $.getJSON(url, function (cfg) {
+      var code = cfg["code"];
+      var success = cfg["success"];
+      var enabled = cfg["enabled"];
 
-          if(!enabled) {
-            appendLog( "Push target 'mqtt' is not configured/used" );
-          } else if(success) {
-            appendLog( "Push target 'mqtt' successful" );
-          } else{
-            if(code==-3)
-              appendLog( "Push target 'mqtt' failed to connect" );
-            else if(code==-4)
-              appendLog( "Push target 'mqtt' failed with error timeout" );
-            else if(code==-10)
-              appendLog( "Push target 'mqtt' failed with error denied" );
-            else 
-              appendLog( "Push target 'mqtt' failed with error code " + code );
-          }
-        }
+      if(!enabled) {
+        appendLog( "Push target 'mqtt' is not configured/used" );
+      } else if(success) {
+        appendLog( "Push target 'mqtt' successful" );
+      } else{
+        if(code==-3)
+          appendLog( "Push target 'mqtt' failed to connect" );
+        else if(code==-4)
+          appendLog( "Push target 'mqtt' failed with error timeout" );
+        else if(code==-10)
+          appendLog( "Push target 'mqtt' failed with error denied" );
+        else 
+          appendLog( "Push target 'mqtt' failed with error code " + code );
+      }
     })
     .fail(function () {
       appendLog( "Failed to test push target 'influxdb'");
@@ -146,30 +136,25 @@
     var url = "/api/test/push";
     url += "?id=" + id + "&format=influxdb";
     //var url = "/test/push.json";  
-    $.ajax({
-        type: 'GET',
-        url: url,
-        async: false,
-        success: function(cfg) {
-          var code = cfg["code"];
-          var success = cfg["success"];
-          var enabled = cfg["enabled"];
+    $.getJSON(url, function (cfg) {
+      var code = cfg["code"];
+      var success = cfg["success"];
+      var enabled = cfg["enabled"];
 
-          if(!enabled) {
-            appendLog( "Push target 'influxdb' is not configured/used" );
-          } else if(success) {
-            appendLog( "Push target 'influxdb' successful" );
-          } else{
-            if(code==400)
-              appendLog( "Push target 'influxdb' failed with error code 400, bad request" );
-            else if(code==401)
-              appendLog( "Push target 'influxdb' failed with error code 401, unauthorized" );
-            else if(code==404)
-              appendLog( "Push target 'influxdb' failed with error code 404, url not found" );
-            else 
-              appendLog( "Push target 'influxdb' failed with error code " + code );
-          }
-        }
+      if(!enabled) {
+        appendLog( "Push target 'influxdb' is not configured/used" );
+      } else if(success) {
+        appendLog( "Push target 'influxdb' successful" );
+      } else{
+        if(code==400)
+          appendLog( "Push target 'influxdb' failed with error code 400, bad request" );
+        else if(code==401)
+          appendLog( "Push target 'influxdb' failed with error code 401, unauthorized" );
+        else if(code==404)
+          appendLog( "Push target 'influxdb' failed with error code 404, url not found" );
+        else 
+          appendLog( "Push target 'influxdb' failed with error code " + code );
+      }
     })
     .fail(function () {
       appendLog( "Failed to test push target 'influxdb'");
@@ -180,30 +165,25 @@
     var url = "/api/test/push";
     url += "?id=" + id + "&format=" + target;
     //var url = "/test/push.json";  
-    $.ajax({
-        type: 'GET',
-        url: url,
-        async: false,
-        success: function(cfg) {
-          var code = cfg["code"];
-          var success = cfg["success"];
-          var enabled = cfg["enabled"];
+    $.getJSON(url, function (cfg) {
+      var code = cfg["code"];
+      var success = cfg["success"];
+      var enabled = cfg["enabled"];
 
-          if(!enabled) {
-            appendLog( "Push target '" + target + "' is not configured/used" );
-          } else if(success) {
-            appendLog( "Push target '" + target + "' successful" );
-          } else{
-            if(code==400)
-              appendLog( "Push target '" + target + "' failed with error code 400, bad request" );
-            else if(code==401)
-              appendLog( "Push target '" + target + "' failed with error code 401, unauthorized" );
-            else if(code==404)
-              appendLog( "Push target '" + target + "' failed with error code 404, url not found" );
-            else 
-              appendLog( "Push target '" + target + "' failed with error code " + code );
-          }
-        }
+      if(!enabled) {
+        appendLog( "Push target '" + target + "' is not configured/used" );
+      } else if(success) {
+        appendLog( "Push target '" + target + "' successful" );
+      } else{
+        if(code==400)
+          appendLog( "Push target '" + target + "' failed with error code 400, bad request" );
+        else if(code==401)
+          appendLog( "Push target '" + target + "' failed with error code 401, unauthorized" );
+        else if(code==404)
+          appendLog( "Push target '" + target + "' failed with error code 404, url not found" );
+        else 
+          appendLog( "Push target '" + target + "' failed with error code " + code );
+      }
     })
     .fail(function () {
       appendLog( "Failed to test push target '" + target + "'");
