@@ -37,9 +37,13 @@ SOFTWARE.
 #define PIN_DS D6
 #define PIN_A0 A0
 #else // defined (ESP32)
+#if defined (ESPRESSIF32_20)
+#include <LittleFS.h>
+#else
 #include <LITTLEFS.h>
-#include <FS.h>
 #define LittleFS LITTLEFS
+#endif
+#include <FS.h>
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart
 #define ESP8266WebServer WebServer
