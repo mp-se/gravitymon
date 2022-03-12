@@ -55,7 +55,7 @@ Config::Config() {
 #if defined(ESP8266)
   setVoltageFactor(1.59);  // Conversion factor for battery on ESP8266
 #else                      // defined (ESP32)
-  setVoltageFactor(1.43);  // Conversion factor for battery on ESP32
+  setVoltageFactor(1.25);  // Conversion factor for battery on ESP32
 #endif
 }
 
