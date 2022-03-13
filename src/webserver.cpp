@@ -256,7 +256,7 @@ void WebServerHandler::webHandleStatus() {
   LOG_PERF_START("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
 
-  DynamicJsonDocument doc(256);
+  DynamicJsonDocument doc(300);
 
   double angle = 0;
 
