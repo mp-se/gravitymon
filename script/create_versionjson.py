@@ -19,36 +19,30 @@ def after_build(source, target, env):
     shutil.copyfile( source, target )
 
     # Copy file 2
-    source = dir + "/data/device.min.htm"
-    target = dir + "/bin/device.min.htm"
-    print( "Copy file : " + source + " -> " + target )
-    shutil.copyfile( source, target )
-
-    # Copy file 3
     source = dir + "/data/config.min.htm"
     target = dir + "/bin/config.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
-    # Copy file 4
+    # Copy file 3
     source = dir + "/data/about.min.htm"
     target = dir + "/bin/about.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
-    # Copy file 5
+    # Copy file 4
     source = dir + "/data/calibration.min.htm"
     target = dir + "/bin/calibration.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
-    # Copy file 6
+    # Copy file 5
     source = dir + "/data/format.min.htm"
     target = dir + "/bin/format.min.htm"
     print( "Copy file : " + source + " -> " + target )
     shutil.copyfile( source, target )
 
-    # Copy file 7
+    # Copy file 6
     source = dir + "/data/test.min.htm"
     target = dir + "/bin/test.min.htm"
     print( "Copy file : " + source + " -> " + target )
