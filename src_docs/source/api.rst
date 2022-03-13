@@ -102,9 +102,11 @@ Other parameters are the same as in the configuration guide.
       "battery": 0,
       "temp-format": "C",
       "sleep-mode": false,
+      "token": "token",
       "rssi": -56,
       "app-ver": "0.0.0",
       "mdns": "gravmon",
+      "sleep-interval": 30,
       "platform": "esp8266",
       "runtime-average": 3.12
    }

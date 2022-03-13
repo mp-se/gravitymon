@@ -147,38 +147,71 @@
   
   // Test the calibration
   $("#test-btn").click(function(e) {
-    var doc = $("#format").val();
-    doc = doc.replaceAll("${mdns}", "testing");
-    doc = doc.replaceAll("${id}", "e4a344");
-    doc = doc.replaceAll("${sleep-interval}", "300");
-    doc = doc.replaceAll("${temp}", "21.1");
-    doc = doc.replaceAll("${token}", "a-token");
-    doc = doc.replaceAll("${temp-c}", "21.1");
-    doc = doc.replaceAll("${temp-f}", "51.3");
-    doc = doc.replaceAll("${temp-unit}", "C");
-    doc = doc.replaceAll("${battery}", "3.86");
-    doc = doc.replaceAll("${rssi}", "-76");
-    doc = doc.replaceAll("${run-time}", "4.32");
-    doc = doc.replaceAll("${gravity}", "1.044");
-    doc = doc.replaceAll("${gravity-sg}", "1.044");
-    doc = doc.replaceAll("${gravity-plato}", "9.5");
-    doc = doc.replaceAll("${gravity-unit}", "G");
-    doc = doc.replaceAll("${corr-gravity}", "1.044");
-    doc = doc.replaceAll("${corr-gravity-sg}", "1.044");
-    doc = doc.replaceAll("${corr-gravity-plato}", "9.5");
-    doc = doc.replaceAll("${angle}", "54.5");
-    doc = doc.replaceAll("${tilt}", "54.5");
+    var url = "/api/status";
+    //var url = "/test/status.json";
+    $('#spinner').show(); 
+    $.getJSON(url, function (cfg) {
+      console.log( cfg );
 
-    // Format in a readable json string.
-    try {
-      var json = JSON.parse(doc);
-      doc = JSON.stringify(json, null, 2);
-    } catch(e) {
-      console.log("Not a javascript object!")
-    }
+      var doc = $("#format").val();
 
-    $("#preview").text(doc);
+      if (cfg["temp-format"]=="C")
+        doc = doc.replaceAll("${temp}", cfg["temp-c"]);
+      else
+        doc = doc.replaceAll("${temp}", cfg["temp-f"]);
+
+      if (cfg["gravity-format"]=="G") {
+        var sg = cfg["gravity"];
+        doc = doc.replaceAll("${gravity-sg}", sg);
+        doc = doc.replaceAll("${corr-gravity-sg}", sg);
+        var plato = 259 - (259 - sg);
+        doc = doc.replaceAll("${gravity-plato}", plato);
+        doc = doc.replaceAll("${corr-gravity-plato}", plato);
+      }
+      else {
+        var plato = cfg["gravity"];
+        doc = doc.replaceAll("${gravity-plato}", plato);
+        doc = doc.replaceAll("${corr-gravity-plato}", plato);
+        var sg = 259 / (259 - plato);
+        doc = doc.replaceAll("${gravity-sg}", sg);
+        doc = doc.replaceAll("${corr-gravity-sg}", sg);
+      }
+        
+      doc = doc.replaceAll("${mdns}", cfg["mdns"]);
+      doc = doc.replaceAll("${id}", cfg["id"]);
+      doc = doc.replaceAll("${sleep-interval}", cfg["sleep-interval"]);
+      doc = doc.replaceAll("${token}", cfg["token"]);
+      doc = doc.replaceAll("${temp-c}", cfg["temp-c"]);
+      doc = doc.replaceAll("${temp-f}", cfg["temp-f"]);
+      doc = doc.replaceAll("${temp-unit}", cfg["temp-format"]);
+      doc = doc.replaceAll("${battery}", cfg["battery"]);
+      doc = doc.replaceAll("${rssi}", cfg["rssi"]);
+      doc = doc.replaceAll("${run-time}", cfg["runtime-average"]);
+      doc = doc.replaceAll("${gravity}", cfg["gravity"]);
+      doc = doc.replaceAll("${gravity-unit}", cfg["gravity-format"]);
+      doc = doc.replaceAll("${corr-gravity}", cfg["gravity"]);
+      doc = doc.replaceAll("${angle}", cfg["angle"]);
+      doc = doc.replaceAll("${tilt}", cfg["angle"]);
+
+      // Format in a readable json string.
+      try {
+        var json = JSON.parse(doc);
+        doc = JSON.stringify(json, null, 2);
+      } catch(e) {
+        console.log("Not a javascript object!")
+      }
+
+      $("#preview").text(doc);
+
+    })
+    .fail(function () {
+      showError('Unable to get data from the device.');
+    })
+    .always(function() {
+      $('#spinner').hide(); 
+    });
   });
+ 
 
   function setButtonDisabled( b ) {
     $("#format-btn").prop("disabled", b);

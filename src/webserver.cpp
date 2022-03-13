@@ -283,6 +283,8 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   doc[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
   doc[PARAM_RSSI] = WiFi.RSSI();
+  doc[PARAM_SLEEP_INTERVAL] = myConfig.getSleepInterval();
+  doc[PARAM_TOKEN] = myConfig.getToken();
 
   doc[PARAM_APP_VER] = CFG_APPVER;
   doc[PARAM_MDNS] = myConfig.getMDNS();
