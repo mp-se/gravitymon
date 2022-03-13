@@ -93,14 +93,14 @@
     <input type="text" name="runtime-average" id="runtime-average" hidden>
 
     <div class="card">
-      <div class="card-header" id="headingOne">
+      <div class="card-header" id="headingDevice">
         <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          <button class="btn btn-link btn-block text-left" onclick="window.location.href = '#collapseDevice'" type="button" data-toggle="collapse" data-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
             Device settings
           </button>
         </h2>
       </div>  
-      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      <div id="collapseDevice" class="collapse show" aria-labelledby="headingDevice" data-parent="#accordion">
         <div class="card-body">
           <form action="/api/config/device" method="post">
             <input type="text" name="id" id="id1" hidden>
@@ -157,17 +157,18 @@
     </div>
 
     <div class="card">
-      <div class="card-header" id="headingTwo">
+      <div class="card-header" id="headingPush">
         <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          <button class="btn btn-link btn-block text-left collapsed" onclick="window.location.href = '#collapsePush'" type="button" data-toggle="collapse" data-target="#collapsePush" aria-expanded="false" aria-controls="collapsePush">
             Push settings
           </button>
         </h2>
       </div>
-      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+      <div id="collapsePush" class="collapse" aria-labelledby="headingPush" data-parent="#accordion">
         <div class="card-body">
           <form action="/api/config/push" method="post">
             <input type="text" name="id" id="id2" hidden>
+            <input type="text" name="section" value="collapsePush" hidden>
             <input type="text" name="http-push-h1" id="http-push-h1" hidden>
             <input type="text" name="http-push-h2" id="http-push-h2" hidden>
             <input type="text" name="http-push2-h1" id="http-push2-h1" hidden>
@@ -210,7 +211,37 @@
               </div>
             </div>
 
-            <hr class="my-2">
+            <div class="form-group row">
+              <div class="col-sm-8 offset-sm-2">
+                <button type="submit" class="btn btn-primary" id="push-btn">Save</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="form-group row">
+            <div class="col-sm-8 offset-sm-2">
+              <button class="btn btn-info" id="format-btn">Format editor</button>
+              <button class="btn btn-info" id="test-btn">Test Push</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" id="headingPush2">
+        <h2 class="mb-0">
+          <button class="btn btn-link btn-block text-left collapsed" onclick="window.location.href = '#collapsePush2'" type="button" data-toggle="collapse" data-target="#collapsePush2" aria-expanded="false" aria-controls="collapsePush2">
+            Push settings (2)
+          </button>
+        </h2>
+      </div>
+      <div id="collapsePush2" class="collapse" aria-labelledby="headingPush2" data-parent="#accordion">
+        <div class="card-body">
+          <form action="/api/config/push" method="post">
+            <input type="text" name="id" id="id5" hidden>
+            <input type="text" name="section" value="collapsePush2" hidden>
 
             <div class="form-group row">
               <label for="influxdb2-push" class="col-sm-2 col-form-label">InfluxDB v2 URL:</label>
@@ -266,15 +297,15 @@
 
             <div class="form-group row">
               <div class="col-sm-8 offset-sm-2">
-                <button type="submit" class="btn btn-primary" id="push-btn">Save</button>
+                <button type="submit" class="btn btn-primary" id="push-btn2">Save</button>
               </div>
             </div>
           </form>
 
           <div class="form-group row">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-info" id="format-btn">Format editor</button>
-              <button class="btn btn-info" id="test-btn">Test Push</button>
+              <button class="btn btn-info" id="format-btn2">Format editor</button>
+              <button class="btn btn-info" id="test-btn2">Test Push</button>
             </div>
           </div>
 
@@ -283,14 +314,14 @@
     </div>
 
     <div class="card">
-      <div class="card-header" id="headingThree">
+      <div class="card-header" id="headingGravity">
         <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          <button class="btn btn-link btn-block text-left collapsed" onclick="window.location.href = '#collapseGravity'" type="button" data-toggle="collapse" data-target="#collapseGravity" aria-expanded="false" aria-controls="collapseGravity">
             Gravity
           </button>
         </h2>
       </div>
-      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+      <div id="collapseGravity" class="collapse" aria-labelledby="headingGravity" data-parent="#accordion">
         <div class="card-body">
           <form action="/api/config/gravity" method="post">
             <input type="text" name="id" id="id3" hidden>
@@ -338,14 +369,14 @@
     </div>
 
     <div class="card">
-      <div class="card-header" id="headingFour">
+      <div class="card-header" id="headingHardware">
         <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+          <button class="btn btn-link btn-block text-left collapsed" onclick="window.location.href = '#collapseHardware'" type="button" data-toggle="collapse" data-target="#collapseHardware" aria-expanded="false" aria-controls="collapseHardware">
             Hardware settings
           </button>
         </h2>
       </div>
-      <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+      <div id="collapseHardware" class="collapse" aria-labelledby="headingHardware" data-parent="#accordion">
         <div class="card-body">
           <form action="/api/config/hardware" method="post">
             <input type="text" name="id" id="id4" hidden>
@@ -464,7 +495,7 @@ function checkHeader(input) {
 
   setButtonDisabled( true );
 
-  // Opens the targetet according (if URL has #collapseOne to #collapseFour)
+  // Opens the targetet according (if URL has #collapseXXX)
   $(document).ready(function () {
     if(location.hash != null && location.hash != ""){
       $('.collapse').removeClass('in');
@@ -489,7 +520,16 @@ function checkHeader(input) {
     window.location.href = "/format.htm";
   });
 
+    // Open the format editor
+  $("#format-btn2").click(function(e){
+    window.location.href = "/format.htm";
+  });
+
   $("#test-btn").click(function(e){
+    window.location.href = "/test.htm";
+  });
+
+  $("#test-btn2").click(function(e){
     window.location.href = "/test.htm";
   });
 
@@ -541,9 +581,13 @@ function checkHeader(input) {
     $("#device-btn").prop("disabled", b);
     $("#calibrate-btn").prop("disabled", b);
     $("#push-btn").prop("disabled", b);
+    $("#format-btn").prop("disabled", b);
+    $("#test-btn").prop("disabled", b);
     $("#gravity-btn").prop("disabled", b);
     $("#hardware-btn").prop("disabled", b);
-    $("#format-btn").prop("disabled", b);
+    $("#push-btn2").prop("disabled", b);
+    $("#format-btn2").prop("disabled", b);
+    $("#test-btn2").prop("disabled", b);
   }
 
   // Get the configuration values from the API
@@ -565,6 +609,7 @@ function checkHeader(input) {
       $("#id2").val(cfg["id"]);
       $("#id3").val(cfg["id"]);
       $("#id4").val(cfg["id"]);
+      $("#id5").val(cfg["id"]);
       $("#mdns").val(cfg["mdns"]);
       if( cfg["temp-format"] == "C" ) $("#temp-format-c").click();
       else $("#temp-format-f").click();

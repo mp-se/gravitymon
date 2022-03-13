@@ -387,7 +387,7 @@ void WebServerHandler::webHandleConfigDevice() {
   if (_server->hasArg(PARAM_SLEEP_INTERVAL))
     myConfig.setSleepInterval(_server->arg(PARAM_SLEEP_INTERVAL).c_str());
   myConfig.saveFile();
-  _server->sendHeader("Location", "/config.htm#collapseOne", true);
+  _server->sendHeader("Location", "/config.htm#collapseDevice", true);
   _server->send(302, "text/plain", "Device config updated");
   LOG_PERF_STOP("webserver-api-config-device");
 }
@@ -447,7 +447,9 @@ void WebServerHandler::webHandleConfigPush() {
   if (_server->hasArg(PARAM_PUSH_MQTT_PASS))
     myConfig.setMqttPass(_server->arg(PARAM_PUSH_MQTT_PASS).c_str());
   myConfig.saveFile();
-  _server->sendHeader("Location", "/config.htm#collapseTwo", true);
+  String section("/config.htm#");
+  section += _server->arg("section");
+  _server->sendHeader("Location", section.c_str(), true);
   _server->send(302, "text/plain", "Push config updated");
   LOG_PERF_STOP("webserver-api-config-push");
 }

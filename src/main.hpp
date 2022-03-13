@@ -35,7 +35,7 @@ SOFTWARE.
 #define PIN_SDA D3
 #define PIN_SCL D4
 #define PIN_DS D6
-#define PIN_A0 A0
+//#define PIN_A0 A0
 #else // defined (ESP32)
 #if defined (ESPRESSIF32_20)
 #include <LittleFS.h>
