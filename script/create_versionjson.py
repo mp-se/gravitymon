@@ -60,7 +60,7 @@ def after_build(source, target, env):
     print( "Creating version.json" )
     f = open( target, "w" )
     f.write( "{ \"project\":\"gravmon\", \"version\":" + ver + ", " ) 
-    f.write( " \"html\": [ \"index.min.htm\", \"device.min.htm\", \"config.min.htm\", \"calibration.min.htm\", \"test.min.htm\", \"format.min.htm\", \"about.min.htm\" ] }" )
+    f.write( " \"html\": [ \"index.min.htm\", \"config.min.htm\", \"calibration.min.htm\", \"test.min.htm\", \"format.min.htm\", \"about.min.htm\" ] }" )
     f.close()
 
 

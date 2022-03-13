@@ -82,8 +82,8 @@
   function getConfig() {
     appendLog( "Starting test of push targets" );
 
-    var url = "/api/device";
-    //var url = "/test/device.json";
+    var url = "/api/status";
+    //var url = "/test/status.json";
     $('#spinner').show(); 
     $.getJSON(url, function (cfg) {
       var id = cfg["id"];

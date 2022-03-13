@@ -67,10 +67,6 @@
     <div class="col-md-6 themed-grid-col bg-light" id="index">Checking...</div>
   </div>
   <div class="row mb-3">
-    <div class="col-md-2 themed-grid-col bg-light">device.min.htm</div>
-    <div class="col-md-6 themed-grid-col bg-light" id="device">Checking...</div>
-  </div>
-  <div class="row mb-3">
     <div class="col-md-2 themed-grid-col bg-light">config.min.htm</div>
     <div class="col-md-6 themed-grid-col bg-light" id="config">Checking...</div>
   </div>
@@ -124,11 +120,6 @@ function getUpload() {
         $("#index").text("Completed.");
       else
         $("#index").text("File is missing.");
-
-      if( cfg["device"] )
-        $("#device").text("Completed.");
-      else
-        $("#device").text("File is missing.");
 
       if( cfg["config"] )
         $("#config").text("Completed.");

@@ -31,7 +31,6 @@ SOFTWARE.
 #if defined(EMBED_HTML)
 // Using minify to reduce memory usage. Reducing RAM memory usage with about 7%
 INCBIN(IndexHtm, "data/index.min.htm");
-INCBIN(DeviceHtm, "data/device.min.htm");
 INCBIN(ConfigHtm, "data/config.min.htm");
 INCBIN(CalibrationHtm, "data/calibration.min.htm");
 INCBIN(FormatHtm, "data/format.min.htm");

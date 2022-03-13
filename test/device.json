@@ -1,8 +1,0 @@
-{
-    "app-name": "GravityMon ",
-    "app-ver": "0.0.0",
-    "id": "7376ef",
-    "mdns": "gravmon",
-    "platform": "esp32",
-    "runtime-average": 3.12
-}

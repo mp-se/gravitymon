@@ -2,12 +2,15 @@
     "id": "7376ef",
     "angle": 22.4,
     "gravity": 1.044,
-    "gravity-tempcorr": 1.031,
     "gravity-format": "G",
     "temp-c": 12,
     "temp-f": 32,
     "battery": 3.81,
     "temp-format": "C",
     "sleep-mode": false,
-    "rssi": -56
+    "rssi": -56,
+    "app-ver": "0.0.0",
+    "mdns": "gravmon",
+    "platform": "esp32",
+    "runtime-average": 3.12
 }

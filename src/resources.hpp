@@ -61,7 +61,6 @@ SOFTWARE.
 #define PARAM_FILES "files"
 #define PARAM_FILE_NAME "file-name"
 #define PARAM_FILE_SIZE "file-size"
-#define PARAM_APP_NAME "app-name"
 #define PARAM_APP_VER "app-ver"
 #define PARAM_ANGLE "angle"
 #define PARAM_GRAVITY "gravity"

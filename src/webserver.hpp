@@ -37,7 +37,6 @@ SOFTWARE.
 
 #if defined(EMBED_HTML)
 INCBIN_EXTERN(IndexHtm);
-INCBIN_EXTERN(DeviceHtm);
 INCBIN_EXTERN(ConfigHtm);
 INCBIN_EXTERN(CalibrationHtm);
 INCBIN_EXTERN(FormatHtm);
@@ -70,7 +69,6 @@ class WebServerHandler {
   void webHandleCalibrate();
   void webHandleUploadFile();
   void webHandleUpload();
-  void webHandleDevice();
   void webHandleDeviceParam();
   void webHandlePageNotFound();
 
@@ -85,10 +83,6 @@ class WebServerHandler {
   void webReturnIndexHtm() {
     _server->send_P(200, "text/html", (const char*)gIndexHtmData,
                     gIndexHtmSize);
-  }
-  void webReturnDeviceHtm() {
-    _server->send_P(200, "text/html", (const char*)gDeviceHtmData,
-                    gDeviceHtmSize);
   }
   void webReturnConfigHtm() {
     _server->send_P(200, "text/html", (const char*)gConfigHtmData,
@@ -120,12 +114,11 @@ class WebServerHandler {
  public:
   enum HtmlFile {
     HTML_INDEX = 0,
-    HTML_DEVICE = 1,
-    HTML_CONFIG = 2,
-    HTML_ABOUT = 3,
-    HTML_CALIBRATION = 4,
-    HTML_FORMAT = 5,
-    HTML_TEST = 6
+    HTML_CONFIG = 1,
+    HTML_ABOUT = 2,
+    HTML_CALIBRATION = 3,
+    HTML_FORMAT = 4,
+    HTML_TEST = 5
   };
 
   bool setupWebServer();

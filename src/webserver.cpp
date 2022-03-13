@@ -40,42 +40,6 @@ extern bool sleepModeAlwaysSkip;
 //
 // Callback from webServer when / has been accessed.
 //
-void WebServerHandler::webHandleDevice() {
-  LOG_PERF_START("webserver-api-device");
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : webServer callback for /api/device(get)." CR));
-#endif
-
-  DynamicJsonDocument doc(100);
-  doc[PARAM_ID] = myConfig.getID();
-  doc[PARAM_APP_NAME] = CFG_APPNAME;
-  doc[PARAM_APP_VER] = CFG_APPVER;
-  doc[PARAM_MDNS] = myConfig.getMDNS();
-
-  FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
-      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, 1);
-
-#if defined(ESP8266)
-  doc[PARAM_PLATFORM] = "esp8266";
-#else
-  doc[PARAM_PLATFORM] = "esp32";
-#endif
-
-#if LOG_LEVEL == 6
-  serializeJson(doc, Serial);
-  Serial.print(CR);
-#endif
-  String out;
-  out.reserve(100);
-  serializeJson(doc, out);
-  _server->send(200, "application/json", out.c_str());
-  LOG_PERF_STOP("webserver-api-device");
-}
-
-//
-// Callback from webServer when / has been accessed.
-//
 void WebServerHandler::webHandleConfig() {
   LOG_PERF_START("webserver-api-config");
   Log.notice(F("WEB : webServer callback for /api/config(get)." CR));
@@ -140,8 +104,6 @@ void WebServerHandler::webHandleUpload() {
   DynamicJsonDocument doc(300);
 
   doc["index"] = checkHtmlFile(WebServerHandler::HTML_INDEX);
-  doc["device"] = checkHtmlFile(WebServerHandler::HTML_DEVICE);
-  doc["config"] = checkHtmlFile(WebServerHandler::HTML_CONFIG);
   doc["calibration"] = checkHtmlFile(WebServerHandler::HTML_CALIBRATION);
   doc["format"] = checkHtmlFile(WebServerHandler::HTML_FORMAT);
   doc["about"] = checkHtmlFile(WebServerHandler::HTML_ABOUT);
@@ -204,9 +166,10 @@ void WebServerHandler::webHandleUploadFile() {
   bool validFilename = false;
 
   if (f.equalsIgnoreCase("index.min.htm") ||
-      f.equalsIgnoreCase("device.min.htm") ||
       f.equalsIgnoreCase("calibration.min.htm") ||
       f.equalsIgnoreCase("config.min.htm") ||
+      f.equalsIgnoreCase("format.min.htm") ||
+      f.equalsIgnoreCase("test.min.htm") ||
       f.equalsIgnoreCase("about.min.htm")) {
     validFilename = true;
   }
@@ -306,7 +269,7 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_ID] = myConfig.getID();
   doc[PARAM_ANGLE] = reduceFloatPrecision(angle);
   if (myConfig.isGravityTempAdj()) {
-    gravity = gravityTemperatureCorrectionC(gravity, tempC);  //
+    gravity = gravityTemperatureCorrectionC(gravity, tempC);
   }
   if (myConfig.isGravityPlato()) {
     doc[PARAM_GRAVITY] = reduceFloatPrecision(convertToPlato(gravity), 1);
@@ -320,6 +283,19 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   doc[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
   doc[PARAM_RSSI] = WiFi.RSSI();
+
+  doc[PARAM_APP_VER] = CFG_APPVER;
+  doc[PARAM_MDNS] = myConfig.getMDNS();
+
+  FloatHistoryLog runLog(RUNTIME_FILENAME);
+  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
+      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, 1);
+
+#if defined(ESP8266)
+  doc[PARAM_PLATFORM] = "esp8266";
+#else
+  doc[PARAM_PLATFORM] = "esp32";
+#endif
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -343,6 +319,9 @@ void WebServerHandler::webHandleClearWIFI() {
   if (!id.compareTo(myConfig.getID())) {
     _server->send(200, "text/plain",
                   "Clearing WIFI credentials and doing reset...");
+    myConfig.setWifiPass("");
+    myConfig.setWifiSSID("");
+    myConfig.saveFile();
     delay(1000);
     WiFi.disconnect();  // Clear credentials
     ESP_RESET();
@@ -1003,8 +982,6 @@ const char* WebServerHandler::getHtmlFileName(HtmlFile item) {
   switch (item) {
     case HTML_INDEX:
       return "index.min.htm";
-    case HTML_DEVICE:
-      return "device.min.htm";
     case HTML_CONFIG:
       return "config.min.htm";
     case HTML_CALIBRATION:
@@ -1060,8 +1037,6 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/", std::bind(&WebServerHandler::webReturnIndexHtm, this));
   _server->on("/index.htm",
               std::bind(&WebServerHandler::webReturnIndexHtm, this));
-  _server->on("/device.htm",
-              std::bind(&WebServerHandler::webReturnDeviceHtm, this));
   _server->on("/config.htm",
               std::bind(&WebServerHandler::webReturnConfigHtm, this));
   _server->on("/calibration.htm",
@@ -1087,14 +1062,13 @@ bool WebServerHandler::setupWebServer() {
 
   // Check if the html files exist, if so serve them, else show the static
   // upload page.
-  if (checkHtmlFile(HTML_INDEX) && checkHtmlFile(HTML_DEVICE) &&
-      checkHtmlFile(HTML_CONFIG) && checkHtmlFile(HTML_CALIBRATION) &&
-      checkHtmlFile(HTML_FORMAT) && checkHtmlFile(HTML_ABOUT) && checkHtmlFile(HTML_TEST) ) {
+  if (checkHtmlFile(HTML_INDEX) && checkHtmlFile(HTML_CONFIG) && 
+      checkHtmlFile(HTML_CALIBRATION) && checkHtmlFile(HTML_FORMAT) && 
+      checkHtmlFile(HTML_ABOUT) && checkHtmlFile(HTML_TEST) ) {
     Log.notice(F("WEB : All html files exist, starting in normal mode." CR));
 
     _server->serveStatic("/", LittleFS, "/index.min.htm");
     _server->serveStatic("/index.htm", LittleFS, "/index.min.htm");
-    _server->serveStatic("/device.htm", LittleFS, "/device.min.htm");
     _server->serveStatic("/config.htm", LittleFS, "/config.min.htm");
     _server->serveStatic("/about.htm", LittleFS, "/about.min.htm");
     _server->serveStatic("/test.htm", LittleFS, "/test.min.htm");
@@ -1117,9 +1091,6 @@ bool WebServerHandler::setupWebServer() {
   _server->on(
       "/api/config", HTTP_GET,
       std::bind(&WebServerHandler::webHandleConfig, this));  // Get config.json
-  _server->on(
-      "/api/device", HTTP_GET,
-      std::bind(&WebServerHandler::webHandleDevice, this));  // Get device.json
   _server->on("/api/formula", HTTP_GET,
               std::bind(&WebServerHandler::webHandleFormulaRead,
                         this));  // Get formula.json (calibration page)

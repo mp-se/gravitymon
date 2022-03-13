@@ -17,9 +17,6 @@ shutil.copyfile( source + file, target + file )
 file = "config.min.htm"
 #print( "Copy file: " + source + file + "->" + target + file)
 shutil.copyfile( source + file, target + file )
-file = "device.min.htm"
-#print( "Copy file: " + source + file + "->" + target + file)
-shutil.copyfile( source + file, target + file )
 file = "index.min.htm"
 #print( "Copy file: " + source + file + "->" + target + file)
 shutil.copyfile( source + file, target + file )

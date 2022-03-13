@@ -78,20 +78,7 @@ Other parameters are the same as in the configuration guide.
 GET: /api/device
 ================
 
-Retrive the current device settings via an HTTP GET command. Payload is in JSON format.
-
-* ``platform`` can be either ``esp8266`` or ``esp32``
-
-.. code-block:: json
-
-   {
-      "app-name": "GravityMon",
-      "app-ver": "0.0.0",
-      "id": "ee1bfc",
-      "mdns": "gravmon",
-      "platform": "esp8266",
-      "runtime-average": 3.12
-   }
+This API has been removed from 0.9 and merged with /api/status
 
 
 GET: /api/status
@@ -100,6 +87,7 @@ GET: /api/status
 Retrive the current device status via an HTTP GET command. Payload is in JSON format.
 
 * ``temp-format`` can be either ``C`` or ``F``
+* ``platform`` can be either ``esp8266`` or ``esp32``
 
 Other parameters are the same as in the configuration guide.
 
@@ -109,13 +97,16 @@ Other parameters are the same as in the configuration guide.
       "id": "ee1bfc",
       "angle": 89.86,
       "gravity": 1.1052,
-      "gravity-tempcorr": 1.1031,
       "temp-c": 0,
       "temp-f": 32,
       "battery": 0,
       "temp-format": "C",
       "sleep-mode": false,
-      "rssi": -56
+      "rssi": -56,
+      "app-ver": "0.0.0",
+      "mdns": "gravmon",
+      "platform": "esp8266",
+      "runtime-average": 3.12
    }
 
 
@@ -149,7 +140,7 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
 GET: /api/clearwifi
 ===================
 
-Will reset the wifi settings, leaving the rest unused.
+Will reset the wifi settings both in the configuration file and eeprom, leaving the rest of the configuration.
 
 For this to work you will need to supply the device id as a parameter in the request:
 

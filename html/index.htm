@@ -26,9 +26,6 @@
         <a class="nav-link" href="/index.htm">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/device.htm">Device</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="/config.htm">Configuration</a>
       </li>
       <li class="nav-item">
@@ -72,7 +69,54 @@
     });    
   </script>
 
-  <div class="" id="id" hidden></div>
+<div class="row mb-3">
+  <div class="col-md-8 themed-grid-col bg-light">Current version:</div>
+  <div class="col-md-4 themed-grid-col bg-light" id="app-ver">Loading...</div>
+</div>
+<div class="row mb-3" id="h-app-ver-new" hidden>
+  <div class="col-md-8 themed-grid-col bg-light">New version:</div>
+  <div class="col-md-4 themed-grid-col bg-light" id="app-ver-new">Loading...</div>
+</div>
+<div class="row mb-3">
+  <div class="col-md-8 themed-grid-col bg-light">Host name:</div>
+  <div class="col-md-4 themed-grid-col bg-light" id="mdns">Loading...</div>
+</div>
+<div class="row mb-3">
+  <div class="col-md-8 themed-grid-col bg-light">Device ID:</div>
+  <div class="col-md-4 themed-grid-col bg-light" id="id">Loading...</div>
+</div>
+<div class="row mb-3">
+  <div class="col-md-8 themed-grid-col bg-light">Platform:</div>
+  <div class="col-md-4 themed-grid-col bg-light" id="platform">Loading...</div>
+</div>
+
+<script>
+  $("#log-btn").click(function(e){
+    loadLog();
+  });
+  setInterval(function() {
+    loadLog();
+  }, 3000); //5 seconds  
+ 
+  function loadLog() {
+    $("#logContent").load("/log");
+    //$("#logContent").load("/test/status.json");
+  };
+</script>
+
+<div class="row mb-3">
+  <a class="badge badge-primary" data-toggle="collapse" href="#collapseLog" role="button" aria-expanded="false" aria-controls="collapseLog" id="log-btn">
+    View error log
+  </a>
+</div>
+
+<div class="collapse" id="collapseLog">
+  <div class="card card-body">
+    <pre><code id="logContent"></code></pre>
+  </div>
+</div>
+
+<hr class="my-4">
 
   <div class="row mb-3">
     <div class="col-md-8 themed-grid-col bg-light">Gravity:</div>
@@ -92,6 +136,11 @@
   </div>
 
   <div class="row mb-3">
+    <div class="col-md-8 themed-grid-col bg-light">Average runtime:</div>
+    <div class="col-md-4 themed-grid-col bg-light" id="runtime">Loading...</div>
+  </div>
+
+  <div class="row mb-3">
     <div class="col-md-12 px-md-5 themed-grid-col bg-light custom-control custom-checkbox">
       <input type="checkbox" class="custom-control-input" name="sleep-mode" id="sleep-mode" disabled>
       <label class="custom-control-label" for="sleep-mode">Do not enter sleep mode when floating (check this if you are collecting angles/tilt for calibration).</label>
@@ -99,6 +148,7 @@
   </div>      
 
   <hr class="my-4">
+
 </div>
 
 <script type="text/javascript">
@@ -121,8 +171,14 @@
     $('#spinner').show(); 
     $.getJSON(url, function (cfg) {
       console.log( cfg );
+
+      //$("#app-ver").text(cfg["app-ver"] + " (html 0.8.0)");
+      $("#app-ver").text(cfg["app-ver"]);
+      $("#mdns").text(cfg["mdns"]);
       $("#id").text(cfg["id"]);
-     
+      $("#platform").text(cfg["platform"]);
+      $("#runtime").text(cfg["runtime-average"] + " seconds");
+   
       var angle = cfg["angle"];
       
       if(angle==0) {
