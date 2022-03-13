@@ -27,47 +27,17 @@ Configuration is accessed by entering the URL for the device, this will be the m
 The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if 
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.
 
+You can also view the average time a gravity measurement takes. Under optimal setting this should be around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likley connected to slow wifi 
+connection. It will show 0 if data has not been collected yet.
+
 .. tip::
 
    If you are connected to the device via a serial console (speed: 115200) you can see the connection sequence and get the Unique ID and IP adress from there. 
-
-
-Device
-======
-
-URL: (http://gravmon.local/device)
-
-.. image:: images/device.png
-  :width: 800
-  :alt: Device Settings
 
 .. tip::
 
    The button `view error log` will show the last 15 errors on the device. This can be useful for checking errors without
    the need to connect to the serial port or to check what errors has occured while in `gravity mode`.
-
-* **Version:** 
-
-   Installed version of the code and html files.
-
-* **Device name:** 
-
-   This is unique name of the device which is set in the configuration, also known as MDNS name.
-
-* **Device ID:** 
-
-   This is unique identifier for the device (ESP8266 id), this is required when using the API as an API Key to safeguard 
-   against faulty requests. This is the ESP8266 chip ID, so it should be unique.
-
-* **Platform:** 
-
-   Used to show what chip this build is for, it can be esp8266 or esp32. Some features are only available on an ESP32 platform. 
-
-* **Average runtime:** 
-
-   This shows the average time a gravity measurement takes. Under optimal setting this should be 
-   around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likley connected to slow wifi 
-   connection. It will show 0 if data has not been collected yet.
 
 
 Configuration 
@@ -122,7 +92,6 @@ Push Settings
    When enabling SSL this will not validate the root CA of the remote service, this is a design decision based on two aspects. Enabling CA validation will take 3-4s extra on each connection which means way less 
    battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I belive this is a good balance.
 
-
 * **HTTP URL 1:**
 
    Endpoint to send data via http. Default format used Format used :ref:`data-formats-ispindle`. You can customize the format using :ref:`format-editor`.
@@ -145,6 +114,36 @@ Push Settings
    Endpoint to send data via http to brewfather. Format used :ref:`data-formats-brewfather`
 
    SSL is not supported for this target.
+
+* **HTTP Headers**
+
+   .. image:: images/config-popup1.png
+      :width: 300
+      :alt: HTTP Headers
+
+   You can define 2 http headers per push target. This is available via a pop-up window but dont forget
+   to press the save buttons on the post section to save the values. One common header is content type which is the 
+   default setting for http targets.
+
+   The input must have the format **'<header>: <value>'** for it to work. The UI will accept any value so errors 
+   will not show until the device tries to push data.
+
+
+   ::
+      
+      Content-Type: application/json
+      X-Auth-Token: <api-token>
+
+
+   Mozilla has a good guide on what headers are valid; `HTTP Headers <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers>`_ 
+
+
+Push Settings (2)
++++++++++++++++++
+
+.. image:: images/config2b.png
+  :width: 800
+  :alt: Push Settings
 
 * **Influx DB v2 URL:**
 
@@ -179,28 +178,6 @@ Push Settings
 * **MQTT password:**
 
    Password or blank if anonymous is accepted
-
-* **HTTP Headers**
-
-   .. image:: images/config-popup1.png
-      :width: 300
-      :alt: HTTP Headers
-
-   You can define 2 http headers per push target. This is available via a pop-up window but dont forget
-   to press the save buttons on the post section to save the values. One common header is content type which is the 
-   default setting for http targets.
-
-   The input must have the format **'<header>: <value>'** for it to work. The UI will accept any value so errors 
-   will not show until the device tries to push data.
-
-
-   ::
-      
-      Content-Type: application/json
-      X-Auth-Token: <api-token>
-
-
-   Mozilla has a good guide on what headers are valid; `HTTP Headers <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers>`_ 
    
 
 Gravity Settings

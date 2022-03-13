@@ -9,12 +9,13 @@ v0.9.0
 * Merged index and device pages into one so that all the needed information is available on the index page.
 * Removed api for device (/api/device), it's now merged into the /api/status api.
 * Test function in format editor now uses real data and not fake. 
+* Split push configuration into two sections to make it fit better on smaller devices
 * Updated WifiManager and DoubleReset libraries
 * Experimental release of firmware using an esp32 instead of esp8266
 * Updated esp32 target with littlefs support
 * Updated esp32 target with BLE send support (it will simulate a tilt)
 * Corrected PIN for voltage read on ESP32
-* Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine. 
+* Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine.
 
 * BUG: If using plato and not gravity formula was defined the value was set to null.
 
