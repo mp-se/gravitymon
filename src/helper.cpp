@@ -50,7 +50,11 @@ void tcp_cleanup() {
 //
 // Convert sg to plato
 //
-double convertToPlato(double sg) { return 259 - (259 / sg); }
+double convertToPlato(double sg) { 
+  if (sg)
+    return 259 - (259 / sg); 
+  return 0;
+}
 
 //
 // Convert plato to sg
