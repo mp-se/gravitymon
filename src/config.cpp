@@ -74,12 +74,14 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
   doc[PARAM_PUSH_BREWFATHER] = getBrewfatherPushUrl();
   doc[PARAM_TOKEN] = getToken();
+  doc[PARAM_TOKEN2] = getToken2();
   doc[PARAM_PUSH_HTTP] = getHttpUrl();
   doc[PARAM_PUSH_HTTP_H1] = getHttpHeader(0);
   doc[PARAM_PUSH_HTTP_H2] = getHttpHeader(1);
   doc[PARAM_PUSH_HTTP2] = getHttp2Url();
   doc[PARAM_PUSH_HTTP2_H1] = getHttp2Header(0);
   doc[PARAM_PUSH_HTTP2_H2] = getHttp2Header(1);
+  doc[PARAM_PUSH_HTTP3] = getHttp3Url();
   doc[PARAM_PUSH_INFLUXDB2] = getInfluxDb2PushUrl();
   doc[PARAM_PUSH_INFLUXDB2_ORG] = getInfluxDb2PushOrg();
   doc[PARAM_PUSH_INFLUXDB2_BUCKET] = getInfluxDb2PushBucket();
@@ -215,6 +217,7 @@ bool Config::loadFile() {
     setBrewfatherPushUrl(doc[PARAM_PUSH_BREWFATHER]);
 
   if (!doc[PARAM_TOKEN].isNull()) setToken(doc[PARAM_TOKEN]);
+  if (!doc[PARAM_TOKEN2].isNull()) setToken2(doc[PARAM_TOKEN2]);
   if (!doc[PARAM_PUSH_HTTP].isNull()) setHttpUrl(doc[PARAM_PUSH_HTTP]);
   if (!doc[PARAM_PUSH_HTTP_H1].isNull())
     setHttpHeader(doc[PARAM_PUSH_HTTP_H1], 0);
@@ -225,6 +228,7 @@ bool Config::loadFile() {
     setHttp2Header(doc[PARAM_PUSH_HTTP2_H1], 0);
   if (!doc[PARAM_PUSH_HTTP2_H2].isNull())
     setHttp2Header(doc[PARAM_PUSH_HTTP2_H2], 1);
+  if (!doc[PARAM_PUSH_HTTP3].isNull()) setHttp3Url(doc[PARAM_PUSH_HTTP3]);
 
   if (!doc[PARAM_PUSH_INFLUXDB2].isNull())
     setInfluxDb2PushUrl(doc[PARAM_PUSH_INFLUXDB2]);

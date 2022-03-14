@@ -109,11 +109,13 @@ class Config {
   String _brewfatherPushUrl = "";
 
   String _token = "";
+  String _token2 = "";
 
   String _httpUrl = "";
   String _httpHeader[2] = {"Content-Type: application/json", ""};
   String _http2Url = "";
   String _http2Header[2] = {"Content-Type: application/json", ""};
+  String _http3Url = "";
 
   String _influxDb2Url = "";
   String _influxDb2Org = "";
@@ -192,6 +194,11 @@ class Config {
     _token = s;
     _saveNeeded = true;
   }
+  const char* getToken2() { return _token2.c_str(); }
+  void setToken2(String s) {
+    _token2 = s;
+    _saveNeeded = true;
+  }
 
   // Standard HTTP
   const char* getHttpUrl() { return _httpUrl.c_str(); }
@@ -219,6 +226,14 @@ class Config {
   }
   bool isHttp2Active() { return _http2Url.length() ? true : false; }
   bool isHttp2SSL() { return _http2Url.startsWith("https://"); }
+
+  const char* getHttp3Url() { return _http3Url.c_str(); }
+  void setHttp3Url(String s) {
+    _http3Url = s;
+    _saveNeeded = true;
+  }
+  bool isHttp3Active() { return _http3Url.length() ? true : false; }
+  bool isHttp3SSL() { return _http3Url.startsWith("https://"); }
 
   // InfluxDB2
   const char* getInfluxDb2PushUrl() { return _influxDb2Url.c_str(); }
@@ -345,7 +360,7 @@ class Config {
   }
   bool isBLEActive() { return _colorBLE.length() ? true : false; }
   bool isWifiPushActive() {
-    return (isHttpActive() || isHttp2Active() || isBrewfatherActive() || isInfluxDb2Active() || isMqttActive()) ? true : false;
+    return (isHttpActive() || isHttp2Active() || isHttp3Active() || isBrewfatherActive() || isInfluxDb2Active() || isMqttActive()) ? true : false;
   }
 
   const RawGyroData& getGyroCalibration() { return _gyroCalibration; }

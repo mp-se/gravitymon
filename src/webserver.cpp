@@ -285,6 +285,7 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_RSSI] = WiFi.RSSI();
   doc[PARAM_SLEEP_INTERVAL] = myConfig.getSleepInterval();
   doc[PARAM_TOKEN] = myConfig.getToken();
+  doc[PARAM_TOKEN2] = myConfig.getToken2();
 
   doc[PARAM_APP_VER] = CFG_APPVER;
   doc[PARAM_MDNS] = myConfig.getMDNS();
@@ -413,6 +414,8 @@ void WebServerHandler::webHandleConfigPush() {
 
   if (_server->hasArg(PARAM_TOKEN))
     myConfig.setToken(_server->arg(PARAM_TOKEN).c_str());
+  if (_server->hasArg(PARAM_TOKEN2))
+    myConfig.setToken2(_server->arg(PARAM_TOKEN2).c_str());
   if (_server->hasArg(PARAM_PUSH_HTTP))
     myConfig.setHttpUrl(_server->arg(PARAM_PUSH_HTTP).c_str());
   if (_server->hasArg(PARAM_PUSH_HTTP_H1))
@@ -425,6 +428,8 @@ void WebServerHandler::webHandleConfigPush() {
     myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H1).c_str(), 0);
   if (_server->hasArg(PARAM_PUSH_HTTP2_H2))
     myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H2).c_str(), 1);
+  if (_server->hasArg(PARAM_PUSH_HTTP3))
+    myConfig.setHttp3Url(_server->arg(PARAM_PUSH_HTTP3).c_str());
   if (_server->hasArg(PARAM_PUSH_BREWFATHER))
     myConfig.setBrewfatherPushUrl(_server->arg(PARAM_PUSH_BREWFATHER).c_str());
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2))
@@ -710,6 +715,8 @@ void WebServerHandler::webHandleConfigFormatWrite() {
     success = writeFile(TPL_FNAME_HTTP1, _server->arg(PARAM_FORMAT_HTTP1));
   } else if (_server->hasArg(PARAM_FORMAT_HTTP2)) {
     success = writeFile(TPL_FNAME_HTTP2, _server->arg(PARAM_FORMAT_HTTP2));
+  } else if (_server->hasArg(PARAM_FORMAT_HTTP3)) {
+    success = writeFile(TPL_FNAME_HTTP3, _server->arg(PARAM_FORMAT_HTTP3));
   } else if (_server->hasArg(PARAM_FORMAT_INFLUXDB)) {
     success =
         writeFile(TPL_FNAME_INFLUXDB, _server->arg(PARAM_FORMAT_INFLUXDB));
@@ -773,6 +780,9 @@ void WebServerHandler::webHandleTestPush() {
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_HTTP2) && myConfig.isHttp2Active()) {
     push.sendHttp2(engine, myConfig.isHttp2SSL());
+    enabled = true;
+  } else if (!type.compareTo(PARAM_FORMAT_HTTP3) && myConfig.isHttp3Active()) {
+    push.sendHttp3(engine, myConfig.isHttp3SSL());
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_INFLUXDB) && myConfig.isInfluxDb2Active()) {
     push.sendInfluxDb2(engine);
@@ -867,6 +877,12 @@ void WebServerHandler::webHandleConfigFormatRead() {
     doc[PARAM_FORMAT_HTTP2] = urlencode(s);
   else
     doc[PARAM_FORMAT_HTTP2] = urlencode(String(&iSpindleFormat[0]));
+
+  s = readFile(TPL_FNAME_HTTP3);
+  if (s.length())
+    doc[PARAM_FORMAT_HTTP3] = urlencode(s);
+  else
+    doc[PARAM_FORMAT_HTTP3] = urlencode(String(&iHttpGetFormat[0]));
 
   /*s = readFile(TPL_FNAME_BREWFATHER);
   if (s.length())

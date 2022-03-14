@@ -5,18 +5,18 @@ Releases
 
 v0.9.0
 ------
+* Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api's. 
 * Added function to test push targets from configuration page. It will send data and show the return code as a first step. 
+* Experimental release of firmware using an esp32 instead of esp8266
 * Merged index and device pages into one so that all the needed information is available on the index page.
 * Removed api for device (/api/device), it's now merged into the /api/status api.
 * Test function in format editor now uses real data and not fake. 
 * Split push configuration into two sections to make it fit better on smaller devices
 * Updated WifiManager and DoubleReset libraries
-* Experimental release of firmware using an esp32 instead of esp8266
 * Updated esp32 target with littlefs support
 * Updated esp32 target with BLE send support (it will simulate a tilt)
-* Corrected PIN for voltage read on ESP32
 * Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine.
-
+* BUG: Corrected PIN for voltage read on ESP32
 * BUG: If using plato and not gravity formula was defined the value was set to null.
 
 v0.8.0
@@ -29,7 +29,7 @@ v0.8.0
 * Added instructions for how to configure integration with Brewspy
 * Added instructions for how to configure integration with Thingspeak
 * Added option to do a factory reset via API. 
-* Logging the runtime, how long a measurement take (last 10 are stored). This can be 
+* Added logging of the runtime, how long a measurement take (last 10 are stored). This can be 
   used to check how good the wifi connection is and estimate the lifetime when on battery. 
   Check the device page in the UI for this information.
 * Refactored code to free up more RAM to make SSL more stable. 

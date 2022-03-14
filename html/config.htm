@@ -175,7 +175,7 @@
             <input type="text" name="http-push2-h2" id="http-push2-h2" hidden>
 
             <div class="form-group row">
-              <label for="http-push" class="col-sm-2 col-form-label">Http URL 1:</label>
+              <label for="http-push" class="col-sm-2 col-form-label">HTTP 1 (POST):</label>
               <div class="col-sm-8">
                 <input type="url" maxlength="120" class="form-control" name="http-push" id="http-push">
               </div>
@@ -184,7 +184,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="http-push2" class="col-sm-2 col-form-label">Http URL 2:</label>
+              <label for="http-push2" class="col-sm-2 col-form-label">HTTP 2 (POST):</label>
               <div class="col-sm-8">
                 <input type="url" maxlength="120" class="form-control" name="http-push2" id="http-push2">
               </div>
@@ -193,12 +193,26 @@
               </div>
             </div>
 
-            <hr class="my-2">
-
             <div class="form-group row">
               <label for="token" class="col-sm-2 col-form-label">Token:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="50" class="form-control" name="token" id="token">
+              </div>
+            </div>
+
+            <hr class="my-2">
+
+            <div class="form-group row">
+              <label for="http-push3" class="col-sm-2 col-form-label">HTTP 3 (GET):</label>
+              <div class="col-sm-8">
+                <input type="url" maxlength="120" class="form-control" name="http-push3" id="http-push3">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="token2" class="col-sm-2 col-form-label">Token 2:</label>
+              <div class="col-sm-4">
+                <input type="text" maxlength="50" class="form-control" name="token2" id="token2">
               </div>
             </div>
 
@@ -617,12 +631,14 @@ function checkHeader(input) {
       else $("#gravity-format-p").click();
       $("#ota-url").val(cfg["ota-url"]);
       $("#token").val(cfg["token"]);
+      $("#token2").val(cfg["token2"]);
       $("#http-push").val(cfg["http-push"]);
       $("#http-push-h1").val(cfg["http-push-h1"]);
       $("#http-push-h2").val(cfg["http-push-h2"]);
       $("#http-push2").val(cfg["http-push2"]);
       $("#http-push2-h1").val(cfg["http-push2-h1"]);
       $("#http-push2-h2").val(cfg["http-push2-h2"]);
+      $("#http-push3").val(cfg["http-push3"]);
       $("#brewfather-push").val(cfg["brewfather-push"]);
       $("#influxdb2-push").val(cfg["influxdb2-push"]);
       $("#influxdb2-org").val(cfg["influxdb2-org"]);

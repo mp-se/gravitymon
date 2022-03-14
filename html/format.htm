@@ -74,6 +74,7 @@
             <input type="text" name="id" id="id" hidden>
             <input type="text" name="http-1" id="http-1" hidden>
             <input type="text" name="http-2" id="http-2" hidden>
+            <input type="text" name="http-3" id="http-3" hidden>
             <!--<input type="text" name="brewfather" id="brewfather" hidden>-->
             <input type="text" name="influxdb" id="influxdb" hidden>
             <input type="text" name="mqtt" id="mqtt" hidden>
@@ -81,8 +82,9 @@
             <div class="form-group row">
               <label for="push-target" class="col-sm-2 col-form-label">Push target:</label>
               <select class="custom-select col-sm-4" required name="push-target" id="push-target">
-                <option value="http-1">HTTP option 1</option>
-                <option value="http-2">HTTP option 2</option>
+                <option value="http-1">HTTP option 1 (post)</option>
+                <option value="http-2">HTTP option 2 (post)</option>
+                <option value="http-3">HTTP option 3 (get)</option>
                 <!--<option value="brewfather">Brewfather</option>-->
                 <option value="influxdb">Influx DB</option>
                 <option value="mqtt">MQTT</option>
@@ -181,6 +183,7 @@
       doc = doc.replaceAll("${id}", cfg["id"]);
       doc = doc.replaceAll("${sleep-interval}", cfg["sleep-interval"]);
       doc = doc.replaceAll("${token}", cfg["token"]);
+      doc = doc.replaceAll("${token2}", cfg["token2"]);
       doc = doc.replaceAll("${temp-c}", cfg["temp-c"]);
       doc = doc.replaceAll("${temp-f}", cfg["temp-f"]);
       doc = doc.replaceAll("${temp-unit}", cfg["temp-format"]);
@@ -242,6 +245,7 @@
 
       $("#http-1").val(cfg["http-1"]);
       $("#http-2").val(cfg["http-2"]);
+      $("#http-3").val(cfg["http-3"]);
       //$("#brewfather").val(cfg["brewfather"]);
       $("#influxdb").val(cfg["influxdb"]);
       $("#mqtt").val(cfg["mqtt"]);

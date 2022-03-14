@@ -42,7 +42,8 @@ class PushTarget {
   int _lastCode;
   bool _lastSuccess;
 
-  void sendHttp(TemplatingEngine& engine, bool isSecure, int index);
+  void sendHttpPost(TemplatingEngine& engine, bool isSecure, int index);
+  void sendHttpGet(TemplatingEngine& engine, bool isSecure);
   void addHttpHeader(HTTPClient& http, String header);
 
  public:
@@ -50,8 +51,9 @@ class PushTarget {
             float runTime);
 
   void sendBrewfather(TemplatingEngine& engine);
-  void sendHttp1(TemplatingEngine& engine, bool isSecure) { sendHttp(engine, isSecure, 0); }
-  void sendHttp2(TemplatingEngine& engine, bool isSecure) { sendHttp(engine, isSecure, 1); }
+  void sendHttp1(TemplatingEngine& engine, bool isSecure) { sendHttpPost(engine, isSecure, 0); }
+  void sendHttp2(TemplatingEngine& engine, bool isSecure) { sendHttpPost(engine, isSecure, 1); }
+  void sendHttp3(TemplatingEngine& engine, bool isSecure) { sendHttpGet(engine, isSecure); }
   void sendInfluxDb2(TemplatingEngine& engine);
   void sendMqtt(TemplatingEngine& engine, bool isSecure);
   int getLastCode() { return _lastCode; }

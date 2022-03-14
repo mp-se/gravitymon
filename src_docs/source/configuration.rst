@@ -92,13 +92,13 @@ Push Settings
    When enabling SSL this will not validate the root CA of the remote service, this is a design decision based on two aspects. Enabling CA validation will take 3-4s extra on each connection which means way less 
    battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I belive this is a good balance.
 
-* **HTTP URL 1:**
+* **HTTP 1 (POST):**
 
    Endpoint to send data via http. Default format used Format used :ref:`data-formats-ispindle`. You can customize the format using :ref:`format-editor`.
 
    If you add the prefix `https://` then the device will use SSL when sending data.
 
-* **HTTP URL 2:**
+* **HTTP 2 (POST):**
 
    Endpoint to send data via http. Default format used :ref:`data-formats-ispindle`. You can customize the format using :ref:`format-editor`.
 
@@ -108,6 +108,16 @@ Push Settings
 
    The token is included in the iSpindle JSON format and will be used for both HTTP targets. If you 
    need to have 2 different tokens please use the :ref:`format-editor` to customize the data format. 
+
+* **HTTP 3 (GET):**
+
+   Endpoint to send data via http. This is using an HTTP GET request instead of a post. This means that the values are appended to the URL like; http://endpoint?param=value&param2=value2. You can customize the format using :ref:`format-editor`.
+
+   If you add the prefix `https://` then the device will use SSL when sending data. 
+
+* **Token 2:**
+
+   The token is included in the default format for the HTTP GET url but can be used for any of the formats. For HTTP GET use can use this for an authorization token with for instance ubidots or blynk http api. 
 
 * **Brewfather URL:**
 

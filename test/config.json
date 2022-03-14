@@ -11,6 +11,8 @@
     "http-push2-h1": "Second",
     "http-push2-h2": "First",
     "token": "mytoken",
+    "token2": "mytoken2",
+    "http-push3": "http://192.168.1.10/ispindel",
     "influxdb2-push": "http://192.168.1.10:8086",
     "influxdb2-org": "hello",
     "influxdb2-bucket": "spann",

@@ -26,12 +26,14 @@ Other parameters are the same as in the configuration guide.
       "ble": "color",
       "brewfather-push": "http://log.brewfather.net/stream?id=Qwerty",
       "token": "token",
+      "token2": "token2",
       "http-push": "http://192.168.1.50:9090/api/v1/Qwerty/telemetry",
       "http-push-h1": "header: value",                           
       "http-push-h2": "header: value",                           
       "http-push2": "http://192.168.1.50/ispindel",
       "http-push2-h1": "header: value",                           
       "http-push2-h2": "header: value",                           
+      "http-push3": "http://192.168.1.50/ispindel",
       "influxdb2-push": "http://192.168.1.50:8086",
       "influxdb2-org": "org",
       "influxdb2-bucket": "bucket_id",
@@ -103,6 +105,7 @@ Other parameters are the same as in the configuration guide.
       "temp-format": "C",
       "sleep-mode": false,
       "token": "token",
+      "token2": "token2",
       "rssi": -56,
       "app-ver": "0.0.0",
       "mdns": "gravmon",
@@ -211,8 +214,11 @@ Payload should be in standard format used for posting a form. Such as as: `id=va
 .. code-block::
 
    id=ee1bfc
+   token=
+   token2=
    http-push=http://192.168.1.50/ispindel
    http-push2=
+   http-push3=
    http-push-h1=
    http-push-h2=
    http-push2-h1=
@@ -332,8 +338,10 @@ The requests package converts the json to standard form post format.
    url = "http://" + host + "/api/config/push"
    json = { "id": id, 
             "token": "",
+            "token2": "",
             "http-push": "http://192.168.1.1/ispindel",  
             "http-push2": "",
+            "http-push3": "",
             "http-push-h1": "",
             "http-push-h2": "",
             "http-push2-h1": ""

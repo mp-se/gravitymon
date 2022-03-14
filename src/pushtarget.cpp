@@ -52,14 +52,20 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
 
   if (myConfig.isHttpActive()) {
     LOG_PERF_START("push-http");
-    sendHttp(engine, myConfig.isHttpSSL(), 0);
+    sendHttpPost(engine, myConfig.isHttpSSL(), 0);
     LOG_PERF_STOP("push-http");
   }
 
   if (myConfig.isHttp2Active()) {
     LOG_PERF_START("push-http2");
-    sendHttp(engine, myConfig.isHttp2SSL(), 1);
+    sendHttpPost(engine, myConfig.isHttp2SSL(), 1);
     LOG_PERF_STOP("push-http2");
+  }
+
+  if (myConfig.isHttp3Active()) {
+    LOG_PERF_START("push-http3");
+    sendHttpGet(engine, myConfig.isHttp3SSL());
+    LOG_PERF_STOP("push-http3");
   }
 
   if (myConfig.isInfluxDb2Active()) {
@@ -178,9 +184,9 @@ void PushTarget::addHttpHeader(HTTPClient& http, String header) {
 }
 
 //
-// Send data to http target
+// Send data to http target using POST
 //
-void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
+void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure, int index) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to http (%s)" CR),
              index ? "http2" : "http");
@@ -248,12 +254,12 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
 
   if (_lastCode == 200) {
     _lastSuccess = true;
-    Log.notice(F("PUSH: HTTP push successful, response=%d" CR),
+    Log.notice(F("PUSH: HTTP post successful, response=%d" CR),
                _lastCode);
   } else {
     ErrorFileLog errLog;
     errLog.addEntry(
-        "PUSH: HTTP push failed response=" + String(_lastCode) +
+        "PUSH: HTTP post failed response=" + String(_lastCode) +
         String(index == 0 ? " (http)" : " (http2)"));
   }
 
@@ -268,7 +274,71 @@ void PushTarget::sendHttp(TemplatingEngine& engine, bool isSecure, int index) {
 }
 
 //
-// Send data to http target
+// Send data to http target using GET
+//
+void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
+#if !defined(PUSH_DISABLE_LOGGING)
+  Log.notice(F("PUSH: Sending values to http3" CR));
+#endif
+  _lastCode = 0;
+  _lastSuccess = false;
+
+  String serverPath;
+
+  serverPath = myConfig.getHttp3Url();
+  serverPath += engine.create(TemplatingEngine::TEMPLATE_HTTP3);
+
+#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
+  Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
+#endif
+
+  if (isSecure) {
+    Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
+    _wifiSecure.setInsecure();
+
+#if defined (ESP8266)
+    String host = serverPath.substring(8); // remove the prefix or the probe will fail, it needs a pure host name.
+    int idx = host.indexOf("/");
+    if (idx!=-1)
+      host = host.substring(0, idx);
+
+    if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
+      Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
+      _wifiSecure.setBufferSizes(512, 512);
+    }
+#endif
+
+    _httpSecure.begin(_wifiSecure, serverPath);
+    _httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+    _lastCode = _httpSecure.GET(); 
+  } else {
+    _http.begin(_wifi, serverPath);
+    _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+    _lastCode = _http.GET();
+  }
+
+  if (_lastCode == 200) {
+    _lastSuccess = true;
+    Log.notice(F("PUSH: HTTP get successful, response=%d" CR),
+               _lastCode);
+  } else {
+    ErrorFileLog errLog;
+    errLog.addEntry(
+        "PUSH: HTTP get failed response=" + String(_lastCode));
+  }
+
+  if (isSecure) {
+    _httpSecure.end();
+    _wifiSecure.stop();
+  } else {
+    _http.end();
+    _wifi.stop();
+  }
+  tcp_cleanup();
+}
+
+//
+// Send data to mqtt target
 //
 void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
 #if !defined(PUSH_DISABLE_LOGGING)

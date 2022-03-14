@@ -35,6 +35,7 @@ SOFTWARE.
 #define TPL_MDNS "${mdns}"
 #define TPL_ID "${id}"
 #define TPL_TOKEN "${token}"
+#define TPL_TOKEN2 "${token2}"
 #define TPL_SLEEP_INTERVAL "${sleep-interval}"
 #define TPL_TEMP "${temp}"
 #define TPL_TEMP_C "${temp-c}"
@@ -55,11 +56,13 @@ SOFTWARE.
 
 #define TPL_FNAME_HTTP1 "/http-1.tpl"
 #define TPL_FNAME_HTTP2 "/http-2.tpl"
+#define TPL_FNAME_HTTP3 "/http-3.tpl"
 // #define TPL_FNAME_BREWFATHER "/brewfather.tpl"
 #define TPL_FNAME_INFLUXDB "/influxdb.tpl"
 #define TPL_FNAME_MQTT "/mqtt.tpl"
 
 extern const char iSpindleFormat[] PROGMEM;
+extern const char iHttpGetFormat[] PROGMEM;
 extern const char brewfatherFormat[] PROGMEM;
 extern const char influxDbFormat[] PROGMEM;
 extern const char mqttFormat[] PROGMEM;
@@ -72,7 +75,7 @@ class TemplatingEngine {
     String val;
   };
 
-  KeyVal items[20] = {{TPL_MDNS, ""},           {TPL_ID, ""},
+  KeyVal items[21] = {{TPL_MDNS, ""},           {TPL_ID, ""},
                       {TPL_SLEEP_INTERVAL, ""}, {TPL_TEMP, ""},
                       {TPL_TEMP_C, ""},         {TPL_TEMP_F, ""},
                       {TPL_TEMP_UNITS, ""},     {TPL_BATTERY, ""},
@@ -81,7 +84,8 @@ class TemplatingEngine {
                       {TPL_GRAVITY, ""},        {TPL_GRAVITY_G, ""},
                       {TPL_GRAVITY_P, ""},      {TPL_GRAVITY_CORR, ""},
                       {TPL_GRAVITY_CORR_G, ""}, {TPL_GRAVITY_CORR_P, ""},
-                      {TPL_GRAVITY_UNIT, ""},   {TPL_TOKEN, ""}};
+                      {TPL_GRAVITY_UNIT, ""},   {TPL_TOKEN, ""},
+                      {TPL_TOKEN2, ""} };
 
   char buffer[20];
   String baseTemplate;
@@ -128,9 +132,10 @@ class TemplatingEngine {
   enum Templates {
     TEMPLATE_HTTP1 = 0,
     TEMPLATE_HTTP2 = 1,
-    TEMPLATE_BREWFATHER = 2,
-    TEMPLATE_INFLUX = 3,
-    TEMPLATE_MQTT = 4
+    TEMPLATE_HTTP3 = 2,
+    TEMPLATE_BREWFATHER = 3,
+    TEMPLATE_INFLUX = 4,
+    TEMPLATE_MQTT = 5
   };
 
   void initialize(float angle, float gravitySG, float corrGravitySG,

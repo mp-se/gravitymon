@@ -30,7 +30,7 @@ SOFTWARE.
 #include <WiFi.h>
 #endif
 
-// Use iSpindle format for compatibility
+// Use iSpindle format for compatibility, HTTP POST
 const char iSpindleFormat[] PROGMEM = 
   "{"
     "\"name\" : \"${mdns}\", "
@@ -47,6 +47,22 @@ const char iSpindleFormat[] PROGMEM =
      "\"gravity-unit\": \"${gravity-unit}\", "
      "\"run-time\": ${run-time} "
    "}";
+
+// Format for an HTTP GET
+const char iHttpGetFormat[] PROGMEM = 
+  "?name=${mdns}"
+  "&id=${id}"
+  "&token=${token2}"
+  "&interval=${sleep-interval}"
+  "&temperature=${temp}"
+  "&temp-units=${temp-unit}"
+  "&gravity=${gravity}"
+  "&angle=${angle}"
+  "&battery=${battery}"
+  "&rssi=${rssi}"
+  "&corr-gravity=${corr-gravity}"
+  "&gravity-unit=${gravity-unit}"
+  "&run-time=${run-time}";
 
 const char brewfatherFormat[] PROGMEM = 
   "{"
@@ -89,6 +105,7 @@ void TemplatingEngine::initialize(float angle, float gravitySG, float corrGravit
   setVal(TPL_MDNS, myConfig.getMDNS());
   setVal(TPL_ID, myConfig.getID());
   setVal(TPL_TOKEN, myConfig.getToken());
+  setVal(TPL_TOKEN2, myConfig.getToken2());
 
   // Temperature
   if (myConfig.isTempC()) {
@@ -150,6 +167,10 @@ const String& TemplatingEngine::create(TemplatingEngine::Templates idx) {
     case TEMPLATE_HTTP2:
       baseTemplate = String(iSpindleFormat);
       fname = TPL_FNAME_HTTP2;
+    break;
+    case TEMPLATE_HTTP3:
+      baseTemplate = String(iHttpGetFormat);
+      fname = TPL_FNAME_HTTP3;
     break;
     case TEMPLATE_BREWFATHER:
       baseTemplate = String(brewfatherFormat);
