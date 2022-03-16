@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v0.9**. Last updated 2022-03-12
+  This documentation reflects **v0.9**. Last updated 2022-03-14
   
 GravityMon is used to measure gravity and temperature during fermentation of beer and report the progress. The graph below is
 an example on how the fermentation process can be tracked. This is from my last brew that was over on a few days. The graph is rendered using

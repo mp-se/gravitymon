@@ -66,11 +66,24 @@
     </div>
   </div>
 
+  <div class="form-group row">
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-8">
+      <button class="btn btn-primary" id="test-btn">Test</button>
+    </div>
+  </div>
+
   <hr class="my-4">
 </div>
 
 <script type="text/javascript">
-  window.onload = getConfig;
+  $('#spinner').hide(); 
+
+  function clearLog() {
+    $("#preview").text("");
+  }
 
   function appendLog(log) {
     doc = $("#preview").text();
@@ -79,12 +92,14 @@
   }
 
   // Get the configuration values from the API
-  function getConfig() {
+  $("#test-btn").click(function(e) {
+    clearLog();
     appendLog( "Starting test of push targets" );
 
     var url = "/api/status";
     //var url = "/test/status.json";
-    $('#spinner').show(); 
+    $("#test-btn").prop("disabled", true);
+    $('#spinner').show();
     $.getJSON(url, function (cfg) {
       var id = cfg["id"];
       console.log( id );
@@ -95,14 +110,17 @@
       testHttp( id, "brewfather" );
       testInfluxdb( id );
       testMqtt( id );
+      $('#spinner').hide(); 
+      $("#test-btn").prop("disabled", false);
     })
     .fail(function () {
       showError('Unable to get data from the device.');
+      $('#spinner').hide(); 
+      $("#test-btn").prop("disabled", false);
     })
     .always(function() {
-      $('#spinner').hide(); 
     });
-  }
+  });
 
   function testMqtt(id) {
     var url = "/api/test/push";
