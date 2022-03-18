@@ -10,14 +10,55 @@ Brewfather
 
 Brewfather is an all in one service that allows you to manage you recepies and brews. 
 
-Just enter the http adress found on brewfather, not other settings are needed. The endpoint has the following format:
+.. tip::
+
+   The integration named Brewfather is uses the custom stream endpoint in brewfather not the standard iSpindle 
+   endpoint. You can use the iSpindle endpoint as well. In that case just use the http-1 or http-2 fields.  
+
+**Option 1** - Custom Stream
+
+This option makes use of the push endpoint called Brewfather in the UI. Just enter the http stream adress found 
+on brewfather, not other settings are needed. The stream endpoint URL has the following format:
 
 .. code-block::
 
-   http://log.brewfather.net/http://log.brewfather.net/stream?id=<yourid>
+   http://log.brewfather.net/stream?id=<yourid>
+
+Documentation on this can be found under `Brewfather Custom Endpoint <https://docs.brewfather.app/integrations/custom-stream>`_
+
+The implementation is basically a http request with the following format template:
+
+.. code-block::
+
+   {
+      "name": "${mdns}",
+      "temp": ${temp},
+      "aux_temp": 0,
+      "ext_temp": 0,
+      "temp_unit": "${temp-unit}",
+      "gravity": ${gravity},
+      "gravity_unit": "${gravity-unit}",
+      "pressure": 0,
+      "pressure_unit": "PSI",
+      "ph": 0,
+      "bpm": 0,
+      "comment": "",
+      "beer": "",
+      "battery": ${battery}
+   }
 
 
-The URL is found under settings.
+**Option 2** - iSpindle Endpoint
+
+This opion makes use of the standard http (1 or 2) endpoints in the push section. The brewfather iSpindle endpoint 
+has the following format:
+
+.. code-block::
+
+   http://log.brewfather.net/ispindel?id=<yourid>
+
+
+Documentation on this can be found under `Brewfather iSpindle Endpoint <https://docs.brewfather.app/integrations/ispindel>`_
 
 Fermentrack
 +++++++++++

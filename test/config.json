@@ -39,7 +39,7 @@
     "angle": 90.93,
     "gravity": 1.105,
     "battery": 0.04,
-    "runtime-average": 2.0,
+    "runtime-average": 3.0,
     "ble": "pink",
     "platform": "esp32"
 }

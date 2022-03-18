@@ -132,7 +132,7 @@
               <div class="col-sm-2">
                 <input type="number" min="10" max="3600" class="form-control" name="sleep-interval" id="sleep-interval">
               </div>
-              <label for="sleep-interval" class="col-sm-7 col-form-label" id="sleep-interval-info"></label>
+              <label for="sleep-interval" class="col-sm-4 col-form-label" id="sleep-interval-info"></label>
             </div>
             <div class="form-group row">
               <div class="col-sm-8 offset-sm-3">
@@ -547,16 +547,15 @@ function checkHeader(input) {
     window.location.href = "/test.htm";
   });
 
-  function estimateBatteryLife(interval) {
+  function estimateBatteryLife(interval, rt) {
     // ESP8266 consumes between 140-170mA when WIFI is on. Deep sleep is 20uA. 
     // MPU-6050 consumes 4mA
     // DS18B20 consumes 1mA
     // For this estimation we use an average of 160mA
 
-    var pwrActive = 160; // mA per hour
-    var pwrSleep = 5; // mA per day
-    var batt = 2200; // mA
-    var rt = parseInt($("#runtime-average").val());
+    var pwrActive = 170; // mA per hour
+    var pwrSleep = 15; // mA per day
+    var batt = 2000; // mA
 
     if(rt<1) rt = 2;
 
@@ -567,15 +566,19 @@ function checkHeader(input) {
 
   function updateSleepInfo() {
     var i = parseInt($("#sleep-interval").val());
+    var rt = parseInt($("#runtime-average").val());
+    var j = 0;
 
-    var j = estimateBatteryLife(i);
+    if( rt>0 )
+      j = estimateBatteryLife(i, rt);
 
     var t1 = Math.floor(i/60) + " m " + (i%60) + " s";
-    var t2 = Math.floor(j/7) + " weeks " + (i%7) + " days";
+    var t2 = Math.floor(j/7) + " weeks " + Math.floor(j%7) + " days";
 
-    $("#sleep-interval-info").text(t1);
-    //$("#sleep-interval-info").text( t1 + " - Estimated life: " + t2);
-    console.log( "Estimated life: " + t2);
+    if( j )
+      $("#sleep-interval-info").text( t1 + "  -  Estimated runtime: " + t2);
+    else
+      $("#sleep-interval-info").text( t1 );
 
     hideWarningGyro();
     if(i>0 && i<300) {
@@ -609,7 +612,7 @@ function checkHeader(input) {
     setButtonDisabled( true );
 
     var url = "/api/config";
-    //var url = "/test/config.json";
+    var url = "/test/config.json";
     $('#spinner').show(); 
     $.getJSON(url, function (cfg) {
       console.log( cfg );

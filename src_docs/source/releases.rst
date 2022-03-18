@@ -8,6 +8,7 @@ v0.9.0
 * Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api's. 
 * Added function to test push targets from configuration page. It will send data and show the return code as a first step. 
 * Added documetation on how to integrate with Blynk.io using http get.
+* Config page now shows the estimated runtime for the device (based on a full battery and previous average runtime)
 * Experimental release of firmware using an esp32 instead of esp8266
 * Merged index and device pages into one so that all the needed information is available on the index page.
 * Removed api for device (/api/device), it's now merged into the /api/status api.
