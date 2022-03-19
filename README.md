@@ -8,24 +8,31 @@
 
 # Gravity Monitor for Beer Brewing
 
-GravityMon is a replacement firmware for the iSpindle firmware. It's 100% compatible with the iSpindle hardware design so it does not require any hardware changes.
+GravityMon is a replacement firmware for the iSpindle firmware. It's 100% compatible with the iSpindle hardware design so it does not require any hardware changes. 
+
+Now also works with ESP32 (use ESP32 d1 mini which is compatible with ESP8266)
 
 Installation can be made using https://www.brewflasher.com
+
+Note! If its being flagged as malware, try the older version.
 
 The main differences:
 ---------------------
 
-* Operates in two modes gravity monitoring and configuration mode (simplify calibration)
-* Modern web based UI for configuration (in config mode)
-* REST API
-* Send data to multiple endpoints when pushing data (2xhttp, brewfather, influxdb v2, mqtt supported)
-* Automatic temperature adjustment of gravity reading
-* OTA support from local webserver
-* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity. 
-* Visual graph showing how formula will be interpreted
-* Using the temperature sensor in gyro instead of DS18B20 (faster)
-* Built in performance measurements (used to optimise code)
+* Modern web based user interface for configuration when connected to WIFI
+* Efficient software, long lifespan (+45 days with 5min update frequencey)
+* Send data to multiple endpoints (http-post, http-get, influxdb v2, mqtt)
+* Instructions for service such as; Brewfather, Fermentrack, Ubidots, Home Assistant, Brewers Friend, Brewspy, Thingspeak, Blynk. 
 * SSL support in standard HTTP and MQTT connections.
+* ESP32 support with Bluetooth push
+* Customize data format to be pushed
+* Automatic temperature adjustment of gravity when enabled
+* Use the temperature sensor in gyro instead of DS18B20
+* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity. 
+* Visual graph showing how gravity formula will be interpreted
+* OTA support 
+* Built in performance measurements (used to optimise code)
+* REST API for scripting 
 
 No code has been reused from the iSpindle project. 
 
