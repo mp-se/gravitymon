@@ -22,11 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #if defined(ESP8266)
-#include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266httpUpdate.h>
 #else  // defined (ESP32)
-#include <HTTPClient.h>
 #include <HTTPUpdate.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -276,37 +274,22 @@ bool WifiConnection::updateFirmware() {
 //
 // Download and save file
 //
-void WifiConnection::downloadFile(const char *fname) {
+void WifiConnection::downloadFile(HTTPClient& http, String& fname) {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Download file %s." CR), fname);
 #endif
-  WiFiClient wifi;
-  WiFiClientSecure wifiSecure;
-  HTTPClient http;
-  String serverPath = myConfig.getOtaURL();
-  serverPath += fname;
-
-  if (myConfig.isOtaSSL()) {
-    wifiSecure.setInsecure();
-    Log.notice(F("WIFI: OTA, SSL enabled without validation." CR));
-    http.begin(wifiSecure, serverPath);
-  } else {
-    http.begin(wifi, serverPath);
-  }
-
   int httpResponseCode = http.GET();
 
   if (httpResponseCode == 200) {
     File f = LittleFS.open(fname, "w");
     http.writeToStream(&f);
     f.close();
-    Log.notice(F("WIFI: Downloaded file %s." CR), fname);
+    Log.notice(F("WIFI: Downloaded file %s." CR), fname.c_str());
   } else {
     ErrorFileLog errLog;
     errLog.addEntry("WIFI: Failed to download html-file " +
                     String(httpResponseCode));
   }
-  http.end();
 }
 
 //
@@ -332,6 +315,7 @@ bool WifiConnection::checkFirmwareVersion() {
   }
 
   // Send HTTP GET request
+  DynamicJsonDocument ver(300);
   int httpResponseCode = http.GET();
 
   if (httpResponseCode == 200) {
@@ -341,7 +325,6 @@ bool WifiConnection::checkFirmwareVersion() {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
     Log.verbose(F("WIFI: Payload %s." CR), payload.c_str());
 #endif
-    DynamicJsonDocument ver(300);
     DeserializationError err = deserializeJson(ver, payload);
     if (err) {
       ErrorFileLog errLog;
@@ -364,10 +347,10 @@ bool WifiConnection::checkFirmwareVersion() {
           // Compare major version
           if (newVer[0] > curVer[0]) _newFirmware = true;
           // Compare minor version
-          if (newVer[0] == curVer[0] && newVer[1] > curVer[1])
+          else if (newVer[0] == curVer[0] && newVer[1] > curVer[1])
             _newFirmware = true;
           // Compare patch version
-          if (newVer[0] == curVer[0] && newVer[1] == curVer[1] &&
+          else if (newVer[0] == curVer[0] && newVer[1] == curVer[1] &&
               newVer[2] > curVer[2])
             _newFirmware = true;
         }
@@ -375,14 +358,14 @@ bool WifiConnection::checkFirmwareVersion() {
 
       // Download new html files to filesystem if they are present.
       if (!ver["html"].isNull() && _newFirmware) {
-        Log.notice(F("WIFI: OTA downloading new html files." CR));
+        Log.notice(F("WIFI: OTA checking if html files should be downloaded." CR));
         JsonArray htmlFiles = ver["html"].as<JsonArray>();
         for (JsonVariant v : htmlFiles) {
           String s = v;
 #if LOG_LEVEL == 6
           Log.verbose(F("WIFI: OTA listed html file %s" CR), s.c_str());
 #endif
-          downloadFile(s.c_str());
+          downloadFile(http, s);
         }
       }
     }

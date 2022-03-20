@@ -24,6 +24,12 @@ SOFTWARE.
 #ifndef SRC_WIFI_HPP_
 #define SRC_WIFI_HPP_
 
+#if defined(ESP8266)
+#include <ESP8266HTTPClient.h>
+#else  // defined (ESP32)
+#include <HTTPClient.h>
+#endif
+
 #define WIFI_DEFAULT_SSID "GravityMon"  // Name of created SSID
 #define WIFI_DEFAULT_PWD "password"     // Password for created SSID
 #define WIFI_MDNS "gravitymon"          // Prefix for MDNS name
@@ -35,7 +41,7 @@ class WifiConnection {
   // OTA
   bool _newFirmware = false;
   bool parseFirmwareVersionString(int (&num)[3], const char* version);
-  void downloadFile(const char* fname);
+  void downloadFile(HTTPClient& http, String& fname);
   void connectAsync();
   bool waitForConnection(int maxTime = 20);
 
