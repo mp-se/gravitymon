@@ -191,7 +191,7 @@ void deepSleep(int t) {
 // Print the build options used
 //
 void printBuildOptions() {
-  Log.notice(F("Build options: %s LOGLEVEL %d "
+  Log.notice(F("Build options: %s (%s) LOGLEVEL %d "
 #ifdef SKIP_SLEEPMODE
                "SKIP_SLEEP "
 #endif
@@ -205,7 +205,7 @@ void printBuildOptions() {
                "OTA "
 #endif
                CR),
-             CFG_APPVER, LOG_LEVEL);
+             CFG_APPVER, CFG_GITREV, LOG_LEVEL);
 }
 
 //
