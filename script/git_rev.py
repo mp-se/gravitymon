@@ -5,4 +5,5 @@ revision = (
     .strip()
     .decode("utf-8")
 )
-print("-D CFG_GITREV='\"%s\"'" % revision)
+revision = revision[-6:]
+print("-D CFG_GITREV='\"..%s\"'" % revision)
