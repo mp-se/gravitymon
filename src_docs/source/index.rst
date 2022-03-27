@@ -17,17 +17,17 @@ Fermentrack.
   :width: 500
   :alt: Example fermentation
 
-GravityMon is a replacement firmare for the iSpindle and uses the same hardware configuration and is 100% compatible. It
+GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
 implements a lot of the features that has been requested in the orginal iSpindle project but has been rejected for 
 various reasons. Here is a list of :ref:`main_features`.
 
-I started GravityMon because i like to create software and wanted to do some low level programming. I had done a few
+I started GravityMon because I like to create software and wanted to do some low level programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural. 
 
 The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. For more 
 information on this topic and function please visit `iSpindel Homepage <https://www.ispindel.de>`_ .
 
-My approach to this software is a little different from that the original ispindle firmware. The github repository 
+My approach to this software is a little different from that the original iSpindle firmware. The github repository 
 can be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
 
 .. note::  
