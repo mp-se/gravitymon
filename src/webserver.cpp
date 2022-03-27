@@ -104,6 +104,7 @@ void WebServerHandler::webHandleUpload() {
   DynamicJsonDocument doc(300);
 
   doc["index"] = checkHtmlFile(WebServerHandler::HTML_INDEX);
+  doc["config"] = checkHtmlFile(WebServerHandler::HTML_CONFIG);
   doc["calibration"] = checkHtmlFile(WebServerHandler::HTML_CALIBRATION);
   doc["format"] = checkHtmlFile(WebServerHandler::HTML_FORMAT);
   doc["about"] = checkHtmlFile(WebServerHandler::HTML_ABOUT);
