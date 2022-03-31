@@ -129,6 +129,8 @@ void setup() {
   }
   snprintf(&buf[0], sizeof(buf), "%6x", chipId);
   Log.notice(F("Main: Started setup for %s." CR), &buf[0]);
+  pinMode(PIN_LED, OUTPUT);
+  digitalWrite(PIN_LED, HIGH);
 #endif
   printBuildOptions();
 
@@ -290,7 +292,7 @@ bool loopReadGravity() {
     }
     return true;
   } else {
-    Log.error(F("MAIN: No gyro value found, the device might be moving."));
+    Log.error(F("MAIN: No gyro value found, the device might be moving." CR));
   }
   return false;
 }

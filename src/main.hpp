@@ -35,6 +35,7 @@ SOFTWARE.
 #define PIN_SDA D3
 #define PIN_SCL D4
 #define PIN_DS D6
+#define PIN_LED 2
 //#define PIN_A0 A0
 #else // defined (ESP32)
 #if defined (ESPRESSIF32_20)
@@ -51,6 +52,7 @@ SOFTWARE.
 #define PIN_SCL 16
 #define PIN_DS 19
 #define PIN_A0 36
+#define PIN_LED 2
 #endif
 
 #define PIN_LED 2
