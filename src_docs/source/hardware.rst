@@ -14,6 +14,8 @@ mount it really close to the PCB in order for it to fit in the PET tube/containe
 
 I would suggest that you try how it fits into the PET tube before soldering it to the PCB. Make sure that the battery is attached since this will be a really tight fit.
 
+You also need to desolder (remove) the RED ON LED from the ESP32 or the battery power will be reduced a lot.
+
 .. image:: images/esp32.jpg
   :width: 500
   :alt: Mounting esp32
