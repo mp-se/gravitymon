@@ -22,7 +22,7 @@ This is the format used for standard http posts.
       "token" : "gravmon",
       "interval": 900,
       "temperature": 20.5,
-      "temp-units": "C",
+      "temp_units": "C",
       "gravity": 1.0050,
       "angle": 45.34,
       "battery": 3.67,
@@ -43,7 +43,7 @@ This is the format template used to create the json above.
    "token" : "gravmon",
    "interval": ${sleep-interval}, 
    "temperature": ${temp},
-   "temp-units": "${temp-unit}",
+   "temp_units": "${temp-unit}",
    "gravity": ${gravity},
    "angle": ${angle},
    "battery": ${battery},
@@ -153,7 +153,7 @@ This is a format template that is compatible with v0.6. Just replace the `topic`
 .. code-block::
    
    topic:{"name":"gravmon", "ID":"${id}", "token":"gravmon", "interval": ${sleep-interval},
-   "temperature": ${temp}, "temp-units": "${temp-unit}", "gravity":${gravity},
+   "temperature": ${temp}, "temp_units": "${temp-unit}", "gravity":${gravity},
    "angle": ${angle}, "battery":${battery}, "rssi": ${rssi}, "corr-gravity":${corr-gravity},
    "gravity-unit": "${gravity-unit}", "run-time": ${run-time}}|
 

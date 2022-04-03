@@ -20,6 +20,7 @@ v0.9.0
 * Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine.
 * BUG: Corrected PIN for voltage read on ESP32
 * BUG: If using plato and not gravity formula was defined the value was set to null.
+* BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.
 
 v0.8.0
 ------

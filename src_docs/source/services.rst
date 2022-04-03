@@ -190,7 +190,7 @@ format for the endpoint. Just add you API key after token.
    "token" : "[API KEY]",
    "interval": ${sleep-interval}, 
    "temperature": ${temp},
-   "temp-units": "${temp-unit}",
+   "temp_units": "${temp-unit}",
    "gravity": ${gravity},
    "angle": ${angle},
    "battery": ${battery},
