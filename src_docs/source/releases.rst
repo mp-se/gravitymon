@@ -21,6 +21,7 @@ v0.9.0
 * BUG: Corrected PIN for voltage read on ESP32
 * BUG: If using plato and not gravity formula was defined the value was set to null.
 * BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.
+* BUG: Temperature sensor adjusmemnt value was not handled properly when using Farenheight.
 
 v0.8.0
 ------

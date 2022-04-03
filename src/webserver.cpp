@@ -267,6 +267,9 @@ void WebServerHandler::webHandleStatus() {
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
 
+  if (myConfig.isTempF()) // If the format is F we need to replace this value
+    doc[PARAM_TEMP_ADJ] = convertCtoF(myConfig.getTempSensorAdjC());
+
   doc[PARAM_ID] = myConfig.getID();
   doc[PARAM_ANGLE] = reduceFloatPrecision(angle);
   if (myConfig.isGravityTempAdj()) {
