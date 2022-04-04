@@ -18,6 +18,7 @@ v0.9.0
 * Updated esp32 target with littlefs support
 * Updated esp32 target with BLE send support (it will simulate a tilt)
 * Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine.
+* Default mDNS name is now shown on WIFI setup page.
 * BUG: Corrected PIN for voltage read on ESP32
 * BUG: If using plato and not gravity formula was defined the value was set to null.
 * BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.

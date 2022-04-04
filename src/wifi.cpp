@@ -136,6 +136,12 @@ void WifiConnection::startPortal() {
   myWifiManager->setConfigPortalTimeout(
       myHardwareConfig.getWifiPortalTimeout());
 
+  String mdns("<p>Default mDNS name is: http://");
+  mdns += myConfig.getMDNS();
+  mdns += ".local<p>"; 
+  ESP_WMParameter deviceName(mdns.c_str());
+  myWifiManager->addParameter(&deviceName);
+
   if (myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD)) {
     Log.notice(F("WIFI: Exited portal, connected to wifi. Rebooting..." CR));
     myConfig.setWifiSSID(myWifiManager->getSSID());
