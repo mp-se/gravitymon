@@ -45,12 +45,14 @@ INCBIN_EXTERN(AboutHtm);
 #else
 INCBIN_EXTERN(UploadHtm);
 #endif
+INCBIN_EXTERN(FirmwareHtm);
 
 class WebServerHandler {
  private:
   ESP8266WebServer* _server = 0;
   File _uploadFile;
   int _lastFormulaCreateError = 0;
+  int _uploadReturn = 200;
 
   void webHandleConfig();
   void webHandleFormulaWrite();
@@ -78,7 +80,7 @@ class WebServerHandler {
   String getRequestArguments();
 
   // Inline functions.
-  void webReturnOK() { _server->send(200); }
+  void webReturnOK() { _server->send(_uploadReturn); }
 #if defined(EMBED_HTML)
   void webReturnIndexHtm() {
     _server->send_P(200, "text/html", (const char*)gIndexHtmData,
@@ -110,6 +112,10 @@ class WebServerHandler {
                     gUploadHtmSize);
   }
 #endif
+  void webReturnFirmwareHtm() {
+    _server->send_P(200, "text/html", (const char*)gFirmwareHtmData,
+                    gFirmwareHtmSize);
+  }
 
  public:
   enum HtmlFile {

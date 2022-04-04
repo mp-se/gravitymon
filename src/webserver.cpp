@@ -106,7 +106,7 @@ void WebServerHandler::webHandleConfig() {
 //
 void WebServerHandler::webHandleUpload() {
   LOG_PERF_START("webserver-api-upload");
-  Log.notice(F("WEB : webServer callback for /api/upload." CR));
+  Log.notice(F("WEB : webServer callback for /api/upload(get)." CR));
   DynamicJsonDocument doc(300);
 
   doc["index"] = checkHtmlFile(WebServerHandler::HTML_INDEX);
@@ -167,10 +167,11 @@ void WebServerHandler::webHandleUpload() {
 //
 void WebServerHandler::webHandleUploadFile() {
   LOG_PERF_START("webserver-api-upload-file");
-  Log.notice(F("WEB : webServer callback for /api/upload/file." CR));
+  Log.verbose(F("WEB : webServer callback for /api/upload(post)." CR));
   HTTPUpload& upload = _server->upload();
   String f = upload.filename;
   bool validFilename = false;
+  bool firmware = false;
 
   if (f.equalsIgnoreCase("index.min.htm") ||
       f.equalsIgnoreCase("calibration.min.htm") ||
@@ -181,32 +182,85 @@ void WebServerHandler::webHandleUploadFile() {
     validFilename = true;
   }
 
+  if (f.endsWith(".bin")) {
+    validFilename = true;
+    firmware = true;
+  }
+
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : webServer callback for /api/upload, receiving file %s, "
-                "valid=%s." CR),
-              f.c_str(), validFilename ? "yes" : "no");
+  Log.verbose(F("WEB : webServer callback for /api/upload, receiving file %s, %d(%d) "
+                "valid=%s, firmware=%s." CR),
+              f.c_str(), upload.currentSize, upload.totalSize, validFilename ? "yes" : "no", firmware ? "yes" : "no");
 #endif
 
-  if (upload.status == UPLOAD_FILE_START) {
-    Log.notice(F("WEB : Start upload." CR));
-    if (validFilename) _uploadFile = LittleFS.open(f, "w");
-  } else if (upload.status == UPLOAD_FILE_WRITE) {
-    Log.notice(F("WEB : Writing upload." CR));
-    if (_uploadFile)
-      _uploadFile.write(
-          upload.buf,
-          upload.currentSize);  // Write the received bytes to the file
-  } else if (upload.status == UPLOAD_FILE_END) {
-    Log.notice(F("WEB : Finish upload." CR));
-    if (_uploadFile) {
-      _uploadFile.close();
-      Log.notice(F("WEB : File uploaded %d bytes." CR), upload.totalSize);
+  if (firmware) {
+    // Handle firmware update
+    uint32_t maxSketchSpace = 1044464; //(ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+
+    if (upload.status == UPLOAD_FILE_START) {
+      _uploadReturn = 200;
+      Log.notice(F("WEB : Start firmware upload, max sketch size %d kb." CR), maxSketchSpace/1024);
+
+      if (!Update.begin(maxSketchSpace, U_FLASH, PIN_LED)){
+        ErrorFileLog errLog;
+        errLog.addEntry(F("WEB : Not enough space to store for this firmware."));
+        _uploadReturn = 500;
+      }      
+    } else if (upload.status == UPLOAD_FILE_WRITE) {
+      Log.notice(F("WEB : Writing firmware upload %d (%d)." CR), upload.totalSize, maxSketchSpace);
+
+      if (upload.totalSize > maxSketchSpace) {
+        Log.error(F("WEB : Firmware file is to large." CR));
+        _uploadReturn = 500;
+      } else if (Update.write(upload.buf, upload.currentSize) != upload.currentSize){
+        Log.warning(F("WEB : Firmware write was unsuccessful." CR));
+        _uploadReturn = 500;
+      }
+    } else if (upload.status == UPLOAD_FILE_END) {
+      Log.notice(F("WEB : Finish firmware upload." CR));
+      if(Update.end(true)) {
+        _server->send(200);
+        delay(500);
+        ESP_RESET();
+      } else {
+        ErrorFileLog errLog;
+        errLog.addEntry(F("WEB : Failed to finish firmware flashing error=") + String(Update.getError()));
+        _uploadReturn = 500;
+      }
+    } else {
+      Update.end();
+      Log.notice(F("WEB : Firmware flashing aborted." CR));
+      _uploadReturn = 500;
     }
-    _server->sendHeader("Location", "/");
-    _server->send(303);
+
+    delay(0);
+
   } else {
-    _server->send(500, "text/plain", "Couldn't create file.");
+    // Handle HTML file upload
+    if (upload.status == UPLOAD_FILE_START) {
+      _uploadReturn = 200;
+      Log.notice(F("WEB : Start html upload." CR));
+
+      if (validFilename) _uploadFile = LittleFS.open(f, "w");
+    } else if (upload.status == UPLOAD_FILE_WRITE) {
+      Log.notice(F("WEB : Writing html upload." CR));
+      if (_uploadFile)
+        _uploadFile.write(
+            upload.buf,
+            upload.currentSize);
+    } else if (upload.status == UPLOAD_FILE_END) {
+      Log.notice(F("WEB : Finish html upload." CR));
+      if (_uploadFile) {
+        _uploadFile.close();
+        Log.notice(F("WEB : Html file uploaded %d bytes." CR), upload.totalSize);
+      }
+      _server->sendHeader("Location", "/");
+      _server->send(303);
+    } else {
+      _server->send(500, "text/plain", "Couldn't upload html file.");
+    }
   }
+
   LOG_PERF_STOP("webserver-api-upload-file");
 }
 
@@ -1111,6 +1165,8 @@ bool WebServerHandler::setupWebServer() {
     _server->on("/", std::bind(&WebServerHandler::webReturnUploadHtm, this));
   }
 #endif
+  _server->on("/firmware.htm",
+                std::bind(&WebServerHandler::webReturnFirmwareHtm, this));
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
 
