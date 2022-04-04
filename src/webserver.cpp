@@ -60,6 +60,12 @@ void WebServerHandler::webHandleConfig() {
   doc[PARAM_ANGLE] = reduceFloatPrecision(angle);
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
 
+  // Format the adjustment so we get rid of rounding errors
+  if (myConfig.isTempF()) 
+    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC()), 1);
+  else
+    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(myConfig.getTempSensorAdjC(), 1);
+
   if (myConfig.isGravityTempAdj()) {
     gravity =
         gravityTemperatureCorrectionC(gravity, tempC, myConfig.getTempFormat());
@@ -266,12 +272,6 @@ void WebServerHandler::webHandleStatus() {
 
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
-
-  // Format the adjustment so we get rid of rounding errors
-  if (myConfig.isTempF()) 
-    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC()), 1);
-  else
-    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(myConfig.getTempSensorAdjC(), 1);
 
   doc[PARAM_ID] = myConfig.getID();
   doc[PARAM_ANGLE] = reduceFloatPrecision(angle);
@@ -514,7 +514,7 @@ void WebServerHandler::webHandleConfigGravity() {
         _server->arg(PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
                                                                     : false);
   myConfig.saveFile();
-  _server->sendHeader("Location", "/config.htm#collapseThree", true);
+  _server->sendHeader("Location", "/config.htm#collapseGravity", true);
   _server->send(302, "text/plain", "Gravity config updated");
   LOG_PERF_STOP("webserver-api-config-gravity");
 }
@@ -556,7 +556,7 @@ void WebServerHandler::webHandleConfigHardware() {
     myConfig.setGyroTemp(
         _server->arg(PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
   myConfig.saveFile();
-  _server->sendHeader("Location", "/config.htm#collapseFour", true);
+  _server->sendHeader("Location", "/config.htm#collapseHardware", true);
   _server->send(302, "text/plain", "Hardware config updated");
   LOG_PERF_STOP("webserver-api-config-hardware");
 }
