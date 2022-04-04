@@ -267,8 +267,11 @@ void WebServerHandler::webHandleStatus() {
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
 
-  if (myConfig.isTempF()) // If the format is F we need to replace this value
-    doc[PARAM_TEMP_ADJ] = convertCtoF(myConfig.getTempSensorAdjC());
+  // Format the adjustment so we get rid of rounding errors
+  if (myConfig.isTempF()) 
+    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC()), 1);
+  else
+    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(myConfig.getTempSensorAdjC(), 1);
 
   doc[PARAM_ID] = myConfig.getID();
   doc[PARAM_ANGLE] = reduceFloatPrecision(angle);
