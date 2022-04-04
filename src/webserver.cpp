@@ -197,8 +197,8 @@ void WebServerHandler::webHandleUploadFile() {
 
   if (firmware) {
     // Handle firmware update, hardcode since function return wrong value.
-    uint32_t maxSketchSpace =
-        1044464;  // (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+    // (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+    uint32_t maxSketchSpace = MAX_SKETCH_SPACE;
 
     if (upload.status == UPLOAD_FILE_START) {
       _uploadReturn = 200;
@@ -231,7 +231,7 @@ void WebServerHandler::webHandleUploadFile() {
         ESP_RESET();
       } else {
         ErrorFileLog errLog;
-        errLog.addEntry(F("WEB : Failed to finish firmware flashing error=") +
+        errLog.addEntry("WEB : Failed to finish firmware flashing error=" +
                         String(Update.getError()));
         _uploadReturn = 500;
       }
