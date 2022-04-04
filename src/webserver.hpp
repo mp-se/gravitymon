@@ -24,14 +24,14 @@ SOFTWARE.
 #ifndef SRC_WEBSERVER_HPP_
 #define SRC_WEBSERVER_HPP_
 
-#if defined (ESP8266)
+#if defined(ESP8266)
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-#else // defined (ESP32)
+#else  // defined (ESP32)
+#include <ESPmDNS.h>
 #include <WebServer.h>
 #include <WiFi.h>
-#include <ESPmDNS.h>
 #endif
 #include <incbin.h>
 
@@ -103,8 +103,7 @@ class WebServerHandler {
                     gAboutHtmSize);
   }
   void webReturnTestHtm() {
-    _server->send_P(200, "text/html", (const char*)gTestHtmData,
-                    gTestHtmSize);
+    _server->send_P(200, "text/html", (const char*)gTestHtmData, gTestHtmSize);
   }
 #else
   void webReturnUploadHtm() {

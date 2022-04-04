@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#include <ble.hpp>
 #include <calc.hpp>
 #include <config.hpp>
 #include <gyro.hpp>
@@ -30,7 +31,6 @@ SOFTWARE.
 #include <tempsensor.hpp>
 #include <webserver.hpp>
 #include <wifi.hpp>
-#include <ble.hpp>
 
 // Define constats for this program
 #ifdef DEACTIVATE_SLEEPMODE
@@ -161,7 +161,8 @@ void setup() {
     runMode = RunMode::wifiSetupMode;
   }
 
-  bool needWifi = true; // Under ESP32 we dont need wifi if only BLE is active in gravityMode
+  bool needWifi = true;  // Under ESP32 we dont need wifi if only BLE is active
+                         // in gravityMode
 
   // Do this setup for all modes exect wifi setup
   switch (runMode) {
@@ -183,9 +184,11 @@ void setup() {
       myBatteryVoltage.read();
       checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
 
-#if defined (ESP32)
+#if defined(ESP32)
       if (!myConfig.isWifiPushActive() && runMode == RunMode::gravityMode) {
-        Log.notice(F("Main: Wifi is not needed in gravity mode, skipping connection." CR));
+        Log.notice(
+            F("Main: Wifi is not needed in gravity mode, skipping "
+              "connection." CR));
         needWifi = false;
       }
 #endif
@@ -269,18 +272,19 @@ bool loopReadGravity() {
       pushMillis = millis();
       LOG_PERF_START("loop-push");
 
-#if defined (ESP32)
+#if defined(ESP32)
       if (myConfig.isBLEActive()) {
         BleSender ble(myConfig.getColorBLE());
-        ble.sendData( convertCtoF(tempC), gravitySG);
+        ble.sendData(convertCtoF(tempC), gravitySG);
         Log.notice(F("MAIN: Broadcast data over bluetooth." CR));
       }
-#endif 
+#endif
 
-      if (myWifi.isConnected()) { // no need to try if there is no wifi connection.
+      if (myWifi.isConnected()) {  // no need to try if there is no wifi
+                                   // connection.
         PushTarget push;
         push.sendAll(angle, gravitySG, corrGravitySG, tempC,
-                  (millis() - runtimeMillis) / 1000);
+                     (millis() - runtimeMillis) / 1000);
       }
 
       LOG_PERF_STOP("loop-push");
@@ -356,7 +360,9 @@ void loop() {
     case RunMode::gravityMode:
       // If we didnt get a wifi connection, we enter sleep for a short time to
       // conserve battery.
-      if (!myWifi.isConnected() && myConfig.isWifiPushActive()) {  // no connection to wifi and we have defined push targets.
+      if (!myWifi.isConnected() &&
+          myConfig.isWifiPushActive()) {  // no connection to wifi and we have
+                                          // defined push targets.
         Log.notice(
             F("MAIN: No connection to wifi established, sleeping for 60s." CR));
         myWifi.stopDoubleReset();

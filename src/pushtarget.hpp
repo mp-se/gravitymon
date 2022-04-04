@@ -48,12 +48,18 @@ class PushTarget {
 
  public:
   void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
-            float runTime);
+               float runTime);
 
   void sendBrewfather(TemplatingEngine& engine);
-  void sendHttp1(TemplatingEngine& engine, bool isSecure) { sendHttpPost(engine, isSecure, 0); }
-  void sendHttp2(TemplatingEngine& engine, bool isSecure) { sendHttpPost(engine, isSecure, 1); }
-  void sendHttp3(TemplatingEngine& engine, bool isSecure) { sendHttpGet(engine, isSecure); }
+  void sendHttp1(TemplatingEngine& engine, bool isSecure) {
+    sendHttpPost(engine, isSecure, 0);
+  }
+  void sendHttp2(TemplatingEngine& engine, bool isSecure) {
+    sendHttpPost(engine, isSecure, 1);
+  }
+  void sendHttp3(TemplatingEngine& engine, bool isSecure) {
+    sendHttpGet(engine, isSecure);
+  }
   void sendInfluxDb2(TemplatingEngine& engine);
   void sendMqtt(TemplatingEngine& engine, bool isSecure);
   int getLastCode() { return _lastCode; }

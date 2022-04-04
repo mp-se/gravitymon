@@ -60,7 +60,7 @@ class HardwareConfig {
   int _gyroSensorMovingThreashold = 500;
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
-  int _pushTimeout = 10; // seconds
+  int _pushTimeout = 10;      // seconds
 
  public:
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
@@ -133,7 +133,7 @@ class Config {
   char _gravityFormat = 'G';
 
   // BLE (ESP32 only)
-  String _colorBLE; 
+  String _colorBLE;
 
   // Gyro calibration and formula calculation data
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
@@ -360,7 +360,10 @@ class Config {
   }
   bool isBLEActive() { return _colorBLE.length() ? true : false; }
   bool isWifiPushActive() {
-    return (isHttpActive() || isHttp2Active() || isHttp3Active() || isBrewfatherActive() || isInfluxDb2Active() || isMqttActive()) ? true : false;
+    return (isHttpActive() || isHttp2Active() || isHttp3Active() ||
+            isBrewfatherActive() || isInfluxDb2Active() || isMqttActive())
+               ? true
+               : false;
   }
 
   const RawGyroData& getGyroCalibration() { return _gyroCalibration; }

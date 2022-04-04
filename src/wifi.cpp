@@ -138,7 +138,7 @@ void WifiConnection::startPortal() {
 
   String mdns("<p>Default mDNS name is: http://");
   mdns += myConfig.getMDNS();
-  mdns += ".local<p>"; 
+  mdns += ".local<p>";
   ESP_WMParameter deviceName(mdns.c_str());
   myWifiManager->addParameter(&deviceName);
 
@@ -244,9 +244,9 @@ bool WifiConnection::updateFirmware() {
   WiFiClientSecure wifiSecure;
   HTTPUpdateResult ret;
   String serverPath = myConfig.getOtaURL();
-#if defined (ESP8266)  
+#if defined(ESP8266)
   serverPath += "firmware.bin";
-#else // defined (ESP32)
+#else  // defined (ESP32)
   serverPath += "firmware32.bin";
 #endif
 
@@ -280,7 +280,7 @@ bool WifiConnection::updateFirmware() {
 //
 // Download and save file
 //
-void WifiConnection::downloadFile(HTTPClient& http, String& fname) {
+void WifiConnection::downloadFile(HTTPClient &http, String &fname) {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Download file %s." CR), fname);
 #endif
@@ -357,14 +357,15 @@ bool WifiConnection::checkFirmwareVersion() {
             _newFirmware = true;
           // Compare patch version
           else if (newVer[0] == curVer[0] && newVer[1] == curVer[1] &&
-              newVer[2] > curVer[2])
+                   newVer[2] > curVer[2])
             _newFirmware = true;
         }
       }
 
       // Download new html files to filesystem if they are present.
       if (!ver["html"].isNull() && _newFirmware) {
-        Log.notice(F("WIFI: OTA checking if html files should be downloaded." CR));
+        Log.notice(
+            F("WIFI: OTA checking if html files should be downloaded." CR));
         JsonArray htmlFiles = ver["html"].as<JsonArray>();
         for (JsonVariant v : htmlFiles) {
           String s = v;

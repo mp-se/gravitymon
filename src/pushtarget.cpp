@@ -36,7 +36,7 @@ SOFTWARE.
 // Send the data to targets
 //
 void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
-                      float tempC, float runTime) {
+                         float tempC, float runTime) {
   printHeap("PUSH");
   _http.setReuse(false);
   _httpSecure.setReuse(false);
@@ -111,12 +111,10 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
 
   if (_lastCode == 204) {
     _lastSuccess = true;
-    Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR),
-               _lastCode);
+    Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR), _lastCode);
   } else {
     ErrorFileLog errLog;
-    errLog.addEntry("PUSH: Influxdb push failed response=" +
-                    String(_lastCode));
+    errLog.addEntry("PUSH: Influxdb push failed response=" + String(_lastCode));
   }
 
   _http.end();
@@ -186,7 +184,8 @@ void PushTarget::addHttpHeader(HTTPClient& http, String header) {
 //
 // Send data to http target using POST
 //
-void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure, int index) {
+void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
+                              int index) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to http (%s)" CR),
              index ? "http2" : "http");
@@ -213,11 +212,12 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure, int index
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
 
-#if defined (ESP8266)
-    String host = serverPath.substring(8); // remove the prefix or the probe will fail, it needs a pure host name.
+#if defined(ESP8266)
+    String host =
+        serverPath.substring(8);  // remove the prefix or the probe will fail,
+                                  // it needs a pure host name.
     int idx = host.indexOf("/");
-    if (idx!=-1)
-      host = host.substring(0, idx);
+    if (idx != -1) host = host.substring(0, idx);
 
     if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
       Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
@@ -254,13 +254,11 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure, int index
 
   if (_lastCode == 200) {
     _lastSuccess = true;
-    Log.notice(F("PUSH: HTTP post successful, response=%d" CR),
-               _lastCode);
+    Log.notice(F("PUSH: HTTP post successful, response=%d" CR), _lastCode);
   } else {
     ErrorFileLog errLog;
-    errLog.addEntry(
-        "PUSH: HTTP post failed response=" + String(_lastCode) +
-        String(index == 0 ? " (http)" : " (http2)"));
+    errLog.addEntry("PUSH: HTTP post failed response=" + String(_lastCode) +
+                    String(index == 0 ? " (http)" : " (http2)"));
   }
 
   if (isSecure) {
@@ -296,11 +294,12 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
 
-#if defined (ESP8266)
-    String host = serverPath.substring(8); // remove the prefix or the probe will fail, it needs a pure host name.
+#if defined(ESP8266)
+    String host =
+        serverPath.substring(8);  // remove the prefix or the probe will fail,
+                                  // it needs a pure host name.
     int idx = host.indexOf("/");
-    if (idx!=-1)
-      host = host.substring(0, idx);
+    if (idx != -1) host = host.substring(0, idx);
 
     if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
       Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
@@ -310,7 +309,7 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 
     _httpSecure.begin(_wifiSecure, serverPath);
     _httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
-    _lastCode = _httpSecure.GET(); 
+    _lastCode = _httpSecure.GET();
   } else {
     _http.begin(_wifi, serverPath);
     _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
@@ -319,12 +318,10 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 
   if (_lastCode == 200) {
     _lastSuccess = true;
-    Log.notice(F("PUSH: HTTP get successful, response=%d" CR),
-               _lastCode);
+    Log.notice(F("PUSH: HTTP get successful, response=%d" CR), _lastCode);
   } else {
     ErrorFileLog errLog;
-    errLog.addEntry(
-        "PUSH: HTTP get failed response=" + String(_lastCode));
+    errLog.addEntry("PUSH: HTTP get failed response=" + String(_lastCode));
   }
 
   if (isSecure) {
@@ -356,7 +353,7 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
 
-#if defined (ESP8266)
+#if defined(ESP8266)
     if (_wifiSecure.probeMaxFragmentLength(host, port, 512)) {
       Log.notice(F("PUSH: MQTT server supports smaller SSL buffer." CR));
       _wifiSecure.setBufferSizes(512, 512);

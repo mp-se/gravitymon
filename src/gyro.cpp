@@ -197,12 +197,13 @@ float GyroSensor::calculateAngle(RawGyroData &raw) {
 
   // Source: https://www.nxp.com/docs/en/application-note/AN3461.pdf
   float vY = (acos(abs(ay) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 / PI);
-  //float vZ = (acos(abs(az) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 / PI);
-  //float vX = (acos(abs(ax) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 / PI);
+  // float vZ = (acos(abs(az) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 /
+  // PI); float vX = (acos(abs(ax) / sqrt(ax * ax + ay * ay + az * az)) * 180.0
+  // / PI);
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
-  //Log.notice(F("GYRO: angleX= %F." CR), vX);
+  // Log.notice(F("GYRO: angleX= %F." CR), vX);
   Log.notice(F("GYRO: angleY= %F." CR), vY);
-  //Log.notice(F("GYRO: angleZ= %F." CR), vZ);
+  // Log.notice(F("GYRO: angleZ= %F." CR), vZ);
 #endif
   return vY;
 }

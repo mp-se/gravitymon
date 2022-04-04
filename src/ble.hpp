@@ -24,25 +24,24 @@ SOFTWARE.
 #ifndef SRC_BLE_HPP_
 #define SRC_BLE_HPP_
 
-#if defined (ESP32)
+#if defined(ESP32)
 
-#include <NimBLEDevice.h>
 #include <NimBLEBeacon.h>
-#include <main.hpp>
+#include <NimBLEDevice.h>
+
 #include <config.hpp>
+#include <main.hpp>
 
 class BleSender {
  private:
-  BLEAdvertising *_advertising;
+  BLEAdvertising* _advertising;
   String _color;
   BLEUUID _uuid;
 
  public:
-  BleSender(const char* color);
+  explicit BleSender(const char* color);
   void sendData(float tempF, float gravSG);
 };
 
-#endif // ESP32
-#endif // SRC_BLE_HPP_
-
-// EOF
+#endif  // ESP32
+#endif  // SRC_BLE_HPP_

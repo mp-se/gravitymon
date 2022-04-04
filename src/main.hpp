@@ -29,16 +29,16 @@ SOFTWARE.
 #include <ArduinoLog.h>
 #include <stdlib.h>
 
-#if defined (ESP8266)
+#if defined(ESP8266)
 #include <LittleFS.h>
 #define ESP_RESET ESP.reset
 #define PIN_SDA D3
 #define PIN_SCL D4
 #define PIN_DS D6
 #define PIN_LED 2
-//#define PIN_A0 A0
-#else // defined (ESP32)
-#if defined (ESPRESSIF32_20)
+// #define PIN_A0 A0
+#else  // defined (ESP32)
+#if defined(ESPRESSIF32_20)
 #include <LittleFS.h>
 #else
 #include <LITTLEFS.h>

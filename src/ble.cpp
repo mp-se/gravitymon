@@ -24,11 +24,12 @@ SOFTWARE.
 #if defined(ESP32)
 
 #include <ble.hpp>
+#include <string>
 
 // Tilt UUID variants and data format, based on tilt-sim
 //
 // https://github.com/spouliot/tilt-sim
-//  
+//
 // Tilt data format is described here. Only SG and Temp is transmitted over BLE.
 // https://kvurd.com/blog/tilt-hydrometer-ibeacon-data-format/
 
@@ -38,10 +39,11 @@ SOFTWARE.
 BleSender::BleSender(const char* color) {
   BLEDevice::init("");
 
-  // boost power to maximum, these might be changed once battery life using BLE has been tested.
+  // boost power to maximum, these might be changed once battery life using BLE
+  // has been tested.
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN ,ESP_PWR_LVL_P9);
+  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P9);
 
   _advertising = BLEDevice::getAdvertising();
   _color = color;
@@ -60,7 +62,7 @@ BleSender::BleSender(const char* color) {
     _uuid = BLEUUID::fromString("A495BB60-C5B1-4B44-B512-1370F02D74DE");
   else if (!_color.compareTo("yellow"))
     _uuid = BLEUUID::fromString("A495BB70-C5B1-4B44-B512-1370F02D74DE");
-  else // if (_color.compareTo("pink"))
+  else  // if (_color.compareTo("pink"))
     _uuid = BLEUUID::fromString("A495BB80-C5B1-4B44-B512-1370F02D74DE");
 }
 
@@ -68,26 +70,27 @@ BleSender::BleSender(const char* color) {
 // Send temp and gravity via BLE
 //
 void BleSender::sendData(float tempF, float gravSG) {
-  uint16_t gravity = gravSG*1000;   // SG * 1000 or SG * 10000 for Tilt Pro/HD
-  uint16_t temperature = tempF;     // Deg F _or_ Deg F * 10 for Tilt Pro/HD
+  uint16_t gravity = gravSG * 1000;  // SG * 1000 or SG * 10000 for Tilt Pro/HD
+  uint16_t temperature = tempF;      // Deg F _or_ Deg F * 10 for Tilt Pro/HD
 
   BLEBeacon oBeacon = BLEBeacon();
-  oBeacon.setManufacturerId(0x4C00); // fake Apple 0x004C LSB (ENDIAN_CHANGE_U16!)
+  oBeacon.setManufacturerId(
+      0x4C00);  // fake Apple 0x004C LSB (ENDIAN_CHANGE_U16!)
   oBeacon.setProximityUUID(_uuid);
   oBeacon.setMajor(temperature);
-  oBeacon.setMinor(gravity);  
+  oBeacon.setMinor(gravity);
   std::string strServiceData = "";
-  strServiceData += (char)26;     // Len
-  strServiceData += (char)0xFF;   // Type
-  strServiceData += oBeacon.getData(); 
+  strServiceData += static_cast<char>(26);    // Len
+  strServiceData += static_cast<char>(0xFF);  // Type
+  strServiceData += oBeacon.getData();
 
   BLEAdvertisementData oAdvertisementData = BLEAdvertisementData();
-  oAdvertisementData.setFlags(0x04); // BR_EDR_NOT_SUPPORTED 0x04
+  oAdvertisementData.setFlags(0x04);  // BR_EDR_NOT_SUPPORTED 0x04
   oAdvertisementData.addData(strServiceData);
 
   BLEAdvertisementData oScanResponseData = BLEAdvertisementData();
   _advertising->setAdvertisementData(oAdvertisementData);
-  _advertising->setScanResponseData(oScanResponseData);  
+  _advertising->setScanResponseData(oScanResponseData);
   _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
 
   _advertising->start();
@@ -96,4 +99,4 @@ void BleSender::sendData(float tempF, float gravSG) {
   delay(100);
 }
 
-#endif // ESP32
+#endif  // ESP32

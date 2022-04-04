@@ -26,10 +26,10 @@ SOFTWARE.
 #include <gyro.hpp>
 #include <helper.hpp>
 #include <main.hpp>
+#include <pushtarget.hpp>
 #include <resources.hpp>
 #include <templating.hpp>
 #include <tempsensor.hpp>
-#include <pushtarget.hpp>
 #include <webserver.hpp>
 #include <wifi.hpp>
 
@@ -51,9 +51,8 @@ void WebServerHandler::webHandleConfig() {
 
   double angle = 0;
 
-  if (myGyro.hasValue())
-    angle = myGyro.getAngle();
-  
+  if (myGyro.hasValue()) angle = myGyro.getAngle();
+
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
 
@@ -61,8 +60,9 @@ void WebServerHandler::webHandleConfig() {
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
 
   // Format the adjustment so we get rid of rounding errors
-  if (myConfig.isTempF()) 
-    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC()), 1);
+  if (myConfig.isTempF())
+    doc[PARAM_TEMP_ADJ] =
+        reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC()), 1);
   else
     doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(myConfig.getTempSensorAdjC(), 1);
 
@@ -128,13 +128,13 @@ void WebServerHandler::webHandleUpload() {
     obj[PARAM_FILE_NAME] = dir.fileName();
     obj[PARAM_FILE_SIZE] = dir.fileSize();
   }
-#else // defined(ESP32)
+#else  // defined(ESP32)
   JsonArray files = doc.createNestedArray(PARAM_FILES);
 
   File dir = LittleFS.open("/");
 
   while (true) {
-    File entry =  dir.openNextFile();
+    File entry = dir.openNextFile();
     if (!entry) {
       // no more files
       break;
@@ -188,43 +188,51 @@ void WebServerHandler::webHandleUploadFile() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : webServer callback for /api/upload, receiving file %s, %d(%d) "
-                "valid=%s, firmware=%s." CR),
-              f.c_str(), upload.currentSize, upload.totalSize, validFilename ? "yes" : "no", firmware ? "yes" : "no");
+  Log.verbose(
+      F("WEB : webServer callback for /api/upload, receiving file %s, %d(%d) "
+        "valid=%s, firmware=%s." CR),
+      f.c_str(), upload.currentSize, upload.totalSize,
+      validFilename ? "yes" : "no", firmware ? "yes" : "no");
 #endif
 
   if (firmware) {
-    // Handle firmware update
-    uint32_t maxSketchSpace = 1044464; //(ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+    // Handle firmware update, hardcode since function return wrong value.
+    uint32_t maxSketchSpace =
+        1044464;  // (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
 
     if (upload.status == UPLOAD_FILE_START) {
       _uploadReturn = 200;
-      Log.notice(F("WEB : Start firmware upload, max sketch size %d kb." CR), maxSketchSpace/1024);
+      Log.notice(F("WEB : Start firmware upload, max sketch size %d kb." CR),
+                 maxSketchSpace / 1024);
 
-      if (!Update.begin(maxSketchSpace, U_FLASH, PIN_LED)){
+      if (!Update.begin(maxSketchSpace, U_FLASH, PIN_LED)) {
         ErrorFileLog errLog;
-        errLog.addEntry(F("WEB : Not enough space to store for this firmware."));
+        errLog.addEntry(
+            F("WEB : Not enough space to store for this firmware."));
         _uploadReturn = 500;
-      }      
+      }
     } else if (upload.status == UPLOAD_FILE_WRITE) {
-      Log.notice(F("WEB : Writing firmware upload %d (%d)." CR), upload.totalSize, maxSketchSpace);
+      Log.notice(F("WEB : Writing firmware upload %d (%d)." CR),
+                 upload.totalSize, maxSketchSpace);
 
       if (upload.totalSize > maxSketchSpace) {
         Log.error(F("WEB : Firmware file is to large." CR));
         _uploadReturn = 500;
-      } else if (Update.write(upload.buf, upload.currentSize) != upload.currentSize){
+      } else if (Update.write(upload.buf, upload.currentSize) !=
+                 upload.currentSize) {
         Log.warning(F("WEB : Firmware write was unsuccessful." CR));
         _uploadReturn = 500;
       }
     } else if (upload.status == UPLOAD_FILE_END) {
       Log.notice(F("WEB : Finish firmware upload." CR));
-      if(Update.end(true)) {
+      if (Update.end(true)) {
         _server->send(200);
         delay(500);
         ESP_RESET();
       } else {
         ErrorFileLog errLog;
-        errLog.addEntry(F("WEB : Failed to finish firmware flashing error=") + String(Update.getError()));
+        errLog.addEntry(F("WEB : Failed to finish firmware flashing error=") +
+                        String(Update.getError()));
         _uploadReturn = 500;
       }
     } else {
@@ -244,15 +252,13 @@ void WebServerHandler::webHandleUploadFile() {
       if (validFilename) _uploadFile = LittleFS.open(f, "w");
     } else if (upload.status == UPLOAD_FILE_WRITE) {
       Log.notice(F("WEB : Writing html upload." CR));
-      if (_uploadFile)
-        _uploadFile.write(
-            upload.buf,
-            upload.currentSize);
+      if (_uploadFile) _uploadFile.write(upload.buf, upload.currentSize);
     } else if (upload.status == UPLOAD_FILE_END) {
       Log.notice(F("WEB : Finish html upload." CR));
       if (_uploadFile) {
         _uploadFile.close();
-        Log.notice(F("WEB : Html file uploaded %d bytes." CR), upload.totalSize);
+        Log.notice(F("WEB : Html file uploaded %d bytes." CR),
+                   upload.totalSize);
       }
       _server->sendHeader("Location", "/");
       _server->send(303);
@@ -321,8 +327,7 @@ void WebServerHandler::webHandleStatus() {
 
   double angle = 0;
 
-  if (myGyro.hasValue())
-    angle = myGyro.getAngle();
+  if (myGyro.hasValue()) angle = myGyro.getAngle();
 
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
@@ -833,10 +838,11 @@ void WebServerHandler::webHandleTestPush() {
   PushTarget push;
   bool enabled = false;
 
-  if (!type.compareTo(PARAM_FORMAT_BREWFATHER) && myConfig.isBrewfatherActive()) {
+  if (!type.compareTo(PARAM_FORMAT_BREWFATHER) &&
+      myConfig.isBrewfatherActive()) {
     push.sendBrewfather(engine);
     enabled = true;
-  } else if (!type.compareTo(PARAM_FORMAT_HTTP1) && myConfig.isHttpActive()) {  
+  } else if (!type.compareTo(PARAM_FORMAT_HTTP1) && myConfig.isHttpActive()) {
     push.sendHttp1(engine, myConfig.isHttpSSL());
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_HTTP2) && myConfig.isHttp2Active()) {
@@ -845,7 +851,8 @@ void WebServerHandler::webHandleTestPush() {
   } else if (!type.compareTo(PARAM_FORMAT_HTTP3) && myConfig.isHttp3Active()) {
     push.sendHttp3(engine, myConfig.isHttp3SSL());
     enabled = true;
-  } else if (!type.compareTo(PARAM_FORMAT_INFLUXDB) && myConfig.isInfluxDb2Active()) {
+  } else if (!type.compareTo(PARAM_FORMAT_INFLUXDB) &&
+             myConfig.isInfluxDb2Active()) {
     push.sendInfluxDb2(engine);
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_MQTT) && myConfig.isMqttActive()) {
@@ -1143,9 +1150,9 @@ bool WebServerHandler::setupWebServer() {
 
   // Check if the html files exist, if so serve them, else show the static
   // upload page.
-  if (checkHtmlFile(HTML_INDEX) && checkHtmlFile(HTML_CONFIG) && 
-      checkHtmlFile(HTML_CALIBRATION) && checkHtmlFile(HTML_FORMAT) && 
-      checkHtmlFile(HTML_ABOUT) && checkHtmlFile(HTML_TEST) ) {
+  if (checkHtmlFile(HTML_INDEX) && checkHtmlFile(HTML_CONFIG) &&
+      checkHtmlFile(HTML_CALIBRATION) && checkHtmlFile(HTML_FORMAT) &&
+      checkHtmlFile(HTML_ABOUT) && checkHtmlFile(HTML_TEST)) {
     Log.notice(F("WEB : All html files exist, starting in normal mode." CR));
 
     _server->serveStatic("/", LittleFS, "/index.min.htm");
@@ -1166,7 +1173,7 @@ bool WebServerHandler::setupWebServer() {
   }
 #endif
   _server->on("/firmware.htm",
-                std::bind(&WebServerHandler::webReturnFirmwareHtm, this));
+              std::bind(&WebServerHandler::webReturnFirmwareHtm, this));
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
 
@@ -1226,7 +1233,7 @@ bool WebServerHandler::setupWebServer() {
                         this));  // Change device params
   _server->on("/api/test/push", HTTP_GET,
               std::bind(&WebServerHandler::webHandleTestPush,
-                        this));  // 
+                        this));  //
 
   _server->onNotFound(
       std::bind(&WebServerHandler::webHandlePageNotFound, this));

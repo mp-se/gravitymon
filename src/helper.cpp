@@ -50,9 +50,8 @@ void tcp_cleanup() {
 //
 // Convert sg to plato
 //
-double convertToPlato(double sg) { 
-  if (sg)
-    return 259 - (259 / sg); 
+double convertToPlato(double sg) {
+  if (sg) return 259 - (259 / sg);
   return 0;
 }
 
@@ -357,20 +356,25 @@ void PerfLogging::pushInflux() {
   snprintf(&buf[0], sizeof(buf), "\ndebug,host=%s,device=%s ",
            myConfig.getMDNS(), myConfig.getID());
   body += &buf[0];
-#if defined (ESP8266)
-  snprintf(
-      &buf[0], sizeof(buf),
-      "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp=%.2f,heap=%d,heap-frag=%d,heap-max=%d,stack=%d",
-      myGyro.getAngle(), myGyro.getLastGyroData().ax,
-      myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
-      myGyro.getSensorTempC(), myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(), ESP.getHeapFragmentation(), ESP.getMaxFreeBlockSize(), ESP.getFreeContStack());
-#else // defined (ESP32)
-  snprintf(
-      &buf[0], sizeof(buf),
-      "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp=%.2f,heap=%d,heap-frag=%d,heap-max=%d",
-      myGyro.getAngle(), myGyro.getLastGyroData().ax,
-      myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
-      myGyro.getSensorTempC(), myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(), 0, ESP.getMaxAllocHeap());
+#if defined(ESP8266)
+  snprintf(&buf[0], sizeof(buf),
+           "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp="
+           "%.2f,heap=%d,heap-frag=%d,heap-max=%d,stack=%d",
+           myGyro.getAngle(), myGyro.getLastGyroData().ax,
+           myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
+           myGyro.getSensorTempC(),
+           myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(),
+           ESP.getHeapFragmentation(), ESP.getMaxFreeBlockSize(),
+           ESP.getFreeContStack());
+#else  // defined (ESP32)
+  snprintf(&buf[0], sizeof(buf),
+           "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp="
+           "%.2f,heap=%d,heap-frag=%d,heap-max=%d",
+           myGyro.getAngle(), myGyro.getLastGyroData().ax,
+           myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
+           myGyro.getSensorTempC(),
+           myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(), 0,
+           ESP.getMaxAllocHeap());
 #endif
 
   body += &buf[0];
@@ -429,7 +433,7 @@ float reduceFloatPrecision(float f, int dec) {
 //
 String urlencode(String str) {
   String encodedString;
-  encodedString.reserve(str.length()*2);
+  encodedString.reserve(str.length() * 2);
   encodedString = "";
   char c;
   char code0;

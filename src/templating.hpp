@@ -85,7 +85,7 @@ class TemplatingEngine {
                       {TPL_GRAVITY_P, ""},      {TPL_GRAVITY_CORR, ""},
                       {TPL_GRAVITY_CORR_G, ""}, {TPL_GRAVITY_CORR_P, ""},
                       {TPL_GRAVITY_UNIT, ""},   {TPL_TOKEN, ""},
-                      {TPL_TOKEN2, ""} };
+                      {TPL_TOKEN2, ""}};
 
   char buffer[20];
   String baseTemplate;
