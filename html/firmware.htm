@@ -123,7 +123,10 @@
           showError("Upload failed");
         },
         success: function(resp) {
-          showSuccess("Upload completed, device is restarting. Wait 10 seconds and refresh browser.");
+          showSuccess("Upload completed, device is restarting. Waiting 10 seconds to refresh browser.");
+          setTimeout(() => {  
+            window.location = "/";
+          }, 10000);
         }
       });
     });
@@ -138,11 +141,6 @@
     $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val).text(val + "%");
   }
 
-  function completeHandler(event) {
-    showSuccess("Upload completed, device is restarting.");
-    setProgress(0);
-  }
-  
   function getStatus() {
     var url = "/api/status";
     //var url = "/test/status.json";

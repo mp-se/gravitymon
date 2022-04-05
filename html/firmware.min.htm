@@ -6,4 +6,71 @@
       </div>
       <button type="submit" class="btn btn-primary" id="upload-btn" value="upload">Flash firmware</button>
     </form>
---><form id="uploadForm" enctype="multipart/form-data"><div class="col-md-8 custom-file"><input type="file" accept=".bin" class="custom-file-input" name="name" id="name"> <label class="custom-file-label" for="name">Choose file</label></div><button type="submit" class="btn btn-primary" id="upload-btn" value="upload">Flash firmware</button></form></div><div class="progress"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div><hr class="my-4"></div><script type="text/javascript">function progressHandler(e){var t=e.loaded/e.total*100;setProgress(Math.round(t))}function setProgress(e){$(".progress-bar").css("width",e+"%").attr("aria-valuenow",e).text(e+"%")}function completeHandler(e){showSuccess("Upload completed, device is restarting."),setProgress(0)}function getStatus(){var e="/api/status";$("#spinner").show(),$.getJSON(e,function(e){console.log(e),$("#app-ver").text(e["app-ver"]),$("#platform").text(e.platform)}).fail(function(){showError("Unable to get data from the device.")}).always(function(){$("#spinner").hide()})}function start(){setInterval(getStatus,3e3)}window.onload=getStatus,$(document).ready(function(){$("#uploadForm").on("submit",function(e){e.preventDefault(),$.ajax({xhr:function(){var e=new window.XMLHttpRequest;return e.upload.addEventListener("progress",function(e){e.lengthComputable&&progressHandler(e)},!1),e},type:"POST",url:"/api/upload",data:new FormData(this),contentType:!1,cache:!1,processData:!1,beforeSend:function(){setProgress(0)},error:function(){showError("Upload failed")},success:function(e){showSuccess("Upload completed, device is restarting. Wait 10 seconds and refresh browser.")}})})})</script><!-- START FOOTER --><div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div></body></html>
+--><form id="uploadForm" enctype="multipart/form-data"><div class="col-md-8 custom-file"><input type="file" accept=".bin" class="custom-file-input" name="name" id="name"> <label class="custom-file-label" for="name">Choose file</label></div><button type="submit" class="btn btn-primary" id="upload-btn" value="upload">Flash firmware</button></form></div><div class="progress"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div><hr class="my-4"></div><script type="text/javascript">window.onload = getStatus;
+  
+  $(document).ready(function() {
+    $("#uploadForm").on('submit', function(e) {
+      e.preventDefault();
+      $.ajax( {
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              progressHandler(evt);
+            }
+          }, false);
+          return xhr;
+        },
+        type: 'POST',
+        url: '/api/upload',
+        data: new FormData(this),
+        contentType: false,
+        cache: false,
+        processData:false,
+        beforeSend: function() {
+          setProgress(0);
+        },
+        error:function() {
+          showError("Upload failed");
+        },
+        success: function(resp) {
+          showSuccess("Upload completed, device is restarting. Waiting 10 seconds to refresh browser.");
+          setTimeout(() => {  
+            window.location = "/";
+          }, 10000);
+        }
+      });
+    });
+  });
+
+  function progressHandler(event) {
+    var percent = (event.loaded / event.total) * 100;
+    setProgress(Math.round(percent));
+  }
+
+  function setProgress(val) {
+    $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val).text(val + "%");
+  }
+
+  function getStatus() {
+    var url = "/api/status";
+    //var url = "/test/status.json";
+    $('#spinner').show(); 
+    $.getJSON(url, function (cfg) {
+      console.log( cfg );
+
+      $("#app-ver").text(cfg["app-ver"]);
+      $("#platform").text(cfg["platform"]);
+   
+    })
+    .fail(function () {
+      showError('Unable to get data from the device.');
+    })
+    .always(function() {
+      $('#spinner').hide(); 
+    });
+  }
+
+  function start() {
+    setInterval(getStatus, 3000);
+  }</script><!-- START FOOTER --><div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div></body></html>
