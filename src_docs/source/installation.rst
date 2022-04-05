@@ -3,6 +3,12 @@
 Installation 
 ------------
 
+You have these 3 options for flashing this firmware:
+
+* Brewflasher via USB serial
+* Esptool via USB serial
+* iSpindel web interface
+
 Brewflasher
 ===========
 
@@ -16,7 +22,7 @@ on both Windows and Mac. You can download the latest version from here: `Brewfla
 Binaries
 ********
 
-In the /bin directory you will find 2 different firmware builds;
+In the /bin directory you will find 3 different firmware builds;
 
 * **firmware.bin**
 
@@ -26,12 +32,16 @@ In the /bin directory you will find 2 different firmware builds;
 
   This version also submits performance data to an influx database with detailed execution times.
 
+* **firmware32.bin**
+
+  This is the standard release build for an ESP32 variant
+
 In these versions all the html files are embedded in the binaries. The file system is currently only used for storing 
 the configuration file. 
 
 If the software becomes so large the html files can be moved to the file system, but this is not enabled by 
 default (see compiling for details). This approach makes installation much easier and ensure that html files 
-and code is in sync. 
+and code is in sync.
 
 Esptool
 =======
@@ -48,6 +58,14 @@ The basic command for flashing on Windows is;
 If there are issues you can try do erase the flash first using this command;
 
 ``esptool.py --port COM4 erase_flash``
+
+iSpindel
+========
+
+If you already have the device flashed with iSpindel firmware you can go into the configuration mode where you will find
+an option for updating firmware. The option is under the maintence meny.
+
+Select the esp8266 version of the firmware called firmware.bin and press upload. 
 
 Serial Monitoring
 =================
