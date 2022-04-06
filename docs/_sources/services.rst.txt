@@ -48,6 +48,27 @@ Enter the following as URL:
    http://industrial.api.ubidots.com/api/v1.6/devices/<devicename>/?token=<api-token>
 
 
+This is the less secure option. 
+
+**Option 2** - token as the http header
+
+Enter the following as URL, use either standard or ssl.
+   
+.. code-block::
+
+   http://industrial.api.ubidots.com/api/v1.6/devices/<devicename>
+   https://industrial.api.ubidots.com/api/v1.6/devices/<devicename>
+
+
+Under `Headers` (button after the http url in the UI) enter the following string: 
+   
+.. code-block::
+
+   X-Auth-Token: <api-token>
+
+
+This is the more secure option.
+
 Even though ubidots can handle the default ispindle format it probably better to just post the data you want. This is an example of a 
 format template that can be used. For information on customizing the format see :ref:`format-editor`.
 
@@ -105,7 +126,7 @@ Brewer's friend is an all in one service that allows you to manage you recepies 
 
 .. warning::
   I dont have an account for brewers friend so I have not been able to verfy this completely. Its based on
-  the available documentation.
+  the available documentation. If this works please let 
 
 You can find you API key when logged in to the service. Follow these `instructions <https://docs.brewersfriend.com/devices/ispindel>`_
 
@@ -134,3 +155,43 @@ format for the endpoint. Just add you API key after token.
    "battery": ${battery},
    "rssi": ${rssi}
   }
+
+
+Brewspy
++++++++
+
+BrewSpy is a service that can show the history and manage the brew.
+
+You need to enter the Token found in brewspy. The field is found under the field for http configuration.
+
+.. code-block::
+
+   http://brew-spy.com/api/ispindel
+
+
+Thingspeak
+++++++++++
+
+Thingspeak is an IoT platform for receiving data which can be visualized.
+
+In order to use this platform you need to create a channel (channel = device) and get the APIKEY for 
+writing to the channel. Each channel can handle up to 8 measurements. In the http field enter the following URL.
+
+.. code-block::
+
+   http://api.thingspeak.com/update.json
+
+
+You also need to create a custom format for the selected endpoint where the field1-field8 contains the data 
+you want to include. The example below sends 5 different values to the channel identified by the API key.
+
+.. code-block::
+
+   { 
+      "api_key": "<your write api key for channel>",
+      "field1": ${gravity}, 
+      "field2": ${temp},
+      "field3": ${angle},
+      "field4": ${battery},
+      "field5": ${rssi}
+   }

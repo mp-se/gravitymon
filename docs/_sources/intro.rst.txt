@@ -40,8 +40,8 @@ Configuration - Device Settings - Device Name
 
 Give your device a good name.
 
-Configuration - Device Settings - Calibration
-+++++++++++++++++++++++++++++++++++++++++++++
+Configuration - Device Settings - Gyro Calibration
+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 You need to place the device on a flat surface and then press the 
 calibrate button. It will take a few seconds for this to complete and the angle should be close to 90 degress. Without 
@@ -49,14 +49,18 @@ calibration the device will not go into gravity mode.
 
 Configuration - Push Settings
 +++++++++++++++++++++++++++++
-Add the endpoints where you want data to be transmitted. All URLs that contain a 
-valid endpoint will receive the data.
+Add the endpoints where you want data to be transmitted. All URLs that contain a valid endpoint will receive the data.
 
 Calibration 
 +++++++++++
 
 I recommend to use the calibration feature to create a gravity formula. If you have values from a 
 previous calibration then you can add them here, if not follow the calibration guidelines on the iSpindle site.
+
+There are several guides for how to calibrate the device (`iSpindle Calibration <https://www.ispindel.de/docs/Calibration_en.html>`_) 
+
+This will get the data points needed to create the formula, and the datapoints will be stored on the device so you can 
+adjust them when needed.
 
 Step 4 - Completed
 ------------------
