@@ -3,7 +3,7 @@
 Installation 
 ------------
 
-You have these 3 options for flashing this firmware:
+You have these 3 options for flashing this firmware. 
 
 * Brewflasher via USB serial
 * Esptool via USB serial
@@ -66,6 +66,32 @@ If you already have the device flashed with iSpindel firmware you can go into th
 an option for updating firmware. The option is under the maintence meny.
 
 Select the esp8266 version of the firmware called firmware.bin and press upload. 
+
+Updating firmware 
+=================
+
+You can use the above options for updating the firmware as well. But if you want to do updates without connecting the USB cable these 
+are your options.
+
+OTA Option
+**********
+
+You can use the OTA option by adding this URL to your configuration and when the device starts up in configuration mode it 
+will check for a new version and if it finds a newer version it will do an update.
+
+``https://mp-se.github.io/gravitymon/release/``
+
+Manual update
+*************
+
+When the device in is configuration mode you can manually update with a new firmware. Just open this URL in the web 
+browser and select the firmware.bin file that corresponds to the version you want to flash. 
+
+``http://<device_name>/firmware.htm``
+
+
+
+.. _serial_monitoring:
 
 Serial Monitoring
 =================
