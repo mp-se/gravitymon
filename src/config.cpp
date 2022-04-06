@@ -35,13 +35,13 @@ Config::Config() {
   // Assiging default values
   char buf[30];
 #if defined(ESP8266)
-  snprintf(&buf[0], sizeof(buf), "%6x", (unsigned int)ESP.getChipId());
+  snprintf(&buf[0], sizeof(buf), "%06x", (unsigned int)ESP.getChipId());
 #else  // defined (ESP32)
   uint32_t chipId = 0;
   for (int i = 0; i < 17; i = i + 8) {
     chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
   }
-  snprintf(&buf[0], sizeof(buf), "%6x", chipId);
+  snprintf(&buf[0], sizeof(buf), "%06x", chipId);
 #endif
   _id = String(&buf[0]);
   snprintf(&buf[0], sizeof(buf), "" WIFI_MDNS "%s", getID());
