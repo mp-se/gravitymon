@@ -1,0 +1,408 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Compiling the software" href="compiling.html" /><link rel="prev" title="REST API" href="api.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
+        <title>Data Formats - GravityMon 0.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">GravityMon 0.8.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">GravityMon 0.8.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="data-formats">
+<span id="id1"></span><h1>Data Formats<a class="headerlink" href="#data-formats" title="Permalink to this headline">#</a></h1>
+<div class="section" id="ispindle-format">
+<span id="data-formats-ispindle"></span><h2>iSpindle format<a class="headerlink" href="#ispindle-format" title="Permalink to this headline">#</a></h2>
+<p>This is the format used for standard http posts.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">corr-gravity</span></code> is an extended parameter containing a temperature corrected gravity reading.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gravity-format</span></code> is an extended parameter containing the gravity format (G or P).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run-time</span></code> is an extended parameter containing the number of seconds the execution took.</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"ID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2E6753"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"token"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">900</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"temperature"</span><span class="p">:</span><span class="w"> </span><span class="mf">20.5</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"temp-units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"angle"</span><span class="p">:</span><span class="w"> </span><span class="mf">45.34</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"rssi"</span><span class="p">:</span><span class="w"> </span><span class="mi">-12</span><span class="p">,</span><span class="w"></span>
+
+<span class="w">   </span><span class="nt">"corr-gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gravity-unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"run-time"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This is the format template used to create the json above.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
+ "name" : "${mdns}",
+ "ID": "${id}",
+ "token" : "gravmon",
+ "interval": ${sleep-interval},
+ "temperature": ${temp},
+ "temp-units": "${temp-unit}",
+ "gravity": ${gravity},
+ "angle": ${angle},
+ "battery": ${battery},
+ "rssi": ${rssi},
+ "corr-gravity": ${corr-gravity},
+ "gravity-unit": "${gravity-unit}",
+ "run-time": ${run-time}
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="brewfather-format">
+<span id="data-formats-brewfather"></span><h2>Brewfather format<a class="headerlink" href="#brewfather-format" title="Permalink to this headline">#</a></h2>
+<p>This is the format for Brewfather. See: <a class="reference external" href="https://docs.brewfather.app/integrations/custom-stream">Brewfather API docs</a></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"temp"</span><span class="p">:</span><span class="w"> </span><span class="mf">20.5</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"temp_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gravity_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="influx-db-v2">
+<span id="data-formats-influxdb2"></span><h2>Influx DB v2<a class="headerlink" href="#influx-db-v2" title="Permalink to this headline">#</a></h2>
+<p>This is the format for InfluxDB v2</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">measurement</span><span class="p">,</span><span class="n">host</span><span class="o">=&lt;</span><span class="n">mdns</span><span class="o">&gt;</span><span class="p">,</span><span class="n">device</span><span class="o">=&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="p">,</span><span class="n">temp</span><span class="o">-</span><span class="nb">format</span><span class="o">=&lt;</span><span class="n">C</span><span class="o">|</span><span class="n">F</span><span class="o">&gt;</span><span class="p">,</span><span class="n">gravity</span><span class="o">-</span><span class="nb">format</span><span class="o">=</span><span class="n">SG</span><span class="p">,</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">corr</span><span class="o">-</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">angle</span><span class="o">=</span><span class="mf">45.45</span><span class="p">,</span><span class="n">temp</span><span class="o">=</span><span class="mf">20.1</span><span class="p">,</span><span class="n">battery</span><span class="o">=</span><span class="mf">3.96</span><span class="p">,</span><span class="n">rssi</span><span class="o">=-</span><span class="mi">18</span>
+</pre></div>
+</div>
+<p>This is the format template used to create the json above.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
+</pre></div>
+</div>
+</div>
+<div class="section" id="mqtt">
+<span id="data-formats-mqtt"></span><h2>MQTT<a class="headerlink" href="#mqtt" title="Permalink to this headline">#</a></h2>
+<p>This is the format used to send data to MQTT. Each of the lines are specific topics</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">tilt</span> <span class="mf">89.96796</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">temperature</span> <span class="mf">21.375</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">temp_units</span> <span class="n">C</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">battery</span> <span class="mf">0.04171</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">gravity</span> <span class="mf">33.54894</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">interval</span> <span class="mi">1</span>
+<span class="n">ispindel</span><span class="o">/</span><span class="n">device_name</span><span class="o">/</span><span class="n">RSSI</span> <span class="o">-</span><span class="mi">58</span>
+</pre></div>
+</div>
+<p>This is the format template used to create the json above.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Each line in the format is treated as one topic. The <cite>|</cite> is used as separator between lines and the first <cite>:</cite> is used as separator between topic and value. Each line is formatted as <cite>&lt;topic&gt;:&lt;value&gt;</cite></p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ispindel/${mdns}/tilt:${angle}|
+ispindel/${mdns}/temperature:${temp}|
+ispindel/${mdns}/temp_units:${temp-unit}|
+ispindel/${mdns}/battery:${battery}|
+ispindel/${mdns}/gravity:${gravity}|
+ispindel/${mdns}/interval:${sleep-interval}|
+ispindel/${mdns}/RSSI:${rssi}|
+</pre></div>
+</div>
+<p>This is a format template that is compatible with v0.6. Just replace the <cite>topic</cite> with the topic you want to post data to.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>topic:{"name":"gravmon","ID":"${id}","token":"gravmon","interval": ${sleep-interval},"temperature": ${temp},"temp-units": "${temp-unit}","gravity":${gravity},"angle": ${angle},"battery":${battery},"rssi": ${rssi},"corr-gravity":${corr-gravity},"gravity-unit": "${gravity-unit}","run-time": ${run-time}}|
+</pre></div>
+</div>
+</div>
+<div class="section" id="version-json">
+<h2>version.json<a class="headerlink" href="#version-json" title="Permalink to this headline">#</a></h2>
+<p>Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it’s easy to
+upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system
+they can be uploaded manually afterwards.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"project"</span><span class="p">:</span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"0.7.0"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"html"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">      </span><span class="s2">"index.min.htm"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">"device.min.htm"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">"config.min.htm"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">"format.min.htm"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">"calibration.min.htm"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">"about.min.htm"</span><span class="w"></span>
+<span class="w">   </span><span class="p">]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="compiling.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Compiling the software</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="api.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">REST API</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2021-2022, Magnus Persson
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Data Formats</a><ul>
+<li><a class="reference internal" href="#ispindle-format">iSpindle format</a></li>
+<li><a class="reference internal" href="#brewfather-format">Brewfather format</a></li>
+<li><a class="reference internal" href="#influx-db-v2">Influx DB v2</a></li>
+<li><a class="reference internal" href="#mqtt">MQTT</a></li>
+<li><a class="reference internal" href="#version-json">version.json</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    </body>
+</html>
