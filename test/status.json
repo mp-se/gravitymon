@@ -11,6 +11,7 @@
     "sleep-mode": false,
     "rssi": -56,
     "app-ver": "0.0.0",
+    "app-build": "gitrev",
     "mdns": "gravmon",
     "platform": "esp32",
     "runtime-average": 3.12

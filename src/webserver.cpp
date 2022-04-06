@@ -354,6 +354,7 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_TOKEN2] = myConfig.getToken2();
 
   doc[PARAM_APP_VER] = CFG_APPVER;
+  doc[PARAM_APP_BUILD] = CFG_GITREV;
   doc[PARAM_MDNS] = myConfig.getMDNS();
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
