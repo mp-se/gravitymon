@@ -23,6 +23,7 @@ v0.9.0
 * BUG: If using plato and not gravity formula was defined the value was set to null.
 * BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.
 * BUG: Temperature sensor adjusmemnt value was not handled properly when using Farenheight.
+* BUG: If the ID was to low the device id could end up with a leading space causing errors in data post. Added leading zero to ID.
 
 v0.8.0
 ------
