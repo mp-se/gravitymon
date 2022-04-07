@@ -322,12 +322,12 @@ class Config {
     _tempSensorAdjC = f;
     _saveNeeded = true;
   }
-  void setTempSensorAdjC(String s) {
-    _tempSensorAdjC = s.toFloat();
+  void setTempSensorAdjC(String s, float adjustC = 0) {
+    _tempSensorAdjC = s.toFloat() + adjustC;
     _saveNeeded = true;
   }
-  void setTempSensorAdjF(String s) {
-    _tempSensorAdjC = convertFtoC(s.toFloat());
+  void setTempSensorAdjF(String s, float adjustF = 0) {
+    _tempSensorAdjC = convertFtoC(s.toFloat() + adjustF);
     _saveNeeded = true;
   }
 

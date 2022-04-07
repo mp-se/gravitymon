@@ -61,8 +61,9 @@ void WebServerHandler::webHandleConfig() {
 
   // Format the adjustment so we get rid of rounding errors
   if (myConfig.isTempF())
+    // We want the delta value (32F = 0C).
     doc[PARAM_TEMP_ADJ] =
-        reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC()), 1);
+        reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC())-32, 1); 
   else
     doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(myConfig.getTempSensorAdjC(), 1);
 
@@ -605,7 +606,8 @@ void WebServerHandler::webHandleConfigHardware() {
     if (myConfig.isTempC()) {
       myConfig.setTempSensorAdjC(_server->arg(PARAM_TEMP_ADJ));
     } else {
-      myConfig.setTempSensorAdjF(_server->arg(PARAM_TEMP_ADJ));
+      // Data is delta so we add 32 in order to conver to C.
+      myConfig.setTempSensorAdjF(_server->arg(PARAM_TEMP_ADJ), 32);
     }
   }
   if (_server->hasArg(PARAM_BLE))
