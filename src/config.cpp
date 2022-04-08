@@ -51,12 +51,6 @@ Config::Config() {
   Log.verbose(F("CFG : Created config for %s (%s)." CR), _id.c_str(),
               _mDNS.c_str());
 #endif
-
-#if defined(ESP8266)
-  setVoltageFactor(1.59);  // Conversion factor for battery on ESP8266
-#else                      // defined (ESP32)
-  setVoltageFactor(1.25);  // Conversion factor for battery on ESP32
-#endif
 }
 
 //

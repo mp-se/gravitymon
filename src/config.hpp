@@ -96,7 +96,7 @@ class Config {
   String _mDNS = "";
   String _otaURL = "";
   char _tempFormat = 'C';
-  float _voltageFactor = 0;
+  float _voltageFactor = 1.59;
   float _tempSensorAdjC = 0;
   int _sleepInterval = 900;
   bool _gyroTemp = false;
