@@ -16,6 +16,9 @@ I would suggest that you try how it fits into the PET tube before soldering it t
 
 You also need to desolder (remove) the RED ON LED from the ESP32 or the battery power will be reduced a lot.
 
+Final thing is to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor which 
+the esp32 does not have. So in order to get a valid voltage (less than 3.2V) on the A= pin this is needed. 
+
 .. image:: images/esp32.jpg
   :width: 500
   :alt: Mounting esp32

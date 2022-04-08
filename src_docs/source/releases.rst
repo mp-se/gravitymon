@@ -18,6 +18,7 @@ v0.9.0
 * Updated esp32 target with littlefs support
 * Updated esp32 target with BLE send support (it will simulate a tilt)
 * Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine.
+* Documented hardware changes on esp32
 * Default mDNS name is now shown on WIFI setup page.
 * Added option to manually update/downgrade firmware under hardware settings. 
 * BUG: Corrected PIN for voltage read on ESP32
