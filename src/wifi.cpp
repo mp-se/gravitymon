@@ -89,8 +89,11 @@ bool WifiConnection::hasConfig() {
   String ssid = WiFi.SSID();
   if (ssid.length()) {
     Log.notice(F("WIFI: Found credentials in EEPORM." CR));
-    myConfig.setWifiSSID(WiFi.SSID());
-    myConfig.setWifiPass(WiFi.psk());
+    myConfig.setWifiSSID(ssid);
+
+    if (WiFi.psk().length()) 
+      myConfig.setWifiPass(WiFi.psk());
+    
     myConfig.saveFile();
     return true;
   }
@@ -144,8 +147,13 @@ void WifiConnection::startPortal() {
 
   if (myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD)) {
     Log.notice(F("WIFI: Exited portal, connected to wifi. Rebooting..." CR));
-    myConfig.setWifiSSID(myWifiManager->getSSID());
-    myConfig.setWifiPass(myWifiManager->getPW());
+
+    if (myWifiManager->getSSID().length())
+      myConfig.setWifiSSID(myWifiManager->getSSID());
+  
+    if (myWifiManager->getPW().length())
+      myConfig.setWifiPass(myWifiManager->getPW());
+
     myConfig.saveFile();
   } else {
     Log.notice(
