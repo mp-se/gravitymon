@@ -26,6 +26,7 @@ v0.9.0
 * BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.
 * BUG: Temperature sensor adjusmemnt value was not handled properly when using Farenheight.
 * BUG: If the ID was to low the device id could end up with a leading space causing errors in data post. Added leading zero to ID.
+* BUG: Entering wifi setup and a timeout occured the wifi settings could be deleted.
 
 v0.8.0
 ------
