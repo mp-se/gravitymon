@@ -85,7 +85,7 @@
 -->
     <form id="uploadForm" enctype="multipart/form-data">
       <div class="col-md-8 custom-file">
-        <input type="file" accept=".bin" class="custom-file-input" name="name" id="name">
+        <input type="file" accept=".bin" class="custom-file-input" name="name" id="name" onchange="checkName()">
         <label class="custom-file-label" for="name">Choose file</label>
       </div>
       <button type="submit" class="btn btn-primary" id="upload-btn" value="upload">Flash firmware</button>
@@ -137,6 +137,10 @@
     });
   });
 
+  function checkName() {
+    setButtonDisabled( $("#name").val()!="" ? false : true );
+  }
+
   function progressHandler(event) {
     var percent = (event.loaded / event.total) * 100;
     setProgress(Math.round(percent));
@@ -146,7 +150,14 @@
     $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val).text(val + "%");
   }
 
+  function setButtonDisabled( b ) {
+    $("#upload-btn").prop("disabled", b);
+  }
+
   function getStatus() {
+
+    setButtonDisabled( true );
+
     var url = "/api/status";
     //var url = "/test/status.json";
     $('#spinner').show(); 
