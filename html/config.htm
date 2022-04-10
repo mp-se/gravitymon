@@ -106,16 +106,16 @@
             <input type="text" name="id" id="id1" hidden>
 
             <div class="row mb-3">
-              <label for="mdns" class="col-sm-3 col-form-label">Device name:</label>
+              <label for="mdns" class="col-sm-2 col-form-label">Device name:</label>
               <div class="col-sm-3">
                 <input type="text" maxlength="12" class="form-control" name="mdns" id="mdns">
               </div>
             </div>
 
             <div class="row mb-3">
-              <fieldset class="form-group">
-                <legend class="col-form-label col-sm-3 float-sm-left pt-0">Temperature Format:</legend>
-                <div class="col-sm-6">
+              <fieldset class="form-group row">
+                <legend class="col-form-label col-sm-2 float-sm-left pt-0">Temperature Format:</legend>
+                <div class="col-sm-4">
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="temp-format" id="temp-format-c" value="C" checked>
                     <label class="form-check-label" for="temp-format-c">Celsius</label>
@@ -129,7 +129,7 @@
             </div>
 
             <div class="row mb-3">
-              <label for="sleep-interval" class="col-sm-3 col-form-label">Interval (seconds):</label>
+              <label for="sleep-interval" class="col-sm-2 col-form-label">Interval (seconds):</label>
               <div class="col-sm-2">
                 <input type="number" min="10" max="3600" class="form-control" name="sleep-interval" id="sleep-interval">
               </div>
@@ -137,7 +137,7 @@
             </div>
 
             <div class="row mb-3">
-              <div class="col-sm-8 offset-sm-3">
+              <div class="col-sm-4 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="device-btn">Save</button>
               </div>
             </div>
@@ -146,10 +146,10 @@
           <hr class="my-2">
 
           <div class="row mb-3">
-            <label for="calibrate-btn" class="col-sm-3 col-form-label">Current calibration values:</label>
-            <label for="calibrate-btn" class="col-sm-3 col-form-label" id="gyro-calibration-data">Loading...</label>
-            <label for="gyro-calibration-data" class="col-sm-3 col-form-label" id="angle">Loading...</label>
-            <div class="col-sm-8 offset-sm-3">
+            <label for="calibrate-btn" class="col-sm-2 col-form-label">Current calibration:</label>
+            <label for="calibrate-btn" class="col-sm-2 col-form-label" id="gyro-calibration-data">Loading...</label>
+            <label for="gyro-calibration-data" class="col-sm-2 col-form-label" id="angle">Loading...</label>
+            <div class="col-sm-8 offset-sm-2">
               <button type="button" class="btn btn-warning" id="calibrate-btn">Calibrate device</button>
             </div>
           </div>

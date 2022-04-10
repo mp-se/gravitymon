@@ -91,38 +91,56 @@
 
               <div class="row">
                 <label class="col-sm-1 col-form-label">#</label>
-                <label class="col-sm-4 col-form-label">Angle/Tilt</label>
-                <label class="col-sm-4 col-form-label" id="gravity-header">Gravity</label>
+                <label class="col-sm-2 col-form-label">Angle/Tilt</label>
+                <label class="col-sm-2 col-form-label" id="gravity-header">Gravity</label>
               </div>
 
               <div class="row mb-3">
                 <label for="angle1" class="col-sm-1 col-form-label">1.</label>
-                <div class="col-sm-4"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a1" id="a1"></div>
-                <div class="col-sm-4"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g1" id="g1"></div>
+                <div class="col-sm-2"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a1" id="a1"></div>
+                <div class="col-sm-2"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g1" id="g1"></div>
               </div>
 
               <div class="row mb-3">
                 <label for="angle2" class="col-sm-1 col-form-label">2.</label>
-                <div class="col-sm-4"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a2" id="a2"></div>
-                <div class="col-sm-4"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g2" id="g2"></div>
+                <div class="col-sm-2"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a2" id="a2"></div>
+                <div class="col-sm-2"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g2" id="g2"></div>
               </div>
 
               <div class="row mb-3">
                 <label for="angle3" class="col-sm-1 col-form-label">3.</label>
-                <div class="col-sm-4"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a3" id="a3"></div>
-                <div class="col-sm-4"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g3" id="g3"></div>
+                <div class="col-sm-2"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a3" id="a3"></div>
+                <div class="col-sm-2"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g3" id="g3"></div>
               </div>
 
               <div class="row mb-3">
                 <label for="angle4" class="col-sm-1 col-form-label">4.</label>
-                <div class="col-sm-4"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a4" id="a4"></div>
-                <div class="col-sm-4"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g4" id="g4"></div>
+                <div class="col-sm-2"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a4" id="a4"></div>
+                <div class="col-sm-2"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g4" id="g4"></div>
               </div>
 
               <div class="row mb-3">
                 <label for="angle5" class="col-sm-1 col-form-label">5.</label>
-                <div class="col-sm-4"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a5" id="a5"></div>
-                <div class="col-sm-4"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g5" id="g5"></div>
+                <div class="col-sm-2"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a5" id="a5"></div>
+                <div class="col-sm-2"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g5" id="g5"></div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="angle6" class="col-sm-1 col-form-label">6.</label>
+                <div class="col-sm-2"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a6" id="a6"></div>
+                <div class="col-sm-2"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g6" id="g6"></div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="angle7" class="col-sm-1 col-form-label">7.</label>
+                <div class="col-sm-2"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a7" id="a7"></div>
+                <div class="col-sm-2"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g7" id="g7"></div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="angle8" class="col-sm-1 col-form-label">8.</label>
+                <div class="col-sm-2"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a8" id="a8"></div>
+                <div class="col-sm-2"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g8" id="g8"></div>
               </div>
 
               <div class="row mb-3">
@@ -220,12 +238,18 @@
     g3.onchange = setGravityDecimal
     g4.onchange = setGravityDecimal
     g5.onchange = setGravityDecimal
+    g6.onchange = setGravityDecimal
+    g7.onchange = setGravityDecimal
+    g8.onchange = setGravityDecimal
 
     a1.onchange = setAngleDecimal
     a2.onchange = setAngleDecimal
     a3.onchange = setAngleDecimal
     a4.onchange = setAngleDecimal
     a5.onchange = setAngleDecimal
+    a6.onchange = setAngleDecimal
+    a7.onchange = setAngleDecimal
+    a8.onchange = setAngleDecimal
 
     window.onload = getConfig;
     setButtonDisabled( true );
@@ -293,6 +317,9 @@
       populateChartForm( $("#a3").val(), $("#g3").val() );
       populateChartForm( $("#a4").val(), $("#g4").val() );
       populateChartForm( $("#a5").val(), $("#g5").val() );
+      populateChartForm( $("#a6").val(), $("#g6").val() );
+      populateChartForm( $("#a7").val(), $("#g7").val() );
+      populateChartForm( $("#a8").val(), $("#g8").val() );
 
       if( myChart )
         myChart.destroy();
@@ -336,6 +363,9 @@
           $("#g3").val( parseFloat(cfg["g3"]).toFixed(4) );
           $("#g4").val( parseFloat(cfg["g4"]).toFixed(4) );
           $("#g5").val( parseFloat(cfg["g5"]).toFixed(4) );
+          $("#g6").val( parseFloat(cfg["g6"]).toFixed(4) );
+          $("#g7").val( parseFloat(cfg["g7"]).toFixed(4) );
+          $("#g8").val( parseFloat(cfg["g8"]).toFixed(4) );
         }
 
         $("#a1").val( parseFloat(cfg["a1"]).toFixed(2) );
@@ -343,6 +373,9 @@
         $("#a3").val( parseFloat(cfg["a3"]).toFixed(2) );
         $("#a4").val( parseFloat(cfg["a4"]).toFixed(2) );
         $("#a5").val( parseFloat(cfg["a5"]).toFixed(2) );
+        $("#a6").val( parseFloat(cfg["a6"]).toFixed(2) );
+        $("#a7").val( parseFloat(cfg["a7"]).toFixed(2) );
+        $("#a8").val( parseFloat(cfg["a8"]).toFixed(2) );
 
         if( cfg["error"]!="" ) {
           showError(cfg["error"]);

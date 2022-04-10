@@ -696,7 +696,7 @@ void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_START("webserver-api-formula-read");
   Log.notice(F("WEB : webServer callback for /api/formula(get)." CR));
 
-  DynamicJsonDocument doc(250);
+  DynamicJsonDocument doc(512);
   const RawFormulaData& fd = myConfig.getFormulaData();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -729,6 +729,9 @@ void WebServerHandler::webHandleFormulaRead() {
   doc["a3"] = reduceFloatPrecision(fd.a[2], 2);
   doc["a4"] = reduceFloatPrecision(fd.a[3], 2);
   doc["a5"] = reduceFloatPrecision(fd.a[4], 2);
+  doc["a6"] = reduceFloatPrecision(fd.a[5], 2);
+  doc["a7"] = reduceFloatPrecision(fd.a[6], 2);
+  doc["a8"] = reduceFloatPrecision(fd.a[7], 2);
 
   if (myConfig.isGravityPlato()) {
     doc["g1"] = reduceFloatPrecision(convertToPlato(fd.g[0]), 1);
@@ -736,12 +739,18 @@ void WebServerHandler::webHandleFormulaRead() {
     doc["g3"] = reduceFloatPrecision(convertToPlato(fd.g[2]), 1);
     doc["g4"] = reduceFloatPrecision(convertToPlato(fd.g[3]), 1);
     doc["g5"] = reduceFloatPrecision(convertToPlato(fd.g[4]), 1);
+    doc["g6"] = reduceFloatPrecision(convertToPlato(fd.g[5]), 1);
+    doc["g7"] = reduceFloatPrecision(convertToPlato(fd.g[6]), 1);
+    doc["g8"] = reduceFloatPrecision(convertToPlato(fd.g[7]), 1);
   } else {
     doc["g1"] = reduceFloatPrecision(fd.g[0], 4);
     doc["g2"] = reduceFloatPrecision(fd.g[1], 4);
     doc["g3"] = reduceFloatPrecision(fd.g[2], 4);
     doc["g4"] = reduceFloatPrecision(fd.g[3], 4);
     doc["g5"] = reduceFloatPrecision(fd.g[4], 4);
+    doc["g6"] = reduceFloatPrecision(fd.g[5], 4);
+    doc["g7"] = reduceFloatPrecision(fd.g[6], 4);
+    doc["g8"] = reduceFloatPrecision(fd.g[7], 4);
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -995,6 +1004,9 @@ void WebServerHandler::webHandleFormulaWrite() {
   fd.a[2] = _server->arg("a3").toDouble();
   fd.a[3] = _server->arg("a4").toDouble();
   fd.a[4] = _server->arg("a5").toDouble();
+  fd.a[5] = _server->arg("a6").toDouble();
+  fd.a[6] = _server->arg("a7").toDouble();
+  fd.a[7] = _server->arg("a8").toDouble();
 
   if (myConfig.isGravityPlato()) {
     fd.g[0] = convertToSG(_server->arg("g1").toDouble());
@@ -1002,12 +1014,18 @@ void WebServerHandler::webHandleFormulaWrite() {
     fd.g[2] = convertToSG(_server->arg("g3").toDouble());
     fd.g[3] = convertToSG(_server->arg("g4").toDouble());
     fd.g[4] = convertToSG(_server->arg("g5").toDouble());
+    fd.g[5] = convertToSG(_server->arg("g6").toDouble());
+    fd.g[6] = convertToSG(_server->arg("g7").toDouble());
+    fd.g[7] = convertToSG(_server->arg("g8").toDouble());
   } else {
     fd.g[0] = _server->arg("g1").toDouble();
     fd.g[1] = _server->arg("g2").toDouble();
     fd.g[2] = _server->arg("g3").toDouble();
     fd.g[3] = _server->arg("g4").toDouble();
     fd.g[4] = _server->arg("g5").toDouble();
+    fd.g[5] = _server->arg("g6").toDouble();
+    fd.g[6] = _server->arg("g7").toDouble();
+    fd.g[7] = _server->arg("g8").toDouble();
   }
 
   myConfig.setFormulaData(fd);
