@@ -3,6 +3,13 @@
 Releases 
 ########
 
+v1.0.0
+------
+* Upgraded to bootstrap v5.1 for web pages.
+* Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.
+* Added 3 more points for formula creation, so a total of 8 angles/gravity values can be stored.
+* BUG: Fixed issue in formula calculation in case there were a gap in the data series
+
 v0.9.0
 ------
 * Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api's. 
