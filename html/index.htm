@@ -5,237 +5,261 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <title>Beer Gravity Monitor</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+  <style>
+    .row-margin-05 { margin-top: 0.5em; }
+    .row-margin-10 { margin-top: 1.0em; }
+  </style>
 </head>
 
 <body class="py-4">
 
-<!-- START MENU -->
+  <!-- START MENU -->
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
-  <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="#"><b>Home</b></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config.htm">Configuration</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/calibration.htm">Calibration</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about.htm">About</a>
+          </li> 
+        </ul>
+      </div>
+      <div class="spinner-border text-light" id="spinner" role="status"></div>
+    </div>
+  </nav>
 
-  <div class="collapse navbar-collapse" id="navbar"> 
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/index.htm">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/config.htm">Configuration</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/calibration.htm">Calibration</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/about.htm">About</a>
-      </li>
-    </ul>
+  <!-- START MAIN INDEX -->
 
-    <div class="spinner-border text-light" id="spinner" role="status"></div>
-  </div>
-</nav>
+  <div class="container row-margin-10">
 
-<!-- START MAIN INDEX -->
+    <div class="alert alert-success alert-dismissible hide fade d-none" role="alert">
+      <div id="alert"></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-<div class="container">
+    <script type="text/javascript">
+      function showError( msg ) {
+        console.log("Error:" + msg);
+        $('.alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert').text( msg );
+      }
 
-  <hr class="my-4">
+      function showSuccess( msg ) {
+        console.log("Success:" + msg);
+        $('.alert').addClass('alert-success').removeClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert').text( msg );
+      }
 
-  <div class="alert alert-success alert-dismissible fade hide show d-none" role="alert" id="alert">
-    <div id="alert-msg">...</div>
-    <button type="button" id="alert-btn" class="close" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+      $("#alert-btn").click(function(e){
+        console.log("Disable");
+        $('.alert').addClass('hide').removeClass('show').addClass('d-none');
+      });    
+    </script>
+
+    <div class="accordion" id="accordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingSoftware">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSoftware" aria-expanded="true" aria-controls="collapseSoftware">
+            <b>Device</b>
+          </button>
+        </h2>
+        <div id="collapseSoftware" class="accordion-collapse collapse show" aria-labelledby="headingSoftware" data-bs-parent="#accordion">
+          <div class="accordion-body">
+            <div class="row mb-3">
+              <div class="col-md-4 bg-light">Current version:</div>
+              <div class="col-md-4 bg-light" id="app-ver">Loading...</div>
+            </div>
+            <div class="row mb-3" id="h-app-ver-new" hidden>
+              <div class="col-md-4 bg-light">New version:</div>
+              <div class="col-md-4 bg-light" id="app-ver-new">Loading...</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 bg-light">Host name:</div>
+              <div class="col-md-4 bg-light" id="mdns">Loading...</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 bg-light">Device ID:</div>
+              <div class="col-md-4 bg-light" id="id">Loading...</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 bg-light">Platform:</div>
+              <div class="col-md-4 bg-light" id="platform">Loading...</div>
+            </div>
+
+            <script>
+              $("#log-btn").click(function(e){
+                loadLog();
+              });
+              setInterval(function() {
+                loadLog();
+              }, 3000); //5 seconds  
+            
+              function loadLog() {
+                //$("#logContent").load("/log");
+                $("#logContent").load("/test/status.json");
+              };
+            </script>
+          
+            <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLog" aria-expanded="false" aria-controls="collapseLog">
+              View error log
+            </button>
+
+            <div class="collapse row-margin-10" id="collapseLog">
+              <div class="card card-body">
+                <pre><code class="card-text" id="logContent"></code></pre>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      </div>
+
+      <h2 class="accordion-header" id="headingData">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseData" aria-expanded="true" aria-controls="collapseData">
+          <b>Measurement</b>
+        </button>
+      </h2>
+      <div id="collapseData" class="accordion-collapse collapse show" aria-labelledby="headingData" data-bs-parent="#accordion">
+        <div class="accordion-body">
+
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Gravity:</div>
+            <div class="col-md-4 bg-light" id="gravity">Loading...</div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Temperature:</div>
+            <div class="col-md-4 bg-light" id="temp">Loading...</div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Angle/Tilt:</div>
+            <div class="col-md-4 bg-light" id="angle">Loading...</div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Battery:</div>
+            <div class="col-md-4 bg-light" id="battery">Loading...</div>
+          </div>
+      
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Average runtime:</div>
+            <div class="col-md-4 bg-light" id="runtime">Loading...</div>
+          </div>
+      
+          <div class="row mb-3">
+            <div class="col-md-8 bg-light custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="sleep-mode" id="sleep-mode" disabled>
+              <label class="custom-control-label" for="sleep-mode">Do not enter sleep mode when floating (check this if you are collecting angles/tilt for calibration).</label>
+            </div>        
+          </div>      
+      
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="text/javascript">
-    function showError( msg ) {
-      $('.alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show')
-      $('#alert-msg').text( msg );
+    window.onload = start;
+
+    $("#sleep-mode").click(function(e){
+      console.log( "Blocking sleep mode = " + $("#sleep-mode").is(":checked"));
+      $.ajax( { 
+        type: "POST",  
+        url: "/api/status/sleepmode", 
+        data: { "id": $("#id").text(), "sleep-mode": $("#sleep-mode").is(":checked")  }, 
+        success: function(result) { },
+        error: function(result) { showError('Could not update sleep mode for device.'); },
+      } );
+    });
+
+    function getStatus() {
+      var url = "/api/status";
+      var url = "/test/status.json";
+      showError(url);
+      //showSuccess(url);
+      $('#spinner').show(); 
+
+      $.getJSON(url, function (cfg) {
+        console.log( cfg );
+
+        $("#app-ver").text(cfg["app-ver"] + " (" + cfg["app-build"] + ")");
+        $("#mdns").text(cfg["mdns"]);
+        $("#id").text(cfg["id"]);
+        $("#platform").text(cfg["platform"]);
+        $("#runtime").text(cfg["runtime-average"] + " seconds");
+    
+        var angle = cfg["angle"];
+        
+        if(angle==0) {
+          $("#angle").text("Gyro moving"); 
+          $("#gravity").text("Gyro moving");
+        } else {
+          $("#angle").text(cfg["angle"]);
+        
+          if( cfg["gravity-format"] == "G")
+            $("#gravity").text(cfg["gravity"] + " SG");
+          else
+            $("#gravity").text(cfg["gravity"] + " °P");
+        }
+
+        var batt = cfg["battery"];
+        var charge = 0;
+
+        if(batt>4.15) charge = 100;
+        else if(batt>4.05) charge = 90;
+        else if(batt>3.97) charge = 80;
+        else if(batt>3.91) charge = 70;
+        else if(batt>3.86) charge = 60;
+        else if(batt>3.81) charge = 50;
+        else if(batt>3.78) charge = 40;
+        else if(batt>3.76) charge = 30;
+        else if(batt>3.73) charge = 20;
+        else if(batt>3.67) charge = 10;
+        else if(batt>3.44) charge = 5;
+
+        $("#battery").text(batt + " V (" + charge + "%)" );
+
+        if( cfg["temp-format"] == "C") 
+          $("#temp").text(cfg["temp-c"] + " C");
+        else 
+          $("#temp").text(cfg["temp-f"] + " F");
+
+        if( cfg["sleep-mode"] ) 
+          $("#sleep-mode").attr("checked", true );
+        else 
+          $("#sleep-mode").attr("checked", false );
+        $("#sleep-mode").removeAttr("disabled");
+      })
+      .fail(function () {
+        showError('Unable to get data from the device.');
+      })
+      .always(function() {
+        $('#spinner').hide(); 
+      });
     }
 
-    function showSuccess( msg ) {
-      $('.alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show')
-      $('#alert-msg').text( msg );
+    function start() {
+      setInterval(getStatus, 3000);
     }
-
-    $("#alert-btn").click(function(e){
-      $('.alert').addClass('d-none').removeClass('show')
-    });    
   </script>
 
-<div class="row mb-3">
-  <div class="col-md-8 themed-grid-col bg-light">Current version:</div>
-  <div class="col-md-4 themed-grid-col bg-light" id="app-ver">Loading...</div>
-</div>
-<div class="row mb-3" id="h-app-ver-new" hidden>
-  <div class="col-md-8 themed-grid-col bg-light">New version:</div>
-  <div class="col-md-4 themed-grid-col bg-light" id="app-ver-new">Loading...</div>
-</div>
-<div class="row mb-3">
-  <div class="col-md-8 themed-grid-col bg-light">Host name:</div>
-  <div class="col-md-4 themed-grid-col bg-light" id="mdns">Loading...</div>
-</div>
-<div class="row mb-3">
-  <div class="col-md-8 themed-grid-col bg-light">Device ID:</div>
-  <div class="col-md-4 themed-grid-col bg-light" id="id">Loading...</div>
-</div>
-<div class="row mb-3">
-  <div class="col-md-8 themed-grid-col bg-light">Platform:</div>
-  <div class="col-md-4 themed-grid-col bg-light" id="platform">Loading...</div>
-</div>
+  <!-- START FOOTER -->
 
-<script>
-  $("#log-btn").click(function(e){
-    loadLog();
-  });
-  setInterval(function() {
-    loadLog();
-  }, 3000); //5 seconds  
- 
-  function loadLog() {
-    $("#logContent").load("/log");
-    //$("#logContent").load("/test/status.json");
-  };
-</script>
-
-<div class="row mb-3">
-  <a class="badge badge-primary" data-toggle="collapse" href="#collapseLog" role="button" aria-expanded="false" aria-controls="collapseLog" id="log-btn">
-    View error log
-  </a>
-</div>
-
-<div class="collapse" id="collapseLog">
-  <div class="card card-body">
-    <pre><code id="logContent"></code></pre>
-  </div>
-</div>
-
-<hr class="my-4">
-
-  <div class="row mb-3">
-    <div class="col-md-8 themed-grid-col bg-light">Gravity:</div>
-    <div class="col-md-4 themed-grid-col bg-light" id="gravity">Loading...</div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-8 themed-grid-col bg-light">Temperature:</div>
-    <div class="col-md-4 themed-grid-col bg-light" id="temp">Loading...</div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-8 themed-grid-col bg-light">Angle/Tilt:</div>
-    <div class="col-md-4 themed-grid-col bg-light" id="angle">Loading...</div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-8 themed-grid-col bg-light">Battery:</div>
-    <div class="col-md-4 themed-grid-col bg-light" id="battery">Loading...</div>
-  </div>
-
-  <div class="row mb-3">
-    <div class="col-md-8 themed-grid-col bg-light">Average runtime:</div>
-    <div class="col-md-4 themed-grid-col bg-light" id="runtime">Loading...</div>
-  </div>
-
-  <div class="row mb-3">
-    <div class="col-md-12 px-md-5 themed-grid-col bg-light custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" name="sleep-mode" id="sleep-mode" disabled>
-      <label class="custom-control-label" for="sleep-mode">Do not enter sleep mode when floating (check this if you are collecting angles/tilt for calibration).</label>
-    </div>        
-  </div>      
-
-  <hr class="my-4">
-
-</div>
-
-<script type="text/javascript">
-  window.onload = start;
-
-  $("#sleep-mode").click(function(e){
-    console.log( "Blocking sleep mode = " + $("#sleep-mode").is(":checked"));
-    $.ajax( { 
-      type: "POST",  
-      url: "/api/status/sleepmode", 
-      data: { "id": $("#id").text(), "sleep-mode": $("#sleep-mode").is(":checked")  }, 
-      success: function(result) { },
-      error: function(result) { showError('Could not update sleep mode for device.'); },
-    } );
-  });
-
-  function getStatus() {
-    var url = "/api/status";
-    //var url = "/test/status.json";
-    $('#spinner').show(); 
-    $.getJSON(url, function (cfg) {
-      console.log( cfg );
-
-      //$("#app-ver").text(cfg["app-ver"] + " (html 0.8.0)");
-      $("#app-ver").text(cfg["app-ver"] + " (" + cfg["app-build"] + ")");
-      $("#mdns").text(cfg["mdns"]);
-      $("#id").text(cfg["id"]);
-      $("#platform").text(cfg["platform"]);
-      $("#runtime").text(cfg["runtime-average"] + " seconds");
-   
-      var angle = cfg["angle"];
-      
-      if(angle==0) {
-        $("#angle").text("Gyro moving"); 
-        $("#gravity").text("Gyro moving");
-      } else {
-        $("#angle").text(cfg["angle"]);
-      
-        if( cfg["gravity-format"] == "G")
-          $("#gravity").text(cfg["gravity"] + " SG");
-        else
-          $("#gravity").text(cfg["gravity"] + " °P");
-      }
-
-      var batt = cfg["battery"];
-      var charge = 0;
-
-      if(batt>4.15) charge = 100;
-      else if(batt>4.05) charge = 90;
-      else if(batt>3.97) charge = 80;
-      else if(batt>3.91) charge = 70;
-      else if(batt>3.86) charge = 60;
-      else if(batt>3.81) charge = 50;
-      else if(batt>3.78) charge = 40;
-      else if(batt>3.76) charge = 30;
-      else if(batt>3.73) charge = 20;
-      else if(batt>3.67) charge = 10;
-      else if(batt>3.44) charge = 5;
-
-      $("#battery").text(batt + " V (" + charge + "%)" );
-
-      if( cfg["temp-format"] == "C") 
-        $("#temp").text(cfg["temp-c"] + " C");
-      else 
-        $("#temp").text(cfg["temp-f"] + " F");
-
-      if( cfg["sleep-mode"] ) 
-        $("#sleep-mode").attr("checked", true );
-      else 
-        $("#sleep-mode").attr("checked", false );
-      $("#sleep-mode").removeAttr("disabled");
-    })
-    .fail(function () {
-      showError('Unable to get data from the device.');
-    })
-    .always(function() {
-      $('#spinner').hide(); 
-    });
-  }
-
-  function start() {
-    setInterval(getStatus, 3000);
-  }
-</script>
-
-<!-- START FOOTER -->
-
-<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div>
+  <div class="container themed-container bg-primary text-light row-margin-10">(C) Copyright 2021-22 Magnus Persson</div>
 </body>
 </html>

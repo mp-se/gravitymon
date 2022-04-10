@@ -5,136 +5,138 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <title>Beer Gravity Monitor</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+  <style>
+    .row-margin-05 { margin-top: 0.5em; }
+    .row-margin-10 { margin-top: 1.0em; }
+  </style>
 </head> 
 <body class="py-4">
 
-<!-- START MENU -->
+  <!-- START MENU -->
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.htm">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="#"><b>Configuration</b></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/calibration.htm">Calibration</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about.htm">About</a>
+          </li> 
+        </ul>
+      </div>
+      <div class="spinner-border text-light" id="spinner" role="status"></div>
+    </div>
+  </nav>
 
-  <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  
-  <div class="collapse navbar-collapse" id="navbar"> 
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/index.htm">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/config.htm">Configuration</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/calibration.htm">Calibration</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/about.htm">About</a>
-      </li>
-    </ul>
-  </div>
-  <div class="spinner-border text-light" id="spinner" role="status"></div>
-</nav>
+  <!-- START MAIN INDEX -->
 
-<!-- START MAIN INDEX -->
+  <div class="container row-margin-10">
 
-<div class="container">
+    <div class="alert alert-success alert-dismissible hide fade d-none" role="alert" id="alert">
+      <div id="alert-msg"></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-  <hr class="my-2">
+    <div class="alert alert-warning alert-dismissible hide fade d-none" role="alert" id="warning-sleep">
+      <div>A sleep-interval of less than 300s will reduce battery life, consider using 900s</div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-  <div class="alert alert-success alert-dismissible fade hide show d-none" role="alert" id="alert">
-    <div id="alert-msg">...</div>
-    <button type="button" id="alert-btn" class="close" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
+    <div class="alert alert-warning alert-dismissible hide fade d-none" role="alert" id="warning-gyro">
+      <div>When using the gyro temperature use a sleep-interval that is greater than 300s for accurate readings</div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-  <div class="alert alert-warning fade hide show d-none" role="alert" id="warning-sleep">
-    <div>A sleep-interval of less than 300s will reduce battery life, consider using 900s</div>
-  </div>
+    <script type="text/javascript">
+      function showError( msg ) {
+        $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert-msg').text( msg );
+      }
 
-  <div class="alert alert-warning fade hide show d-none" role="alert" id="warning-gyro">
-    <div>When using the gyro temperature use a sleep-interval that is greater than 300s for accurate readings</div>
-  </div>
+      function showSuccess( msg ) {
+        $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert-msg').text( msg );
+      }
 
-  <script type="text/javascript">
-    function showError( msg ) {
-      $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show');
-      $('#alert-msg').text( msg );
-    }
+      $("#alert-btn").click(function(e){
+        $('#alert').addClass('hide').removeClass('show').addClass('d-none');
+      });    
 
-    function showSuccess( msg ) {
-      $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show');
-      $('#alert-msg').text( msg );
-    }
-
-    $("#alert-btn").click(function(e){
-      $('#alert').addClass('d-none').removeClass('show');
-    });    
-
-    function showWarningSleep() {
-      $('#warning-sleep').removeClass('d-none').addClass('show');
-    }
-    function hideWarningSleep() {
-      $('#warning-sleep').addClass('d-none').removeClass('show');
-    }
-    function showWarningGyro() {
-      $('#warning-gyro').removeClass('d-none').addClass('show');
-    }
-    function hideWarningGyro() {
-      $('#warning-gyro').addClass('d-none').removeClass('show');
-    }
-  </script>
+      function showWarningSleep() {
+        $('#warning-sleep').removeClass('d-none').addClass('show').removeClass('hide');
+      }
+      function hideWarningSleep() {
+        $('#warning-sleep').addClass('d-none').removeClass('show').addClass('hide');
+      }
+      function showWarningGyro() {
+        $('#warning-gyro').removeClass('d-none').addClass('show').removeClass('hide');
+      }
+      function hideWarningGyro() {
+        $('#warning-gyro').addClass('d-none').removeClass('show').addClass('hide');
+      }
+    </script>
 
   <div class="accordion" id="accordion">
-    <input type="text" name="runtime-average" id="runtime-average" hidden>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingDevice">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
+          <b>Device settings</b>
+        </button>
+      </h2>
+      <div id="collapseDevice" class="accordion-collapse collapse show" aria-labelledby="headingDevice" data-bs-parent="#accordion">
+        <div class="accordion-body">
 
-    <div class="card">
-      <div class="card-header" id="headingDevice">
-        <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left" onclick="window.location.href = '#collapseDevice'" type="button" data-toggle="collapse" data-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
-            Device settings
-          </button>
-        </h2>
-      </div>  
-      <div id="collapseDevice" class="collapse show" aria-labelledby="headingDevice" data-parent="#accordion">
-        <div class="card-body">
           <form action="/api/config/device" method="post">
             <input type="text" name="id" id="id1" hidden>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="mdns" class="col-sm-3 col-form-label">Device name:</label>
-              <div class="col-sm-9">
+              <div class="col-sm-3">
                 <input type="text" maxlength="12" class="form-control" name="mdns" id="mdns">
               </div>
             </div>
-            <fieldset class="form-group row">
-              <legend class="col-form-label col-sm-3 float-sm-left pt-0">Temperature Format:</legend>
-              <div class="col-sm-6">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="temp-format" id="temp-format-c" value="C" checked>
-                  <label class="form-check-label" for="temp-format-c">
-                    Celsius
-                  </label>
+
+            <div class="row mb-3">
+              <fieldset class="form-group">
+                <legend class="col-form-label col-sm-3 float-sm-left pt-0">Temperature Format:</legend>
+                <div class="col-sm-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="temp-format" id="temp-format-c" value="C" checked>
+                    <label class="form-check-label" for="temp-format-c">Celsius</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="temp-format" id="temp-format-f" value="F">
+                    <label class="form-check-label" for="temp-format-f">Farenheight</label>
+                  </div>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="temp-format" id="temp-format-f" value="F">
-                  <label class="form-check-label" for="temp-format-f">
-                    Farenheight
-                  </label>
-                </div>
-              </div>
-            </fieldset>
-            <div class="form-group row">
+              </fieldset>
+            </div>
+
+            <div class="row mb-3">
               <label for="sleep-interval" class="col-sm-3 col-form-label">Interval (seconds):</label>
               <div class="col-sm-2">
                 <input type="number" min="10" max="3600" class="form-control" name="sleep-interval" id="sleep-interval">
               </div>
               <label for="sleep-interval" class="col-sm-4 col-form-label" id="sleep-interval-info"></label>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <div class="col-sm-8 offset-sm-3">
                 <button type="submit" class="btn btn-primary" id="device-btn">Save</button>
               </div>
@@ -143,7 +145,7 @@
 
           <hr class="my-2">
 
-          <div class="form-group row">
+          <div class="row mb-3">
             <label for="calibrate-btn" class="col-sm-3 col-form-label">Current calibration values:</label>
             <label for="calibrate-btn" class="col-sm-3 col-form-label" id="gyro-calibration-data">Loading...</label>
             <label for="gyro-calibration-data" class="col-sm-3 col-form-label" id="angle">Loading...</label>
@@ -156,16 +158,14 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header" id="headingPush">
-        <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left collapsed" onclick="window.location.href = '#collapsePush'" type="button" data-toggle="collapse" data-target="#collapsePush" aria-expanded="false" aria-controls="collapsePush">
-            Push settings
-          </button>
-        </h2>
-      </div>
-      <div id="collapsePush" class="collapse" aria-labelledby="headingPush" data-parent="#accordion">
-        <div class="card-body">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingPush">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush" aria-expanded="false" aria-controls="collapsePush">
+          <b>Push settings</b>
+        </button>
+      </h2>
+      <div id="collapsePush" class="accordion-collapse collapse" aria-labelledby="headingPush" data-bs-parent="#accordion">
+        <div class="accordion-body">
           <form action="/api/config/push" method="post">
             <input type="text" name="id" id="id2" hidden>
             <input type="text" name="section" value="collapsePush" hidden>
@@ -174,68 +174,58 @@
             <input type="text" name="http-push2-h1" id="http-push2-h1" hidden>
             <input type="text" name="http-push2-h2" id="http-push2-h2" hidden>
 
-            <div class="form-group row">
+            <div class="row mb-3">
               <label for="http-push" class="col-sm-2 col-form-label">HTTP 1 (POST):</label>
               <div class="col-sm-8">
                 <input type="url" maxlength="120" class="form-control" name="http-push" id="http-push">
               </div>
               <div class="col-sm-2">
-                <button type="button" class="btn btn-info" data-field1="#http-push-h1" data-field2="#http-push-h2" data-toggle="modal" data-target="#modal-http">Headers</button>
+                <button type="button" class="btn btn-secondary" data-field1="#http-push-h1" data-field2="#http-push-h2" data-bs-toggle="modal" data-bs-target="#modal-http">Headers</button>
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="http-push2" class="col-sm-2 col-form-label">HTTP 2 (POST):</label>
               <div class="col-sm-8">
                 <input type="url" maxlength="120" class="form-control" name="http-push2" id="http-push2">
               </div>
               <div class="col-sm-2">
-                <button type="button" class="btn btn-info" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-toggle="modal" data-target="#modal-http">Headers</button>
+                <button type="button" class="btn btn-secondary" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-bs-toggle="modal" data-bs-target="#modal-http">Headers</button>
               </div>
             </div>
 
-            <div class="form-group row">
+            <div class="row mb-3">
               <label for="token" class="col-sm-2 col-form-label">Token:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="50" class="form-control" name="token" id="token">
               </div>
             </div>
 
-            <hr class="my-2">
-
-            <div class="form-group row">
+            <div class="row mb-3">
               <label for="http-push3" class="col-sm-2 col-form-label">HTTP 3 (GET):</label>
               <div class="col-sm-8">
                 <input type="url" maxlength="120" class="form-control" name="http-push3" id="http-push3">
               </div>
             </div>
 
-            <div class="form-group row">
+            <div class="row mb-3">
               <label for="token2" class="col-sm-2 col-form-label">Token 2:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="50" class="form-control" name="token2" id="token2">
               </div>
             </div>
 
-            <hr class="my-2">
-
-            <div class="form-group row">
-              <label for="inputBrewfatherPush" class="col-sm-2 col-form-label">Brewfather URL:</label>
-              <div class="col-sm-10">
-                <input type="url" maxlength="100" class="form-control" name="brewfather-push" id="brewfather-push">
-              </div>
-            </div>
-
-            <div class="form-group row">
+            <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="push-btn">Save</button>
               </div>
             </div>
           </form>
 
-          <div class="form-group row">
+          <div class="row mb-3">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-info" id="format-btn">Format editor</button>
-              <button class="btn btn-info" id="test-btn">Test Push</button>
+              <button class="btn btn-secondary" id="format-btn">Format editor</button>
+              <button class="btn btn-secondary" id="test-btn">Test Push</button>
             </div>
           </div>
 
@@ -243,39 +233,41 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header" id="headingPush2">
-        <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left collapsed" onclick="window.location.href = '#collapsePush2'" type="button" data-toggle="collapse" data-target="#collapsePush2" aria-expanded="false" aria-controls="collapsePush2">
-            Push settings (2)
-          </button>
-        </h2>
-      </div>
-      <div id="collapsePush2" class="collapse" aria-labelledby="headingPush2" data-parent="#accordion">
-        <div class="card-body">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingPush2">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush2" aria-expanded="false" aria-controls="collapsePush2">
+          <b>Push settings (2)</b>
+        </button>
+      </h2>
+      <div id="collapsePush2" class="accordion-collapse collapse" aria-labelledby="headingPush2" data-bs-parent="#accordion">
+        <div class="accordion-body">
+
           <form action="/api/config/push" method="post">
             <input type="text" name="id" id="id5" hidden>
             <input type="text" name="section" value="collapsePush2" hidden>
 
-            <div class="form-group row">
+            <div class="row mb-3">
               <label for="influxdb2-push" class="col-sm-2 col-form-label">InfluxDB v2 URL:</label>
-              <div class="col-sm-6">
+              <div class="col-sm-8">
                 <input type="url" maxlength="40" class="form-control" name="influxdb2-push" id="influxdb2-push">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="influxdb2-org" class="col-sm-2 col-form-label">InfluxDB v2 Org:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="50" class="form-control" name="influxdb2-org" id="influxdb2-org">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="influxdb2-bucket" class="col-sm-2 col-form-label">InfluxDB v2 Bucket:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="50" class="form-control" name="influxdb2-bucket" id="influxdb2-bucket">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="influxdb2-auth" class="col-sm-2 col-form-label">InfluxDB v2 Auth:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="100" class="form-control" name="influxdb2-auth" id="influxdb2-auth">
@@ -284,42 +276,45 @@
 
             <hr class="my-2">
 
-            <div class="form-group row">
+            <div class="row mb-3">
               <label for="mqtt-push" class="col-sm-2 col-form-label">MQTT Server:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="40" class="form-control" name="mqtt-push" id="mqtt-push">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="mqtt-topic" class="col-sm-2 col-form-label">MQTT Port:</label>
               <div class="col-sm-4">
                 <input type="number" min="1" max="65535" class="form-control" name="mqtt-port" id="mqtt-port">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="mqtt-user" class="col-sm-2 col-form-label">MQTT User:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="20" class="form-control" name="mqtt-user" id="mqtt-user">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="mqtt-pass" class="col-sm-2 col-form-label">MQTT Password:</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="20" class="form-control" name="mqtt-pass" id="mqtt-pass">
               </div>
             </div>
 
-            <div class="form-group row">
+            <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="push-btn2">Save</button>
               </div>
             </div>
           </form>
 
-          <div class="form-group row">
+          <div class="row mb-3">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-info" id="format-btn2">Format editor</button>
-              <button class="btn btn-info" id="test-btn2">Test Push</button>
+              <button class="btn btn-secondary" id="format-btn2">Format editor</button>
+              <button class="btn btn-secondary" id="test-btn2">Test Push</button>
             </div>
           </div>
 
@@ -327,52 +322,51 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header" id="headingGravity">
-        <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left collapsed" onclick="window.location.href = '#collapseGravity'" type="button" data-toggle="collapse" data-target="#collapseGravity" aria-expanded="false" aria-controls="collapseGravity">
-            Gravity
-          </button>
-        </h2>
-      </div>
-      <div id="collapseGravity" class="collapse" aria-labelledby="headingGravity" data-parent="#accordion">
-        <div class="card-body">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingGravity">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGravity" aria-expanded="false" aria-controls="collapseGravity">
+          <b>Gravity</b>
+        </button>
+      </h2>
+      <div id="collapseGravity" class="accordion-collapse collapse" aria-labelledby="headingGravity" data-bs-parent="#accordion">
+        <div class="accordion-body">
+
           <form action="/api/config/gravity" method="post">
             <input type="text" name="id" id="id3" hidden>
-            <fieldset class="form-group row">
-              <legend class="col-form-label col-sm-2 float-sm-left pt-0">Gravity Format:</legend>
-              <div class="col-sm-4">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-g" value="G" checked>
-                  <label class="form-check-label" for="gravity-format-g">
-                    SG
-                  </label>
+
+            <div class="row mb-3">
+              <fieldset class="form-group row">
+                <legend class="col-form-label col-sm-2 float-sm-left pt-0">Gravity Format:</legend>
+                <div class="col-sm-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-g" value="G" checked>
+                    <label class="form-check-label" for="gravity-format-g">SG</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-p" value="P">
+                    <label class="form-check-label" for="gravity-format-p">Plato</label>
+                  </div>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-p" value="P">
-                  <label class="form-check-label" for="gravity-format-p">
-                    Plato
-                  </label>
-                </div>
-              </div>
-            </fieldset>
-            <div class="form-group row">
-              <label for="gravity-formula" class="col-sm-2 col-form-label">Formula (SG)</label>
+              </fieldset>
+            </div>
+            
+            <div class="row mb-3">
+              <label for="gravity-formula" class="col-sm-2 col-form-label">Formula</label>
               <div class="col-sm-10">
                 <input type="text" maxlength="200" class="form-control" name="gravity-formula" id="gravity-formula">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <div class="col-sm-4 offset-sm-2">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="gravity-temp-adjustment" id="gravity-temp-adjustment">
-                  <label class="form-check-label" for="gravity-temp-adjustment">
-                    Temperature adjust gravity 
-                  </label>
+                  <label class="form-check-label" for="gravity-temp-adjustment">Temperature adjust gravity</label>
                 </div>
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <div class="col-sm-4 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="gravity-btn">Save</button>
               </div>
@@ -382,45 +376,46 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header" id="headingHardware">
-        <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left collapsed" onclick="window.location.href = '#collapseHardware'" type="button" data-toggle="collapse" data-target="#collapseHardware" aria-expanded="false" aria-controls="collapseHardware">
-            Hardware settings
-          </button>
-        </h2>
-      </div>
-      <div id="collapseHardware" class="collapse" aria-labelledby="headingHardware" data-parent="#accordion">
-        <div class="card-body">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingHardware">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHardware" aria-expanded="false" aria-controls="collapseHardware">
+          <b>Hardware</b>
+        </button>
+      </h2>
+      <div id="collapseHardware" class="accordion-collapse collapse" aria-labelledby="headingHardware" data-bs-parent="#accordion">
+        <div class="accordion-body">
+
           <form action="/api/config/hardware" method="post">
             <input type="text" name="id" id="id4" hidden>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="voltage-factor" class="col-sm-2 col-form-label">Voltage factor:</label>
               <div class="col-sm-2">
                 <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor">
               </div>
               <label for="voltage-factor" class="col-sm-3 col-form-label" id="battery">Loading...</label>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="temp-adjustment-value" class="col-sm-2 col-form-label">Temp Sensor Adj:</label>
               <div class="col-sm-2">
                 <input type="number" step=".1" class="form-control" name="temp-adjustment-value" id="temp-adjustment-value">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <div class="col-sm-3 offset-sm-2">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="gyro-temp" id="gyro-temp">
-                  <label class="form-check-label" for="gyro-temp">
-                    Use gyro temperature
-                  </label>
+                  <label class="form-check-label" for="gyro-temp">Use gyro temperature</label>
                 </div>
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label class="col-sm-2 col-form-label" for="ble">Bluetooth tilt color:</label>
               <div class="col-sm-2">
-                <select class="form-control" id="ble" name="ble" disabled>
+                <select class="form-select" id="ble" name="ble" disabled>
                   <option value="">-not active-</option>
                   <option value="red">red</option>
                   <option value="green">green</option>
@@ -433,21 +428,24 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <label for="ota-url" class="col-sm-2 col-form-label">OTA base URL:</label>
-              <div class="col-sm-10">
+              <div class="col-sm-8">
                 <input type="url" maxlength="90" class="form-control" name="ota-url" id="ota-url">
               </div>
             </div>
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="hardware-btn">Save</button>
               </div>
             </div>
           </form>
-          <div class="form-group row">
+
+          <div class="row mb-3">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-info" id="firmware-btn">Upload firmware</button>
+              <button class="btn btn-secondary" id="firmware-btn">Upload firmware</button>
             </div>
           </div>
         </div>
@@ -455,236 +453,238 @@
     </div>
   </div>
 
-  <hr class="my-4">
-</div>
-
-<div class="modal fade" id="modal-http" tabindex="-1" role="dialog" aria-labelledby="modal-header" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modal-header">Define HTTP headers</h5>
-      </div>
-      <div class="modal-body">
-        <label for="http-header" class="col-form-label">Header 1 (Header: value)</label>
-        <input type="text" maxlength="100" class="form-control" id="header1" oninput="checkHeader(this)">
-        <label for="http-header" class="col-form-label">Header 2 (Header: value)</label>
-        <input type="text" maxlength="100" class="form-control" id="header2" oninput="checkHeader(this)">
-        <input type="text" id="field1" hidden>
-        <input type="text" id="field2" hidden>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="btn-close" data-dismiss="modal">Close</button>
+  <div class="modal fade" id="modal-http" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-header" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal-header">Define HTTP headers</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label for="http-header" class="col-form-label">Header 1 (Header: value)</label>
+          <input type="text" maxlength="100" class="form-control" id="header1" oninput="checkHeader(this)">
+          <label for="http-header" class="col-form-label">Header 2 (Header: value)</label>
+          <input type="text" maxlength="100" class="form-control" id="header2" oninput="checkHeader(this)">
+          <input type="text" id="field1" hidden>
+          <input type="text" id="field2" hidden>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-$('#modal-http').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget) 
-  var field1 = button.data('field1') 
-  var field2 = button.data('field2') 
-  var modal = $(this)
-  modal.find('.modal-body #header1').val($(field1).val())
-  modal.find('.modal-body #header2').val($(field2).val())
-  modal.find('.modal-body #field1').val(field1)
-  modal.find('.modal-body #field2').val(field2)
-})
-$('#modal-http').on('hide.bs.modal', function (event) {
-  var modal = $(this)
-  field1 = modal.find('.modal-body #field1').val()
-  field2 = modal.find('.modal-body #field2').val()
-  $(field1).val(modal.find('.modal-body #header1').val())
-  $(field2).val(modal.find('.modal-body #header2').val())
-})
-function checkHeader(input) {
-   console.log( input.value );
-  if (input.value != "" && input.value.indexOf(":") == -1) {
-    $("#btn-close").prop("disabled", true);
-    $(input).removeClass("is-valid").addClass("is-invalid");
-  } else {
-    $("#btn-close").prop("disabled", false);
-    $(input).removeClass("is-invalid").addClass("is-valid");
-  }
-}
-</script>
-
-<script type="text/javascript">
-  window.onload = getConfig;
-
-  setButtonDisabled( true );
-
-  // Opens the targetet according (if URL has #collapseXXX)
-  $(document).ready(function () {
-    if(location.hash != null && location.hash != ""){
-      $('.collapse').removeClass('in');
-      $(location.hash + '.collapse').collapse('show');
-    }
-  });
-
-  // Trigger the calibration
-  $("#calibrate-btn").click(function(e){
-    console.log( "Calibrating..." );
-    $.ajax( { 
-      type: "POST",  
-      url: "/api/calibrate", 
-      data: { id: $("#id1").val() }, 
-      success: function(result) { showSuccess('Calibration of device was completed successfully.'); getConfig(); },
-      error: function(result) { showError('Unable to calibrate device.'); }
-    } );
-  });
-
-  $("#firmware-btn").click(function(e){
-    window.location.href = "/firmware.htm";
-  });
-
-  // Open the format editor
-  $("#format-btn").click(function(e){
-    window.location.href = "/format.htm";
-  });
-
-    // Open the format editor
-  $("#format-btn2").click(function(e){
-    window.location.href = "/format.htm";
-  });
-
-  $("#test-btn").click(function(e){
-    window.location.href = "/test.htm";
-  });
-
-  $("#test-btn2").click(function(e){
-    window.location.href = "/test.htm";
-  });
-
-  function estimateBatteryLife(interval, rt) {
-    // ESP8266 consumes between 140-170mA when WIFI is on. Deep sleep is 20uA. 
-    // MPU-6050 consumes 4mA
-    // DS18B20 consumes 1mA
-    // For this estimation we use an average of 160mA
-
-    var pwrActive = 170; // mA per hour
-    var pwrSleep = 15; // mA per day
-    var batt = 2000; // mA
-
-    if(rt<1) rt = 2;
-
-    // The deep sleep will consume approx 1mA per day.
-    var powerPerDay = (24*3600)/(interval+rt)*(rt/3600)*pwrActive + pwrSleep; 
-    return batt/powerPerDay;
-  }
-
-  function updateSleepInfo() {
-    var i = parseInt($("#sleep-interval").val());
-    var rt = parseInt($("#runtime-average").val());
-    var j = 0;
-
-    if( rt>0 )
-      j = estimateBatteryLife(i, rt);
-
-    var t1 = Math.floor(i/60) + " m " + (i%60) + " s";
-    var t2 = Math.floor(j/7) + " weeks " + Math.floor(j%7) + " days";
-
-    if( j )
-      $("#sleep-interval-info").text( t1 + "  -  Estimated runtime: " + t2);
-    else
-      $("#sleep-interval-info").text( t1 );
-
-    hideWarningGyro();
-    if(i>0 && i<300) {
-      if( $("#gyro-temp").is(":checked") )
-        showWarningGyro();
-      showWarningSleep();
+  <script>
+  $('#modal-http').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) 
+    var field1 = button.data('field1') 
+    var field2 = button.data('field2') 
+    var modal = $(this)
+    modal.find('.modal-body #header1').val($(field1).val())
+    modal.find('.modal-body #header2').val($(field2).val())
+    modal.find('.modal-body #field1').val(field1)
+    modal.find('.modal-body #field2').val(field2)
+  })
+  $('#modal-http').on('hide.bs.modal', function (event) {
+    console.log("2")
+    var modal = $(this)
+    field1 = modal.find('.modal-body #field1').val()
+    field2 = modal.find('.modal-body #field2').val()
+    $(field1).val(modal.find('.modal-body #header1').val())
+    $(field2).val(modal.find('.modal-body #header2').val())
+  })
+  function checkHeader(input) {
+    console.log( input.value );
+    if (input.value != "" && input.value.indexOf(":") == -1) {
+      $("#btn-close").prop("disabled", true);
+      $(input).removeClass("is-valid").addClass("is-invalid");
     } else {
-      hideWarningSleep();
-    } 
+      $("#btn-close").prop("disabled", false);
+      $(input).removeClass("is-invalid").addClass("is-valid");
+    }
   }
+  </script>
 
-  // Trigger the calibration and show warnings if needed
-  $("#sleep-interval").keyup(updateSleepInfo);
-  $("#gyro-temp").change(updateSleepInfo);
+  <script type="text/javascript">
+    window.onload = getConfig;
 
-  function setButtonDisabled( b ) {
-    $("#device-btn").prop("disabled", b);
-    $("#calibrate-btn").prop("disabled", b);
-    $("#push-btn").prop("disabled", b);
-    $("#format-btn").prop("disabled", b);
-    $("#test-btn").prop("disabled", b);
-    $("#gravity-btn").prop("disabled", b);
-    $("#hardware-btn").prop("disabled", b);
-    $("#push-btn2").prop("disabled", b);
-    $("#format-btn2").prop("disabled", b);
-    $("#test-btn2").prop("disabled", b);
-  }
-
-  // Get the configuration values from the API
-  function getConfig() {
     setButtonDisabled( true );
 
-    var url = "/api/config";
-    //var url = "/test/config.json";
-    $('#spinner').show(); 
-    $.getJSON(url, function (cfg) {
-      console.log( cfg );
-
-      if(cfg["platform"]=="esp32") {
-        $('#ble').prop('disabled', false);
-        $("#ble").val(cfg["ble"]);
+    // Opens the targetet according (if URL has #collapseXXX)
+    $(document).ready(function () {
+      if(location.hash != null && location.hash != ""){
+        $('.collapse').removeClass('in');
+        $(location.hash + '.collapse').collapse('show');
       }
-
-      $("#id1").val(cfg["id"]);
-      $("#id2").val(cfg["id"]);
-      $("#id3").val(cfg["id"]);
-      $("#id4").val(cfg["id"]);
-      $("#id5").val(cfg["id"]);
-      $("#mdns").val(cfg["mdns"]);
-      if( cfg["temp-format"] == "C" ) $("#temp-format-c").click();
-      else $("#temp-format-f").click();
-      if( cfg["gravity-format"] == "G" ) $("#gravity-format-g").click();
-      else $("#gravity-format-p").click();
-      $("#ota-url").val(cfg["ota-url"]);
-      $("#token").val(cfg["token"]);
-      $("#token2").val(cfg["token2"]);
-      $("#http-push").val(cfg["http-push"]);
-      $("#http-push-h1").val(cfg["http-push-h1"]);
-      $("#http-push-h2").val(cfg["http-push-h2"]);
-      $("#http-push2").val(cfg["http-push2"]);
-      $("#http-push2-h1").val(cfg["http-push2-h1"]);
-      $("#http-push2-h2").val(cfg["http-push2-h2"]);
-      $("#http-push3").val(cfg["http-push3"]);
-      $("#brewfather-push").val(cfg["brewfather-push"]);
-      $("#influxdb2-push").val(cfg["influxdb2-push"]);
-      $("#influxdb2-org").val(cfg["influxdb2-org"]);
-      $("#influxdb2-bucket").val(cfg["influxdb2-bucket"]);
-      $("#influxdb2-auth").val(cfg["influxdb2-auth"]);
-      $("#mqtt-push").val(cfg["mqtt-push"]);
-      $("#mqtt-port").val(cfg["mqtt-port"]);
-      $("#mqtt-user").val(cfg["mqtt-user"]);
-      $("#mqtt-pass").val(cfg["mqtt-pass"]);
-      $("#sleep-interval").val(cfg["sleep-interval"]);
-      $("#voltage-factor").val(cfg["voltage-factor"]);
-      $("#gravity-formula").val(cfg["gravity-formula"]);
-      $("#temp-adjustment-value").val(cfg["temp-adjustment-value"]);
-      $("#gravity-temp-adjustment").prop( "checked", cfg["gravity-temp-adjustment"] );
-      $("#gyro-temp").prop( "checked", cfg["gyro-temp"] );
-      $("#gyro-calibration-data").text( cfg["gyro-calibration-data"]["ax"] + "," + cfg["gyro-calibration-data"]["ay"] + "," + cfg["gyro-calibration-data"]["az"] + "," + cfg["gyro-calibration-data"]["gx"] + "," + cfg["gyro-calibration-data"]["gy"] + "," + cfg["gyro-calibration-data"]["gz"] );
-      $("#battery").text(cfg["battery"] + " V");
-      $("#angle").text(cfg["angle"]);
-      $("#runtime-average").val(cfg["runtime-average"]);
-      //$("#gravity").text(cfg["gravity"] + " SG");
-    })
-    .fail(function () {
-      showError('Unable to get data from the device.');
-    })
-    .always(function() {
-      $('#spinner').hide(); 
-      setButtonDisabled( false );
-      updateSleepInfo();
     });
-  }
-</script>
 
-<!-- START FOOTER -->
+    // Trigger the calibration
+    $("#calibrate-btn").click(function(e){
+      console.log( "Calibrating..." );
+      $.ajax( { 
+        type: "POST",  
+        url: "/api/calibrate", 
+        data: { id: $("#id1").val() }, 
+        success: function(result) { showSuccess('Calibration of device was completed successfully.'); getConfig(); },
+        error: function(result) { showError('Unable to calibrate device.'); }
+      } );
+    });
 
-<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div>
+    $("#firmware-btn").click(function(e){
+      window.location.href = "/firmware.htm";
+    });
+
+    // Open the format editor
+    $("#format-btn").click(function(e){
+      window.location.href = "/format.htm";
+    });
+
+      // Open the format editor
+    $("#format-btn2").click(function(e){
+      window.location.href = "/format.htm";
+    });
+
+    $("#test-btn").click(function(e){
+      window.location.href = "/test.htm";
+    });
+
+    $("#test-btn2").click(function(e){
+      window.location.href = "/test.htm";
+    });
+
+    function estimateBatteryLife(interval, rt) {
+      // ESP8266 consumes between 140-170mA when WIFI is on. Deep sleep is 20uA. 
+      // MPU-6050 consumes 4mA
+      // DS18B20 consumes 1mA
+      // For this estimation we use an average of 160mA
+
+      var pwrActive = 170; // mA per hour
+      var pwrSleep = 15; // mA per day
+      var batt = 2000; // mA
+
+      if(rt<1) rt = 2;
+
+      // The deep sleep will consume approx 1mA per day.
+      var powerPerDay = (24*3600)/(interval+rt)*(rt/3600)*pwrActive + pwrSleep; 
+      return batt/powerPerDay;
+    }
+
+    function updateSleepInfo() {
+      var i = parseInt($("#sleep-interval").val());
+      var rt = parseInt($("#runtime-average").val());
+      var j = 0;
+
+      if( rt>0 )
+        j = estimateBatteryLife(i, rt);
+
+      var t1 = Math.floor(i/60) + " m " + (i%60) + " s";
+      var t2 = Math.floor(j/7) + " weeks " + Math.floor(j%7) + " days";
+
+      if( j )
+        $("#sleep-interval-info").text( t1 + "  -  Estimated runtime: " + t2);
+      else
+        $("#sleep-interval-info").text( t1 );
+/*
+      hideWarningGyro();
+      if(i>0 && i<300) {
+        if( $("#gyro-temp").is(":checked") )
+          showWarningGyro();
+        showWarningSleep();
+      } else {
+        hideWarningSleep();
+      }*/
+    }
+
+    // Trigger the calibration and show warnings if needed
+    $("#sleep-interval").keyup(updateSleepInfo);
+    $("#gyro-temp").change(updateSleepInfo);
+
+    function setButtonDisabled( b ) {
+      $("#device-btn").prop("disabled", b);
+      $("#calibrate-btn").prop("disabled", b);
+      $("#push-btn").prop("disabled", b);
+      $("#format-btn").prop("disabled", b);
+      $("#test-btn").prop("disabled", b);
+      $("#gravity-btn").prop("disabled", b);
+      $("#hardware-btn").prop("disabled", b);
+      $("#push-btn2").prop("disabled", b);
+      $("#format-btn2").prop("disabled", b);
+      $("#test-btn2").prop("disabled", b);
+    }
+
+    // Get the configuration values from the API
+    function getConfig() {
+      setButtonDisabled( true );
+
+      var url = "/api/config";
+      var url = "/test/config.json";
+      showError(url);
+      //showSuccess(url);
+      showWarningGyro();
+      showWarningSleep();
+      $('#spinner').show(); 
+      $.getJSON(url, function (cfg) {
+        console.log( cfg );
+
+        if(cfg["platform"]=="esp32") {
+          $('#ble').prop('disabled', false);
+          $("#ble").val(cfg["ble"]);
+        }
+
+        $("#id1").val(cfg["id"]);
+        $("#id2").val(cfg["id"]);
+        $("#id3").val(cfg["id"]);
+        $("#id4").val(cfg["id"]);
+        $("#id5").val(cfg["id"]);
+        $("#mdns").val(cfg["mdns"]);
+        if( cfg["temp-format"] == "C" ) $("#temp-format-c").click();
+        else $("#temp-format-f").click();
+        if( cfg["gravity-format"] == "G" ) $("#gravity-format-g").click();
+        else $("#gravity-format-p").click();
+        $("#ota-url").val(cfg["ota-url"]);
+        $("#token").val(cfg["token"]);
+        $("#token2").val(cfg["token2"]);
+        $("#http-push").val(cfg["http-push"]);
+        $("#http-push-h1").val(cfg["http-push-h1"]);
+        $("#http-push-h2").val(cfg["http-push-h2"]);
+        $("#http-push2").val(cfg["http-push2"]);
+        $("#http-push2-h1").val(cfg["http-push2-h1"]);
+        $("#http-push2-h2").val(cfg["http-push2-h2"]);
+        $("#http-push3").val(cfg["http-push3"]);
+        $("#influxdb2-push").val(cfg["influxdb2-push"]);
+        $("#influxdb2-org").val(cfg["influxdb2-org"]);
+        $("#influxdb2-bucket").val(cfg["influxdb2-bucket"]);
+        $("#influxdb2-auth").val(cfg["influxdb2-auth"]);
+        $("#mqtt-push").val(cfg["mqtt-push"]);
+        $("#mqtt-port").val(cfg["mqtt-port"]);
+        $("#mqtt-user").val(cfg["mqtt-user"]);
+        $("#mqtt-pass").val(cfg["mqtt-pass"]);
+        $("#sleep-interval").val(cfg["sleep-interval"]);
+        $("#voltage-factor").val(cfg["voltage-factor"]);
+        $("#gravity-formula").val(cfg["gravity-formula"]);
+        $("#temp-adjustment-value").val(cfg["temp-adjustment-value"]);
+        $("#gravity-temp-adjustment").prop( "checked", cfg["gravity-temp-adjustment"] );
+        $("#gyro-temp").prop( "checked", cfg["gyro-temp"] );
+        $("#gyro-calibration-data").text( cfg["gyro-calibration-data"]["ax"] + "," + cfg["gyro-calibration-data"]["ay"] + "," + cfg["gyro-calibration-data"]["az"] + "," + cfg["gyro-calibration-data"]["gx"] + "," + cfg["gyro-calibration-data"]["gy"] + "," + cfg["gyro-calibration-data"]["gz"] );
+        $("#battery").text(cfg["battery"] + " V");
+        $("#angle").text(cfg["angle"]);
+        $("#runtime-average").val(cfg["runtime-average"]);
+        //$("#gravity").text(cfg["gravity"] + " SG");
+      })
+      .fail(function () {
+        showError('Unable to get data from the device.');
+      })
+      .always(function() {
+        $('#spinner').hide(); 
+        setButtonDisabled( false );
+        updateSleepInfo();
+      });
+    }
+  </script>
+
+  <!-- START FOOTER -->
+
+  <div class="container themed-container bg-primary text-light row-margin-10">(C) Copyright 2021-22 Magnus Persson</div>
 </body>
 </html>
