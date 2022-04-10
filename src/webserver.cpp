@@ -498,8 +498,6 @@ void WebServerHandler::webHandleConfigPush() {
     myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H2).c_str(), 1);
   if (_server->hasArg(PARAM_PUSH_HTTP3))
     myConfig.setHttp3Url(_server->arg(PARAM_PUSH_HTTP3).c_str());
-  if (_server->hasArg(PARAM_PUSH_BREWFATHER))
-    myConfig.setBrewfatherPushUrl(_server->arg(PARAM_PUSH_BREWFATHER).c_str());
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2))
     myConfig.setInfluxDb2PushUrl(_server->arg(PARAM_PUSH_INFLUXDB2).c_str());
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2_ORG))
@@ -792,10 +790,6 @@ void WebServerHandler::webHandleConfigFormatWrite() {
   } else if (_server->hasArg(PARAM_FORMAT_MQTT)) {
     success = writeFile(TPL_FNAME_MQTT, _server->arg(PARAM_FORMAT_MQTT));
   }
-  /*else if (_server->hasArg(PARAM_FORMAT_BREWFATHER)) {
-    success = writeFile(TPL_FNAME_BREWFATHER,
-  _server->arg(PARAM_FORMAT_BREWFATHER));
-  }*/
 
   if (success) {
     _server->sendHeader("Location", "/format.htm", true);
@@ -841,11 +835,7 @@ void WebServerHandler::webHandleTestPush() {
   PushTarget push;
   bool enabled = false;
 
-  if (!type.compareTo(PARAM_FORMAT_BREWFATHER) &&
-      myConfig.isBrewfatherActive()) {
-    push.sendBrewfather(engine);
-    enabled = true;
-  } else if (!type.compareTo(PARAM_FORMAT_HTTP1) && myConfig.isHttpActive()) {
+  if (!type.compareTo(PARAM_FORMAT_HTTP1) && myConfig.isHttpActive()) {
     push.sendHttp1(engine, myConfig.isHttpSSL());
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_HTTP2) && myConfig.isHttp2Active()) {
@@ -954,12 +944,6 @@ void WebServerHandler::webHandleConfigFormatRead() {
     doc[PARAM_FORMAT_HTTP3] = urlencode(s);
   else
     doc[PARAM_FORMAT_HTTP3] = urlencode(String(&iHttpGetFormat[0]));
-
-  /*s = readFile(TPL_FNAME_BREWFATHER);
-  if (s.length())
-    doc[PARAM_FORMAT_BREWFATHER] = urlencode(s);
-  else
-    doc[PARAM_FORMAT_BREWFATHER] = urlencode(&brewfatherFormat[0]);*/
 
   s = readFile(TPL_FNAME_INFLUXDB);
   if (s.length())

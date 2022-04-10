@@ -106,8 +106,6 @@ class Config {
   String _wifiPASS = "";
 
   // Push target settings
-  String _brewfatherPushUrl = "";
-
   String _token = "";
   String _token2 = "";
 
@@ -176,16 +174,6 @@ class Config {
   void setWifiPass(String s) {
     _wifiPASS = s;
     _saveNeeded = true;
-  }
-
-  // Brewfather
-  const char* getBrewfatherPushUrl() { return _brewfatherPushUrl.c_str(); }
-  void setBrewfatherPushUrl(String s) {
-    _brewfatherPushUrl = s;
-    _saveNeeded = true;
-  }
-  bool isBrewfatherActive() {
-    return _brewfatherPushUrl.length() ? true : false;
   }
 
   // Token parameter
@@ -361,7 +349,7 @@ class Config {
   bool isBLEActive() { return _colorBLE.length() ? true : false; }
   bool isWifiPushActive() {
     return (isHttpActive() || isHttp2Active() || isHttp3Active() ||
-            isBrewfatherActive() || isInfluxDb2Active() || isMqttActive())
+            isInfluxDb2Active() || isMqttActive())
                ? true
                : false;
   }

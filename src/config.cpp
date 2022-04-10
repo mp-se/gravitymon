@@ -66,7 +66,6 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_PASS] = getWifiPass();
   doc[PARAM_BLE] = getColorBLE();
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
-  doc[PARAM_PUSH_BREWFATHER] = getBrewfatherPushUrl();
   doc[PARAM_TOKEN] = getToken();
   doc[PARAM_TOKEN2] = getToken2();
   doc[PARAM_PUSH_HTTP] = getHttpUrl();
@@ -206,9 +205,6 @@ bool Config::loadFile() {
     String s = doc[PARAM_TEMPFORMAT];
     setTempFormat(s.charAt(0));
   }
-
-  if (!doc[PARAM_PUSH_BREWFATHER].isNull())
-    setBrewfatherPushUrl(doc[PARAM_PUSH_BREWFATHER]);
 
   if (!doc[PARAM_TOKEN].isNull()) setToken(doc[PARAM_TOKEN]);
   if (!doc[PARAM_TOKEN2].isNull()) setToken2(doc[PARAM_TOKEN2]);

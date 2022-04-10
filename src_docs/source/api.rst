@@ -24,7 +24,6 @@ Other parameters are the same as in the configuration guide.
       "ota-url": "http://192.168.1.50:80/firmware/gravmon/",
       "temp-format": "C",
       "ble": "color",
-      "brewfather-push": "http://log.brewfather.net/stream?id=Qwerty",
       "token": "token",
       "token2": "token2",
       "http-push": "http://192.168.1.50:9090/api/v1/Qwerty/telemetry",
@@ -173,7 +172,7 @@ Trigger a push on one of the targets, used to validate the configuration from th
 
 Requires to parameters to function /api/test/push?id=<deviceid>&format=<format>
 
-* ``format`` defines which endpoint to test, valid values are; http-1, http-2, brewfather, influxdb, mqtt
+* ``format`` defines which endpoint to test, valid values are; http-1, http-2, http-3, influxdb, mqtt
 
 The response is an json message with the following values.
 
@@ -223,7 +222,6 @@ Payload should be in standard format used for posting a form. Such as as: `id=va
    http-push-h2=
    http-push2-h1=
    http-push2-h2=
-   brewfather-push=
    influxdb2-push=http://192.168.1.50:8086
    influxdb2-org=
    influxdb2-bucket=
@@ -346,7 +344,6 @@ The requests package converts the json to standard form post format.
             "http-push-h2": "",
             "http-push2-h1": ""
             "http-push2-h2": "",
-            "brewfather-push": "",
             "influxdb2-push": "",
             "influxdb2-org": "",
             "influxdb2-bucket": "",

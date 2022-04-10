@@ -3,7 +3,6 @@
     "id": "7376ef",
     "ota-url": "http://192.168.1.100:80/firmware/gravmon/",
     "temp-format": "C",
-    "brewfather-push": "http://log.brewfather.net/stream?id=KfkJU43jUFfj",
     "http-push": "http://192.168.1.10:9090/api/v1/ZYfjlUNeiuyu9N/telemetry",
     "http-push-h1": "Auth: Basic T7IF9DD9fF3RDddE=",
     "http-push-h2": "Auth: Advanced T7IF9DD9fF3RDddE=",

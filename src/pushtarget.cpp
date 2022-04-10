@@ -44,12 +44,6 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
   TemplatingEngine engine;
   engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime);
 
-  if (myConfig.isBrewfatherActive()) {
-    LOG_PERF_START("push-brewfather");
-    sendBrewfather(engine);
-    LOG_PERF_STOP("push-brewfather");
-  }
-
   if (myConfig.isHttpActive()) {
     LOG_PERF_START("push-http");
     sendHttpPost(engine, myConfig.isHttpSSL(), 0);
@@ -115,45 +109,6 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
   } else {
     ErrorFileLog errLog;
     errLog.addEntry("PUSH: Influxdb push failed response=" + String(_lastCode));
-  }
-
-  _http.end();
-  _wifi.stop();
-  tcp_cleanup();
-}
-
-//
-// Send data to brewfather
-//
-void PushTarget::sendBrewfather(TemplatingEngine& engine) {
-#if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to brewfather" CR));
-#endif
-  _lastCode = 0;
-  _lastSuccess = false;
-
-  String serverPath = myConfig.getBrewfatherPushUrl();
-  String doc = engine.create(TemplatingEngine::TEMPLATE_BREWFATHER);
-
-  _http.begin(_wifi, serverPath);
-  _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
-
-#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
-  Log.verbose(F("PUSH: json %s." CR), doc.c_str());
-#endif
-
-  _http.addHeader(F("Content-Type"), F("application/json"));
-  _lastCode = _http.POST(doc);
-
-  if (_lastCode == 200) {
-    _lastSuccess = true;
-    Log.notice(F("PUSH: Brewfather push successful, response=%d" CR),
-               _lastCode);
-  } else {
-    ErrorFileLog errLog;
-    errLog.addEntry("PUSH: Brewfather push failed response=" +
-                    String(_lastCode));
   }
 
   _http.end();

@@ -50,7 +50,6 @@ class PushTarget {
   void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
                float runTime);
 
-  void sendBrewfather(TemplatingEngine& engine);
   void sendHttp1(TemplatingEngine& engine, bool isSecure) {
     sendHttpPost(engine, isSecure, 0);
   }
