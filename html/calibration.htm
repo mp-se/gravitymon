@@ -312,9 +312,7 @@
       setButtonDisabled( true );
 
       var url = "/api/formula";
-      var url = "/test/formula.json";
-      showError(url);
-      //showSuccess(url);
+      //var url = "/test/formula.json";
       $('#spinner').show(); 
       $.getJSON(url, function (cfg) {
         console.log( cfg );

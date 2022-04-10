@@ -112,8 +112,8 @@
               }, 3000); //5 seconds  
             
               function loadLog() {
-                //$("#logContent").load("/log");
-                $("#logContent").load("/test/status.json");
+                $("#logContent").load("/log");
+                //$("#logContent").load("/test/status.json");
               };
             </script>
           
@@ -189,9 +189,7 @@
 
     function getStatus() {
       var url = "/api/status";
-      var url = "/test/status.json";
-      showError(url);
-      //showSuccess(url);
+      //var url = "/test/status.json";
       $('#spinner').show(); 
 
       $.getJSON(url, function (cfg) {

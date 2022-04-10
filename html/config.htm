@@ -585,7 +585,7 @@
         $("#sleep-interval-info").text( t1 + "  -  Estimated runtime: " + t2);
       else
         $("#sleep-interval-info").text( t1 );
-/*
+
       hideWarningGyro();
       if(i>0 && i<300) {
         if( $("#gyro-temp").is(":checked") )
@@ -593,7 +593,7 @@
         showWarningSleep();
       } else {
         hideWarningSleep();
-      }*/
+      }
     }
 
     // Trigger the calibration and show warnings if needed
@@ -618,11 +618,7 @@
       setButtonDisabled( true );
 
       var url = "/api/config";
-      var url = "/test/config.json";
-      showError(url);
-      //showSuccess(url);
-      showWarningGyro();
-      showWarningSleep();
+      //var url = "/test/config.json";
       $('#spinner').show(); 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
