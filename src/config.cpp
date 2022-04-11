@@ -277,6 +277,12 @@ bool Config::loadFile() {
     _formulaData.a[3] = doc[PARAM_FORMULA_DATA]["a4"].as<double>();
   if (!doc[PARAM_FORMULA_DATA]["a5"].isNull())
     _formulaData.a[4] = doc[PARAM_FORMULA_DATA]["a5"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["a6"].isNull())
+    _formulaData.a[5] = doc[PARAM_FORMULA_DATA]["a6"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["a7"].isNull())
+    _formulaData.a[6] = doc[PARAM_FORMULA_DATA]["a7"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["a8"].isNull())
+    _formulaData.a[7] = doc[PARAM_FORMULA_DATA]["a8"].as<double>();
 
   if (!doc[PARAM_FORMULA_DATA]["g1"].isNull())
     _formulaData.g[0] = doc[PARAM_FORMULA_DATA]["g1"].as<double>();
@@ -288,6 +294,12 @@ bool Config::loadFile() {
     _formulaData.g[3] = doc[PARAM_FORMULA_DATA]["g4"].as<double>();
   if (!doc[PARAM_FORMULA_DATA]["g5"].isNull())
     _formulaData.g[4] = doc[PARAM_FORMULA_DATA]["g5"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["g6"].isNull())
+    _formulaData.g[5] = doc[PARAM_FORMULA_DATA]["g6"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["g7"].isNull())
+    _formulaData.g[6] = doc[PARAM_FORMULA_DATA]["g7"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["g8"].isNull())
+    _formulaData.g[7] = doc[PARAM_FORMULA_DATA]["g8"].as<double>();
 
   /*if( doc[PARAM_CONFIG_VER].isNull() ) {
     // If this parameter is missing we need to reset the gyrocalibaration due to

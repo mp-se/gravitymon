@@ -62,11 +62,19 @@ Other parameters are the same as in the configuration guide.
          "a3":35,
          "a4":40,
          "a5":45,
+         "a5":0,
+         "a6":0,
+         "a7":0,
+         "a8":0,
          "g1":1,
          "g2":1.01,
          "g3":1.02,
          "g4":1.03,
-         "g5":1.04
+         "g4":1.04,
+         "g5":1,
+         "g6":1,
+         "g7":1,
+         "g8":1
       },
       "angle": 90.93,
       "gravity": 1.105,
@@ -119,8 +127,8 @@ GET: /api/config/formula
 
 Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
 
-* ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
-* ``g1``-``g4`` are the corresponding gravity reaadings in SG or Plato depending on the device-format.
+* ``a1``-``a8`` are the angles/tilt readings (up to 8 are currently supported)
+* ``g1``-``g8`` are the corresponding gravity reaadings in SG or Plato depending on the device-format.
 
 .. code-block:: json
 
@@ -131,11 +139,18 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
       "a3": 58, 
       "a4": 0, 
       "a5": 0, 
+      "a6": 0, 
+      "a7": 0, 
+      "a8": 0, 
       "g1": 1.000,      
       "g2": 1.053, 
       "g3": 1.062, 
       "g4": 1, 
       "g5": 1,
+      "g6": 1,
+      "g7": 1,
+      "g8": 1,
+      "error": "Potential error message",
       "gravity-format": "G", 
       "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"
    }
@@ -280,8 +295,8 @@ POST: /api/config/formula
 
 Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.
 
-* ``a1``-``a4`` are the angles/tilt readings (up to 5 are currently supported)
-* ``g1``-``g4`` are the corresponding gravity reaadings (in SG)
+* ``a1``-``a8`` are the angles/tilt readings (up to 5 are currently supported)
+* ``g1``-``g8`` are the corresponding gravity reaadings (in SG)
 
 Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
@@ -293,11 +308,17 @@ Payload should be in standard format used for posting a form. Such as as: `id=va
    a3=58
    a4=0
    a5=0
+   a6=0
+   a7=0
+   a8=0
    g1=1.000      
    g2=1.053 
    g3=1.062
    g4=1
    g5=1 
+   g6=1 
+   g7=1 
+   g8=1 
 
 
 Calling the API's from Python
@@ -380,10 +401,16 @@ The requests package converts the json to standard form post format.
             "a3": 58, 
             "a4": 0, 
             "a5": 0, 
+            "a6": 0, 
+            "a7": 0, 
+            "a8": 0, 
             "g1": 1.000, 
             "g2": 1.053, 
             "g3": 1.062, 
             "g4": 1, 
-            "g5": 1 
+            "g5": 1, 
+            "g6": 1, 
+            "g7": 1, 
+            "g8": 1 
             }
    set_config( url, json )
