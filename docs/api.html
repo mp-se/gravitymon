@@ -4,11 +4,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Data Formats" href="data.html" /><link rel="prev" title="Advanced Configuration" href="advanced.html" />
 
-    <meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>REST API - GravityMon 0.8.0 documentation</title>
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
+        <title>REST API - GravityMon 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
 
@@ -35,10 +35,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -120,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.8.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -143,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -153,12 +155,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -166,8 +169,8 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 </ul>
 
 </div>
@@ -209,6 +212,7 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gravity-format</span></code> is always <code class="docutils literal notranslate"><span class="pre">G</span></code> (plato is not yet supported)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ble</span></code> is used to enable ble data transmission (only on esp32) simulating a tilt. Valid color names are; red, green, black, purple, orange, blue, yellow, pink</p></li>
 </ul>
 <p>Other parameters are the same as in the configuration guide.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
@@ -216,14 +220,17 @@
 <span class="w">   </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ee1bfc"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"ota-url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.1.50:80/firmware/gravmon/"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp-format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"ble"</span><span class="p">:</span><span class="w"> </span><span class="s2">"color"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"brewfather-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://log.brewfather.net/stream?id=Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"token2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token2"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"http-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.1.50:9090/api/v1/Qwerty/telemetry"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"http-push-h1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"header: value"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"http-push-h2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"header: value"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"http-push2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.1.50/ispindel"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"http-push2-h1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"header: value"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"http-push2-h2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"header: value"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"http-push3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.1.50/ispindel"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.1.50:8086"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-org"</span><span class="p">:</span><span class="w"> </span><span class="s2">"org"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"influxdb2-bucket"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bucket_id"</span><span class="p">,</span><span class="w"></span>
@@ -247,9 +254,22 @@
 <span class="w">      </span><span class="nt">"gy"</span><span class="p">:</span><span class="w"> </span><span class="mi">-6</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="nt">"gz"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
 <span class="w">   </span><span class="p">},</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"formula-calculation-data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"a1"</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"a2"</span><span class="p">:</span><span class="mi">30</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"a3"</span><span class="p">:</span><span class="mi">35</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"a4"</span><span class="p">:</span><span class="mi">40</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"a5"</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"g1"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"g2"</span><span class="p">:</span><span class="mf">1.01</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"g3"</span><span class="p">:</span><span class="mf">1.02</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"g4"</span><span class="p">:</span><span class="mf">1.03</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"g5"</span><span class="p">:</span><span class="mf">1.04</span><span class="w"></span>
+<span class="w">   </span><span class="p">},</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"angle"</span><span class="p">:</span><span class="w"> </span><span class="mf">90.93</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.105</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"platform"</span><span class="p">:</span><span class="w"> </span><span class="s2">"esp8266"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"runtime-average"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.12</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
@@ -257,35 +277,33 @@
 </div>
 <div class="section" id="get-api-device">
 <h2>GET: /api/device<a class="headerlink" href="#get-api-device" title="Permalink to this headline">#</a></h2>
-<p>Retrive the current device settings via an HTTP GET command. Payload is in JSON format.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"app-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GravityMon"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"app-ver"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.0"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ee1bfc"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"mdns"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"runtime-average"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.12</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
+<p>This API has been removed from 0.9 and merged with /api/status</p>
 </div>
 <div class="section" id="get-api-status">
 <h2>GET: /api/status<a class="headerlink" href="#get-api-status" title="Permalink to this headline">#</a></h2>
 <p>Retrive the current device status via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">platform</span></code> can be either <code class="docutils literal notranslate"><span class="pre">esp8266</span></code> or <code class="docutils literal notranslate"><span class="pre">esp32</span></code></p></li>
 </ul>
 <p>Other parameters are the same as in the configuration guide.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ee1bfc"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"angle"</span><span class="p">:</span><span class="w"> </span><span class="mf">89.86</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1052</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"gravity-tempcorr"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1031</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp-c"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp-f"</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp-format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"sleep-mode"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"rssi"</span><span class="p">:</span><span class="w"> </span><span class="mi">-56</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"token2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token2"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"rssi"</span><span class="p">:</span><span class="w"> </span><span class="mi">-56</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"app-ver"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.0"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"mdns"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"sleep-interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"platform"</span><span class="p">:</span><span class="w"> </span><span class="s2">"esp8266"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"runtime-average"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.12</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
@@ -315,11 +333,38 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="get-api-clearwifi">
+<h2>GET: /api/clearwifi<a class="headerlink" href="#get-api-clearwifi" title="Permalink to this headline">#</a></h2>
+<p>Will reset the wifi settings both in the configuration file and eeprom, leaving the rest of the configuration.</p>
+<p>For this to work you will need to supply the device id as a parameter in the request:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://mygravity.local/api/clearwifi?id=&lt;mydeviceid&gt;
+</pre></div>
+</div>
+</div>
 <div class="section" id="get-api-factory">
 <h2>GET: /api/factory<a class="headerlink" href="#get-api-factory" title="Permalink to this headline">#</a></h2>
 <p>Will do a reset to factory defaults and delete all data except wifi settings.</p>
 <p>For this to work you will need to supply the device id as a parameter in the request:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://mygravity.local/api/factory?id=&lt;mydeviceid&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-api-test-push">
+<h2>GET: /api/test/push<a class="headerlink" href="#get-api-test-push" title="Permalink to this headline">#</a></h2>
+<p>Trigger a push on one of the targets, used to validate the configuration from the UI.</p>
+<p>Requires to parameters to function /api/test/push?id=&lt;deviceid&gt;&amp;format=&lt;format&gt;</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code> defines which endpoint to test, valid values are; http-1, http-2, brewfather, influxdb, mqtt</p></li>
+</ul>
+<p>The response is an json message with the following values.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">code</span></code> is the return code from the push function, typically http responsecode or error code from mqtt library.</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="mi">-3</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -342,8 +387,11 @@
 <p>Used to update push settings via an HTTP POST command. Payload is in JSON format.</p>
 <p>Payload should be in standard format used for posting a form. Such as as: <cite>id=value&amp;mdns=value</cite> etc. Key value pairs are shown below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span><span class="o">=</span><span class="n">ee1bfc</span>
+<span class="n">token</span><span class="o">=</span>
+<span class="n">token2</span><span class="o">=</span>
 <span class="n">http</span><span class="o">-</span><span class="n">push</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.1.50</span><span class="o">/</span><span class="n">ispindel</span>
 <span class="n">http</span><span class="o">-</span><span class="n">push2</span><span class="o">=</span>
+<span class="n">http</span><span class="o">-</span><span class="n">push3</span><span class="o">=</span>
 <span class="n">http</span><span class="o">-</span><span class="n">push</span><span class="o">-</span><span class="n">h1</span><span class="o">=</span>
 <span class="n">http</span><span class="o">-</span><span class="n">push</span><span class="o">-</span><span class="n">h2</span><span class="o">=</span>
 <span class="n">http</span><span class="o">-</span><span class="n">push2</span><span class="o">-</span><span class="n">h1</span><span class="o">=</span>
@@ -392,6 +440,7 @@ reading data it’s sent as boolean (true,false).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span><span class="o">=</span><span class="n">ee1bfc</span>
 <span class="n">voltage</span><span class="o">-</span><span class="n">factor</span><span class="o">=</span><span class="mf">1.59</span>
 <span class="n">temp</span><span class="o">-</span><span class="n">adjustment</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ble</span><span class="o">=</span><span class="n">red</span>
 <span class="n">gyro</span><span class="o">-</span><span class="n">temp</span><span class="o">=</span><span class="n">off</span>
 <span class="n">ota</span><span class="o">-</span><span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.1.50</span><span class="o">/</span><span class="n">firmware</span><span class="o">/</span><span class="n">gravmon</span><span class="o">/</span>
 </pre></div>
@@ -450,11 +499,13 @@ present or the API call will fail.</p>
 <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://"</span> <span class="o">+</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">"/api/config/push"</span>
 <span class="n">json</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"id"</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
          <span class="s2">"token"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+         <span class="s2">"token2"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"http-push"</span><span class="p">:</span> <span class="s2">"http://192.168.1.1/ispindel"</span><span class="p">,</span>
          <span class="s2">"http-push2"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+         <span class="s2">"http-push3"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"http-push-h1"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"http-push-h2"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
-         <span class="s2">"http-push2-h1"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+         <span class="s2">"http-push2-h1"</span><span class="p">:</span> <span class="s2">""</span>
          <span class="s2">"http-push2-h2"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"brewfather-push"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"influxdb2-push"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
@@ -481,6 +532,7 @@ present or the API call will fail.</p>
          <span class="s2">"voltage-factor"</span><span class="p">:</span> <span class="mf">1.59</span><span class="p">,</span>                 <span class="c1"># Default value for voltage calculation</span>
          <span class="s2">"temp-adjustment"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>                   <span class="c1"># If temp sensor needs to be corrected</span>
          <span class="s2">"gyro-temp"</span><span class="p">:</span> <span class="s2">"on"</span><span class="p">,</span>                      <span class="c1"># Use the temp sensor in the gyro instead (on/off)</span>
+         <span class="s2">"ble"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">,</span>                           <span class="c1"># Enable ble on esp32</span>
          <span class="s2">"ota-url"</span><span class="p">:</span> <span class="s2">""</span>                           <span class="c1"># if the device should seach for a new update when active</span>
       <span class="p">}</span>
 <span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
@@ -566,7 +618,9 @@ present or the API call will fail.</p>
 <li><a class="reference internal" href="#get-api-device">GET: /api/device</a></li>
 <li><a class="reference internal" href="#get-api-status">GET: /api/status</a></li>
 <li><a class="reference internal" href="#get-api-config-formula">GET: /api/config/formula</a></li>
+<li><a class="reference internal" href="#get-api-clearwifi">GET: /api/clearwifi</a></li>
 <li><a class="reference internal" href="#get-api-factory">GET: /api/factory</a></li>
+<li><a class="reference internal" href="#get-api-test-push">GET: /api/test/push</a></li>
 <li><a class="reference internal" href="#post-api-config-device">POST: /api/config/device</a></li>
 <li><a class="reference internal" href="#post-api-config-push">POST: /api/config/push</a></li>
 <li><a class="reference internal" href="#post-api-config-gravity">POST: /api/config/gravity</a></li>

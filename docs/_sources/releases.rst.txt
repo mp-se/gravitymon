@@ -3,6 +3,31 @@
 Releases 
 ########
 
+v0.9.0
+------
+* Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api's. 
+* Added function to test push targets from configuration page. It will send data and show the return code as a first step. 
+* Added documetation on how to integrate with Blynk.io using http get.
+* Config page now shows the estimated runtime for the device (based on a full battery and previous average runtime)
+* Experimental release of firmware using an esp32 instead of esp8266
+* Merged index and device pages into one so that all the needed information is available on the index page.
+* Removed api for device (/api/device), it's now merged into the /api/status api.
+* Test function in format editor now uses real data and not fake. 
+* Split push configuration into two sections to make it fit better on smaller devices
+* Updated WifiManager and DoubleReset libraries
+* Updated esp32 target with littlefs support
+* Updated esp32 target with BLE send support (it will simulate a tilt)
+* Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine.
+* Documented hardware changes on esp32
+* Default mDNS name is now shown on WIFI setup page.
+* Added option to manually update/downgrade firmware under hardware settings. 
+* BUG: Corrected PIN for voltage read on ESP32
+* BUG: If using plato and not gravity formula was defined the value was set to null.
+* BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.
+* BUG: Temperature sensor adjusmemnt value was not handled properly when using Farenheight.
+* BUG: If the ID was to low the device id could end up with a leading space causing errors in data post. Added leading zero to ID.
+* BUG: Entering wifi setup and a timeout occured the wifi settings could be deleted.
+
 v0.8.0
 ------
 
@@ -13,7 +38,7 @@ v0.8.0
 * Added instructions for how to configure integration with Brewspy
 * Added instructions for how to configure integration with Thingspeak
 * Added option to do a factory reset via API. 
-* Logging the runtime, how long a measurement take (last 10 are stored). This can be 
+* Added logging of the runtime, how long a measurement take (last 10 are stored). This can be 
   used to check how good the wifi connection is and estimate the lifetime when on battery. 
   Check the device page in the UI for this information.
 * Refactored code to free up more RAM to make SSL more stable. 

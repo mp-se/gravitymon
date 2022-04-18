@@ -2,13 +2,13 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="Installation" href="installation.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionallity" href="functionallity.html" /><link rel="prev" title="Getting started" href="intro.html" />
 
-    <meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Releases - GravityMon 0.8.0 documentation</title>
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
+        <title>Releases - GravityMon 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
 
@@ -35,10 +35,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -120,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.8.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -143,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -153,12 +155,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -166,8 +169,8 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 </ul>
 
 </div>
@@ -202,6 +205,33 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">#</a></h1>
+<div class="section" id="v0-9-0">
+<h2>v0.9.0<a class="headerlink" href="#v0-9-0" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api’s.</p></li>
+<li><p>Added function to test push targets from configuration page. It will send data and show the return code as a first step.</p></li>
+<li><p>Added documetation on how to integrate with Blynk.io using http get.</p></li>
+<li><p>Config page now shows the estimated runtime for the device (based on a full battery and previous average runtime)</p></li>
+<li><p>Experimental release of firmware using an esp32 instead of esp8266</p></li>
+<li><p>Merged index and device pages into one so that all the needed information is available on the index page.</p></li>
+<li><p>Removed api for device (/api/device), it’s now merged into the /api/status api.</p></li>
+<li><p>Test function in format editor now uses real data and not fake.</p></li>
+<li><p>Split push configuration into two sections to make it fit better on smaller devices</p></li>
+<li><p>Updated WifiManager and DoubleReset libraries</p></li>
+<li><p>Updated esp32 target with littlefs support</p></li>
+<li><p>Updated esp32 target with BLE send support (it will simulate a tilt)</p></li>
+<li><p>Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine.</p></li>
+<li><p>Documented hardware changes on esp32</p></li>
+<li><p>Default mDNS name is now shown on WIFI setup page.</p></li>
+<li><p>Added option to manually update/downgrade firmware under hardware settings.</p></li>
+<li><p>BUG: Corrected PIN for voltage read on ESP32</p></li>
+<li><p>BUG: If using plato and not gravity formula was defined the value was set to null.</p></li>
+<li><p>BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.</p></li>
+<li><p>BUG: Temperature sensor adjusmemnt value was not handled properly when using Farenheight.</p></li>
+<li><p>BUG: If the ID was to low the device id could end up with a leading space causing errors in data post. Added leading zero to ID.</p></li>
+<li><p>BUG: Entering wifi setup and a timeout occured the wifi settings could be deleted.</p></li>
+</ul>
+</div>
 <div class="section" id="v0-8-0">
 <h2>v0.8.0<a class="headerlink" href="#v0-8-0" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
@@ -212,7 +242,7 @@ other http formats than json (default) and for adding authentication headers.</p
 <li><p>Added instructions for how to configure integration with Brewspy</p></li>
 <li><p>Added instructions for how to configure integration with Thingspeak</p></li>
 <li><p>Added option to do a factory reset via API.</p></li>
-<li><p>Logging the runtime, how long a measurement take (last 10 are stored). This can be
+<li><p>Added logging of the runtime, how long a measurement take (last 10 are stored). This can be
 used to check how good the wifi connection is and estimate the lifetime when on battery.
 Check the device page in the UI for this information.</p></li>
 <li><p>Refactored code to free up more RAM to make SSL more stable.</p></li>
@@ -303,23 +333,23 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="configuration.html">
+          <a class="next-page" href="functionallity.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Configuration</div>
+                <div class="title">Functionallity</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="installation.html">
+          <a class="prev-page" href="intro.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Installation</div>
+                <div class="title">Getting started</div>
                 
               </div>
             </a>
@@ -356,6 +386,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
+<li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>
 <li><a class="reference internal" href="#v0-8-0">v0.8.0</a></li>
 <li><a class="reference internal" href="#v0-7-1">v0.7.1</a></li>
 <li><a class="reference internal" href="#v0-7-0">v0.7.0</a></li>

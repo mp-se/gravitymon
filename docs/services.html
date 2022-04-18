@@ -4,11 +4,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Advanced Configuration" href="advanced.html" /><link rel="prev" title="Create formula" href="formula.html" />
 
-    <meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Service Integration - GravityMon 0.8.0 documentation</title>
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
+        <title>Service Integration - GravityMon 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
 
@@ -35,10 +35,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -120,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.8.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -143,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -153,12 +155,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -166,8 +169,8 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 </ul>
 
 </div>
@@ -206,11 +209,44 @@
 <div class="section" id="brewfather">
 <h2>Brewfather<a class="headerlink" href="#brewfather" title="Permalink to this headline">#</a></h2>
 <p>Brewfather is an all in one service that allows you to manage you recepies and brews.</p>
-<p>Just enter the http adress found on brewfather, not other settings are needed. The endpoint has the following format:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://log.brewfather.net/http://log.brewfather.net/stream?id=&lt;yourid&gt;
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The integration named Brewfather is uses the custom stream endpoint in brewfather not the standard iSpindle
+endpoint. You can use the iSpindle endpoint as well. In that case just use the http-1 or http-2 fields.</p>
+</div>
+<p><strong>Option 1</strong> - Custom Stream</p>
+<p>This option makes use of the push endpoint called Brewfather in the UI. Just enter the http stream adress found
+on brewfather, not other settings are needed. The stream endpoint URL has the following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://log.brewfather.net/stream?id=&lt;yourid&gt;
 </pre></div>
 </div>
-<p>The URL is found under settings.</p>
+<p>Documentation on this can be found under <a class="reference external" href="https://docs.brewfather.app/integrations/custom-stream">Brewfather Custom Endpoint</a></p>
+<p>The implementation is basically a http request with the following format template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
+   "name": "${mdns}",
+   "temp": ${temp},
+   "aux_temp": 0,
+   "ext_temp": 0,
+   "temp_unit": "${temp-unit}",
+   "gravity": ${gravity},
+   "gravity_unit": "${gravity-unit}",
+   "pressure": 0,
+   "pressure_unit": "PSI",
+   "ph": 0,
+   "bpm": 0,
+   "comment": "",
+   "beer": "",
+   "battery": ${battery}
+}
+</pre></div>
+</div>
+<p><strong>Option 2</strong> - iSpindle Endpoint</p>
+<p>This opion makes use of the standard http (1 or 2) endpoints in the push section. The brewfather iSpindle endpoint
+has the following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://log.brewfather.net/ispindel?id=&lt;yourid&gt;
+</pre></div>
+</div>
+<p>Documentation on this can be found under <a class="reference external" href="https://docs.brewfather.app/integrations/ispindel">Brewfather iSpindle Endpoint</a></p>
 </div>
 <div class="section" id="fermentrack">
 <h2>Fermentrack<a class="headerlink" href="#fermentrack" title="Permalink to this headline">#</a></h2>
@@ -304,7 +340,7 @@ format for the endpoint. Just add you API key after token.</p>
  "token" : "[API KEY]",
  "interval": ${sleep-interval},
  "temperature": ${temp},
- "temp-units": "${temp-unit}",
+ "temp_units": "${temp-unit}",
  "gravity": ${gravity},
  "angle": ${angle},
  "battery": ${battery},
@@ -339,6 +375,23 @@ you want to include. The example below sends 5 different values to the channel i
    "field4": ${battery},
    "field5": ${rssi}
 }
+</pre></div>
+</div>
+</div>
+<div class="section" id="blynk-io">
+<h2>Blynk.io<a class="headerlink" href="#blynk-io" title="Permalink to this headline">#</a></h2>
+<p>Blynk is an IoT service which can be updated via http get. It also has an mobile device that can be used to show the data.</p>
+<p>In order to use this platform you need to create a device which can be used to receive the data. Each device will have a
+unique token that is used to identify it. You need to use the HTTP GET option (http-3) on the device for this to work. Enter the
+following URL in the UI. This will allow us to update several data points at once. I usually enter the token in the <code class="docutils literal notranslate"><span class="pre">token2</span></code> field
+so the format template does not contain any sensitive data and it’s easier to switch to another device.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">blynk</span><span class="o">.</span><span class="n">cloud</span><span class="o">/</span><span class="n">external</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">batch</span><span class="o">/</span><span class="n">update</span>
+</pre></div>
+</div>
+<p>In the format editor you can enter this template which will send 3 values to blynk. You can add as many as you want but make sure
+these are configured on the device with the correct validation option such as data type and range. The value should be on one line
+starting with a <code class="docutils literal notranslate"><span class="pre">?</span></code>. This string will be added to the URL above when doing the post. You can add more values if you want.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>?token=${token2}&amp;v1=${temp}&amp;v2=${gravity}&amp;v3=${angle}
 </pre></div>
 </div>
 </div>
@@ -409,6 +462,7 @@ you want to include. The example below sends 5 different values to the channel i
 <li><a class="reference internal" href="#brewer-s-friend">Brewer’s Friend</a></li>
 <li><a class="reference internal" href="#brewspy">Brewspy</a></li>
 <li><a class="reference internal" href="#thingspeak">Thingspeak</a></li>
+<li><a class="reference internal" href="#blynk-io">Blynk.io</a></li>
 </ul>
 </li>
 </ul>

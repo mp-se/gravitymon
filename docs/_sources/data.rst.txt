@@ -5,8 +5,8 @@ Data Formats
 
 .. _data-formats-ispindle:
 
-iSpindle format 
-===============
+HTTP Post, iSpindle format 
+==========================
 
 This is the format used for standard http posts. 
 
@@ -22,7 +22,7 @@ This is the format used for standard http posts.
       "token" : "gravmon",
       "interval": 900,
       "temperature": 20.5,
-      "temp-units": "C",
+      "temp_units": "C",
       "gravity": 1.0050,
       "angle": 45.34,
       "battery": 3.67,
@@ -43,7 +43,7 @@ This is the format template used to create the json above.
    "token" : "gravmon",
    "interval": ${sleep-interval}, 
    "temperature": ${temp},
-   "temp-units": "${temp-unit}",
+   "temp_units": "${temp-unit}",
    "gravity": ${gravity},
    "angle": ${angle},
    "battery": ${battery},
@@ -75,6 +75,25 @@ This is the format for Brewfather. See: `Brewfather API docs <https://docs.brewf
 
 .. _data-formats-influxdb2:
 
+HTTP Get
+========
+
+This is the format added to the URL when using HTTP get
+
+.. code-block::
+   
+   ?name=<mdns>,id=<id>,token=<token>&interval=300&temperature=20.1&temp-units=<C|F>&
+   gravity=$1.004&angle=45.5&battery=3.96&rssi=-18&corr-gravity=1.004&gravity-unit=<G|P>&run-time=2.1
+
+This is the format template used to create the data above. 
+
+.. code-block::
+
+  ?name=${mdns}&id=${id}&token=${token2}&interval=${sleep-interval}&temperature=${temp}&
+  temp-units=${temp-unit}&gravity=${gravity}&angle=${angle}&battery=${battery}&rssi=${rssi}&
+  corr-gravity=${corr-gravity}&gravity-unit=${gravity-unit}&run-time=${run-time}
+
+
 Influx DB v2
 ============
 
@@ -82,14 +101,17 @@ This is the format for InfluxDB v2
 
 .. code-block::
    
-   measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG,gravity=1.0004,corr-gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
+   measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG,
+   gravity=1.0004,corr-gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
 
 
 This is the format template used to create the json above. 
 
 .. code-block::
 
-  measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
+  measurement,host=${mdns},device=${id},temp-format=${temp-unit},
+  gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},
+  angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
 
 
 .. _data-formats-mqtt:
@@ -130,7 +152,10 @@ This is a format template that is compatible with v0.6. Just replace the `topic`
 
 .. code-block::
    
-   topic:{"name":"gravmon","ID":"${id}","token":"gravmon","interval": ${sleep-interval},"temperature": ${temp},"temp-units": "${temp-unit}","gravity":${gravity},"angle": ${angle},"battery":${battery},"rssi": ${rssi},"corr-gravity":${corr-gravity},"gravity-unit": "${gravity-unit}","run-time": ${run-time}}|
+   topic:{"name":"gravmon", "ID":"${id}", "token":"gravmon", "interval": ${sleep-interval},
+   "temperature": ${temp}, "temp_units": "${temp-unit}", "gravity":${gravity},
+   "angle": ${angle}, "battery":${battery}, "rssi": ${rssi}, "corr-gravity":${corr-gravity},
+   "gravity-unit": "${gravity-unit}", "run-time": ${run-time}}|
 
 
 version.json
@@ -147,7 +172,7 @@ they can be uploaded manually afterwards.
       "version":"0.7.0",  
       "html": [ 
          "index.min.htm", 
-         "device.min.htm", 
+         "test.min.htm", 
          "config.min.htm", 
          "format.min.htm", 
          "calibration.min.htm", 

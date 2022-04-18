@@ -4,11 +4,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Compiling the software" href="compiling.html" /><link rel="prev" title="REST API" href="api.html" />
 
-    <meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Data Formats - GravityMon 0.8.0 documentation</title>
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
+        <title>Data Formats - GravityMon 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
 
@@ -35,10 +35,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -120,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.8.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -143,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -153,12 +155,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -166,8 +169,8 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 </ul>
 
 </div>
@@ -202,8 +205,8 @@
         <article role="main">
           <div class="section" id="data-formats">
 <span id="id1"></span><h1>Data Formats<a class="headerlink" href="#data-formats" title="Permalink to this headline">#</a></h1>
-<div class="section" id="ispindle-format">
-<span id="data-formats-ispindle"></span><h2>iSpindle format<a class="headerlink" href="#ispindle-format" title="Permalink to this headline">#</a></h2>
+<div class="section" id="http-post-ispindle-format">
+<span id="data-formats-ispindle"></span><h2>HTTP Post, iSpindle format<a class="headerlink" href="#http-post-ispindle-format" title="Permalink to this headline">#</a></h2>
 <p>This is the format used for standard http posts.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">corr-gravity</span></code> is an extended parameter containing a temperature corrected gravity reading.</p></li>
@@ -216,7 +219,7 @@
 <span class="w">   </span><span class="nt">"token"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">900</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temperature"</span><span class="p">:</span><span class="w"> </span><span class="mf">20.5</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"temp-units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"temp_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"angle"</span><span class="p">:</span><span class="w"> </span><span class="mf">45.34</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
@@ -235,7 +238,7 @@
  "token" : "gravmon",
  "interval": ${sleep-interval},
  "temperature": ${temp},
- "temp-units": "${temp-unit}",
+ "temp_units": "${temp-unit}",
  "gravity": ${gravity},
  "angle": ${angle},
  "battery": ${battery},
@@ -261,14 +264,31 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="http-get">
+<span id="data-formats-influxdb2"></span><h2>HTTP Get<a class="headerlink" href="#http-get" title="Permalink to this headline">#</a></h2>
+<p>This is the format added to the URL when using HTTP get</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>?name=&lt;mdns&gt;,id=&lt;id&gt;,token=&lt;token&gt;&amp;interval=300&amp;temperature=20.1&amp;temp-units=&lt;C|F&gt;&amp;
+gravity=$1.004&amp;angle=45.5&amp;battery=3.96&amp;rssi=-18&amp;corr-gravity=1.004&amp;gravity-unit=&lt;G|P&gt;&amp;run-time=2.1
+</pre></div>
+</div>
+<p>This is the format template used to create the data above.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>?name=${mdns}&amp;id=${id}&amp;token=${token2}&amp;interval=${sleep-interval}&amp;temperature=${temp}&amp;
+temp-units=${temp-unit}&amp;gravity=${gravity}&amp;angle=${angle}&amp;battery=${battery}&amp;rssi=${rssi}&amp;
+corr-gravity=${corr-gravity}&amp;gravity-unit=${gravity-unit}&amp;run-time=${run-time}
+</pre></div>
+</div>
+</div>
 <div class="section" id="influx-db-v2">
-<span id="data-formats-influxdb2"></span><h2>Influx DB v2<a class="headerlink" href="#influx-db-v2" title="Permalink to this headline">#</a></h2>
+<h2>Influx DB v2<a class="headerlink" href="#influx-db-v2" title="Permalink to this headline">#</a></h2>
 <p>This is the format for InfluxDB v2</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">measurement</span><span class="p">,</span><span class="n">host</span><span class="o">=&lt;</span><span class="n">mdns</span><span class="o">&gt;</span><span class="p">,</span><span class="n">device</span><span class="o">=&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="p">,</span><span class="n">temp</span><span class="o">-</span><span class="nb">format</span><span class="o">=&lt;</span><span class="n">C</span><span class="o">|</span><span class="n">F</span><span class="o">&gt;</span><span class="p">,</span><span class="n">gravity</span><span class="o">-</span><span class="nb">format</span><span class="o">=</span><span class="n">SG</span><span class="p">,</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">corr</span><span class="o">-</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">angle</span><span class="o">=</span><span class="mf">45.45</span><span class="p">,</span><span class="n">temp</span><span class="o">=</span><span class="mf">20.1</span><span class="p">,</span><span class="n">battery</span><span class="o">=</span><span class="mf">3.96</span><span class="p">,</span><span class="n">rssi</span><span class="o">=-</span><span class="mi">18</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">measurement</span><span class="p">,</span><span class="n">host</span><span class="o">=&lt;</span><span class="n">mdns</span><span class="o">&gt;</span><span class="p">,</span><span class="n">device</span><span class="o">=&lt;</span><span class="nb">id</span><span class="o">&gt;</span><span class="p">,</span><span class="n">temp</span><span class="o">-</span><span class="nb">format</span><span class="o">=&lt;</span><span class="n">C</span><span class="o">|</span><span class="n">F</span><span class="o">&gt;</span><span class="p">,</span><span class="n">gravity</span><span class="o">-</span><span class="nb">format</span><span class="o">=</span><span class="n">SG</span><span class="p">,</span>
+<span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">corr</span><span class="o">-</span><span class="n">gravity</span><span class="o">=</span><span class="mf">1.0004</span><span class="p">,</span><span class="n">angle</span><span class="o">=</span><span class="mf">45.45</span><span class="p">,</span><span class="n">temp</span><span class="o">=</span><span class="mf">20.1</span><span class="p">,</span><span class="n">battery</span><span class="o">=</span><span class="mf">3.96</span><span class="p">,</span><span class="n">rssi</span><span class="o">=-</span><span class="mi">18</span>
 </pre></div>
 </div>
 <p>This is the format template used to create the json above.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>measurement,host=${mdns},device=${id},temp-format=${temp-unit},
+gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},
+angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
 </pre></div>
 </div>
 </div>
@@ -299,7 +319,10 @@ ispindel/${mdns}/RSSI:${rssi}|
 </pre></div>
 </div>
 <p>This is a format template that is compatible with v0.6. Just replace the <cite>topic</cite> with the topic you want to post data to.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>topic:{"name":"gravmon","ID":"${id}","token":"gravmon","interval": ${sleep-interval},"temperature": ${temp},"temp-units": "${temp-unit}","gravity":${gravity},"angle": ${angle},"battery":${battery},"rssi": ${rssi},"corr-gravity":${corr-gravity},"gravity-unit": "${gravity-unit}","run-time": ${run-time}}|
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>topic:{"name":"gravmon", "ID":"${id}", "token":"gravmon", "interval": ${sleep-interval},
+"temperature": ${temp}, "temp_units": "${temp-unit}", "gravity":${gravity},
+"angle": ${angle}, "battery":${battery}, "rssi": ${rssi}, "corr-gravity":${corr-gravity},
+"gravity-unit": "${gravity-unit}", "run-time": ${run-time}}|
 </pre></div>
 </div>
 </div>
@@ -313,7 +336,7 @@ they can be uploaded manually afterwards.</p>
 <span class="w">   </span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"0.7.0"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"html"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"index.min.htm"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">"device.min.htm"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s2">"test.min.htm"</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"config.min.htm"</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"format.min.htm"</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="s2">"calibration.min.htm"</span><span class="p">,</span><span class="w"></span>
@@ -383,8 +406,9 @@ they can be uploaded manually afterwards.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Data Formats</a><ul>
-<li><a class="reference internal" href="#ispindle-format">iSpindle format</a></li>
+<li><a class="reference internal" href="#http-post-ispindle-format">HTTP Post, iSpindle format</a></li>
 <li><a class="reference internal" href="#brewfather-format">Brewfather format</a></li>
+<li><a class="reference internal" href="#http-get">HTTP Get</a></li>
 <li><a class="reference internal" href="#influx-db-v2">Influx DB v2</a></li>
 <li><a class="reference internal" href="#mqtt">MQTT</a></li>
 <li><a class="reference internal" href="#version-json">version.json</a></li>

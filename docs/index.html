@@ -2,13 +2,13 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Licence" href="license.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Getting started" href="intro.html" />
 
-    <meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>GravityMon 0.8.0 documentation</title>
+    <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
+        <title>GravityMon 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
 
@@ -35,10 +35,12 @@
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -120,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">GravityMon 0.8.0 documentation</div></a>
+      <a href="#"><div class="brand">GravityMon 0.9.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -143,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.8.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -153,12 +155,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -166,8 +169,8 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 </ul>
 
 </div>
@@ -204,7 +207,7 @@
 <h1>Welcome to GravityMon’s documentation!<a class="headerlink" href="#welcome-to-gravitymon-s-documentation" title="Permalink to this headline">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v0.8</strong>. Last updated 2022-03-05</p>
+<p>This documentation reflects <strong>v0.9</strong>. Last updated 2022-03-14</p>
 </div>
 <p>GravityMon is used to measure gravity and temperature during fermentation of beer and report the progress. The graph below is
 an example on how the fermentation process can be tracked. This is from my last brew that was over on a few days. The graph is rendered using
@@ -213,6 +216,7 @@ Fermentrack.</p>
 <p>GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
 implements a lot of the features that has been requested in the orginal iSpindle project but has been rejected for
 various reasons. Here is a list of <a class="reference internal" href="#main-features"><span class="std std-ref">Main features:</span></a>.</p>
+<p>From v0.9 the firmware now supports a iSpindle build based on an ESP32 d1 mini (pin compatible with esp8266). See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
 <p>I started GravityMon because I like to create software and wanted to do some low level programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural.</p>
 <p>The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. For more
@@ -293,17 +297,19 @@ the following libraries and without these this would have been much more difficu
 <li><p><a class="reference external" href="https://getbootstrap.com/">https://getbootstrap.com/</a></p>
 <p>CSS templates for the web page.</p>
 </li>
+<li><p><a class="reference external" href="https://github.com/lorol/LITTLEFS">https://github.com/lorol/LITTLEFS</a></p>
+<p>LittleFS library for ESP32 framework 1.x</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/h2zero/NimBLE-Arduino">https://github.com/h2zero/NimBLE-Arduino</a></p>
+<p>Bluetooth library for ESP32 framework 1.x</p>
+</li>
+<li><p><a class="reference external" href="https://github.com/spouliot/tilt-sim">https://github.com/spouliot/tilt-sim</a></p>
+<p>Excellent project for simulating a tilt device.</p>
+</li>
 </ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="functionallity.html#the-main-features">The main features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functionallity.html#battery-life">Battery life</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functionallity.html#performance">Performance</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-1-flash-the-device">Step 1 - Flash the device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-2-setup-wifi">Step 2 - Setup WIFI</a></li>
@@ -311,14 +317,8 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-4-completed">Step 4 - Completed</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#brewflasher">Brewflasher</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#esptool">Esptool</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#serial-monitoring">Serial Monitoring</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#configuring-wifi">Configuring WIFI</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-9-0">v0.9.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-8-0">v0.8.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-1">v0.7.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-0">v0.7.0</a></li>
@@ -327,10 +327,33 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-4-0">v0.4.0</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functionallity.html#the-main-features">The main features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functionallity.html#battery-life">Battery life</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functionallity.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#brewflasher">Brewflasher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#esptool">Esptool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#ispindel">iSpindel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#updating-firmware">Updating firmware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#serial-monitoring">Serial Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#configuring-wifi">Configuring WIFI</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#status">Status</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#device">Device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#id1">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#log-errors">Log errors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
@@ -342,6 +365,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewer-s-friend">Brewer’s Friend</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewspy">Brewspy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#thingspeak">Thingspeak</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#blynk-io">Blynk.io</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a><ul>
@@ -353,7 +377,9 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="api.html#get-api-device">GET: /api/device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#get-api-status">GET: /api/status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#get-api-config-formula">GET: /api/config/formula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-clearwifi">GET: /api/clearwifi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#get-api-factory">GET: /api/factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-test-push">GET: /api/test/push</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-device">POST: /api/config/device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-push">POST: /api/config/push</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-gravity">POST: /api/config/gravity</a></li>
@@ -363,8 +389,9 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="data.html#ispindle-format">iSpindle format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#http-post-ispindle-format">HTTP Post, iSpindle format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html#brewfather-format">Brewfather format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#http-get">HTTP Get</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html#influx-db-v2">Influx DB v2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html#mqtt">MQTT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html#version-json">version.json</a></li>
@@ -379,15 +406,8 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#log-errors">Log errors</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 </ul>
 </div>
 <div class="section" id="indices-and-tables">
@@ -406,12 +426,12 @@ the following libraries and without these this would have been much more difficu
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="license.html">
+          <a class="next-page" href="intro.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Licence</div>
+                <div class="title">Getting started</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>

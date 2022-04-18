@@ -35,6 +35,12 @@ These are the format keys available for use in the format.
    * - ${mdns}
      - Name of the device
      - gravmon2
+   * - ${token}
+     - Token
+     - any value
+   * - ${token2}
+     - Token 2
+     - any value
    * - ${id}
      - Unique id of the device
      - e422a3
