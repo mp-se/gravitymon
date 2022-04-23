@@ -110,14 +110,32 @@ Configuring WIFI
 ================
 
 When the device is flashed it will need to have WIFI configuration in order to work. If you have used other software on 
-the device its possible that wifi settings exist.
+the device its possible that wifi settings already exist.
 
 If this is not configured in the device it will create an wirless access point called `GravMon`. The default password is `password`.
 
 Connect to this AP and enter the SSID and password you want to use. If the web page dont open automatically you can enter the following adress 
 in the browser: **http://192.168.4.1**
 
+Before pressing save on the network infomration, make a note of the devicename that is shown on the screen, this will be the name that is used 
+in the next step to access the configuration pages. The link would look like this: **http://gravitymon56EA34.local**
+
 .. image:: images/wifi.png
   :width: 200
   :alt: Wifi page
 
+
+.. _setup_ip:
+
+Finding the device adress
+=========================
+
+Once the wifi network settings have been added then the device will reboot and connect to your network. If the blue led is flashing then it's up and running and is ready to be configured. 
+
+If your computer supports mDNS the adress you saw before can be used in your web browser to connect to the device. Windows does not have the best support for mDNS so if you are having issues 
+with finding the network name you can try the following:
+
+* Check your wireless router for the IP adress and use that to connect instead, for example; http://192.168.1.56
+* Download an IP scanner / Port Scanner on your Windows computer or mobile device and use that to find what devices are listening on port 80.
+
+Once you can access the user interface then proceed to the next step.
