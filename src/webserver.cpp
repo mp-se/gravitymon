@@ -1013,6 +1013,8 @@ void WebServerHandler::webHandleFormulaWrite() {
   fd.a[5] = _server->arg("a6").toDouble();
   fd.a[6] = _server->arg("a7").toDouble();
   fd.a[7] = _server->arg("a8").toDouble();
+  fd.a[8] = _server->arg("a9").toDouble();
+  fd.a[9] = _server->arg("a10").toDouble();
 
   if (myConfig.isGravityPlato()) {
     fd.g[0] = convertToSG(_server->arg("g1").toDouble());
@@ -1023,6 +1025,8 @@ void WebServerHandler::webHandleFormulaWrite() {
     fd.g[5] = convertToSG(_server->arg("g6").toDouble());
     fd.g[6] = convertToSG(_server->arg("g7").toDouble());
     fd.g[7] = convertToSG(_server->arg("g8").toDouble());
+    fd.g[8] = convertToSG(_server->arg("g9").toDouble());
+    fd.g[9] = convertToSG(_server->arg("g10").toDouble());
   } else {
     fd.g[0] = _server->arg("g1").toDouble();
     fd.g[1] = _server->arg("g2").toDouble();
@@ -1032,6 +1036,8 @@ void WebServerHandler::webHandleFormulaWrite() {
     fd.g[5] = _server->arg("g6").toDouble();
     fd.g[6] = _server->arg("g7").toDouble();
     fd.g[7] = _server->arg("g8").toDouble();
+    fd.g[8] = _server->arg("g9").toDouble();
+    fd.g[9] = _server->arg("g10").toDouble();
   }
 
   myConfig.setFormulaData(fd);

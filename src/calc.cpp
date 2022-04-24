@@ -50,7 +50,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
       order, noAngles);
 #endif
 
-  if (!noAngles) {
+  if (noAngles <3) {
     ErrorFileLog errLog;
     errLog.addEntry(F("CALC: Not enough values for deriving formula"));
     return ERR_FORMULA_NOTENOUGHVALUES;
@@ -96,11 +96,9 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
 
         // If the deviation is more than 2 degress we mark it as failed.
         if (dev * 1000 > myHardwareConfig.getMaxFormulaCreationDeviation()) {
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
           char s[20];
           snprintf(&s[0], sizeof(s), "%.8f", dev);
-          Log.verbose(F("CALC: Deviation is: %s" CR), &s[0]);
-#endif
+          Log.error(F("CALC: Deviation to large: %s" CR), &s[0]);
           valid = false;
         }
       }
