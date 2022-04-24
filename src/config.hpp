@@ -232,6 +232,7 @@ class Config {
     _saveNeeded = true;
   }
   bool isInfluxDb2Active() { return _influxDb2Url.length() ? true : false; }
+  bool isInfluxSSL() { return _influxDb2Url.startsWith("https://"); }
   const char* getInfluxDb2PushOrg() { return _influxDb2Org.c_str(); }
   void setInfluxDb2PushOrg(String s) {
     _influxDb2Org = s;

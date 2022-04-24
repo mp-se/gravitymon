@@ -64,7 +64,7 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
 
   if (myConfig.isInfluxDb2Active()) {
     LOG_PERF_START("push-influxdb2");
-    sendInfluxDb2(engine);
+    sendInfluxDb2(engine, myConfig.isInfluxSSL());
     LOG_PERF_STOP("push-influxdb2");
   }
 
@@ -78,7 +78,7 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
 //
 // Send to influx db v2
 //
-void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
+void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to influxdb2." CR));
 #endif
@@ -91,8 +91,31 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
       "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
   String doc = engine.create(TemplatingEngine::TEMPLATE_INFLUX);
 
-  _http.begin(_wifi, serverPath);
-  _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+  if (isSecure) {
+    Log.notice(F("PUSH: InfluxDB, SSL enabled without validation." CR));
+    _wifiSecure.setInsecure();
+
+#if defined(ESP8266)
+    String host =
+        serverPath.substring(8);  // remove the prefix or the probe will fail,
+                                  // it needs a pure host name.
+    int idx = host.indexOf("/");
+    if (idx != -1) host = host.substring(0, idx);
+
+    if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
+      Log.notice(F("PUSH: InfluxDB server supports smaller SSL buffer." CR));
+      _wifiSecure.setBufferSizes(512, 512);
+    }
+#endif
+
+    _httpSecure.begin(_wifiSecure, serverPath);
+    _httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+    _lastCode = _httpSecure.POST(doc);
+  } else  {
+    _http.begin(_wifi, serverPath);
+    _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
+    _lastCode = _http.POST(doc);
+  }
 
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
@@ -111,13 +134,18 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
     errLog.addEntry("PUSH: Influxdb push failed response=" + String(_lastCode));
   }
 
-  _http.end();
-  _wifi.stop();
+  if (isSecure) {
+    _httpSecure.end();
+    _wifiSecure.stop();
+  } else {
+    _http.end();
+    _wifi.stop();
+  }
   tcp_cleanup();
 }
 
 //
-//
+// Add HTTP header to request
 //
 void PushTarget::addHttpHeader(HTTPClient& http, String header) {
   if (!header.length()) return;

@@ -31,7 +31,6 @@ Log errors
   Check the format for your custom header. This means it has not a correct format.
 
 * Influxdb push failed response
-* Brewfather push failed response
 * HTTP push failed response
 
   All these errors are standard http error codes. This are the commone ones;
@@ -41,6 +40,20 @@ Log errors
   *  403 - Forbidden. Could be an issue with token or URL. 
   *  404 - Not found. Probably a wrong URL.
   
+  In some cases there can be negative error codes which have the following meaning:
+
+  * -1 - Connection refused
+  * -2 - Send header failed
+  * -3 - Send payload failed
+  * -4 - Not connected
+  * -5 - Connection lost
+  * -6 - No stream
+  * -7 - No HTTP server
+  * -8 - Too little RAM available
+  * -9 - Error encoding
+  * -10 - Error writing to stream
+  * -11 - Read timeout
+
 * MQTT push on <topic> failed error
 
   * -3 - Network failed connected

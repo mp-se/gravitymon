@@ -59,7 +59,7 @@ class PushTarget {
   void sendHttp3(TemplatingEngine& engine, bool isSecure) {
     sendHttpGet(engine, isSecure);
   }
-  void sendInfluxDb2(TemplatingEngine& engine);
+  void sendInfluxDb2(TemplatingEngine& engine, bool isSecure);
   void sendMqtt(TemplatingEngine& engine, bool isSecure);
   int getLastCode() { return _lastCode; }
   bool getLastSuccess() { return _lastSuccess; }
