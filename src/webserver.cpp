@@ -732,6 +732,8 @@ void WebServerHandler::webHandleFormulaRead() {
   doc["a6"] = reduceFloatPrecision(fd.a[5], 2);
   doc["a7"] = reduceFloatPrecision(fd.a[6], 2);
   doc["a8"] = reduceFloatPrecision(fd.a[7], 2);
+  doc["a9"] = reduceFloatPrecision(fd.a[8], 2);
+  doc["a10"] = reduceFloatPrecision(fd.a[9], 2);
 
   if (myConfig.isGravityPlato()) {
     doc["g1"] = reduceFloatPrecision(convertToPlato(fd.g[0]), 1);
@@ -742,6 +744,8 @@ void WebServerHandler::webHandleFormulaRead() {
     doc["g6"] = reduceFloatPrecision(convertToPlato(fd.g[5]), 1);
     doc["g7"] = reduceFloatPrecision(convertToPlato(fd.g[6]), 1);
     doc["g8"] = reduceFloatPrecision(convertToPlato(fd.g[7]), 1);
+    doc["g9"] = reduceFloatPrecision(convertToPlato(fd.g[8]), 1);
+    doc["g10"] = reduceFloatPrecision(convertToPlato(fd.g[9]), 1);
   } else {
     doc["g1"] = reduceFloatPrecision(fd.g[0], 4);
     doc["g2"] = reduceFloatPrecision(fd.g[1], 4);
@@ -751,6 +755,8 @@ void WebServerHandler::webHandleFormulaRead() {
     doc["g6"] = reduceFloatPrecision(fd.g[5], 4);
     doc["g7"] = reduceFloatPrecision(fd.g[6], 4);
     doc["g8"] = reduceFloatPrecision(fd.g[7], 4);
+    doc["g9"] = reduceFloatPrecision(fd.g[8], 4);
+    doc["g10"] = reduceFloatPrecision(fd.g[9], 4);
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)

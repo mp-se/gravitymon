@@ -47,7 +47,7 @@ struct RawGyroData {
 };
 
 // Used for holding formulaData (used for calculating formula on device)
-#define FORMULA_DATA_SIZE 8
+#define FORMULA_DATA_SIZE 10
 
 struct RawFormulaData {
   double a[FORMULA_DATA_SIZE];

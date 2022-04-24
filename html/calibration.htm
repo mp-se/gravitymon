@@ -143,6 +143,18 @@
               </div>
 
               <div class="row mb-3">
+                <label for="angle9" class="col-sm-1 col-form-label">9.</label>
+                <div class="col-sm-4"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a9" id="a9"></div>
+                <div class="col-sm-4"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g9" id="g9"></div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="angle10" class="col-sm-1 col-form-label">10.</label>
+                <div class="col-sm-4"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a10" id="a10"></div>
+                <div class="col-sm-4"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g10" id="g10"></div>
+              </div>
+
+              <div class="row mb-3">
                 <div class="col-sm-8 offset-sm-1"><button type="submit" class="btn btn-primary" id="calculate-btn">Save & Calculate</button></div>
               </div>
 
@@ -240,6 +252,8 @@
     g6.onchange = setGravityDecimal
     g7.onchange = setGravityDecimal
     g8.onchange = setGravityDecimal
+    g9.onchange = setGravityDecimal
+    g10.onchange = setGravityDecimal
 
     a1.onchange = setAngleDecimal
     a2.onchange = setAngleDecimal
@@ -249,6 +263,8 @@
     a6.onchange = setAngleDecimal
     a7.onchange = setAngleDecimal
     a8.onchange = setAngleDecimal
+    a9.onchange = setAngleDecimal
+    a10.onchange = setAngleDecimal
 
     window.onload = getConfig;
     setButtonDisabled( true );
@@ -319,6 +335,8 @@
       populateChartForm( $("#a6").val(), $("#g6").val() );
       populateChartForm( $("#a7").val(), $("#g7").val() );
       populateChartForm( $("#a8").val(), $("#g8").val() );
+      populateChartForm( $("#a9").val(), $("#g9").val() );
+      populateChartForm( $("#a10").val(), $("#g10").val() );
 
       if( myChart )
         myChart.destroy();
@@ -355,6 +373,11 @@
           $("#g3").val( parseFloat(cfg["g3"]).toFixed(1) );
           $("#g4").val( parseFloat(cfg["g4"]).toFixed(1) );
           $("#g5").val( parseFloat(cfg["g5"]).toFixed(1) );
+          $("#g6").val( parseFloat(cfg["g6"]).toFixed(1) );
+          $("#g7").val( parseFloat(cfg["g7"]).toFixed(1) );
+          $("#g8").val( parseFloat(cfg["g8"]).toFixed(1) );
+          $("#g9").val( parseFloat(cfg["g9"]).toFixed(1) );
+          $("#g10").val( parseFloat(cfg["g10"]).toFixed(1) );
         } else {
           $("#gravity-header").text("Gravity (SG):");
           $("#g1").val( parseFloat(cfg["g1"]).toFixed(4) );
@@ -365,6 +388,8 @@
           $("#g6").val( parseFloat(cfg["g6"]).toFixed(4) );
           $("#g7").val( parseFloat(cfg["g7"]).toFixed(4) );
           $("#g8").val( parseFloat(cfg["g8"]).toFixed(4) );
+          $("#g9").val( parseFloat(cfg["g9"]).toFixed(4) );
+          $("#g10").val( parseFloat(cfg["g10"]).toFixed(4) );
         }
 
         $("#a1").val( parseFloat(cfg["a1"]).toFixed(2) );
@@ -375,6 +400,8 @@
         $("#a6").val( parseFloat(cfg["a6"]).toFixed(2) );
         $("#a7").val( parseFloat(cfg["a7"]).toFixed(2) );
         $("#a8").val( parseFloat(cfg["a8"]).toFixed(2) );
+        $("#a9").val( parseFloat(cfg["a9"]).toFixed(2) );
+        $("#a10").val( parseFloat(cfg["a10"]).toFixed(2) );
 
         if( cfg["error"]!="" ) {
           showError(cfg["error"]);
