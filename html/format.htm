@@ -89,15 +89,39 @@
 
             <div class="row mb-3">
               <div class="col-sm-12">
-                <textarea rows="5" class="form-control" name="format" id="format">  
+                <textarea rows="10" class="form-control" name="format" id="format">  
                 </textarea>
               </div>
             </div>
 
-            <div class="row mb-3">
-              <div class="col-sm-8 offset-sm-2">
+            <script>
+              let formatTemplates = [
+              { "id": "GravityMon-Post", "format": "%7B%0A%20%22name%22%20%3A%20%22%24%7Bmdns%7D%22%2C%0A%20%22ID%22%3A%20%22%24%7Bid%7D%22%2C%0A%20%22token%22%20%3A%20%22gravmon%22%2C%0A%20%22interval%22%3A%20%24%7Bsleep-interval%7D%2C%0A%20%22temperature%22%3A%20%24%7Btemp%7D%2C%0A%20%22temp_units%22%3A%20%22%24%7Btemp-unit%7D%22%2C%0A%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%22angle%22%3A%20%24%7Bangle%7D%2C%0A%20%22battery%22%3A%20%24%7Bbattery%7D%2C%0A%20%22rssi%22%3A%20%24%7Brssi%7D%2C%0A%20%22corr-gravity%22%3A%20%24%7Bcorr-gravity%7D%2C%0A%20%22gravity-unit%22%3A%20%22%24%7Bgravity-unit%7D%22%2C%0A%20%22run-time%22%3A%20%24%7Brun-time%7D%0A%7D" },
+              { "id": "GravityMon-Get", "format": "%3Fname%3D%24%7Bmdns%7D%26id%3D%24%7Bid%7D%26token%3D%24%7Btoken2%7D%26interval%3D%24%7Bsleep-interval%7D%26temperature%3D%24%7Btemp%7D%26%0Atemp-units%3D%24%7Btemp-unit%7D%26gravity%3D%24%7Bgravity%7D%26angle%3D%24%7Bangle%7D%26battery%3D%24%7Bbattery%7D%26rssi%3D%24%7Brssi%7D%26%0Acorr-gravity%3D%24%7Bcorr-gravity%7D%26gravity-unit%3D%24%7Bgravity-unit%7D%26run-time%3D%24%7Brun-time%7D" },
+              { "id": "iSpindle-Post", "format": "%7B%0A%20%22name%22%20%3A%20%22%24%7Bmdns%7D%22%2C%0A%20%22ID%22%3A%20%22%24%7Bid%7D%22%2C%0A%20%22token%22%20%3A%20%22gravmon%22%2C%0A%20%22interval%22%3A%20%24%7Bsleep-interval%7D%2C%0A%20%22temperature%22%3A%20%24%7Btemp%7D%2C%0A%20%22temp_units%22%3A%20%22%24%7Btemp-unit%7D%22%2C%0A%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%22angle%22%3A%20%24%7Bangle%7D%2C%0A%20%22battery%22%3A%20%24%7Bbattery%7D%2C%0A%20%22rssi%22%3A%20%24%7Brssi%7D%0A%7D" },
+              { "id": "BrewFatherCustom-Post", "format": "%7B%0A%20%20%20%22name%22%3A%20%22%24%7Bmdns%7D%22%2C%0A%20%20%20%22temp%22%3A%20%24%7Btemp%7D%2C%0A%20%20%20%22aux_temp%22%3A%200%2C%0A%20%20%20%22ext_temp%22%3A%200%2C%0A%20%20%20%22temp_unit%22%3A%20%22%24%7Btemp-unit%7D%22%2C%0A%20%20%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%20%20%22gravity_unit%22%3A%20%22%24%7Bgravity-unit%7D%22%2C%0A%20%20%20%22pressure%22%3A%200%2C%0A%20%20%20%22pressure_unit%22%3A%20%22PSI%22%2C%0A%20%20%20%22ph%22%3A%200%2C%0A%20%20%20%22bpm%22%3A%200%2C%0A%20%20%20%22comment%22%3A%20%22%22%2C%0A%20%20%20%22beer%22%3A%20%22%22%2C%0A%20%20%20%22battery%22%3A%20%24%7Bbattery%7D%0A%7D" },
+              { "id": "iSpindle-Mqtt", "format": "ispindel%2F%24%7Bmdns%7D%2Ftilt%3A%24%7Bangle%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Ftemperature%3A%24%7Btemp%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Ftemp_units%3A%24%7Btemp-unit%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Fbattery%3A%24%7Bbattery%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Fgravity%3A%24%7Bgravity%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Finterval%3A%24%7Bsleep-interval%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2FRSSI%3A%24%7Brssi%7D%7C" },
+              { "id": "HomeAssistant-Mqtt", "format": "gravmon%2F%24%7Bmdns%7D%2Ftilt%3A%24%7Bangle%7D%7C%0Agravmon%2F%24%7Bmdns%7D%2Ftemperature%3A%24%7Btemp%7D%7C%0Agravmon%2F%24%7Bmdns%7D%2Ftemp_units%3A%24%7Btemp-unit%7D%7C" },
+              { "id": "UBIDots1-Post", "format": "%7B%0A%20%20%20%22temperature%22%3A%20%24%7Btemp%7D%2C%0A%20%20%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%20%20%22angle%22%3A%20%24%7Bangle%7D%2C%0A%20%20%20%22battery%22%3A%20%24%7Bbattery%7D%2C%0A%20%20%20%22rssi%22%3A%20%24%7Brssi%7D%0A%7D" } ];
+            </script>
+
+          <div class="row mb-3">
+              <div class="col-sm-2">
                 <button class="btn btn-primary" id="format-btn">Save</button>
                 <button class="btn btn-secondary" id="test-btn">Test</button>
+              </div>
+              <select class="custom-select col-sm-4" required name="predefined" id="predefined">
+                <option value="iSpindle-Post">iSpindle (POST)</option>
+                <option value="GravityMon-Post">GravityMon (POST)</option>
+                <option value="iSpindle-Mqtt">iSpindle (MQTT)</option>
+                <option value="HomeAssistant-Mqtt">Home Assistant (MQTT)</option>
+                <option value="UBIDots1-Post">UBIdots - Alternative 1 (POST)</option>
+                <option value="BrewFatherCustom-Post">Brewfather Custom Endpoint (POST)</option>
+                <option value="GravityMon-Get">GravityMon (GET)</option>
+              </select>
+              <div class="col-sm-4">
+                <button class="btn btn-secondary" id="copy-btn">Copy format</button>
+                <button class="btn btn-secondary" id="clear-btn">Clear format</button>
               </div>
             </div>
 
@@ -127,6 +151,24 @@
     $("#push-target").change(function(e){
       console.log(e)
       selectFormat();
+    });
+
+    // Copy the selected template
+    $("#copy-btn").click(function(e) {
+      var id = $("#predefined").val();
+
+      //console.log( encodeURIComponent( $("#format").val() ) );
+
+      formatTemplates.forEach(function (item, index) {
+        if( item.id == id ) {
+          $("#format").val( decodeURIComponent(item.format) );
+        }
+      });
+    });
+
+    // Clear the selected template
+    $("#clear-btn").click(function(e) {
+      $("#format").val( "" );
     });
 
     // Store the format
