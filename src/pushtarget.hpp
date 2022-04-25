@@ -65,6 +65,21 @@ class PushTarget {
   bool getLastSuccess() { return _lastSuccess; }
 };
 
+class PushIntervalTracker {
+ private:
+  int _counters[5] = { 0, 0, 0, 0, 0 };
+  void update(const int index, const int defaultValue);
+
+ public:
+  bool useHttp1() { return _counters[0] == 0 ? true : false; }
+  bool useHttp2() { return _counters[1] == 0 ? true : false; }
+  bool useHttp3() { return _counters[2] == 0 ? true : false; }
+  bool useInflux() { return _counters[3] == 0 ? true : false; }
+  bool useMqtt() { return _counters[4] == 0 ? true : false; }
+  void load();
+  void save();
+};
+
 #endif  // SRC_PUSHTARGET_HPP_
 
 // EOF

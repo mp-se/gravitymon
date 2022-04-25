@@ -138,7 +138,7 @@ void setup() {
   myConfig.checkFileSystem();
   myConfig.loadFile();
   myWifi.init();
-  myHardwareConfig.loadFile();
+  myAdvancedConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
 
   // Setup watchdog

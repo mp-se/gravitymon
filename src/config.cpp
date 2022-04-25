@@ -26,7 +26,7 @@ SOFTWARE.
 #include <wifi.hpp>
 
 Config myConfig;
-HardwareConfig myHardwareConfig;
+AdvancedConfig myAdvancedConfig;
 
 //
 // Create the config class with default settings.
@@ -359,7 +359,7 @@ void Config::checkFileSystem() {
 //
 // Save json document to file
 //
-bool HardwareConfig::saveFile() {
+bool AdvancedConfig::saveFile() {
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   Log.verbose(F("CFG : Saving hardware configuration to file." CR));
 #endif
@@ -380,6 +380,11 @@ bool HardwareConfig::saveFile() {
   doc[PARAM_HW_FORMULA_DEVIATION] = this->getMaxFormulaCreationDeviation();
   doc[PARAM_HW_WIFI_PORTALTIMEOUT] = this->getWifiPortalTimeout();
   doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = this->getPushIntervalHttp1();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = this->getPushIntervalHttp2();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = this->getPushIntervalHttp3();
+  doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
+  doc[PARAM_HW_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -397,7 +402,7 @@ bool HardwareConfig::saveFile() {
 //
 // Load config file from disk
 //
-bool HardwareConfig::loadFile() {
+bool AdvancedConfig::loadFile() {
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   Log.verbose(F("CFG : Loading hardware configuration from file." CR));
 #endif
@@ -454,6 +459,16 @@ bool HardwareConfig::loadFile() {
     this->setWifiPortalTimeout(doc[PARAM_HW_WIFI_PORTALTIMEOUT].as<int>());
   if (!doc[PARAM_HW_PUSH_TIMEOUT].isNull())
     this->setPushTimeout(doc[PARAM_HW_PUSH_TIMEOUT].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP1].isNull())
+    this->setPushIntervalHttp1(doc[PARAM_HW_PUSH_INTERVAL_HTTP1].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP2].isNull())
+    this->setPushIntervalHttp2(doc[PARAM_HW_PUSH_INTERVAL_HTTP2].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP3].isNull())
+    this->setPushIntervalHttp3(doc[PARAM_HW_PUSH_INTERVAL_HTTP3].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_INFLUX].isNull())
+    this->setPushIntervalInflux(doc[PARAM_HW_PUSH_INTERVAL_INFLUX].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_MQTT].isNull())
+    this->setPushIntervalMqtt(doc[PARAM_HW_PUSH_INTERVAL_MQTT].as<int>());
 
   Log.notice(F("CFG : Configuration file " CFG_HW_FILENAME " loaded." CR));
   return true;

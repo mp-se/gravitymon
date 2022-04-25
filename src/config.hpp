@@ -54,7 +54,7 @@ struct RawFormulaData {
   double g[FORMULA_DATA_SIZE];
 };
 
-class HardwareConfig {
+class AdvancedConfig {
  private:
   int _wifiPortalTimeout = 120;
   float _maxFormulaCreationDeviation = 1.6;
@@ -63,26 +63,54 @@ class HardwareConfig {
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
   int _pushTimeout = 10;      // seconds
+  int _pushIntervalHttp1 = 0;
+  int _pushIntervalHttp2 = 0;
+  int _pushIntervalHttp3 = 0;
+  int _pushIntervalInflux = 0;
+  int _pushIntervalMqtt = 0;
 
  public:
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
   void setWifiPortalTimeout(int t) { _wifiPortalTimeout = t; }
+
   float getMaxFormulaCreationDeviation() {
     return _maxFormulaCreationDeviation;
   }
   void setMaxFormulaCreationDeviation(float f) {
     _maxFormulaCreationDeviation = f;
   }
+
   float getDefaultCalibrationTemp() { return _defaultCalibrationTemp; }
   void SetDefaultCalibrationTemp(float t) { _defaultCalibrationTemp = t; }
+
   int getGyroSensorMovingThreashold() { return _gyroSensorMovingThreashold; }
   void setGyroSensorMovingThreashold(int t) { _gyroSensorMovingThreashold = t; }
+
   int getGyroReadCount() { return _gyroReadCount; }
   void setGyroReadCount(int c) { _gyroReadCount = c; }
+
   int getGyroReadDelay() { return _gyroReadDelay; }
   void setGyroReadDelay(int d) { _gyroReadDelay = d; }
+
   int getPushTimeout() { return _pushTimeout; }
   void setPushTimeout(int t) { _pushTimeout = t; }
+
+  int getPushIntervalHttp1() { return _pushIntervalHttp1; }
+  void setPushIntervalHttp1(int t) { _pushIntervalHttp1 = t; }
+
+  int getPushIntervalHttp2() { return _pushIntervalHttp2; }
+  void setPushIntervalHttp2(int t) { _pushIntervalHttp2 = t; }
+
+  int getPushIntervalHttp3() { return _pushIntervalHttp3; }
+  void setPushIntervalHttp3(int t) { _pushIntervalHttp3 = t; }
+
+  int getPushIntervalInflux() { return _pushIntervalInflux; }
+  void setPushIntervalInflux(int t) { _pushIntervalInflux = t; }
+
+  int getPushIntervalMqtt() { return _pushIntervalMqtt; }
+  void setPushIntervalMqtt(int t) { _pushIntervalMqtt = t; }
+
+  bool isPushIntervalActive() { return (_pushIntervalHttp1+_pushIntervalHttp2+_pushIntervalHttp3+_pushIntervalInflux+_pushIntervalMqtt) == 0 ? false : true; }
 
   bool saveFile();
   bool loadFile();
@@ -379,7 +407,7 @@ class Config {
 };
 
 extern Config myConfig;
-extern HardwareConfig myHardwareConfig;
+extern AdvancedConfig myAdvancedConfig;
 
 #endif  // SRC_CONFIG_HPP_
 

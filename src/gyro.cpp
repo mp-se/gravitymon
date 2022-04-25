@@ -217,7 +217,7 @@ bool GyroSensor::isSensorMoving(RawGyroData &raw) {
 #endif
 
   int x = abs(raw.gx), y = abs(raw.gy), z = abs(raw.gz);
-  int threashold = myHardwareConfig.getGyroSensorMovingThreashold();
+  int threashold = myAdvancedConfig.getGyroSensorMovingThreashold();
 
   if (x > threashold || y > threashold || z > threashold) {
     Log.notice(F("GYRO: Movement detected (%d)\t%d\t%d\t%d." CR), threashold, x,
@@ -239,8 +239,8 @@ bool GyroSensor::read() {
   if (!_sensorConnected) return false;
 
   readSensor(
-      _lastGyroData, myHardwareConfig.getGyroReadCount(),
-      myHardwareConfig.getGyroReadDelay());  // Last param is unused if
+      _lastGyroData, myAdvancedConfig.getGyroReadCount(),
+      myAdvancedConfig.getGyroReadDelay());  // Last param is unused if
                                              // GYRO_USE_INTERRUPT is defined.
 
   // If the sensor is unstable we return false to signal we dont have valid

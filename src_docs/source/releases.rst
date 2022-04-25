@@ -9,9 +9,14 @@ v1.0.0
 * Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.
 * Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.
 * Added function on format page so that it's easy to copy a format template from the docs (simplify service integration).
-* Added https support for Influxdb
+* Added https support for Influxdb (EXPERIMENTAL NOT YET TESTED)
+* Added possibility to have variable push intervals for different endpoints. 
+* Added advanced settings to configuration for adjusting some internal values (gyro reads, accepted formula deviation, moving detection).
 * Added additional http error codes to troubleshooting documentation
 * BUG: Fixed issue in formula calculation in case there were a gap in the data series
+
+* TODO: Fix documentation for advanced settings.
+* TODO: Update brewfather documentation
 
 v0.9.0
 ------

@@ -275,3 +275,14 @@ This option gives you the possibility to install an new version of the firmware 
   :alt: Update firmware
 
 
+Advanded Settings
++++++++++++++++++
+
+.. image:: images/config5.png
+  :width: 800
+  :alt: Advanced Settings
+
+* **Header:**
+
+To be described
+

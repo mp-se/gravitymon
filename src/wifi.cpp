@@ -137,7 +137,7 @@ void WifiConnection::startPortal() {
   myWifiManager->setMinimumSignalQuality(-1);
   myWifiManager->setConfigPortalChannel(0);
   myWifiManager->setConfigPortalTimeout(
-      myHardwareConfig.getWifiPortalTimeout());
+      myAdvancedConfig.getWifiPortalTimeout());
 
   String mdns("<p>Default mDNS name is: http://");
   mdns += myConfig.getMDNS();

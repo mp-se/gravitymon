@@ -95,7 +95,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
         double dev = (g - fd.g[i]) < 0 ? (fd.g[i] - g) : (g - fd.g[i]);
 
         // If the deviation is more than 2 degress we mark it as failed.
-        if (dev * 1000 > myHardwareConfig.getMaxFormulaCreationDeviation()) {
+        if (dev * 1000 > myAdvancedConfig.getMaxFormulaCreationDeviation()) {
           char s[20];
           snprintf(&s[0], sizeof(s), "%.8f", dev);
           Log.error(F("CALC: Deviation to large: %s" CR), &s[0]);

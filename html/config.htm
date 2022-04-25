@@ -449,6 +449,96 @@
           </div>
         </div>
       </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingAdvanced">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
+            <b>Advanced (use with caution)</b>
+          </button>
+        </h2>
+        <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced" data-bs-parent="#accordion">
+          <div class="accordion-body">
+  
+            <form action="/api/config/advanced" method="post">
+              <input type="text" name="id" id="id6" hidden>
+  
+              <div class="row mb-3">
+                <label for="gyro-read-count" class="col-sm-3 col-form-label">Gyro reads:</label>
+                <div class="col-sm-2">
+                  <input type="number" min="10" max="100" class="form-control" name="gyro-read-count" id="gyro-read-count">
+                </div>
+                <div class="col-sm-5">(10-100) - default 50 - number of reads for angle</div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="gyro-moving-threashold" class="col-sm-3 col-form-label">Gyro moving theashold:</label>
+                <div class="col-sm-2">
+                  <input type="number" min="50" max="1000" class="form-control" name="gyro-moving-threashold" id="gyro-moving-threashold"> 
+                </div>
+                <div class="col-sm-5">(50-1000) - default 500 - size of movement</div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="formula-max-deviation" class="col-sm-3 col-form-label">Formula max deviation:</label>
+                <div class="col-sm-2">
+                  <input type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation"> 
+                </div>
+                <div class="col-sm-5">(1 - 10) - default 1.6 SG - max deviation value when checking formula</div>
+              </div>
+              
+              <hr>
+
+              <div class="row mb-3">
+                <label for="int-http1" class="col-sm-3 col-form-label">Skip interval - HTTP 1 (POST):</label>
+                <div class="col-sm-2">
+                  <input type="number" min="0" max="5" class="form-control" name="int-http1" id="int-http1"> 
+                </div>
+                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="int-http2" class="col-sm-3 col-form-label">Skip interval - HTTP 2 (POST):</label>
+                <div class="col-sm-2">
+                  <input type="number" min="0" max="5" class="form-control" name="int-http2" id="int-http2"> 
+                </div>
+                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="int-http3" class="col-sm-3 col-form-label">Skip interval - HTTP 3 (GET):</label>
+                <div class="col-sm-2">
+                  <input type="number" min="0" max="5" class="form-control" name="int-http3" id="int-http3"> 
+                </div>
+                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="int-influx" class="col-sm-3 col-form-label">Skip interval - InfluxDB v2:</label>
+                <div class="col-sm-2">
+                  <input type="number" min="0" max="5" class="form-control" name="int-influx" id="int-influx"> 
+                </div>
+                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="int-mqtt" class="col-sm-3 col-form-label">Skip interval - MQTT:</label>
+                <div class="col-sm-2">
+                  <input type="number" min="0" max="5" class="form-control" name="int-mqtt" id="int-mqtt"> 
+                </div>
+                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-sm-8 offset-sm-3">
+                  <button type="submit" class="btn btn-primary" id="advanced-btn">Save</button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -610,6 +700,35 @@
       $("#push-btn2").prop("disabled", b);
       $("#format-btn2").prop("disabled", b);
       $("#test-btn2").prop("disabled", b);
+      $("#advanced-btn").prop("disabled", b);
+    }
+
+    // Get the advanced values from the API
+    function getAdvancedConfig() {
+      setButtonDisabled( true );
+
+      var url = "/api/config/advanced";
+      //var url = "/test/adv.json";
+      $('#spinner').show(); 
+      $.getJSON(url, function (cfg) {
+        console.log( cfg );
+
+        $("#gyro-read-count").val(cfg["gyro-read-count"]);      
+        $("#gyro-moving-threashold").val(cfg["gyro-moving-threashold"]);
+        $("#formula-max-deviation").val(cfg["formula-max-deviation"]);
+        $("#int-http1").val(cfg["int-http1"]);
+        $("#int-http2").val(cfg["int-http2"]);
+        $("#int-http3").val(cfg["int-http3"]);
+        $("#int-influx").val(cfg["int-influx"]);
+        $("#int-mqtt").val(cfg["int-mqtt"]);
+      })
+      .fail(function () {
+        showError('Unable to get data from the device.');
+      })
+      .always(function() {
+        $('#spinner').hide(); 
+        setButtonDisabled( false );
+      });
     }
 
     // Get the configuration values from the API
@@ -632,6 +751,7 @@
         $("#id3").val(cfg["id"]);
         $("#id4").val(cfg["id"]);
         $("#id5").val(cfg["id"]);
+        $("#id6").val(cfg["id"]);
         $("#mdns").val(cfg["mdns"]);
         if( cfg["temp-format"] == "C" ) $("#temp-format-c").click();
         else $("#temp-format-f").click();
@@ -671,9 +791,10 @@
         showError('Unable to get data from the device.');
       })
       .always(function() {
-        $('#spinner').hide(); 
-        setButtonDisabled( false );
+        //$('#spinner').hide(); 
+        //setButtonDisabled( false );
         updateSleepInfo();
+        getAdvancedConfig();
       });
     }
   </script>

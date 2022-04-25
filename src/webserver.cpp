@@ -622,18 +622,18 @@ void WebServerHandler::webHandleConfigHardware() {
 }
 
 //
-// Update device parameters.
+// Update advanced settings.
 //
-void WebServerHandler::webHandleDeviceParam() {
-  LOG_PERF_START("webserver-api-device-param");
+void WebServerHandler::webHandleConfigAdvancedWrite() {
+  LOG_PERF_START("webserver-api-config-advanced");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/device/param(post)." CR));
+  Log.notice(F("WEB : webServer callback for /api/config/advaced(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
     _server->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-device-param");
+    LOG_PERF_STOP("webserver-api-config-advanced");
     return;
   }
 
@@ -641,41 +641,61 @@ void WebServerHandler::webHandleDeviceParam() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  for (int i = 0; i < _server->args(); i++) {
-    String s = _server->arg(i);
+  if (_server->hasArg(PARAM_HW_GYRO_READ_COUNT))
+    myAdvancedConfig.setGyroReadCount(_server->arg(PARAM_HW_GYRO_READ_COUNT).toInt());
+  if (_server->hasArg(PARAM_HW_GYRO_READ_DELAY))
+    myAdvancedConfig.setGyroReadDelay(_server->arg(PARAM_HW_GYRO_READ_DELAY).toInt());
+  if (_server->hasArg(PARAM_HW_GYRO_MOVING_THREASHOLD))
+    myAdvancedConfig.setGyroSensorMovingThreashold(_server->arg(PARAM_HW_GYRO_MOVING_THREASHOLD).toInt());
+  if (_server->hasArg(PARAM_HW_FORMULA_DEVIATION))
+    myAdvancedConfig.setMaxFormulaCreationDeviation(_server->arg(PARAM_HW_FORMULA_DEVIATION).toFloat());
+  if (_server->hasArg(PARAM_HW_FORMULA_CALIBRATION_TEMP))
+    myAdvancedConfig.SetDefaultCalibrationTemp(_server->arg(PARAM_HW_FORMULA_CALIBRATION_TEMP).toFloat());
+  if (_server->hasArg(PARAM_HW_WIFI_PORTALTIMEOUT))
+    myAdvancedConfig.setWifiPortalTimeout(_server->arg(PARAM_HW_WIFI_PORTALTIMEOUT).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_TIMEOUT))
+    myAdvancedConfig.setPushTimeout(_server->arg(PARAM_HW_PUSH_TIMEOUT).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP1))
+    myAdvancedConfig.setPushIntervalHttp1(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP1).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP2))
+    myAdvancedConfig.setPushIntervalHttp2(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP2).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP3))
+    myAdvancedConfig.setPushIntervalHttp3(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP3).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_INFLUX))
+    myAdvancedConfig.setPushIntervalInflux(_server->arg(PARAM_HW_PUSH_INTERVAL_INFLUX).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_MQTT))
+    myAdvancedConfig.setPushIntervalMqtt(_server->arg(PARAM_HW_PUSH_INTERVAL_MQTT).toInt());
 
-    if (_server->argName(i).equalsIgnoreCase(PARAM_HW_GYRO_READ_COUNT))
-      myHardwareConfig.setGyroReadCount(s.toInt());
-    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_GYRO_READ_DELAY))
-      myHardwareConfig.setGyroReadDelay(s.toInt());
-    else if (_server->argName(i).equalsIgnoreCase(
-                 PARAM_HW_GYRO_MOVING_THREASHOLD))
-      myHardwareConfig.setGyroSensorMovingThreashold(s.toInt());
-    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_FORMULA_DEVIATION))
-      myHardwareConfig.setMaxFormulaCreationDeviation(s.toFloat());
-    else if (_server->argName(i).equalsIgnoreCase(
-                 PARAM_HW_FORMULA_CALIBRATION_TEMP))
-      myHardwareConfig.SetDefaultCalibrationTemp(s.toFloat());
-    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_WIFI_PORTALTIMEOUT))
-      myHardwareConfig.setWifiPortalTimeout(s.toInt());
-    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_PUSH_TIMEOUT))
-      myHardwareConfig.setPushTimeout(s.toInt());
-  }
+  myAdvancedConfig.saveFile();
+  _server->sendHeader("Location", "/config.htm#collapseAdvanced", true);
+  _server->send(302, "text/plain", "Advanced config updated");
+  LOG_PERF_STOP("webserver-api-config-advanced");
+}
 
-  myHardwareConfig.saveFile();
 
-  // Return the current configuration.
+//
+// Read advanced settings
+//
+void WebServerHandler::webHandleConfigAdvancedRead() {
+  LOG_PERF_START("webserver-api-config-advanced");
+  Log.notice(F("WEB : webServer callback for /api/config/advanced(get)." CR));
+
   DynamicJsonDocument doc(512);
 
-  doc[PARAM_HW_GYRO_READ_COUNT] = myHardwareConfig.getGyroReadCount();
-  doc[PARAM_HW_GYRO_READ_DELAY] = myHardwareConfig.getGyroReadDelay();
+  doc[PARAM_HW_GYRO_READ_COUNT] = myAdvancedConfig.getGyroReadCount();
+  doc[PARAM_HW_GYRO_READ_DELAY] = myAdvancedConfig.getGyroReadDelay();
   doc[PARAM_HW_GYRO_MOVING_THREASHOLD] =
-      myHardwareConfig.getGyroSensorMovingThreashold();
+      myAdvancedConfig.getGyroSensorMovingThreashold();
   doc[PARAM_HW_FORMULA_DEVIATION] =
-      myHardwareConfig.getMaxFormulaCreationDeviation();
-  doc[PARAM_HW_WIFI_PORTALTIMEOUT] = myHardwareConfig.getWifiPortalTimeout();
+      myAdvancedConfig.getMaxFormulaCreationDeviation();
+  doc[PARAM_HW_WIFI_PORTALTIMEOUT] = myAdvancedConfig.getWifiPortalTimeout();
   doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
-      myHardwareConfig.getDefaultCalibrationTemp();
+      myAdvancedConfig.getDefaultCalibrationTemp();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = myAdvancedConfig.getPushIntervalHttp1();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = myAdvancedConfig.getPushIntervalHttp2();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = myAdvancedConfig.getPushIntervalHttp3();
+  doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = myAdvancedConfig.getPushIntervalInflux();
+  doc[PARAM_HW_PUSH_INTERVAL_MQTT] = myAdvancedConfig.getPushIntervalMqtt();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -686,7 +706,7 @@ void WebServerHandler::webHandleDeviceParam() {
   out.reserve(512);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
-  LOG_PERF_STOP("webserver-api-device-param");
+  LOG_PERF_STOP("webserver-api-config-advanced");
 }
 
 //
@@ -1245,9 +1265,12 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/config/format", HTTP_POST,
               std::bind(&WebServerHandler::webHandleConfigFormatWrite,
                         this));  // Change template formats
-  _server->on("/api/device/param", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleDeviceParam,
-                        this));  // Change device params
+  _server->on("/api/config/advanced", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleConfigAdvancedRead,
+                        this));  // Read advanced settings
+  _server->on("/api/config/advanced", HTTP_POST,
+              std::bind(&WebServerHandler::webHandleConfigAdvancedWrite,
+                        this));  // Change advanced params
   _server->on("/api/test/push", HTTP_GET,
               std::bind(&WebServerHandler::webHandleTestPush,
                         this));  //

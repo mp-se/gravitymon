@@ -156,6 +156,35 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
    }
 
 
+GET: /api/config/advanced
+=========================
+
+Used for adjusting some internal constants and other advanced settings. Should be used with caution.
+
+.. code-block:: json
+
+   {
+      "gyro-read-count": 50,
+      "gyro-read-delay": 3150,
+      "gyro-moving-threashold": 500,
+      "formula-max-deviation": 1.6,
+      "wifi-portaltimeout": 120,
+      "formula-calibration-temp": 20,
+      "int-http1": 0,
+      "int-http2": 0,
+      "int-http3": 0,
+      "int-influx": 0,
+      "int-mqtt": 0
+   }
+
+POST: /api/config/advanced
+==========================
+
+Same parameters as above.
+
+Payload should be in standard format used for posting a form
+
+
 GET: /api/clearwifi
 ===================
 
