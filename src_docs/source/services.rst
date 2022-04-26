@@ -12,7 +12,12 @@ Brewfather is an all in one service that allows you to manage you recepies and b
 
 **Option 1** - iSpindle Endpoint
 
-This opion makes use of the standard http (1 or 2) endpoints in the push section. This makes use of the standard format template, no changes needed.
+This opion makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume 
+that the data is in plato. You can also modify the format template using the following options:
+
+Update the following part `"gravity": ${gravity-plato},` or `"name" : "${mdns}[SG]",``
+
+This makes use of the standard format template, no changes needed.
 
 .. code-block::
 
