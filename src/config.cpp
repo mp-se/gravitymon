@@ -378,7 +378,8 @@ bool AdvancedConfig::saveFile() {
   doc[PARAM_HW_GYRO_READ_DELAY] = this->getGyroReadDelay();
   doc[PARAM_HW_GYRO_MOVING_THREASHOLD] = this->getGyroSensorMovingThreashold();
   doc[PARAM_HW_FORMULA_DEVIATION] = this->getMaxFormulaCreationDeviation();
-  doc[PARAM_HW_WIFI_PORTALTIMEOUT] = this->getWifiPortalTimeout();
+  doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = this->getWifiPortalTimeout();
+  doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = this->getWifiConnectTimeout();
   doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = this->getPushIntervalHttp1();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = this->getPushIntervalHttp2();
@@ -455,8 +456,10 @@ bool AdvancedConfig::loadFile() {
   if (!doc[PARAM_HW_FORMULA_CALIBRATION_TEMP].isNull())
     this->SetDefaultCalibrationTemp(
         doc[PARAM_HW_FORMULA_CALIBRATION_TEMP].as<float>());
-  if (!doc[PARAM_HW_WIFI_PORTALTIMEOUT].isNull())
-    this->setWifiPortalTimeout(doc[PARAM_HW_WIFI_PORTALTIMEOUT].as<int>());
+  if (!doc[PARAM_HW_WIFI_PORTAL_TIMEOUT].isNull())
+    this->setWifiPortalTimeout(doc[PARAM_HW_WIFI_PORTAL_TIMEOUT].as<int>());
+  if (!doc[PARAM_HW_WIFI_CONNECT_TIMEOUT].isNull())
+    this->setWifiConnectTimeout(doc[PARAM_HW_WIFI_CONNECT_TIMEOUT].as<int>());
   if (!doc[PARAM_HW_PUSH_TIMEOUT].isNull())
     this->setPushTimeout(doc[PARAM_HW_PUSH_TIMEOUT].as<int>());
   if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP1].isNull())

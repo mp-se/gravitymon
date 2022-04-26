@@ -221,7 +221,7 @@ bool WifiConnection::waitForConnection(int maxTime) {
 //
 bool WifiConnection::connect() {
   connectAsync();
-  return waitForConnection(20);  // 20 seconds.
+  return waitForConnection(myAdvancedConfig.getWifiConnectTimeout());
 }
 
 //

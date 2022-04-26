@@ -651,8 +651,10 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
     myAdvancedConfig.setMaxFormulaCreationDeviation(_server->arg(PARAM_HW_FORMULA_DEVIATION).toFloat());
   if (_server->hasArg(PARAM_HW_FORMULA_CALIBRATION_TEMP))
     myAdvancedConfig.SetDefaultCalibrationTemp(_server->arg(PARAM_HW_FORMULA_CALIBRATION_TEMP).toFloat());
-  if (_server->hasArg(PARAM_HW_WIFI_PORTALTIMEOUT))
-    myAdvancedConfig.setWifiPortalTimeout(_server->arg(PARAM_HW_WIFI_PORTALTIMEOUT).toInt());
+  if (_server->hasArg(PARAM_HW_WIFI_PORTAL_TIMEOUT))
+    myAdvancedConfig.setWifiPortalTimeout(_server->arg(PARAM_HW_WIFI_PORTAL_TIMEOUT).toInt());
+  if (_server->hasArg(PARAM_HW_WIFI_CONNECT_TIMEOUT))
+    myAdvancedConfig.setWifiConnectTimeout(_server->arg(PARAM_HW_WIFI_CONNECT_TIMEOUT).toInt());
   if (_server->hasArg(PARAM_HW_PUSH_TIMEOUT))
     myAdvancedConfig.setPushTimeout(_server->arg(PARAM_HW_PUSH_TIMEOUT).toInt());
   if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP1))
@@ -688,7 +690,9 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
       myAdvancedConfig.getGyroSensorMovingThreashold();
   doc[PARAM_HW_FORMULA_DEVIATION] =
       myAdvancedConfig.getMaxFormulaCreationDeviation();
-  doc[PARAM_HW_WIFI_PORTALTIMEOUT] = myAdvancedConfig.getWifiPortalTimeout();
+  doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = myAdvancedConfig.getWifiPortalTimeout();
+  doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = myAdvancedConfig.getWifiConnectTimeout();
+  doc[PARAM_HW_PUSH_TIMEOUT] = myAdvancedConfig.getPushTimeout();
   doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
       myAdvancedConfig.getDefaultCalibrationTemp();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = myAdvancedConfig.getPushIntervalHttp1();

@@ -57,6 +57,7 @@ struct RawFormulaData {
 class AdvancedConfig {
  private:
   int _wifiPortalTimeout = 120;
+  int _wifiConnectTimeout = 20;
   float _maxFormulaCreationDeviation = 1.6;
   float _defaultCalibrationTemp = 20.0;
   int _gyroSensorMovingThreashold = 500;
@@ -72,6 +73,9 @@ class AdvancedConfig {
  public:
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
   void setWifiPortalTimeout(int t) { _wifiPortalTimeout = t; }
+
+  int getWifiConnectTimeout() { return _wifiConnectTimeout; }
+  void setWifiConnectTimeout(int t) { _wifiConnectTimeout = t; }
 
   float getMaxFormulaCreationDeviation() {
     return _maxFormulaCreationDeviation;

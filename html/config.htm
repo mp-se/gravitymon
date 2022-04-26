@@ -485,7 +485,25 @@
               </div>
               <div class="col-sm-5">(1 - 10) - default 1.6 SG</div>
             </div>
-            
+
+            <hr>
+
+            <div class="row mb-3">
+              <label for="wifi-connect-timeout" class="col-sm-3 col-form-label">Wifi connect timeout (s):</label>
+              <div class="col-sm-2">
+                <input type="number" min="1" max="60" class="form-control" name="wifi-connect-timeout" id="wifi-connect-timeout" checked data-bs-toggle="tooltip" title="Max time waiting for a wifi connection before going back to sleep"> 
+              </div>
+              <div class="col-sm-5">(1 - 60) - default 20 s</div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="wifi-portal-timeout" class="col-sm-3 col-form-label">Wifi portal timeout (s):</label>
+              <div class="col-sm-2">
+                <input type="number" min="10" max="240" class="form-control" name="wifi-portal-timeout" id="wifi-portal-timeout" checked data-bs-toggle="tooltip" title="Max time the wifi portal is active before existing"> 
+              </div>
+              <div class="col-sm-5">(10 - 240) - default 120 s</div>
+            </div>
+
             <hr>
 
             <div class="row mb-3">
@@ -715,6 +733,8 @@
         $("#gyro-read-count").val(cfg["gyro-read-count"]);      
         $("#gyro-moving-threashold").val(cfg["gyro-moving-threashold"]);
         $("#formula-max-deviation").val(cfg["formula-max-deviation"]);
+        $("#wifi-portal-timeout").val(cfg["wifi-portal-timeout"]);
+        $("#wifi-connect-timeout").val(cfg["wifi-connect-timeout"]);
         $("#int-http1").val(cfg["int-http1"]);
         $("#int-http2").val(cfg["int-http2"]);
         $("#int-http3").val(cfg["int-http3"]);
