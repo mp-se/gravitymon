@@ -11,21 +11,46 @@ def after_build(source, target, env):
     print( "Executing custom step " )
     dir    = env.GetLaunchDir()
     name   = env.get( "PIOENV" )
-    source = dir + "/.pio/build/" + name + "/firmware.bin"
     if name == "gravity-debug" :
         target = dir + "/bin/firmware-debug.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
     if name == "gravity-release" :
         target = dir + "/bin/firmware.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
     if name == "gravity-perf" :
         target = dir + "/bin/firmware-perf.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
     if name == "gravity32-release" :
         target = dir + "/bin/firmware32.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
     if name == "gravity32-perf" :
         target = dir + "/bin/firmware32-perf.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
     if name == "gravity32-release2" :
         target = dir + "/bin/firmware32_2.bin"
-    print( "Copy file : " + source + " -> " + target )
-    shutil.copyfile( source, target )
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
 
 
 print( "Adding custom build step (copy firmware): ")
