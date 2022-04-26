@@ -14,6 +14,7 @@ v1.0.0
 * Added advanced settings to configuration for adjusting some internal values (gyro reads, accepted formula deviation, moving detection).
 * Added additional http error codes to troubleshooting documentation
 * Added tooltips to all fields in user interface
+* Installation instructions updated on how to find the device after wifi has been configured. 
 * BUG: Fixed issue in formula calculation in case there were a gap in the data series
 * BUG: Field name for wifi strenght changed from "rssi" to "RSSI"
 
