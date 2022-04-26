@@ -13,7 +13,9 @@ v1.0.0
 * Added possibility to have variable push intervals for different endpoints. 
 * Added advanced settings to configuration for adjusting some internal values (gyro reads, accepted formula deviation, moving detection).
 * Added additional http error codes to troubleshooting documentation
+* Added tooltips to all fields in user interface
 * BUG: Fixed issue in formula calculation in case there were a gap in the data series
+* BUG: Field name for wifi strenght changed from "rssi" to "RSSI"
 
 * TODO: Fix documentation for advanced settings.
 * TODO: Update brewfather documentation

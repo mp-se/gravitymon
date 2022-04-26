@@ -26,7 +26,7 @@ This is the format used for standard http posts.
       "gravity": 1.0050,
       "angle": 45.34,
       "battery": 3.67,
-      "rssi": -12,
+      "RSSI": -12,
 
       "corr-gravity": 1.0050,
       "gravity-unit": "G",
@@ -47,7 +47,7 @@ This is the format template used to create the json above.
    "gravity": ${gravity},
    "angle": ${angle},
    "battery": ${battery},
-   "rssi": ${rssi},
+   "RSSI": ${rssi},
    "corr-gravity": ${corr-gravity},
    "gravity-unit": "${gravity-unit}",
    "run-time": ${run-time}

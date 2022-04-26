@@ -42,7 +42,7 @@ const char iSpindleFormat[] PROGMEM =
     "\"gravity\": ${gravity}, "
     "\"angle\": ${angle}, "
     "\"battery\": ${battery}, "
-    "\"rssi\": ${rssi}, "
+    "\"RSSI\": ${rssi}, "
     "\"corr-gravity\": ${corr-gravity}, "
     "\"gravity-unit\": \"${gravity-unit}\", "
     "\"run-time\": ${run-time} "
