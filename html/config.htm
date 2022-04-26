@@ -107,7 +107,7 @@
             <div class="row mb-3">
               <label for="mdns" class="col-sm-2 col-form-label">Device name:</label>
               <div class="col-sm-3">
-                <input type="text" maxlength="12" class="form-control" name="mdns" id="mdns">
+                <input type="text" maxlength="12" class="form-control" name="mdns" id="mdns" data-bs-toggle="tooltip" title="Name of the device. Will be used for identifying the device when pushing data and on the local network.">
               </div>
             </div>
 
@@ -116,11 +116,11 @@
                 <legend class="col-form-label col-sm-2 float-sm-left pt-0">Temperature Format:</legend>
                 <div class="col-sm-4">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="temp-format" id="temp-format-c" value="C" checked>
+                    <input class="form-check-input" type="radio" name="temp-format" id="temp-format-c" value="C" checked data-bs-toggle="tooltip" title="Temperature format used with displaying data">
                     <label class="form-check-label" for="temp-format-c">Celsius</label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="temp-format" id="temp-format-f" value="F">
+                    <input class="form-check-input" type="radio" name="temp-format" id="temp-format-f" value="F" data-bs-toggle="tooltip" title="Temperature format used with displaying data">
                     <label class="form-check-label" for="temp-format-f">Farenheight</label>
                   </div>
                 </div>
@@ -130,14 +130,14 @@
             <div class="row mb-3">
               <label for="sleep-interval" class="col-sm-2 col-form-label">Interval (seconds):</label>
               <div class="col-sm-2">
-                <input type="number" min="10" max="3600" class="form-control" name="sleep-interval" id="sleep-interval">
+                <input type="number" min="10" max="3600" class="form-control" name="sleep-interval" id="sleep-interval" data-bs-toggle="tooltip" title="The number of seconds that the device will sleep between gravity readings. Recommended value is 300s">
               </div>
               <label for="sleep-interval" class="col-sm-4 col-form-label" id="sleep-interval-info"></label>
             </div>
 
             <div class="row mb-3">
               <div class="col-sm-4 offset-sm-2">
-                <button type="submit" class="btn btn-primary" id="device-btn">Save</button>
+                <button type="submit" class="btn btn-primary" id="device-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
               </div>
             </div>
           </form>
@@ -149,7 +149,7 @@
             <label for="calibrate-btn" class="col-sm-2 col-form-label" id="gyro-calibration-data">Loading...</label>
             <label for="gyro-calibration-data" class="col-sm-2 col-form-label" id="angle">Loading...</label>
             <div class="col-sm-8 offset-sm-2">
-              <button type="button" class="btn btn-warning" id="calibrate-btn">Calibrate device</button>
+              <button type="button" class="btn btn-warning" id="calibrate-btn" data-bs-toggle="tooltip" title="Perform a calibration. The device should be flat on a surface (90 degrees) with the battery down">Calibrate device</button>
             </div>
           </div>
 
@@ -176,55 +176,55 @@
             <div class="row mb-3">
               <label for="http-push" class="col-sm-2 col-form-label">HTTP 1 (POST):</label>
               <div class="col-sm-8">
-                <input type="url" maxlength="120" class="form-control" name="http-push" id="http-push">
+                <input type="url" maxlength="120" class="form-control" name="http-push" id="http-push" placeholder="http://www.internet.com/path" data-bs-toggle="tooltip" title="URL to push target, use format http://servername.com/resource (Supports http and https)">
               </div>
               <div class="col-sm-2">
-                <button type="button" class="btn btn-secondary" data-field1="#http-push-h1" data-field2="#http-push-h2" data-bs-toggle="modal" data-bs-target="#modal-http">Headers</button>
+                <button type="button" class="btn btn-secondary" data-field1="#http-push-h1" data-field2="#http-push-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="http-push2" class="col-sm-2 col-form-label">HTTP 2 (POST):</label>
               <div class="col-sm-8">
-                <input type="url" maxlength="120" class="form-control" name="http-push2" id="http-push2">
+                <input type="url" maxlength="120" class="form-control" name="http-push2" id="http-push2" placeholder="http://www.internet.com/path" data-bs-toggle="tooltip" title="URL to push target, use format http://servername.com/resource (Supports http and https)">
               </div>
               <div class="col-sm-2">
-                <button type="button" class="btn btn-secondary" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-bs-toggle="modal" data-bs-target="#modal-http">Headers</button>
+                <button type="button" class="btn btn-secondary" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="token" class="col-sm-2 col-form-label">Token:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="50" class="form-control" name="token" id="token">
+                <input type="text" maxlength="50" class="form-control" name="token" id="token" data-bs-toggle="tooltip" title="Token can be used in the format template as a variable, some services use this for authentication">
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="http-push3" class="col-sm-2 col-form-label">HTTP 3 (GET):</label>
               <div class="col-sm-8">
-                <input type="url" maxlength="120" class="form-control" name="http-push3" id="http-push3">
+                <input type="url" maxlength="120" class="form-control" name="http-push3" id="http-push3" placeholder="http://www.internet.com/path" data-bs-toggle="tooltip" title="URL to push target, use format http://servername.com/resource (Supports http and https). Do not add the query string, that will be added via the format template">
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="token2" class="col-sm-2 col-form-label">Token 2:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="50" class="form-control" name="token2" id="token2">
+                <input type="text" maxlength="50" class="form-control" name="token2" id="token2" data-bs-toggle="tooltip" title="Token can be used in the format template as a variable, some services use this for authentication">
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
-                <button type="submit" class="btn btn-primary" id="push-btn">Save</button>
+                <button type="submit" class="btn btn-primary" id="push-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
               </div>
             </div>
           </form>
 
           <div class="row mb-3">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="format-btn">Format editor</button>
-              <button class="btn btn-secondary" id="test-btn">Test Push</button>
+              <button class="btn btn-secondary" id="format-btn" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
+              <button class="btn btn-secondary" id="test-btn" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
             </div>
           </div>
 
@@ -248,28 +248,28 @@
             <div class="row mb-3">
               <label for="influxdb2-push" class="col-sm-2 col-form-label">InfluxDB v2 URL:</label>
               <div class="col-sm-8">
-                <input type="url" maxlength="40" class="form-control" name="influxdb2-push" id="influxdb2-push">
+                <input type="url" maxlength="40" class="form-control" name="influxdb2-push" placeholder="http://www.internet.com" id="influxdb2-push" data-bs-toggle="tooltip" title="URL to push target, use format http://servername.com (Supports http and https)">
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="influxdb2-org" class="col-sm-2 col-form-label">InfluxDB v2 Org:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="50" class="form-control" name="influxdb2-org" id="influxdb2-org">
+                <input type="text" maxlength="50" class="form-control" name="influxdb2-org" id="influxdb2-org" data-bs-toggle="tooltip" title="Identifier to what organisation to use">
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="influxdb2-bucket" class="col-sm-2 col-form-label">InfluxDB v2 Bucket:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="50" class="form-control" name="influxdb2-bucket" id="influxdb2-bucket">
+                <input type="text" maxlength="50" class="form-control" name="influxdb2-bucket" id="influxdb2-bucket" data-bs-toggle="tooltip" title="Identifier for the data bucket to use">
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="influxdb2-auth" class="col-sm-2 col-form-label">InfluxDB v2 Auth:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="100" class="form-control" name="influxdb2-auth" id="influxdb2-auth">
+                <input type="text" maxlength="100" class="form-control" name="influxdb2-auth" id="influxdb2-auth" data-bs-toggle="tooltip" title="Authentication token for accessing data bucket">
               </div>
             </div>
 
@@ -278,42 +278,42 @@
             <div class="row mb-3">
               <label for="mqtt-push" class="col-sm-2 col-form-label">MQTT Server:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="40" class="form-control" name="mqtt-push" id="mqtt-push">
+                <input type="text" maxlength="40" class="form-control" name="mqtt-push" id="mqtt-push" placeholder="www.internet.com" data-bs-toggle="tooltip" title="Name of server to connect to, use format servername.com">
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="mqtt-topic" class="col-sm-2 col-form-label">MQTT Port:</label>
               <div class="col-sm-4">
-                <input type="number" min="1" max="65535" class="form-control" name="mqtt-port" id="mqtt-port">
+                <input type="number" min="1" max="65535" class="form-control" name="mqtt-port" id="mqtt-port" placeholder="1138" data-bs-toggle="tooltip" title="Port number to use, 1138 is standard. Ports higher than 8000 will assume to use SSL">
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="mqtt-user" class="col-sm-2 col-form-label">MQTT User:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="20" class="form-control" name="mqtt-user" id="mqtt-user">
+                <input type="text" maxlength="20" class="form-control" name="mqtt-user" id="mqtt-user" data-bs-toggle="tooltip" title="Username to use. Leave blank if authentication is disabled">
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="mqtt-pass" class="col-sm-2 col-form-label">MQTT Password:</label>
               <div class="col-sm-4">
-                <input type="text" maxlength="20" class="form-control" name="mqtt-pass" id="mqtt-pass">
+                <input type="text" maxlength="20" class="form-control" name="mqtt-pass" id="mqtt-pass" data-bs-toggle="tooltip" title="Password to use. Leave blank if authentication is disabled">
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
-                <button type="submit" class="btn btn-primary" id="push-btn2">Save</button>
+                <button type="submit" class="btn btn-primary" id="push-btn2" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
               </div>
             </div>
           </form>
 
           <div class="row mb-3">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="format-btn2">Format editor</button>
-              <button class="btn btn-secondary" id="test-btn2">Test Push</button>
+              <button class="btn btn-secondary" id="format-btn2" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
+              <button class="btn btn-secondary" id="test-btn2" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
             </div>
           </div>
 
@@ -338,11 +338,11 @@
                 <legend class="col-form-label col-sm-2 float-sm-left pt-0">Gravity Format:</legend>
                 <div class="col-sm-4">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-g" value="G" checked>
+                    <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-g" value="G" checked data-bs-toggle="tooltip" title="Present gravity in SG format">
                     <label class="form-check-label" for="gravity-format-g">SG</label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-p" value="P">
+                    <input class="form-check-input" type="radio" name="gravity-format" id="gravity-format-p" value="P" checked data-bs-toggle="tooltip" title="Present gravity in Plato format">
                     <label class="form-check-label" for="gravity-format-p">Plato</label>
                   </div>
                 </div>
@@ -352,14 +352,14 @@
             <div class="row mb-3">
               <label for="gravity-formula" class="col-sm-2 col-form-label">Formula</label>
               <div class="col-sm-10">
-                <input type="text" maxlength="200" class="form-control" name="gravity-formula" id="gravity-formula">
+                <input type="text" maxlength="200" class="form-control" name="gravity-formula" id="gravity-formula" checked data-bs-toggle="tooltip" title="Formula used to convert angle to gravity">
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-sm-4 offset-sm-2">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="gravity-temp-adjustment" id="gravity-temp-adjustment">
+                  <input class="form-check-input" type="checkbox" name="gravity-temp-adjustment" id="gravity-temp-adjustment" checked data-bs-toggle="tooltip" title="Adjust the calculated gravity based on the current temperature. Assumes that calibration is done using 20C / 68F">
                   <label class="form-check-label" for="gravity-temp-adjustment">Temperature adjust gravity</label>
                 </div>
               </div>
@@ -367,7 +367,7 @@
 
             <div class="row mb-3">
               <div class="col-sm-4 offset-sm-2">
-                <button type="submit" class="btn btn-primary" id="gravity-btn">Save</button>
+                <button type="submit" class="btn btn-primary" id="gravity-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
               </div>
             </div>
           </form>
@@ -390,7 +390,7 @@
             <div class="row mb-3">
               <label for="voltage-factor" class="col-sm-2 col-form-label">Voltage factor:</label>
               <div class="col-sm-2">
-                <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor">
+                <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor" data-bs-toggle="tooltip" title="Factor used to calculate the battery voltage. When running on battery, the voltage should be less than 4.15V">
               </div>
               <label for="voltage-factor" class="col-sm-3 col-form-label" id="battery">Loading...</label>
             </div>
@@ -398,14 +398,14 @@
             <div class="row mb-3">
               <label for="temp-adjustment-value" class="col-sm-2 col-form-label">Temp Sensor Adj:</label>
               <div class="col-sm-2">
-                <input type="number" step=".1" class="form-control" name="temp-adjustment-value" id="temp-adjustment-value">
+                <input type="number" step=".1" class="form-control" name="temp-adjustment-value" id="temp-adjustment-value" data-bs-toggle="tooltip" title="This value will be added to the sensor value in case the sensor dont show the correct temperature">
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-sm-3 offset-sm-2">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="gyro-temp" id="gyro-temp">
+                  <input class="form-check-input" type="checkbox" name="gyro-temp" id="gyro-temp" data-bs-toggle="tooltip" title="Use the temperature sensor in the gyro instead of DS18B20, require 300s update interval to be accurate">
                   <label class="form-check-label" for="gyro-temp">Use gyro temperature</label>
                 </div>
               </div>
@@ -414,7 +414,7 @@
             <div class="row mb-3">
               <label class="col-sm-2 col-form-label" for="ble">Bluetooth tilt color:</label>
               <div class="col-sm-2">
-                <select class="form-select" id="ble" name="ble" disabled>
+                <select class="form-select" id="ble" name="ble" disabled data-bs-toggle="tooltip" title="Select the BLE token to be used when sending data over bluetooth">
                   <option value="">-not active-</option>
                   <option value="red">red</option>
                   <option value="green">green</option>
@@ -431,111 +431,110 @@
             <div class="row mb-3">
               <label for="ota-url" class="col-sm-2 col-form-label">OTA base URL:</label>
               <div class="col-sm-8">
-                <input type="url" maxlength="90" class="form-control" name="ota-url" id="ota-url">
+                <input type="url" maxlength="90" class="form-control" name="ota-url" id="ota-url" placeholder="http://www.local.com/path/" data-bs-toggle="tooltip" title="Base URL to where firmware and version.json file can be found. Needs to end with '/', example: http://www.mysite.com/firmware/">
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
-                <button type="submit" class="btn btn-primary" id="hardware-btn">Save</button>
+                <button type="submit" class="btn btn-primary" id="hardware-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
               </div>
             </div>
           </form>
 
           <div class="row mb-3">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="firmware-btn">Upload firmware</button>
+              <button class="btn btn-secondary" id="firmware-btn" checked data-bs-toggle="tooltip" title="Manually upload a new firmware version to the device">Upload firmware</button>
             </div>
           </div>
         </div>
       </div>
+    </div>  
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingAdvanced">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
+          <b>Advanced (use with caution)</b>
+        </button>
+      </h2>
+      <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced" data-bs-parent="#accordion">
+        <div class="accordion-body">
 
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="headingAdvanced">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
-            <b>Advanced (use with caution)</b>
-          </button>
-        </h2>
-        <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced" data-bs-parent="#accordion">
-          <div class="accordion-body">
-  
-            <form action="/api/config/advanced" method="post">
-              <input type="text" name="id" id="id6" hidden>
-  
-              <div class="row mb-3">
-                <label for="gyro-read-count" class="col-sm-3 col-form-label">Gyro reads:</label>
-                <div class="col-sm-2">
-                  <input type="number" min="10" max="100" class="form-control" name="gyro-read-count" id="gyro-read-count">
-                </div>
-                <div class="col-sm-5">(10-100) - default 50 - number of reads for angle</div>
+          <form action="/api/config/advanced" method="post">
+            <input type="text" name="id" id="id6" hidden>
+
+            <div class="row mb-3">
+              <label for="gyro-read-count" class="col-sm-3 col-form-label">Gyro reads:</label>
+              <div class="col-sm-2">
+                <input type="number" min="10" max="100" class="form-control" name="gyro-read-count" id="gyro-read-count" checked data-bs-toggle="tooltip" title="How many times should we read the gyro to get an accurate angle. More reads = better accuracy but higher battery drain">
               </div>
+              <div class="col-sm-5">(10-100) - default 50</div>
+            </div>
 
-              <div class="row mb-3">
-                <label for="gyro-moving-threashold" class="col-sm-3 col-form-label">Gyro moving theashold:</label>
-                <div class="col-sm-2">
-                  <input type="number" min="50" max="1000" class="form-control" name="gyro-moving-threashold" id="gyro-moving-threashold"> 
-                </div>
-                <div class="col-sm-5">(50-1000) - default 500 - size of movement</div>
+            <div class="row mb-3">
+              <label for="gyro-moving-threashold" class="col-sm-3 col-form-label">Gyro moving theashold:</label>
+              <div class="col-sm-2">
+                <input type="number" min="50" max="1000" class="form-control" name="gyro-moving-threashold" id="gyro-moving-threashold" checked data-bs-toggle="tooltip" title="How much deviation between gyro reads are acceptable in order to regard this as a valid angle"> 
               </div>
+              <div class="col-sm-5">(50-1000) - default 500</div>
+            </div>
 
-              <div class="row mb-3">
-                <label for="formula-max-deviation" class="col-sm-3 col-form-label">Formula max deviation:</label>
-                <div class="col-sm-2">
-                  <input type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation"> 
-                </div>
-                <div class="col-sm-5">(1 - 10) - default 1.6 SG - max deviation value when checking formula</div>
+            <div class="row mb-3">
+              <label for="formula-max-deviation" class="col-sm-3 col-form-label">Formula max deviation (SG):</label>
+              <div class="col-sm-2">
+                <input type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation" checked data-bs-toggle="tooltip" title="When validating the derived formula this is the maximum accepted deviation for the supplied values"> 
               </div>
-              
-              <hr>
+              <div class="col-sm-5">(1 - 10) - default 1.6 SG</div>
+            </div>
+            
+            <hr>
 
-              <div class="row mb-3">
-                <label for="int-http1" class="col-sm-3 col-form-label">Skip interval - HTTP 1 (POST):</label>
-                <div class="col-sm-2">
-                  <input type="number" min="0" max="5" class="form-control" name="int-http1" id="int-http1"> 
-                </div>
-                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+            <div class="row mb-3">
+              <label for="int-http1" class="col-sm-3 col-form-label">Skip interval - HTTP 1 (POST):</label>
+              <div class="col-sm-2">
+                <input type="number" min="0" max="5" class="form-control" name="int-http1" id="int-http1" checked data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
+              <div class="col-sm-5">(0 - 5) - default 0</div>
+            </div>
 
-              <div class="row mb-3">
-                <label for="int-http2" class="col-sm-3 col-form-label">Skip interval - HTTP 2 (POST):</label>
-                <div class="col-sm-2">
-                  <input type="number" min="0" max="5" class="form-control" name="int-http2" id="int-http2"> 
-                </div>
-                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+            <div class="row mb-3">
+              <label for="int-http2" class="col-sm-3 col-form-label">Skip interval - HTTP 2 (POST):</label>
+              <div class="col-sm-2">
+                <input type="number" min="0" max="5" class="form-control" name="int-http2" id="int-http2" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
+              <div class="col-sm-5">(0 - 5) - default 0</div>
+            </div>
 
-              <div class="row mb-3">
-                <label for="int-http3" class="col-sm-3 col-form-label">Skip interval - HTTP 3 (GET):</label>
-                <div class="col-sm-2">
-                  <input type="number" min="0" max="5" class="form-control" name="int-http3" id="int-http3"> 
-                </div>
-                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+            <div class="row mb-3">
+              <label for="int-http3" class="col-sm-3 col-form-label">Skip interval - HTTP 3 (GET):</label>
+              <div class="col-sm-2">
+                <input type="number" min="0" max="5" class="form-control" name="int-http3" id="int-http3" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
+              <div class="col-sm-5">(0 - 5) - default 0</div>
+            </div>
 
-              <div class="row mb-3">
-                <label for="int-influx" class="col-sm-3 col-form-label">Skip interval - InfluxDB v2:</label>
-                <div class="col-sm-2">
-                  <input type="number" min="0" max="5" class="form-control" name="int-influx" id="int-influx"> 
-                </div>
-                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+            <div class="row mb-3">
+              <label for="int-influx" class="col-sm-3 col-form-label">Skip interval - InfluxDB v2:</label>
+              <div class="col-sm-2">
+                <input type="number" min="0" max="5" class="form-control" name="int-influx" id="int-influx" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
+              <div class="col-sm-5">(0 - 5) - default 0</div>
+            </div>
 
-              <div class="row mb-3">
-                <label for="int-mqtt" class="col-sm-3 col-form-label">Skip interval - MQTT:</label>
-                <div class="col-sm-2">
-                  <input type="number" min="0" max="5" class="form-control" name="int-mqtt" id="int-mqtt"> 
-                </div>
-                <div class="col-sm-5">(0 - 5) skips a number of sleep cycles before pushing data</div>
+            <div class="row mb-3">
+              <label for="int-mqtt" class="col-sm-3 col-form-label">Skip interval - MQTT:</label>
+              <div class="col-sm-2">
+                <input type="number" min="0" max="5" class="form-control" name="int-mqtt" id="int-mqtt" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
+              <div class="col-sm-5">(0 - 5) - default 0</div>
+            </div>
 
-              <div class="row mb-3">
-                <div class="col-sm-8 offset-sm-3">
-                  <button type="submit" class="btn btn-primary" id="advanced-btn">Save</button>
-                </div>
+            <div class="row mb-3">
+              <div class="col-sm-8 offset-sm-3">
+                <button type="submit" class="btn btn-primary" id="advanced-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
               </div>
-            </form>
+            </div>
+          </form>
 
-          </div>
         </div>
       </div>
 
@@ -551,14 +550,14 @@
         </div>
         <div class="modal-body">
           <label for="http-header" class="col-form-label">Header 1 (Header: value)</label>
-          <input type="text" maxlength="100" class="form-control" id="header1" oninput="checkHeader(this)">
+          <input type="text" maxlength="100" class="form-control" id="header1" oninput="checkHeader(this)" placeholder="Content-Type: application/json" data-bs-toggle="tooltip" title="Set a http headers, empty string is skipped">
           <label for="http-header" class="col-form-label">Header 2 (Header: value)</label>
-          <input type="text" maxlength="100" class="form-control" id="header2" oninput="checkHeader(this)">
+          <input type="text" maxlength="100" class="form-control" id="header2" oninput="checkHeader(this)" data-bs-toggle="tooltip" title="Set a http headers, empty string is skipped">
           <input type="text" id="field1" hidden>
           <input type="text" id="field2" hidden>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  data-bs-toggle="tooltip" title="Close dialog, press the save button in the section to save data">Close</button>
         </div>
       </div>
     </div>

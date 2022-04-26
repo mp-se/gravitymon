@@ -78,7 +78,7 @@
 
             <div class="row mb-3">
               <label for="push-target" class="col-sm-2 col-form-label">Push target:</label>
-              <select class="custom-select col-sm-4" required name="push-target" id="push-target">
+              <select class="custom-select col-sm-4" required name="push-target" id="push-target" data-bs-toggle="tooltip" title="Select the push target to edit format template for">
                 <option value="http-1">HTTP option 1 (post)</option>
                 <option value="http-2">HTTP option 2 (post)</option>
                 <option value="http-3">HTTP option 3 (get)</option>
@@ -107,10 +107,10 @@
 
           <div class="row mb-3">
               <div class="col-sm-2">
-                <button class="btn btn-primary" id="format-btn">Save</button>
-                <button class="btn btn-secondary" id="test-btn">Test</button>
+                <button class="btn btn-primary" id="format-btn" data-bs-toggle="tooltip" title="Save the format template, saving an empty form will reset the template to default">Save</button>
+                <button class="btn btn-secondary" id="test-btn" data-bs-toggle="tooltip" title="Apply device data to template to see how it works">Test</button>
               </div>
-              <select class="custom-select col-sm-4" required name="predefined" id="predefined">
+              <select class="custom-select col-sm-4" required name="predefined" id="predefined" data-bs-toggle="tooltip" title="Select a pre-defined format template">
                 <option value="iSpindle-Post">iSpindle (POST)</option>
                 <option value="GravityMon-Post">GravityMon (POST)</option>
                 <option value="iSpindle-Mqtt">iSpindle (MQTT)</option>
@@ -120,8 +120,8 @@
                 <option value="GravityMon-Get">GravityMon (GET)</option>
               </select>
               <div class="col-sm-4">
-                <button class="btn btn-secondary" id="copy-btn">Copy format</button>
-                <button class="btn btn-secondary" id="clear-btn">Clear format</button>
+                <button class="btn btn-secondary" id="copy-btn" data-bs-toggle="tooltip" title="Copy the selected format template to the selected push target">Copy format</button>
+                <button class="btn btn-secondary" id="clear-btn" data-bs-toggle="tooltip" title="Clear the current format template">Clear format</button>
               </div>
             </div>
 

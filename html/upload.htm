@@ -99,12 +99,12 @@
             <form action="/api/upload" method="post" enctype="multipart/form-data">
               <div class="row mb-3">
                 <div class="col-md-8 custom-file">
-                  <input type="file" accept=".min.htm" class="custom-file-input" name="name" id="name">
+                  <input type="file" accept=".min.htm" class="custom-file-input" name="name" id="name" data-bs-toggle="tooltip" title="Select a file that matches the name in the list above to upload it to the device">
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="col-md-3">
-                  <button type="submit" class="btn btn-primary" id="upload-btn" value="upload">Upload</button>
+                  <button type="submit" class="btn btn-primary" id="upload-btn" value="upload" data-bs-toggle="tooltip" title="Upload the selected file to the device">Upload</button>
                 </div>
               </div>
             </form>

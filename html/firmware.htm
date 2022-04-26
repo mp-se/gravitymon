@@ -87,12 +87,12 @@
           <form id="uploadForm" enctype="multipart/form-data">
             <div class="row mb-3">
               <div class="col-md-8 custom-file">
-                <input type="file" accept=".bin" class="custom-file-input" name="name" id="name" onchange="checkName()">
+                <input type="file" accept=".bin" class="custom-file-input" name="name" id="name" onchange="checkName()" data-bs-toggle="tooltip" title="Select a firmware file to upload">
               </div>
             </div>
             <div class="row mb-3">
               <div class="col-md-4">
-                <button type="submit" class="btn btn-primary" id="upload-btn" value="upload">Flash firmware</button>
+                <button type="submit" class="btn btn-primary" id="upload-btn" value="upload" data-bs-toggle="tooltip" title="Update the device with the selected firmware">Flash firmware</button>
               </div>
             </div>
           </form>
