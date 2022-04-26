@@ -6,20 +6,20 @@ Releases
 v1.0.0
 ------
 * Upgraded to bootstrap v5.1 for web pages.
+* Added tooltips to all fields in user interface
 * Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.
 * Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.
 * Added function on format page so that it's easy to copy a format template from the docs (simplify service integration).
-* Added https support for Influxdb (EXPERIMENTAL NOT YET TESTED)
-* Added possibility to have variable push intervals for different endpoints. 
-* Added advanced settings to configuration for adjusting some internal values (gyro reads, accepted formula deviation, moving detection).
+* Added https support for Influxdb
+* Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather. 
+* Added advanced settings to configuration for adjusting some internal values (gyro reads, accepted formula deviation, timeouts, moving detection etc).
 * Added additional http error codes to troubleshooting documentation
-* Added tooltips to all fields in user interface
 * Installation instructions updated on how to find the device after wifi has been configured. 
+* Documentation on brewfather has been updated to adress SG/Plato conversion
 * BUG: Fixed issue in formula calculation in case there were a gap in the data series
 * BUG: Field name for wifi strenght changed from "rssi" to "RSSI"
 
 * TODO: Fix documentation for advanced settings.
-* TODO: Update brewfather documentation
 
 v0.9.0
 ------
