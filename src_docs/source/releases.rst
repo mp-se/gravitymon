@@ -3,6 +3,8 @@
 Releases 
 ########
 
+* Installation instructions updated on how to find the device after wifi has been configured. 
+
 v0.9.0
 ------
 * Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api's. 

@@ -50,8 +50,8 @@ The implementation is basically a http request with the following format templat
 
 **Option 2** - iSpindle Endpoint
 
-This opion makes use of the standard http (1 or 2) endpoints in the push section. The brewfather iSpindle endpoint 
-has the following format:
+This opion makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume 
+that the data is in plato. The brewfather iSpindle endpoint has the following format:
 
 .. code-block::
 
