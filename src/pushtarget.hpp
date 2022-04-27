@@ -45,6 +45,7 @@ class PushTarget {
   void sendHttpPost(TemplatingEngine& engine, bool isSecure, int index);
   void sendHttpGet(TemplatingEngine& engine, bool isSecure);
   void addHttpHeader(HTTPClient& http, String header);
+  void probeMaxFragement( String& serverPath );
 
  public:
   void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,

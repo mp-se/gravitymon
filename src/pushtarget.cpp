@@ -149,6 +149,36 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
 }
 
 //
+// Check if the server can reduce the buffer size to save memory (ESP8266 only)
+//
+void PushTarget::probeMaxFragement( String& serverPath ) {
+#if defined(ESP8266) // Looks like this is feature is not supported by influxdb
+  // Format: http:://servername:port/path
+  int port = 443;
+  String host =
+      serverPath.substring(8);  // remove the prefix or the probe will fail,
+                                // it needs a pure host name.
+  // Remove the path if it exist
+  int idx = host.indexOf("/");
+  if (idx != -1) host = host.substring(0, idx);
+
+  // If a server port is defined, lets extract that part
+  idx = host.indexOf(":");
+  if (idx != -1) {
+    String p = host.substring(idx+1);
+    port = p.toInt();
+    host = host.substring(0, idx);
+  }
+
+  Log.notice(F("PUSH: Probing server to max fragment %s:%d" CR), host.c_str(), port);
+  if (_wifiSecure.probeMaxFragmentLength(host, port, 512)) {
+    Log.notice(F("PUSH: Server supports smaller SSL buffer." CR));
+    _wifiSecure.setBufferSizes(512, 512);
+  }
+#endif
+}
+
+//
 // Send to influx db v2
 //
 void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
@@ -164,40 +194,27 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
       "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
   String doc = engine.create(TemplatingEngine::TEMPLATE_INFLUX);
 
-  if (isSecure) {
-    Log.notice(F("PUSH: InfluxDB, SSL enabled without validation." CR));
-    _wifiSecure.setInsecure();
-
-#if defined(ESP8266)
-    String host =
-        serverPath.substring(8);  // remove the prefix or the probe will fail,
-                                  // it needs a pure host name.
-    int idx = host.indexOf("/");
-    if (idx != -1) host = host.substring(0, idx);
-
-    if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
-      Log.notice(F("PUSH: InfluxDB server supports smaller SSL buffer." CR));
-      _wifiSecure.setBufferSizes(512, 512);
-    }
-#endif
-
-    _httpSecure.begin(_wifiSecure, serverPath);
-    _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
-    _lastCode = _httpSecure.POST(doc);
-  } else  {
-    _http.begin(_wifi, serverPath);
-    _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
-    _lastCode = _http.POST(doc);
-  }
-
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
   Log.verbose(F("PUSH: data %s." CR), doc.c_str());
 #endif
 
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
-  _http.addHeader(F("Authorization"), auth.c_str());
-  _lastCode = _http.POST(doc);
+
+  if (isSecure) {
+    Log.notice(F("PUSH: InfluxDB, SSL enabled without validation." CR));
+    _wifiSecure.setInsecure();
+    probeMaxFragement( serverPath );
+    _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _httpSecure.begin(_wifiSecure, serverPath);
+    _httpSecure.addHeader(F("Authorization"), auth.c_str());
+    _lastCode = _httpSecure.POST(doc);
+  } else  {
+    _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _http.begin(_wifi, serverPath);
+    _http.addHeader(F("Authorization"), auth.c_str());
+    _lastCode = _http.POST(doc);
+  }
 
   if (_lastCode == 204) {
     _lastSuccess = true;
@@ -267,22 +284,9 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
   if (isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
-
-#if defined(ESP8266)
-    String host =
-        serverPath.substring(8);  // remove the prefix or the probe will fail,
-                                  // it needs a pure host name.
-    int idx = host.indexOf("/");
-    if (idx != -1) host = host.substring(0, idx);
-
-    if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
-      Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
-      _wifiSecure.setBufferSizes(512, 512);
-    }
-#endif
-
-    _httpSecure.begin(_wifiSecure, serverPath);
+    probeMaxFragement( serverPath );
     _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _httpSecure.begin(_wifiSecure, serverPath);
 
     if (index == 0) {
       addHttpHeader(_httpSecure, myConfig.getHttpHeader(0));
@@ -294,8 +298,8 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
 
     _lastCode = _httpSecure.POST(doc);
   } else {
-    _http.begin(_wifi, serverPath);
     _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _http.begin(_wifi, serverPath);
 
     if (index == 0) {
       addHttpHeader(_http, myConfig.getHttpHeader(0));
@@ -349,26 +353,13 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
   if (isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
-
-#if defined(ESP8266)
-    String host =
-        serverPath.substring(8);  // remove the prefix or the probe will fail,
-                                  // it needs a pure host name.
-    int idx = host.indexOf("/");
-    if (idx != -1) host = host.substring(0, idx);
-
-    if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
-      Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
-      _wifiSecure.setBufferSizes(512, 512);
-    }
-#endif
-
-    _httpSecure.begin(_wifiSecure, serverPath);
+    probeMaxFragement( serverPath );
     _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _httpSecure.begin(_wifiSecure, serverPath);
     _lastCode = _httpSecure.GET();
   } else {
-    _http.begin(_wifi, serverPath);
     _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _http.begin(_wifi, serverPath);
     _lastCode = _http.GET();
   }
 
@@ -416,8 +407,10 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
     }
 #endif
 
+    mqtt.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     mqtt.begin(host.c_str(), port, _wifiSecure);
   } else {
+    mqtt.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     mqtt.begin(host.c_str(), port, _wifi);
   }
 
@@ -428,9 +421,6 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
   Log.verbose(F("PUSH: url %s." CR), myConfig.getMqttUrl());
   Log.verbose(F("PUSH: data %s." CR), doc.c_str());
 #endif
-
-  // Send MQQT message(s)
-  mqtt.setTimeout(myAdvancedConfig.getPushTimeout());  // 10 seconds timeout
 
   int lines = 1;
   // Find out how many lines are in the document. Each line is one

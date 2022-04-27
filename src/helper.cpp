@@ -387,7 +387,7 @@ void PerfLogging::pushInflux() {
   // Send HTTP POST request
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
   http.addHeader(F("Authorization"), auth.c_str());
-  http.setTimeout(myHardwareConfig.getPushTimeout());
+  http.setTimeout(myAdvancedConfig.getPushTimeout());
   int httpResponseCode = http.POST(body);
 
   if (httpResponseCode == 204) {
