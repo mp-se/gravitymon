@@ -5,264 +5,302 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <title>Beer Gravity Monitor</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">  
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <style>
+    .row-margin-10 { margin-top: 1.0em; }
+  </style>
 </head> 
 <body class="py-4">
 
-<!-- START MENU -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+  <!-- START MENU -->
 
-  <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  
-  <div class="collapse navbar-collapse" id="navbar"> 
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="javascript:history.back()">Back to configuration</a>
-      </li>
-    </ul>
-  </div>
-  <div class="spinner-border text-light" id="spinner" role="status"></div>
-</nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:history.back()">Back to configuration</a>
+          </li>
+        </ul>  
+      </div>
+      <div class="spinner-border text-light" id="spinner" role="status"></div>
+    </div>
+  </nav>
 
-<!-- START MAIN INDEX -->
+  <!-- START MAIN INDEX -->
 
-<div class="container">
+  <div class="container row-margin-10">
 
-  <hr class="my-2">
+    <div class="alert alert-success alert-dismissible hide fade d-none" role="alert">
+      <div id="alert"></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-  <div class="alert alert-success alert-dismissible fade hide show d-none" role="alert" id="alert">
-    <div id="alert-msg">...</div>
-    <button type="button" id="alert-btn" class="close" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
+    <script type="text/javascript">
+      function showError( msg ) {
+        $('.alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert').text( msg );
+      }
 
-  <script type="text/javascript">
-    function showError( msg ) {
-      $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('d-none').addClass('show');
-      $('#alert-msg').text( msg );
-    }
+      function showSuccess( msg ) {
+        $('.alert').addClass('alert-success').removeClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert').text( msg );
+      }
 
-    function showSuccess( msg ) {
-      $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('d-none').addClass('show');
-      $('#alert-msg').text( msg );
-    }
+      $("#alert-btn").click(function(e){
+        $('.alert').addClass('hide').removeClass('show').addClass('d-none');
+      });    
+    </script>
 
-    $("#alert-btn").click(function(e){
-      $('#alert').addClass('d-none').removeClass('show');
-    });    
-  </script>
-
-  <div class="accordion" id="accordion">
-
-    <div class="card">
-      <div class="card-header" id="headingFormat">
-        <h2 class="mb-0">
-          <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseFormat" aria-expanded="true" aria-controls="collapseFormat">
-            Push Format Templates
+    <div class="accordion" id="accordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingFormat">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFormat" aria-expanded="true" aria-controls="collapseFormat">
+            <b>Push Format Templates</b>
           </button>
         </h2>
-      </div>  
-      <div id="collapseFormat" class="collapse show" aria-labelledby="headingFormat" data-parent="#accordion">
-        <div class="card-body">
+        <div id="collapseFormat" class="accordion-collapse collapse show" aria-labelledby="headingFormat" data-bs-parent="#accordion">
+          <div class="accordion-body">
+
             <input type="text" name="id" id="id" hidden>
             <input type="text" name="http-1" id="http-1" hidden>
             <input type="text" name="http-2" id="http-2" hidden>
             <input type="text" name="http-3" id="http-3" hidden>
-            <!--<input type="text" name="brewfather" id="brewfather" hidden>-->
             <input type="text" name="influxdb" id="influxdb" hidden>
             <input type="text" name="mqtt" id="mqtt" hidden>
 
-            <div class="form-group row">
+            <div class="row mb-3">
               <label for="push-target" class="col-sm-2 col-form-label">Push target:</label>
-              <select class="custom-select col-sm-4" required name="push-target" id="push-target">
+              <select class="custom-select col-sm-4" required name="push-target" id="push-target" data-bs-toggle="tooltip" title="Select the push target to edit format template for">
                 <option value="http-1">HTTP option 1 (post)</option>
                 <option value="http-2">HTTP option 2 (post)</option>
                 <option value="http-3">HTTP option 3 (get)</option>
-                <!--<option value="brewfather">Brewfather</option>-->
                 <option value="influxdb">Influx DB</option>
                 <option value="mqtt">MQTT</option>
               </select>
             </div>
-          
-            <div class="form-group row">
+
+            <div class="row mb-3">
               <div class="col-sm-12">
-                <textarea rows="5" class="form-control" name="format" id="format">  
+                <textarea rows="10" class="form-control" name="format" id="format">  
                 </textarea>
               </div>
             </div>
 
-            <div class="form-group row">
-              <div class="col-sm-8 offset-sm-2">
-                <button class="btn btn-primary" id="format-btn">Save</button>
-                <button class="btn btn-secondary" id="test-btn">Test</button>
+            <script>
+              let formatTemplates = [
+              { "id": "GravityMon-Post", "format": "%7B%0A%20%22name%22%20%3A%20%22%24%7Bmdns%7D%22%2C%0A%20%22ID%22%3A%20%22%24%7Bid%7D%22%2C%0A%20%22token%22%20%3A%20%22gravmon%22%2C%0A%20%22interval%22%3A%20%24%7Bsleep-interval%7D%2C%0A%20%22temperature%22%3A%20%24%7Btemp%7D%2C%0A%20%22temp_units%22%3A%20%22%24%7Btemp-unit%7D%22%2C%0A%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%22angle%22%3A%20%24%7Bangle%7D%2C%0A%20%22battery%22%3A%20%24%7Bbattery%7D%2C%0A%20%22RSSI%22%3A%20%24%7Brssi%7D%2C%0A%20%22corr-gravity%22%3A%20%24%7Bcorr-gravity%7D%2C%0A%20%22gravity-unit%22%3A%20%22%24%7Bgravity-unit%7D%22%2C%0A%20%22run-time%22%3A%20%24%7Brun-time%7D%0A%7D" },
+              { "id": "GravityMon-Get", "format": "%3Fname%3D%24%7Bmdns%7D%26id%3D%24%7Bid%7D%26token%3D%24%7Btoken2%7D%26interval%3D%24%7Bsleep-interval%7D%26temperature%3D%24%7Btemp%7D%26%0Atemp-units%3D%24%7Btemp-unit%7D%26gravity%3D%24%7Bgravity%7D%26angle%3D%24%7Bangle%7D%26battery%3D%24%7Bbattery%7D%26rssi%3D%24%7Brssi%7D%26%0Acorr-gravity%3D%24%7Bcorr-gravity%7D%26gravity-unit%3D%24%7Bgravity-unit%7D%26run-time%3D%24%7Brun-time%7D" },
+              { "id": "iSpindle-Post", "format": "%7B%0A%20%22name%22%20%3A%20%22%24%7Bmdns%7D%22%2C%0A%20%22ID%22%3A%20%22%24%7Bid%7D%22%2C%0A%20%22token%22%20%3A%20%22gravmon%22%2C%0A%20%22interval%22%3A%20%24%7Bsleep-interval%7D%2C%0A%20%22temperature%22%3A%20%24%7Btemp%7D%2C%0A%20%22temp_units%22%3A%20%22%24%7Btemp-unit%7D%22%2C%0A%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%22angle%22%3A%20%24%7Bangle%7D%2C%0A%20%22battery%22%3A%20%24%7Bbattery%7D%2C%0A%20%22RSSI%22%3A%20%24%7Brssi%7D%0A%7D" },
+              { "id": "BrewFatherCustom-Post", "format": "%7B%0A%20%20%20%22name%22%3A%20%22%24%7Bmdns%7D%22%2C%0A%20%20%20%22temp%22%3A%20%24%7Btemp%7D%2C%0A%20%20%20%22aux_temp%22%3A%200%2C%0A%20%20%20%22ext_temp%22%3A%200%2C%0A%20%20%20%22temp_unit%22%3A%20%22%24%7Btemp-unit%7D%22%2C%0A%20%20%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%20%20%22gravity_unit%22%3A%20%22%24%7Bgravity-unit%7D%22%2C%0A%20%20%20%22pressure%22%3A%200%2C%0A%20%20%20%22pressure_unit%22%3A%20%22PSI%22%2C%0A%20%20%20%22ph%22%3A%200%2C%0A%20%20%20%22bpm%22%3A%200%2C%0A%20%20%20%22comment%22%3A%20%22%22%2C%0A%20%20%20%22beer%22%3A%20%22%22%2C%0A%20%20%20%22battery%22%3A%20%24%7Bbattery%7D%0A%7D" },
+              { "id": "iSpindle-Mqtt", "format": "ispindel%2F%24%7Bmdns%7D%2Ftilt%3A%24%7Bangle%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Ftemperature%3A%24%7Btemp%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Ftemp_units%3A%24%7Btemp-unit%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Fbattery%3A%24%7Bbattery%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Fgravity%3A%24%7Bgravity%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Finterval%3A%24%7Bsleep-interval%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2FRSSI%3A%24%7Brssi%7D%7C" },
+              { "id": "HomeAssistant-Mqtt", "format": "gravmon%2F%24%7Bmdns%7D%2Ftilt%3A%24%7Bangle%7D%7C%0Agravmon%2F%24%7Bmdns%7D%2Ftemperature%3A%24%7Btemp%7D%7C%0Agravmon%2F%24%7Bmdns%7D%2Ftemp_units%3A%24%7Btemp-unit%7D%7C" },
+              { "id": "UBIDots1-Post", "format": "%7B%0A%20%20%20%22temperature%22%3A%20%24%7Btemp%7D%2C%0A%20%20%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%20%20%22angle%22%3A%20%24%7Bangle%7D%2C%0A%20%20%20%22battery%22%3A%20%24%7Bbattery%7D%2C%0A%20%20%20%22rssi%22%3A%20%24%7Brssi%7D%0A%7D" } ];
+            </script>
+
+          <div class="row mb-3">
+              <div class="col-sm-2">
+                <button class="btn btn-primary" id="format-btn" data-bs-toggle="tooltip" title="Save the format template, saving an empty form will reset the template to default">Save</button>
+                <button class="btn btn-secondary" id="test-btn" data-bs-toggle="tooltip" title="Apply device data to template to see how it works">Test</button>
+              </div>
+              <select class="custom-select col-sm-4" required name="predefined" id="predefined" data-bs-toggle="tooltip" title="Select a pre-defined format template">
+                <option value="iSpindle-Post">iSpindle (POST)</option>
+                <option value="GravityMon-Post">GravityMon (POST)</option>
+                <option value="iSpindle-Mqtt">iSpindle (MQTT)</option>
+                <option value="HomeAssistant-Mqtt">Home Assistant (MQTT)</option>
+                <option value="UBIDots1-Post">UBIdots - Alternative 1 (POST)</option>
+                <option value="BrewFatherCustom-Post">Brewfather Custom Endpoint (POST)</option>
+                <option value="GravityMon-Get">GravityMon (GET)</option>
+              </select>
+              <div class="col-sm-4">
+                <button class="btn btn-secondary" id="copy-btn" data-bs-toggle="tooltip" title="Copy the selected format template to the selected push target">Copy format</button>
+                <button class="btn btn-secondary" id="clear-btn" data-bs-toggle="tooltip" title="Clear the current format template">Clear format</button>
               </div>
             </div>
 
+            <hr class="my-2">
+
             <pre class="card-preview" id="preview" name="preview"></pre> 
+
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <hr class="my-4">
-</div>
+  <script type="text/javascript">
+    window.onload = getConfig;
 
-<script type="text/javascript">
-  window.onload = getConfig;
-
-  setButtonDisabled( true );
-
-  // Opens the targetet according (if URL has #collapseOne to #collapseFour)
-  $(document).ready(function () {
-    if(location.hash != null && location.hash != ""){
-      $('.collapse').removeClass('in');
-      $(location.hash + '.collapse').collapse('show');
-    }
-  });
-
-  $("#push-target").change(function(e){
-    console.log(e)
-    selectFormat();
-  });
-
-  // Store the format
-  $("#format-btn").click(function(e) {
-    var s = $("#format").val();
-    s = s.replaceAll("\n", "");
-    var obj = 'id=' + $("#id").val() + '&' + $("#push-target").val() + '=' + encodeURIComponent(s);
-    console.log(obj);
-
-    $.ajax( { 
-      type: "POST",  
-      url: "/api/config/format", 
-      data: obj, 
-      success: function(result) { showSuccess('Format stored successfully.'); getConfig(); },
-      error: function(result) { showError('Unable to store format.'); }
-    } );
-  });
-  
-  // Test the calibration
-  $("#test-btn").click(function(e) {
-    var url = "/api/status";
-    //var url = "/test/status.json";
-    $('#spinner').show(); 
-    $.getJSON(url, function (cfg) {
-      console.log( cfg );
-
-      var doc = $("#format").val();
-
-      if (cfg["temp-format"]=="C")
-        doc = doc.replaceAll("${temp}", cfg["temp-c"]);
-      else
-        doc = doc.replaceAll("${temp}", cfg["temp-f"]);
-
-      if (cfg["gravity-format"]=="G") {
-        var sg = cfg["gravity"];
-        doc = doc.replaceAll("${gravity-sg}", sg);
-        doc = doc.replaceAll("${corr-gravity-sg}", sg);
-        var plato = 259 - (259 - sg);
-        doc = doc.replaceAll("${gravity-plato}", plato);
-        doc = doc.replaceAll("${corr-gravity-plato}", plato);
-      }
-      else {
-        var plato = cfg["gravity"];
-        doc = doc.replaceAll("${gravity-plato}", plato);
-        doc = doc.replaceAll("${corr-gravity-plato}", plato);
-        var sg = 259 / (259 - plato);
-        doc = doc.replaceAll("${gravity-sg}", sg);
-        doc = doc.replaceAll("${corr-gravity-sg}", sg);
-      }
-        
-      doc = doc.replaceAll("${mdns}", cfg["mdns"]);
-      doc = doc.replaceAll("${id}", cfg["id"]);
-      doc = doc.replaceAll("${sleep-interval}", cfg["sleep-interval"]);
-      doc = doc.replaceAll("${token}", cfg["token"]);
-      doc = doc.replaceAll("${token2}", cfg["token2"]);
-      doc = doc.replaceAll("${temp-c}", cfg["temp-c"]);
-      doc = doc.replaceAll("${temp-f}", cfg["temp-f"]);
-      doc = doc.replaceAll("${temp-unit}", cfg["temp-format"]);
-      doc = doc.replaceAll("${battery}", cfg["battery"]);
-      doc = doc.replaceAll("${rssi}", cfg["rssi"]);
-      doc = doc.replaceAll("${run-time}", cfg["runtime-average"]);
-      doc = doc.replaceAll("${gravity}", cfg["gravity"]);
-      doc = doc.replaceAll("${gravity-unit}", cfg["gravity-format"]);
-      doc = doc.replaceAll("${corr-gravity}", cfg["gravity"]);
-      doc = doc.replaceAll("${angle}", cfg["angle"]);
-      doc = doc.replaceAll("${tilt}", cfg["angle"]);
-
-      // Format in a readable json string.
-      try {
-        var json = JSON.parse(doc);
-        doc = JSON.stringify(json, null, 2);
-      } catch(e) {
-        console.log("Not a javascript object!")
-      }
-
-      $("#preview").text(doc);
-
-    })
-    .fail(function () {
-      showError('Unable to get data from the device.');
-    })
-    .always(function() {
-      $('#spinner').hide(); 
-    });
-  });
- 
-
-  function setButtonDisabled( b ) {
-    $("#format-btn").prop("disabled", b);
-    $("#test-btn").prop("disabled", b);
-  }
-
-  function selectFormat() {
-    var s = "#" + $("#push-target").val()
-    console.log(s);
-    s = decodeURIComponent($(s).val());
-    console.log(s);
-    s = s.replaceAll("|", "|\n");
-    console.log(s);
-    $("#format").val(s);
-    $("#preview").text("");
-  }
-
-  // Get the configuration values from the API
-  function getConfig() {
     setButtonDisabled( true );
 
-    var url = "/api/config/format";
-    //var url = "/test/format.json";
-    $('#spinner').show(); 
-    $.getJSON(url, function (cfg) {
-      console.log( cfg );
-      $("#id").val(cfg["id"]);
-
-      $("#http-1").val(cfg["http-1"]);
-      $("#http-2").val(cfg["http-2"]);
-      $("#http-3").val(cfg["http-3"]);
-      //$("#brewfather").val(cfg["brewfather"]);
-      $("#influxdb").val(cfg["influxdb"]);
-      $("#mqtt").val(cfg["mqtt"]);
-      selectFormat();
-    })
-    .fail(function () {
-      showError('Unable to get data from the device.');
-    })
-    .always(function() {
-      $('#spinner').hide(); 
-      setButtonDisabled( false );
+    // Opens the targetet according (if URL has #collapseOne to #collapseFour)
+    $(document).ready(function () {
+      if(location.hash != null && location.hash != ""){
+        $('.collapse').removeClass('in');
+        $(location.hash + '.collapse').collapse('show');
+      }
     });
-  }
-</script>
 
-<!-- START FOOTER -->
+    $("#push-target").change(function(e){
+      console.log(e)
+      selectFormat();
+    });
 
-<div class="container-fluid themed-container bg-primary text-light">(C) Copyright 2021-22 Magnus Persson</div>
+    // Copy the selected template
+    $("#copy-btn").click(function(e) {
+      var id = $("#predefined").val();
+
+      //console.log( encodeURIComponent( $("#format").val() ) );
+
+      formatTemplates.forEach(function (item, index) {
+        if( item.id == id ) {
+          $("#format").val( decodeURIComponent(item.format) );
+        }
+      });
+    });
+
+    // Clear the selected template
+    $("#clear-btn").click(function(e) {
+      $("#format").val( "" );
+    });
+
+    // Store the format
+    $("#format-btn").click(function(e) {
+      var s = $("#format").val();
+      s = s.replaceAll("\n", "");
+      var obj = 'id=' + $("#id").val() + '&' + $("#push-target").val() + '=' + encodeURIComponent(s);
+      console.log(obj);
+
+      $.ajax( { 
+        type: "POST",  
+        url: "/api/config/format", 
+        data: obj, 
+        success: function(result) { showSuccess('Format stored successfully.'); getConfig(); },
+        error: function(result) { showError('Unable to store format.'); }
+      } );
+    });
+    
+    // Test the calibration
+    $("#test-btn").click(function(e) {
+      var url = "/api/status";
+      //var url = "/test/status.json";
+      $('#spinner').show(); 
+      $.getJSON(url, function (cfg) {
+        console.log( cfg );
+
+        var doc = $("#format").val();
+
+        if (cfg["temp-format"]=="C")
+          doc = doc.replaceAll("${temp}", cfg["temp-c"]);
+        else
+          doc = doc.replaceAll("${temp}", cfg["temp-f"]);
+
+        if (cfg["gravity-format"]=="G") {
+          var sg = cfg["gravity"];
+          doc = doc.replaceAll("${gravity-sg}", sg);
+          doc = doc.replaceAll("${corr-gravity-sg}", sg);
+          var plato = 259 - (259 - sg);
+          doc = doc.replaceAll("${gravity-plato}", plato);
+          doc = doc.replaceAll("${corr-gravity-plato}", plato);
+        }
+        else {
+          var plato = cfg["gravity"];
+          doc = doc.replaceAll("${gravity-plato}", plato);
+          doc = doc.replaceAll("${corr-gravity-plato}", plato);
+          var sg = 259 / (259 - plato);
+          doc = doc.replaceAll("${gravity-sg}", sg);
+          doc = doc.replaceAll("${corr-gravity-sg}", sg);
+        }
+          
+        doc = doc.replaceAll("${mdns}", cfg["mdns"]);
+        doc = doc.replaceAll("${id}", cfg["id"]);
+        doc = doc.replaceAll("${sleep-interval}", cfg["sleep-interval"]);
+        doc = doc.replaceAll("${token}", cfg["token"]);
+        doc = doc.replaceAll("${token2}", cfg["token2"]);
+        doc = doc.replaceAll("${temp-c}", cfg["temp-c"]);
+        doc = doc.replaceAll("${temp-f}", cfg["temp-f"]);
+        doc = doc.replaceAll("${temp-unit}", cfg["temp-format"]);
+        doc = doc.replaceAll("${battery}", cfg["battery"]);
+        doc = doc.replaceAll("${rssi}", cfg["rssi"]);
+        doc = doc.replaceAll("${run-time}", cfg["runtime-average"]);
+        doc = doc.replaceAll("${gravity}", cfg["gravity"]);
+        doc = doc.replaceAll("${gravity-unit}", cfg["gravity-format"]);
+        doc = doc.replaceAll("${corr-gravity}", cfg["gravity"]);
+        doc = doc.replaceAll("${angle}", cfg["angle"]);
+        doc = doc.replaceAll("${tilt}", cfg["angle"]);
+
+        // Format in a readable json string.
+        try {
+          var json = JSON.parse(doc);
+          doc = JSON.stringify(json, null, 2);
+        } catch(e) {
+          console.log("Not a javascript object!")
+        }
+
+        $("#preview").text(doc);
+
+      })
+      .fail(function () {
+        showError('Unable to get data from the device.');
+      })
+      .always(function() {
+        $('#spinner').hide(); 
+      });
+    });
+
+    function setButtonDisabled( b ) {
+      $("#format-btn").prop("disabled", b);
+      $("#test-btn").prop("disabled", b);
+    }
+
+    function selectFormat() {
+      var s = "#" + $("#push-target").val()
+      console.log(s);
+      s = decodeURIComponent($(s).val());
+      console.log(s);
+      s = s.replaceAll("|", "|\n");
+      console.log(s);
+      $("#format").val(s);
+      $("#preview").text("");
+    }
+
+    // Get the configuration values from the API
+    function getConfig() {
+      setButtonDisabled( true );
+
+      var url = "/api/config/format";
+      //var url = "/test/format.json";
+      $('#spinner').show(); 
+      $.getJSON(url, function (cfg) {
+        console.log( cfg );
+        $("#id").val(cfg["id"]);
+
+        $("#http-1").val(cfg["http-1"]);
+        $("#http-2").val(cfg["http-2"]);
+        $("#http-3").val(cfg["http-3"]);
+        $("#influxdb").val(cfg["influxdb"]);
+        $("#mqtt").val(cfg["mqtt"]);
+        selectFormat();
+      })
+      .fail(function () {
+        showError('Unable to get data from the device.');
+      })
+      .always(function() {
+        $('#spinner').hide(); 
+        setButtonDisabled( false );
+      });
+    }
+  </script>
+
+  <!-- START FOOTER -->
+
+  <div class="container themed-container bg-primary text-light row-margin-10">(C) Copyright 2021-22 Magnus Persson</div>
 </body>
 </html>

@@ -26,7 +26,7 @@ SOFTWARE.
 #include <wifi.hpp>
 
 Config myConfig;
-HardwareConfig myHardwareConfig;
+AdvancedConfig myAdvancedConfig;
 
 //
 // Create the config class with default settings.
@@ -66,7 +66,6 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_PASS] = getWifiPass();
   doc[PARAM_BLE] = getColorBLE();
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
-  doc[PARAM_PUSH_BREWFATHER] = getBrewfatherPushUrl();
   doc[PARAM_TOKEN] = getToken();
   doc[PARAM_TOKEN2] = getToken2();
   doc[PARAM_PUSH_HTTP] = getHttpUrl();
@@ -106,12 +105,22 @@ void Config::createJson(DynamicJsonDocument& doc) {
   cal2["a3"] = reduceFloatPrecision(_formulaData.a[2], 2);
   cal2["a4"] = reduceFloatPrecision(_formulaData.a[3], 2);
   cal2["a5"] = reduceFloatPrecision(_formulaData.a[4], 2);
+  cal2["a6"] = reduceFloatPrecision(_formulaData.a[5], 2);
+  cal2["a7"] = reduceFloatPrecision(_formulaData.a[6], 2);
+  cal2["a8"] = reduceFloatPrecision(_formulaData.a[7], 2);
+  cal2["a9"] = reduceFloatPrecision(_formulaData.a[8], 2);
+  cal2["a10"] = reduceFloatPrecision(_formulaData.a[9], 2);
 
   cal2["g1"] = reduceFloatPrecision(_formulaData.g[0], 4);
   cal2["g2"] = reduceFloatPrecision(_formulaData.g[1], 4);
   cal2["g3"] = reduceFloatPrecision(_formulaData.g[2], 4);
   cal2["g4"] = reduceFloatPrecision(_formulaData.g[3], 4);
   cal2["g5"] = reduceFloatPrecision(_formulaData.g[4], 4);
+  cal2["g6"] = reduceFloatPrecision(_formulaData.g[5], 4);
+  cal2["g7"] = reduceFloatPrecision(_formulaData.g[6], 4);
+  cal2["g8"] = reduceFloatPrecision(_formulaData.g[7], 4);
+  cal2["g9"] = reduceFloatPrecision(_formulaData.g[8], 4);
+  cal2["g10"] = reduceFloatPrecision(_formulaData.g[9], 4);
 }
 
 //
@@ -207,9 +216,6 @@ bool Config::loadFile() {
     setTempFormat(s.charAt(0));
   }
 
-  if (!doc[PARAM_PUSH_BREWFATHER].isNull())
-    setBrewfatherPushUrl(doc[PARAM_PUSH_BREWFATHER]);
-
   if (!doc[PARAM_TOKEN].isNull()) setToken(doc[PARAM_TOKEN]);
   if (!doc[PARAM_TOKEN2].isNull()) setToken2(doc[PARAM_TOKEN2]);
   if (!doc[PARAM_PUSH_HTTP].isNull()) setHttpUrl(doc[PARAM_PUSH_HTTP]);
@@ -281,6 +287,16 @@ bool Config::loadFile() {
     _formulaData.a[3] = doc[PARAM_FORMULA_DATA]["a4"].as<double>();
   if (!doc[PARAM_FORMULA_DATA]["a5"].isNull())
     _formulaData.a[4] = doc[PARAM_FORMULA_DATA]["a5"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["a6"].isNull())
+    _formulaData.a[5] = doc[PARAM_FORMULA_DATA]["a6"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["a7"].isNull())
+    _formulaData.a[6] = doc[PARAM_FORMULA_DATA]["a7"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["a8"].isNull())
+    _formulaData.a[7] = doc[PARAM_FORMULA_DATA]["a8"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["a9"].isNull())
+    _formulaData.a[8] = doc[PARAM_FORMULA_DATA]["a9"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["a10"].isNull())
+    _formulaData.a[9] = doc[PARAM_FORMULA_DATA]["a10"].as<double>();
 
   if (!doc[PARAM_FORMULA_DATA]["g1"].isNull())
     _formulaData.g[0] = doc[PARAM_FORMULA_DATA]["g1"].as<double>();
@@ -292,6 +308,16 @@ bool Config::loadFile() {
     _formulaData.g[3] = doc[PARAM_FORMULA_DATA]["g4"].as<double>();
   if (!doc[PARAM_FORMULA_DATA]["g5"].isNull())
     _formulaData.g[4] = doc[PARAM_FORMULA_DATA]["g5"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["g6"].isNull())
+    _formulaData.g[5] = doc[PARAM_FORMULA_DATA]["g6"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["g7"].isNull())
+    _formulaData.g[6] = doc[PARAM_FORMULA_DATA]["g7"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["g8"].isNull())
+    _formulaData.g[7] = doc[PARAM_FORMULA_DATA]["g8"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["g9"].isNull())
+    _formulaData.g[8] = doc[PARAM_FORMULA_DATA]["g9"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA]["g10"].isNull())
+    _formulaData.g[9] = doc[PARAM_FORMULA_DATA]["g10"].as<double>();
 
   /*if( doc[PARAM_CONFIG_VER].isNull() ) {
     // If this parameter is missing we need to reset the gyrocalibaration due to
@@ -333,7 +359,7 @@ void Config::checkFileSystem() {
 //
 // Save json document to file
 //
-bool HardwareConfig::saveFile() {
+bool AdvancedConfig::saveFile() {
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   Log.verbose(F("CFG : Saving hardware configuration to file." CR));
 #endif
@@ -352,8 +378,14 @@ bool HardwareConfig::saveFile() {
   doc[PARAM_HW_GYRO_READ_DELAY] = this->getGyroReadDelay();
   doc[PARAM_HW_GYRO_MOVING_THREASHOLD] = this->getGyroSensorMovingThreashold();
   doc[PARAM_HW_FORMULA_DEVIATION] = this->getMaxFormulaCreationDeviation();
-  doc[PARAM_HW_WIFI_PORTALTIMEOUT] = this->getWifiPortalTimeout();
+  doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = this->getWifiPortalTimeout();
+  doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = this->getWifiConnectTimeout();
   doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = this->getPushIntervalHttp1();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = this->getPushIntervalHttp2();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = this->getPushIntervalHttp3();
+  doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
+  doc[PARAM_HW_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -371,7 +403,7 @@ bool HardwareConfig::saveFile() {
 //
 // Load config file from disk
 //
-bool HardwareConfig::loadFile() {
+bool AdvancedConfig::loadFile() {
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   Log.verbose(F("CFG : Loading hardware configuration from file." CR));
 #endif
@@ -424,10 +456,22 @@ bool HardwareConfig::loadFile() {
   if (!doc[PARAM_HW_FORMULA_CALIBRATION_TEMP].isNull())
     this->SetDefaultCalibrationTemp(
         doc[PARAM_HW_FORMULA_CALIBRATION_TEMP].as<float>());
-  if (!doc[PARAM_HW_WIFI_PORTALTIMEOUT].isNull())
-    this->setWifiPortalTimeout(doc[PARAM_HW_WIFI_PORTALTIMEOUT].as<int>());
+  if (!doc[PARAM_HW_WIFI_PORTAL_TIMEOUT].isNull())
+    this->setWifiPortalTimeout(doc[PARAM_HW_WIFI_PORTAL_TIMEOUT].as<int>());
+  if (!doc[PARAM_HW_WIFI_CONNECT_TIMEOUT].isNull())
+    this->setWifiConnectTimeout(doc[PARAM_HW_WIFI_CONNECT_TIMEOUT].as<int>());
   if (!doc[PARAM_HW_PUSH_TIMEOUT].isNull())
     this->setPushTimeout(doc[PARAM_HW_PUSH_TIMEOUT].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP1].isNull())
+    this->setPushIntervalHttp1(doc[PARAM_HW_PUSH_INTERVAL_HTTP1].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP2].isNull())
+    this->setPushIntervalHttp2(doc[PARAM_HW_PUSH_INTERVAL_HTTP2].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP3].isNull())
+    this->setPushIntervalHttp3(doc[PARAM_HW_PUSH_INTERVAL_HTTP3].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_INFLUX].isNull())
+    this->setPushIntervalInflux(doc[PARAM_HW_PUSH_INTERVAL_INFLUX].as<int>());
+  if (!doc[PARAM_HW_PUSH_INTERVAL_MQTT].isNull())
+    this->setPushIntervalMqtt(doc[PARAM_HW_PUSH_INTERVAL_MQTT].as<int>());
 
   Log.notice(F("CFG : Configuration file " CFG_HW_FILENAME " loaded." CR));
   return true;

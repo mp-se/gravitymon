@@ -37,7 +37,6 @@ json = { "id": id,
          "http-push-h2": "",
          "http-push2-h1": "Content-Type: application/json",
          "http-push2-h2": "",
-         "brewfather-push": "",                         # Brewfather URL
          "influxdb2-push": "",                          # InfluxDB2 settings
          "influxdb2-org": "",
          "influxdb2-bucket": "",

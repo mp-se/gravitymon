@@ -498,8 +498,6 @@ void WebServerHandler::webHandleConfigPush() {
     myConfig.setHttp2Header(_server->arg(PARAM_PUSH_HTTP2_H2).c_str(), 1);
   if (_server->hasArg(PARAM_PUSH_HTTP3))
     myConfig.setHttp3Url(_server->arg(PARAM_PUSH_HTTP3).c_str());
-  if (_server->hasArg(PARAM_PUSH_BREWFATHER))
-    myConfig.setBrewfatherPushUrl(_server->arg(PARAM_PUSH_BREWFATHER).c_str());
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2))
     myConfig.setInfluxDb2PushUrl(_server->arg(PARAM_PUSH_INFLUXDB2).c_str());
   if (_server->hasArg(PARAM_PUSH_INFLUXDB2_ORG))
@@ -624,18 +622,18 @@ void WebServerHandler::webHandleConfigHardware() {
 }
 
 //
-// Update device parameters.
+// Update advanced settings.
 //
-void WebServerHandler::webHandleDeviceParam() {
-  LOG_PERF_START("webserver-api-device-param");
+void WebServerHandler::webHandleConfigAdvancedWrite() {
+  LOG_PERF_START("webserver-api-config-advanced");
   String id = _server->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/device/param(post)." CR));
+  Log.notice(F("WEB : webServer callback for /api/config/advaced(post)." CR));
 
   if (!id.equalsIgnoreCase(myConfig.getID())) {
     Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
               myConfig.getID());
     _server->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-device-param");
+    LOG_PERF_STOP("webserver-api-config-advanced");
     return;
   }
 
@@ -643,41 +641,65 @@ void WebServerHandler::webHandleDeviceParam() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  for (int i = 0; i < _server->args(); i++) {
-    String s = _server->arg(i);
+  if (_server->hasArg(PARAM_HW_GYRO_READ_COUNT))
+    myAdvancedConfig.setGyroReadCount(_server->arg(PARAM_HW_GYRO_READ_COUNT).toInt());
+  if (_server->hasArg(PARAM_HW_GYRO_READ_DELAY))
+    myAdvancedConfig.setGyroReadDelay(_server->arg(PARAM_HW_GYRO_READ_DELAY).toInt());
+  if (_server->hasArg(PARAM_HW_GYRO_MOVING_THREASHOLD))
+    myAdvancedConfig.setGyroSensorMovingThreashold(_server->arg(PARAM_HW_GYRO_MOVING_THREASHOLD).toInt());
+  if (_server->hasArg(PARAM_HW_FORMULA_DEVIATION))
+    myAdvancedConfig.setMaxFormulaCreationDeviation(_server->arg(PARAM_HW_FORMULA_DEVIATION).toFloat());
+  if (_server->hasArg(PARAM_HW_FORMULA_CALIBRATION_TEMP))
+    myAdvancedConfig.SetDefaultCalibrationTemp(_server->arg(PARAM_HW_FORMULA_CALIBRATION_TEMP).toFloat());
+  if (_server->hasArg(PARAM_HW_WIFI_PORTAL_TIMEOUT))
+    myAdvancedConfig.setWifiPortalTimeout(_server->arg(PARAM_HW_WIFI_PORTAL_TIMEOUT).toInt());
+  if (_server->hasArg(PARAM_HW_WIFI_CONNECT_TIMEOUT))
+    myAdvancedConfig.setWifiConnectTimeout(_server->arg(PARAM_HW_WIFI_CONNECT_TIMEOUT).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_TIMEOUT))
+    myAdvancedConfig.setPushTimeout(_server->arg(PARAM_HW_PUSH_TIMEOUT).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP1))
+    myAdvancedConfig.setPushIntervalHttp1(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP1).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP2))
+    myAdvancedConfig.setPushIntervalHttp2(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP2).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP3))
+    myAdvancedConfig.setPushIntervalHttp3(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP3).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_INFLUX))
+    myAdvancedConfig.setPushIntervalInflux(_server->arg(PARAM_HW_PUSH_INTERVAL_INFLUX).toInt());
+  if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_MQTT))
+    myAdvancedConfig.setPushIntervalMqtt(_server->arg(PARAM_HW_PUSH_INTERVAL_MQTT).toInt());
 
-    if (_server->argName(i).equalsIgnoreCase(PARAM_HW_GYRO_READ_COUNT))
-      myHardwareConfig.setGyroReadCount(s.toInt());
-    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_GYRO_READ_DELAY))
-      myHardwareConfig.setGyroReadDelay(s.toInt());
-    else if (_server->argName(i).equalsIgnoreCase(
-                 PARAM_HW_GYRO_MOVING_THREASHOLD))
-      myHardwareConfig.setGyroSensorMovingThreashold(s.toInt());
-    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_FORMULA_DEVIATION))
-      myHardwareConfig.setMaxFormulaCreationDeviation(s.toFloat());
-    else if (_server->argName(i).equalsIgnoreCase(
-                 PARAM_HW_FORMULA_CALIBRATION_TEMP))
-      myHardwareConfig.SetDefaultCalibrationTemp(s.toFloat());
-    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_WIFI_PORTALTIMEOUT))
-      myHardwareConfig.setWifiPortalTimeout(s.toInt());
-    else if (_server->argName(i).equalsIgnoreCase(PARAM_HW_PUSH_TIMEOUT))
-      myHardwareConfig.setPushTimeout(s.toInt());
-  }
+  myAdvancedConfig.saveFile();
+  _server->sendHeader("Location", "/config.htm#collapseAdvanced", true);
+  _server->send(302, "text/plain", "Advanced config updated");
+  LOG_PERF_STOP("webserver-api-config-advanced");
+}
 
-  myHardwareConfig.saveFile();
 
-  // Return the current configuration.
+//
+// Read advanced settings
+//
+void WebServerHandler::webHandleConfigAdvancedRead() {
+  LOG_PERF_START("webserver-api-config-advanced");
+  Log.notice(F("WEB : webServer callback for /api/config/advanced(get)." CR));
+
   DynamicJsonDocument doc(512);
 
-  doc[PARAM_HW_GYRO_READ_COUNT] = myHardwareConfig.getGyroReadCount();
-  doc[PARAM_HW_GYRO_READ_DELAY] = myHardwareConfig.getGyroReadDelay();
+  doc[PARAM_HW_GYRO_READ_COUNT] = myAdvancedConfig.getGyroReadCount();
+  doc[PARAM_HW_GYRO_READ_DELAY] = myAdvancedConfig.getGyroReadDelay();
   doc[PARAM_HW_GYRO_MOVING_THREASHOLD] =
-      myHardwareConfig.getGyroSensorMovingThreashold();
+      myAdvancedConfig.getGyroSensorMovingThreashold();
   doc[PARAM_HW_FORMULA_DEVIATION] =
-      myHardwareConfig.getMaxFormulaCreationDeviation();
-  doc[PARAM_HW_WIFI_PORTALTIMEOUT] = myHardwareConfig.getWifiPortalTimeout();
+      myAdvancedConfig.getMaxFormulaCreationDeviation();
+  doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = myAdvancedConfig.getWifiPortalTimeout();
+  doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = myAdvancedConfig.getWifiConnectTimeout();
+  doc[PARAM_HW_PUSH_TIMEOUT] = myAdvancedConfig.getPushTimeout();
   doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
-      myHardwareConfig.getDefaultCalibrationTemp();
+      myAdvancedConfig.getDefaultCalibrationTemp();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = myAdvancedConfig.getPushIntervalHttp1();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = myAdvancedConfig.getPushIntervalHttp2();
+  doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = myAdvancedConfig.getPushIntervalHttp3();
+  doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = myAdvancedConfig.getPushIntervalInflux();
+  doc[PARAM_HW_PUSH_INTERVAL_MQTT] = myAdvancedConfig.getPushIntervalMqtt();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -688,7 +710,7 @@ void WebServerHandler::webHandleDeviceParam() {
   out.reserve(512);
   serializeJson(doc, out);
   _server->send(200, "application/json", out.c_str());
-  LOG_PERF_STOP("webserver-api-device-param");
+  LOG_PERF_STOP("webserver-api-config-advanced");
 }
 
 //
@@ -698,7 +720,7 @@ void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_START("webserver-api-formula-read");
   Log.notice(F("WEB : webServer callback for /api/formula(get)." CR));
 
-  DynamicJsonDocument doc(250);
+  DynamicJsonDocument doc(512);
   const RawFormulaData& fd = myConfig.getFormulaData();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -731,6 +753,11 @@ void WebServerHandler::webHandleFormulaRead() {
   doc["a3"] = reduceFloatPrecision(fd.a[2], 2);
   doc["a4"] = reduceFloatPrecision(fd.a[3], 2);
   doc["a5"] = reduceFloatPrecision(fd.a[4], 2);
+  doc["a6"] = reduceFloatPrecision(fd.a[5], 2);
+  doc["a7"] = reduceFloatPrecision(fd.a[6], 2);
+  doc["a8"] = reduceFloatPrecision(fd.a[7], 2);
+  doc["a9"] = reduceFloatPrecision(fd.a[8], 2);
+  doc["a10"] = reduceFloatPrecision(fd.a[9], 2);
 
   if (myConfig.isGravityPlato()) {
     doc["g1"] = reduceFloatPrecision(convertToPlato(fd.g[0]), 1);
@@ -738,12 +765,22 @@ void WebServerHandler::webHandleFormulaRead() {
     doc["g3"] = reduceFloatPrecision(convertToPlato(fd.g[2]), 1);
     doc["g4"] = reduceFloatPrecision(convertToPlato(fd.g[3]), 1);
     doc["g5"] = reduceFloatPrecision(convertToPlato(fd.g[4]), 1);
+    doc["g6"] = reduceFloatPrecision(convertToPlato(fd.g[5]), 1);
+    doc["g7"] = reduceFloatPrecision(convertToPlato(fd.g[6]), 1);
+    doc["g8"] = reduceFloatPrecision(convertToPlato(fd.g[7]), 1);
+    doc["g9"] = reduceFloatPrecision(convertToPlato(fd.g[8]), 1);
+    doc["g10"] = reduceFloatPrecision(convertToPlato(fd.g[9]), 1);
   } else {
     doc["g1"] = reduceFloatPrecision(fd.g[0], 4);
     doc["g2"] = reduceFloatPrecision(fd.g[1], 4);
     doc["g3"] = reduceFloatPrecision(fd.g[2], 4);
     doc["g4"] = reduceFloatPrecision(fd.g[3], 4);
     doc["g5"] = reduceFloatPrecision(fd.g[4], 4);
+    doc["g6"] = reduceFloatPrecision(fd.g[5], 4);
+    doc["g7"] = reduceFloatPrecision(fd.g[6], 4);
+    doc["g8"] = reduceFloatPrecision(fd.g[7], 4);
+    doc["g9"] = reduceFloatPrecision(fd.g[8], 4);
+    doc["g10"] = reduceFloatPrecision(fd.g[9], 4);
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -792,10 +829,6 @@ void WebServerHandler::webHandleConfigFormatWrite() {
   } else if (_server->hasArg(PARAM_FORMAT_MQTT)) {
     success = writeFile(TPL_FNAME_MQTT, _server->arg(PARAM_FORMAT_MQTT));
   }
-  /*else if (_server->hasArg(PARAM_FORMAT_BREWFATHER)) {
-    success = writeFile(TPL_FNAME_BREWFATHER,
-  _server->arg(PARAM_FORMAT_BREWFATHER));
-  }*/
 
   if (success) {
     _server->sendHeader("Location", "/format.htm", true);
@@ -841,11 +874,7 @@ void WebServerHandler::webHandleTestPush() {
   PushTarget push;
   bool enabled = false;
 
-  if (!type.compareTo(PARAM_FORMAT_BREWFATHER) &&
-      myConfig.isBrewfatherActive()) {
-    push.sendBrewfather(engine);
-    enabled = true;
-  } else if (!type.compareTo(PARAM_FORMAT_HTTP1) && myConfig.isHttpActive()) {
+  if (!type.compareTo(PARAM_FORMAT_HTTP1) && myConfig.isHttpActive()) {
     push.sendHttp1(engine, myConfig.isHttpSSL());
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_HTTP2) && myConfig.isHttp2Active()) {
@@ -856,7 +885,7 @@ void WebServerHandler::webHandleTestPush() {
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_INFLUXDB) &&
              myConfig.isInfluxDb2Active()) {
-    push.sendInfluxDb2(engine);
+    push.sendInfluxDb2(engine, myConfig.isInfluxSSL());
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_MQTT) && myConfig.isMqttActive()) {
     push.sendMqtt(engine, myConfig.isMqttSSL());
@@ -955,12 +984,6 @@ void WebServerHandler::webHandleConfigFormatRead() {
   else
     doc[PARAM_FORMAT_HTTP3] = urlencode(String(&iHttpGetFormat[0]));
 
-  /*s = readFile(TPL_FNAME_BREWFATHER);
-  if (s.length())
-    doc[PARAM_FORMAT_BREWFATHER] = urlencode(s);
-  else
-    doc[PARAM_FORMAT_BREWFATHER] = urlencode(&brewfatherFormat[0]);*/
-
   s = readFile(TPL_FNAME_INFLUXDB);
   if (s.length())
     doc[PARAM_FORMAT_INFLUXDB] = urlencode(s);
@@ -1011,6 +1034,11 @@ void WebServerHandler::webHandleFormulaWrite() {
   fd.a[2] = _server->arg("a3").toDouble();
   fd.a[3] = _server->arg("a4").toDouble();
   fd.a[4] = _server->arg("a5").toDouble();
+  fd.a[5] = _server->arg("a6").toDouble();
+  fd.a[6] = _server->arg("a7").toDouble();
+  fd.a[7] = _server->arg("a8").toDouble();
+  fd.a[8] = _server->arg("a9").toDouble();
+  fd.a[9] = _server->arg("a10").toDouble();
 
   if (myConfig.isGravityPlato()) {
     fd.g[0] = convertToSG(_server->arg("g1").toDouble());
@@ -1018,12 +1046,22 @@ void WebServerHandler::webHandleFormulaWrite() {
     fd.g[2] = convertToSG(_server->arg("g3").toDouble());
     fd.g[3] = convertToSG(_server->arg("g4").toDouble());
     fd.g[4] = convertToSG(_server->arg("g5").toDouble());
+    fd.g[5] = convertToSG(_server->arg("g6").toDouble());
+    fd.g[6] = convertToSG(_server->arg("g7").toDouble());
+    fd.g[7] = convertToSG(_server->arg("g8").toDouble());
+    fd.g[8] = convertToSG(_server->arg("g9").toDouble());
+    fd.g[9] = convertToSG(_server->arg("g10").toDouble());
   } else {
     fd.g[0] = _server->arg("g1").toDouble();
     fd.g[1] = _server->arg("g2").toDouble();
     fd.g[2] = _server->arg("g3").toDouble();
     fd.g[3] = _server->arg("g4").toDouble();
     fd.g[4] = _server->arg("g5").toDouble();
+    fd.g[5] = _server->arg("g6").toDouble();
+    fd.g[6] = _server->arg("g7").toDouble();
+    fd.g[7] = _server->arg("g8").toDouble();
+    fd.g[8] = _server->arg("g9").toDouble();
+    fd.g[9] = _server->arg("g10").toDouble();
   }
 
   myConfig.setFormulaData(fd);
@@ -1231,9 +1269,12 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/config/format", HTTP_POST,
               std::bind(&WebServerHandler::webHandleConfigFormatWrite,
                         this));  // Change template formats
-  _server->on("/api/device/param", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleDeviceParam,
-                        this));  // Change device params
+  _server->on("/api/config/advanced", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleConfigAdvancedRead,
+                        this));  // Read advanced settings
+  _server->on("/api/config/advanced", HTTP_POST,
+              std::bind(&WebServerHandler::webHandleConfigAdvancedWrite,
+                        this));  // Change advanced params
   _server->on("/api/test/push", HTTP_GET,
               std::bind(&WebServerHandler::webHandleTestPush,
                         this));  //

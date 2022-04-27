@@ -47,40 +47,74 @@ struct RawGyroData {
 };
 
 // Used for holding formulaData (used for calculating formula on device)
+#define FORMULA_DATA_SIZE 10
+
 struct RawFormulaData {
-  double a[5];
-  double g[5];
+  double a[FORMULA_DATA_SIZE];
+  double g[FORMULA_DATA_SIZE];
 };
 
-class HardwareConfig {
+class AdvancedConfig {
  private:
   int _wifiPortalTimeout = 120;
+  int _wifiConnectTimeout = 20;
   float _maxFormulaCreationDeviation = 1.6;
   float _defaultCalibrationTemp = 20.0;
   int _gyroSensorMovingThreashold = 500;
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
   int _pushTimeout = 10;      // seconds
+  int _pushIntervalHttp1 = 0;
+  int _pushIntervalHttp2 = 0;
+  int _pushIntervalHttp3 = 0;
+  int _pushIntervalInflux = 0;
+  int _pushIntervalMqtt = 0;
 
  public:
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
   void setWifiPortalTimeout(int t) { _wifiPortalTimeout = t; }
+
+  int getWifiConnectTimeout() { return _wifiConnectTimeout; }
+  void setWifiConnectTimeout(int t) { _wifiConnectTimeout = t; }
+
   float getMaxFormulaCreationDeviation() {
     return _maxFormulaCreationDeviation;
   }
   void setMaxFormulaCreationDeviation(float f) {
     _maxFormulaCreationDeviation = f;
   }
+
   float getDefaultCalibrationTemp() { return _defaultCalibrationTemp; }
   void SetDefaultCalibrationTemp(float t) { _defaultCalibrationTemp = t; }
+
   int getGyroSensorMovingThreashold() { return _gyroSensorMovingThreashold; }
   void setGyroSensorMovingThreashold(int t) { _gyroSensorMovingThreashold = t; }
+
   int getGyroReadCount() { return _gyroReadCount; }
   void setGyroReadCount(int c) { _gyroReadCount = c; }
+
   int getGyroReadDelay() { return _gyroReadDelay; }
   void setGyroReadDelay(int d) { _gyroReadDelay = d; }
+
   int getPushTimeout() { return _pushTimeout; }
   void setPushTimeout(int t) { _pushTimeout = t; }
+
+  int getPushIntervalHttp1() { return _pushIntervalHttp1; }
+  void setPushIntervalHttp1(int t) { _pushIntervalHttp1 = t; }
+
+  int getPushIntervalHttp2() { return _pushIntervalHttp2; }
+  void setPushIntervalHttp2(int t) { _pushIntervalHttp2 = t; }
+
+  int getPushIntervalHttp3() { return _pushIntervalHttp3; }
+  void setPushIntervalHttp3(int t) { _pushIntervalHttp3 = t; }
+
+  int getPushIntervalInflux() { return _pushIntervalInflux; }
+  void setPushIntervalInflux(int t) { _pushIntervalInflux = t; }
+
+  int getPushIntervalMqtt() { return _pushIntervalMqtt; }
+  void setPushIntervalMqtt(int t) { _pushIntervalMqtt = t; }
+
+  bool isPushIntervalActive() { return (_pushIntervalHttp1+_pushIntervalHttp2+_pushIntervalHttp3+_pushIntervalInflux+_pushIntervalMqtt) == 0 ? false : true; }
 
   bool saveFile();
   bool loadFile();
@@ -106,8 +140,6 @@ class Config {
   String _wifiPASS = "";
 
   // Push target settings
-  String _brewfatherPushUrl = "";
-
   String _token = "";
   String _token2 = "";
 
@@ -178,16 +210,6 @@ class Config {
     _saveNeeded = true;
   }
 
-  // Brewfather
-  const char* getBrewfatherPushUrl() { return _brewfatherPushUrl.c_str(); }
-  void setBrewfatherPushUrl(String s) {
-    _brewfatherPushUrl = s;
-    _saveNeeded = true;
-  }
-  bool isBrewfatherActive() {
-    return _brewfatherPushUrl.length() ? true : false;
-  }
-
   // Token parameter
   const char* getToken() { return _token.c_str(); }
   void setToken(String s) {
@@ -242,6 +264,7 @@ class Config {
     _saveNeeded = true;
   }
   bool isInfluxDb2Active() { return _influxDb2Url.length() ? true : false; }
+  bool isInfluxSSL() { return _influxDb2Url.startsWith("https://"); }
   const char* getInfluxDb2PushOrg() { return _influxDb2Org.c_str(); }
   void setInfluxDb2PushOrg(String s) {
     _influxDb2Org = s;
@@ -361,7 +384,7 @@ class Config {
   bool isBLEActive() { return _colorBLE.length() ? true : false; }
   bool isWifiPushActive() {
     return (isHttpActive() || isHttp2Active() || isHttp3Active() ||
-            isBrewfatherActive() || isInfluxDb2Active() || isMqttActive())
+            isInfluxDb2Active() || isMqttActive())
                ? true
                : false;
   }
@@ -388,7 +411,7 @@ class Config {
 };
 
 extern Config myConfig;
-extern HardwareConfig myHardwareConfig;
+extern AdvancedConfig myAdvancedConfig;
 
 #endif  // SRC_CONFIG_HPP_
 

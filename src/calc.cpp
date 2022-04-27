@@ -33,14 +33,16 @@ SOFTWARE.
 int createFormula(RawFormulaData &fd, char *formulaBuffer,
                   int formulaBufferSize, int order) {
   int noAngles = 0;
+  RawFormulaData fd2;
 
-  // Check how many valid values we have got
-  if (fd.a[0] > 0 && fd.a[1] > 0 && fd.a[2] > 0 && fd.a[3] > 0 && fd.a[4] > 0)
-    noAngles = 5;
-  else if (fd.a[0] > 0 && fd.a[1] > 0 && fd.a[2] > 0 && fd.a[3] > 0)
-    noAngles = 4;
-  else if (fd.a[0] > 0 && fd.a[1] > 0 && fd.a[2] > 0)
-    noAngles = 3;
+  // Check how many valid values we have got and make sure we have a full series.
+  for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
+    if (fd.a[i]) {
+      fd2.a[noAngles] = fd.a[i];
+      fd2.g[noAngles] = fd.g[i];
+      noAngles++;
+    }
+  }
 
 #if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
   Log.verbose(
@@ -48,19 +50,19 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
       order, noAngles);
 #endif
 
-  if (!noAngles) {
+  if (noAngles <3) {
     ErrorFileLog errLog;
     errLog.addEntry(F("CALC: Not enough values for deriving formula"));
     return ERR_FORMULA_NOTENOUGHVALUES;
   } else {
     double coeffs[order + 1];
-    int ret = fitCurve(order, noAngles, fd.a, fd.g,
+    int ret = fitCurve(order, noAngles, fd2.a, fd2.g,
                        sizeof(coeffs) / sizeof(double), coeffs);
 
     // Returned value is 0 if no error
     if (ret == 0) {
 #if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
-      Log.verbose(F("CALC: Finshied processing data points." CR));
+      Log.verbose(F("CALC: Finshied processing data points, order = %d." CR), order);
 #endif
 
       // Print the formula based on 'order'
@@ -93,12 +95,10 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
         double dev = (g - fd.g[i]) < 0 ? (fd.g[i] - g) : (g - fd.g[i]);
 
         // If the deviation is more than 2 degress we mark it as failed.
-        if (dev * 1000 > myHardwareConfig.getMaxFormulaCreationDeviation()) {
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+        if (dev * 1000 > myAdvancedConfig.getMaxFormulaCreationDeviation()) {
           char s[20];
           snprintf(&s[0], sizeof(s), "%.8f", dev);
-          Log.verbose(F("CALC: Deviation is: %s" CR), &s[0]);
-#endif
+          Log.error(F("CALC: Deviation to large: %s" CR), &s[0]);
           valid = false;
         }
       }

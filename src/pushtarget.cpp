@@ -32,6 +32,74 @@ SOFTWARE.
 #include <pushtarget.hpp>
 #include <wifi.hpp>
 
+#define PUSHINT_FILENAME "/push.dat"
+
+//
+// Decrease counters
+//
+void PushIntervalTracker::update(const int index, const int defaultValue) {
+  if (_counters[index] <= 0)
+    _counters[index] = defaultValue;
+  else 
+    _counters[index]--;
+}
+
+//
+// Load data from file
+//
+void PushIntervalTracker::load() {
+  File intFile = LittleFS.open(PUSHINT_FILENAME, "r");
+  int i = 0;
+
+  if (intFile) {
+    String line = intFile.readStringUntil('\n');
+    Log.notice(F("PUSH: Read interval tracker %s." CR), line.c_str());
+
+    char temp[80];
+    char *s, *p = &temp[0];
+    int i = 0;
+
+    snprintf(&temp[0], sizeof(temp), "%s", line.c_str());
+    while ((s = strtok_r(p, ":", &p)) != NULL) {
+      _counters[i++] = atoi(s);
+    }
+
+    intFile.close();
+  }
+ 
+#if !defined(PUSH_DISABLE_LOGGING)
+  Log.verbose(F("PUSH: Parsed trackers: %d:%d:%d:%d:%d." CR), _counters[0], _counters[1], _counters[2], _counters[3], _counters[4] );
+#endif
+}
+
+//
+// Update and save counters
+//
+void PushIntervalTracker::save() {
+  update(0, myAdvancedConfig.getPushIntervalHttp1());
+  update(1, myAdvancedConfig.getPushIntervalHttp2());
+  update(2, myAdvancedConfig.getPushIntervalHttp3());
+  update(3, myAdvancedConfig.getPushIntervalInflux());
+  update(4, myAdvancedConfig.getPushIntervalMqtt());
+
+  // If this feature is disabled we skip saving the file
+  if (!myAdvancedConfig.isPushIntervalActive()) {
+#if !defined(PUSH_DISABLE_LOGGING)
+    Log.notice(F("PUSH: Variabled push interval disabled." CR));
+#endif
+    LittleFS.remove(PUSHINT_FILENAME);
+  } else {
+    Log.notice(F("PUSH: Variabled push interval enabled, updating counters." CR));
+    File intFile = LittleFS.open(PUSHINT_FILENAME, "w");
+
+    if (intFile) {
+      // Format=http1:http2:http3:influx:mqtt
+      intFile.printf("%d:%d:%d:%d:%d\n", _counters[0], _counters[1], _counters[2], _counters[3], _counters[4] );
+      intFile.close();
+    }
+  }
+}
+
 //
 // Send the data to targets
 //
@@ -44,47 +112,76 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
   TemplatingEngine engine;
   engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime);
 
-  if (myConfig.isBrewfatherActive()) {
-    LOG_PERF_START("push-brewfather");
-    sendBrewfather(engine);
-    LOG_PERF_STOP("push-brewfather");
-  }
+  PushIntervalTracker intDelay;
+  intDelay.load();
 
-  if (myConfig.isHttpActive()) {
+  if (myConfig.isHttpActive() && intDelay.useHttp1()) {
     LOG_PERF_START("push-http");
     sendHttpPost(engine, myConfig.isHttpSSL(), 0);
     LOG_PERF_STOP("push-http");
   }
 
-  if (myConfig.isHttp2Active()) {
+  if (myConfig.isHttp2Active() && intDelay.useHttp2()) {
     LOG_PERF_START("push-http2");
     sendHttpPost(engine, myConfig.isHttp2SSL(), 1);
     LOG_PERF_STOP("push-http2");
   }
 
-  if (myConfig.isHttp3Active()) {
+  if (myConfig.isHttp3Active() && intDelay.useHttp3()) {
     LOG_PERF_START("push-http3");
     sendHttpGet(engine, myConfig.isHttp3SSL());
     LOG_PERF_STOP("push-http3");
   }
 
-  if (myConfig.isInfluxDb2Active()) {
+  if (myConfig.isInfluxDb2Active() && intDelay.useInflux()) {
     LOG_PERF_START("push-influxdb2");
-    sendInfluxDb2(engine);
+    sendInfluxDb2(engine, myConfig.isInfluxSSL());
     LOG_PERF_STOP("push-influxdb2");
   }
 
-  if (myConfig.isMqttActive()) {
+  if (myConfig.isMqttActive() && intDelay.useMqtt()) {
     LOG_PERF_START("push-mqtt");
     sendMqtt(engine, myConfig.isMqttSSL());
     LOG_PERF_STOP("push-mqtt");
   }
+
+  intDelay.save();
+}
+
+//
+// Check if the server can reduce the buffer size to save memory (ESP8266 only)
+//
+void PushTarget::probeMaxFragement( String& serverPath ) {
+#if defined(ESP8266) // Looks like this is feature is not supported by influxdb
+  // Format: http:://servername:port/path
+  int port = 443;
+  String host =
+      serverPath.substring(8);  // remove the prefix or the probe will fail,
+                                // it needs a pure host name.
+  // Remove the path if it exist
+  int idx = host.indexOf("/");
+  if (idx != -1) host = host.substring(0, idx);
+
+  // If a server port is defined, lets extract that part
+  idx = host.indexOf(":");
+  if (idx != -1) {
+    String p = host.substring(idx+1);
+    port = p.toInt();
+    host = host.substring(0, idx);
+  }
+
+  Log.notice(F("PUSH: Probing server to max fragment %s:%d" CR), host.c_str(), port);
+  if (_wifiSecure.probeMaxFragmentLength(host, port, 512)) {
+    Log.notice(F("PUSH: Server supports smaller SSL buffer." CR));
+    _wifiSecure.setBufferSizes(512, 512);
+  }
+#endif
 }
 
 //
 // Send to influx db v2
 //
-void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
+void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to influxdb2." CR));
 #endif
@@ -97,17 +194,27 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
       "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
   String doc = engine.create(TemplatingEngine::TEMPLATE_INFLUX);
 
-  _http.begin(_wifi, serverPath);
-  _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
-
 #if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
   Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
   Log.verbose(F("PUSH: data %s." CR), doc.c_str());
 #endif
 
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
-  _http.addHeader(F("Authorization"), auth.c_str());
-  _lastCode = _http.POST(doc);
+
+  if (isSecure) {
+    Log.notice(F("PUSH: InfluxDB, SSL enabled without validation." CR));
+    _wifiSecure.setInsecure();
+    probeMaxFragement( serverPath );
+    _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _httpSecure.begin(_wifiSecure, serverPath);
+    _httpSecure.addHeader(F("Authorization"), auth.c_str());
+    _lastCode = _httpSecure.POST(doc);
+  } else  {
+    _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _http.begin(_wifi, serverPath);
+    _http.addHeader(F("Authorization"), auth.c_str());
+    _lastCode = _http.POST(doc);
+  }
 
   if (_lastCode == 204) {
     _lastSuccess = true;
@@ -117,52 +224,18 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine) {
     errLog.addEntry("PUSH: Influxdb push failed response=" + String(_lastCode));
   }
 
-  _http.end();
-  _wifi.stop();
-  tcp_cleanup();
-}
-
-//
-// Send data to brewfather
-//
-void PushTarget::sendBrewfather(TemplatingEngine& engine) {
-#if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to brewfather" CR));
-#endif
-  _lastCode = 0;
-  _lastSuccess = false;
-
-  String serverPath = myConfig.getBrewfatherPushUrl();
-  String doc = engine.create(TemplatingEngine::TEMPLATE_BREWFATHER);
-
-  _http.begin(_wifi, serverPath);
-  _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
-
-#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
-  Log.verbose(F("PUSH: json %s." CR), doc.c_str());
-#endif
-
-  _http.addHeader(F("Content-Type"), F("application/json"));
-  _lastCode = _http.POST(doc);
-
-  if (_lastCode == 200) {
-    _lastSuccess = true;
-    Log.notice(F("PUSH: Brewfather push successful, response=%d" CR),
-               _lastCode);
+  if (isSecure) {
+    _httpSecure.end();
+    _wifiSecure.stop();
   } else {
-    ErrorFileLog errLog;
-    errLog.addEntry("PUSH: Brewfather push failed response=" +
-                    String(_lastCode));
+    _http.end();
+    _wifi.stop();
   }
-
-  _http.end();
-  _wifi.stop();
   tcp_cleanup();
 }
 
 //
-//
+// Add HTTP header to request
 //
 void PushTarget::addHttpHeader(HTTPClient& http, String header) {
   if (!header.length()) return;
@@ -211,22 +284,9 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
   if (isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
-
-#if defined(ESP8266)
-    String host =
-        serverPath.substring(8);  // remove the prefix or the probe will fail,
-                                  // it needs a pure host name.
-    int idx = host.indexOf("/");
-    if (idx != -1) host = host.substring(0, idx);
-
-    if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
-      Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
-      _wifiSecure.setBufferSizes(512, 512);
-    }
-#endif
-
+    probeMaxFragement( serverPath );
+    _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
-    _httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
     if (index == 0) {
       addHttpHeader(_httpSecure, myConfig.getHttpHeader(0));
@@ -238,8 +298,8 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
 
     _lastCode = _httpSecure.POST(doc);
   } else {
+    _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _http.begin(_wifi, serverPath);
-    _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
 
     if (index == 0) {
       addHttpHeader(_http, myConfig.getHttpHeader(0));
@@ -293,26 +353,13 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
   if (isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
-
-#if defined(ESP8266)
-    String host =
-        serverPath.substring(8);  // remove the prefix or the probe will fail,
-                                  // it needs a pure host name.
-    int idx = host.indexOf("/");
-    if (idx != -1) host = host.substring(0, idx);
-
-    if (_wifiSecure.probeMaxFragmentLength(host, 443, 512)) {
-      Log.notice(F("PUSH: HTTP server supports smaller SSL buffer." CR));
-      _wifiSecure.setBufferSizes(512, 512);
-    }
-#endif
-
+    probeMaxFragement( serverPath );
+    _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
-    _httpSecure.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
     _lastCode = _httpSecure.GET();
   } else {
+    _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _http.begin(_wifi, serverPath);
-    _http.setTimeout(myHardwareConfig.getPushTimeout() * 1000);
     _lastCode = _http.GET();
   }
 
@@ -360,8 +407,10 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
     }
 #endif
 
+    mqtt.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     mqtt.begin(host.c_str(), port, _wifiSecure);
   } else {
+    mqtt.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     mqtt.begin(host.c_str(), port, _wifi);
   }
 
@@ -372,9 +421,6 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
   Log.verbose(F("PUSH: url %s." CR), myConfig.getMqttUrl());
   Log.verbose(F("PUSH: data %s." CR), doc.c_str());
 #endif
-
-  // Send MQQT message(s)
-  mqtt.setTimeout(myHardwareConfig.getPushTimeout());  // 10 seconds timeout
 
   int lines = 1;
   // Find out how many lines are in the document. Each line is one

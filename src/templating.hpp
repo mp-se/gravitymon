@@ -57,13 +57,11 @@ SOFTWARE.
 #define TPL_FNAME_HTTP1 "/http-1.tpl"
 #define TPL_FNAME_HTTP2 "/http-2.tpl"
 #define TPL_FNAME_HTTP3 "/http-3.tpl"
-// #define TPL_FNAME_BREWFATHER "/brewfather.tpl"
 #define TPL_FNAME_INFLUXDB "/influxdb.tpl"
 #define TPL_FNAME_MQTT "/mqtt.tpl"
 
 extern const char iSpindleFormat[] PROGMEM;
 extern const char iHttpGetFormat[] PROGMEM;
-extern const char brewfatherFormat[] PROGMEM;
 extern const char influxDbFormat[] PROGMEM;
 extern const char mqttFormat[] PROGMEM;
 
@@ -133,9 +131,8 @@ class TemplatingEngine {
     TEMPLATE_HTTP1 = 0,
     TEMPLATE_HTTP2 = 1,
     TEMPLATE_HTTP3 = 2,
-    TEMPLATE_BREWFATHER = 3,
-    TEMPLATE_INFLUX = 4,
-    TEMPLATE_MQTT = 5
+    TEMPLATE_INFLUX = 3,
+    TEMPLATE_MQTT = 4
   };
 
   void initialize(float angle, float gravitySG, float corrGravitySG,

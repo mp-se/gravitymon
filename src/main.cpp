@@ -60,6 +60,12 @@ void checkSleepMode(float angle, float volt) {
   return;
 #endif
 
+#if defined( FORCE_GRAVITY_MODE )
+  Log.notice(
+      F("MAIN: Forcing device into gravity mode for debugging" CR));
+  runMode = RunMode::gravityMode; 
+#endif
+
   const RawGyroData &g = myConfig.getGyroCalibration();
 
   if (!g.ax && !g.ay && !g.az && !g.gx && !g.gy && !g.gz) {
@@ -138,7 +144,7 @@ void setup() {
   myConfig.checkFileSystem();
   myConfig.loadFile();
   myWifi.init();
-  myHardwareConfig.loadFile();
+  myAdvancedConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
 
   // Setup watchdog

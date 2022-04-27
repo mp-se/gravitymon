@@ -1,0 +1,15 @@
+{
+  "gyro-read-count": 51,
+  "gyro-read-delay": 3151,
+  "gyro-moving-threashold": 501,
+  "formula-max-deviation": 1.7,
+  "wifi-portal-timeout": 121,
+  "wifi-connect-timeout": 21,
+  "formula-calibration-temp": 21,
+  "push-timeout": 10,
+  "int-http1": 1,
+  "int-http2": 2,
+  "int-http3": 3,
+  "int-influx": 4,
+  "int-mqtt": 5
+}

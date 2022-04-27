@@ -42,7 +42,7 @@ const char iSpindleFormat[] PROGMEM =
     "\"gravity\": ${gravity}, "
     "\"angle\": ${angle}, "
     "\"battery\": ${battery}, "
-    "\"rssi\": ${rssi}, "
+    "\"RSSI\": ${rssi}, "
     "\"corr-gravity\": ${corr-gravity}, "
     "\"gravity-unit\": \"${gravity-unit}\", "
     "\"run-time\": ${run-time} "
@@ -63,24 +63,6 @@ const char iHttpGetFormat[] PROGMEM =
     "&corr-gravity=${corr-gravity}"
     "&gravity-unit=${gravity-unit}"
     "&run-time=${run-time}";
-
-const char brewfatherFormat[] PROGMEM =
-    "{"
-    "\"name\": \"${mdns}\","
-    "\"temp\": ${temp}, "
-    "\"aux_temp\": 0, "
-    "\"ext_temp\": 0, "
-    "\"temp_unit\": \"${temp-unit}\", "
-    "\"gravity\": ${gravity}, "
-    "\"gravity_unit\": \"${gravity-unit}\", "
-    "\"pressure\": 0, "
-    "\"pressure_unit\": \"PSI\", "
-    "\"ph\": 0, "
-    "\"bpm\": 0, "
-    "\"comment\": \"\", "
-    "\"beer\": \"\", "
-    "\"battery\": ${battery}"
-    "}";
 
 const char influxDbFormat[] PROGMEM =
     "measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-"
@@ -173,10 +155,6 @@ const String& TemplatingEngine::create(TemplatingEngine::Templates idx) {
     case TEMPLATE_HTTP3:
       baseTemplate = String(iHttpGetFormat);
       fname = TPL_FNAME_HTTP3;
-      break;
-    case TEMPLATE_BREWFATHER:
-      baseTemplate = String(brewfatherFormat);
-      // fname = TPL_FNAME_BREWFATHER;
       break;
     case TEMPLATE_INFLUX:
       baseTemplate = String(influxDbFormat);

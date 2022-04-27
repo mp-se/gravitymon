@@ -60,6 +60,8 @@ class WebServerHandler {
   void webHandleConfig();
   void webHandleFormulaWrite();
   void webHandleFormulaRead();
+  void webHandleConfigAdvancedRead();
+  void webHandleConfigAdvancedWrite();
   void webHandleConfigHardware();
   void webHandleConfigGravity();
   void webHandleConfigPush();
@@ -74,7 +76,6 @@ class WebServerHandler {
   void webHandleCalibrate();
   void webHandleUploadFile();
   void webHandleUpload();
-  void webHandleDeviceParam();
   void webHandlePageNotFound();
 
   String readFile(String fname);

@@ -121,12 +121,6 @@ If you add the prefix `https://` then the device will use SSL when sending data.
 
 The token is included in the default format for the HTTP GET url but can be used for any of the formats. For HTTP GET use can use this for an authorization token with for instance ubidots or blynk http api. 
 
-* **Brewfather URL:**
-
-Endpoint to send data via http to brewfather. Format used :ref:`data-formats-brewfather`
-
-SSL is not supported for this target.
-
 * **HTTP Headers**
 
 .. image:: images/config-popup1.png
@@ -280,4 +274,15 @@ This option gives you the possibility to install an new version of the firmware 
   :width: 600
   :alt: Update firmware
 
+
+Advanded Settings
++++++++++++++++++
+
+.. image:: images/config5.png
+  :width: 800
+  :alt: Advanced Settings
+
+* **Header:**
+
+To be described
 

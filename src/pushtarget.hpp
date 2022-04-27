@@ -45,12 +45,12 @@ class PushTarget {
   void sendHttpPost(TemplatingEngine& engine, bool isSecure, int index);
   void sendHttpGet(TemplatingEngine& engine, bool isSecure);
   void addHttpHeader(HTTPClient& http, String header);
+  void probeMaxFragement( String& serverPath );
 
  public:
   void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
                float runTime);
 
-  void sendBrewfather(TemplatingEngine& engine);
   void sendHttp1(TemplatingEngine& engine, bool isSecure) {
     sendHttpPost(engine, isSecure, 0);
   }
@@ -60,10 +60,25 @@ class PushTarget {
   void sendHttp3(TemplatingEngine& engine, bool isSecure) {
     sendHttpGet(engine, isSecure);
   }
-  void sendInfluxDb2(TemplatingEngine& engine);
+  void sendInfluxDb2(TemplatingEngine& engine, bool isSecure);
   void sendMqtt(TemplatingEngine& engine, bool isSecure);
   int getLastCode() { return _lastCode; }
   bool getLastSuccess() { return _lastSuccess; }
+};
+
+class PushIntervalTracker {
+ private:
+  int _counters[5] = { 0, 0, 0, 0, 0 };
+  void update(const int index, const int defaultValue);
+
+ public:
+  bool useHttp1() { return _counters[0] == 0 ? true : false; }
+  bool useHttp2() { return _counters[1] == 0 ? true : false; }
+  bool useHttp3() { return _counters[2] == 0 ? true : false; }
+  bool useInflux() { return _counters[3] == 0 ? true : false; }
+  bool useMqtt() { return _counters[4] == 0 ? true : false; }
+  void load();
+  void save();
 };
 
 #endif  // SRC_PUSHTARGET_HPP_

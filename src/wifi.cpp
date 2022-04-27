@@ -137,7 +137,7 @@ void WifiConnection::startPortal() {
   myWifiManager->setMinimumSignalQuality(-1);
   myWifiManager->setConfigPortalChannel(0);
   myWifiManager->setConfigPortalTimeout(
-      myHardwareConfig.getWifiPortalTimeout());
+      myAdvancedConfig.getWifiPortalTimeout());
 
   String mdns("<p>Default mDNS name is: http://");
   mdns += myConfig.getMDNS();
@@ -221,7 +221,7 @@ bool WifiConnection::waitForConnection(int maxTime) {
 //
 bool WifiConnection::connect() {
   connectAsync();
-  return waitForConnection(20);  // 20 seconds.
+  return waitForConnection(myAdvancedConfig.getWifiConnectTimeout());
 }
 
 //
