@@ -62,8 +62,10 @@ void Config::createJson(DynamicJsonDocument& doc) {
   // doc[PARAM_CONFIG_VER] = getConfigVersion();
   doc[PARAM_ID] = getID();
   doc[PARAM_OTA] = getOtaURL();
-  doc[PARAM_SSID] = getWifiSSID();
-  doc[PARAM_PASS] = getWifiPass();
+  doc[PARAM_SSID] = getWifiSSID(0);
+  doc[PARAM_PASS] = getWifiPass(0);
+  doc[PARAM_SSID2] = getWifiSSID(1);
+  doc[PARAM_PASS2] = getWifiPass(1);
   doc[PARAM_BLE] = getColorBLE();
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
   doc[PARAM_TOKEN] = getToken();
@@ -207,8 +209,10 @@ bool Config::loadFile() {
 #endif
   if (!doc[PARAM_OTA].isNull()) setOtaURL(doc[PARAM_OTA]);
   if (!doc[PARAM_MDNS].isNull()) setMDNS(doc[PARAM_MDNS]);
-  if (!doc[PARAM_SSID].isNull()) setWifiSSID(doc[PARAM_SSID]);
-  if (!doc[PARAM_PASS].isNull()) setWifiPass(doc[PARAM_PASS]);
+  if (!doc[PARAM_SSID].isNull()) setWifiSSID(doc[PARAM_SSID], 0);
+  if (!doc[PARAM_PASS].isNull()) setWifiPass(doc[PARAM_PASS], 0);
+  if (!doc[PARAM_SSID2].isNull()) setWifiSSID(doc[PARAM_SSID2], 1);
+  if (!doc[PARAM_PASS2].isNull()) setWifiPass(doc[PARAM_PASS2], 1);
   if (!doc[PARAM_BLE].isNull()) setColorBLE(doc[PARAM_BLE]);
 
   if (!doc[PARAM_TEMPFORMAT].isNull()) {

@@ -52,20 +52,8 @@ SOFTWARE.
 #define USE_STATIC_IP_CONFIG_IN_CP false
 #define _WIFIMGR_LOGLEVEL_ 3
 #include <ESP_WiFiManager.h>
-// Override the look and feel of the standard ui (hide secondary forms)
-const char WM_HTTP_FORM_START[] PROGMEM =
-    "<form method='get' "
-    "action='wifisave'><fieldset><div><label>SSID</label><input id='s' "
-    "name='s' length=32 "
-    "placeholder='SSID'><div></div></div><div><label>Password</label><input "
-    "id='p' name='p' length=64 placeholder='password'><div></div></div><div "
-    "hidden><label>SSID1</label><input id='s1' name='s1' length=32 "
-    "placeholder='SSID1'><div></div></div><div "
-    "hidden><label>Password</label><input id='p1' name='p1' length=64 "
-    "placeholder='password1'><div></div></div></fieldset>";
 ESP_WiFiManager *myWifiManager;
 DoubleResetDetector *myDRD;
-
 WifiConnection myWifi;
 
 const char *userSSID = USER_SSID;
@@ -82,18 +70,21 @@ void WifiConnection::init() {
 // Check if we have a valid wifi configuration
 //
 bool WifiConnection::hasConfig() {
-  if (strlen(myConfig.getWifiSSID())) return true;
+  if (strlen(myConfig.getWifiSSID(0))) return true;
   if (strlen(userSSID)) return true;
 
-  // Check if there are stored WIFI Settings we can use.
+    // Check if there are stored WIFI Settings we can use.
+#if defined(ESP32)
+#warning \
+    "Cant read SSID on ESP32 until a connection has been made, this part will not work, change to WifiManager"
+#endif
   String ssid = WiFi.SSID();
   if (ssid.length()) {
     Log.notice(F("WIFI: Found credentials in EEPORM." CR));
-    myConfig.setWifiSSID(ssid);
+    myConfig.setWifiSSID(ssid, 0);
 
-    if (WiFi.psk().length()) 
-      myConfig.setWifiPass(WiFi.psk());
-    
+    if (WiFi.psk().length()) myConfig.setWifiPass(WiFi.psk(), 0);
+
     myConfig.saveFile();
     return true;
   }
@@ -145,21 +136,29 @@ void WifiConnection::startPortal() {
   ESP_WMParameter deviceName(mdns.c_str());
   myWifiManager->addParameter(&deviceName);
 
-  if (myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD)) {
-    Log.notice(F("WIFI: Exited portal, connected to wifi. Rebooting..." CR));
+  myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD);
 
-    if (myWifiManager->getSSID().length())
-      myConfig.setWifiSSID(myWifiManager->getSSID());
-  
-    if (myWifiManager->getPW().length())
-      myConfig.setWifiPass(myWifiManager->getPW());
+  if (myWifiManager->getSSID(0).length()) {
+    myConfig.setWifiSSID(myWifiManager->getSSID(0), 0);
+    myConfig.setWifiPass(myWifiManager->getPW(0), 0);
+    myConfig.setWifiSSID(myWifiManager->getSSID(1), 1);
+    myConfig.setWifiPass(myWifiManager->getPW(1), 1);
 
+    // If the same SSID has been used, lets delete the second
+    if (!strcmp(myConfig.getWifiSSID(0), myConfig.getWifiSSID(1))) {
+      myConfig.setWifiSSID("", 1);
+      myConfig.setWifiPass("", 1);
+    }
+
+    Log.notice(F("WIFI: Stored SSID1:'%s' SSID2:'%s'" CR),
+               myConfig.getWifiSSID(0), myConfig.getWifiSSID(1));
     myConfig.saveFile();
   } else {
     Log.notice(
-        F("WIFI: Exited portal, no connection to wifi. Rebooting..." CR));
+        F("WIFI: Could not find first SSID so assuming we got a timeout." CR));
   }
 
+  Log.notice(F("WIFI: Exited wifi config portal. Rebooting..." CR));
   stopDoubleReset();
   delay(500);
   ESP_RESET();
@@ -173,7 +172,7 @@ void WifiConnection::loop() { myDRD->loop(); }
 //
 // Connect to last known access point, non blocking mode.
 //
-void WifiConnection::connectAsync() {
+void WifiConnection::connectAsync(int wifiIndex) {
   WiFi.persistent(true);
   WiFi.mode(WIFI_STA);
   if (strlen(userSSID)) {
@@ -181,9 +180,10 @@ void WifiConnection::connectAsync() {
                userSSID);
     WiFi.begin(userSSID, userPWD);
   } else {
-    Log.notice(F("WIFI: Connecting to wifi using stored settings %s." CR),
-               myConfig.getWifiSSID());
-    WiFi.begin(myConfig.getWifiSSID(), myConfig.getWifiPass());
+    Log.notice(F("WIFI: Connecting to wifi (%d) using stored settings %s." CR),
+               wifiIndex, myConfig.getWifiSSID(wifiIndex));
+    WiFi.begin(myConfig.getWifiSSID(wifiIndex),
+               myConfig.getWifiPass(wifiIndex));
   }
 }
 
@@ -211,17 +211,91 @@ bool WifiConnection::waitForConnection(int maxTime) {
     }
   }
   Serial.print(CR);
-  Log.notice(F("WIFI: Connected to wifi ip=%s." CR), getIPAddress().c_str());
+  Log.notice(F("WIFI: Connected to wifi %s ip=%s." CR), WiFi.SSID().c_str(),
+             getIPAddress().c_str());
   Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS());
   return true;
+}
+
+//
+// Check what network is the strongest.
+//
+int WifiConnection::findStrongestNetwork() {
+  if (!myConfig.dualWifiConfigured()) {
+    Log.notice(F("WIFI: Only one wifi SSID is configured, skipping scan." CR));
+    return -1;
+  }
+
+  Log.notice(F("WIFI: Scanning for wifi." CR));
+  int noNetwork = WiFi.scanNetworks(false, false);
+  int strenght[2] = {-100, -100};
+
+  for (int i = 0; i < noNetwork; i++) {
+    int rssi = WiFi.RSSI(i);
+    String ssid = WiFi.SSID(i);
+
+    if (ssid.compareTo(myConfig.getWifiSSID(0)))
+      strenght[0] = rssi;
+    else if (ssid.compareTo(myConfig.getWifiSSID(1)))
+      strenght[1] = rssi;
+
+#if LOG_LEVEL == 6
+    Log.verbose(F("WIFI: Found %s %d." CR), ssid.c_str(), rssi);
+#endif
+  }
+
+  if (strenght[0] == -100 && strenght[1] == -100)
+    return -1;  // None of the stored networks can be seen
+
+  if (strenght[0] >= strenght[1])
+    return 0;  // First network is strongest or they have equal strength
+
+  return 1;  // Second network is the strongest
 }
 
 //
 // Connect to last known access point, blocking mode.
 //
 bool WifiConnection::connect() {
-  connectAsync();
+  /*
+  // Alternative code for connecting to strongest wifi.
+  // Takes approximatly 2 seconds to scan for available network
+  int i = findStrongestNetwork();
+
+  if (i != -1) {
+    Log.notice(F("WIFI: Wifi %d:'%s' is strongest." CR), i,
+  myConfig.getWifiSSID(i)); } else { i = 0; // Use first SSID as default.
+  }
+
+  connectAsync(i);
   return waitForConnection(myAdvancedConfig.getWifiConnectTimeout());
+  */
+
+  // Alternative code for using seconday wifi settings as fallback.
+  // If success to seconday is successful this is used as standard
+  int timeout = myAdvancedConfig.getWifiConnectTimeout();
+
+  connectAsync(0);
+  if (!waitForConnection(timeout)) {
+    Log.warning(F("WIFI: Failed to connect to first SSID %s." CR),
+                myConfig.getWifiSSID(0));
+    connectAsync(1);
+
+    if (waitForConnection(timeout)) {
+      Log.notice(
+          F("WIFI: Connected to second SSID %s, making secondary default." CR),
+          myConfig.getWifiSSID(1));
+
+      myConfig.swapPrimaryWifi();
+      myConfig.saveFile();
+      return true;
+    }
+
+    Log.warning(F("WIFI: Failed to connect to any SSID." CR));
+    return false;
+  }
+
+  return true;
 }
 
 //

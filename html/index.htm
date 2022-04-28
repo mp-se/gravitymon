@@ -101,6 +101,10 @@
               <div class="col-md-4 bg-light">Platform:</div>
               <div class="col-md-4 bg-light" id="platform">Loading...</div>
             </div>
+            <div class="row mb-3">
+              <div class="col-md-4 bg-light">SSID:</div>
+              <div class="col-md-4 bg-light" id="wifi-ssid">Loading...</div>
+            </div>
 
             <script>
               $("#log-btn").click(function(e){
@@ -198,6 +202,7 @@
         $("#mdns").text(cfg["mdns"]);
         $("#id").text(cfg["id"]);
         $("#platform").text(cfg["platform"]);
+        $("#wifi-ssid").text(cfg["wifi-ssid"]);
         $("#runtime").text(cfg["runtime-average"] + " seconds");
     
         var angle = cfg["angle"];

@@ -31,6 +31,8 @@ SOFTWARE.
 #define PARAM_OTA "ota-url"
 #define PARAM_SSID "wifi-ssid"
 #define PARAM_PASS "wifi-pass"
+#define PARAM_SSID2 "wifi-ssid2"
+#define PARAM_PASS2 "wifi-pass2"
 #define PARAM_RUNTIME_AVERAGE "runtime-average"
 #define PARAM_TOKEN "token"
 #define PARAM_TOKEN2 "token2"

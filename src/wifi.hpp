@@ -42,8 +42,11 @@ class WifiConnection {
   bool _newFirmware = false;
   bool parseFirmwareVersionString(int (&num)[3], const char* version);
   void downloadFile(HTTPClient& http, String& fname);
-  void connectAsync();
+
+  // WIFI
+  void connectAsync(int wifiIndex);
   bool waitForConnection(int maxTime = 20);
+  int findStrongestNetwork();
 
  public:
   // WIFI

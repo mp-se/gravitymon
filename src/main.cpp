@@ -60,10 +60,9 @@ void checkSleepMode(float angle, float volt) {
   return;
 #endif
 
-#if defined( FORCE_GRAVITY_MODE )
-  Log.notice(
-      F("MAIN: Forcing device into gravity mode for debugging" CR));
-  runMode = RunMode::gravityMode; 
+#if defined(FORCE_GRAVITY_MODE)
+  Log.notice(F("MAIN: Forcing device into gravity mode for debugging" CR));
+  runMode = RunMode::gravityMode;
 #endif
 
   const RawGyroData &g = myConfig.getGyroCalibration();
@@ -215,6 +214,7 @@ void setup() {
   switch (runMode) {
     case RunMode::configurationMode:
       if (myWifi.isConnected()) {
+        Log.notice(F("Main: Activating web server." CR));
 #if defined(ACTIVATE_OTA)
         LOG_PERF_START("main-wifi-ota");
         if (myWifi.checkFirmwareVersion()) myWifi.updateFirmware();
@@ -355,7 +355,8 @@ void goToSleep(int sleepInterval) {
 void loop() {
   switch (runMode) {
     case RunMode::configurationMode:
-      myWebServerHandler.loop();
+      if (myWifi.isConnected()) myWebServerHandler.loop();
+
       myWifi.loop();
       loopGravityOnInterval();
 

@@ -114,7 +114,12 @@ class AdvancedConfig {
   int getPushIntervalMqtt() { return _pushIntervalMqtt; }
   void setPushIntervalMqtt(int t) { _pushIntervalMqtt = t; }
 
-  bool isPushIntervalActive() { return (_pushIntervalHttp1+_pushIntervalHttp2+_pushIntervalHttp3+_pushIntervalInflux+_pushIntervalMqtt) == 0 ? false : true; }
+  bool isPushIntervalActive() {
+    return (_pushIntervalHttp1 + _pushIntervalHttp2 + _pushIntervalHttp3 +
+            _pushIntervalInflux + _pushIntervalMqtt) == 0
+               ? false
+               : true;
+  }
 
   bool saveFile();
   bool loadFile();
@@ -136,8 +141,8 @@ class Config {
   bool _gyroTemp = false;
 
   // Wifi Config
-  String _wifiSSID = "";
-  String _wifiPASS = "";
+  String _wifiSSID[2] = {"", ""};
+  String _wifiPASS[2] = {"", ""};
 
   // Push target settings
   String _token = "";
@@ -199,14 +204,29 @@ class Config {
   bool isOtaActive() { return _otaURL.length() ? true : false; }
   bool isOtaSSL() { return _otaURL.startsWith("https://"); }
 
-  const char* getWifiSSID() { return _wifiSSID.c_str(); }
-  void setWifiSSID(String s) {
-    _wifiSSID = s;
+  const char* getWifiSSID(int idx) { return _wifiSSID[idx].c_str(); }
+  void setWifiSSID(String s, int idx) {
+    _wifiSSID[idx] = s;
     _saveNeeded = true;
   }
-  const char* getWifiPass() { return _wifiPASS.c_str(); }
-  void setWifiPass(String s) {
-    _wifiPASS = s;
+  const char* getWifiPass(int idx) { return _wifiPASS[idx].c_str(); }
+  void setWifiPass(String s, int idx) {
+    _wifiPASS[idx] = s;
+    _saveNeeded = true;
+  }
+  bool dualWifiConfigured() {
+    return _wifiSSID[0].length() > 0 && _wifiSSID[1].length() > 0 ? true
+                                                                  : false;
+  }
+  void swapPrimaryWifi() {
+    String s = _wifiSSID[0];
+    _wifiSSID[0] = _wifiSSID[1];
+    _wifiSSID[1] = s;
+
+    String p = _wifiPASS[0];
+    _wifiPASS[0] = _wifiPASS[1];
+    _wifiPASS[1] = p;
+
     _saveNeeded = true;
   }
 

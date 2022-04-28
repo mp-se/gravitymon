@@ -63,7 +63,7 @@ void WebServerHandler::webHandleConfig() {
   if (myConfig.isTempF())
     // We want the delta value (32F = 0C).
     doc[PARAM_TEMP_ADJ] =
-        reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC())-32, 1); 
+        reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC()) - 32, 1);
   else
     doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(myConfig.getTempSensorAdjC(), 1);
 
@@ -357,6 +357,7 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_APP_VER] = CFG_APPVER;
   doc[PARAM_APP_BUILD] = CFG_GITREV;
   doc[PARAM_MDNS] = myConfig.getMDNS();
+  doc[PARAM_SSID] = WiFi.SSID();
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
   doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
@@ -390,8 +391,10 @@ void WebServerHandler::webHandleClearWIFI() {
   if (!id.compareTo(myConfig.getID())) {
     _server->send(200, "text/plain",
                   "Clearing WIFI credentials and doing reset...");
-    myConfig.setWifiPass("");
-    myConfig.setWifiSSID("");
+    myConfig.setWifiPass("", 0);
+    myConfig.setWifiSSID("", 0);
+    myConfig.setWifiPass("", 1);
+    myConfig.setWifiSSID("", 1);
     myConfig.saveFile();
     delay(1000);
     WiFi.disconnect();  // Clear credentials
@@ -642,38 +645,50 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
 #endif
 
   if (_server->hasArg(PARAM_HW_GYRO_READ_COUNT))
-    myAdvancedConfig.setGyroReadCount(_server->arg(PARAM_HW_GYRO_READ_COUNT).toInt());
+    myAdvancedConfig.setGyroReadCount(
+        _server->arg(PARAM_HW_GYRO_READ_COUNT).toInt());
   if (_server->hasArg(PARAM_HW_GYRO_READ_DELAY))
-    myAdvancedConfig.setGyroReadDelay(_server->arg(PARAM_HW_GYRO_READ_DELAY).toInt());
+    myAdvancedConfig.setGyroReadDelay(
+        _server->arg(PARAM_HW_GYRO_READ_DELAY).toInt());
   if (_server->hasArg(PARAM_HW_GYRO_MOVING_THREASHOLD))
-    myAdvancedConfig.setGyroSensorMovingThreashold(_server->arg(PARAM_HW_GYRO_MOVING_THREASHOLD).toInt());
+    myAdvancedConfig.setGyroSensorMovingThreashold(
+        _server->arg(PARAM_HW_GYRO_MOVING_THREASHOLD).toInt());
   if (_server->hasArg(PARAM_HW_FORMULA_DEVIATION))
-    myAdvancedConfig.setMaxFormulaCreationDeviation(_server->arg(PARAM_HW_FORMULA_DEVIATION).toFloat());
+    myAdvancedConfig.setMaxFormulaCreationDeviation(
+        _server->arg(PARAM_HW_FORMULA_DEVIATION).toFloat());
   if (_server->hasArg(PARAM_HW_FORMULA_CALIBRATION_TEMP))
-    myAdvancedConfig.SetDefaultCalibrationTemp(_server->arg(PARAM_HW_FORMULA_CALIBRATION_TEMP).toFloat());
+    myAdvancedConfig.SetDefaultCalibrationTemp(
+        _server->arg(PARAM_HW_FORMULA_CALIBRATION_TEMP).toFloat());
   if (_server->hasArg(PARAM_HW_WIFI_PORTAL_TIMEOUT))
-    myAdvancedConfig.setWifiPortalTimeout(_server->arg(PARAM_HW_WIFI_PORTAL_TIMEOUT).toInt());
+    myAdvancedConfig.setWifiPortalTimeout(
+        _server->arg(PARAM_HW_WIFI_PORTAL_TIMEOUT).toInt());
   if (_server->hasArg(PARAM_HW_WIFI_CONNECT_TIMEOUT))
-    myAdvancedConfig.setWifiConnectTimeout(_server->arg(PARAM_HW_WIFI_CONNECT_TIMEOUT).toInt());
+    myAdvancedConfig.setWifiConnectTimeout(
+        _server->arg(PARAM_HW_WIFI_CONNECT_TIMEOUT).toInt());
   if (_server->hasArg(PARAM_HW_PUSH_TIMEOUT))
-    myAdvancedConfig.setPushTimeout(_server->arg(PARAM_HW_PUSH_TIMEOUT).toInt());
+    myAdvancedConfig.setPushTimeout(
+        _server->arg(PARAM_HW_PUSH_TIMEOUT).toInt());
   if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP1))
-    myAdvancedConfig.setPushIntervalHttp1(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP1).toInt());
+    myAdvancedConfig.setPushIntervalHttp1(
+        _server->arg(PARAM_HW_PUSH_INTERVAL_HTTP1).toInt());
   if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP2))
-    myAdvancedConfig.setPushIntervalHttp2(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP2).toInt());
+    myAdvancedConfig.setPushIntervalHttp2(
+        _server->arg(PARAM_HW_PUSH_INTERVAL_HTTP2).toInt());
   if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP3))
-    myAdvancedConfig.setPushIntervalHttp3(_server->arg(PARAM_HW_PUSH_INTERVAL_HTTP3).toInt());
+    myAdvancedConfig.setPushIntervalHttp3(
+        _server->arg(PARAM_HW_PUSH_INTERVAL_HTTP3).toInt());
   if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_INFLUX))
-    myAdvancedConfig.setPushIntervalInflux(_server->arg(PARAM_HW_PUSH_INTERVAL_INFLUX).toInt());
+    myAdvancedConfig.setPushIntervalInflux(
+        _server->arg(PARAM_HW_PUSH_INTERVAL_INFLUX).toInt());
   if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_MQTT))
-    myAdvancedConfig.setPushIntervalMqtt(_server->arg(PARAM_HW_PUSH_INTERVAL_MQTT).toInt());
+    myAdvancedConfig.setPushIntervalMqtt(
+        _server->arg(PARAM_HW_PUSH_INTERVAL_MQTT).toInt());
 
   myAdvancedConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseAdvanced", true);
   _server->send(302, "text/plain", "Advanced config updated");
   LOG_PERF_STOP("webserver-api-config-advanced");
 }
-
 
 //
 // Read advanced settings

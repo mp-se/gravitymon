@@ -40,7 +40,7 @@ SOFTWARE.
 void PushIntervalTracker::update(const int index, const int defaultValue) {
   if (_counters[index] <= 0)
     _counters[index] = defaultValue;
-  else 
+  else
     _counters[index]--;
 }
 
@@ -49,7 +49,6 @@ void PushIntervalTracker::update(const int index, const int defaultValue) {
 //
 void PushIntervalTracker::load() {
   File intFile = LittleFS.open(PUSHINT_FILENAME, "r");
-  int i = 0;
 
   if (intFile) {
     String line = intFile.readStringUntil('\n');
@@ -66,9 +65,10 @@ void PushIntervalTracker::load() {
 
     intFile.close();
   }
- 
+
 #if !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: Parsed trackers: %d:%d:%d:%d:%d." CR), _counters[0], _counters[1], _counters[2], _counters[3], _counters[4] );
+  Log.verbose(F("PUSH: Parsed trackers: %d:%d:%d:%d:%d." CR), _counters[0],
+              _counters[1], _counters[2], _counters[3], _counters[4]);
 #endif
 }
 
@@ -89,12 +89,14 @@ void PushIntervalTracker::save() {
 #endif
     LittleFS.remove(PUSHINT_FILENAME);
   } else {
-    Log.notice(F("PUSH: Variabled push interval enabled, updating counters." CR));
+    Log.notice(
+        F("PUSH: Variabled push interval enabled, updating counters." CR));
     File intFile = LittleFS.open(PUSHINT_FILENAME, "w");
 
     if (intFile) {
       // Format=http1:http2:http3:influx:mqtt
-      intFile.printf("%d:%d:%d:%d:%d\n", _counters[0], _counters[1], _counters[2], _counters[3], _counters[4] );
+      intFile.printf("%d:%d:%d:%d:%d\n", _counters[0], _counters[1],
+                     _counters[2], _counters[3], _counters[4]);
       intFile.close();
     }
   }
@@ -151,13 +153,12 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
 //
 // Check if the server can reduce the buffer size to save memory (ESP8266 only)
 //
-void PushTarget::probeMaxFragement( String& serverPath ) {
-#if defined(ESP8266) // Looks like this is feature is not supported by influxdb
+void PushTarget::probeMaxFragement(String& serverPath) {
+#if defined(ESP8266)  // Looks like this is feature is not supported by influxdb
   // Format: http:://servername:port/path
   int port = 443;
-  String host =
-      serverPath.substring(8);  // remove the prefix or the probe will fail,
-                                // it needs a pure host name.
+  String host = serverPath.substring(8);  // remove the prefix or the probe will
+                                          // fail, it needs a pure host name.
   // Remove the path if it exist
   int idx = host.indexOf("/");
   if (idx != -1) host = host.substring(0, idx);
@@ -165,12 +166,13 @@ void PushTarget::probeMaxFragement( String& serverPath ) {
   // If a server port is defined, lets extract that part
   idx = host.indexOf(":");
   if (idx != -1) {
-    String p = host.substring(idx+1);
+    String p = host.substring(idx + 1);
     port = p.toInt();
     host = host.substring(0, idx);
   }
 
-  Log.notice(F("PUSH: Probing server to max fragment %s:%d" CR), host.c_str(), port);
+  Log.notice(F("PUSH: Probing server to max fragment %s:%d" CR), host.c_str(),
+             port);
   if (_wifiSecure.probeMaxFragmentLength(host, port, 512)) {
     Log.notice(F("PUSH: Server supports smaller SSL buffer." CR));
     _wifiSecure.setBufferSizes(512, 512);
@@ -204,12 +206,12 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
   if (isSecure) {
     Log.notice(F("PUSH: InfluxDB, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
-    probeMaxFragement( serverPath );
+    probeMaxFragement(serverPath);
     _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
     _httpSecure.addHeader(F("Authorization"), auth.c_str());
     _lastCode = _httpSecure.POST(doc);
-  } else  {
+  } else {
     _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _http.begin(_wifi, serverPath);
     _http.addHeader(F("Authorization"), auth.c_str());
@@ -284,7 +286,7 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
   if (isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
-    probeMaxFragement( serverPath );
+    probeMaxFragement(serverPath);
     _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
 
@@ -353,7 +355,7 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
   if (isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
-    probeMaxFragement( serverPath );
+    probeMaxFragement(serverPath);
     _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
     _lastCode = _httpSecure.GET();
