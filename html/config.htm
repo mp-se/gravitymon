@@ -465,7 +465,7 @@
             <div class="row mb-3">
               <label for="gyro-read-count" class="col-sm-3 col-form-label">Gyro reads:</label>
               <div class="col-sm-2">
-                <input type="number" min="10" max="100" class="form-control" name="gyro-read-count" id="gyro-read-count" checked data-bs-toggle="tooltip" title="How many times should we read the gyro to get an accurate angle. More reads = better accuracy but higher battery drain">
+                <input disabled type="number" min="10" max="100" class="form-control" name="gyro-read-count" id="gyro-read-count" checked data-bs-toggle="tooltip" title="How many times should we read the gyro to get an accurate angle. More reads = better accuracy but higher battery drain">
               </div>
               <div class="col-sm-5">(10-100) - default 50</div>
             </div>
@@ -473,7 +473,7 @@
             <div class="row mb-3">
               <label for="gyro-moving-threashold" class="col-sm-3 col-form-label">Gyro moving theashold:</label>
               <div class="col-sm-2">
-                <input type="number" min="50" max="1000" class="form-control" name="gyro-moving-threashold" id="gyro-moving-threashold" checked data-bs-toggle="tooltip" title="How much deviation between gyro reads are acceptable in order to regard this as a valid angle"> 
+                <input disabled type="number" min="50" max="1000" class="form-control" name="gyro-moving-threashold" id="gyro-moving-threashold" checked data-bs-toggle="tooltip" title="How much deviation between gyro reads are acceptable in order to regard this as a valid angle"> 
               </div>
               <div class="col-sm-5">(50-1000) - default 500</div>
             </div>
@@ -481,7 +481,7 @@
             <div class="row mb-3">
               <label for="formula-max-deviation" class="col-sm-3 col-form-label">Formula max deviation (SG):</label>
               <div class="col-sm-2">
-                <input type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation" checked data-bs-toggle="tooltip" title="When validating the derived formula this is the maximum accepted deviation for the supplied values"> 
+                <input disabled type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation" checked data-bs-toggle="tooltip" title="When validating the derived formula this is the maximum accepted deviation for the supplied values"> 
               </div>
               <div class="col-sm-5">(1 - 10) - default 1.6 SG</div>
             </div>
@@ -491,7 +491,7 @@
             <div class="row mb-3">
               <label for="wifi-connect-timeout" class="col-sm-3 col-form-label">Wifi connect timeout (s):</label>
               <div class="col-sm-2">
-                <input type="number" min="1" max="60" class="form-control" name="wifi-connect-timeout" id="wifi-connect-timeout" checked data-bs-toggle="tooltip" title="Max time waiting for a wifi connection before going back to sleep"> 
+                <input disabled type="number" min="1" max="60" class="form-control" name="wifi-connect-timeout" id="wifi-connect-timeout" checked data-bs-toggle="tooltip" title="Max time waiting for a wifi connection before going back to sleep"> 
               </div>
               <div class="col-sm-5">(1 - 60) - default 20 s</div>
             </div>
@@ -499,7 +499,7 @@
             <div class="row mb-3">
               <label for="wifi-portal-timeout" class="col-sm-3 col-form-label">Wifi portal timeout (s):</label>
               <div class="col-sm-2">
-                <input type="number" min="10" max="240" class="form-control" name="wifi-portal-timeout" id="wifi-portal-timeout" checked data-bs-toggle="tooltip" title="Max time the wifi portal is active before existing"> 
+                <input disabled type="number" min="10" max="240" class="form-control" name="wifi-portal-timeout" id="wifi-portal-timeout" checked data-bs-toggle="tooltip" title="Max time the wifi portal is active before existing"> 
               </div>
               <div class="col-sm-5">(10 - 240) - default 120 s</div>
             </div>
@@ -509,7 +509,7 @@
             <div class="row mb-3">
               <label for="int-http1" class="col-sm-3 col-form-label">Skip interval - HTTP 1 (POST):</label>
               <div class="col-sm-2">
-                <input type="number" min="0" max="5" class="form-control" name="int-http1" id="int-http1" checked data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-http1" id="int-http1" checked data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -517,7 +517,7 @@
             <div class="row mb-3">
               <label for="int-http2" class="col-sm-3 col-form-label">Skip interval - HTTP 2 (POST):</label>
               <div class="col-sm-2">
-                <input type="number" min="0" max="5" class="form-control" name="int-http2" id="int-http2" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-http2" id="int-http2" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -525,7 +525,7 @@
             <div class="row mb-3">
               <label for="int-http3" class="col-sm-3 col-form-label">Skip interval - HTTP 3 (GET):</label>
               <div class="col-sm-2">
-                <input type="number" min="0" max="5" class="form-control" name="int-http3" id="int-http3" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-http3" id="int-http3" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -533,7 +533,7 @@
             <div class="row mb-3">
               <label for="int-influx" class="col-sm-3 col-form-label">Skip interval - InfluxDB v2:</label>
               <div class="col-sm-2">
-                <input type="number" min="0" max="5" class="form-control" name="int-influx" id="int-influx" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-influx" id="int-influx" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -541,7 +541,7 @@
             <div class="row mb-3">
               <label for="int-mqtt" class="col-sm-3 col-form-label">Skip interval - MQTT:</label>
               <div class="col-sm-2">
-                <input type="number" min="0" max="5" class="form-control" name="int-mqtt" id="int-mqtt" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-mqtt" id="int-mqtt" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -552,6 +552,15 @@
               </div>
             </div>
           </form>
+
+          <div class="row mb-3">
+            <div class="col-sm-4 offset-sm-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="adv-config" id="adv-config" checked data-bs-toggle="tooltip" title="Enabled the advanced configuration settings.">
+                <label class="form-check-label" for="adv-config">Enable advanced configuration</label>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -718,6 +727,28 @@
       $("#format-btn2").prop("disabled", b);
       $("#test-btn2").prop("disabled", b);
       $("#advanced-btn").prop("disabled", b);
+
+      checkAdvancedSection( b );
+    }
+
+    $("#adv-config").click(function(e){
+      checkAdvancedSection();
+    });
+
+    function checkAdvancedSection( b ) {
+      var b = $("#adv-config").is(":checked");
+
+      $("#advanced-btn").prop("disabled", b);
+      $("#gyro-read-count").prop("disabled", b);
+      $("#gyro-moving-threashold").prop("disabled", b);
+      $("#formula-max-deviation").prop("disabled", b);
+      $("#wifi-portal-timeout").prop("disabled", b);
+      $("#wifi-connect-timeout").prop("disabled", b);
+      $("#int-http1").prop("disabled", b);
+      $("#int-http2").prop("disabled", b);
+      $("#int-http3").prop("disabled", b);
+      $("#int-influx").prop("disabled", b);
+      $("#int-mqtt").prop("disabled", b);
     }
 
     // Get the advanced values from the API
