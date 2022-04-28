@@ -317,6 +317,11 @@ void PerfLogging::print() {
 void PerfLogging::pushInflux() {
   if (!myConfig.isInfluxDb2Active()) return;
 
+  if (myConfig.isInfluxSSL()) {
+    Log.warning(F("PERF: InfluxDB2 with SSL is not supported when pushing performance data, skipping" CR);
+    return;
+  }
+
   WiFiClient wifi;
   HTTPClient http;
   String serverPath =
