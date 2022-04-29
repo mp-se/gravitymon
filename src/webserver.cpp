@@ -324,7 +324,7 @@ void WebServerHandler::webHandleStatus() {
   LOG_PERF_START("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
 
-  DynamicJsonDocument doc(300);
+  DynamicJsonDocument doc(512);
 
   double angle = 0;
 
@@ -683,6 +683,9 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
   if (_server->hasArg(PARAM_HW_PUSH_INTERVAL_MQTT))
     myAdvancedConfig.setPushIntervalMqtt(
         _server->arg(PARAM_HW_PUSH_INTERVAL_MQTT).toInt());
+  if (_server->hasArg(PARAM_HW_TEMPSENSOR_RESOLUTION))
+    myAdvancedConfig.setTempSensorResolution(
+        _server->arg(PARAM_HW_TEMPSENSOR_RESOLUTION).toInt());
 
   myAdvancedConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseAdvanced", true);
@@ -715,6 +718,8 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = myAdvancedConfig.getPushIntervalHttp3();
   doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = myAdvancedConfig.getPushIntervalInflux();
   doc[PARAM_HW_PUSH_INTERVAL_MQTT] = myAdvancedConfig.getPushIntervalMqtt();
+  doc[PARAM_HW_TEMPSENSOR_RESOLUTION] =
+      myAdvancedConfig.getTempSensorResolution();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);

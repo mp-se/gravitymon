@@ -32,7 +32,6 @@ SOFTWARE.
 
 OneWire myOneWire(PIN_DS);
 DallasTemperature mySensors(&myOneWire);
-#define TEMPERATURE_PRECISION 9
 
 TempSensor myTempSensor;
 
@@ -52,10 +51,10 @@ void TempSensor::setup() {
 
   if (mySensors.getDS18Count()) {
 #if !defined(TSEN_DISABLE_LOGGING)
-    Log.notice(F("TSEN: Found %d temperature sensor(s)." CR),
-               mySensors.getDS18Count());
+    Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d resolution" CR),
+               mySensors.getDS18Count(), myAdvancedConfig.getTempSensorResolution());
 #endif
-    mySensors.setResolution(TEMPERATURE_PRECISION);
+    mySensors.setResolution(myAdvancedConfig.getTempSensorResolution());
   }
 
   // Set the temp sensor adjustment values

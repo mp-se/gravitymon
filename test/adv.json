@@ -5,6 +5,7 @@
   "wifi-portal-timeout": 121,
   "wifi-connect-timeout": 21,
   "formula-calibration-temp": 21,
+  "tempsensor-resolution": 12,
   "push-timeout": 10,
   "int-http1": 1,
   "int-http2": 2,

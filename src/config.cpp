@@ -390,6 +390,7 @@ bool AdvancedConfig::saveFile() {
   doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = this->getPushIntervalHttp3();
   doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
   doc[PARAM_HW_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
+  doc[PARAM_HW_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();  
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -476,6 +477,8 @@ bool AdvancedConfig::loadFile() {
     this->setPushIntervalInflux(doc[PARAM_HW_PUSH_INTERVAL_INFLUX].as<int>());
   if (!doc[PARAM_HW_PUSH_INTERVAL_MQTT].isNull())
     this->setPushIntervalMqtt(doc[PARAM_HW_PUSH_INTERVAL_MQTT].as<int>());
+  if (!doc[PARAM_HW_TEMPSENSOR_RESOLUTION].isNull())
+    this->setTempSensorResolution(doc[PARAM_HW_TEMPSENSOR_RESOLUTION].as<int>());
 
   Log.notice(F("CFG : Configuration file " CFG_HW_FILENAME " loaded." CR));
   return true;

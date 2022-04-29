@@ -83,6 +83,7 @@ SOFTWARE.
 #define PARAM_HW_FORMULA_CALIBRATION_TEMP "formula-calibration-temp"
 #define PARAM_HW_WIFI_PORTAL_TIMEOUT "wifi-portal-timeout"
 #define PARAM_HW_WIFI_CONNECT_TIMEOUT "wifi-connect-timeout"
+#define PARAM_HW_TEMPSENSOR_RESOLUTION "tempsensor-resolution"
 #define PARAM_HW_PUSH_TIMEOUT "push-timeout"
 #define PARAM_HW_PUSH_INTERVAL_HTTP1 "int-http1"
 #define PARAM_HW_PUSH_INTERVAL_HTTP2 "int-http2"

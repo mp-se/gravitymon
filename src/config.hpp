@@ -61,6 +61,7 @@ class AdvancedConfig {
   float _maxFormulaCreationDeviation = 1.6;
   float _defaultCalibrationTemp = 20.0;
   int _gyroSensorMovingThreashold = 500;
+  int _tempSensorResolution = 9;
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
   int _pushTimeout = 10;      // seconds
@@ -82,6 +83,12 @@ class AdvancedConfig {
   }
   void setMaxFormulaCreationDeviation(float f) {
     _maxFormulaCreationDeviation = f;
+  }
+
+  int getTempSensorResolution() { return _tempSensorResolution; }
+  void setTempSensorResolution(int t) { 
+    if (t>=9 && t<=12)
+      _tempSensorResolution = t; 
   }
 
   float getDefaultCalibrationTemp() { return _defaultCalibrationTemp; }
