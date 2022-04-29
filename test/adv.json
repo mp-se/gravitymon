@@ -1,6 +1,5 @@
 {
   "gyro-read-count": 51,
-  "gyro-read-delay": 3151,
   "gyro-moving-threashold": 501,
   "formula-max-deviation": 1.7,
   "wifi-portal-timeout": 121,

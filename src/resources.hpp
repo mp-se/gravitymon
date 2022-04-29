@@ -77,7 +77,7 @@ SOFTWARE.
 #define PARAM_PLATFORM "platform"
 #define PARAM_BLE "ble"
 #define PARAM_HW_GYRO_READ_COUNT "gyro-read-count"
-#define PARAM_HW_GYRO_READ_DELAY "gyro-read-delay"
+// #define PARAM_HW_GYRO_READ_DELAY "gyro-read-delay"
 #define PARAM_HW_GYRO_MOVING_THREASHOLD "gyro-moving-threashold"
 #define PARAM_HW_FORMULA_DEVIATION "formula-max-deviation"
 #define PARAM_HW_FORMULA_CALIBRATION_TEMP "formula-calibration-temp"

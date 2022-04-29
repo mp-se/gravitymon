@@ -379,7 +379,7 @@ bool AdvancedConfig::saveFile() {
   DynamicJsonDocument doc(512);
 
   doc[PARAM_HW_GYRO_READ_COUNT] = this->getGyroReadCount();
-  doc[PARAM_HW_GYRO_READ_DELAY] = this->getGyroReadDelay();
+  // doc[PARAM_HW_GYRO_READ_DELAY] = this->getGyroReadDelay();
   doc[PARAM_HW_GYRO_MOVING_THREASHOLD] = this->getGyroSensorMovingThreashold();
   doc[PARAM_HW_FORMULA_DEVIATION] = this->getMaxFormulaCreationDeviation();
   doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = this->getWifiPortalTimeout();
@@ -449,8 +449,8 @@ bool AdvancedConfig::loadFile() {
 
   if (!doc[PARAM_HW_GYRO_READ_COUNT].isNull())
     this->setGyroReadCount(doc[PARAM_HW_GYRO_READ_COUNT].as<int>());
-  if (!doc[PARAM_HW_GYRO_READ_DELAY].isNull())
-    this->setGyroReadDelay(doc[PARAM_HW_GYRO_READ_DELAY].as<int>());
+  // if (!doc[PARAM_HW_GYRO_READ_DELAY].isNull())
+  //  this->setGyroReadDelay(doc[PARAM_HW_GYRO_READ_DELAY].as<int>());
   if (!doc[PARAM_HW_GYRO_MOVING_THREASHOLD].isNull())
     this->setGyroSensorMovingThreashold(
         doc[PARAM_HW_GYRO_MOVING_THREASHOLD].as<int>());

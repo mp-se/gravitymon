@@ -647,9 +647,9 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
   if (_server->hasArg(PARAM_HW_GYRO_READ_COUNT))
     myAdvancedConfig.setGyroReadCount(
         _server->arg(PARAM_HW_GYRO_READ_COUNT).toInt());
-  if (_server->hasArg(PARAM_HW_GYRO_READ_DELAY))
-    myAdvancedConfig.setGyroReadDelay(
-        _server->arg(PARAM_HW_GYRO_READ_DELAY).toInt());
+  // if (_server->hasArg(PARAM_HW_GYRO_READ_DELAY))
+  //  myAdvancedConfig.setGyroReadDelay(
+  //      _server->arg(PARAM_HW_GYRO_READ_DELAY).toInt());
   if (_server->hasArg(PARAM_HW_GYRO_MOVING_THREASHOLD))
     myAdvancedConfig.setGyroSensorMovingThreashold(
         _server->arg(PARAM_HW_GYRO_MOVING_THREASHOLD).toInt());
@@ -700,7 +700,7 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   DynamicJsonDocument doc(512);
 
   doc[PARAM_HW_GYRO_READ_COUNT] = myAdvancedConfig.getGyroReadCount();
-  doc[PARAM_HW_GYRO_READ_DELAY] = myAdvancedConfig.getGyroReadDelay();
+  // doc[PARAM_HW_GYRO_READ_DELAY] = myAdvancedConfig.getGyroReadDelay();
   doc[PARAM_HW_GYRO_MOVING_THREASHOLD] =
       myAdvancedConfig.getGyroSensorMovingThreashold();
   doc[PARAM_HW_FORMULA_DEVIATION] =
