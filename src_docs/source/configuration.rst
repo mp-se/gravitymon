@@ -282,7 +282,41 @@ Advanded Settings
   :width: 800
   :alt: Advanced Settings
 
-* **Header:**
+.. warning::
 
-To be described
+   Changeing these parameters with caution. The wrong values might cause the device to become unresponsive. 
 
+
+* **Gyro reads:**
+
+This defines how many gyro reads will be done before an angle is calculated. More reads will give better accuracy and also allow detection of 
+movement. Too many reads will take time and affecte batterylife. 50 takes about 800 ms to execute.
+
+* **Gyro moving threashold:**
+
+This is the max amount of deviation allowed for a stable reading. 
+
+* **Formula deviation:**
+
+This is the maximum devation on the formlula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied 
+data and of the deviation on any point is bigger the formula will be rejected.
+
+* **DS18B20 Resolution:**
+
+Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C, 12 bits will give an accuracy of 0.0625C but will also 
+take longer time to measure..
+   
+* **Wifi connect timeout:**
+
+This is the amount of time allowed for a wifi connect. 
+   
+* **Wifi portal timeout:**
+
+If the wifi portal is triggered (can be triggerd by reset) then this is the amount of time allowed before it exists again.
+   
+* **Skip Interval (...):**
+
+These options allow the user to have variable push intervals for the diffrent endpoints. 0 means that every wakeup will send data to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped.
+
+If the sleep interval is 300s and MQTT is set to 0 and HTTP1 is set to 2 then MQTT will be sent every 300s while HTTP1 would be sent 900s. This is great if you want to send data to a local mqtt server often but brewfather will only 
+accept data every 15 min.

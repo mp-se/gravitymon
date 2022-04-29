@@ -58,23 +58,9 @@ Other parameters are the same as in the configuration guide.
       },
       "formula-calculation-data": {
          "a1":25,
-         "a2":30,
-         "a3":35,
-         "a4":40,
-         "a5":45,
-         "a5":0,
-         "a6":0,
-         "a7":0,
-         "a8":0,
+         "a10":0,
          "g1":1,
-         "g2":1.01,
-         "g3":1.02,
-         "g4":1.03,
-         "g4":1.04,
-         "g5":1,
-         "g6":1,
-         "g7":1,
-         "g8":1
+         "g10":1
       },
       "angle": 90.93,
       "gravity": 1.105,
@@ -109,6 +95,7 @@ Other parameters are the same as in the configuration guide.
       "temp-c": 0,
       "temp-f": 32,
       "battery": 0,
+      "wifi-ssid": "connected SSID",
       "temp-format": "C",
       "sleep-mode": false,
       "token": "token",
@@ -127,8 +114,8 @@ GET: /api/config/formula
 
 Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
 
-* ``a1``-``a8`` are the angles/tilt readings (up to 8 are currently supported)
-* ``g1``-``g8`` are the corresponding gravity reaadings in SG or Plato depending on the device-format.
+* ``a1``-``a10`` are the angles/tilt readings (up to 10 are currently supported)
+* ``g1``-``g10`` are the corresponding gravity reaadings in SG or Plato depending on the device-format.
 
 .. code-block:: json
 
@@ -142,6 +129,8 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
       "a6": 0, 
       "a7": 0, 
       "a8": 0, 
+      "a9": 0, 
+      "a10": 0, 
       "g1": 1.000,      
       "g2": 1.053, 
       "g3": 1.062, 
@@ -150,6 +139,8 @@ Retrive the data used for formula calculation data via an HTTP GET command. Payl
       "g6": 1,
       "g7": 1,
       "g8": 1,
+      "g9": 1,
+      "g10": 1,
       "error": "Potential error message",
       "gravity-format": "G", 
       "gravity-formula": "0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"
@@ -165,10 +156,11 @@ Used for adjusting some internal constants and other advanced settings. Should b
 
    {
       "gyro-read-count": 50,
-      "gyro-read-delay": 3150,
+      "tempsensor-resolution": 9,
       "gyro-moving-threashold": 500,
       "formula-max-deviation": 1.6,
-      "wifi-portaltimeout": 120,
+      "wifi-portal-timeout": 120,
+      "wifi-connect-timeout": 20,
       "formula-calibration-temp": 20,
       "int-http1": 0,
       "int-http2": 0,
@@ -324,8 +316,8 @@ POST: /api/config/formula
 
 Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.
 
-* ``a1``-``a8`` are the angles/tilt readings (up to 5 are currently supported)
-* ``g1``-``g8`` are the corresponding gravity reaadings (in SG)
+* ``a1``-``a10`` are the angles/tilt readings (up to 10 are currently supported)
+* ``g1``-``g10`` are the corresponding gravity reaadings (in SG)
 
 Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
@@ -340,6 +332,8 @@ Payload should be in standard format used for posting a form. Such as as: `id=va
    a6=0
    a7=0
    a8=0
+   a9=0
+   a19=0
    g1=1.000      
    g2=1.053 
    g3=1.062
@@ -348,6 +342,8 @@ Payload should be in standard format used for posting a form. Such as as: `id=va
    g6=1 
    g7=1 
    g8=1 
+   g9=1 
+   g10=1 
 
 
 Calling the API's from Python
@@ -433,6 +429,8 @@ The requests package converts the json to standard form post format.
             "a6": 0, 
             "a7": 0, 
             "a8": 0, 
+            "a9": 0, 
+            "a10": 0, 
             "g1": 1.000, 
             "g2": 1.053, 
             "g3": 1.062, 
@@ -440,6 +438,8 @@ The requests package converts the json to standard form post format.
             "g5": 1, 
             "g6": 1, 
             "g7": 1, 
-            "g8": 1 
+            "g8": 1, 
+            "g9": 1, 
+            "g10": 1 
             }
    set_config( url, json )

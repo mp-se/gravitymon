@@ -120,7 +120,7 @@ format template that can be used. For information on customizing the format see 
       "gravity": ${gravity}, 
       "angle": ${angle}, 
       "battery": ${battery}, 
-      "rssi": ${rssi} 
+      "RSSI": ${rssi} 
    }
 
 
@@ -146,7 +146,10 @@ device is named `gravmon2`
       state_topic: "gravmon/gravmon2/battery"
    - platform: mqtt
       name: "gravmon2_rssi"
-      state_topic: "gravmon/gravmon2/rssi"
+      state_topic: "gravmon/gravmon2/RSSI"
+   - platform: mqtt
+      name: "gravmon2_temp"
+      state_topic: "gravmon/gravmon2/temp"
 
 
 Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option 
@@ -155,9 +158,10 @@ many sensors / topics as you want.
 
 ::
 
-   gravmon/${mdns}/tilt:${angle}|
-   gravmon/${mdns}/temperature:${temp}|
-   gravmon/${mdns}/temp_units:${temp-unit}|
+   gravmon/${mdns}/gravity:${gravity}|
+   gravmon/${mdns}/battery:${battery}|
+   gravmon/${mdns}/RSSI:${rssi}|
+   gravmon/${mdns}/temp:${temp}|
 
 
 Brewer's Friend
@@ -194,7 +198,7 @@ format for the endpoint. Just add you API key after token.
    "gravity": ${gravity},
    "angle": ${angle},
    "battery": ${battery},
-   "rssi": ${rssi}
+   "RSSI": ${rssi}
   }
 
 
@@ -260,4 +264,3 @@ starting with a ``?``. This string will be added to the URL above when doing the
 .. code-block::
 
    ?token=${token2}&v1=${temp}&v2=${gravity}&v3=${angle}
-

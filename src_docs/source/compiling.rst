@@ -29,8 +29,9 @@ In the platformio config there are 3 targets defined
 
 * gravity-debug; Maximum logging for trouble shooting, deep sleep is disabled.
 * gravity-release; Standard release
-* gravity-perf; Standard release but contains code for measuring performance 
-* gravity32-perf: Experimental version for ESP32.
+* gravity-perf; Standard release but contains code for measuring performance.
+* gravity32-release: Version for ESP32.
+* gravity32-perf: Version for ESP32 but contains code for measuring performance.
 
 .. note::
   There is an experimental ESP32 target but since platformio only supports SDK 1.0.6 and the WIFI connection is really slow compared to ESP8266, 
@@ -68,8 +69,6 @@ Source structure
      - Source code for software
    * - /src_docs
      - Source code for documentation
-   * - /stl
-     - 3d models 
    * - /test
      - Test data for developing html files
 

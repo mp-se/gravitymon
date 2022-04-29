@@ -53,6 +53,7 @@ Log errors
   * -9 - Error encoding
   * -10 - Error writing to stream
   * -11 - Read timeout
+  * -100 - Endpoint skipped since its SSL and the device is in gravity mode
 
 * MQTT push on <topic> failed error
 
