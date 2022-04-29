@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v1.0**. Last updated 2022-04-26
+  This documentation reflects **v1.0**. Last updated 2022-04-29
 
 .. image:: images/gravitymon.gif
   :width: 800

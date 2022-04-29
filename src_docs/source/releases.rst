@@ -6,6 +6,7 @@ Releases
 v1.0.0-beta2
 ------------
 * Moved applying sensor resolution in loop so we dont need to reboot.
+* Updated docs with information from beta1
 
 v1.0.0-beta1
 ------------
