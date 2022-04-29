@@ -32,6 +32,8 @@ SOFTWARE.
 #include <webserver.hpp>
 #include <wifi.hpp>
 
+//#define FORCE_GRAVITY_MODE
+
 // Define constats for this program
 #ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000;  // ms, time to wait between changes to output
@@ -45,8 +47,6 @@ uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 uint32_t stableGyroMillis;  // Used to calculate the total time since last
                             // stable gyro reading
-
-enum RunMode { gravityMode = 0, configurationMode = 1, wifiSetupMode = 2 };
 
 RunMode runMode = RunMode::gravityMode;
 
@@ -63,6 +63,7 @@ void checkSleepMode(float angle, float volt) {
 #if defined(FORCE_GRAVITY_MODE)
   Log.notice(F("MAIN: Forcing device into gravity mode for debugging" CR));
   runMode = RunMode::gravityMode;
+  return;
 #endif
 
   const RawGyroData &g = myConfig.getGyroCalibration();

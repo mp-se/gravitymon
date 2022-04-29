@@ -29,6 +29,9 @@ SOFTWARE.
 #include <ArduinoLog.h>
 #include <stdlib.h>
 
+enum RunMode { gravityMode = 0, configurationMode = 1, wifiSetupMode = 2 };
+extern RunMode runMode;
+
 #if defined(ESP8266)
 #include <LittleFS.h>
 #define ESP_RESET ESP.reset

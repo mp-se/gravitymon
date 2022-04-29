@@ -204,12 +204,18 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
 
   if (isSecure) {
+    if (runMode == RunMode::configurationMode) {
+      Log.notice(F("PUSH: Skipping InfluxDB since SSL is enabled and we are in config mode." CR));
+      return;
+    }
+
     Log.notice(F("PUSH: InfluxDB, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
     probeMaxFragement(serverPath);
     _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
-    _httpSecure.addHeader(F("Authorization"), auth.c_str());
+    _httpSecure.addHeader(F("Authorization"), auth.c_str()); 
+    _httpSecure.setReuse(true);
     _lastCode = _httpSecure.POST(doc);
   } else {
     _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
@@ -284,6 +290,11 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
 #endif
 
   if (isSecure) {
+    if (runMode == RunMode::configurationMode) {
+      Log.notice(F("PUSH: Skipping HTTP since SSL is enabled and we are in config mode." CR));
+      return;
+    }
+
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
     probeMaxFragement(serverPath);
@@ -353,6 +364,11 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 #endif
 
   if (isSecure) {
+    if (runMode == RunMode::configurationMode) {
+      Log.notice(F("PUSH: Skipping HTTP since SSL is enabled and we are in config mode." CR));
+      return;
+    }
+
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
     probeMaxFragement(serverPath);
@@ -399,6 +415,11 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
   int port = myConfig.getMqttPort();
 
   if (myConfig.isMqttSSL()) {
+    if (runMode == RunMode::configurationMode) {
+      Log.notice(F("PUSH: Skipping MQTT since SSL is enabled and we are in config mode." CR));
+      return;
+    }
+
     Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
 
