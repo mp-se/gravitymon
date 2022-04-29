@@ -54,7 +54,6 @@ void TempSensor::setup() {
     Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d resolution" CR),
                mySensors.getDS18Count(), myAdvancedConfig.getTempSensorResolution());
 #endif
-    mySensors.setResolution(myAdvancedConfig.getTempSensorResolution());
   }
 
   // Set the temp sensor adjustment values
@@ -94,6 +93,7 @@ float TempSensor::getValue(bool useGyro) {
   }
 
   // Read the sensors
+  mySensors.setResolution(myAdvancedConfig.getTempSensorResolution());
   mySensors.requestTemperatures();
 
   float c = 0;
