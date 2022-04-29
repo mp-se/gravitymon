@@ -3,8 +3,12 @@
 Releases 
 ########
 
-v1.0.0
-------
+v1.0.0-beta2
+------------
+* Moved applying sensor resolution in loop so we dont need to reboot.
+
+v1.0.0-beta1
+------------
 * Upgraded to bootstrap v5.1 for web pages.
 * Added tooltips to all fields in user interface
 * Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.
@@ -12,14 +16,19 @@ v1.0.0
 * Added function on format page so that it's easy to copy a format template from the docs (simplify service integration).
 * Added https support for Influxdb
 * Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather. 
-* Added advanced settings to configuration for adjusting some internal values (gyro reads, accepted formula deviation, timeouts, moving detection etc).
+* Added advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)
+* Added advanced settings: Set amount of gyro movement is allowed for a accurate read.
+* Added advanced settings: What deviation is acceptable for creating formula deviation
+* Added advanced settings: Various timeouts, wifi connect, wifi portal, http connects.
+* Added advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife
 * Added additional http error codes to troubleshooting documentation
+* Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If succesful the seconday becomes the new primary.
+* SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory. 
 * Installation instructions updated on how to find the device after wifi has been configured. 
 * Documentation on brewfather has been updated to adress SG/Plato conversion
 * BUG: Fixed issue in formula calculation in case there were a gap in the data series
-* BUG: Field name for wifi strenght changed from "rssi" to "RSSI"
-
-* TODO: Fix documentation for advanced settings.
+* BUG: Field name for wifi strength changed from "rssi" to "RSSI"
+* BUG: Fixed issue with probing MFLN on non standard ports
 
 v0.9.0
 ------
