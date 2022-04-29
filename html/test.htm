@@ -148,6 +148,8 @@
             appendLog( "Push target 'mqtt' failed with error timeout" );
           else if(code==-10)
             appendLog( "Push target 'mqtt' failed with error denied" );
+          else if(code==-100)
+            appendLog( "Push target 'mqtt' skipped since it's using SSL" );
           else 
             appendLog( "Push target 'mqtt' failed with error code " + code );
         }
@@ -177,6 +179,8 @@
             appendLog( "Push target 'influxdb' failed with error code 401, unauthorized" );
           else if(code==404)
             appendLog( "Push target 'influxdb' failed with error code 404, url not found" );
+          else if(code==-100)
+            appendLog( "Push target 'influxdb' skipped since it's using SSL" );
           else 
             appendLog( "Push target 'influxdb' failed with error code " + code );
         }
@@ -206,6 +210,8 @@
             appendLog( "Push target '" + target + "' failed with error code 401, unauthorized" );
           else if(code==404)
             appendLog( "Push target '" + target + "' failed with error code 404, url not found" );
+          else if(code==-100)
+            appendLog( "Push target '" + target + "' skipped since it's using SSL" );
           else 
             appendLog( "Push target '" + target + "' failed with error code " + code );
         }
