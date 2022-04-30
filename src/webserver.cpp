@@ -1130,17 +1130,17 @@ const char* WebServerHandler::getHtmlFileName(HtmlFile item) {
   Log.notice(F("WEB : Looking up filename for %d." CR), item);
 
   switch (item) {
-    case HTML_INDEX:
+    case HtmlFile::HTML_INDEX:
       return "index.min.htm";
-    case HTML_CONFIG:
+    case HtmlFile::HTML_CONFIG:
       return "config.min.htm";
-    case HTML_CALIBRATION:
+    case HtmlFile::HTML_CALIBRATION:
       return "calibration.min.htm";
-    case HTML_FORMAT:
+    case HtmlFile::HTML_FORMAT:
       return "format.min.htm";
-    case HTML_ABOUT:
+    case HtmlFile::HTML_ABOUT:
       return "about.min.htm";
-    case HTML_TEST:
+    case HtmlFile::HTML_TEST:
       return "test.min.htm";
   }
 

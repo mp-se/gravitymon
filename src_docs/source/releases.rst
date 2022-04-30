@@ -5,8 +5,11 @@ Releases
 
 v1.0.0-beta2
 ------------
-* Moved applying sensor resolution in loop so we dont need to reboot.
-* Updated docs with information from beta1
+* Moved applying temp sensor resolution in loop so there is no need to reboot.
+* Advanced software settings is only disabled if settings contain default values.
+* Added button on indexpage to direct to github issues.
+* Added button to extract important information for support requests. 
+* Updated docs with information from beta1.
 
 v1.0.0-beta1
 ------------

@@ -112,11 +112,11 @@
               });
               setInterval(function() {
                 loadLog();
-              }, 3000); //5 seconds  
+              }, 5000);
             
               function loadLog() {
                 $("#logContent").load("/log");
-                //$("#logContent").load("/test/status.json");
+                //$("#logContent").load("/test/log");
               };
             </script>
           
@@ -124,12 +124,26 @@
               View error log
             </button>
 
+            <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="tooltip" name="github-btn" id="github-btn" title="Go to github and place a issue">
+              Submit a issue on github
+            </button>
+
+            <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupport" aria-expanded="false" aria-controls="collapseSupport" data-bs-toggle="tooltip" name="support-btn" id="support-btn" title="Collect data relevant for a support case">
+              Gather support information
+            </button>
+
             <div class="collapse row-margin-10" id="collapseLog">
               <div class="card card-body">
                 <pre><code class="card-text" id="logContent"></code></pre>
               </div>
             </div>
-          
+
+            <div class="collapse row-margin-10" id="collapseSupport">
+              <div class="card card-body">
+                <pre><code class="card-text" id="supportContent"></code></pre>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -177,7 +191,77 @@
   </div>
 
   <script type="text/javascript">
+    var debug = {};
+
     window.onload = start;
+
+    $("#github-btn").click(function(e){
+      window.location.href = "https://github.com/mp-se/gravitymon/issues";
+    });
+
+    $("#support-btn").click(function(e){
+      $('#spinner').show(); 
+
+      var url = "/api/config";
+      //var url = "/test/config.json";
+      $.getJSON(url, function (cfg) {
+        debug = {};
+        debug["mdns"] = cfg["mdns"];
+        debug["id"] = cfg["id"];
+
+        debug["sleep-interval"] = cfg["sleep-interval"];
+        debug["temp-format"] = cfg["temp-format"];
+
+        debug["gravity-format"] = cfg["gravity-format"];
+        debug["gravity-temp-adjustment"] = cfg["gravity-temp-adjustment"];
+
+        debug["voltage-factor"] = cfg["voltage-factor"];
+        debug["platform"] = cfg["platform"];
+        debug["ble"] = cfg["ble"];
+        debug["gyro-temp"] = cfg["gyro-temp"];
+        debug["gyro-calibration-data"] = cfg["gyro-calibration-data"];
+        debug["temp-adjustment-value"] = cfg["temp-adjustment-value"];
+
+        var url = "/api/status";
+        //var url = "/test/status.json";
+        $.getJSON(url, function (cfg) {
+          debug["runtime-average"] = cfg["runtime-average"];
+          debug["rssi"] = cfg["rssi"];
+          debug["app-ver"] = cfg["app-ver"];
+          debug["app-build"] = cfg["app-build"];       
+        });
+
+        var url = "/api/config/format";
+        //var url = "/test/format.json";
+        $.getJSON(url, function (cfg) {
+          debug["formats"] = cfg;
+
+          var url = "/api/config/advanced";
+          //var url = "/test/adv.json";
+          $.getJSON(url, function (cfg) {
+            debug["advanced"] = cfg;
+
+            var url = "/api/upload";
+            //var url = "/test/upload.json";
+            $.getJSON(url, function (cfg) {
+              debug["files"] = cfg;
+            
+              var url = "/log";
+              //var url = "/test/log";
+              $.ajax({url: url, method: 'get', success: function (data) {
+                debug["log"] = data.split("\n");
+                var s = JSON.stringify(debug, null, 2);
+                $("#supportContent").text( s );
+                $('#spinner').hide(); 
+                navigator.clipboard.writeText(s);
+                alert("Support information copied to clipboard");
+                } 
+              });
+            });
+          });
+        });
+      });   
+    });
 
     $("#sleep-mode").click(function(e){
       console.log( "Blocking sleep mode = " + $("#sleep-mode").is(":checked"));

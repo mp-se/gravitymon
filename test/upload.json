@@ -1,8 +1,22 @@
 {
-    "index": false,
+    "index": true,
     "config": false,
-    "calibration": false,
-    "format": false,
+    "calibration": true,
+    "format": true,
+    "about": false,
     "test": false,
-    "about": true
+    "files": [
+        {
+            "file-name": "calibration.min.htm",
+            "file-size": 0
+        },
+        {
+            "file-name": "drd.dat",
+            "file-size": 4
+        },
+        {
+            "file-name": "error.log",
+            "file-size": 839
+        }
+    ]
 }
