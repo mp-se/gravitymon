@@ -48,6 +48,7 @@ void WebServerHandler::webHandleConfig() {
   myConfig.createJson(doc);
 
   doc[PARAM_PASS] = "";  // dont show the wifi password
+  doc[PARAM_PASS2] = "";
 
   double angle = 0;
 
