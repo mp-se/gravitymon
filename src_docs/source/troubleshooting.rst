@@ -57,6 +57,11 @@ Log errors
 
 * MQTT push on <topic> failed error
 
+  * -1 - Buffer to short
+  * -2 - Overflow
   * -3 - Network failed connected
+  * -4 - Network timeout
+  * -5 - Network read failed
+  * -6 - Network write failed
   * -10 - Connection denied
-
+  * -11 - Failed subscription
