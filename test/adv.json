@@ -1,15 +1,15 @@
 {
-  "gyro-read-count": 51,
-  "gyro-moving-threashold": 501,
-  "formula-max-deviation": 1.7,
-  "wifi-portal-timeout": 121,
-  "wifi-connect-timeout": 21,
-  "formula-calibration-temp": 21,
-  "tempsensor-resolution": 12,
+  "gyro-read-count": 50,
+  "gyro-moving-threashold": 500,
+  "formula-max-deviation": 1.6,
+  "wifi-portal-timeout": 120,
+  "wifi-connect-timeout": 20,
+  "formula-calibration-temp": 20,
+  "tempsensor-resolution": 9,
   "push-timeout": 10,
-  "int-http1": 1,
-  "int-http2": 2,
-  "int-http3": 3,
-  "int-influx": 4,
-  "int-mqtt": 5
+  "int-http1": 0,
+  "int-http2": 0,
+  "int-http3": 0,
+  "int-influx": 0,
+  "int-mqtt": 0
 }

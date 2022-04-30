@@ -107,7 +107,7 @@
             <div class="row mb-3">
               <label for="mdns" class="col-sm-2 col-form-label">Device name:</label>
               <div class="col-sm-3">
-                <input type="text" maxlength="12" class="form-control" name="mdns" id="mdns" data-bs-toggle="tooltip" title="Name of the device. Will be used for identifying the device when pushing data and on the local network.">
+                <input type="text" maxlength="12" class="form-control" name="mdns" id="mdns" placeholder="gravmon" data-bs-toggle="tooltip" title="Name of the device. Will be used for identifying the device when pushing data and on the local network.">
               </div>
             </div>
 
@@ -121,7 +121,7 @@
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="temp-format" id="temp-format-f" value="F" data-bs-toggle="tooltip" title="Temperature format used with displaying data">
-                    <label class="form-check-label" for="temp-format-f">Farenheight</label>
+                    <label class="form-check-label" for="temp-format-f">Fahrenheit</label>
                   </div>
                 </div>
               </fieldset>
@@ -130,7 +130,7 @@
             <div class="row mb-3">
               <label for="sleep-interval" class="col-sm-2 col-form-label">Interval (seconds):</label>
               <div class="col-sm-2">
-                <input type="number" min="10" max="3600" class="form-control" name="sleep-interval" id="sleep-interval" data-bs-toggle="tooltip" title="The number of seconds that the device will sleep between gravity readings. Recommended value is 300s">
+                <input type="number" min="10" max="3600" class="form-control" name="sleep-interval" id="sleep-interval" placeholder="300" data-bs-toggle="tooltip" title="The number of seconds that the device will sleep between gravity readings. Recommended value is 300s">
               </div>
               <label for="sleep-interval" class="col-sm-4 col-form-label" id="sleep-interval-info"></label>
             </div>
@@ -285,7 +285,7 @@
             <div class="row mb-3">
               <label for="mqtt-topic" class="col-sm-2 col-form-label">MQTT Port:</label>
               <div class="col-sm-4">
-                <input type="number" min="1" max="65535" class="form-control" name="mqtt-port" id="mqtt-port" placeholder="1138" data-bs-toggle="tooltip" title="Port number to use, 1138 is standard. Ports higher than 8000 will assume to use SSL">
+                <input type="number" min="1" max="65535" class="form-control" name="mqtt-port" id="mqtt-port" placeholder="1883" data-bs-toggle="tooltip" title="Port number to use, 1883 is standard. Ports higher than 8000 will assume to use SSL">
               </div>
             </div>
 
@@ -352,7 +352,7 @@
             <div class="row mb-3">
               <label for="gravity-formula" class="col-sm-2 col-form-label">Formula</label>
               <div class="col-sm-10">
-                <input type="text" maxlength="200" class="form-control" name="gravity-formula" id="gravity-formula" checked data-bs-toggle="tooltip" title="Formula used to convert angle to gravity">
+                <input type="text" maxlength="200" class="form-control" name="gravity-formula" id="gravity-formula" placeholder="0.0*tilt^2+0.01*tilt+0.2" checked data-bs-toggle="tooltip" title="Formula used to convert angle to gravity">
               </div>
             </div>
 
@@ -390,7 +390,7 @@
             <div class="row mb-3">
               <label for="voltage-factor" class="col-sm-2 col-form-label">Voltage factor:</label>
               <div class="col-sm-2">
-                <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor" data-bs-toggle="tooltip" title="Factor used to calculate the battery voltage. When running on battery, the voltage should be less than 4.15V">
+                <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor" placeholder="1.59" data-bs-toggle="tooltip" title="Factor used to calculate the battery voltage. When running on battery, the voltage should be less than 4.15V">
               </div>
               <label for="voltage-factor" class="col-sm-3 col-form-label" id="battery">Loading...</label>
             </div>
@@ -398,7 +398,7 @@
             <div class="row mb-3">
               <label for="temp-adjustment-value" class="col-sm-2 col-form-label">Temp Sensor Adj:</label>
               <div class="col-sm-2">
-                <input type="number" step=".1" class="form-control" name="temp-adjustment-value" id="temp-adjustment-value" data-bs-toggle="tooltip" title="This value will be added to the sensor value in case the sensor dont show the correct temperature">
+                <input type="number" step=".1" class="form-control" name="temp-adjustment-value" id="temp-adjustment-value" placeholder="0" data-bs-toggle="tooltip" title="This value will be added to the sensor value in case the sensor dont show the correct temperature">
               </div>
             </div>
 
@@ -453,7 +453,7 @@
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingAdvanced">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
-          <b>Advanced Settings (use with caution)</b>
+          <b>Advanced Software Settings (use with caution)</b>
         </button>
       </h2>
       <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced" data-bs-parent="#accordion">
@@ -465,7 +465,7 @@
             <div class="row mb-3">
               <label for="gyro-read-count" class="col-sm-3 col-form-label">Gyro reads:</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="10" max="100" class="form-control" name="gyro-read-count" id="gyro-read-count" checked data-bs-toggle="tooltip" title="How many times should we read the gyro to get an accurate angle. More reads = better accuracy but higher battery drain">
+                <input disabled type="number" min="10" max="100" class="form-control" name="gyro-read-count" id="gyro-read-count" placeholder="50" checked data-bs-toggle="tooltip" title="How many times should we read the gyro to get an accurate angle. More reads = better accuracy but higher battery drain">
               </div>
               <div class="col-sm-5">(10-100) - default 50</div>
             </div>
@@ -473,7 +473,7 @@
             <div class="row mb-3">
               <label for="gyro-moving-threashold" class="col-sm-3 col-form-label">Gyro moving theashold:</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="50" max="1000" class="form-control" name="gyro-moving-threashold" id="gyro-moving-threashold" checked data-bs-toggle="tooltip" title="How much deviation between gyro reads are acceptable in order to regard this as a valid angle"> 
+                <input disabled type="number" min="50" max="1000" class="form-control" name="gyro-moving-threashold" id="gyro-moving-threashold" placeholder="500" checked data-bs-toggle="tooltip" title="How much deviation between gyro reads are acceptable in order to regard this as a valid angle"> 
               </div>
               <div class="col-sm-5">(50-1000) - default 500</div>
             </div>
@@ -481,7 +481,7 @@
             <div class="row mb-3">
               <label for="formula-max-deviation" class="col-sm-3 col-form-label">Formula max deviation (SG):</label>
               <div class="col-sm-2">
-                <input disabled type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation" checked data-bs-toggle="tooltip" title="When validating the derived formula this is the maximum accepted deviation for the supplied values"> 
+                <input disabled type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation" placeholder="1.6" checked data-bs-toggle="tooltip" title="When validating the derived formula this is the maximum accepted deviation for the supplied values"> 
               </div>
               <div class="col-sm-5">(1 - 10) - default 1.6 SG</div>
             </div>
@@ -491,7 +491,7 @@
             <div class="row mb-3">
               <label for="tempsensor-resolution" class="col-sm-3 col-form-label">DS18B20 resolution (bits):</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="9" max="12" class="form-control" name="tempsensor-resolution" id="tempsensor-resolution" checked data-bs-toggle="tooltip" title="Resolution when reading the DS18B20 temperature sensor, higher resolution give better accuracy but takes longer"> 
+                <input disabled type="number" min="9" max="12" class="form-control" name="tempsensor-resolution" id="tempsensor-resolution" placeholder="9" checked data-bs-toggle="tooltip" title="Resolution when reading the DS18B20 temperature sensor, higher resolution give better accuracy but takes longer"> 
               </div>
               <div class="col-sm-5">(9 - 12) - default 9 bits</div>
             </div>
@@ -501,7 +501,7 @@
             <div class="row mb-3">
               <label for="wifi-connect-timeout" class="col-sm-3 col-form-label">Wifi connect timeout (s):</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="1" max="60" class="form-control" name="wifi-connect-timeout" id="wifi-connect-timeout" checked data-bs-toggle="tooltip" title="Max time waiting for a wifi connection before going back to sleep"> 
+                <input disabled type="number" min="1" max="60" class="form-control" name="wifi-connect-timeout" id="wifi-connect-timeout" placeholder="20" checked data-bs-toggle="tooltip" title="Max time waiting for a wifi connection before going back to sleep"> 
               </div>
               <div class="col-sm-5">(1 - 60) - default 20 s</div>
             </div>
@@ -509,7 +509,7 @@
             <div class="row mb-3">
               <label for="wifi-portal-timeout" class="col-sm-3 col-form-label">Wifi portal timeout (s):</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="10" max="240" class="form-control" name="wifi-portal-timeout" id="wifi-portal-timeout" checked data-bs-toggle="tooltip" title="Max time the wifi portal is active before existing"> 
+                <input disabled type="number" min="10" max="240" class="form-control" name="wifi-portal-timeout" id="wifi-portal-timeout" placeholder="120" checked data-bs-toggle="tooltip" title="Max time the wifi portal is active before existing"> 
               </div>
               <div class="col-sm-5">(10 - 240) - default 120 s</div>
             </div>
@@ -519,7 +519,7 @@
             <div class="row mb-3">
               <label for="int-http1" class="col-sm-3 col-form-label">Skip interval - HTTP 1 (POST):</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="0" max="5" class="form-control" name="int-http1" id="int-http1" checked data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-http1" id="int-http1" placeholder="0" checked data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -527,7 +527,7 @@
             <div class="row mb-3">
               <label for="int-http2" class="col-sm-3 col-form-label">Skip interval - HTTP 2 (POST):</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="0" max="5" class="form-control" name="int-http2" id="int-http2" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-http2" id="int-http2" placeholder="0" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -535,7 +535,7 @@
             <div class="row mb-3">
               <label for="int-http3" class="col-sm-3 col-form-label">Skip interval - HTTP 3 (GET):</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="0" max="5" class="form-control" name="int-http3" id="int-http3" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-http3" id="int-http3" placeholder="0" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -543,7 +543,7 @@
             <div class="row mb-3">
               <label for="int-influx" class="col-sm-3 col-form-label">Skip interval - InfluxDB v2:</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="0" max="5" class="form-control" name="int-influx" id="int-influx" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-influx" id="int-influx" placeholder="0" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -551,7 +551,7 @@
             <div class="row mb-3">
               <label for="int-mqtt" class="col-sm-3 col-form-label">Skip interval - MQTT:</label>
               <div class="col-sm-2">
-                <input disabled type="number" min="0" max="5" class="form-control" name="int-mqtt" id="int-mqtt" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
+                <input disabled type="number" min="0" max="5" class="form-control" name="int-mqtt" id="int-mqtt" placeholder="0" data-bs-toggle="tooltip" title="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle"> 
               </div>
               <div class="col-sm-5">(0 - 5) - default 0</div>
             </div>
@@ -566,8 +566,8 @@
           <div class="row mb-3">
             <div class="col-sm-4 offset-sm-3">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="adv-config" id="adv-config" checked data-bs-toggle="tooltip" title="Enabled the advanced configuration settings.">
-                <label class="form-check-label" for="adv-config">Enable advanced configuration</label>
+                <input class="form-check-input" type="checkbox" name="adv-config" id="adv-config" checked data-bs-toggle="tooltip" title="Enabled the advanced software settings.">
+                <label class="form-check-label" for="adv-config">Disable advanced software settings</label>
               </div>
             </div>
           </div>
@@ -747,7 +747,7 @@
 
     function checkAdvancedSection( b ) {
       var b = $("#adv-config").is(":checked");
-
+   
       $("#advanced-btn").prop("disabled", b);
       $("#gyro-read-count").prop("disabled", b);
       $("#gyro-moving-threashold").prop("disabled", b);
@@ -783,6 +783,11 @@
         $("#int-http3").val(cfg["int-http3"]);
         $("#int-influx").val(cfg["int-influx"]);
         $("#int-mqtt").val(cfg["int-mqtt"]);
+
+        if ( cfg["gyro-read-count"] != 50 || cfg["gyro-moving-threashold"] != 500 || cfg["formula-max-deviation"] != 1.6 || cfg["wifi-portal-timeout"] != 120 || cfg["wifi-connect-timeout"] != 20 || cfg["tempsensor-resolution"] != 9 || 
+             cfg["int-http1"] != 0 || cfg["int-http2"] != 0 || cfg["int-http3"] != 0 || cfg["int-influx"] != 0 || cfg["int-mqtt"] != 0 ) {
+          $("#adv-config").attr("checked", false );
+        }
       })
       .fail(function () {
         showError('Unable to get data from the device.');
