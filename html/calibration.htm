@@ -97,7 +97,7 @@
               <div class="row mb-3">
                 <label for="angle1" class="col-sm-1 col-form-label">1.</label>
                 <div class="col-sm-4"><input type="number" min="0" max="90" step="0.001" class="form-control" name="a1" id="a1" data-bs-toggle="tooltip" title="Enter the angle for the gravity. Zero value will be ignored"></div>
-                <div class="col-sm-4"><input type="number"  min="0" max="26" step="0.0001" class="form-control" name="g1" id="g1" data-bs-toggle="tooltip" title="Enter the gravity for the angle."></div>
+                <div class="col-sm-4"><input disabled type="number" class="form-control" name="g1" id="g1" data-bs-toggle="tooltip" title="The first value is reserved for water gravity."></div>
               </div>
 
               <div class="row mb-3">
@@ -368,7 +368,8 @@
 
         if(isPlato()) {
           $("#gravity-header").text("Gravity (Plato):");
-          $("#g1").val( parseFloat(cfg["g1"]).toFixed(1) );
+          //$("#g1").val( parseFloat(cfg["g1"]).toFixed(1) );
+          $("#g1").val( "0.0" );
           $("#g2").val( parseFloat(cfg["g2"]).toFixed(1) );
           $("#g3").val( parseFloat(cfg["g3"]).toFixed(1) );
           $("#g4").val( parseFloat(cfg["g4"]).toFixed(1) );
@@ -380,7 +381,8 @@
           $("#g10").val( parseFloat(cfg["g10"]).toFixed(1) );
         } else {
           $("#gravity-header").text("Gravity (SG):");
-          $("#g1").val( parseFloat(cfg["g1"]).toFixed(4) );
+          //$("#g1").val( parseFloat(cfg["g1"]).toFixed(4) );
+          $("#g1").val( "1.0000" );
           $("#g2").val( parseFloat(cfg["g2"]).toFixed(4) );
           $("#g3").val( parseFloat(cfg["g3"]).toFixed(4) );
           $("#g4").val( parseFloat(cfg["g4"]).toFixed(4) );
