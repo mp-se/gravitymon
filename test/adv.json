@@ -6,6 +6,7 @@
   "wifi-connect-timeout": 20,
   "formula-calibration-temp": 20,
   "tempsensor-resolution": 9,
+  "ignore-low-angles": false,
   "push-timeout": 10,
   "int-http1": 0,
   "int-http2": 0,

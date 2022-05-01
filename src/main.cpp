@@ -275,6 +275,11 @@ bool loopReadGravity() {
     bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
                         (myConfig.getSleepInterval() * 1000));
 
+    if (myAdvancedConfig.isIgnoreLowAnges() && (angle < myConfig.getFormulaData().a[0]) ) {
+      Log.warning(F("Main: Angle is lower than water, so we regard this as faulty and dont send any data." CR));
+      pushExpired = false;
+    }
+
     if (pushExpired || runMode == RunMode::gravityMode) {
       pushMillis = millis();
       LOG_PERF_START("loop-push");

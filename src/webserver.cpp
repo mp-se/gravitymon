@@ -576,6 +576,9 @@ void WebServerHandler::webHandleConfigGravity() {
     myConfig.setGravityTempAdj(
         _server->arg(PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
                                                                     : false);
+  else 
+      myConfig.setGravityTempAdj(false);
+                                                                    
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseGravity", true);
   _server->send(302, "text/plain", "Gravity config updated");
@@ -619,6 +622,9 @@ void WebServerHandler::webHandleConfigHardware() {
   if (_server->hasArg(PARAM_GYRO_TEMP))
     myConfig.setGyroTemp(
         _server->arg(PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
+  else
+      myConfig.setGyroTemp(false);
+
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseHardware", true);
   _server->send(302, "text/plain", "Hardware config updated");
@@ -687,6 +693,11 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
   if (_server->hasArg(PARAM_HW_TEMPSENSOR_RESOLUTION))
     myAdvancedConfig.setTempSensorResolution(
         _server->arg(PARAM_HW_TEMPSENSOR_RESOLUTION).toInt());
+  if (_server->hasArg(PARAM_HW_IGNORE_LOW_ANGLES))
+    myAdvancedConfig.setIgnoreLowAnges(
+        _server->arg(PARAM_HW_IGNORE_LOW_ANGLES).equalsIgnoreCase("on") ? true : false);
+  else 
+    myAdvancedConfig.setIgnoreLowAnges(false);
 
   myAdvancedConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseAdvanced", true);
@@ -721,6 +732,7 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   doc[PARAM_HW_PUSH_INTERVAL_MQTT] = myAdvancedConfig.getPushIntervalMqtt();
   doc[PARAM_HW_TEMPSENSOR_RESOLUTION] =
       myAdvancedConfig.getTempSensorResolution();
+  doc[PARAM_HW_IGNORE_LOW_ANGLES] = myAdvancedConfig.isIgnoreLowAnges();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);

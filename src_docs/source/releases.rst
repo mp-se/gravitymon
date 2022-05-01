@@ -10,6 +10,8 @@ v1.0.0-beta2
 * Added button on indexpage to direct to github issues.
 * Added button to extract important information for support requests. 
 * Updated docs with information from beta1.
+* First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.
+* Added advanced setting to ignore angles that are lower than water. This is disabled by default.
 
 v1.0.0-beta1
 ------------

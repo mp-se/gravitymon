@@ -162,6 +162,7 @@ Used for adjusting some internal constants and other advanced settings. Should b
       "wifi-portal-timeout": 120,
       "wifi-connect-timeout": 20,
       "formula-calibration-temp": 20,
+      "ignore-low-angles": false,
       "int-http1": 0,
       "int-http2": 0,
       "int-http3": 0,
@@ -174,8 +175,11 @@ POST: /api/config/advanced
 
 Same parameters as above.
 
-Payload should be in standard format used for posting a form
+Payload should be in standard format used for posting a form. 
 
+.. note::
+  ``ignore-low-angles`` is defined as "on" or "off" when posting since this is the output values 
+  from a checkbox, when reading data it's sent as boolean (true,false).
 
 GET: /api/clearwifi
 ===================

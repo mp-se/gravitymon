@@ -70,6 +70,7 @@ class AdvancedConfig {
   int _pushIntervalHttp3 = 0;
   int _pushIntervalInflux = 0;
   int _pushIntervalMqtt = 0;
+  bool _IgnoreLowAnges = false;
 
  public:
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
@@ -126,6 +127,11 @@ class AdvancedConfig {
             _pushIntervalInflux + _pushIntervalMqtt) == 0
                ? false
                : true;
+  }
+
+  const bool isIgnoreLowAnges() { return _IgnoreLowAnges; }
+  void setIgnoreLowAnges(bool b) {
+    _IgnoreLowAnges = b;
   }
 
   bool saveFile();
