@@ -1194,6 +1194,22 @@ bool WebServerHandler::setupWebServer() {
   MDNS.begin(myConfig.getMDNS());
   MDNS.addService("http", "tcp", 80);
 
+  // Show files in the filessytem at startup
+  FSInfo fs;
+  LittleFS.info(fs);
+  Log.notice(F("WEB : File system Total=%d, Used=%d." CR), fs.totalBytes,
+             fs.usedBytes);
+  Dir dir = LittleFS.openDir("/");
+  while (dir.next()) {
+    Log.notice(F("WEB : File=%s, %d bytes" CR), dir.fileName().c_str(),
+               dir.fileSize());
+    if (!dir.fileSize()) {
+      Log.notice(F("WEB : Empty file detected, removing file." CR));
+      LittleFS.remove(dir.fileName().c_str());
+    }
+  
+  }
+
   // Static content
 #if defined(EMBED_HTML)
   _server->on("/", std::bind(&WebServerHandler::webReturnIndexHtm, this));
@@ -1210,18 +1226,6 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/test.htm",
               std::bind(&WebServerHandler::webReturnTestHtm, this));
 #else
-  // Show files in the filessytem at startup
-
-  FSInfo fs;
-  LittleFS.info(fs);
-  Log.notice(F("WEB : File system Total=%d, Used=%d." CR), fs.totalBytes,
-             fs.usedBytes);
-  Dir dir = LittleFS.openDir("/");
-  while (dir.next()) {
-    Log.notice(F("WEB : File=%s, %d bytes" CR), dir.fileName().c_str(),
-               dir.fileSize());
-  }
-
   // Check if the html files exist, if so serve them, else show the static
   // upload page.
   if (checkHtmlFile(HTML_INDEX) && checkHtmlFile(HTML_CONFIG) &&
