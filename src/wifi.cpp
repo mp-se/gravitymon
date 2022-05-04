@@ -279,16 +279,19 @@ bool WifiConnection::connect() {
   if (!waitForConnection(timeout)) {
     Log.warning(F("WIFI: Failed to connect to first SSID %s." CR),
                 myConfig.getWifiSSID(0));
-    connectAsync(1);
 
-    if (waitForConnection(timeout)) {
-      Log.notice(
-          F("WIFI: Connected to second SSID %s, making secondary default." CR),
-          myConfig.getWifiSSID(1));
+    if (strlen(myConfig.getWifiSSID(1))) {
+      connectAsync(1);
 
-      myConfig.swapPrimaryWifi();
-      myConfig.saveFile();
-      return true;
+      if (waitForConnection(timeout)) {
+        Log.notice(
+            F("WIFI: Connected to second SSID %s, making secondary default." CR),
+            myConfig.getWifiSSID(1));
+
+        myConfig.swapPrimaryWifi();
+        myConfig.saveFile();
+        return true;
+      }
     }
 
     Log.warning(F("WIFI: Failed to connect to any SSID." CR));
