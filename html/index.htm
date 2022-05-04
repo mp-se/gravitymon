@@ -73,6 +73,47 @@
     </script>
 
     <div class="accordion" id="accordion">
+
+      <h2 class="accordion-header" id="headingData">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseData" aria-expanded="true" aria-controls="collapseData">
+          <b>Measurement</b>
+        </button>
+      </h2>
+      <div id="collapseData" class="accordion-collapse collapse show" aria-labelledby="headingData" data-bs-parent="#accordion">
+        <div class="accordion-body">
+
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Gravity:</div>
+            <div class="col-md-4 bg-light" id="gravity">Loading...</div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Temperature:</div>
+            <div class="col-md-4 bg-light" id="temp">Loading...</div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Angle/Tilt:</div>
+            <div class="col-md-4 bg-light" id="angle">Loading...</div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Battery:</div>
+            <div class="col-md-4 bg-light" id="battery">Loading...</div>
+          </div>
+      
+          <div class="row mb-3">
+            <div class="col-md-4 bg-light">Average runtime:</div>
+            <div class="col-md-4 bg-light" id="runtime">Loading...</div>
+          </div>
+      
+          <div class="row mb-3">
+            <div class="col-md-8 bg-light custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="sleep-mode" id="sleep-mode" disabled>
+              <label class="custom-control-label" for="sleep-mode">Do not enter sleep mode when floating (check this if you are collecting angles/tilt for calibration).</label>
+            </div>        
+          </div>      
+      
+        </div>
+      </div>
+
       <div class="accordion-item">
         <h2 class="accordion-header" id="headingSoftware">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSoftware" aria-expanded="true" aria-controls="collapseSoftware">
@@ -148,45 +189,6 @@
         </div>
       </div>
 
-      <h2 class="accordion-header" id="headingData">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseData" aria-expanded="true" aria-controls="collapseData">
-          <b>Measurement</b>
-        </button>
-      </h2>
-      <div id="collapseData" class="accordion-collapse collapse show" aria-labelledby="headingData" data-bs-parent="#accordion">
-        <div class="accordion-body">
-
-          <div class="row mb-3">
-            <div class="col-md-4 bg-light">Gravity:</div>
-            <div class="col-md-4 bg-light" id="gravity">Loading...</div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-4 bg-light">Temperature:</div>
-            <div class="col-md-4 bg-light" id="temp">Loading...</div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-4 bg-light">Angle/Tilt:</div>
-            <div class="col-md-4 bg-light" id="angle">Loading...</div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-4 bg-light">Battery:</div>
-            <div class="col-md-4 bg-light" id="battery">Loading...</div>
-          </div>
-      
-          <div class="row mb-3">
-            <div class="col-md-4 bg-light">Average runtime:</div>
-            <div class="col-md-4 bg-light" id="runtime">Loading...</div>
-          </div>
-      
-          <div class="row mb-3">
-            <div class="col-md-8 bg-light custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" name="sleep-mode" id="sleep-mode" disabled>
-              <label class="custom-control-label" for="sleep-mode">Do not enter sleep mode when floating (check this if you are collecting angles/tilt for calibration).</label>
-            </div>        
-          </div>      
-      
-        </div>
-      </div>
     </div>
   </div>
 
