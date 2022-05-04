@@ -1195,6 +1195,7 @@ bool WebServerHandler::setupWebServer() {
   MDNS.addService("http", "tcp", 80);
 
   // Show files in the filessytem at startup
+#if defined( ESP8266 )
   FSInfo fs;
   LittleFS.info(fs);
   Log.notice(F("WEB : File system Total=%d, Used=%d." CR), fs.totalBytes,
@@ -1207,8 +1208,12 @@ bool WebServerHandler::setupWebServer() {
       Log.notice(F("WEB : Empty file detected, removing file." CR));
       LittleFS.remove(dir.fileName().c_str());
     }
-  
   }
+#else // defined( ESP32 )
+
+#warning "Implement file listning for ESP32"
+
+#endif
 
   // Static content
 #if defined(EMBED_HTML)
