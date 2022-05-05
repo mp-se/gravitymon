@@ -12,6 +12,13 @@ v1.0.0-beta2
 * Updated docs with information from beta1.
 * First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.
 * Added advanced setting to ignore angles that are lower than water. This is disabled by default.
+* Added experimental support for MPU6500 (allowing that deviceID), waiting for confirmation on function.
+* Changed layout on index page with measured data on top.
+
+TODO:
+* Fix ESP32 build and update to fwk 2.0
+* Update documentation to match new version
+* Add circuit schema for ESP32
 
 v1.0.0-beta1
 ------------
