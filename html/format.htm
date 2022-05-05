@@ -241,7 +241,7 @@
           var json = JSON.parse(doc);
           doc = JSON.stringify(json, null, 2);
         } catch(e) {
-          console.log("Not a javascript object!")
+          console.log("Not a JSON object!")
         }
 
         $("#preview").text(doc);
