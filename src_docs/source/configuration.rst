@@ -301,6 +301,10 @@ This is the max amount of deviation allowed for a stable reading.
 This is the maximum devation on the formlula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied 
 data and of the deviation on any point is bigger the formula will be rejected.
 
+* **Ignore angles below water:**
+
+If this option is checked any angles below that of SG 1 will be discarded as invalid and never sent to any server. Default = off.
+
 * **DS18B20 Resolution:**
 
 Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C, 12 bits will give an accuracy of 0.0625C but will also 

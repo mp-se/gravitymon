@@ -122,7 +122,7 @@ Before pressing save on the network infomration, make a note of the devicename t
 in the next step to access the configuration pages. The link would look like this: **http://gravitymon56EA34.local**
 
 Under wifi settings you can define a primary and seconday wifi SSID. The seconday will be used in case the primary fails. If the seconday is 
-successful then it will be used as primary.
+successful then it will be used as primary. *The second wifi setting is optional and not needed.*
 
 .. image:: images/wifi.png
   :width: 200
