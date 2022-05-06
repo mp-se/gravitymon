@@ -1210,9 +1210,20 @@ bool WebServerHandler::setupWebServer() {
     }
   }
 #else // defined( ESP32 )
+  File root = LittleFS.open("/");
+  File f = root.openNextFile(); 
+  while (f) {
+    Log.notice(F("WEB : File=%s, %d bytes" CR), f.name(),
+               f.size());
+    if (!f.size()) {
+      Log.notice(F("WEB : Empty file detected, removing file." CR));
+      LittleFS.remove(f.name());
+    }
 
-#warning "Implement file listning for ESP32"
-
+    f = root.openNextFile();
+  }
+  f.close();
+  root.close();
 #endif
 
   // Static content

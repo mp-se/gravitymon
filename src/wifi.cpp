@@ -74,10 +74,7 @@ bool WifiConnection::hasConfig() {
   if (strlen(userSSID)) return true;
 
     // Check if there are stored WIFI Settings we can use.
-#if defined(ESP32)
-#warning \
-    "Cant read SSID on ESP32 until a connection has been made, this part will not work, change to WifiManager"
-#endif
+#if defined(ESP8266)
   String ssid = WiFi.SSID();
   if (ssid.length()) {
     Log.notice(F("WIFI: Found credentials in EEPORM." CR));
@@ -88,6 +85,10 @@ bool WifiConnection::hasConfig() {
     myConfig.saveFile();
     return true;
   }
+#else // defined( ESP32 )
+#warning "Cant read SSID property on ESP32 until a connection has been made!"
+#endif
+
   return false;
 }
 
