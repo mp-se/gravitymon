@@ -1,0 +1,58 @@
+Testing formatting
+------------------
+
+Header 1
+########
+
+Header 2
+--------
+
+Header 3
+********
+
+**BOLD**
+
+*ITALIC*
+
+``CODE SAMPLE``
+
+1. List
+2. List
+
+* List
+* List
+
+.. list-table:: Table
+   :widths: 40 60
+   :header-rows: 1
+
+   * - table
+     - table
+   * - content
+     - content
+
+.. image:: images/formula1.png
+  :width: 400
+  :alt: image
+
+.. code-block:: objdump
+
+   measurement,host=<mdns>,device=<id>,temp-format=<C|F>,gravity-format=SG,gravity=1.0004,corr-gravity=1.0004,angle=45.45,temp=20.1,battery=3.96,rssi=-18
+
+.. code-block:: json
+
+  { 
+    "project":"gravmon", 
+    "version":"0.4.10",  
+    "html": [ 
+        "index.min.htm", 
+        "device.min.htm", 
+        "config.min.htm", 
+        "calibration.min.htm", 
+        "about.min.htm" 
+    ] 
+  }
+
+.. note::
+
+   Note...
