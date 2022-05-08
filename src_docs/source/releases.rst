@@ -3,6 +3,11 @@
 Releases 
 ########
 
+v1.0.0-beta3
+------------
+* Added circuit diagram for esp8266 and esp32
+* Update documentation to match new version
+
 v1.0.0-beta2
 ------------
 * Moved applying temp sensor resolution in loop so there is no need to reboot.
@@ -14,11 +19,7 @@ v1.0.0-beta2
 * Added advanced setting to ignore angles that are lower than water. This is disabled by default.
 * Added experimental support for MPU6500 (allowing that deviceID), waiting for confirmation on function.
 * Changed layout on index page with measured data on top.
-
-TODO:
-* Fix ESP32 build and update to fwk 2.0
-* Update documentation to match new version
-* Add circuit schema for ESP32
+* BUG: Fixed error in html page for calibration so that that feature works again (REST API was working)
 
 v1.0.0-beta1
 ------------
