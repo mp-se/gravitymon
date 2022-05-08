@@ -133,7 +133,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -197,7 +197,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -205,7 +205,29 @@
         <article role="main">
           <div class="section" id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">#</a></h1>
-<p>This section is under construction.</p>
+<p>Anyone is welcome to contribute to this project or create their own variant of it. I would appreciate a PR if your feature would be of benefit other users.</p>
+<p>In order to keep the source code in good condition I use <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to validate and format the code using their standards for C++/C.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are using Windows as a base platform I would suggest that you install pre-commit under wsl (Windows Subssytem for Windows) and run it from there, I have found
+that this approach works fine.</p>
+</div>
+<p>The following command will run pre-commit on all the source files. Assuming you are inte project directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">run</span> <span class="o">--</span><span class="n">files</span> <span class="n">src</span><span class="o">/*</span>
+</pre></div>
+</div>
+<div class="section" id="design-goals">
+<h2>Design goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">#</a></h2>
+<p>My goals with this software has been the following:</p>
+<ul class="simple">
+<li><p>Create an open software for the excellent iSpindle hardware platform that is open and available for anyone.</p></li>
+<li><p>Add user requested features that have not made it into the iSpindle project.</p></li>
+<li><p>Focus on long battery life and stability.</p></li>
+<li><p>Explore new technologies and create the next generation gravity monitoring for home brewers.</p></li>
+</ul>
+<p>I will do my best to assist users and respond to new features, pr and suggestions. But keep in mind I’m doing this on my spare time.</p>
+<p>Regards, Magnus</p>
+</div>
 </div>
 
         </article>
@@ -253,8 +275,27 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Contributing</a><ul>
+<li><a class="reference internal" href="#design-goals">Design goals</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
