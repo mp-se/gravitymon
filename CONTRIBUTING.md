@@ -12,7 +12,9 @@
 
 * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
 
-* Before submitting, please use `pre-commit` to validate that your code contribution complies with the formatting standards for C++ and C.
+* Before submitting, please use `pre-commit` to validate that your code contribution complies with the formatting standards for C++ and C. 
+
+* Check the contribution section under the documentation for additional information.
 
 #### **Do you intend to add a new feature or change an existing one?**
 
