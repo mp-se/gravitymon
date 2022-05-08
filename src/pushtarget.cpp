@@ -204,9 +204,11 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
 
   if (isSecure) {
-#if defined( ESP8266 )
+#if defined(ESP8266)
     if (runMode == RunMode::configurationMode) {
-      Log.notice(F("PUSH: Skipping InfluxDB since SSL is enabled and we are in config mode." CR));
+      Log.notice(
+          F("PUSH: Skipping InfluxDB since SSL is enabled and we are in config "
+            "mode." CR));
       _lastCode = -100;
       return;
     }
@@ -217,7 +219,7 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
     probeMaxFragement(serverPath);
     _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
-    _httpSecure.addHeader(F("Authorization"), auth.c_str()); 
+    _httpSecure.addHeader(F("Authorization"), auth.c_str());
     _httpSecure.setReuse(true);
     _lastCode = _httpSecure.POST(doc);
   } else {
@@ -293,9 +295,11 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
 #endif
 
   if (isSecure) {
-#if defined( ESP8266 )
+#if defined(ESP8266)
     if (runMode == RunMode::configurationMode) {
-      Log.notice(F("PUSH: Skipping HTTP since SSL is enabled and we are in config mode." CR));
+      Log.notice(
+          F("PUSH: Skipping HTTP since SSL is enabled and we are in config "
+            "mode." CR));
       _lastCode = -100;
       return;
     }
@@ -370,9 +374,11 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 #endif
 
   if (isSecure) {
-#if defined( ESP8266 )
+#if defined(ESP8266)
     if (runMode == RunMode::configurationMode) {
-      Log.notice(F("PUSH: Skipping HTTP since SSL is enabled and we are in config mode." CR));
+      Log.notice(
+          F("PUSH: Skipping HTTP since SSL is enabled and we are in config "
+            "mode." CR));
       _lastCode = -100;
       return;
     }
@@ -424,9 +430,11 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
   int port = myConfig.getMqttPort();
 
   if (myConfig.isMqttSSL()) {
-#if defined( ESP8266 )
+#if defined(ESP8266)
     if (runMode == RunMode::configurationMode) {
-      Log.notice(F("PUSH: Skipping MQTT since SSL is enabled and we are in config mode." CR));
+      Log.notice(
+          F("PUSH: Skipping MQTT since SSL is enabled and we are in config "
+            "mode." CR));
       _lastCode = -100;
       return;
     }

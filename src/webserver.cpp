@@ -576,9 +576,9 @@ void WebServerHandler::webHandleConfigGravity() {
     myConfig.setGravityTempAdj(
         _server->arg(PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
                                                                     : false);
-  else 
-      myConfig.setGravityTempAdj(false);
-                                                                    
+  else
+    myConfig.setGravityTempAdj(false);
+
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseGravity", true);
   _server->send(302, "text/plain", "Gravity config updated");
@@ -623,7 +623,7 @@ void WebServerHandler::webHandleConfigHardware() {
     myConfig.setGyroTemp(
         _server->arg(PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
   else
-      myConfig.setGyroTemp(false);
+    myConfig.setGyroTemp(false);
 
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseHardware", true);
@@ -695,8 +695,10 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
         _server->arg(PARAM_HW_TEMPSENSOR_RESOLUTION).toInt());
   if (_server->hasArg(PARAM_HW_IGNORE_LOW_ANGLES))
     myAdvancedConfig.setIgnoreLowAnges(
-        _server->arg(PARAM_HW_IGNORE_LOW_ANGLES).equalsIgnoreCase("on") ? true : false);
-  else 
+        _server->arg(PARAM_HW_IGNORE_LOW_ANGLES).equalsIgnoreCase("on")
+            ? true
+            : false);
+  else
     myAdvancedConfig.setIgnoreLowAnges(false);
 
   myAdvancedConfig.saveFile();
@@ -1195,7 +1197,7 @@ bool WebServerHandler::setupWebServer() {
   MDNS.addService("http", "tcp", 80);
 
   // Show files in the filessytem at startup
-#if defined( ESP8266 )
+#if defined(ESP8266)
   FSInfo fs;
   LittleFS.info(fs);
   Log.notice(F("WEB : File system Total=%d, Used=%d." CR), fs.totalBytes,
@@ -1209,12 +1211,11 @@ bool WebServerHandler::setupWebServer() {
       LittleFS.remove(dir.fileName().c_str());
     }
   }
-#else // defined( ESP32 )
+#else  // defined( ESP32 )
   File root = LittleFS.open("/");
-  File f = root.openNextFile(); 
+  File f = root.openNextFile();
   while (f) {
-    Log.notice(F("WEB : File=%s, %d bytes" CR), f.name(),
-               f.size());
+    Log.notice(F("WEB : File=%s, %d bytes" CR), f.name(), f.size());
     if (!f.size()) {
       Log.notice(F("WEB : Empty file detected, removing file." CR));
       LittleFS.remove(f.name());

@@ -28,12 +28,12 @@ SOFTWARE.
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-#define MAX_SKETCH_SPACE 1044464  
+#define MAX_SKETCH_SPACE 1044464
 #else  // defined (ESP32)
 #include <ESPmDNS.h>
+#include <Update.h>
 #include <WebServer.h>
 #include <WiFi.h>
-#include <Update.h>
 #define MAX_SKETCH_SPACE 1835008
 #endif
 #include <incbin.h>

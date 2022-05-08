@@ -87,9 +87,8 @@ class AdvancedConfig {
   }
 
   int getTempSensorResolution() { return _tempSensorResolution; }
-  void setTempSensorResolution(int t) { 
-    if (t>=9 && t<=12)
-      _tempSensorResolution = t; 
+  void setTempSensorResolution(int t) {
+    if (t >= 9 && t <= 12) _tempSensorResolution = t;
   }
 
   float getDefaultCalibrationTemp() { return _defaultCalibrationTemp; }
@@ -130,9 +129,7 @@ class AdvancedConfig {
   }
 
   const bool isIgnoreLowAnges() { return _IgnoreLowAnges; }
-  void setIgnoreLowAnges(bool b) {
-    _IgnoreLowAnges = b;
-  }
+  void setIgnoreLowAnges(bool b) { _IgnoreLowAnges = b; }
 
   bool saveFile();
   bool loadFile();

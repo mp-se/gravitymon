@@ -45,7 +45,7 @@ class PushTarget {
   void sendHttpPost(TemplatingEngine& engine, bool isSecure, int index);
   void sendHttpGet(TemplatingEngine& engine, bool isSecure);
   void addHttpHeader(HTTPClient& http, String header);
-  void probeMaxFragement( String& serverPath );
+  void probeMaxFragement(String& serverPath);
 
  public:
   void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
@@ -68,7 +68,7 @@ class PushTarget {
 
 class PushIntervalTracker {
  private:
-  int _counters[5] = { 0, 0, 0, 0, 0 };
+  int _counters[5] = {0, 0, 0, 0, 0};
   void update(const int index, const int defaultValue);
 
  public:

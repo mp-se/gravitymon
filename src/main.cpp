@@ -32,7 +32,7 @@ SOFTWARE.
 #include <webserver.hpp>
 #include <wifi.hpp>
 
-//#define FORCE_GRAVITY_MODE
+// #define FORCE_GRAVITY_MODE
 
 // Define constats for this program
 #ifdef DEACTIVATE_SLEEPMODE
@@ -275,8 +275,11 @@ bool loopReadGravity() {
     bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
                         (myConfig.getSleepInterval() * 1000));
 
-    if (myAdvancedConfig.isIgnoreLowAnges() && (angle < myConfig.getFormulaData().a[0]) ) {
-      Log.warning(F("Main: Angle is lower than water, so we regard this as faulty and dont send any data." CR));
+    if (myAdvancedConfig.isIgnoreLowAnges() &&
+        (angle < myConfig.getFormulaData().a[0])) {
+      Log.warning(
+          F("Main: Angle is lower than water, so we regard this as faulty and "
+            "dont send any data." CR));
       pushExpired = false;
     }
 

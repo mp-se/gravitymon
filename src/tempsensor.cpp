@@ -51,8 +51,9 @@ void TempSensor::setup() {
 
   if (mySensors.getDS18Count()) {
 #if !defined(TSEN_DISABLE_LOGGING)
-    Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d resolution" CR),
-               mySensors.getDS18Count(), myAdvancedConfig.getTempSensorResolution());
+    Log.notice(
+        F("TSEN: Found %d temperature sensor(s). Using %d resolution" CR),
+        mySensors.getDS18Count(), myAdvancedConfig.getTempSensorResolution());
 #endif
   }
 

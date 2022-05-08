@@ -85,7 +85,7 @@ bool WifiConnection::hasConfig() {
     myConfig.saveFile();
     return true;
   }
-#else // defined( ESP32 )
+#else  // defined( ESP32 )
 #warning "Cant read SSID property on ESP32 until a connection has been made!"
 #endif
 
@@ -285,9 +285,9 @@ bool WifiConnection::connect() {
       connectAsync(1);
 
       if (waitForConnection(timeout)) {
-        Log.notice(
-            F("WIFI: Connected to second SSID %s, making secondary default." CR),
-            myConfig.getWifiSSID(1));
+        Log.notice(F("WIFI: Connected to second SSID %s, making secondary "
+                     "default." CR),
+                   myConfig.getWifiSSID(1));
 
         myConfig.swapPrimaryWifi();
         myConfig.saveFile();

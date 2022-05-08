@@ -390,7 +390,7 @@ bool AdvancedConfig::saveFile() {
   doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = this->getPushIntervalHttp3();
   doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
   doc[PARAM_HW_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
-  doc[PARAM_HW_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();  
+  doc[PARAM_HW_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
   doc[PARAM_HW_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
@@ -479,7 +479,8 @@ bool AdvancedConfig::loadFile() {
   if (!doc[PARAM_HW_PUSH_INTERVAL_MQTT].isNull())
     this->setPushIntervalMqtt(doc[PARAM_HW_PUSH_INTERVAL_MQTT].as<int>());
   if (!doc[PARAM_HW_TEMPSENSOR_RESOLUTION].isNull())
-    this->setTempSensorResolution(doc[PARAM_HW_TEMPSENSOR_RESOLUTION].as<int>());
+    this->setTempSensorResolution(
+        doc[PARAM_HW_TEMPSENSOR_RESOLUTION].as<int>());
   if (!doc[PARAM_HW_IGNORE_LOW_ANGLES].isNull())
     setIgnoreLowAnges(doc[PARAM_HW_IGNORE_LOW_ANGLES].as<bool>());
 

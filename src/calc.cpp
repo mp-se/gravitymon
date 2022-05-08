@@ -35,7 +35,8 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
   int noAngles = 0;
   RawFormulaData fd2;
 
-  // Check how many valid values we have got and make sure we have a full series.
+  // Check how many valid values we have got and make sure we have a full
+  // series.
   for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
     if (fd.a[i]) {
       fd2.a[noAngles] = fd.a[i];
@@ -50,7 +51,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
       order, noAngles);
 #endif
 
-  if (noAngles <3) {
+  if (noAngles < 3) {
     ErrorFileLog errLog;
     errLog.addEntry(F("CALC: Not enough values for deriving formula"));
     return ERR_FORMULA_NOTENOUGHVALUES;
@@ -62,7 +63,8 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
     // Returned value is 0 if no error
     if (ret == 0) {
 #if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
-      Log.verbose(F("CALC: Finshied processing data points, order = %d." CR), order);
+      Log.verbose(F("CALC: Finshied processing data points, order = %d." CR),
+                  order);
 #endif
 
       // Print the formula based on 'order'
