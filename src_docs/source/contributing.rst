@@ -5,7 +5,18 @@ Anyone is welcome to contribute to this project or create their own variant of i
 
 In order to keep the source code in good condition I use `pre-commit <https://pre-commit.com/>`_ to validate and format the code using their standards for C++/C. 
 
-If you are using Windows as a base platform I would suggest that you install pre-commit under wsl (Windows Subssytem for Windows) and run it from there, I have found that this approach works fine.
+.. note::  
+
+  If you are using Windows as a base platform I would suggest that you install pre-commit under wsl (Windows Subssytem for Windows) and run it from there, I have found 
+  that this approach works fine. 
+
+
+The following command will run pre-commit on all the source files. Assuming you are inte project directory.
+
+.. code-block:: 
+
+  pre-commit run --files src/*
+
 
 Design goals
 ------------
