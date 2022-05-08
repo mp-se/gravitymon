@@ -3,7 +3,46 @@
 Releases 
 ########
 
+v1.0.0-beta3
+------------
+* Added circuit diagram for esp8266 and esp32
+* Update documentation to match new version
+
+v1.0.0-beta2
+------------
+* Moved applying temp sensor resolution in loop so there is no need to reboot.
+* Advanced software settings is only disabled if settings contain default values.
+* Added button on indexpage to direct to github issues.
+* Added button to extract important information for support requests. 
+* Updated docs with information from beta1.
+* First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.
+* Added advanced setting to ignore angles that are lower than water. This is disabled by default.
+* Added experimental support for MPU6500 (allowing that deviceID), waiting for confirmation on function.
+* Changed layout on index page with measured data on top.
+* BUG: Fixed error in html page for calibration so that that feature works again (REST API was working)
+
+v1.0.0-beta1
+------------
+* Upgraded to bootstrap v5.1 for web pages.
+* Added tooltips to all fields in user interface
+* Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.
+* Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.
+* Added function on format page so that it's easy to copy a format template from the docs (simplify service integration).
+* Added https support for Influxdb
+* Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather. 
+* Added advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)
+* Added advanced settings: Set amount of gyro movement is allowed for a accurate read.
+* Added advanced settings: What deviation is acceptable for creating formula deviation
+* Added advanced settings: Various timeouts, wifi connect, wifi portal, http connects.
+* Added advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife
+* Added additional http error codes to troubleshooting documentation
+* Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If succesful the seconday becomes the new primary.
+* SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory. 
 * Installation instructions updated on how to find the device after wifi has been configured. 
+* Documentation on brewfather has been updated to adress SG/Plato conversion
+* BUG: Fixed issue in formula calculation in case there were a gap in the data series
+* BUG: Field name for wifi strength changed from "rssi" to "RSSI"
+* BUG: Fixed issue with probing MFLN on non standard ports
 
 v0.9.0
 ------

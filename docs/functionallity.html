@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" /><link rel="prev" title="Releases" href="releases.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Functionallity - GravityMon 0.9.0 documentation</title>
+        <title>Functionallity - GravityMon 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -226,10 +226,10 @@ in theory you can use them all. However this will consume more battery power so 
 more efficient to have the endpoints on your local network than on the internet.</p>
 <p>Currently the device supports the following endpoints.</p>
 <ul class="simple">
-<li><p>http or https</p></li>
-<li><p>influxdb v2</p></li>
+<li><p>http (ssl optional)</p></li>
+<li><p>influxdb v2 (ssl optional)</p></li>
+<li><p>MQTT (ssl optional)</p></li>
 <li><p>Brewfather</p></li>
-<li><p>MQTT</p></li>
 <li><p>Home Assistant</p></li>
 <li><p>Brew Spy</p></li>
 <li><p>Brewers Friend</p></li>
@@ -255,9 +255,8 @@ to minimize the needed RAM but the remote service might not support that feature
 <li><p><strong>Create gravity formulas on the device</strong></p>
 <p>Another big difference is that this software can create the gravity formula in the device, just enter the
 angle/gravity data that you have collected. You will also see a graph simulating how the formula would work.</p>
-<p>Currently the device can handle 5 data points which should be enough to get a accurate formula. At least 3 data points
+<p>Currently the device can handle 10 data points which should be enough to get a accurate formula. At least 3 data points
 is needed to get an accurate formula.</p>
-<p>If there is a need for more data points, raise a comment on github.</p>
 </li>
 <li><p><strong>Customize the data format beeing sent to push targets</strong></p>
 <p>In order to make it easier to support more targets there is a built in format editor that can be used to
@@ -272,19 +271,21 @@ feature that can correct the gravity as a second step making this independant of
 </li>
 <li><p><strong>OTA support from webserver</strong></p>
 <p>When starting up in configuration mode the device will check for a software update from a webserver. This is an easily
-way to keep the software up to date. In the future I might add a hosted endpoint for providing updates.</p>
+way to keep the software up to date. In the future I might add a hosted endpoint for providing updates. OTA can also be
+done over a SSL connection.</p>
 </li>
 <li><p><strong>DS18B20 temperature adjustments</strong></p>
 <p>You can adjust the temperature reading of the temperature sensor. In normal cases this should not be needed since
 the sensors should be calibrated.</p>
 </li>
 <li><p><strong>Gyro Movement</strong></p>
-<p>The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60seconds.
+<p>The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60 seconds.
 This way we should avoid faulty measurements and peaks in the graphs.</p>
 </li>
 <li><p><strong>WIFI connection issues</strong></p>
 <p>The software will not wait indefiently for a wifi connection. If it takes longer than 20 seconds to connect then
-the device will go into deep sleep for 60 seoncds and then retry later. This to conserve batter as much as possible.</p>
+the device will try the seconday wifi configuration, and that also failes it will go into deep sleep for 60 seconds and then
+retry later. This to conserve batter as much as possible.</p>
 </li>
 <li><p><strong>Use gyro temperature sensor</strong></p>
 <p>This works fine when the device has time to cool down between measurements and it saves up to 400 ms.

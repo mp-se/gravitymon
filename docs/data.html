@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Compiling the software" href="compiling.html" /><link rel="prev" title="REST API" href="api.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Data Formats - GravityMon 0.9.0 documentation</title>
+        <title>Data Formats - GravityMon 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -223,7 +223,7 @@
 <span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"angle"</span><span class="p">:</span><span class="w"> </span><span class="mf">45.34</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"rssi"</span><span class="p">:</span><span class="w"> </span><span class="mi">-12</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"RSSI"</span><span class="p">:</span><span class="w"> </span><span class="mi">-12</span><span class="p">,</span><span class="w"></span>
 
 <span class="w">   </span><span class="nt">"corr-gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity-unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w"></span>
@@ -242,25 +242,11 @@
  "gravity": ${gravity},
  "angle": ${angle},
  "battery": ${battery},
- "rssi": ${rssi},
+ "RSSI": ${rssi},
  "corr-gravity": ${corr-gravity},
  "gravity-unit": "${gravity-unit}",
  "run-time": ${run-time}
 }
-</pre></div>
-</div>
-</div>
-<div class="section" id="brewfather-format">
-<span id="data-formats-brewfather"></span><h2>Brewfather format<a class="headerlink" href="#brewfather-format" title="Permalink to this headline">#</a></h2>
-<p>This is the format for Brewfather. See: <a class="reference external" href="https://docs.brewfather.app/integrations/custom-stream">Brewfather API docs</a></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"temp"</span><span class="p">:</span><span class="w"> </span><span class="mf">20.5</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"temp_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.67</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0050</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"gravity_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -407,7 +393,6 @@ they can be uploaded manually afterwards.</p>
             <ul>
 <li><a class="reference internal" href="#">Data Formats</a><ul>
 <li><a class="reference internal" href="#http-post-ispindle-format">HTTP Post, iSpindle format</a></li>
-<li><a class="reference internal" href="#brewfather-format">Brewfather format</a></li>
 <li><a class="reference internal" href="#http-get">HTTP Get</a></li>
 <li><a class="reference internal" href="#influx-db-v2">Influx DB v2</a></li>
 <li><a class="reference internal" href="#mqtt">MQTT</a></li>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Licence" href="license.html" /><link rel="prev" title="Contributing" href="contributing.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Hardware - GravityMon 0.9.0 documentation</title>
+        <title>Hardware - GravityMon 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -133,7 +133,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -197,7 +197,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -215,6 +215,20 @@ mount it really close to the PCB in order for it to fit in the PET tube/containe
 the esp32 does not have. So in order to get a valid voltage (less than 3.2V) on the A0 pin this is needed. Once the modification is done you might
 need to adjust the voltage factor so the battery reading is correct.</p>
 <a class="reference internal image-reference" href="_images/esp32.jpg"><img alt="Mounting esp32" src="_images/esp32.jpg" style="width: 500px;"/></a>
+<div class="section" id="schema-for-esp8266-build">
+<h2>Schema for esp8266 build<a class="headerlink" href="#schema-for-esp8266-build" title="Permalink to this headline">#</a></h2>
+<a class="reference internal image-reference" href="_images/schema_esp8266.png"><img alt="Schema esp8266" src="_images/schema_esp8266.png" style="width: 700px;"/></a>
+</div>
+<div class="section" id="schema-for-esp32-build">
+<h2>Schema for esp32 build<a class="headerlink" href="#schema-for-esp32-build" title="Permalink to this headline">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This schema assumes that an ESP32 D1 Mini (pin compatible with ESP8266 D1 Mini is used)
+The ESP32 has two rows of pins but only the inner row is used. The main difference is the added resistor R3 so we
+get a voltage divider for measuring battery. The ESP8266 has a built in resistor thats not visible on the schema.</p>
+</div>
+<a class="reference internal image-reference" href="_images/schema_esp32.png"><img alt="Schema esp32" src="_images/schema_esp32.png" style="width: 700px;"/></a>
+</div>
 </div>
 
         </article>
@@ -262,8 +276,28 @@ need to adjust the voltage factor so the battery reading is correct.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Hardware</a><ul>
+<li><a class="reference internal" href="#schema-for-esp8266-build">Schema for esp8266 build</a></li>
+<li><a class="reference internal" href="#schema-for-esp32-build">Schema for esp32 build</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

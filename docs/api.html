@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Data Formats" href="data.html" /><link rel="prev" title="Advanced Configuration" href="advanced.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>REST API - GravityMon 0.9.0 documentation</title>
+        <title>REST API - GravityMon 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -221,7 +221,6 @@
 <span class="w">   </span><span class="nt">"ota-url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.1.50:80/firmware/gravmon/"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp-format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"ble"</span><span class="p">:</span><span class="w"> </span><span class="s2">"color"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"brewfather-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://log.brewfather.net/stream?id=Qwerty"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"token2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token2"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"http-push"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://192.168.1.50:9090/api/v1/Qwerty/telemetry"</span><span class="p">,</span><span class="w"></span>
@@ -256,15 +255,9 @@
 <span class="w">   </span><span class="p">},</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"formula-calculation-data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="nt">"a1"</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"a2"</span><span class="p">:</span><span class="mi">30</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"a3"</span><span class="p">:</span><span class="mi">35</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"a4"</span><span class="p">:</span><span class="mi">40</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"a5"</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"a10"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">      </span><span class="nt">"g1"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"g2"</span><span class="p">:</span><span class="mf">1.01</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"g3"</span><span class="p">:</span><span class="mf">1.02</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"g4"</span><span class="p">:</span><span class="mf">1.03</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"g5"</span><span class="p">:</span><span class="mf">1.04</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"g10"</span><span class="p">:</span><span class="mi">1</span><span class="w"></span>
 <span class="w">   </span><span class="p">},</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"angle"</span><span class="p">:</span><span class="w"> </span><span class="mf">90.93</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.105</span><span class="p">,</span><span class="w"></span>
@@ -294,6 +287,7 @@
 <span class="w">   </span><span class="nt">"temp-c"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp-f"</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"wifi-ssid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"connected SSID"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"temp-format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"sleep-mode"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token"</span><span class="p">,</span><span class="w"></span>
@@ -312,8 +306,8 @@
 <h2>GET: /api/config/formula<a class="headerlink" href="#get-api-config-formula" title="Permalink to this headline">#</a></h2>
 <p>Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a4</span></code> are the angles/tilt readings (up to 5 are currently supported)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g4</span></code> are the corresponding gravity reaadings in SG or Plato depending on the device-format.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a10</span></code> are the angles/tilt readings (up to 10 are currently supported)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g10</span></code> are the corresponding gravity reaadings in SG or Plato depending on the device-format.</p></li>
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ee1bfc"</span><span class="p">,</span><span class="w"></span>
@@ -322,15 +316,57 @@
 <span class="w">   </span><span class="nt">"a3"</span><span class="p">:</span><span class="w"> </span><span class="mi">58</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"a4"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"a5"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"a6"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"a7"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"a8"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"a9"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"a10"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"g1"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.000</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"g2"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.053</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"g3"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.062</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"g4"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"g5"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"g6"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"g7"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"g8"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"g9"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"g10"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Potential error message"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity-format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity-formula"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0*tilt^3+0.0*tilt^2+0.0017978*tilt+0.9436"</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="get-api-config-advanced">
+<h2>GET: /api/config/advanced<a class="headerlink" href="#get-api-config-advanced" title="Permalink to this headline">#</a></h2>
+<p>Used for adjusting some internal constants and other advanced settings. Should be used with caution.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gyro-read-count"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"tempsensor-resolution"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"gyro-moving-threashold"</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"formula-max-deviation"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.6</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"wifi-portal-timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"wifi-connect-timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"formula-calibration-temp"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"ignore-low-angles"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"int-http1"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"int-http2"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"int-http3"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"int-influx"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"int-mqtt"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="post-api-config-advanced">
+<h2>POST: /api/config/advanced<a class="headerlink" href="#post-api-config-advanced" title="Permalink to this headline">#</a></h2>
+<p>Same parameters as above.</p>
+<p>Payload should be in standard format used for posting a form.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">ignore-low-angles</span></code> is defined as “on” or “off” when posting since this is the output values
+from a checkbox, when reading data it’s sent as boolean (true,false).</p>
 </div>
 </div>
 <div class="section" id="get-api-clearwifi">
@@ -354,7 +390,7 @@
 <p>Trigger a push on one of the targets, used to validate the configuration from the UI.</p>
 <p>Requires to parameters to function /api/test/push?id=&lt;deviceid&gt;&amp;format=&lt;format&gt;</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code> defines which endpoint to test, valid values are; http-1, http-2, brewfather, influxdb, mqtt</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code> defines which endpoint to test, valid values are; http-1, http-2, http-3, influxdb, mqtt</p></li>
 </ul>
 <p>The response is an json message with the following values.</p>
 <ul class="simple">
@@ -396,7 +432,6 @@
 <span class="n">http</span><span class="o">-</span><span class="n">push</span><span class="o">-</span><span class="n">h2</span><span class="o">=</span>
 <span class="n">http</span><span class="o">-</span><span class="n">push2</span><span class="o">-</span><span class="n">h1</span><span class="o">=</span>
 <span class="n">http</span><span class="o">-</span><span class="n">push2</span><span class="o">-</span><span class="n">h2</span><span class="o">=</span>
-<span class="n">brewfather</span><span class="o">-</span><span class="n">push</span><span class="o">=</span>
 <span class="n">influxdb2</span><span class="o">-</span><span class="n">push</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.1.50</span><span class="p">:</span><span class="mi">8086</span>
 <span class="n">influxdb2</span><span class="o">-</span><span class="n">org</span><span class="o">=</span>
 <span class="n">influxdb2</span><span class="o">-</span><span class="n">bucket</span><span class="o">=</span>
@@ -450,8 +485,8 @@ reading data it’s sent as boolean (true,false).</p>
 <h2>POST: /api/config/formula<a class="headerlink" href="#post-api-config-formula" title="Permalink to this headline">#</a></h2>
 <p>Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a4</span></code> are the angles/tilt readings (up to 5 are currently supported)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g4</span></code> are the corresponding gravity reaadings (in SG)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a10</span></code> are the angles/tilt readings (up to 10 are currently supported)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g10</span></code> are the corresponding gravity reaadings (in SG)</p></li>
 </ul>
 <p>Payload should be in standard format used for posting a form. Such as as: <cite>id=value&amp;mdns=value</cite> etc. Key value pairs are shown below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span><span class="o">=</span><span class="n">ee1bfc</span>
@@ -460,11 +495,21 @@ reading data it’s sent as boolean (true,false).</p>
 <span class="n">a3</span><span class="o">=</span><span class="mi">58</span>
 <span class="n">a4</span><span class="o">=</span><span class="mi">0</span>
 <span class="n">a5</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">a6</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">a7</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">a8</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">a9</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">a19</span><span class="o">=</span><span class="mi">0</span>
 <span class="n">g1</span><span class="o">=</span><span class="mf">1.000</span>
 <span class="n">g2</span><span class="o">=</span><span class="mf">1.053</span>
 <span class="n">g3</span><span class="o">=</span><span class="mf">1.062</span>
 <span class="n">g4</span><span class="o">=</span><span class="mi">1</span>
 <span class="n">g5</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">g6</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">g7</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">g8</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">g9</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">g10</span><span class="o">=</span><span class="mi">1</span>
 </pre></div>
 </div>
 </div>
@@ -507,7 +552,6 @@ present or the API call will fail.</p>
          <span class="s2">"http-push-h2"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"http-push2-h1"</span><span class="p">:</span> <span class="s2">""</span>
          <span class="s2">"http-push2-h2"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
-         <span class="s2">"brewfather-push"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"influxdb2-push"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"influxdb2-org"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
          <span class="s2">"influxdb2-bucket"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
@@ -544,11 +588,21 @@ present or the API call will fail.</p>
          <span class="s2">"a3"</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
          <span class="s2">"a4"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
          <span class="s2">"a5"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="s2">"a6"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="s2">"a7"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="s2">"a8"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="s2">"a9"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="s2">"a10"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
          <span class="s2">"g1"</span><span class="p">:</span> <span class="mf">1.000</span><span class="p">,</span>
          <span class="s2">"g2"</span><span class="p">:</span> <span class="mf">1.053</span><span class="p">,</span>
          <span class="s2">"g3"</span><span class="p">:</span> <span class="mf">1.062</span><span class="p">,</span>
          <span class="s2">"g4"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-         <span class="s2">"g5"</span><span class="p">:</span> <span class="mi">1</span>
+         <span class="s2">"g5"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+         <span class="s2">"g6"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+         <span class="s2">"g7"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+         <span class="s2">"g8"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+         <span class="s2">"g9"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+         <span class="s2">"g10"</span><span class="p">:</span> <span class="mi">1</span>
          <span class="p">}</span>
 <span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
 </pre></div>
@@ -618,6 +672,8 @@ present or the API call will fail.</p>
 <li><a class="reference internal" href="#get-api-device">GET: /api/device</a></li>
 <li><a class="reference internal" href="#get-api-status">GET: /api/status</a></li>
 <li><a class="reference internal" href="#get-api-config-formula">GET: /api/config/formula</a></li>
+<li><a class="reference internal" href="#get-api-config-advanced">GET: /api/config/advanced</a></li>
+<li><a class="reference internal" href="#post-api-config-advanced">POST: /api/config/advanced</a></li>
 <li><a class="reference internal" href="#get-api-clearwifi">GET: /api/clearwifi</a></li>
 <li><a class="reference internal" href="#get-api-factory">GET: /api/factory</a></li>
 <li><a class="reference internal" href="#get-api-test-push">GET: /api/test/push</a></li>

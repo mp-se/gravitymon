@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Troubleshooting" href="troubleshooting.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Configuration - GravityMon 0.9.0 documentation</title>
+        <title>Configuration - GravityMon 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -300,11 +300,6 @@ need to have 2 different tokens please use the <a class="reference internal" hre
 </ul>
 <p>The token is included in the default format for the HTTP GET url but can be used for any of the formats. For HTTP GET use can use this for an authorization token with for instance ubidots or blynk http api.</p>
 <ul class="simple">
-<li><p><strong>Brewfather URL:</strong></p></li>
-</ul>
-<p>Endpoint to send data via http to brewfather. Format used <a class="reference internal" href="data.html#data-formats-brewfather"><span class="std std-ref">Brewfather format</span></a></p>
-<p>SSL is not supported for this target.</p>
-<ul class="simple">
 <li><p><strong>HTTP Headers</strong></p></li>
 </ul>
 <a class="reference internal image-reference" href="_images/config-popup1.png"><img alt="HTTP Headers" src="_images/config-popup1.png" style="width: 300px;"/></a>
@@ -426,6 +421,51 @@ code the update will be done during startup.</p>
 <p>This option gives you the possibility to install an new version of the firmware (or any firmware that uses the standard flash layout).</p>
 <a class="reference internal image-reference" href="_images/firmware.png"><img alt="Update firmware" src="_images/firmware.png" style="width: 600px;"/></a>
 </div>
+<div class="section" id="advanded-settings">
+<h3>Advanded Settings<a class="headerlink" href="#advanded-settings" title="Permalink to this headline">#</a></h3>
+<a class="reference internal image-reference" href="_images/config5.png"><img alt="Advanced Settings" src="_images/config5.png" style="width: 800px;"/></a>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Changeing these parameters with caution. The wrong values might cause the device to become unresponsive.</p>
+</div>
+<ul class="simple">
+<li><p><strong>Gyro reads:</strong></p></li>
+</ul>
+<p>This defines how many gyro reads will be done before an angle is calculated. More reads will give better accuracy and also allow detection of
+movement. Too many reads will take time and affecte batterylife. 50 takes about 800 ms to execute.</p>
+<ul class="simple">
+<li><p><strong>Gyro moving threashold:</strong></p></li>
+</ul>
+<p>This is the max amount of deviation allowed for a stable reading.</p>
+<ul class="simple">
+<li><p><strong>Formula deviation:</strong></p></li>
+</ul>
+<p>This is the maximum devation on the formlula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied
+data and of the deviation on any point is bigger the formula will be rejected.</p>
+<ul class="simple">
+<li><p><strong>Ignore angles below water:</strong></p></li>
+</ul>
+<p>If this option is checked any angles below that of SG 1 will be discarded as invalid and never sent to any server. Default = off.</p>
+<ul class="simple">
+<li><p><strong>DS18B20 Resolution:</strong></p></li>
+</ul>
+<p>Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C, 12 bits will give an accuracy of 0.0625C but will also
+take longer time to measure..</p>
+<ul class="simple">
+<li><p><strong>Wifi connect timeout:</strong></p></li>
+</ul>
+<p>This is the amount of time allowed for a wifi connect.</p>
+<ul class="simple">
+<li><p><strong>Wifi portal timeout:</strong></p></li>
+</ul>
+<p>If the wifi portal is triggered (can be triggerd by reset) then this is the amount of time allowed before it exists again.</p>
+<ul class="simple">
+<li><p><strong>Skip Interval (…):</strong></p></li>
+</ul>
+<p>These options allow the user to have variable push intervals for the diffrent endpoints. 0 means that every wakeup will send data to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped.</p>
+<p>If the sleep interval is 300s and MQTT is set to 0 and HTTP1 is set to 2 then MQTT will be sent every 300s while HTTP1 would be sent 900s. This is great if you want to send data to a local mqtt server often but brewfather will only
+accept data every 15 min.</p>
+</div>
 </div>
 </div>
 
@@ -494,6 +534,7 @@ code the update will be done during startup.</p>
 <li><a class="reference internal" href="#push-settings-2">Push Settings (2)</a></li>
 <li><a class="reference internal" href="#gravity-settings">Gravity Settings</a></li>
 <li><a class="reference internal" href="#hardware-settings">Hardware Settings</a></li>
+<li><a class="reference internal" href="#advanded-settings">Advanded Settings</a></li>
 </ul>
 </li>
 </ul>

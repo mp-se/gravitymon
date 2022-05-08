@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="Functionallity" href="functionallity.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Installation - GravityMon 0.9.0 documentation</title>
+        <title>Installation - GravityMon 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -214,7 +214,8 @@
 <div class="section" id="brewflasher">
 <h2>Brewflasher<a class="headerlink" href="#brewflasher" title="Permalink to this headline">#</a></h2>
 <p>The prefered option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works
-on both Windows and Mac. You can download the latest version from here: <a class="reference external" href="https://www.brewflasher.com/">Brewflasher</a></p>
+on both Windows and Mac. You can download the latest version from here: <a class="reference external" href="https://www.brewflasher.com/">Brewflasher</a> there is also a web based version
+available here <a class="reference external" href="https://web.brewflasher.com/">Brewflasher WEB</a>.</p>
 <a class="reference internal image-reference" href="_images/brewflasher.png"><img alt="Serial output" src="_images/brewflasher.png" style="width: 600px;"/></a>
 <div class="section" id="binaries">
 <h3>Binaries<a class="headerlink" href="#binaries" title="Permalink to this headline">#</a></h3>
@@ -227,7 +228,8 @@ on both Windows and Mac. You can download the latest version from here: <a class
 <p>This version also submits performance data to an influx database with detailed execution times.</p>
 </li>
 <li><p><strong>firmware32.bin</strong></p>
-<p>This is the standard release build for an ESP32 variant</p>
+<p>This is the standard release build for an ESP32 variant. When flashing an ESP32 you also need the <strong>partition32.bin</strong> file that outlines the flash memory structure. Due to
+the size of the firmware we are using a custom partition setup.</p>
 </li>
 </ul>
 <p>In these versions all the html files are embedded in the binaries. The file system is currently only used for storing
@@ -285,6 +287,8 @@ the device its possible that wifi settings already exist.</p>
 in the browser: <strong>http://192.168.4.1</strong></p>
 <p>Before pressing save on the network infomration, make a note of the devicename that is shown on the screen, this will be the name that is used
 in the next step to access the configuration pages. The link would look like this: <strong>http://gravitymon56EA34.local</strong></p>
+<p>Under wifi settings you can define a primary and seconday wifi SSID. The seconday will be used in case the primary fails. If the seconday is
+successful then it will be used as primary. <em>The second wifi setting is optional and not needed.</em></p>
 <a class="reference internal image-reference" href="_images/wifi.png"><img alt="Wifi page" src="_images/wifi.png" style="width: 200px;"/></a>
 </div>
 <div class="section" id="finding-the-device-adress">

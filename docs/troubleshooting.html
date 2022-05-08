@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Q &amp; A" href="q_and_a.html" /><link rel="prev" title="Configuration" href="configuration.html" />
 
     <meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Troubleshooting - GravityMon 0.9.0 documentation</title>
+        <title>Troubleshooting - GravityMon 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 0.9.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 0.9.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -228,7 +228,6 @@ to memory leaks.</p>
 <p>Check the format for your custom header. This means it has not a correct format.</p>
 </li>
 <li><p>Influxdb push failed response</p></li>
-<li><p>Brewfather push failed response</p></li>
 <li><p>HTTP push failed response</p>
 <p>All these errors are standard http error codes. This are the commone ones;</p>
 <ul class="simple">
@@ -237,11 +236,32 @@ to memory leaks.</p>
 <li><p>403 - Forbidden. Could be an issue with token or URL.</p></li>
 <li><p>404 - Not found. Probably a wrong URL.</p></li>
 </ul>
+<p>In some cases there can be negative error codes which have the following meaning:</p>
+<ul class="simple">
+<li><p>-1 - Connection refused</p></li>
+<li><p>-2 - Send header failed</p></li>
+<li><p>-3 - Send payload failed</p></li>
+<li><p>-4 - Not connected</p></li>
+<li><p>-5 - Connection lost</p></li>
+<li><p>-6 - No stream</p></li>
+<li><p>-7 - No HTTP server</p></li>
+<li><p>-8 - Too little RAM available</p></li>
+<li><p>-9 - Error encoding</p></li>
+<li><p>-10 - Error writing to stream</p></li>
+<li><p>-11 - Read timeout</p></li>
+<li><p>-100 - Endpoint skipped since its SSL and the device is in gravity mode</p></li>
+</ul>
 </li>
 <li><p>MQTT push on &lt;topic&gt; failed error</p>
 <ul class="simple">
+<li><p>-1 - Buffer to short</p></li>
+<li><p>-2 - Overflow</p></li>
 <li><p>-3 - Network failed connected</p></li>
+<li><p>-4 - Network timeout</p></li>
+<li><p>-5 - Network read failed</p></li>
+<li><p>-6 - Network write failed</p></li>
 <li><p>-10 - Connection denied</p></li>
+<li><p>-11 - Failed subscription</p></li>
 </ul>
 </li>
 </ul>
