@@ -108,8 +108,8 @@ void PushIntervalTracker::save() {
 void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
                          float tempC, float runTime) {
   printHeap("PUSH");
-  _http.setReuse(false);
-  _httpSecure.setReuse(false);
+  _http.setReuse(true);
+  _httpSecure.setReuse(true);
 
   TemplatingEngine engine;
   engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime);
