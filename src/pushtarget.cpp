@@ -220,7 +220,6 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
     _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
     _httpSecure.addHeader(F("Authorization"), auth.c_str());
-    _httpSecure.setReuse(true);
     _lastCode = _httpSecure.POST(doc);
   } else {
     _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
