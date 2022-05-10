@@ -3,49 +3,52 @@
 Releases 
 ########
 
-v1.0.0-beta3
-------------
-* Added circuit diagram for esp8266 and esp32
-* Update documentation to match new version
+v1.0.0
+======
 
-v1.0.0-beta2
-------------
-* Moved applying temp sensor resolution in loop so there is no need to reboot.
-* Advanced software settings is only disabled if settings contain default values.
-* Added button on indexpage to direct to github issues.
-* Added button to extract important information for support requests. 
-* Updated docs with information from beta1.
-* First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.
-* Added advanced setting to ignore angles that are lower than water. This is disabled by default.
-* Added experimental support for MPU6500 (allowing that deviceID), waiting for confirmation on function.
-* Changed layout on index page with measured data on top.
-* BUG: Fixed error in html page for calibration so that that feature works again (REST API was working)
-
-v1.0.0-beta1
-------------
-* Upgraded to bootstrap v5.1 for web pages.
-* Added tooltips to all fields in user interface
-* Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.
-* Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.
-* Added function on format page so that it's easy to copy a format template from the docs (simplify service integration).
-* Added https support for Influxdb
-* Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather. 
-* Added advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)
-* Added advanced settings: Set amount of gyro movement is allowed for a accurate read.
-* Added advanced settings: What deviation is acceptable for creating formula deviation
-* Added advanced settings: Various timeouts, wifi connect, wifi portal, http connects.
-* Added advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife
-* Added additional http error codes to troubleshooting documentation
-* Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If succesful the seconday becomes the new primary.
-* SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory. 
+Documentation
++++++++++++++
+* Update documentation to match v1.0
 * Installation instructions updated on how to find the device after wifi has been configured. 
 * Documentation on brewfather has been updated to adress SG/Plato conversion
+* Added circuit diagram for esp8266 and esp32
+* Added additional http error codes to troubleshooting documentation
+
+User interface
+++++++++++++++
+* Upgraded to bootstrap v5.1 for web pages.
+* Added button on indexpage to direct to github issues.
+* Added button to extract important information for support requests. 
+* First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.
+* Changed layout on index page with measured data on top.
+* Added tooltips to all fields in user interface
+* Added function on format page so that it's easy to copy a format template from the docs (simplify service integration).
+
+Features
+++++++++
+* Added advanced setting to ignore angles that are lower than water. This is disabled by default.
+* Added support for MPU6500 (standard is MPU6050).
+* Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.
+* Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.
+* Added https support for Influxdb v2
+* Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If succesful the seconday becomes the new primary.
+* SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory. 
+* Advanced settings: Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather. 
+* Advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)
+* Advanced settings: Set amount of gyro movement is allowed for a accurate read.
+* Advanced settings: What deviation is acceptable for creating formula deviation
+* Advanced settings: Various timeouts, wifi connect, wifi portal, http connects.
+* Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife
+
+Issues adressed
+++++++++++++++++
 * BUG: Fixed issue in formula calculation in case there were a gap in the data series
 * BUG: Field name for wifi strength changed from "rssi" to "RSSI"
 * BUG: Fixed issue with probing MFLN on non standard ports
+* BUG: Changed http connection to keep-alive so that server does not close port before the client has had a chance to read the response.
 
 v0.9.0
-------
+======
 * Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api's. 
 * Added function to test push targets from configuration page. It will send data and show the return code as a first step. 
 * Added documetation on how to integrate with Blynk.io using http get.
@@ -70,8 +73,7 @@ v0.9.0
 * BUG: Entering wifi setup and a timeout occured the wifi settings could be deleted.
 
 v0.8.0
-------
-
+======
 * Added option to set http headers (2 per http endpoint), these can be used for 
   other http formats than json (default) and for adding authentication headers.
 * Added possibility to view last 10 errors on device page. 
@@ -91,8 +93,7 @@ v0.8.0
 * Tested batterylife, 47 days using an update frequency of 5 min
 
 v0.7.1
-------
-
+======
 * Added instructions for how to configure integration with Fermentrack
 * Added instructions for how to configure integration with Ubidots
 * Added instructions for how to configure integration with HomeAssistant
@@ -102,8 +103,7 @@ v0.7.1
 * BUG: Fixed issue with default template so it now includes the device name correctly. 
 
 v0.7.0
-------
-
+======
 Latest stable version. `Release v0.7 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.7.0>`_
 
 * SSL support for HTTP targets
@@ -129,10 +129,7 @@ Latest stable version. `Release v0.7 on Github <https://github.com/mp-se/gravity
   the behaviour in v0.6 is wanted this can be done via the format editor. 
 
 v0.6.0
-------
-
-`Release v0.6 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.6.0>`_
-
+======
 * Changed the wifi manager and refactored wifi.cpp
 * LED is now turned on when Wifi Portal is open
 * Refactored main.cpp to make it easier to read
@@ -145,10 +142,7 @@ v0.6.0
 * Bug: MPU init sometimes caused crash during startup.
 
 v0.5.0
-------
-
-`Release v0.5 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.5.0>`_
-
+======
 * Added feature to calcuate formula on device
 * Total rewrite of documentation
 * WIFI settings are now stored in config file
@@ -157,8 +151,5 @@ v0.5.0
 * Refactor code from C to C++
 
 v0.4.0
-------
-
-`Release v0.4 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.4.0>`_
-
-* First release
+======
+* First public release

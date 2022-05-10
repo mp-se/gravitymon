@@ -205,52 +205,57 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">#</a></h1>
-<div class="section" id="v1-0-0-beta3">
-<h2>v1.0.0-beta3<a class="headerlink" href="#v1-0-0-beta3" title="Permalink to this headline">#</a></h2>
+<div class="section" id="v1-0-0">
+<h2>v1.0.0<a class="headerlink" href="#v1-0-0" title="Permalink to this headline">#</a></h2>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
-<li><p>Added circuit diagram for esp8266 and esp32</p></li>
-<li><p>Update documentation to match new version</p></li>
-</ul>
-</div>
-<div class="section" id="v1-0-0-beta2">
-<h2>v1.0.0-beta2<a class="headerlink" href="#v1-0-0-beta2" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Moved applying temp sensor resolution in loop so there is no need to reboot.</p></li>
-<li><p>Advanced software settings is only disabled if settings contain default values.</p></li>
-<li><p>Added button on indexpage to direct to github issues.</p></li>
-<li><p>Added button to extract important information for support requests.</p></li>
-<li><p>Updated docs with information from beta1.</p></li>
-<li><p>First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.</p></li>
-<li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
-<li><p>Added experimental support for MPU6500 (allowing that deviceID), waiting for confirmation on function.</p></li>
-<li><p>Changed layout on index page with measured data on top.</p></li>
-<li><p>BUG: Fixed error in html page for calibration so that that feature works again (REST API was working)</p></li>
-</ul>
-</div>
-<div class="section" id="v1-0-0-beta1">
-<h2>v1.0.0-beta1<a class="headerlink" href="#v1-0-0-beta1" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
-<li><p>Added tooltips to all fields in user interface</p></li>
-<li><p>Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.</p></li>
-<li><p>Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.</p></li>
-<li><p>Added function on format page so that it’s easy to copy a format template from the docs (simplify service integration).</p></li>
-<li><p>Added https support for Influxdb</p></li>
-<li><p>Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather.</p></li>
-<li><p>Added advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)</p></li>
-<li><p>Added advanced settings: Set amount of gyro movement is allowed for a accurate read.</p></li>
-<li><p>Added advanced settings: What deviation is acceptable for creating formula deviation</p></li>
-<li><p>Added advanced settings: Various timeouts, wifi connect, wifi portal, http connects.</p></li>
-<li><p>Added advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife</p></li>
-<li><p>Added additional http error codes to troubleshooting documentation</p></li>
-<li><p>Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If succesful the seconday becomes the new primary.</p></li>
-<li><p>SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory.</p></li>
+<li><p>Update documentation to match v1.0</p></li>
 <li><p>Installation instructions updated on how to find the device after wifi has been configured.</p></li>
 <li><p>Documentation on brewfather has been updated to adress SG/Plato conversion</p></li>
+<li><p>Added circuit diagram for esp8266 and esp32</p></li>
+<li><p>Added additional http error codes to troubleshooting documentation</p></li>
+</ul>
+</div>
+<div class="section" id="user-interface">
+<h3>User interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
+<li><p>Added button on indexpage to direct to github issues.</p></li>
+<li><p>Added button to extract important information for support requests.</p></li>
+<li><p>First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.</p></li>
+<li><p>Changed layout on index page with measured data on top.</p></li>
+<li><p>Added tooltips to all fields in user interface</p></li>
+<li><p>Added function on format page so that it’s easy to copy a format template from the docs (simplify service integration).</p></li>
+</ul>
+</div>
+<div class="section" id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
+<li><p>Added support for MPU6500 (standard is MPU6050).</p></li>
+<li><p>Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.</p></li>
+<li><p>Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.</p></li>
+<li><p>Added https support for Influxdb v2</p></li>
+<li><p>Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If succesful the seconday becomes the new primary.</p></li>
+<li><p>SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory.</p></li>
+<li><p>Advanced settings: Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather.</p></li>
+<li><p>Advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)</p></li>
+<li><p>Advanced settings: Set amount of gyro movement is allowed for a accurate read.</p></li>
+<li><p>Advanced settings: What deviation is acceptable for creating formula deviation</p></li>
+<li><p>Advanced settings: Various timeouts, wifi connect, wifi portal, http connects.</p></li>
+<li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife</p></li>
+</ul>
+</div>
+<div class="section" id="issues-adressed">
+<h3>Issues adressed<a class="headerlink" href="#issues-adressed" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
 <li><p>BUG: Fixed issue in formula calculation in case there were a gap in the data series</p></li>
 <li><p>BUG: Field name for wifi strength changed from “rssi” to “RSSI”</p></li>
 <li><p>BUG: Fixed issue with probing MFLN on non standard ports</p></li>
+<li><p>BUG: Changed http connection to keep-alive so that server does not close port before the client has had a chance to read the response.</p></li>
 </ul>
+</div>
 </div>
 <div class="section" id="v0-9-0">
 <h2>v0.9.0<a class="headerlink" href="#v0-9-0" title="Permalink to this headline">#</a></h2>
@@ -340,7 +345,6 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
 </div>
 <div class="section" id="v0-6-0">
 <h2>v0.6.0<a class="headerlink" href="#v0-6-0" title="Permalink to this headline">#</a></h2>
-<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.6.0">Release v0.6 on Github</a></p>
 <ul class="simple">
 <li><p>Changed the wifi manager and refactored wifi.cpp</p></li>
 <li><p>LED is now turned on when Wifi Portal is open</p></li>
@@ -356,7 +360,6 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
 </div>
 <div class="section" id="v0-5-0">
 <h2>v0.5.0<a class="headerlink" href="#v0-5-0" title="Permalink to this headline">#</a></h2>
-<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.5.0">Release v0.5 on Github</a></p>
 <ul class="simple">
 <li><p>Added feature to calcuate formula on device</p></li>
 <li><p>Total rewrite of documentation</p></li>
@@ -368,9 +371,8 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
 </div>
 <div class="section" id="v0-4-0">
 <h2>v0.4.0<a class="headerlink" href="#v0-4-0" title="Permalink to this headline">#</a></h2>
-<p><a class="reference external" href="https://github.com/mp-se/gravitymon/releases/tag/v0.4.0">Release v0.4 on Github</a></p>
 <ul class="simple">
-<li><p>First release</p></li>
+<li><p>First public release</p></li>
 </ul>
 </div>
 </div>
@@ -433,9 +435,13 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v1-0-0-beta3">v1.0.0-beta3</a></li>
-<li><a class="reference internal" href="#v1-0-0-beta2">v1.0.0-beta2</a></li>
-<li><a class="reference internal" href="#v1-0-0-beta1">v1.0.0-beta1</a></li>
+<li><a class="reference internal" href="#v1-0-0">v1.0.0</a><ul>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#user-interface">User interface</a></li>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>
 <li><a class="reference internal" href="#v0-8-0">v0.8.0</a></li>
 <li><a class="reference internal" href="#v0-7-1">v0.7.1</a></li>
