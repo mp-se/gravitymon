@@ -12,9 +12,11 @@ GravityMon is a replacement firmware for the iSpindle firmware. It's 100% compat
 
 Now also works with ESP32 (use ESP32 d1 mini which is compatible with ESP8266)
 
-Installation can be made using https://www.brewflasher.com
+Installation can be made using https://www.brewflasher.com or https://web.brewflasher.com
 
-Note! If its being flagged as malware, try the older version.
+The documenation can be found here: https://mp-se.github.io/gravitymon/index.html
+
+Note! If Brewflasher being flagged as malware by your antivirus software, try the web version.
 
 The main differences:
 ---------------------
@@ -23,17 +25,14 @@ The main differences:
 * Efficient software, long lifespan (+45 days with 5min update frequencey)
 * Send data to multiple endpoints (http-post, http-get, influxdb v2, mqtt)
 * Instructions for service such as; Brewfather, Fermentrack, Ubidots, Home Assistant, Brewers Friend, Brewspy, Thingspeak, Blynk. 
-* SSL support in standard HTTP and MQTT connections.
+* SSL support for all remote endpoints
 * ESP32 support with Bluetooth push
 * Customize data format to be pushed
 * Automatic temperature adjustment of gravity when enabled
 * Use the temperature sensor in gyro instead of DS18B20
 * Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity. 
 * Visual graph showing how gravity formula will be interpreted
-* OTA support 
-* Built in performance measurements (used to optimise code)
-* REST API for scripting 
+* OTA support or firmware upload via web interface
+* REST API for scripting
 
 No code has been reused from the iSpindle project. 
-
-The documenation can be found here: https://mp-se.github.io/gravitymon/index.html
