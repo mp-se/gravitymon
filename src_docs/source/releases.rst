@@ -3,6 +3,13 @@
 Releases 
 ########
 
+Updates
+=======
+
+Documentation
++++++++++++++
+* Added documentation for Brewpiless as target
+
 v1.0.0
 ======
 

@@ -264,3 +264,11 @@ starting with a ``?``. This string will be added to the URL above when doing the
 .. code-block::
 
    ?token=${token2}&v1=${temp}&v2=${gravity}&v3=${angle}
+
+
+Brewpiless
+++++++++++
+
+If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it's recommended to connect the device to your normal network. 
+
+The device need to have a name starting with iSpindle, for example `iSpindel000`. Set the URL for one of the http POST targets to `http://ip/gravity` where ip is the ip adress of Brewpiless. 
