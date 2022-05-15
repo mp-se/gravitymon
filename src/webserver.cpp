@@ -1099,6 +1099,7 @@ void WebServerHandler::webHandleFormulaWrite() {
     fd.g[9] = _server->arg("g10").toDouble();
   }
 
+  fd.g[0] = 1;  // force first point to SG gravity of water
   myConfig.setFormulaData(fd);
 
   int e;
