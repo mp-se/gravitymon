@@ -184,7 +184,8 @@ class Config {
 
   // Gyro calibration and formula calculation data
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
-  RawFormulaData _formulaData = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+  RawFormulaData _formulaData = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
   void formatFileSystem();
 
