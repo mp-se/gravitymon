@@ -1,0 +1,19 @@
+name: pre-commit
+
+on:
+  pull_request:
+  push:
+    branches: 
+      - master
+      - dev
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2 
+    - name: clang format support
+      run: |
+        sudo apt install clang-format cppcheck
+    - uses: pre-commit/action@v2.0.3
