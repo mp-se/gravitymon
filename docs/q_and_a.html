@@ -221,6 +221,18 @@
 <li><p>Check the orienation of the sensor and soldering.</p></li>
 </ul>
 </div>
+<div class="section" id="calibration-error-unable-to-find-a-valid-formula">
+<h2>Calibration error (unable to find a valid formula)<a class="headerlink" href="#calibration-error-unable-to-find-a-valid-formula" title="Permalink to this headline">#</a></h2>
+<p>If you have issues to get a calibration formula. When a formula has been created the device always tries to validate the formula against the supplied values and if there is a to high deviation on any of the values then the formula will be rejected.</p>
+<p>The image here shows such a case, one of the values is out of bounds.</p>
+<a class="reference internal image-reference" href="_images/qa_1.png"><img alt="Calibration Error" src="_images/qa_1.png" style="width: 500px;"/></a>
+<p>To fix these this you can;</p>
+<ul class="simple">
+<li><p>remove the value from the list (setting the angle to zero will do that)</p></li>
+<li><p>change the advanced setting (Formula max deviation) to a higher value and save the values again.</p></li>
+</ul>
+<p>In the case above this paramater was changed from 1.6 SG to 4 SG and the formula was accepted. The deviation on this point was just above 3 SG.</p>
+</div>
 </div>
 
         </article>
@@ -283,6 +295,7 @@
 <li><a class="reference internal" href="#">Q &amp; A</a><ul>
 <li><a class="reference internal" href="#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
 <li><a class="reference internal" href="#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
+<li><a class="reference internal" href="#calibration-error-unable-to-find-a-valid-formula">Calibration error (unable to find a valid formula)</a></li>
 </ul>
 </li>
 </ul>
