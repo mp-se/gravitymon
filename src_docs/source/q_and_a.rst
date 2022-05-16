@@ -12,3 +12,20 @@ My device reports a temperature of -273C or -491F
 -------------------------------------------------
 - The DS18B20 temperature sensor cannot be found and this is the default value reported in this case.
 - Check the orienation of the sensor and soldering.
+
+Calibration error (unable to find a valid formula)
+--------------------------------------------------
+If you have issues to get a calibration formula. When a formula has been created the device always tries to validate the formula against the supplied values and if there is a to high deviation on any of the values then the formula will be rejected.
+
+The image here shows such a case, one of the values is out of bounds. 
+
+.. image:: images/qa_1.png
+  :width: 500
+  :alt: Calibration Error
+
+To fix these this you can;
+
+- remove the value from the list (setting the angle to zero will do that)
+- change the advanced setting (Formula max deviation) to a higher value and save the values again. 
+
+In the case above this paramater was changed from 1.6 SG to 4 SG and the formula was accepted. The deviation on this point was just above 3 SG. 

@@ -3,6 +3,14 @@
 Releases 
 ########
 
+Updates
+=======
+
+Documentation
++++++++++++++
+* Added documentation for Brewpiless as target
+* Added q&a on formula creation and value deviation
+
 v1.0.0
 ======
 
