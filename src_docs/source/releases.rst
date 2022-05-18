@@ -8,8 +8,9 @@ Updates
 
 Documentation
 +++++++++++++
-* Added documentation for Brewpiless as target
+* Fixed errors in data format section
 * Added q&a on formula creation and value deviation
+* Added documentation for Brewpiless as target
 
 v1.0.0
 ======
