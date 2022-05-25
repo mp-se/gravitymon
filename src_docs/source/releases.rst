@@ -12,6 +12,10 @@ Documentation
 * Added q&a on formula creation and value deviation
 * Added documentation for Brewpiless as target
 
+User interface
+++++++++++++++
+* Under format options its now possible to select brewfather ispindle format to avoid mixing endpoints. 
+
 Issues adressed
 ++++++++++++++++
 * BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.
