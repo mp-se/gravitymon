@@ -3,14 +3,18 @@
 Releases 
 ########
 
-Updates
-=======
+v1.0.1
+======
 
 Documentation
 +++++++++++++
 * Fixed errors in data format section
 * Added q&a on formula creation and value deviation
 * Added documentation for Brewpiless as target
+
+Issues adressed
+++++++++++++++++
+* BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.
 
 v1.0.0
 ======
