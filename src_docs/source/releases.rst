@@ -11,6 +11,7 @@ Documentation
 * Fixed errors in data format section
 * Added q&a on formula creation and value deviation
 * Added documentation for Brewpiless as target
+* Updated docs for ubidots service integration.
 
 User interface
 ++++++++++++++
