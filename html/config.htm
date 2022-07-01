@@ -403,10 +403,19 @@
             </div>
 
             <div class="row mb-3">
-              <div class="col-sm-3 offset-sm-2">
+              <div class="col-sm-4 offset-sm-2">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="gyro-temp" id="gyro-temp" data-bs-toggle="tooltip" title="Use the temperature sensor in the gyro instead of DS18B20, require 300s update interval to be accurate">
                   <label class="form-check-label" for="gyro-temp">Use gyro temperature</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-4 offset-sm-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="storage-sleep" id="storage-sleep" data-bs-toggle="tooltip" title="If enabled and the device is placed on its cap (less than 5 degress) it will go into sleep for 2000 minutes">
+                  <label class="form-check-label" for="storage-sleep">Enable storage mode when placed on cap</label>
                 </div>
               </div>
             </div>
@@ -860,6 +869,7 @@
         $("#temp-adjustment-value").val(cfg["temp-adjustment-value"]);
         $("#gravity-temp-adjustment").prop( "checked", cfg["gravity-temp-adjustment"] );
         $("#gyro-temp").prop( "checked", cfg["gyro-temp"] );
+        $("#storage-sleep").prop( "checked", cfg["storage-sleep"] );
         $("#gyro-calibration-data").text( cfg["gyro-calibration-data"]["ax"] + "," + cfg["gyro-calibration-data"]["ay"] + "," + cfg["gyro-calibration-data"]["az"] + "," + cfg["gyro-calibration-data"]["gx"] + "," + cfg["gyro-calibration-data"]["gy"] + "," + cfg["gyro-calibration-data"]["gz"] );
         $("#battery").text(cfg["battery"] + " V");
         $("#angle").text(cfg["angle"]);

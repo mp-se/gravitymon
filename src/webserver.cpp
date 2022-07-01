@@ -624,6 +624,11 @@ void WebServerHandler::webHandleConfigHardware() {
         _server->arg(PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
   else
     myConfig.setGyroTemp(false);
+  if (_server->hasArg(PARAM_STORAGE_SLEEP))
+    myConfig.setStorageSleep(
+        _server->arg(PARAM_STORAGE_SLEEP).equalsIgnoreCase("on") ? true : false);
+  else
+    myConfig.setStorageSleep(false);
 
   myConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseHardware", true);

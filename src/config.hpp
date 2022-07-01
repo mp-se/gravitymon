@@ -149,6 +149,7 @@ class Config {
   float _tempSensorAdjC = 0;
   int _sleepInterval = 900;
   bool _gyroTemp = false;
+  bool _storageSleep = false;
 
   // Wifi Config
   String _wifiSSID[2] = {"", ""};
@@ -204,6 +205,12 @@ class Config {
   const bool isGyroTemp() { return _gyroTemp; }
   void setGyroTemp(bool b) {
     _gyroTemp = b;
+    _saveNeeded = true;
+  }
+
+  const bool isStorageSleep() { return _storageSleep; }
+  void setStorageSleep(bool b) {
+    _storageSleep = b;
     _saveNeeded = true;
   }
 

@@ -50,9 +50,6 @@ uint32_t stableGyroMillis;  // Used to calculate the total time since last
 
 RunMode runMode = RunMode::gravityMode;
 
-//
-// Check if we should be in sleep mode
-//
 void checkSleepMode(float angle, float volt) {
 #if defined(SKIP_SLEEPMODE)
   runMode = RunMode::configurationMode;
@@ -85,6 +82,8 @@ void checkSleepMode(float angle, float volt) {
     runMode = RunMode::configurationMode;
   } else if ((volt < 4.15 && (angle > 85 && angle < 95)) || (volt > 4.15)) {
     runMode = RunMode::configurationMode;
+  } else if (angle < 5 && myConfig.isStorageSleep()) {
+    runMode = RunMode::storageMode;
   } else {
     runMode = RunMode::gravityMode;
   }
@@ -104,12 +103,14 @@ void checkSleepMode(float angle, float volt) {
                  volt);
 #endif
       break;
+    case RunMode::storageMode:
+#if !defined(MAIN_DISABLE_LOGGING)
+      Log.notice(F("MAIN: run mode STORAGE (angle=%F)." CR), angle);
+#endif
+      break;
   }
 }
 
-//
-// Setup
-//
 void setup() {
   LOG_PERF_START("run-time");
   LOG_PERF_START("main-setup");
@@ -189,6 +190,12 @@ void setup() {
 
       myBatteryVoltage.read();
       checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+
+      if (runMode == RunMode::storageMode) {
+        // If we are in storage mode, just go back to sleep
+        Log.notice(F("Main: Storage mode entered, going to sleep for maximum time." CR));
+        ESP.deepSleep(ESP.deepSleepMax());
+      }
 
 #if defined(ESP32)
       if (!myConfig.isWifiPushActive() && runMode == RunMode::gravityMode) {
@@ -358,9 +365,6 @@ void goToSleep(int sleepInterval) {
   deepSleep(sleepInterval);
 }
 
-//
-// Main loops
-//
 void loop() {
   switch (runMode) {
     case RunMode::configurationMode:

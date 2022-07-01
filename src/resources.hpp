@@ -60,6 +60,7 @@ SOFTWARE.
 #define PARAM_TEMP_ADJ "temp-adjustment-value"
 #define PARAM_GYRO_CALIBRATION "gyro-calibration-data"
 #define PARAM_GYRO_TEMP "gyro-temp"
+#define PARAM_STORAGE_SLEEP "storage-sleep"
 #define PARAM_FORMULA_DATA "formula-calculation-data"
 #define PARAM_FILES "files"
 #define PARAM_FILE_NAME "file-name"
