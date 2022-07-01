@@ -16,6 +16,7 @@ jobs:
         with:
           docs-folder: "src_docs/"
           pre-build-command: |
+            pip install --upgrade pip
             pip install sphinx_rtd_theme
             pip install furo
           build-command: "sphinx-build -b html ./source ../docs"
