@@ -272,3 +272,32 @@ Brewpiless
 If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it's recommended to connect the device to your normal network. 
 
 The device need to have a name starting with iSpindle, for example `iSpindel000`. Set the URL for one of the http POST targets to `http://ip/gravity` where ip is the ip adress of Brewpiless. 
+
+
+BrewBlox
+++++++++++
+
+To send iSpindel data to brewblox over mqtt you need to modify the format template to match the expected format. Once you have configured the mqtt information you also need to update the format template 
+for this target. 
+
+This format template will post the expected json document on the topic, dont forget the `|` character at the end of the line which is needed to parse the payload. The first to words are the topic name and after the first `:` this is the json playload.
+
+.. code-block::
+
+   brewcast/history:{"key":"${mdns}","data":{"Temperature": ${temp-c},"Battery":${battery},"Tilt":${angle},"Rssi":${rssi},"Gravity":${gravity-sg}}}|
+
+
+The json message on the mqtt topic  would look like this:
+
+.. code-block:: json
+
+   {
+   "key": "gravitymon",
+   "data": {
+      "Temperature": 27,
+      "Battery": 4.99,
+      "Tilt": 88.86,
+      "Rssi": -51,
+      "Gravity": 1.1173
+      }
+   }
