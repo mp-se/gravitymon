@@ -10,6 +10,7 @@ Documentation
 +++++++++++++
 * Added documentation for Brewpiless as target
 * Added q&a on formula creation and value deviation
+* Added brewblox as new service
 
 v1.0.0
 ======
