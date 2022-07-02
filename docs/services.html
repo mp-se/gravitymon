@@ -399,19 +399,23 @@ starting with a <code class="docutils literal notranslate"><span class="pre">?</
 <h2>BrewBlox<a class="headerlink" href="#brewblox" title="Permalink to this headline">¶</a></h2>
 <p>To send iSpindel data to brewblox over mqtt you need to modify the format template to match the expected format. Once you have configured the mqtt information you also need to update the format template
 for this target.</p>
-<p>This format template will post the expected json document on the topic, dont forget the <cite>|</cite> character at the end of the line which is needed to parse the payload. The first to words are the topic name and after the first <cite>:</cite> this is the json playload.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>brewcast/history:{"key":"${mdns}","data":{"Temperature": ${temp-c},"Battery":${battery},"Tilt":${angle},"Rssi":${rssi},"Gravity":${gravity-sg}}}|
+<p>This format template will post the expected json document on the topic, dont forget the <cite>|</cite> character at the end of the line which is needed to parse the payload. The first to words are the topic
+name and after the first <cite>:</cite> this is the json playload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section
+in the json document if you need other values as well.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>brewcast/history:{"key":"${mdns}","data":{"Temperature[degC]": ${temp-c},"Temperature[degF]": ${temp-f},"Battery[V]":${battery},"Tilt[deg]":${angle},"Rssi[dBm]":${rssi},"SG":${gravity-sg},"Plato":${gravity-plato}}}|
 </pre></div>
 </div>
 <p>The json message on the mqtt topic  would look like this:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gravitymon"</span><span class="p">,</span><span class="w"></span>
-<span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"Temperature"</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"Battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.99</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"Tilt"</span><span class="p">:</span><span class="w"> </span><span class="mf">88.86</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"Rssi"</span><span class="p">:</span><span class="w"> </span><span class="mi">-51</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"Gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1173</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gravitymon"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"Temperature[degC]"</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"Temperature[degF]"</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"Battery[V]"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.1</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"Tilt[deg]"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"Rssi[dBm]"</span><span class="p">:</span><span class="w"> </span><span class="mi">-78</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"SG"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"Plato"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
 <span class="w">   </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
