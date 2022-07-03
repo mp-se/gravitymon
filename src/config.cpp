@@ -86,7 +86,8 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_PUSH_MQTT_USER] = getMqttUser();
   doc[PARAM_PUSH_MQTT_PASS] = getMqttPass();
   doc[PARAM_SLEEP_INTERVAL] = getSleepInterval();
-  doc[PARAM_VOLTAGEFACTOR] = getVoltageFactor();
+  doc[PARAM_VOLTAGE_FACTOR] = getVoltageFactor();
+  doc[PARAM_VOLTAGE_CONFIG] = getVoltageConfig();
   doc[PARAM_GRAVITY_FORMULA] = getGravityFormula();
   doc[PARAM_GRAVITY_FORMAT] = String(getGravityFormat());
   doc[PARAM_TEMP_ADJ] = getTempSensorAdjC();
@@ -254,8 +255,10 @@ bool Config::loadFile() {
 
   if (!doc[PARAM_SLEEP_INTERVAL].isNull())
     setSleepInterval(doc[PARAM_SLEEP_INTERVAL].as<int>());
-  if (!doc[PARAM_VOLTAGEFACTOR].isNull())
-    setVoltageFactor(doc[PARAM_VOLTAGEFACTOR].as<float>());
+  if (!doc[PARAM_VOLTAGE_FACTOR].isNull())
+    setVoltageFactor(doc[PARAM_VOLTAGE_FACTOR].as<float>());
+  if (!doc[PARAM_VOLTAGE_CONFIG].isNull())
+    setVoltageConfig(doc[PARAM_VOLTAGE_CONFIG].as<float>());
   if (!doc[PARAM_GRAVITY_FORMULA].isNull())
     setGravityFormula(doc[PARAM_GRAVITY_FORMULA]);
   if (!doc[PARAM_GRAVITY_TEMP_ADJ].isNull())

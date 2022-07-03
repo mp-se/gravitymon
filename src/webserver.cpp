@@ -605,8 +605,10 @@ void WebServerHandler::webHandleConfigHardware() {
   Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
 #endif
 
-  if (_server->hasArg(PARAM_VOLTAGEFACTOR))
-    myConfig.setVoltageFactor(_server->arg(PARAM_VOLTAGEFACTOR).toFloat());
+  if (_server->hasArg(PARAM_VOLTAGE_FACTOR))
+    myConfig.setVoltageFactor(_server->arg(PARAM_VOLTAGE_FACTOR).toFloat());
+  if (_server->hasArg(PARAM_VOLTAGE_CONFIG))
+    myConfig.setVoltageConfig(_server->arg(PARAM_VOLTAGE_CONFIG).toFloat());
   if (_server->hasArg(PARAM_TEMP_ADJ)) {
     if (myConfig.isTempC()) {
       myConfig.setTempSensorAdjC(_server->arg(PARAM_TEMP_ADJ));
@@ -626,7 +628,8 @@ void WebServerHandler::webHandleConfigHardware() {
     myConfig.setGyroTemp(false);
   if (_server->hasArg(PARAM_STORAGE_SLEEP))
     myConfig.setStorageSleep(
-        _server->arg(PARAM_STORAGE_SLEEP).equalsIgnoreCase("on") ? true : false);
+        _server->arg(PARAM_STORAGE_SLEEP).equalsIgnoreCase("on") ? true
+                                                                 : false);
   else
     myConfig.setStorageSleep(false);
 

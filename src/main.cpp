@@ -80,7 +80,9 @@ void checkSleepMode(float angle, float volt) {
     Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
 #endif
     runMode = RunMode::configurationMode;
-  } else if ((volt < 4.15 && (angle > 85 && angle < 95)) || (volt > 4.15)) {
+  } else if ((volt < myConfig.getVoltageConfig() &&
+              (angle > 85 && angle < 95)) ||
+             (volt > myConfig.getVoltageConfig())) {
     runMode = RunMode::configurationMode;
   } else if (angle < 5 && myConfig.isStorageSleep()) {
     runMode = RunMode::storageMode;
@@ -193,13 +195,15 @@ void setup() {
 
       if (runMode == RunMode::storageMode) {
         // If we are in storage mode, just go back to sleep
-        Log.notice(F("Main: Storage mode entered, going to sleep for maximum time." CR));
+        Log.notice(F(
+            "Main: Storage mode entered, going to sleep for maximum time." CR));
 #if defined(ESP8266)
         ESP.deepSleep(ESP.deepSleepMax());
 #else
-        #warning "Check and test the max deep sleep for esp32"
-        deepSleep(70*60); // quick search on internet suggest max time is 70 min
-#endif        
+#warning "Check and test the max deep sleep for esp32"
+        deepSleep(70 *
+                  60);  // quick search on internet suggest max time is 70 min
+#endif
       }
 
 #if defined(ESP32)

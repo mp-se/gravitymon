@@ -390,9 +390,16 @@
             <div class="row mb-3">
               <label for="voltage-factor" class="col-sm-2 col-form-label">Voltage factor</label>
               <div class="col-sm-2">
-                <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor" placeholder="1.59" data-bs-toggle="tooltip" title="Factor used to calculate the battery voltage. When running on battery, the voltage should be less than 4.15V">
+                <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor" placeholder="1.59" data-bs-toggle="tooltip" title="Factor used to calculate the battery voltage. Can vary depending on the R2 value">
               </div>
               <label for="voltage-factor" class="col-sm-3 col-form-label" id="battery">Loading...</label>
+            </div>
+
+            <div class="row mb-3">
+              <label for="voltage-config" class="col-sm-2 col-form-label">Config voltage</label>
+              <div class="col-sm-2">
+                <input type="number" step=".01" class="form-control" name="voltage-config" id="voltage-config" placeholder="4.16" data-bs-toggle="tooltip" title="Over this level the device will always go into configuration mode, some batteries might have a higher voltage when fully charged">
+              </div>
             </div>
 
             <div class="row mb-3">
@@ -865,6 +872,7 @@
         $("#mqtt-pass").val(cfg["mqtt-pass"]);
         $("#sleep-interval").val(cfg["sleep-interval"]);
         $("#voltage-factor").val(cfg["voltage-factor"]);
+        $("#voltage-config").val(cfg["voltage-config"]);
         $("#gravity-formula").val(cfg["gravity-formula"]);
         $("#temp-adjustment-value").val(cfg["temp-adjustment-value"]);
         $("#gravity-temp-adjustment").prop( "checked", cfg["gravity-temp-adjustment"] );

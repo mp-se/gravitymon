@@ -146,6 +146,7 @@ class Config {
   String _otaURL = "";
   char _tempFormat = 'C';
   float _voltageFactor = 1.59;
+  float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;
   int _sleepInterval = 900;
   bool _gyroTemp = false;
@@ -375,6 +376,16 @@ class Config {
   }
   void setVoltageFactor(String s) {
     _voltageFactor = s.toFloat();
+    _saveNeeded = true;
+  }
+
+  float getVoltageConfig() { return _voltageConfig; }
+  void setVoltageConfig(float f) {
+    _voltageConfig = f;
+    _saveNeeded = true;
+  }
+  void setVoltageConfig(String s) {
+    _voltageConfig = s.toFloat();
     _saveNeeded = true;
   }
 
