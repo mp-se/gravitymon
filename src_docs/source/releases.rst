@@ -20,6 +20,7 @@ User interface
 Issues adressed
 ++++++++++++++++
 * BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.
+* BUG: Gravity correction formula not calculating correctly.
 
 v1.0.0
 ======
