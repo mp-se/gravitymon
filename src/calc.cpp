@@ -175,16 +175,15 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
 //
 // Source: https://homebrewacademy.com/hydrometer-temperature-correction/
 //
-double gravityTemperatureCorrectionC(double gravity, double tempC,
+double gravityTemperatureCorrectionC(double gravitySG, double tempC,
                                      double calTempC) {
 #if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
   Log.verbose(F("CALC: Adjusting gravity based on temperature, gravity %F, "
                 "temp %F, calTemp %F." CR),
-              gravity, tempC, calTempC);
+              gravitySG, tempC, calTempC);
 #endif
-  // float tempF = convertCtoF(tempC);
-  // float calTempF = convertCtoF(calTempC);
-
+  double tempF = convertCtoF(tempC);
+  double calTempF = convertCtoF(calTempC);
   const char *formula =
       "gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0."
       "00000000232820948*temp^3)/"
@@ -193,7 +192,7 @@ double gravityTemperatureCorrectionC(double gravity, double tempC,
 
   // Store variable names and pointers.
   te_variable vars[] = {
-      {"gravity", &gravity}, {"temp", &tempC}, {"cal", &calTempC}};
+      {"gravity", &gravitySG}, {"temp", &tempF}, {"cal", &calTempF}};
 
   int err;
   // Compile the expression with variables.
@@ -203,11 +202,10 @@ double gravityTemperatureCorrectionC(double gravity, double tempC,
     double g = te_eval(expr);
     te_free(expr);
 
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
-    char s[10];
-    snprintf(&s[0], sizeof(s), "%.8f", g);
-    Log.verbose(F("CALC: Corrected gravity is %s." CR), &s[0]);
-#endif
+    char s[80];
+    snprintf(&s[0], sizeof(s), "Corrected gravity=%.8f, input gravity=%.8f", g,
+             gravitySG);
+    Log.notice(F("CALC: %s." CR), &s[0]);
     return g;
   }
 
@@ -215,7 +213,7 @@ double gravityTemperatureCorrectionC(double gravity, double tempC,
   errLog.addEntry(
       "CALC: Failed to parse expression for gravity temperature correction " +
       String(err));
-  return gravity;
+  return gravitySG;
 }
 
 // EOF
