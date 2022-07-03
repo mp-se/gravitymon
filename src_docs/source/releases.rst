@@ -3,7 +3,7 @@
 Releases 
 ########
 
-v1.0.1
+v1.1.0
 ======
 
 Documentation
@@ -12,6 +12,7 @@ Documentation
 * Added q&a on formula creation and value deviation
 * Added documentation for Brewpiless as target
 * Updated docs for ubidots service integration.
+* Added brewblox as new service
 
 User interface
 ++++++++++++++

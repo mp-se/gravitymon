@@ -274,3 +274,36 @@ Brewpiless
 If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it's recommended to connect the device to your normal network. 
 
 The device need to have a name starting with iSpindle, for example `iSpindel000`. Set the URL for one of the http POST targets to `http://ip/gravity` where ip is the ip adress of Brewpiless. 
+
+
+BrewBlox
+++++++++++
+
+To send iSpindel data to brewblox over mqtt you need to modify the format template to match the expected format. Once you have configured the mqtt information you also need to update the format template 
+for this target. 
+
+This format template will post the expected json document on the topic, dont forget the `|` character at the end of the line which is needed to parse the payload. The first to words are the topic 
+name and after the first `:` this is the json playload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section 
+in the json document if you need other values as well.
+
+.. code-block::
+
+   brewcast/history:{"key":"${mdns}","data":{"Temperature[degC]": ${temp-c},"Temperature[degF]": ${temp-f},"Battery[V]":${battery},"Tilt[deg]":${angle},"Rssi[dBm]":${rssi},"SG":${gravity-sg},"Plato":${gravity-plato}}}|
+
+
+The json message on the mqtt topic  would look like this:
+
+.. code-block:: json
+
+   {
+      "key": "gravitymon",
+      "data": {
+         "Temperature[degC]": 27,
+         "Temperature[degF]": 80,
+         "Battery[V]": 4.1,
+         "Tilt[deg]": 25,
+         "Rssi[dBm]": -78,
+         "SG": 1,
+         "Plato": 0
+      }
+   }
