@@ -235,7 +235,8 @@ Factor used to calcualate the battery voltage. If you get a too low/high voltage
 
 * **Config voltage:**
 
-Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers.
+Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers. 
+If you dont what the device to go into configuration mode when charging, set this to 6V. 
 
 * **Temperature correction:**
 
@@ -251,10 +252,9 @@ been running the value would be totally off.
 
 * **Enable storage mode when placed on cap**
 
-Enable storage mode on the device. When place on the cap (<5 degres tilt) the device will go into max sleep. In order to wake it up 
-you need to do a reset (or wait for the device to wake up). One option is to attach a magnetic reed switch (default open) to the reset pin 
-and use a magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm long incapsulated 
-in a small glass tube.
+When place on the cap (<5 degres tilt) the device will go into max sleep. In order to wake it up you need to do a reset (or wait for the device 
+to wake up). One option is to attach a magnetic reed switch (default open) to the reset pin and use a magnet to force a reset without opening 
+the tube. The reed switch is typically an electronic component of 14 mm long incapsulated in a small glass tube.
 
 * **Bluetooth: (Only ESP32)**
 
