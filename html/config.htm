@@ -398,7 +398,7 @@
             <div class="row mb-3">
               <label for="voltage-config" class="col-sm-2 col-form-label">Config voltage</label>
               <div class="col-sm-2">
-                <input type="number" step=".01" class="form-control" name="voltage-config" id="voltage-config" placeholder="4.16" data-bs-toggle="tooltip" title="Over this level the device will always go into configuration mode, some batteries might have a higher voltage when fully charged">
+                <input type="number" step=".01" min="3.00" max="5.00" class="form-control" name="voltage-config" id="voltage-config" placeholder="4.16" data-bs-toggle="tooltip" title="Over this level the device will always go into configuration mode, some batteries might have a higher voltage when fully charged">
               </div>
             </div>
 
