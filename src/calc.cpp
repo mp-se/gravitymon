@@ -202,10 +202,12 @@ double gravityTemperatureCorrectionC(double gravitySG, double tempC,
     double g = te_eval(expr);
     te_free(expr);
 
+#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
     char s[80];
     snprintf(&s[0], sizeof(s), "Corrected gravity=%.8f, input gravity=%.8f", g,
              gravitySG);
-    Log.notice(F("CALC: %s." CR), &s[0]);
+    Log.verbose(F("CALC: %s." CR), &s[0]);
+#endif
     return g;
   }
 
