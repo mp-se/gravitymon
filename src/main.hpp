@@ -46,8 +46,8 @@ extern RunMode runMode;
 #define PIN_LED 2
 // #define PIN_A0 A0
 #else  // defined (ESP32)
-#include <LittleFS.h>
 #include <FS.h>
+#include <LittleFS.h>
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart
 #define ESP8266WebServer WebServer
