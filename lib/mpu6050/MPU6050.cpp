@@ -66,7 +66,7 @@ void MPU6050_Base::initialize() {
  * @return True if connection is valid, false otherwise
  */
 bool MPU6050_Base::testConnection() {
-    return getDeviceID() == 0x34 || getDeviceID() == 0x38;  // Allow both MPU6050 and MPU6000
+    return getDeviceID() == 0x34;
 }
 
 // AUX_VDDIO register (InvenSense demo code calls this RA_*G_OFFS_TC)
@@ -2556,8 +2556,8 @@ void MPU6050_Base::setClockSource(uint8_t source) {
  * -------------+------------------
  * 0            | 1.25 Hz
  * 1            | 2.5 Hz
- * 2            | 5 Hz
- * 3            | 10 Hz
+ * 2            | 20 Hz
+ * 3            | 40 Hz
  * </pre>
  *
  * For further information regarding the MPU-60X0's power modes, please refer to
@@ -3371,25 +3371,27 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 	resetDMP();
 }
 
+int16_t * MPU6050_Base::GetActiveOffsets() {
+    uint8_t AOffsetRegister = (getDeviceID() < 0x38 )? MPU6050_RA_XA_OFFS_H:0x77;
+    if(AOffsetRegister == 0x06)	I2Cdev::readWords(devAddr, AOffsetRegister, 3, (uint16_t *)offsets, I2Cdev::readTimeout, wireObj);
+    else {
+        I2Cdev::readWords(devAddr, AOffsetRegister, 1, (uint16_t *)offsets, I2Cdev::readTimeout, wireObj);
+        I2Cdev::readWords(devAddr, AOffsetRegister+3, 1, (uint16_t *)(offsets+1), I2Cdev::readTimeout, wireObj);
+        I2Cdev::readWords(devAddr, AOffsetRegister+6, 1, (uint16_t *)(offsets+2), I2Cdev::readTimeout, wireObj);
+    }
+    I2Cdev::readWords(devAddr, 0x13, 3, (uint16_t *)(offsets+3), I2Cdev::readTimeout, wireObj);
+    return offsets;
+}
+
 void MPU6050_Base::PrintActiveOffsets() {
-	uint8_t AOffsetRegister = (getDeviceID() < 0x38 )? MPU6050_RA_XA_OFFS_H:0x77;
-	int16_t Data[3];
-	//Serial.print(F("Offset Register 0x"));
-	//Serial.print(AOffsetRegister>>4,HEX);Serial.print(AOffsetRegister&0x0F,HEX);
-	Serial.print(F("\n//         X Accel  Y Accel  Z Accel   X Gyro   Y Gyro   Z Gyro\n// OFFSETS "));
-	if(AOffsetRegister == 0x06)	I2Cdev::readWords(devAddr, AOffsetRegister, 3, (uint16_t *)Data, I2Cdev::readTimeout, wireObj);
-	else {
-		I2Cdev::readWords(devAddr, AOffsetRegister, 1, (uint16_t *)Data, I2Cdev::readTimeout, wireObj);
-		I2Cdev::readWords(devAddr, AOffsetRegister+3, 1, (uint16_t *)Data+1, I2Cdev::readTimeout, wireObj);
-		I2Cdev::readWords(devAddr, AOffsetRegister+6, 1, (uint16_t *)Data+2, I2Cdev::readTimeout, wireObj);
-	}
+    GetActiveOffsets();
 	//	A_OFFSET_H_READ_A_OFFS(Data);
-    Serial.print((float)Data[0], 5); Serial.print(",  ");
-    Serial.print((float)Data[1], 5); Serial.print(",  ");
-    Serial.print((float)Data[2], 5); Serial.print(",  ");
-	I2Cdev::readWords(devAddr, 0x13, 3, (uint16_t *)Data, I2Cdev::readTimeout, wireObj);
+    Serial.print((float)offsets[0], 5); Serial.print(",\t");
+    Serial.print((float)offsets[1], 5); Serial.print(",\t");
+    Serial.print((float)offsets[2], 5); Serial.print(",\t");
+	
 	//	XG_OFFSET_H_READ_OFFS_USR(Data);
-    Serial.print((float)Data[0], 5); Serial.print(",  ");
-    Serial.print((float)Data[1], 5); Serial.print(",  ");
-    Serial.print((float)Data[2], 5); Serial.print("\n");
+    Serial.print((float)offsets[3], 5); Serial.print(",\t");
+    Serial.print((float)offsets[4], 5); Serial.print(",\t");
+    Serial.print((float)offsets[5], 5); Serial.print("\n\n");
 }

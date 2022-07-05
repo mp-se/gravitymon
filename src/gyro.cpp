@@ -43,7 +43,9 @@ bool GyroSensor::setup() {
   Wire.setClock(400000);  // 400kHz I2C clock. Comment this line if having
                           // compilation difficulties
 
-  if (!accelgyro.testConnection()) {
+  uint8_t id = accelgyro.getDeviceID();
+
+  if (id != 0x34 && id != 0x38) { // Allow both MPU6050 and MPU6000
     ErrorFileLog errLog;
     errLog.addEntry(F("GYRO: Failed to connect to gyro, is it connected?"));
     _sensorConnected = false;
