@@ -377,7 +377,7 @@ void goToSleep(int sleepInterval) {
 void loop() {
   switch (runMode) {
     case RunMode::storageMode:
-        // This point is never reached, just here to remove warning.
+      // This point is never reached, just here to remove warning.
       break;
 
     case RunMode::configurationMode:

@@ -45,7 +45,7 @@ bool GyroSensor::setup() {
 
   uint8_t id = accelgyro.getDeviceID();
 
-  if (id != 0x34 && id != 0x38) { // Allow both MPU6050 and MPU6000
+  if (id != 0x34 && id != 0x38) {  // Allow both MPU6050 and MPU6000
     ErrorFileLog errLog;
     errLog.addEntry(F("GYRO: Failed to connect to gyro, is it connected?"));
     _sensorConnected = false;

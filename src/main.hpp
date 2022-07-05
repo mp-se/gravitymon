@@ -29,7 +29,12 @@ SOFTWARE.
 #include <ArduinoLog.h>
 #include <stdlib.h>
 
-enum RunMode { gravityMode = 0, configurationMode = 1, wifiSetupMode = 2, storageMode = 3 };
+enum RunMode {
+  gravityMode = 0,
+  configurationMode = 1,
+  wifiSetupMode = 2,
+  storageMode = 3
+};
 extern RunMode runMode;
 
 #if defined(ESP8266)
