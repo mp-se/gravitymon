@@ -24,6 +24,13 @@ Features
 ++++++++
 * Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into 
 storage mode and sleep for the max allowed time. 
+ 
+Other
++++++
+* Upgraded framework for ESP8266 to v5.0.0
+* Upgraded framework for ESP32 to v2.0.2
+* Updated OneWire library to be complaint with new ESP32 SDK
+* Fixed issue in i2cdev connected to wrong usage of TwoWire on ESP32 (Gyro initialization hang). 
 
 Issues adressed
 ++++++++++++++++

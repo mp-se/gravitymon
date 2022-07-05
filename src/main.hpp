@@ -45,7 +45,6 @@ extern RunMode runMode;
 #include <LittleFS.h>
 #else
 #include <LITTLEFS.h>
-#define LittleFS LITTLEFS
 #endif
 #include <FS.h>
 #define ESPhttpUpdate httpUpdate

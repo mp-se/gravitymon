@@ -194,14 +194,8 @@ void printBuildOptions() {
 #ifdef SKIP_SLEEPMODE
                "SKIP_SLEEP "
 #endif
-#ifdef EMBED_HTML
-               "EMBED_HTML "
-#endif
 #ifdef COLLECT_PERFDATA
                "PERFDATA "
-#endif
-#ifdef ACTIVATE_OTA
-               "OTA "
 #endif
                CR),
              CFG_APPVER, CFG_GITREV, LOG_LEVEL);
