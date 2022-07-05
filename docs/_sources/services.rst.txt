@@ -10,14 +10,26 @@ Brewfather
 
 Brewfather is an all in one service that allows you to manage you recepies and brews. 
 
-.. tip::
+**Option 1** - iSpindle Endpoint
 
-   The integration named Brewfather is uses the custom stream endpoint in brewfather not the standard iSpindle 
-   endpoint. You can use the iSpindle endpoint as well. In that case just use the http-1 or http-2 fields.  
+This opion makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume 
+that the data is in plato. You can also modify the format template using the following options:
 
-**Option 1** - Custom Stream
+Update the following part `"gravity": ${gravity-plato},` or `"name" : "${mdns}[SG]",``
 
-This option makes use of the push endpoint called Brewfather in the UI. Just enter the http stream adress found 
+This makes use of the standard format template, no changes needed.
+
+.. code-block::
+
+   http://log.brewfather.net/ispindel?id=<yourid>
+
+
+Documentation on this can be found under `Brewfather iSpindle Endpoint <https://docs.brewfather.app/integrations/ispindel>`_
+
+
+**Option 2** - Custom Stream
+
+This option makes use of the http push endpoint with a custom format template. Just enter the http stream adress found 
 on brewfather, not other settings are needed. The stream endpoint URL has the following format:
 
 .. code-block::
@@ -47,18 +59,6 @@ The implementation is basically a http request with the following format templat
       "battery": ${battery}
    }
 
-
-**Option 2** - iSpindle Endpoint
-
-This opion makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume 
-that the data is in plato. The brewfather iSpindle endpoint has the following format:
-
-.. code-block::
-
-   http://log.brewfather.net/ispindel?id=<yourid>
-
-
-Documentation on this can be found under `Brewfather iSpindle Endpoint <https://docs.brewfather.app/integrations/ispindel>`_
 
 Fermentrack
 +++++++++++
@@ -120,7 +120,7 @@ format template that can be used. For information on customizing the format see 
       "gravity": ${gravity}, 
       "angle": ${angle}, 
       "battery": ${battery}, 
-      "rssi": ${rssi} 
+      "RSSI": ${rssi} 
    }
 
 
@@ -146,7 +146,10 @@ device is named `gravmon2`
       state_topic: "gravmon/gravmon2/battery"
    - platform: mqtt
       name: "gravmon2_rssi"
-      state_topic: "gravmon/gravmon2/rssi"
+      state_topic: "gravmon/gravmon2/RSSI"
+   - platform: mqtt
+      name: "gravmon2_temp"
+      state_topic: "gravmon/gravmon2/temp"
 
 
 Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option 
@@ -155,9 +158,10 @@ many sensors / topics as you want.
 
 ::
 
-   gravmon/${mdns}/tilt:${angle}|
-   gravmon/${mdns}/temperature:${temp}|
-   gravmon/${mdns}/temp_units:${temp-unit}|
+   gravmon/${mdns}/gravity:${gravity}|
+   gravmon/${mdns}/battery:${battery}|
+   gravmon/${mdns}/RSSI:${rssi}|
+   gravmon/${mdns}/temp:${temp}|
 
 
 Brewer's Friend
@@ -194,7 +198,7 @@ format for the endpoint. Just add you API key after token.
    "gravity": ${gravity},
    "angle": ${angle},
    "battery": ${battery},
-   "rssi": ${rssi}
+   "RSSI": ${rssi}
   }
 
 
@@ -261,3 +265,43 @@ starting with a ``?``. This string will be added to the URL above when doing the
 
    ?token=${token2}&v1=${temp}&v2=${gravity}&v3=${angle}
 
+
+Brewpiless
+++++++++++
+
+If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it's recommended to connect the device to your normal network. 
+
+The device need to have a name starting with iSpindle, for example `iSpindel000`. Set the URL for one of the http POST targets to `http://ip/gravity` where ip is the ip adress of Brewpiless. 
+
+
+BrewBlox
+++++++++++
+
+To send iSpindel data to brewblox over mqtt you need to modify the format template to match the expected format. Once you have configured the mqtt information you also need to update the format template 
+for this target. 
+
+This format template will post the expected json document on the topic, dont forget the `|` character at the end of the line which is needed to parse the payload. The first to words are the topic 
+name and after the first `:` this is the json playload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section 
+in the json document if you need other values as well.
+
+.. code-block::
+
+   brewcast/history:{"key":"${mdns}","data":{"Temperature[degC]": ${temp-c},"Temperature[degF]": ${temp-f},"Battery[V]":${battery},"Tilt[deg]":${angle},"Rssi[dBm]":${rssi},"SG":${gravity-sg},"Plato":${gravity-plato}}}|
+
+
+The json message on the mqtt topic  would look like this:
+
+.. code-block:: json
+
+   {
+      "key": "gravitymon",
+      "data": {
+         "Temperature[degC]": 27,
+         "Temperature[degF]": 80,
+         "Battery[V]": 4.1,
+         "Tilt[deg]": 25,
+         "Rssi[dBm]": -78,
+         "SG": 1,
+         "Plato": 0
+      }
+   }

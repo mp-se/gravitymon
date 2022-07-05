@@ -7,7 +7,7 @@ Create formula
   :width: 800
   :alt: Formula data
 
-Here you can enter up to 5 values (angles + gravity) that is then used to create the formula. Angles equal to zero will be regarded as empty even if there is a gravity reading.
+Here you can enter up to 10 values (angles + gravity) that is then used to create the formula. Angles equal to zero will be regarded as empty even if there is a gravity reading.
 
 .. image:: images/formula2.png
   :width: 800

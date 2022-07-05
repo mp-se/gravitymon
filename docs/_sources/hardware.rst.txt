@@ -24,3 +24,22 @@ need to adjust the voltage factor so the battery reading is correct.
   :width: 500
   :alt: Mounting esp32
 
+Schema for esp8266 build
+------------------------
+
+.. image:: images/schema_esp8266.png
+  :width: 700
+  :alt: Schema esp8266
+
+Schema for esp32 build
+----------------------
+
+.. note::  
+  This schema assumes that an ESP32 D1 Mini (pin compatible with ESP8266 D1 Mini is used)
+  The ESP32 has two rows of pins but only the inner row is used. The main difference is the added resistor R3 so we 
+  get a voltage divider for measuring battery. The ESP8266 has a built in resistor thats not visible on the schema. 
+
+
+.. image:: images/schema_esp32.png
+  :width: 700
+  :alt: Schema esp32

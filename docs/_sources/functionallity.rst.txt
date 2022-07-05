@@ -33,10 +33,10 @@ The main features
 
   Currently the device supports the following endpoints.  
 
-  * http or https
-  * influxdb v2
+  * http (ssl optional)
+  * influxdb v2 (ssl optional)
+  * MQTT (ssl optional)
   * Brewfather
-  * MQTT
   * Home Assistant
   * Brew Spy
   * Brewers Friend
@@ -65,10 +65,8 @@ The main features
   Another big difference is that this software can create the gravity formula in the device, just enter the 
   angle/gravity data that you have collected. You will also see a graph simulating how the formula would work. 
 
-  Currently the device can handle 5 data points which should be enough to get a accurate formula. At least 3 data points 
+  Currently the device can handle 10 data points which should be enough to get a accurate formula. At least 3 data points 
   is needed to get an accurate formula.
-
-  If there is a need for more data points, raise a comment on github.
 
 * **Customize the data format beeing sent to push targets**
 
@@ -86,7 +84,8 @@ The main features
 * **OTA support from webserver**
 
   When starting up in configuration mode the device will check for a software update from a webserver. This is an easily
-  way to keep the software up to date. In the future I might add a hosted endpoint for providing updates.
+  way to keep the software up to date. In the future I might add a hosted endpoint for providing updates. OTA can also be 
+  done over a SSL connection.
 
 * **DS18B20 temperature adjustments**
 
@@ -95,13 +94,14 @@ The main features
 
 * **Gyro Movement**
 
-  The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60seconds. 
-  This way we should avoid faulty measurements and peaks in the graphs.
+  The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60 seconds. 
+  This way we should avoid faulty measurements and peaks in the graphs. 
 
 * **WIFI connection issues**
 
   The software will not wait indefiently for a wifi connection. If it takes longer than 20 seconds to connect then
-  the device will go into deep sleep for 60 seoncds and then retry later. This to conserve batter as much as possible.
+  the device will try the seconday wifi configuration, and that also failes it will go into deep sleep for 60 seconds and then 
+  retry later. This to conserve batter as much as possible.
 
 * **Use gyro temperature sensor**
 

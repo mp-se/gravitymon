@@ -13,7 +13,8 @@ Brewflasher
 ===========
 
 The prefered option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works 
-on both Windows and Mac. You can download the latest version from here: `Brewflasher <https://www.brewflasher.com/>`_
+on both Windows and Mac. You can download the latest version from here: `Brewflasher <https://www.brewflasher.com/>`_ there is also a web based version 
+available here `Brewflasher WEB <https://web.brewflasher.com/>`_.
 
 .. image:: images/brewflasher.png
   :width: 600
@@ -34,7 +35,8 @@ In the /bin directory you will find 3 different firmware builds;
 
 * **firmware32.bin**
 
-  This is the standard release build for an ESP32 variant
+  This is the standard release build for an ESP32 variant. When flashing an ESP32 you also need the **partition32.bin** file that outlines the flash memory structure. Due to 
+  the size of the firmware we are using a custom partition setup.
 
 In these versions all the html files are embedded in the binaries. The file system is currently only used for storing 
 the configuration file. 
@@ -90,7 +92,6 @@ browser and select the firmware.bin file that corresponds to the version you wan
 ``http://<device_name>/firmware.htm``
 
 
-
 .. _serial_monitoring:
 
 Serial Monitoring
@@ -119,6 +120,9 @@ in the browser: **http://192.168.4.1**
 
 Before pressing save on the network infomration, make a note of the devicename that is shown on the screen, this will be the name that is used 
 in the next step to access the configuration pages. The link would look like this: **http://gravitymon56EA34.local**
+
+Under wifi settings you can define a primary and seconday wifi SSID. The seconday will be used in case the primary fails. If the seconday is 
+successful then it will be used as primary. *The second wifi setting is optional and not needed.*
 
 .. image:: images/wifi.png
   :width: 200
