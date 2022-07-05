@@ -46,11 +46,7 @@ extern RunMode runMode;
 #define PIN_LED 2
 // #define PIN_A0 A0
 #else  // defined (ESP32)
-#if defined(ESPRESSIF32_20)
 #include <LittleFS.h>
-#else
-#include <LITTLEFS.h>
-#endif
 #include <FS.h>
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart
