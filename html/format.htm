@@ -102,6 +102,7 @@
               { "id": "BrewFatherCustom-Post", "format": "%7B%20%20%20%22name%22%3A%20%22%24%7Bmdns%7D%22%2C%20%20%20%22temp%22%3A%20%24%7Btemp%7D%2C%20%20%20%22aux_temp%22%3A%200%2C%20%20%20%22ext_temp%22%3A%200%2C%20%20%20%22temp_unit%22%3A%20%22%24%7Btemp-unit%7D%22%2C%20%20%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%20%20%20%22gravity_unit%22%3A%20%22%24%7Bgravity-unit%7D%22%2C%20%20%20%22pressure%22%3A%200%2C%20%20%20%22pressure_unit%22%3A%20%22PSI%22%2C%20%20%20%22ph%22%3A%200%2C%20%20%20%22bpm%22%3A%200%2C%20%20%20%22comment%22%3A%20%22%22%2C%20%20%20%22beer%22%3A%20%22%22%2C%20%20%20%22battery%22%3A%20%24%7Bbattery%7D%7D" },
               { "id": "iSpindle-Mqtt", "format": "ispindel%2F%24%7Bmdns%7D%2Ftilt%3A%24%7Bangle%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Ftemperature%3A%24%7Btemp%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Ftemp_units%3A%24%7Btemp-unit%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Fbattery%3A%24%7Bbattery%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Fgravity%3A%24%7Bgravity%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2Finterval%3A%24%7Bsleep-interval%7D%7C%0Aispindel%2F%24%7Bmdns%7D%2FRSSI%3A%24%7Brssi%7D%7C" },
               { "id": "HomeAssistant-Mqtt", "format": "gravmon%2F%24%7Bmdns%7D%2Ftilt%3A%24%7Bangle%7D%7C%0Agravmon%2F%24%7Bmdns%7D%2Ftemperature%3A%24%7Btemp%7D%7C%0Agravmon%2F%24%7Bmdns%7D%2Ftemp_units%3A%24%7Btemp-unit%7D%7C" },
+              { "id": "Brewblox-Mqtt", "format": "brewcast%2Fhistory%3A%7B%22key%22%3A%22%24%7Bmdns%7D%22%2C%22data%22%3A%7B%22Temperature%5BdegC%5D%22%3A%20%24%7Btemp-c%7D%2C%22Temperature%5BdegF%5D%22%3A%20%24%7Btemp-f%7D%2C%22Battery%5BV%5D%22%3A%24%7Bbattery%7D%2C%22Tilt%5Bdeg%5D%22%3A%24%7Bangle%7D%2C%22Rssi%5BdBm%5D%22%3A%24%7Brssi%7D%2C%22SG%22%3A%24%7Bgravity-sg%7D%2C%22Plato%22%3A%24%7Bgravity-plato%7D%7D%7D%7C" },
               { "id": "UBIDots-Post", "format": "%7B%0A%20%20%20%22temperature%22%3A%20%24%7Btemp%7D%2C%0A%20%20%20%22gravity%22%3A%20%24%7Bgravity%7D%2C%0A%20%20%20%22angle%22%3A%20%24%7Bangle%7D%2C%0A%20%20%20%22battery%22%3A%20%24%7Bbattery%7D%2C%0A%20%20%20%22rssi%22%3A%20%24%7Brssi%7D%0A%7D" } ];
             </script>
 
@@ -119,6 +120,7 @@
                 <option value="BrewFatherCustom-Post">Brewfather - Custom Endpoint (POST)</option>
                 <option value="iSpindle-Post">Brewfather - iSpindle Endpoint (POST)</option>
                 <option value="GravityMon-Get">GravityMon (GET)</option>
+                <option value="Brewblox-Mqtt">BrewBlox (MQTT)</option>
               </select>
               <div class="col-sm-4">
                 <button class="btn btn-secondary" id="copy-btn" data-bs-toggle="tooltip" title="Copy the selected format template to the selected push target">Copy format</button>
