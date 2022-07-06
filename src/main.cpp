@@ -38,7 +38,7 @@ SOFTWARE.
 #ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000;  // ms, time to wait between changes to output
 #else
-int interval = 200;  // ms, time to wait between changes to output
+int interval = 200;      // ms, time to wait between changes to output
 #endif
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
@@ -114,14 +114,13 @@ void checkSleepMode(float angle, float volt) {
 
   // If we are in storage mode, just go back to sleep
   if (runMode == RunMode::storageMode) {
-    Log.notice(F(
-        "Main: Storage mode entered, going to sleep for maximum time." CR));
+    Log.notice(
+        F("Main: Storage mode entered, going to sleep for maximum time." CR));
 #if defined(ESP8266)
     ESP.deepSleep(ESP.deepSleepMax());
 #else
 #warning "Check and test the max deep sleep for esp32"
-    deepSleep(70 *
-              60);  // quick search on internet suggest max time is 70 min
+    deepSleep(70 * 60);  // quick search on internet suggest max time is 70 min
 #endif
   }
 }
