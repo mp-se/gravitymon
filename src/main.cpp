@@ -111,6 +111,19 @@ void checkSleepMode(float angle, float volt) {
 #endif
       break;
   }
+
+  // If we are in storage mode, just go back to sleep
+  if (runMode == RunMode::storageMode) {
+    Log.notice(F(
+        "Main: Storage mode entered, going to sleep for maximum time." CR));
+#if defined(ESP8266)
+    ESP.deepSleep(ESP.deepSleepMax());
+#else
+#warning "Check and test the max deep sleep for esp32"
+    deepSleep(70 *
+              60);  // quick search on internet suggest max time is 70 min
+#endif
+  }
 }
 
 void setup() {
@@ -192,19 +205,6 @@ void setup() {
 
       myBatteryVoltage.read();
       checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
-
-      if (runMode == RunMode::storageMode) {
-        // If we are in storage mode, just go back to sleep
-        Log.notice(F(
-            "Main: Storage mode entered, going to sleep for maximum time." CR));
-#if defined(ESP8266)
-        ESP.deepSleep(ESP.deepSleepMax());
-#else
-#warning "Check and test the max deep sleep for esp32"
-        deepSleep(70 *
-                  60);  // quick search on internet suggest max time is 70 min
-#endif
-      }
 
 #if defined(ESP32)
       if (!myConfig.isWifiPushActive() && runMode == RunMode::gravityMode) {
