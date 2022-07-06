@@ -75,7 +75,9 @@ GravityMon can be installed and used as an iSpindle. Just register the device as
 UBIdots
 +++++++
 
-`UBIdots <https://www.ubidots.com>`_ is a IoT service that display data collected various sources. 
+`UBIdots <https://www.ubidots.com>`_ is a IoT service that display data collected various sources. There is a limitation on this service where it can only handle 10 variables per device so 
+you might need to reduce the number of values sent to the service. It will also treat every parameter as a number unless you create a custom device type and explicit define the string values 
+as text. This will require a paid subscription (as I interpret the documentation). The example format below will only send numbers so that should work fine with the paid subscription. 
 
 For this service there are two options to configure the integration. First you will need your default token which is found under `API Credentials` (<api-tokem> in the example below).
 Swap the text <devicename> with the name you want to show in ubidots. 

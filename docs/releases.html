@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionallity" href="functionallity.html" /><link rel="prev" title="Getting started" href="intro.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Releases - GravityMon 1.0.0 documentation</title>
+        <title>Releases - GravityMon 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -199,14 +199,47 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="updates">
-<h2>Updates<a class="headerlink" href="#updates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-1-0">
+<h2>v1.1.0<a class="headerlink" href="#v1-1-0" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>Added documentation for Brewpiless as target</p></li>
+<li><p>Fixed errors in data format section</p></li>
 <li><p>Added q&amp;a on formula creation and value deviation</p></li>
+<li><p>Added documentation for Brewpiless as target</p></li>
+<li><p>Updated docs for ubidots service integration.</p></li>
 <li><p>Added brewblox as new service</p></li>
+</ul>
+</div>
+<div class="section" id="user-interface">
+<h3>User interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Under format options its now possible to select brewfather ispindle format to avoid mixing endpoints.</p></li>
+<li><p>Added brewblox as format under format options.</p></li>
+<li><p>User can now edit the voltage level that forces the device into config mode (charging)</p></li>
+</ul>
+</div>
+<div class="section" id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added storage mode which is activated under hardware setting. When place on the cap (&lt;5 degres tilt) the device will go into</p></li>
+</ul>
+<p>storage mode and sleep for the max allowed time.</p>
+</div>
+<div class="section" id="other">
+<h3>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Upgraded framework for ESP8266 to v5.0.0</p></li>
+<li><p>Upgraded framework for ESP32 to v2.0.2</p></li>
+<li><p>Updated OneWire library to be complaint with new ESP32 SDK</p></li>
+<li><p>Fixed issue in i2cdev connected to wrong usage of TwoWire on ESP32 (Gyro initialization hang).</p></li>
+</ul>
+</div>
+<div class="section" id="issues-adressed">
+<h3>Issues adressed<a class="headerlink" href="#issues-adressed" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.</p></li>
+<li><p>BUG: Gravity correction formula not calculating correctly.</p></li>
 </ul>
 </div>
 </div>
@@ -222,8 +255,8 @@
 <li><p>Added additional http error codes to troubleshooting documentation</p></li>
 </ul>
 </div>
-<div class="section" id="user-interface">
-<h3>User interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>User interface<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
 <li><p>Added button on indexpage to direct to github issues.</p></li>
@@ -234,8 +267,8 @@
 <li><p>Added function on format page so that it’s easy to copy a format template from the docs (simplify service integration).</p></li>
 </ul>
 </div>
-<div class="section" id="features">
-<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Features<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
 <li><p>Added support for MPU6500 (standard is MPU6050).</p></li>
@@ -252,8 +285,8 @@
 <li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife</p></li>
 </ul>
 </div>
-<div class="section" id="issues-adressed">
-<h3>Issues adressed<a class="headerlink" href="#issues-adressed" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Issues adressed<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Fixed issue in formula calculation in case there were a gap in the data series</p></li>
 <li><p>BUG: Field name for wifi strength changed from “rssi” to “RSSI”</p></li>
@@ -430,15 +463,19 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#updates">Updates</a><ul>
+<li><a class="reference internal" href="#v1-1-0">v1.1.0</a><ul>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#user-interface">User interface</a></li>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#other">Other</a></li>
+<li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-0-0">v1.0.0</a><ul>
 <li><a class="reference internal" href="#id2">Documentation</a></li>
-<li><a class="reference internal" href="#user-interface">User interface</a></li>
-<li><a class="reference internal" href="#features">Features</a></li>
-<li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
+<li><a class="reference internal" href="#id3">User interface</a></li>
+<li><a class="reference internal" href="#id4">Features</a></li>
+<li><a class="reference internal" href="#id5">Issues adressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>

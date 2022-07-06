@@ -3,14 +3,39 @@
 Releases 
 ########
 
-Updates
-=======
+v1.1.0
+======
 
 Documentation
 +++++++++++++
-* Added documentation for Brewpiless as target
+* Fixed errors in data format section
 * Added q&a on formula creation and value deviation
+* Added documentation for Brewpiless as target
+* Updated docs for ubidots service integration.
 * Added brewblox as new service
+
+User interface
+++++++++++++++
+* Under format options its now possible to select brewfather ispindle format to avoid mixing endpoints. 
+* Added brewblox as format under format options. 
+* User can now edit the voltage level that forces the device into config mode (charging)
+
+Features
+++++++++
+* Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into 
+storage mode and sleep for the max allowed time. 
+ 
+Other
++++++
+* Upgraded framework for ESP8266 to v5.0.0
+* Upgraded framework for ESP32 to v2.0.2
+* Updated OneWire library to be complaint with new ESP32 SDK
+* Fixed issue in i2cdev connected to wrong usage of TwoWire on ESP32 (Gyro initialization hang). 
+
+Issues adressed
+++++++++++++++++
+* BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.
+* BUG: Gravity correction formula not calculating correctly.
 
 v1.0.0
 ======

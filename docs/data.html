@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Compiling the software" href="compiling.html" /><link rel="prev" title="REST API" href="api.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Data Formats - GravityMon 1.0.0 documentation</title>
+        <title>Data Formats - GravityMon 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -229,7 +229,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
  "name" : "${mdns}",
  "ID": "${id}",
- "token" : "gravmon",
+ "token" : "${token}",
  "interval": ${sleep-interval},
  "temperature": ${temp},
  "temp_units": "${temp-unit}",
@@ -298,13 +298,6 @@ ispindel/${mdns}/interval:${sleep-interval}|
 ispindel/${mdns}/RSSI:${rssi}|
 </pre></div>
 </div>
-<p>This is a format template that is compatible with v0.6. Just replace the <cite>topic</cite> with the topic you want to post data to.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>topic:{"name":"gravmon", "ID":"${id}", "token":"gravmon", "interval": ${sleep-interval},
-"temperature": ${temp}, "temp_units": "${temp-unit}", "gravity":${gravity},
-"angle": ${angle}, "battery":${battery}, "rssi": ${rssi}, "corr-gravity":${corr-gravity},
-"gravity-unit": "${gravity-unit}", "run-time": ${run-time}}|
-</pre></div>
-</div>
 </div>
 <div class="section" id="version-json">
 <h2>version.json<a class="headerlink" href="#version-json" title="Permalink to this headline">¶</a></h2>
@@ -313,15 +306,8 @@ upgrade to a version that serve the html files from the file system. If they don
 they can be uploaded manually afterwards.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"project"</span><span class="p">:</span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"0.7.0"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"html"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">      </span><span class="s2">"index.min.htm"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">"test.min.htm"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">"config.min.htm"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">"format.min.htm"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">"calibration.min.htm"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">"about.min.htm"</span><span class="w"></span>
-<span class="w">   </span><span class="p">]</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"html"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>

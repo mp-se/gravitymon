@@ -121,8 +121,13 @@ in the browser: **http://192.168.4.1**
 Before pressing save on the network infomration, make a note of the devicename that is shown on the screen, this will be the name that is used 
 in the next step to access the configuration pages. The link would look like this: **http://gravitymon56EA34.local**
 
+.. note::
+  When selecting a SSID in the list this will be populated in both wifi fields. This is the behaviour of the wifi manager library that I'm using,
+  in the future this is planned to be moved to the normal UI.
+
 Under wifi settings you can define a primary and seconday wifi SSID. The seconday will be used in case the primary fails. If the seconday is 
 successful then it will be used as primary. *The second wifi setting is optional and not needed.*
+
 
 .. image:: images/wifi.png
   :width: 200

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Troubleshooting" href="troubleshooting.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Configuration - GravityMon 1.0.0 documentation</title>
+        <title>Configuration - GravityMon 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 1.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 1.0.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -382,6 +382,11 @@ build this into the gravity formula.</p>
 </ul>
 <p>Factor used to calcualate the battery voltage. If you get a too low/high voltage you can adjust this value.</p>
 <ul class="simple">
+<li><p><strong>Config voltage:</strong></p></li>
+</ul>
+<p>Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers.
+If you dont what the device to go into configuration mode when charging, set this to 6V.</p>
+<ul class="simple">
 <li><p><strong>Temperature correction:</strong></p></li>
 </ul>
 <p>This value will be added to the temperature reading (negative value will reduce temperature reading). This is applied
@@ -393,6 +398,12 @@ when the device starts. So changing this will not take affect until the device i
 longer battery life (this is an experimental feature). The value used is the first temperature reading from when the
 device is activated, since the gyro should be cool this is reflecting the surronding temperature. After it has
 been running the value would be totally off.</p>
+<ul class="simple">
+<li><p><strong>Enable storage mode when placed on cap</strong></p></li>
+</ul>
+<p>When place on the cap (&lt;5 degres tilt) the device will go into max sleep. In order to wake it up you need to do a reset (or wait for the device
+to wake up). One option is to attach a magnetic reed switch (default open) to the reset pin and use a magnet to force a reset without opening
+the tube. The reed switch is typically an electronic component of 14 mm long incapsulated in a small glass tube.</p>
 <ul class="simple">
 <li><p><strong>Bluetooth: (Only ESP32)</strong></p></li>
 </ul>
