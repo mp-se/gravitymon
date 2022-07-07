@@ -32,9 +32,8 @@ SOFTWARE.
 
 double calculateGravity(double angle, double tempC,
                         const char *tempFormula = 0);
-double gravityTemperatureCorrectionC(
-    double gravity, double tempC,
-    double calTempC = myAdvancedConfig.getDefaultCalibrationTemp());
+double gravityTemperatureCorrectionC(double gravity, double tempC,
+                                     double calTempC);
 int createFormula(RawFormulaData &fd, char *formulaBuffer,
                   int formulaBufferSize, int order);
 

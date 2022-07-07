@@ -150,7 +150,7 @@ bool Config::saveFile() {
     return false;
   }
 
-  DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
+  DynamicJsonDocument doc(3000);
   createJson(doc);
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
@@ -192,7 +192,7 @@ bool Config::loadFile() {
   Log.notice(F("CFG : Size of configuration file=%d bytes." CR),
              configFile.size());
 
-  DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
+  DynamicJsonDocument doc(3000);
   DeserializationError err = deserializeJson(doc, configFile);
 #if LOG_LEVEL == 6
   serializeJson(doc, Serial);

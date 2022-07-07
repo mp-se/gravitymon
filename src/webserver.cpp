@@ -44,7 +44,7 @@ void WebServerHandler::webHandleConfig() {
   LOG_PERF_START("webserver-api-config");
   Log.notice(F("WEB : webServer callback for /api/config(get)." CR));
 
-  DynamicJsonDocument doc(CFG_JSON_BUFSIZE);
+  DynamicJsonDocument doc(2000);
   myConfig.createJson(doc);
 
   doc[PARAM_PASS] = "";  // dont show the wifi password
@@ -69,8 +69,8 @@ void WebServerHandler::webHandleConfig() {
     doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(myConfig.getTempSensorAdjC(), 1);
 
   if (myConfig.isGravityTempAdj()) {
-    gravity =
-        gravityTemperatureCorrectionC(gravity, tempC, myConfig.getTempFormat());
+    gravity = gravityTemperatureCorrectionC(
+        gravity, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
   }
 
   if (myConfig.isGravityPlato()) {
@@ -97,8 +97,9 @@ void WebServerHandler::webHandleConfig() {
 #endif
 
   String out;
-  out.reserve(CFG_JSON_BUFSIZE);
+  out.reserve(2000);
   serializeJson(doc, out);
+  doc.clear();
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-config");
 }
@@ -160,6 +161,7 @@ void WebServerHandler::webHandleUpload() {
   String out;
   out.reserve(300);
   serializeJson(doc, out);
+  doc.clear();
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-upload");
 }
@@ -325,7 +327,7 @@ void WebServerHandler::webHandleStatus() {
   LOG_PERF_START("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
 
-  DynamicJsonDocument doc(512);
+  DynamicJsonDocument doc(500);
 
   double angle = 0;
 
@@ -337,7 +339,8 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_ID] = myConfig.getID();
   doc[PARAM_ANGLE] = reduceFloatPrecision(angle);
   if (myConfig.isGravityTempAdj()) {
-    gravity = gravityTemperatureCorrectionC(gravity, tempC);
+    gravity = gravityTemperatureCorrectionC(
+        gravity, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
   }
   if (myConfig.isGravityPlato()) {
     doc[PARAM_GRAVITY] = reduceFloatPrecision(convertToPlato(gravity), 1);
@@ -376,8 +379,9 @@ void WebServerHandler::webHandleStatus() {
 #endif
 
   String out;
-  out.reserve(300);
+  out.reserve(500);
   serializeJson(doc, out);
+  doc.clear();
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-status");
 }
@@ -671,9 +675,11 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
   if (_server->hasArg(PARAM_HW_FORMULA_DEVIATION))
     myAdvancedConfig.setMaxFormulaCreationDeviation(
         _server->arg(PARAM_HW_FORMULA_DEVIATION).toFloat());
-  if (_server->hasArg(PARAM_HW_FORMULA_CALIBRATION_TEMP))
-    myAdvancedConfig.SetDefaultCalibrationTemp(
-        _server->arg(PARAM_HW_FORMULA_CALIBRATION_TEMP).toFloat());
+  if (_server->hasArg(PARAM_HW_FORMULA_CALIBRATION_TEMP)) {
+    float t = _server->arg(PARAM_HW_FORMULA_CALIBRATION_TEMP).toFloat();
+    if (myConfig.isTempF()) t = convertFtoC(t);
+    myAdvancedConfig.SetDefaultCalibrationTemp(t);
+  }
   if (_server->hasArg(PARAM_HW_WIFI_PORTAL_TIMEOUT))
     myAdvancedConfig.setWifiPortalTimeout(
         _server->arg(PARAM_HW_WIFI_PORTAL_TIMEOUT).toInt());
@@ -722,7 +728,7 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   LOG_PERF_START("webserver-api-config-advanced");
   Log.notice(F("WEB : webServer callback for /api/config/advanced(get)." CR));
 
-  DynamicJsonDocument doc(512);
+  DynamicJsonDocument doc(500);
 
   doc[PARAM_HW_GYRO_READ_COUNT] = myAdvancedConfig.getGyroReadCount();
   // doc[PARAM_HW_GYRO_READ_DELAY] = myAdvancedConfig.getGyroReadDelay();
@@ -733,8 +739,9 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = myAdvancedConfig.getWifiPortalTimeout();
   doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = myAdvancedConfig.getWifiConnectTimeout();
   doc[PARAM_HW_PUSH_TIMEOUT] = myAdvancedConfig.getPushTimeout();
+  float t = myAdvancedConfig.getDefaultCalibrationTemp();
   doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
-      myAdvancedConfig.getDefaultCalibrationTemp();
+      myConfig.isTempC() ? t : reduceFloatPrecision(convertCtoF(t), 1);
   doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = myAdvancedConfig.getPushIntervalHttp1();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = myAdvancedConfig.getPushIntervalHttp2();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = myAdvancedConfig.getPushIntervalHttp3();
@@ -750,8 +757,9 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
 #endif
 
   String out;
-  out.reserve(512);
+  out.reserve(500);
   serializeJson(doc, out);
+  doc.clear();
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-config-advanced");
 }
@@ -763,7 +771,7 @@ void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_START("webserver-api-formula-read");
   Log.notice(F("WEB : webServer callback for /api/formula(get)." CR));
 
-  DynamicJsonDocument doc(512);
+  DynamicJsonDocument doc(500);
   const RawFormulaData& fd = myConfig.getFormulaData();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -832,8 +840,9 @@ void WebServerHandler::webHandleFormulaRead() {
 #endif
 
   String out;
-  out.reserve(256);
+  out.reserve(500);
   serializeJson(doc, out);
+  doc.clear();
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-formula-read");
 }
@@ -908,7 +917,8 @@ void WebServerHandler::webHandleTestPush() {
   float angle = myGyro.getAngle();
   float tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   float gravitySG = calculateGravity(angle, tempC);
-  float corrGravitySG = gravityTemperatureCorrectionC(gravitySG, tempC);
+  float corrGravitySG = gravityTemperatureCorrectionC(
+      gravitySG, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
 
   TemplatingEngine engine;
   engine.initialize(angle, gravitySG, corrGravitySG, tempC, 2.1);
@@ -943,6 +953,7 @@ void WebServerHandler::webHandleTestPush() {
   String out;
   out.reserve(100);
   serializeJson(doc, out);
+  doc.clear();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, Serial);
@@ -1005,7 +1016,7 @@ void WebServerHandler::webHandleConfigFormatRead() {
   LOG_PERF_START("webserver-api-config-format-read");
   Log.notice(F("WEB : webServer callback for /api/config/formula(get)." CR));
 
-  DynamicJsonDocument doc(2048);
+  DynamicJsonDocument doc(3000);
 
   doc[PARAM_ID] = myConfig.getID();
 
@@ -1045,8 +1056,9 @@ void WebServerHandler::webHandleConfigFormatRead() {
 #endif
 
   String out;
-  out.reserve(2048);
+  out.reserve(3000);
   serializeJson(doc, out);
+  doc.clear();
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-config-format-read");
 }

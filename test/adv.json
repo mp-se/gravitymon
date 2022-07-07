@@ -4,13 +4,13 @@
   "formula-max-deviation": 1.6,
   "wifi-portal-timeout": 120,
   "wifi-connect-timeout": 20,
-  "formula-calibration-temp": 20,
-  "tempsensor-resolution": 9,
-  "ignore-low-angles": false,
   "push-timeout": 10,
+  "formula-calibration-temp": 20,
   "int-http1": 0,
   "int-http2": 0,
   "int-http3": 0,
   "int-influx": 0,
-  "int-mqtt": 0
+  "int-mqtt": 0,
+  "tempsensor-resolution": 9,
+  "ignore-low-angles": false
 }

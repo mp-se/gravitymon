@@ -521,6 +521,14 @@
               <div class="col-sm-5" name="water-angle" id="water-angle"></div>
             </div>
 
+            <div class="row mb-3">
+              <label for="formula-calibration-temp" class="col-sm-3 col-form-label">Gravity calibration temp</label>
+              <div class="col-sm-3">
+                <input disabled type="number" step=".01" min="0" max="100" class="form-control" name="formula-calibration-temp" id="formula-calibration-temp" placeholder="20" checked data-bs-toggle="tooltip" title="Calibration temperature, used in temperatur correction formula, default 20C/68F"> 
+              </div>
+              <div class="col-sm-5">(0 - 100) - default 20C/68F</div>
+            </div>
+
             <hr>
 
             <div class="row mb-3">
@@ -780,6 +788,7 @@
       $("#formula-max-deviation").prop("disabled", b);
       $("#wifi-portal-timeout").prop("disabled", b);
       $("#wifi-connect-timeout").prop("disabled", b);
+      $("#formula-calibration-temp").prop("disabled", b);     
       $("#int-http1").prop("disabled", b);
       $("#int-http2").prop("disabled", b);
       $("#int-http3").prop("disabled", b);
@@ -794,7 +803,7 @@
       setButtonDisabled( true );
 
       var url = "/api/config/advanced";
-      //var url = "/test/adv.json";
+      var url = "/test/adv.json";
       $('#spinner').show(); 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
@@ -806,6 +815,7 @@
         $("#wifi-connect-timeout").val(cfg["wifi-connect-timeout"]);
         $("#tempsensor-resolution").val(cfg["tempsensor-resolution"]);
         $("#ignore-low-angles").prop( "checked", cfg["ignore-low-angles"] );
+        $("#formula-calibration-temp").val(cfg["formula-calibration-temp"]);
         $("#int-http1").val(cfg["int-http1"]);
         $("#int-http2").val(cfg["int-http2"]);
         $("#int-http3").val(cfg["int-http3"]);
@@ -813,7 +823,7 @@
         $("#int-mqtt").val(cfg["int-mqtt"]);
 
         if ( cfg["gyro-read-count"] != 50 || cfg["gyro-moving-threashold"] != 500 || cfg["formula-max-deviation"] != 1.6 || cfg["wifi-portal-timeout"] != 120 || cfg["wifi-connect-timeout"] != 20 || cfg["tempsensor-resolution"] != 9 || 
-             cfg["int-http1"] != 0 || cfg["int-http2"] != 0 || cfg["int-http3"] != 0 || cfg["int-influx"] != 0 || cfg["int-mqtt"] != 0 || cfg["ignore-low-angles"] != false ) {
+             cfg["int-http1"] != 0 || cfg["int-http2"] != 0 || cfg["int-http3"] != 0 || cfg["int-influx"] != 0 || cfg["int-mqtt"] != 0 || cfg["ignore-low-angles"] != false || (cfg["formula-calibration-temp"] != 20 && cfg["formula-calibration-temp"] != 68)) {
           $("#adv-config").attr("checked", false );
         }
       })

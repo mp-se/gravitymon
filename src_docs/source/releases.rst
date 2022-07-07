@@ -3,8 +3,8 @@
 Releases 
 ########
 
-v1.1.0
-======
+v1.1.0 - beta 2
+===============
 
 Documentation
 +++++++++++++
@@ -19,6 +19,7 @@ User interface
 * Under format options its now possible to select brewfather ispindle format to avoid mixing endpoints. 
 * Added brewblox as format under format options. 
 * User can now edit the voltage level that forces the device into config mode (charging)
+* (beta2) Calibration temperature (for temp adjustment) can now be set under advanced settings.
 
 Features
 ++++++++
@@ -36,6 +37,8 @@ Issues adressed
 ++++++++++++++++
 * BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.
 * BUG: Gravity correction formula not calculating correctly.
+* (beta2) BUG: Temp corrected gravity was not used when pushing data to removed
+* (beta2) BUG: Low memory in format api which resulted in mqtt template to be set to null
 
 v1.0.0
 ======

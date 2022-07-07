@@ -279,7 +279,8 @@ bool loopReadGravity() {
     LOG_PERF_STOP("loop-temp-read");
 
     float gravitySG = calculateGravity(angle, tempC);
-    float corrGravitySG = gravityTemperatureCorrectionC(gravitySG, tempC);
+    float corrGravitySG = gravityTemperatureCorrectionC(
+        gravitySG, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
 
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
