@@ -19,6 +19,12 @@ Step 2 - Setup WIFI
 When the device starts up the first time it will first start an WIFI access point so that the WIFI Settings 
 can be configured. The instructions for that can be found here :ref:`setup_wifi`
 
+.. note::
+  Since the user interface is built using modern frameworks the device requires access to the internet 
+  for the UI to render and data to be populated. The sites that are needed are; https://cdn.jsdelivr.net/npm/bootstrap
+  and https://code.jquery.com
+
+
 Step 3 - Configuration
 ----------------------
 

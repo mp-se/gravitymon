@@ -55,7 +55,8 @@ Device Setting
 
 * **Device name:** 
 
-This is unique name for the device. It will be used in pushing data as well as mDNS name on the network (<name>.local)
+This is unique name for the device. It will be used in pushing data as well as mDNS name on the network (<name>.local). 
+The limitation is 63 chars but using long names might break endpoints that data is sent to if they have other limitations. 
 
 * **Temperature format:** 
 

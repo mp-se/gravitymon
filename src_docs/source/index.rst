@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v1.1 BETA 1**. Last updated 2022-07-06
+  This documentation reflects **v1.1 BETA 2**. Last updated 2022-07-23
 
 * Docs for: `v1.0 <https://mp-se.github.io/gravitymon/v1.0/index.html>`_
 * Docs for: `v0.9 <https://mp-se.github.io/gravitymon/v0.9/index.html>`_

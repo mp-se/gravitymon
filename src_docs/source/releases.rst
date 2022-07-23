@@ -20,11 +20,11 @@ User interface
 * Added brewblox as format under format options. 
 * User can now edit the voltage level that forces the device into config mode (charging)
 * (beta2) Calibration temperature (for temp adjustment) can now be set under advanced settings.
+* (beta2) Changes length of device name from 12 to 63 chars. 63 is the max limit according to mdns. 
 
 Features
 ++++++++
-* Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into 
-storage mode and sleep for the max allowed time. 
+* Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and sleep for the max allowed time. 
  
 Other
 +++++
