@@ -129,7 +129,7 @@ format template that can be used. For information on customizing the format see 
 Home Assistant
 +++++++++++++++
 
-`HomeAssistant <https://www.homeassistant.com>`_ is a platform for home automation and can collect sensor data
+`HomeAssistant <https://www.homeassistant.io>`_ is a platform for home automation and can collect sensor data
 from multiple devices. 
 
 This setup uses the MQTT integration with home assistant to collect values from the device.
@@ -139,31 +139,41 @@ device is named `gravmon2`
 
 ::
 
+   mqtt:
    sensor:
-   - platform: mqtt
-      name: "gravmon2_gravity"
-      state_topic: "gravmon/gravmon2/gravity"
-   - platform: mqtt
-      name: "gravmon2_battery"
-      state_topic: "gravmon/gravmon2/battery"
-   - platform: mqtt
-      name: "gravmon2_rssi"
-      state_topic: "gravmon/gravmon2/RSSI"
-   - platform: mqtt
-      name: "gravmon2_temp"
-      state_topic: "gravmon/gravmon2/temp"
+      - name: "Gravmon2-Gravity"
+         state_topic: "gravmon/gravmon2/gravity"
+         unique_id: gravmon2_grav
+         unit_of_measurement: "SG"
+      - name: "Gravmon2-RSSI"
+         state_topic: "gravmon/gravmon2/rssi"
+         unique_id: gravmon2_rssi
+         unit_of_measurement: "dBm"
 
 
 Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option 
 first. This is the format needed to submit the data to the correct topics as needed above. You can add as 
-many sensors / topics as you want.
+many sensors / topics as you want. It's also possible that you will need to create a user and supply the 
+username / password to be able to publish messages on a topic.
 
 ::
 
    gravmon/${mdns}/gravity:${gravity}|
+   gravmon/${mdns}/rssi:${rssi}|
    gravmon/${mdns}/battery:${battery}|
-   gravmon/${mdns}/RSSI:${rssi}|
-   gravmon/${mdns}/temp:${temp}|
+
+
+It's also possible to allow home assistant to do autodisovery and automatically create the sensor. This format 
+template will create two sensors and update the values for them.
+
+::
+
+   homeassistant/sensor/gravmon_${id}_gravity/state:${gravity}|
+   homeassistant/sensor/gravmon_${id}_gravity/config:{"name": "${mdns}_gravity", "state_topic": "homeassistant/sensor/gravmon_${id}_gravity/state"}|
+   homeassistant/sensor/gravmon_${id}_rssi/state:${rssi}|
+   homeassistant/sensor/gravmon_${id}_rssi/config:{"name": "${mdns}_rssi", "state_topic": "homeassistant/sensor/gravmon_${id}_rssi/state"}|
+   homeassistant/sensor/gravmon_${id}_battery/state:${battery}|
+   homeassistant/sensor/gravmon_${id}_battery/config:{"name": "${mdns}_battery", "state_topic": "homeassistant/sensor/gravmon_${id}_battery/state"}|
 
 
 Brewer's Friend
