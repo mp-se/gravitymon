@@ -98,18 +98,15 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
 
         // If the deviation is more than 2 degress we mark it as failed.
         if (dev * 1000 > myAdvancedConfig.getMaxFormulaCreationDeviation()) {
-          char s[20];
-          snprintf(&s[0], sizeof(s), "%.8f", dev);
-          Log.error(F("CALC: Deviation to large: %s" CR), &s[0]);
+          char s[60];
+          snprintf(&s[0], sizeof(s), "CALC: Validation failed on angle %f, deviation too large %.8f", fd.a[i], dev);
+          ErrorFileLog errLog;
+          errLog.addEntry(&s[0]);
           valid = false;
         }
       }
 
       if (!valid) {
-        ErrorFileLog errLog;
-        errLog.addEntry(
-            F("CALC: Error validating created formula. Deviation to large, "
-              "formula rejected."));
         return ERR_FORMULA_UNABLETOFFIND;
       }
 
