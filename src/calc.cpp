@@ -101,8 +101,8 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
           char s[120];
           snprintf(&s[0], sizeof(s),
                    "CALC: Validation failed on angle %f, deviation too large "
-                   "%.8f, formula order %d",
-                   fd.a[i], dev, order);
+                   "%.2f SG, formula order %d",
+                   fd.a[i], dev * 1000, order);
           ErrorFileLog errLog;
           errLog.addEntry(&s[0]);
           valid = false;
