@@ -789,10 +789,13 @@ void WebServerHandler::webHandleFormulaRead() {
       doc[PARAM_ERROR] = "Internal error creating formula.";
       break;
     case ERR_FORMULA_NOTENOUGHVALUES:
-      doc[PARAM_ERROR] = "Not enough values to create formula.";
+      doc[PARAM_ERROR] =
+          "Not enough values to create formula, need at least 3 angles.";
       break;
     case ERR_FORMULA_UNABLETOFFIND:
-      doc[PARAM_ERROR] = "Unable to find an accurate formula based on input.";
+      doc[PARAM_ERROR] =
+          "Unable to find an accurate formula based on input, check error log "
+          "and graph below.";
       break;
     default:
       doc[PARAM_GRAVITY_FORMULA] = myConfig.getGravityFormula();

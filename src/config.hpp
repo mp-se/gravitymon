@@ -54,10 +54,10 @@ struct RawFormulaData {
 
 class AdvancedConfig {
  private:
-  int _wifiPortalTimeout = 120;              // seconds
-  int _wifiConnectTimeout = 20;              // seconds
-  float _maxFormulaCreationDeviation = 1.6;  // SG
-  float _defaultCalibrationTemp = 20.0;      // C
+  int _wifiPortalTimeout = 120;            // seconds
+  int _wifiConnectTimeout = 20;            // seconds
+  float _maxFormulaCreationDeviation = 3;  // SG
+  float _defaultCalibrationTemp = 20.0;    // C
   int _gyroSensorMovingThreashold = 500;
   int _tempSensorResolution = 9;  // bits
   int _gyroReadCount = 50;
