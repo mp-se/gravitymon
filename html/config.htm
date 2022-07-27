@@ -506,9 +506,9 @@
             <div class="row mb-3">
               <label for="formula-max-deviation" class="col-sm-3 col-form-label">Formula max deviation (SG)</label>
               <div class="col-sm-3">
-                <input disabled type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation" placeholder="1.6" checked data-bs-toggle="tooltip" title="When validating the derived formula this is the maximum accepted deviation for the supplied values"> 
+                <input disabled type="number" step=".1" min="1" max="10" class="form-control" name="formula-max-deviation" id="formula-max-deviation" placeholder="3" checked data-bs-toggle="tooltip" title="When validating the derived formula this is the maximum accepted deviation for the supplied values"> 
               </div>
-              <div class="col-sm-5">(1 - 10) - default 1.6 SG</div>
+              <div class="col-sm-5">(1 - 10) - default 3 SG</div>
             </div>
 
             <div class="row mb-3">
@@ -822,7 +822,7 @@
         $("#int-influx").val(cfg["int-influx"]);
         $("#int-mqtt").val(cfg["int-mqtt"]);
 
-        if ( cfg["gyro-read-count"] != 50 || cfg["gyro-moving-threashold"] != 500 || cfg["formula-max-deviation"] != 1.6 || cfg["wifi-portal-timeout"] != 120 || cfg["wifi-connect-timeout"] != 20 || cfg["tempsensor-resolution"] != 9 || 
+        if ( cfg["gyro-read-count"] != 50 || cfg["gyro-moving-threashold"] != 500 || cfg["formula-max-deviation"] != 3 || cfg["wifi-portal-timeout"] != 120 || cfg["wifi-connect-timeout"] != 20 || cfg["tempsensor-resolution"] != 9 || 
              cfg["int-http1"] != 0 || cfg["int-http2"] != 0 || cfg["int-http3"] != 0 || cfg["int-influx"] != 0 || cfg["int-mqtt"] != 0 || cfg["ignore-low-angles"] != false || (cfg["formula-calibration-temp"] != 20 && cfg["formula-calibration-temp"] != 68)) {
           $("#adv-config").attr("checked", false );
         }
