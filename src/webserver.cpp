@@ -50,6 +50,9 @@ void WebServerHandler::webHandleConfig() {
   doc[PARAM_PASS] = "";  // dont show the wifi password
   doc[PARAM_PASS2] = "";
 
+  doc[PARAM_APP_VER] = String(CFG_APPVER);
+  doc[PARAM_APP_BUILD] = String(CFG_GITREV);
+
   double angle = 0;
 
   if (myGyro.hasValue()) angle = myGyro.getAngle();

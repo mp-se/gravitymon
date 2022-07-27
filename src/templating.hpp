@@ -53,8 +53,8 @@ SOFTWARE.
 #define TPL_GRAVITY_CORR_G "${corr-gravity-sg}"
 #define TPL_GRAVITY_CORR_P "${corr-gravity-plato}"
 #define TPL_GRAVITY_UNIT "${gravity-unit}"  // G or P
-#define TPL_SW_VER "${sw-ver}"
-#define TPL_SW_REV "${sw-rev}"
+#define TPL_APP_VER "${app-ver}"
+#define TPL_APP_BUILD "${app-build}"
 
 #define TPL_FNAME_HTTP1 "/http-1.tpl"
 #define TPL_FNAME_HTTP2 "/http-2.tpl"
@@ -75,7 +75,7 @@ class TemplatingEngine {
     String val;
   };
 
-  KeyVal items[21] = {{TPL_MDNS, ""},           {TPL_ID, ""},
+  KeyVal items[23] = {{TPL_MDNS, ""},           {TPL_ID, ""},
                       {TPL_SLEEP_INTERVAL, ""}, {TPL_TEMP, ""},
                       {TPL_TEMP_C, ""},         {TPL_TEMP_F, ""},
                       {TPL_TEMP_UNITS, ""},     {TPL_BATTERY, ""},
@@ -85,7 +85,8 @@ class TemplatingEngine {
                       {TPL_GRAVITY_P, ""},      {TPL_GRAVITY_CORR, ""},
                       {TPL_GRAVITY_CORR_G, ""}, {TPL_GRAVITY_CORR_P, ""},
                       {TPL_GRAVITY_UNIT, ""},   {TPL_TOKEN, ""},
-                      {TPL_TOKEN2, ""}};
+                      {TPL_TOKEN2, ""},         {TPL_APP_VER, ""},
+                      {TPL_APP_BUILD, ""}};
 
   char buffer[20];
   String baseTemplate;

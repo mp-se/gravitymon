@@ -240,6 +240,8 @@
         doc = doc.replaceAll("${corr-gravity}", cfg["gravity"]);
         doc = doc.replaceAll("${angle}", cfg["angle"]);
         doc = doc.replaceAll("${tilt}", cfg["angle"]);
+        doc = doc.replaceAll("${app-ver}", cfg["app-ver"]);
+        doc = doc.replaceAll("${app-build}", cfg["app-build"]);
 
         // Format in a readable json string.
         try {

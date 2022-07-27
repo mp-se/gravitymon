@@ -130,8 +130,8 @@ void TemplatingEngine::initialize(float angle, float gravitySG,
   setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG), 1);
   setVal(TPL_GRAVITY_UNIT, myConfig.getGravityFormat());
 
-  setVal(TPL_SW_VER, CFG_APPVER);
-  setVal(TPL_SW_REV, CFG_GITREV);
+  setVal(TPL_APP_VER, CFG_APPVER);
+  setVal(TPL_APP_BUILD, CFG_GITREV);
 
 #if LOG_LEVEL == 6
   // dumpAll();

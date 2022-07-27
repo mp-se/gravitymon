@@ -64,5 +64,7 @@
     "battery": 0.04,
     "runtime-average": 3.0,
     "ble": "pink",
+    "app-ver": "0.1.0",
+    "app-build": "build",
     "platform": "esp32"
 }
