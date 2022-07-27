@@ -13,6 +13,7 @@ Documentation
 * Added documentation for Brewpiless as target
 * Updated docs for ubidots service integration.
 * Added brewblox as new service
+* Updated docs for HA integration since method was depricated
 
 User interface
 ++++++++++++++
@@ -25,6 +26,10 @@ User interface
 Features
 ++++++++
 * Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and sleep for the max allowed time. 
+* Added ${app-ver} and ${app-build} to format template as new variables.
+* Added format templates for HA auto registration
+* Improved error messages when creating formula so the meaasurement points can be identified.
+* Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula. 
  
 Other
 +++++
@@ -35,6 +40,7 @@ Other
 
 Issues adressed
 ++++++++++++++++
+* BUG: Large format templates could be saved but when loading it's only blank. Increased total memory from 3kb to 5kb
 * BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.
 * BUG: Gravity correction formula not calculating correctly.
 * (beta2) BUG: Temp corrected gravity was not used when pushing data to removed

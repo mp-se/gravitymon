@@ -1022,7 +1022,7 @@ void WebServerHandler::webHandleConfigFormatRead() {
   LOG_PERF_START("webserver-api-config-format-read");
   Log.notice(F("WEB : webServer callback for /api/config/formula(get)." CR));
 
-  DynamicJsonDocument doc(3000);
+  DynamicJsonDocument doc(5000);
 
   doc[PARAM_ID] = myConfig.getID();
 

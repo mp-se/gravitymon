@@ -164,16 +164,25 @@ username / password to be able to publish messages on a topic.
 
 
 It's also possible to allow home assistant to do autodisovery and automatically create the sensor. This format 
-template will create two sensors and update the values for them.
+template will create two sensors and update the values for them. 
+
+.. warning::
+  This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.
+  Earlier version can handle 2 of the values.
+
 
 ::
 
-   homeassistant/sensor/gravmon_${id}_gravity/state:${gravity}|
-   homeassistant/sensor/gravmon_${id}_gravity/config:{"name": "${mdns}_gravity", "state_topic": "homeassistant/sensor/gravmon_${id}_gravity/state"}|
-   homeassistant/sensor/gravmon_${id}_rssi/state:${rssi}|
-   homeassistant/sensor/gravmon_${id}_rssi/config:{"name": "${mdns}_rssi", "state_topic": "homeassistant/sensor/gravmon_${id}_rssi/state"}|
-   homeassistant/sensor/gravmon_${id}_battery/state:${battery}|
-   homeassistant/sensor/gravmon_${id}_battery/config:{"name": "${mdns}_battery", "state_topic": "homeassistant/sensor/gravmon_${id}_battery/state"}|
+   gravmon/${mdns}/temperature:${temp}|
+   gravmon/${mdns}/gravity:${gravity}|
+   gravmon/${mdns}/rssi:${rssi}|
+   gravmon/${mdns}/tilt:${tilt}|
+   gravmon/${mdns}/battery:${battery}|
+   homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
+   homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","dev_cla":"temperature","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
+   homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"temperature","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
+   homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","dev_cla":"temperature","stat_t":"gravmon/${mdns}/tilt"}|
+   homeassistant/sensor/gravmon_${id}/battery/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_batt","name":"battery","dev_cla":"temperature","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"}|
 
 
 Brewer's Friend
