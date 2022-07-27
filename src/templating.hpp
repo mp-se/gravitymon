@@ -53,6 +53,8 @@ SOFTWARE.
 #define TPL_GRAVITY_CORR_G "${corr-gravity-sg}"
 #define TPL_GRAVITY_CORR_P "${corr-gravity-plato}"
 #define TPL_GRAVITY_UNIT "${gravity-unit}"  // G or P
+#define TPL_SW_VER "${sw-ver}"
+#define TPL_SW_REV "${sw-rev}"
 
 #define TPL_FNAME_HTTP1 "/http-1.tpl"
 #define TPL_FNAME_HTTP2 "/http-2.tpl"

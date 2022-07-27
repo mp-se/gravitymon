@@ -99,4 +99,10 @@ These are the format keys available for use in the format.
    * - ${gravity-unit}
      - Gravity format, `G` or `P`
      - G
+   * - ${sw-ver}
+     - Software version
+     - 1.1.0
+   * - ${sw-rev}
+     - Software revision (git hash)
+     - ..e456743
 
