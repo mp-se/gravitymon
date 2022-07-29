@@ -29,3 +29,19 @@ To fix these this you can;
 - change the advanced setting (Formula max deviation) to a higher value and save the values again. 
 
 In the case above this paramater was changed from 1.6 SG to 4 SG and the formula was accepted. The deviation on this point was just above 3 SG. 
+
+User interface does not render correctly
+----------------------------------------
+
+Since the user interface is built using bootstrap v5 the device requires access to the internet 
+to download required javascripts and css files. Due to size it would not be possible to store these
+on the device. Make sure the device can access: https://cdn.jsdelivr.net/npm/bootstrap
+
+Data is not popoulated in the fields
+------------------------------------
+
+The user interface uses JQuery to fetch data from the device. This javascript library needs to be downloaded 
+from the internet.  Due to size it would not be possible to store these on the device. Make sure the 
+device can access: https://code.jquery.com
+
+Also ensure that any security tools does not block the execution of these features.

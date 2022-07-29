@@ -235,7 +235,8 @@ the need to connect to the serial port or to check what errors has occured while
 <ul class="simple">
 <li><p><strong>Device name:</strong></p></li>
 </ul>
-<p>This is unique name for the device. It will be used in pushing data as well as mDNS name on the network (&lt;name&gt;.local)</p>
+<p>This is unique name for the device. It will be used in pushing data as well as mDNS name on the network (&lt;name&gt;.local).
+The limitation is 63 chars but using long names might break endpoints that data is sent to if they have other limitations.</p>
 <ul class="simple">
 <li><p><strong>Temperature format:</strong></p></li>
 </ul>

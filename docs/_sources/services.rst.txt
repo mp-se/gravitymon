@@ -129,7 +129,7 @@ format template that can be used. For information on customizing the format see 
 Home Assistant
 +++++++++++++++
 
-`HomeAssistant <https://www.homeassistant.com>`_ is a platform for home automation and can collect sensor data
+`HomeAssistant <https://www.homeassistant.io>`_ is a platform for home automation and can collect sensor data
 from multiple devices. 
 
 This setup uses the MQTT integration with home assistant to collect values from the device.
@@ -139,31 +139,50 @@ device is named `gravmon2`
 
 ::
 
+   mqtt:
    sensor:
-   - platform: mqtt
-      name: "gravmon2_gravity"
-      state_topic: "gravmon/gravmon2/gravity"
-   - platform: mqtt
-      name: "gravmon2_battery"
-      state_topic: "gravmon/gravmon2/battery"
-   - platform: mqtt
-      name: "gravmon2_rssi"
-      state_topic: "gravmon/gravmon2/RSSI"
-   - platform: mqtt
-      name: "gravmon2_temp"
-      state_topic: "gravmon/gravmon2/temp"
+      - name: "Gravmon2-Gravity"
+         state_topic: "gravmon/gravmon2/gravity"
+         unique_id: gravmon2_grav
+         unit_of_measurement: "SG"
+      - name: "Gravmon2-RSSI"
+         state_topic: "gravmon/gravmon2/rssi"
+         unique_id: gravmon2_rssi
+         unit_of_measurement: "dBm"
 
 
 Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option 
 first. This is the format needed to submit the data to the correct topics as needed above. You can add as 
-many sensors / topics as you want.
+many sensors / topics as you want. It's also possible that you will need to create a user and supply the 
+username / password to be able to publish messages on a topic.
 
 ::
 
    gravmon/${mdns}/gravity:${gravity}|
+   gravmon/${mdns}/rssi:${rssi}|
    gravmon/${mdns}/battery:${battery}|
-   gravmon/${mdns}/RSSI:${rssi}|
-   gravmon/${mdns}/temp:${temp}|
+
+
+It's also possible to allow home assistant to do autodisovery and automatically create the sensor. This format 
+template will create two sensors and update the values for them. 
+
+.. warning::
+  This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.
+  Earlier version can handle 2 of the values.
+
+
+::
+
+   gravmon/${mdns}/temperature:${temp}|
+   gravmon/${mdns}/gravity:${gravity}|
+   gravmon/${mdns}/rssi:${rssi}|
+   gravmon/${mdns}/tilt:${tilt}|
+   gravmon/${mdns}/battery:${battery}|
+   homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
+   homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","dev_cla":"temperature","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
+   homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"temperature","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
+   homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","dev_cla":"temperature","stat_t":"gravmon/${mdns}/tilt"}|
+   homeassistant/sensor/gravmon_${id}/battery/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_batt","name":"battery","dev_cla":"temperature","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"}|
 
 
 Brewer's Friend

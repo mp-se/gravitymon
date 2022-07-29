@@ -3,8 +3,8 @@
 Releases 
 ########
 
-v1.1.0
-======
+v1.1.0 - beta 2
+===============
 
 Documentation
 +++++++++++++
@@ -13,17 +13,25 @@ Documentation
 * Added documentation for Brewpiless as target
 * Updated docs for ubidots service integration.
 * Added brewblox as new service
+* (beta2) Updated docs for HA integration since method was depricated
 
 User interface
 ++++++++++++++
 * Under format options its now possible to select brewfather ispindle format to avoid mixing endpoints. 
 * Added brewblox as format under format options. 
 * User can now edit the voltage level that forces the device into config mode (charging)
+* (beta2) Calibration temperature (for temp adjustment) can now be set under advanced settings.
+* (beta2) Changes length of device name from 12 to 63 chars. 63 is the max limit according to mdns. 
 
 Features
 ++++++++
-* Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into 
-storage mode and sleep for the max allowed time. 
+* Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and sleep for the max allowed time. 
+* Added ${app-ver} and ${app-build} to format template as new variables.
+* Added format templates for HA auto registration
+* (beta2) Improved error messages when creating formula so the meaasurement points can be identified.
+* (beta2) Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula. 
+* (beta2) Updated format template for Home Assistant for using manual configuration (Aligned with new mqtt configuration format)
+* (beta2) Added format template for Home Assistant with automatic device registration
  
 Other
 +++++
@@ -36,6 +44,9 @@ Issues adressed
 ++++++++++++++++
 * BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.
 * BUG: Gravity correction formula not calculating correctly.
+* (beta2) BUG: Temp corrected gravity was not used when pushing data to removed
+* (beta2) BUG: Low memory in format api which resulted in mqtt template to be set to null
+* (beta2) BUG: Large format templates could be saved but when loading it's only blank. Increased total memory from 3kb to 5kb
 
 v1.0.0
 ======

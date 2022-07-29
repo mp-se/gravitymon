@@ -285,33 +285,49 @@ format template that can be used. For information on customizing the format see 
 </div>
 <div class="section" id="home-assistant">
 <h2>Home Assistant<a class="headerlink" href="#home-assistant" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://www.homeassistant.com">HomeAssistant</a> is a platform for home automation and can collect sensor data
+<p><a class="reference external" href="https://www.homeassistant.io">HomeAssistant</a> is a platform for home automation and can collect sensor data
 from multiple devices.</p>
 <p>This setup uses the MQTT integration with home assistant to collect values from the device.</p>
 <p>This part of the configuration goes into the home assistant configuration.yaml file. The example assumes that the
 device is named <cite>gravmon2</cite></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sensor</span><span class="p">:</span>
-<span class="o">-</span> <span class="n">platform</span><span class="p">:</span> <span class="n">mqtt</span>
-   <span class="n">name</span><span class="p">:</span> <span class="s2">"gravmon2_gravity"</span>
-   <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/gravity"</span>
-<span class="o">-</span> <span class="n">platform</span><span class="p">:</span> <span class="n">mqtt</span>
-   <span class="n">name</span><span class="p">:</span> <span class="s2">"gravmon2_battery"</span>
-   <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/battery"</span>
-<span class="o">-</span> <span class="n">platform</span><span class="p">:</span> <span class="n">mqtt</span>
-   <span class="n">name</span><span class="p">:</span> <span class="s2">"gravmon2_rssi"</span>
-   <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/RSSI"</span>
-<span class="o">-</span> <span class="n">platform</span><span class="p">:</span> <span class="n">mqtt</span>
-   <span class="n">name</span><span class="p">:</span> <span class="s2">"gravmon2_temp"</span>
-   <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/temp"</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mqtt</span><span class="p">:</span>
+<span class="n">sensor</span><span class="p">:</span>
+   <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">"Gravmon2-Gravity"</span>
+      <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/gravity"</span>
+      <span class="n">unique_id</span><span class="p">:</span> <span class="n">gravmon2_grav</span>
+      <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">"SG"</span>
+   <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">"Gravmon2-RSSI"</span>
+      <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/rssi"</span>
+      <span class="n">unique_id</span><span class="p">:</span> <span class="n">gravmon2_rssi</span>
+      <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">"dBm"</span>
 </pre></div>
 </div>
 <p>Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option
 first. This is the format needed to submit the data to the correct topics as needed above. You can add as
-many sensors / topics as you want.</p>
+many sensors / topics as you want. It’s also possible that you will need to create a user and supply the
+username / password to be able to publish messages on a topic.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>gravmon/${mdns}/gravity:${gravity}|
+gravmon/${mdns}/rssi:${rssi}|
 gravmon/${mdns}/battery:${battery}|
-gravmon/${mdns}/RSSI:${rssi}|
-gravmon/${mdns}/temp:${temp}|
+</pre></div>
+</div>
+<p>It’s also possible to allow home assistant to do autodisovery and automatically create the sensor. This format
+template will create two sensors and update the values for them.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.
+Earlier version can handle 2 of the values.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>gravmon/${mdns}/temperature:${temp}|
+gravmon/${mdns}/gravity:${gravity}|
+gravmon/${mdns}/rssi:${rssi}|
+gravmon/${mdns}/tilt:${tilt}|
+gravmon/${mdns}/battery:${battery}|
+homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
+homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","dev_cla":"temperature","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
+homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"temperature","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
+homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","dev_cla":"temperature","stat_t":"gravmon/${mdns}/tilt"}|
+homeassistant/sensor/gravmon_${id}/battery/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_batt","name":"battery","dev_cla":"temperature","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"}|
 </pre></div>
 </div>
 </div>
