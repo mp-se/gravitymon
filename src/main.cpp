@@ -197,7 +197,9 @@ void setup() {
         myGyro.read();
         LOG_PERF_STOP("main-gyro-read");
       } else {
-        Log.notice(F("Main: Failed to connect to the gyro, software will not be able to detect angles." CR));
+        Log.notice(
+            F("Main: Failed to connect to the gyro, software will not be able "
+              "to detect angles." CR));
       }
 
       myBatteryVoltage.read();
