@@ -26,7 +26,7 @@
             showError("Upload failed");
           },
           success: function(resp) {
-            showSuccess("Upload completed, device is restarting. Waiting 10 seconds to refresh browser.");
+            showSuccess("Upload completed, device is restarting. Waiting 10 seconds to refresh browser. If you don't get any gyro readings after update, please press the reset button!");
             setTimeout(() => {  
               window.location = "/";
             }, 10000);
