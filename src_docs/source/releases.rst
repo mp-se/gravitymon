@@ -3,7 +3,7 @@
 Releases 
 ########
 
-v1.1.0 - beta 2
+v1.1.0 - beta 3
 ===============
 
 Documentation
@@ -26,7 +26,7 @@ User interface
 Features
 ++++++++
 * Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and sleep for the max allowed time. 
-* Added ${app-ver} and ${app-build} to format template as new variables.
+* (beta2) Added ${app-ver} and ${app-build} to format template as new variables.
 * Added format templates for HA auto registration
 * (beta2) Improved error messages when creating formula so the meaasurement points can be identified.
 * (beta2) Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula. 
@@ -46,7 +46,8 @@ Issues adressed
 * BUG: Gravity correction formula not calculating correctly.
 * (beta2) BUG: Temp corrected gravity was not used when pushing data to removed
 * (beta2) BUG: Low memory in format api which resulted in mqtt template to be set to null
-* (beta2) BUG: Large format templates could be saved but when loading it's only blank. Increased total memory from 3kb to 5kb
+* (beta2) BUG: Large format templates could be saved but when loading it's only blank.
+* (beta3) BUG: Refactored format api to handle larger payloads.
 
 v1.0.0
 ======
