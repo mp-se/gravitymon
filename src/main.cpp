@@ -192,14 +192,12 @@ void setup() {
       break;
 
     default:
-      if (!myGyro.setup()) {
-        ErrorFileLog errLog;
-        errLog.addEntry(
-            F("MAIN: Failed to initialize the gyro, is it connected?"));
-      } else {
+      if (myGyro.setup()) {
         LOG_PERF_START("main-gyro-read");
         myGyro.read();
         LOG_PERF_STOP("main-gyro-read");
+      } else {
+        Log.notice(F("Main: Failed to connect to the gyro, software will not be able to detect angles." CR));
       }
 
       myBatteryVoltage.read();
