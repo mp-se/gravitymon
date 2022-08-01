@@ -1022,49 +1022,52 @@ void WebServerHandler::webHandleConfigFormatRead() {
   LOG_PERF_START("webserver-api-config-format-read");
   Log.notice(F("WEB : webServer callback for /api/config/formula(get)." CR));
 
-  DynamicJsonDocument doc(5000);
-
-  doc[PARAM_ID] = myConfig.getID();
+  String out;
+  out.reserve(7000);
+  out += "{\"id\":\"" + String(myConfig.getID()) + "\",";
 
   String s = readFile(TPL_FNAME_HTTP1);
+  out += "\"" + String(PARAM_FORMAT_HTTP1) + "\":\"";
   if (s.length())
-    doc[PARAM_FORMAT_HTTP1] = urlencode(s);
+    out += urlencode(s);
   else
-    doc[PARAM_FORMAT_HTTP1] = urlencode(String(&iSpindleFormat[0]));
+    out += urlencode(String(&iSpindleFormat[0]));
 
   s = readFile(TPL_FNAME_HTTP2);
+  out += "\",\"" + String(PARAM_FORMAT_HTTP2) + "\":\"";
   if (s.length())
-    doc[PARAM_FORMAT_HTTP2] = urlencode(s);
+    out += urlencode(s);
   else
-    doc[PARAM_FORMAT_HTTP2] = urlencode(String(&iSpindleFormat[0]));
+    out += urlencode(String(&iSpindleFormat[0]));
 
   s = readFile(TPL_FNAME_HTTP3);
+  out += "\",\"" + String(PARAM_FORMAT_HTTP3) + "\":\"";
   if (s.length())
-    doc[PARAM_FORMAT_HTTP3] = urlencode(s);
+    out += urlencode(s);
   else
-    doc[PARAM_FORMAT_HTTP3] = urlencode(String(&iHttpGetFormat[0]));
+    out += urlencode(String(&iHttpGetFormat[0]));
 
   s = readFile(TPL_FNAME_INFLUXDB);
+  out += "\",\"" + String(PARAM_FORMAT_INFLUXDB) + "\":\"";
   if (s.length())
-    doc[PARAM_FORMAT_INFLUXDB] = urlencode(s);
+    out += urlencode(s);
   else
-    doc[PARAM_FORMAT_INFLUXDB] = urlencode(String(&influxDbFormat[0]));
+    out += urlencode(String(&influxDbFormat[0]));
 
   s = readFile(TPL_FNAME_MQTT);
+  out += "\",\"" + String(PARAM_FORMAT_MQTT) + "\":\"";
   if (s.length())
-    doc[PARAM_FORMAT_MQTT] = urlencode(s);
+    out += urlencode(s);
   else
-    doc[PARAM_FORMAT_MQTT] = urlencode(String(&mqttFormat[0]));
+    out += urlencode(String(&mqttFormat[0]));
+
+  out += "\"}";
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, Serial);
+  Serial.print(out.c_str());
   Serial.print(CR);
 #endif
 
-  String out;
-  out.reserve(3000);
-  serializeJson(doc, out);
-  doc.clear();
   _server->send(200, "application/json", out.c_str());
   LOG_PERF_STOP("webserver-api-config-format-read");
 }
