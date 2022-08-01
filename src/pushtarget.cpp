@@ -416,9 +416,9 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 //
 // Send data to mqtt target
 //
-void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
+void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure, bool skipHomeAssistantRegistration) {
 #if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to mqtt." CR));
+  Log.notice(F("PUSH: Sending values to mqtt. Skip HA registration %s" CR), skipHomeAssistantRegistration ? "yes" : "no");
 #endif
   _lastCode = 0;
   _lastSuccess = false;
@@ -483,15 +483,20 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure) {
     Log.verbose(F("PUSH: topic '%s', value '%s'." CR), topic.c_str(),
                 value.c_str());
 #endif
-    if (mqtt.publish(topic, value)) {
-      _lastSuccess = true;
-      Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
-      _lastCode = 0;
+
+    if (skipHomeAssistantRegistration && topic.startsWith("homeassistant/sensor/")) {
+      Log.notice(F("PUSH: Ignoring Home Assistant registration topic %s" CR), topic.c_str());
     } else {
-      _lastCode = mqtt.lastError();
-      ErrorFileLog errLog;
-      errLog.addEntry("PUSH: MQTT push on " + topic +
-                      " failed error=" + String(mqtt.lastError()));
+      if (mqtt.publish(topic, value)) {
+        _lastSuccess = true;
+        Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
+        _lastCode = 0;
+      } else {
+        _lastCode = mqtt.lastError();
+        ErrorFileLog errLog;
+        errLog.addEntry("PUSH: MQTT push on " + topic +
+                        " failed error=" + String(mqtt.lastError()));
+      }
     }
 
     index = next + 1;

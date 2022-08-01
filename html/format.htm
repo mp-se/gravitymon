@@ -39,24 +39,36 @@
   <div class="container row-margin-10">
 
     <div class="alert alert-success alert-dismissible hide fade d-none" role="alert">
-      <div id="alert"></div>
+      <div id="alert-msg"></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="alert alert-warning alert-dismissible hide fade d-none" role="alert" id="warning-ha">
+      <div>Home Assistant device configuration detected in MQTT format. These messages will be posted when format is saved and not during gravity measurement.</div>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
     <script type="text/javascript">
       function showError( msg ) {
-        $('.alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
-        $('#alert').text( msg );
+        $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert-msg').text( msg );
       }
 
       function showSuccess( msg ) {
-        $('.alert').addClass('alert-success').removeClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
-        $('#alert').text( msg );
+        $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert-msg').text( msg );
       }
 
       $("#alert-btn").click(function(e){
-        $('.alert').addClass('hide').removeClass('show').addClass('d-none');
+        $('#alert').addClass('hide').removeClass('show').addClass('d-none');
       });    
+
+      function showWarningHomeAssistant() {
+        $('#warning-ha').removeClass('d-none').addClass('show').removeClass('hide');
+      }
+      function hideWarningHomeAssistant() {
+        $('#warning-ha').addClass('d-none').removeClass('show').addClass('hide');
+      }
     </script>
 
     <div class="accordion" id="accordion">
@@ -152,6 +164,16 @@
         $(location.hash + '.collapse').collapse('show');
       }
     });
+  
+/*    
+    $("#format-btn").click(function(e){
+      console.log(e)
+      var s = $("#push-target").val()
+      
+      if (s == "mqtt") {
+        console.log("Current format is mqtt, checking for HA device registration.")
+      }
+    });*/
 
     $("#push-target").change(function(e){
       console.log(e)
@@ -179,19 +201,53 @@
     // Store the format
     $("#format-btn").click(function(e) {
       var s = $("#format").val();
-      s = s.replaceAll("\n", "");
-      var obj = 'id=' + $("#id").val() + '&' + $("#push-target").val() + '=' + encodeURIComponent(s);
-      console.log(obj);
+      var ha = false;
+    
+      hideWarningHomeAssistant();
+      if ($("#push-target").val() == "mqtt") {
+        console.log("Current format is mqtt, checking for HA device registration.")
+        if (s.search("homeassistant/sensor/") != -1) {
+          showWarningHomeAssistant();
+          ha = true;
+        }
+      }
 
+      s = s.replaceAll("\n", "");
+      var obj = 'id=' + $("#id").val() + "&" + $("#push-target").val() + '=' + encodeURIComponent(s);
+      console.log(obj);
+    
       $.ajax( { 
         type: "POST",  
         url: "/api/config/format", 
         data: obj, 
-        success: function(result) { showSuccess('Format stored successfully.'); getConfig(); },
+        success: function(result) { showSuccess('Format stored successfully.'); getConfig(); postHomeAssistant(ha); },
         error: function(result) { showError('Unable to store format.'); }
       } );
     });
-    
+ 
+    function postHomeAssistant(active) {
+      if (!active)
+        return;
+
+      var url = "/api/test/push";
+      url += "?id=" + $("#id").val() + "&format=mqtt";
+      //var url = "/test/push.json";  
+      $.getJSON(url, function (cfg) {
+        var code = cfg["code"];
+        var success = cfg["success"];
+        var enabled = cfg["enabled"];
+
+        if(success) {
+          showSuccess( "Format stored successfully. Home Assistant Device Registration Successful." );
+        } else {
+          showError( "Format stored successfully. Home Assistant Device Registration Failed!" );
+        }
+      })
+      .fail(function () {
+        showError( "Format stored successfully. Home Assistant Device Registration Failed!" );
+      })
+    }
+
     // Test the calibration
     $("#test-btn").click(function(e) {
       var url = "/api/status";

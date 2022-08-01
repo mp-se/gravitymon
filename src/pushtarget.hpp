@@ -61,7 +61,7 @@ class PushTarget {
     sendHttpGet(engine, isSecure);
   }
   void sendInfluxDb2(TemplatingEngine& engine, bool isSecure);
-  void sendMqtt(TemplatingEngine& engine, bool isSecure);
+  void sendMqtt(TemplatingEngine& engine, bool isSecure, bool skipHomeAssistantRegistration = true);
   int getLastCode() { return _lastCode; }
   bool getLastSuccess() { return _lastSuccess; }
 };

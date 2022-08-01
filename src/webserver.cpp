@@ -947,7 +947,7 @@ void WebServerHandler::webHandleTestPush() {
     push.sendInfluxDb2(engine, myConfig.isInfluxSSL());
     enabled = true;
   } else if (!type.compareTo(PARAM_FORMAT_MQTT) && myConfig.isMqttActive()) {
-    push.sendMqtt(engine, myConfig.isMqttSSL());
+    push.sendMqtt(engine, myConfig.isMqttSSL(), false);
     enabled = true;
   }
 

@@ -17,6 +17,7 @@ Documentation
 
 User interface
 ++++++++++++++
+* (beta3) Changed behavior for Home Assistant Device registration, this is only done when format template is saved, during normal operation only data values are posted on MQTT. 
 * (beta2) Calibration temperature (for temp adjustment) can now be set under advanced settings.
 * (beta2) Changes length of device name from 12 to 63 chars. 63 is the max limit according to mdns. 
 * Under format options its now possible to select brewfather ispindle format to avoid mixing endpoints. 
