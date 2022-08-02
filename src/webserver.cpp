@@ -332,9 +332,13 @@ void WebServerHandler::webHandleStatus() {
 
   DynamicJsonDocument doc(500);
 
-  double angle = 0;
+  double angle = 0;  // Indicate we have no valid gyro value
 
-  if (myGyro.hasValue()) angle = myGyro.getAngle();
+  if (myGyro.isConnected()) {
+    if (myGyro.hasValue()) angle = myGyro.getAngle();
+  } else {
+    angle = -1;  // Indicate that we have no connection to gyro
+  }
 
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);

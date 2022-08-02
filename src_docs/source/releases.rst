@@ -17,6 +17,8 @@ Documentation
 
 User interface
 ++++++++++++++
+* (beta3) Added error message to user message if gyro connection fails.
+* (beta3) Added  message to user message if no temp sensor can be found.
 * (beta3) Added drop down menus in user interface to simplify navigation to sub pages
 * (beta3) Changed behavior for Home Assistant Device registration, this is only done when format template is saved, during normal operation only data values are posted on MQTT. 
 * (beta2) Calibration temperature (for temp adjustment) can now be set under advanced settings.

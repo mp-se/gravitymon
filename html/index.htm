@@ -300,7 +300,11 @@
     
         var angle = cfg["angle"];
         
-        if(angle==0) {
+        if(angle==-1) {
+          showError("Unable to connect to gyro, try a reset or power off/on")
+          $("#angle").text("No gyro"); 
+          $("#gravity").text("No gyro");
+        } else if(angle==0) {
           $("#angle").text("Gyro moving"); 
           $("#gravity").text("Gyro moving");
         } else {
@@ -329,10 +333,14 @@
 
         $("#battery").text(batt + " V (" + charge + "%)" );
 
-        if( cfg["temp-format"] == "C") 
-          $("#temp").text(cfg["temp-c"] + " C");
-        else 
-          $("#temp").text(cfg["temp-f"] + " F");
+        if( cfg["temp-c"] == -273) {
+          $("#temp").text("No temp sensor");
+        } else {
+          if( cfg["temp-format"] == "C") 
+            $("#temp").text(cfg["temp-c"] + " C");
+          else 
+            $("#temp").text(cfg["temp-f"] + " F");
+        }
 
         if( cfg["sleep-mode"] ) 
           $("#sleep-mode").attr("checked", true );
