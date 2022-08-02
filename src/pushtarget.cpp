@@ -143,7 +143,7 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
 
   if (myConfig.isMqttActive() && intDelay.useMqtt()) {
     LOG_PERF_START("push-mqtt");
-    sendMqtt(engine, myConfig.isMqttSSL());
+    sendMqtt(engine, myConfig.isMqttSSL(), true);
     LOG_PERF_STOP("push-mqtt");
   }
 
@@ -416,9 +416,11 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 //
 // Send data to mqtt target
 //
-void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure, bool skipHomeAssistantRegistration) {
+void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
+                          bool skipHomeAssistantRegistration) {
 #if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to mqtt. Skip HA registration %s" CR), skipHomeAssistantRegistration ? "yes" : "no");
+  Log.notice(F("PUSH: Sending values to mqtt. Skip HA registration %s" CR),
+             skipHomeAssistantRegistration ? "yes" : "no");
 #endif
   _lastCode = 0;
   _lastSuccess = false;
@@ -484,8 +486,10 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure, bool skipHome
                 value.c_str());
 #endif
 
-    if (skipHomeAssistantRegistration && topic.startsWith("homeassistant/sensor/")) {
-      Log.notice(F("PUSH: Ignoring Home Assistant registration topic %s" CR), topic.c_str());
+    if (skipHomeAssistantRegistration &&
+        topic.startsWith("homeassistant/sensor/")) {
+      Log.notice(F("PUSH: Ignoring Home Assistant registration topic %s" CR),
+                 topic.c_str());
     } else {
       if (mqtt.publish(topic, value)) {
         _lastSuccess = true;

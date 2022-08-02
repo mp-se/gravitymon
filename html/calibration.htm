@@ -16,8 +16,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- START MENU -->
-
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
       <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
@@ -29,11 +27,19 @@
           <li class="nav-item">
             <a class="nav-link" href="/index.htm">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/config.htm">Configuration</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Configuration
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/config.htm">Configuration</a></li>
+              <li><a class="dropdown-item" href="/format.htm">Format editor</a></li>
+              <li><a class="dropdown-item" href="/test.htm">Test push</a></li>
+              <li><a class="dropdown-item" href="/firmware.htm">Upload firmware</a></li>
+            </ul>
           </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="#"><b>Calibration</b></a>
+                  <li class="nav-item">
+            <a class="nav-link active" href="#">Calibration</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/about.htm">About</a>

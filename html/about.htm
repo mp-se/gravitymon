@@ -28,20 +28,29 @@
           <li class="nav-item">
             <a class="nav-link" href="/index.htm">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/config.htm">Configuration</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Configuration
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/config.htm">Configuration</a></li>
+              <li><a class="dropdown-item" href="/format.htm">Format editor</a></li>
+              <li><a class="dropdown-item" href="/test.htm">Test push</a></li>
+              <li><a class="dropdown-item" href="/firmware.htm">Upload firmware</a></li>
+            </ul>
           </li>
-          <li class="nav-item">
+                  <li class="nav-item">
             <a class="nav-link" href="/calibration.htm">Calibration</a>
           </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="#"><b>About</b></a>
+          <li class="nav-item">
+            <a class="nav-link active" href="#">About</a>
           </li> 
         </ul>
       </div>
+      <div class="spinner-border text-light" id="spinner" role="status"></div>
     </div>
   </nav>
-
+  
   <!-- START BODY -->
 
   <div class="container row-margin-10">

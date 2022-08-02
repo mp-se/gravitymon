@@ -15,8 +15,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-  <!-- START MENU -->
-
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
       <a class="navbar-brand" href="/index.htm">Beer Gravity Monitor</a>
@@ -24,21 +22,39 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="javascript:history.back()">Back to configuration</a>
+            <a class="nav-link" href="/index.htm">Home</a>
           </li>
-        </ul>  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Configuration
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/config.htm">Configuration</a></li>
+              <li><a class="dropdown-item" href="#">Format editor</a></li>
+              <li><a class="dropdown-item" href="/test.htm">Test push</a></li>
+              <li><a class="dropdown-item" href="/firmware.htm">Upload firmware</a></li>
+            </ul>
+          </li>
+                  <li class="nav-item">
+            <a class="nav-link" href="/calibration.htm">Calibration</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about.htm">About</a>
+          </li> 
+        </ul>
       </div>
       <div class="spinner-border text-light" id="spinner" role="status"></div>
     </div>
   </nav>
 
+
   <!-- START MAIN INDEX -->
 
   <div class="container row-margin-10">
 
-    <div class="alert alert-success alert-dismissible hide fade d-none" role="alert">
+    <div class="alert alert-success alert-dismissible hide fade d-none" role="alert" id="alert">
       <div id="alert-msg"></div>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -200,13 +216,16 @@
 
     // Store the format
     $("#format-btn").click(function(e) {
+      $('#spinner').show(); 
+      setButtonDisabled( true );
+
       var s = $("#format").val();
       var ha = false;
     
       hideWarningHomeAssistant();
       if ($("#push-target").val() == "mqtt") {
-        console.log("Current format is mqtt, checking for HA device registration.")
         if (s.search("homeassistant/sensor/") != -1) {
+          console.log("Current format is mqtt, it contains topics for Home Assistant device registration.")
           showWarningHomeAssistant();
           ha = true;
         }
@@ -220,19 +239,28 @@
         type: "POST",  
         url: "/api/config/format", 
         data: obj, 
-        success: function(result) { showSuccess('Format stored successfully.'); getConfig(); postHomeAssistant(ha); },
-        error: function(result) { showError('Unable to store format.'); }
+        success: function(result) { showSuccess('Format stored successfully.'); postHomeAssistant(ha); },
+        error: function(result) { showError('Unable to store format.'); $('#spinner').hide(); },
+        always: function() {  $('#spinner').hide(); setButtonDisabled( false ); }
       } );
     });
  
     function postHomeAssistant(active) {
-      if (!active)
+      if (!active) {
+        getConfig();        
         return;
+      }
+
+      console.log("Current format is mqtt, running post tests to register device.")
+      $('#spinner').show(); 
+      setButtonDisabled( true );
 
       var url = "/api/test/push";
       url += "?id=" + $("#id").val() + "&format=mqtt";
       //var url = "/test/push.json";  
       $.getJSON(url, function (cfg) {
+        console.log(cfg);
+
         var code = cfg["code"];
         var success = cfg["success"];
         var enabled = cfg["enabled"];
@@ -243,9 +271,14 @@
           showError( "Format stored successfully. Home Assistant Device Registration Failed!" );
         }
       })
-      .fail(function () {
+      .fail(function() {
         showError( "Format stored successfully. Home Assistant Device Registration Failed!" );
       })
+      .always(function() {
+        $('#spinner').hide(); 
+        setButtonDisabled( false );
+        getConfig();        
+      });
     }
 
     // Test the calibration
@@ -321,6 +354,8 @@
     function setButtonDisabled( b ) {
       $("#format-btn").prop("disabled", b);
       $("#test-btn").prop("disabled", b);
+      $("#copy-btn").prop("disabled", b);
+      $("#clear-btn").prop("disabled", b);
     }
 
     function selectFormat() {
