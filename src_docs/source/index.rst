@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v1.1 BETA 2**. Last updated 2022-07-23
+  This documentation reflects **v1.1 BETA 3**. Last updated 2022-08-02
 
 * Docs for: `v1.0 <https://mp-se.github.io/gravitymon/v1.0/index.html>`_
 * Docs for: `v0.9 <https://mp-se.github.io/gravitymon/v0.9/index.html>`_
@@ -55,15 +55,16 @@ Main features:
 * Modern web based UI when in configuration mode. No need to start the access point changing settings.
 * REST API to enable scripted configuration
 * Send data to multiple endpoints and services at once
+* Directly test all endpoints from user interface to simplify troubleshooting
+* Complete format customization for all endpoints using templates
 * Setup guides for how to send data to many popular services. Currently 8+ are documented.
 * Automatic temperature adjustment of gravity reading
 * OTA support from webserver
-* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity and 
-  let GravityMon create the formula. 
+* Firmware update via web interface
+* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity and let GravityMon create the formula. 
 * Visual graph showing how formula will be interpreted based on entered values
 * Using the temperature sensor in gyro instead of DS18B20 (faster)
 * SSL support in standard HTTP and MQTT connections.
-* Option to customize data posted to endpoints using template from the UI.
 * Built in performance measurements (used to optimise code)
 
 For a complete breakdown see the :ref:`functionallity`

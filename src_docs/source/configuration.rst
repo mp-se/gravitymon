@@ -317,6 +317,10 @@ data and of the deviation on any point is bigger the formula will be rejected.
 
 If this option is checked any angles below that of SG 1 will be discarded as invalid and never sent to any server. Default = off.
 
+* **Gravity calibration temp**
+
+This option allows you to set the correction temperature used in the automatic temperature gravity adjustment formula. Standard is 20C. 
+
 * **DS18B20 Resolution:**
 
 Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C, 12 bits will give an accuracy of 0.0625C but will also 
