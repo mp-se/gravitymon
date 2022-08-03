@@ -334,17 +334,16 @@ void WebServerHandler::webHandleStatus() {
 
   double angle = 0;  // Indicate we have no valid gyro value
 
-  if (myGyro.isConnected()) {
-    if (myGyro.hasValue()) angle = myGyro.getAngle();
-  } else {
-    angle = -1;  // Indicate that we have no connection to gyro
-  }
+  if (myGyro.hasValue()) angle = myGyro.getAngle();
 
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
 
   doc[PARAM_ID] = myConfig.getID();
-  doc[PARAM_ANGLE] = reduceFloatPrecision(angle);
+  doc[PARAM_ANGLE] = myGyro.isConnected()
+                         ? reduceFloatPrecision(angle)
+                         : -1;  // Indicate that we have no connection to gyro
+
   if (myConfig.isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
         gravity, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
@@ -954,6 +953,8 @@ void WebServerHandler::webHandleTestPush() {
     push.sendMqtt(engine, myConfig.isMqttSSL(), false);
     enabled = true;
   }
+
+Log.notice(F("WEB : Push completed" CR));
 
   DynamicJsonDocument doc(100);
   doc[PARAM_PUSH_ENABLED] = enabled;
