@@ -97,8 +97,10 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
 
         // If the deviation is more than 2 degress we mark it as failed.
         if (dev * 1000 > myAdvancedConfig.getMaxFormulaCreationDeviation()) {
-          writeErrorLog("CALC: Validation failed on angle %F, deviation too large %.2F SG, formula order %d",
-                   fd.a[i], dev * 1000, order);
+          writeErrorLog(
+              "CALC: Validation failed on angle %F, deviation too large %.2F "
+              "SG, formula order %d",
+              fd.a[i], dev * 1000, order);
           valid = false;
         }
       }
@@ -203,7 +205,9 @@ double gravityTemperatureCorrectionC(double gravitySG, double tempC,
     return g;
   }
 
-  writeErrorLog("CALC: Failed to parse expression for gravity temperature correction %d", err);
+  writeErrorLog(
+      "CALC: Failed to parse expression for gravity temperature correction %d",
+      err);
   return gravitySG;
 }
 

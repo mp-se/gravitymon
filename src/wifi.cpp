@@ -203,7 +203,7 @@ bool WifiConnection::waitForConnection(int maxTime) {
 
     if (i++ >
         (maxTime * 10)) {  // Try for maxTime seconds. Since delay is 100ms.
-      writeErrorLog("WIFI: Failed to connect to wifi %d",WiFi.status());
+      writeErrorLog("WIFI: Failed to connect to wifi %d", WiFi.status());
       WiFi.disconnect();
       Serial.print(CR);
       return false;  // Return to main that we have failed to connect.

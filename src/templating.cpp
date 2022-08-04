@@ -141,30 +141,30 @@ void TemplatingEngine::initialize(float angle, float gravitySG,
 //
 // Create the data using defined template.
 //
-const String& TemplatingEngine::create(TemplatingEngine::Templates idx) {
+const char* TemplatingEngine::create(TemplatingEngine::Templates idx) {
   String fname;
-  baseTemplate.reserve(600);
+  _baseTemplate.reserve(600);
 
   // Load templates from memory
   switch (idx) {
     case TEMPLATE_HTTP1:
-      baseTemplate = String(iSpindleFormat);
+      _baseTemplate = String(iSpindleFormat);
       fname = TPL_FNAME_HTTP1;
       break;
     case TEMPLATE_HTTP2:
-      baseTemplate = String(iSpindleFormat);
+      _baseTemplate = String(iSpindleFormat);
       fname = TPL_FNAME_HTTP2;
       break;
     case TEMPLATE_HTTP3:
-      baseTemplate = String(iHttpGetFormat);
+      _baseTemplate = String(iHttpGetFormat);
       fname = TPL_FNAME_HTTP3;
       break;
     case TEMPLATE_INFLUX:
-      baseTemplate = String(influxDbFormat);
+      _baseTemplate = String(influxDbFormat);
       fname = TPL_FNAME_INFLUXDB;
       break;
     case TEMPLATE_MQTT:
-      baseTemplate = String(mqttFormat);
+      _baseTemplate = String(mqttFormat);
       fname = TPL_FNAME_MQTT;
       break;
   }
@@ -175,7 +175,7 @@ const String& TemplatingEngine::create(TemplatingEngine::Templates idx) {
     char buf[file.size() + 1];
     memset(&buf[0], 0, file.size() + 1);
     file.readBytes(&buf[0], file.size());
-    baseTemplate = String(&buf[0]);
+    _baseTemplate = String(&buf[0]);
     file.close();
     Log.notice(F("TPL : Template loaded from disk %s." CR), fname.c_str());
   }
@@ -185,13 +185,16 @@ const String& TemplatingEngine::create(TemplatingEngine::Templates idx) {
 #endif
 
   // Insert data into template.
-  transform(baseTemplate);
+  transform();
+  _baseTemplate.clear();
 
 #if LOG_LEVEL == 6
   // Log.verbose(F("TPL : Transformed '%s'." CR), baseTemplate.c_str());
 #endif
 
-  return baseTemplate;
+  if (_output) return _output;
+
+  return "";
 }
 
 // EOF

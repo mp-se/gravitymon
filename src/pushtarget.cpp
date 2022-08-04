@@ -254,7 +254,8 @@ void PushTarget::addHttpHeader(HTTPClient& http, String header) {
                value.c_str());
     http.addHeader(name, value);
   } else {
-    writeErrorLog("PUSH: Unable to set header, invalid value %s", header.c_str());
+    writeErrorLog("PUSH: Unable to set header, invalid value %s",
+                  header.c_str());
   }
 }
 
@@ -330,7 +331,8 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
     _lastSuccess = true;
     Log.notice(F("PUSH: HTTP post successful, response=%d" CR), _lastCode);
   } else {
-    writeErrorLog("PUSH: HTTP post failed response=%d http%d", _lastCode, index+1);
+    writeErrorLog("PUSH: HTTP post failed response=%d http%d", _lastCode,
+                  index + 1);
   }
 
   if (isSecure) {
@@ -485,7 +487,8 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
         Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
         _lastCode = 0;
       } else {
-        writeErrorLog("PUSH: MQTT push on %s  failed error=%d", topic.c_str(), mqtt.lastError());
+        writeErrorLog("PUSH: MQTT push on %s  failed error=%d", topic.c_str(),
+                      mqtt.lastError());
       }
     }
 

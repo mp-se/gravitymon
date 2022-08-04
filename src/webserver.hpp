@@ -76,6 +76,7 @@ class WebServerHandler {
   void webHandleCalibrate();
   void webHandleUploadFile();
   void webHandleUpload();
+  void webHandleLogClear();
   void webHandlePageNotFound();
 
   String readFile(String fname);

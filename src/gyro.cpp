@@ -293,7 +293,8 @@ void GyroSensor::applyCalibration() {
   if ((_calibrationOffset.ax + _calibrationOffset.ay + _calibrationOffset.az +
        _calibrationOffset.gx + _calibrationOffset.gy + _calibrationOffset.gz) ==
       0) {
-    writeErrorLog("GYRO: No valid calibration values, please calibrate the device.");
+    writeErrorLog(
+        "GYRO: No valid calibration values, please calibrate the device.");
     return;
   }
 

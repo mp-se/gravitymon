@@ -232,7 +232,8 @@ void WebServerHandler::webHandleUploadFile() {
         delay(500);
         ESP_RESET();
       } else {
-        writeErrorLog("WEB : Failed to finish firmware flashing error=%d", Update.getError());
+        writeErrorLog("WEB : Failed to finish firmware flashing error=%d",
+                      Update.getError());
         _uploadReturn = 500;
       }
     } else {
@@ -290,9 +291,6 @@ void WebServerHandler::webHandleCalibrate() {
   LOG_PERF_STOP("webserver-api-calibrate");
 }
 
-//
-// Callback from webServer when / has been accessed.
-//
 void WebServerHandler::webHandleFactoryDefaults() {
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
@@ -316,9 +314,20 @@ void WebServerHandler::webHandleFactoryDefaults() {
   }
 }
 
-//
-// Callback from webServer when / has been accessed.
-//
+void WebServerHandler::webHandleLogClear() {
+  String id = _server->arg(PARAM_ID);
+  Log.notice(F("WEB : webServer callback for /api/clearlog." CR));
+
+  if (!id.compareTo(myConfig.getID())) {
+    _server->send(200, "text/plain", "Removing logfiles...");
+    LittleFS.remove(ERR_FILENAME);
+    LittleFS.remove(ERR_FILENAME2);
+    _server->send(200, "text/plain", "Logfiles cleared.");
+  } else {
+    _server->send(400, "text/plain", "Unknown ID.");
+  }
+}
+
 void WebServerHandler::webHandleStatus() {
   LOG_PERF_START("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
@@ -385,9 +394,6 @@ void WebServerHandler::webHandleStatus() {
   LOG_PERF_STOP("webserver-api-status");
 }
 
-//
-// Callback from webServer when / has been accessed.
-//
 void WebServerHandler::webHandleClearWIFI() {
   String id = _server->arg(PARAM_ID);
   Log.notice(F("WEB : webServer callback for /api/clearwifi." CR));
@@ -408,9 +414,6 @@ void WebServerHandler::webHandleClearWIFI() {
   }
 }
 
-//
-// Used to force the device to never sleep.
-//
 void WebServerHandler::webHandleStatusSleepmode() {
   LOG_PERF_START("webserver-api-sleepmode");
   String id = _server->arg(PARAM_ID);
@@ -1299,27 +1302,22 @@ bool WebServerHandler::setupWebServer() {
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
 
   // Dynamic content
-  _server->on(
-      "/api/config", HTTP_GET,
-      std::bind(&WebServerHandler::webHandleConfig, this));  // Get config.json
+  _server->on("/api/clearlog", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleLogClear, this));
+  _server->on("/api/config", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleConfig, this));
   _server->on("/api/formula", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleFormulaRead,
-                        this));  // Get formula.json (calibration page)
+              std::bind(&WebServerHandler::webHandleFormulaRead, this));
   _server->on("/api/formula", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleFormulaWrite,
-                        this));  // Get formula.json (calibration page)
+              std::bind(&WebServerHandler::webHandleFormulaWrite, this));
   _server->on("/api/calibrate", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleCalibrate,
-                        this));  // Run calibration routine (param id)
+              std::bind(&WebServerHandler::webHandleCalibrate, this));
   _server->on("/api/factory", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleFactoryDefaults,
-                        this));  // Reset the device
+              std::bind(&WebServerHandler::webHandleFactoryDefaults, this));
   _server->on("/api/status", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleStatus,
-                        this));  // Get the status.json
+              std::bind(&WebServerHandler::webHandleStatus, this));
   _server->on("/api/clearwifi", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleClearWIFI,
-                        this));  // Clear wifi settings
+              std::bind(&WebServerHandler::webHandleClearWIFI, this));
   _server->on(
       "/api/upload", HTTP_GET,
       std::bind(&WebServerHandler::webHandleUpload, this));  // Get upload.json
@@ -1366,9 +1364,6 @@ bool WebServerHandler::setupWebServer() {
   return true;
 }
 
-//
-// called from main loop
-//
 void WebServerHandler::loop() {
 #if defined(ESP8266)
   MDNS.update();

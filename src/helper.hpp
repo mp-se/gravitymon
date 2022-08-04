@@ -37,7 +37,7 @@ SOFTWARE.
 void tcp_cleanup();
 
 // Error logging
-void writeErrorLog(const char *format, ...);
+void writeErrorLog(const char* format, ...);
 
 // Sleep mode
 void deepSleep(int t);

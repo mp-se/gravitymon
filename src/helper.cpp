@@ -47,7 +47,7 @@ void tcp_cleanup() {
   while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
 }
 
-void writeErrorLog(const char *format, ...) {
+void writeErrorLog(const char* format, ...) {
   File f = LittleFS.open(ERR_FILENAME, "a");
 
   if (f && f.size() > ERR_FILEMAXSIZE) {
