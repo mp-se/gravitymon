@@ -88,7 +88,7 @@ class TemplatingEngine {
                        {TPL_TOKEN2, ""},         {TPL_APP_VER, ""},
                        {TPL_APP_BUILD, ""}};
 
-  char _buffer[20];
+  char _buffer[20] = "";
   String _baseTemplate;
   char *_output = 0;
 
@@ -153,13 +153,13 @@ class TemplatingEngine {
                       _items[i].key.length()) == 0) {
             // Found key
             strncat(_output, format + k, j - k);
-            strcat(_output, _items[i].val.c_str());
+            strncat(_output, _items[i].val.c_str(), _items[i].val.length());
             k = j + _items[i].key.length();
           }
         }
       }
     }
-    strcat(_output, format + k);
+    strncat(_output, format + k, strlen(format + k));
   }
 
   void dumpAll() {
