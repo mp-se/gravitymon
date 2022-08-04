@@ -52,8 +52,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
 #endif
 
   if (noAngles < 3) {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("CALC: Not enough values for deriving formula"));
+    writeErrorLog("CALC: Not enough values for deriving formula");
     return ERR_FORMULA_NOTENOUGHVALUES;
   } else {
     double coeffs[order + 1];
@@ -98,13 +97,8 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
 
         // If the deviation is more than 2 degress we mark it as failed.
         if (dev * 1000 > myAdvancedConfig.getMaxFormulaCreationDeviation()) {
-          char s[120];
-          snprintf(&s[0], sizeof(s),
-                   "CALC: Validation failed on angle %f, deviation too large "
-                   "%.2f SG, formula order %d",
+          writeErrorLog("CALC: Validation failed on angle %F, deviation too large %.2F SG, formula order %d",
                    fd.a[i], dev * 1000, order);
-          ErrorFileLog errLog;
-          errLog.addEntry(&s[0]);
           valid = false;
         }
       }
@@ -118,8 +112,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
     }
   }
 
-  ErrorFileLog errLog;
-  errLog.addEntry(F("CALC: Internal error finding formula."));
+  writeErrorLog("CALC: Internal error finding formula.");
   return ERR_FORMULA_INTERNAL;
 }
 
@@ -164,8 +157,7 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
     return g;
   }
 
-  ErrorFileLog errLog;
-  errLog.addEntry("CALC: Failed to parse gravity expression " + String(err));
+  writeErrorLog("CALC: Failed to parse gravity expression %d", err);
   return 0;
 }
 
@@ -211,10 +203,7 @@ double gravityTemperatureCorrectionC(double gravitySG, double tempC,
     return g;
   }
 
-  ErrorFileLog errLog;
-  errLog.addEntry(
-      "CALC: Failed to parse expression for gravity temperature correction " +
-      String(err));
+  writeErrorLog("CALC: Failed to parse expression for gravity temperature correction %d", err);
   return gravitySG;
 }
 

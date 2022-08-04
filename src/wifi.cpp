@@ -203,9 +203,7 @@ bool WifiConnection::waitForConnection(int maxTime) {
 
     if (i++ >
         (maxTime * 10)) {  // Try for maxTime seconds. Since delay is 100ms.
-      ErrorFileLog errLog;
-      errLog.addEntry("WIFI: Failed to connect to wifi " +
-                      String(WiFi.status()));
+      writeErrorLog("WIFI: Failed to connect to wifi %d",WiFi.status());
       WiFi.disconnect();
       Serial.print(CR);
       return false;  // Return to main that we have failed to connect.
@@ -346,9 +344,7 @@ bool WifiConnection::updateFirmware() {
 
   switch (ret) {
     case HTTP_UPDATE_FAILED: {
-      ErrorFileLog errLog;
-      errLog.addEntry("WIFI: OTA update failed " +
-                      String(ESPhttpUpdate.getLastError()));
+      writeErrorLog("WIFI: OTA update failed %d", ESPhttpUpdate.getLastError());
     } break;
     case HTTP_UPDATE_NO_UPDATES:
       break;
@@ -378,9 +374,7 @@ void WifiConnection::downloadFile(HTTPClient &http, String &fname) {
     f.close();
     Log.notice(F("WIFI: Downloaded file %s." CR), fname.c_str());
   } else {
-    ErrorFileLog errLog;
-    errLog.addEntry("WIFI: Failed to download html-file " +
-                    String(httpResponseCode));
+    writeErrorLog("WIFI: Failed to download html-file %d", httpResponseCode);
   }
 }
 
@@ -419,8 +413,7 @@ bool WifiConnection::checkFirmwareVersion() {
 #endif
     DeserializationError err = deserializeJson(ver, payload);
     if (err) {
-      ErrorFileLog errLog;
-      errLog.addEntry(F("WIFI: Failed to parse version.json"));
+      writeErrorLog("WIFI: Failed to parse version.json");
     } else {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
       Log.verbose(F("WIFI: Project %s version %s." CR),

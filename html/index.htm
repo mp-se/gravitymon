@@ -160,11 +160,33 @@
               });
               setInterval(function() {
                 loadLog();
-              }, 5000);
+              }, 30000);
             
               function loadLog() {
-                $("#logContent").load("/log");
-                //$("#logContent").load("/test/log");
+                var url2 = "/log2"; 
+                var url1 = "/log"; 
+                //var url2 = "/test/log2"; 
+                //var url1 = "/test/log1"; 
+                var log = "";
+                
+                $.get(url2, function(data) {
+                  console.log(data);
+                  var list = data.split("\n");
+                  list.forEach(function (item, index) {
+                    log = item + "\n" + log;
+                  });
+                }).always( function() { 
+                  $.get(url1, function(data) {
+                    console.log(data);
+                    var list = data.split("\n");          
+                    list.forEach(function (item, index) {
+                      log = item + "\n" + log;
+                    });
+                  }).always( function() { 
+                    console.log(log);
+                    $("#logContent").text(log);
+                  });
+                });
               };
             </script>
           
@@ -182,13 +204,13 @@
 
             <div class="collapse row-margin-10" id="collapseLog">
               <div class="card card-body">
-                <pre><code class="card-text" id="logContent"></code></pre>
+                <pre><code class="card-text" id="logContent" data-bs-toggle="tooltip" title="Shows the last errors on the device, newest on top.">Loading log data, please wait...</code></pre>
               </div>
             </div>
 
             <div class="collapse row-margin-10" id="collapseSupport">
               <div class="card card-body">
-                <pre><code class="card-text" id="supportContent"></code></pre>
+                <pre><code class="card-text" id="supportContent">Collecting support data, please wait...</code></pre>
               </div>
             </div>
 
@@ -357,7 +379,7 @@
     }
 
     function start() {
-      setInterval(getStatus, 3000);
+      setInterval(getStatus, 5000);
     }
   </script>
 

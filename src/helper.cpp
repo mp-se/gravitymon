@@ -47,75 +47,40 @@ void tcp_cleanup() {
   while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
 }
 
-//
-// Convert sg to plato
-//
+void writeErrorLog(const char *format, ...) {
+  File f = LittleFS.open(ERR_FILENAME, "a");
+
+  if (f && f.size() > ERR_FILEMAXSIZE) {
+    f.close();
+    LittleFS.remove(ERR_FILENAME2);
+    LittleFS.rename(ERR_FILENAME, ERR_FILENAME2);
+    f = LittleFS.open(ERR_FILENAME, "a");
+  }
+
+  if (f) {
+    va_list arg;
+    va_start(arg, format);
+    char buf[80];
+    vsnprintf(&buf[0], sizeof(buf), format, arg);
+    f.write(&buf[0], strlen(&buf[0]));
+    Log.error(&buf[0]);
+    va_end(arg);
+    f.println();
+    f.close();
+  }
+}
+
 double convertToPlato(double sg) {
   if (sg) return 259 - (259 / sg);
   return 0;
 }
 
-//
-// Convert plato to sg
-//
 double convertToSG(double plato) { return 259 / (259 - plato); }
 
-//
-// Conversion to F
-//
 float convertCtoF(float c) { return (c * 1.8) + 32.0; }
 
-//
-// Conversion to C
-//
 float convertFtoC(float f) { return (f - 32.0) / 1.8; }
 
-//
-// Load error log from disk
-//
-ErrorFileLog::ErrorFileLog() {
-  File errFile = LittleFS.open(ERR_FILENAME, "r");
-  int i = 0;
-
-  if (errFile) {
-    do {
-      _errors[i] = errFile.readStringUntil('\n');
-      _errors[i].replace("\r", "");
-      _errors[i].replace("\n", "");
-    } while (_errors[i++].length());
-    errFile.close();
-  }
-}
-
-//
-// Add new entry to top of error log
-//
-void ErrorFileLog::addEntry(String err) {
-  for (int i = (ERR_COUNT - 1); i > 0; i--) {
-    _errors[i] = _errors[i - 1];
-  }
-  _errors[0] = err;
-  err += String(CR);
-  Log.error(err.c_str());
-  save();
-}
-
-//
-// Save error log
-//
-void ErrorFileLog::save() {
-  File errFile = LittleFS.open(ERR_FILENAME, "w");
-  if (errFile) {
-    for (int i = 0; i < ERR_COUNT; i++) {
-      errFile.println(_errors[i]);
-    }
-    errFile.close();
-  }
-}
-
-//
-// Load history log of floats
-//
 FloatHistoryLog::FloatHistoryLog(String fName) {
   _fName = fName;
 
@@ -133,9 +98,6 @@ FloatHistoryLog::FloatHistoryLog(String fName) {
   }
 }
 
-//
-// Add entry to top of log
-//
 void FloatHistoryLog::addEntry(float time) {
   for (int i = (10 - 1); i > 0; i--) {
     _runTime[i] = _runTime[i - 1];
@@ -144,9 +106,6 @@ void FloatHistoryLog::addEntry(float time) {
   save();
 }
 
-//
-// Save log
-//
 void FloatHistoryLog::save() {
   File runFile = LittleFS.open(_fName, "w");
   if (runFile) {
@@ -157,9 +116,6 @@ void FloatHistoryLog::save() {
   }
 }
 
-//
-// Print the heap information.
-//
 void printHeap(String prefix) {
 #if defined(ESP8266)
   Log.notice(
@@ -175,9 +131,6 @@ void printHeap(String prefix) {
 #endif
 }
 
-//
-// Enter deep sleep for the defined duration (Argument is seconds)
-//
 void deepSleep(int t) {
 #if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
   Log.verbose(F("HELP: Entering sleep mode for %ds." CR), t);
@@ -186,9 +139,6 @@ void deepSleep(int t) {
   ESP.deepSleep(wake);
 }
 
-//
-// Print the build options used
-//
 void printBuildOptions() {
   Log.notice(F("Build options: %s (%s) LOGLEVEL %d "
 #ifdef SKIP_SLEEPMODE
@@ -201,9 +151,6 @@ void printBuildOptions() {
              CFG_APPVER, CFG_GITREV, LOG_LEVEL);
 }
 
-//
-// Configure serial debug output
-//
 SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   // Start serial with auto-detected rate (default to defined BAUD)
   Serial.flush();
@@ -214,18 +161,12 @@ SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   getLog()->notice(F("SDBG: Serial logging started at %u." CR), serialSpeed);
 }
 
-//
-// Print the timestamp (ms since start of device)
-//
 void printTimestamp(Print* _logOutput, int _logLevel) {
   char c[12];
   snprintf(c, sizeof(c), "%10lu ", millis());
   _logOutput->print(c);
 }
 
-//
-// Read and calculate the battery voltage
-//
 void BatteryVoltage::read() {
   // The analog pin can only handle 3.3V maximum voltage so we need to reduce
   // the voltage (from max 5V)
@@ -251,9 +192,6 @@ void BatteryVoltage::read() {
 
 PerfLogging myPerfLogging;
 
-//
-// Clear the current cache
-//
 void PerfLogging::clear() {
   // Clear the measurements
   if (first == 0) return;
@@ -270,17 +208,11 @@ void PerfLogging::clear() {
   } while (pe != 0);
 }
 
-//
-// Start measuring this performance point
-//
 void PerfLogging::start(const char* key) {
   PerfEntry* pe = add(key);
   pe->start = millis();
 }
 
-//
-// Finalize measuring of this performance point
-//
 void PerfLogging::stop(const char* key) {
   PerfEntry* pe = find(key);
 
@@ -293,9 +225,6 @@ void PerfLogging::stop(const char* key) {
   }
 }
 
-//
-// Print the collected performance data
-//
 void PerfLogging::print() {
   PerfEntry* pe = first;
 
@@ -305,9 +234,6 @@ void PerfLogging::print() {
   }
 }
 
-//
-// Push collected performance data to influx (use influx configuration)
-//
 void PerfLogging::pushInflux() {
   if (!myConfig.isInfluxDb2Active()) return;
 
@@ -409,29 +335,19 @@ void PerfLogging::pushInflux() {
 
 #endif  // COLLECT_PERFDATA
 
-//
-// Convert float to formatted string with n decimals. Buffer should be at least
-// 10 chars.
-//
 char* convertFloatToString(float f, char* buffer, int dec) {
   dtostrf(f, 6, dec, buffer);
   return buffer;
 }
 
-//
-// Reduce precision to n decimals
-//
 float reduceFloatPrecision(float f, int dec) {
   char buffer[5];
   dtostrf(f, 6, dec, &buffer[0]);
   return atof(&buffer[0]);
 }
 
-//
 // urlencode
-//
 // https://circuits4you.com/2019/03/21/esp8266-url-encode-decode-example/
-//
 String urlencode(String str) {
   String encodedString;
   encodedString.reserve(str.length() * 2);
@@ -475,9 +391,6 @@ unsigned char h2int(char c) {
   return (0);
 }
 
-//
-// urlencode string
-//
 String urldecode(String str) {
   String encodedString;
   encodedString.reserve(str.length());

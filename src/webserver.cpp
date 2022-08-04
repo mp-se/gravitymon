@@ -169,9 +169,6 @@ void WebServerHandler::webHandleUpload() {
   LOG_PERF_STOP("webserver-api-upload");
 }
 
-//
-// Callback from webServer when / has been accessed.
-//
 void WebServerHandler::webHandleUploadFile() {
   LOG_PERF_START("webserver-api-upload-file");
   Log.verbose(F("WEB : webServer callback for /api/upload(post)." CR));
@@ -213,9 +210,7 @@ void WebServerHandler::webHandleUploadFile() {
                  maxSketchSpace / 1024);
 
       if (!Update.begin(maxSketchSpace, U_FLASH, PIN_LED)) {
-        ErrorFileLog errLog;
-        errLog.addEntry(
-            F("WEB : Not enough space to store for this firmware."));
+        writeErrorLog("WEB : Not enough space to store for this firmware.");
         _uploadReturn = 500;
       }
     } else if (upload.status == UPLOAD_FILE_WRITE) {
@@ -237,9 +232,7 @@ void WebServerHandler::webHandleUploadFile() {
         delay(500);
         ESP_RESET();
       } else {
-        ErrorFileLog errLog;
-        errLog.addEntry("WEB : Failed to finish firmware flashing error=" +
-                        String(Update.getError()));
+        writeErrorLog("WEB : Failed to finish firmware flashing error=%d", Update.getError());
         _uploadReturn = 500;
       }
     } else {
@@ -895,8 +888,7 @@ void WebServerHandler::webHandleConfigFormatWrite() {
     _server->sendHeader("Location", "/format.htm", true);
     _server->send(302, "text/plain", "Format updated");
   } else {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("WEB : Unable to store format file"));
+    writeErrorLog("WEB : Unable to store format file");
     _server->send(400, "text/plain", "Unable to store format in file.");
   }
 
@@ -953,8 +945,6 @@ void WebServerHandler::webHandleTestPush() {
     push.sendMqtt(engine, myConfig.isMqttSSL(), false);
     enabled = true;
   }
-
-Log.notice(F("WEB : Push completed" CR));
 
   DynamicJsonDocument doc(100);
   doc[PARAM_PUSH_ENABLED] = enabled;
@@ -1305,6 +1295,7 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/firmware.htm",
               std::bind(&WebServerHandler::webReturnFirmwareHtm, this));
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
+  _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
 
   // Dynamic content

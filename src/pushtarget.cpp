@@ -34,9 +34,6 @@ SOFTWARE.
 
 #define PUSHINT_FILENAME "/push.dat"
 
-//
-// Decrease counters
-//
 void PushIntervalTracker::update(const int index, const int defaultValue) {
   if (_counters[index] <= 0)
     _counters[index] = defaultValue;
@@ -44,9 +41,6 @@ void PushIntervalTracker::update(const int index, const int defaultValue) {
     _counters[index]--;
 }
 
-//
-// Load data from file
-//
 void PushIntervalTracker::load() {
   File intFile = LittleFS.open(PUSHINT_FILENAME, "r");
 
@@ -232,8 +226,7 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
     _lastSuccess = true;
     Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR), _lastCode);
   } else {
-    ErrorFileLog errLog;
-    errLog.addEntry("PUSH: Influxdb push failed response=" + String(_lastCode));
+    writeErrorLog("PUSH: Influxdb push failed response=%d", _lastCode);
   }
 
   if (isSecure) {
@@ -261,8 +254,7 @@ void PushTarget::addHttpHeader(HTTPClient& http, String header) {
                value.c_str());
     http.addHeader(name, value);
   } else {
-    ErrorFileLog errLog;
-    errLog.addEntry("PUSH: Unable to set header, invalid value " + header);
+    writeErrorLog("PUSH: Unable to set header, invalid value %s", header.c_str());
   }
 }
 
@@ -338,9 +330,7 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
     _lastSuccess = true;
     Log.notice(F("PUSH: HTTP post successful, response=%d" CR), _lastCode);
   } else {
-    ErrorFileLog errLog;
-    errLog.addEntry("PUSH: HTTP post failed response=" + String(_lastCode) +
-                    String(index == 0 ? " (http)" : " (http2)"));
+    writeErrorLog("PUSH: HTTP post failed response=%d http%d", _lastCode, index+1);
   }
 
   if (isSecure) {
@@ -399,8 +389,7 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
     _lastSuccess = true;
     Log.notice(F("PUSH: HTTP get successful, response=%d" CR), _lastCode);
   } else {
-    ErrorFileLog errLog;
-    errLog.addEntry("PUSH: HTTP get failed response=" + String(_lastCode));
+    writeErrorLog("PUSH: HTTP get failed response=%d", _lastCode);
   }
 
   if (isSecure) {
@@ -419,7 +408,7 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
                           bool skipHomeAssistantRegistration) {
 #if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to mqtt. Skip HA registration %s" CR),
+  Log.notice(F("PUSH: Sending values to mqtt. Skip HA registration=%s" CR),
              skipHomeAssistantRegistration ? "yes" : "no");
 #endif
   _lastCode = 0;
@@ -496,10 +485,7 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
         Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
         _lastCode = 0;
       } else {
-        _lastCode = mqtt.lastError();
-        ErrorFileLog errLog;
-        errLog.addEntry("PUSH: MQTT push on " + topic +
-                        " failed error=" + String(mqtt.lastError()));
+        writeErrorLog("PUSH: MQTT push on %s  failed error=%d", topic.c_str(), mqtt.lastError());
       }
     }
 

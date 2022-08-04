@@ -28,12 +28,16 @@ SOFTWARE.
 #include <main.hpp>
 
 #define ERR_FILENAME "/error.log"
-#define ERR_COUNT 15
+#define ERR_FILENAME2 "/error2.log"
+#define ERR_FILEMAXSIZE 250
 
 #define RUNTIME_FILENAME "/runtime.log"
 
 // tcp cleanup
 void tcp_cleanup();
+
+// Error logging
+void writeErrorLog(const char *format, ...);
 
 // Sleep mode
 void deepSleep(int t);
@@ -65,16 +69,6 @@ class SerialDebug {
  public:
   explicit SerialDebug(const uint32_t serialSpeed = 115200L);
   static Logging* getLog() { return &Log; }
-};
-
-class ErrorFileLog {
- private:
-  String _errors[ERR_COUNT];
-
- public:
-  ErrorFileLog();
-  void addEntry(String error);
-  void save();
 };
 
 class FloatHistoryLog {

@@ -145,8 +145,7 @@ bool Config::saveFile() {
   File configFile = LittleFS.open(CFG_FILENAME, "w");
 
   if (!configFile) {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("CFG : Failed to save configuration."));
+    writeErrorLog("CFG : Failed to save configuration.");
     return false;
   }
 
@@ -176,16 +175,14 @@ bool Config::loadFile() {
 #endif
 
   if (!LittleFS.exists(CFG_FILENAME)) {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("CFG : Configuration file does not exist."));
+    writeErrorLog("CFG : Configuration file does not exist.");
     return false;
   }
 
   File configFile = LittleFS.open(CFG_FILENAME, "r");
 
   if (!configFile) {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("CFG : Failed to load configuration."));
+    writeErrorLog("CFG : Failed to load configuration.");
     return false;
   }
 
@@ -201,8 +198,7 @@ bool Config::loadFile() {
   configFile.close();
 
   if (err) {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("CFG : Failed to parse configuration (json)"));
+    writeErrorLog("CFG : Failed to parse configuration (json)");
     return false;
   }
 
@@ -377,8 +373,7 @@ bool AdvancedConfig::saveFile() {
   File configFile = LittleFS.open(CFG_HW_FILENAME, "w");
 
   if (!configFile) {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("CFG : Failed to write hardware configuration "));
+    writeErrorLog("CFG : Failed to write hardware configuration ");
     return false;
   }
 
@@ -429,8 +424,7 @@ bool AdvancedConfig::loadFile() {
   File configFile = LittleFS.open(CFG_HW_FILENAME, "r");
 
   if (!configFile) {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("CFG : Failed to read hardware configuration "));
+    writeErrorLog("CFG : Failed to read hardware configuration");
     return false;
   }
 
@@ -446,8 +440,7 @@ bool AdvancedConfig::loadFile() {
   configFile.close();
 
   if (err) {
-    ErrorFileLog errLog;
-    errLog.addEntry(F("CFG : Failed to parse hardware configuration (json)"));
+    writeErrorLog("CFG : Failed to parse hardware configuration (json)");
     return false;
   }
 

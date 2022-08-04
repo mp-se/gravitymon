@@ -46,8 +46,7 @@ bool GyroSensor::setup() {
   uint8_t id = accelgyro.getDeviceID();
 
   if (id != 0x34 && id != 0x38) {  // Allow both MPU6050 and MPU6000
-    ErrorFileLog errLog;
-    errLog.addEntry(F("GYRO: Failed to connect to gyro, is it connected?"));
+    writeErrorLog("GYRO: Failed to connect to gyro, is it connected?");
     _sensorConnected = false;
   } else {
 #if !defined(GYRO_DISABLE_LOGGING)
@@ -294,9 +293,7 @@ void GyroSensor::applyCalibration() {
   if ((_calibrationOffset.ax + _calibrationOffset.ay + _calibrationOffset.az +
        _calibrationOffset.gx + _calibrationOffset.gy + _calibrationOffset.gz) ==
       0) {
-    ErrorFileLog errLog;
-    errLog.addEntry(
-        F("GYRO: No valid calibration values, please calibrate the device."));
+    writeErrorLog("GYRO: No valid calibration values, please calibrate the device.");
     return;
   }
 
