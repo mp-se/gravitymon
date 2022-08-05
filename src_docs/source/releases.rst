@@ -3,7 +3,7 @@
 Releases 
 ########
 
-v1.1.0 - beta 3
+v1.1.0 - beta 4
 ===============
 
 Documentation
@@ -17,6 +17,7 @@ Documentation
 
 User interface
 ++++++++++++++
+* (beta4) Updated format template with information on size and warning message if the template is too large
 * (beta3) Added error message to user message if gyro connection fails.
 * (beta3) Added  message to user message if no temp sensor can be found.
 * (beta3) Added drop down menus in user interface to simplify navigation to sub pages
@@ -40,6 +41,8 @@ Features
  
 Other
 +++++
+* (beta4) Refactored error logging function to reduce memory usage and crashes
+* (beta4) Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars. 
 * Upgraded framework for ESP8266 to v5.0.0
 * Upgraded framework for ESP32 to v2.0.2
 * Updated OneWire library to be complaint with new ESP32 SDK

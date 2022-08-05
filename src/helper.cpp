@@ -62,7 +62,11 @@ void writeErrorLog(const char* format, ...) {
     va_start(arg, format);
     char buf[80];
     vsnprintf(&buf[0], sizeof(buf), format, arg);
+#if defined(ESP8266)
     f.write(&buf[0], strlen(&buf[0]));
+#else  // ESP32
+    f.write((unsigned char*)&buf[0], strlen(&buf[0]));
+#endif
     Log.errorln(&buf[0]);
     va_end(arg);
     f.println();
