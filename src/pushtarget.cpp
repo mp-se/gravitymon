@@ -488,8 +488,10 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
         Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
         _lastCode = 0;
       } else {
+        _lastSuccess = false;
+        _lastCode = mqtt.lastError();
         writeErrorLog("PUSH: MQTT push on %s  failed error=%d", topic.c_str(),
-                      mqtt.lastError());
+                      _lastCode);
       }
     }
 
