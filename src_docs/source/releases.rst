@@ -30,13 +30,15 @@ User interface
 
 Features
 ++++++++
+* (beta4) Added information to error log about abnormal resets (for instance crashes) to detect and fix those.
+* (beta4) Changed storage mode so that the device will go into deep sleep until reset.
 * (beta3) Updated sensor types in home assistant (auto registration)
 * (beta2) Added ${app-ver} and ${app-build} to format template as new variables.
 * (beta2) Improved error messages when creating formula so the meaasurement points can be identified.
 * (beta2) Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula. 
 * (beta2) Updated format template for Home Assistant for using manual configuration (Aligned with new mqtt configuration format)
 * (beta2) Added format template for Home Assistant with automatic device registration
-* Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and sleep for the max allowed time. 
+* Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and deep sleep. 
 * Added format templates for HA auto registration
  
 Other

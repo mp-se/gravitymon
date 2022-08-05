@@ -57,6 +57,8 @@ a magnet.
 If this is connected to the reset button a magnet can be used to trigger a reset of the device. The image below shows how 
 I mounted the iSPINDLE PCB v4.0 just under the cap. The lower red circle shows the reset connection point for the reed switch.
 
+The reed switch is the glass tube visible under the esp8266.
+
 .. image:: images/reed_build.jpg
   :width: 400
   :alt: Reed build
