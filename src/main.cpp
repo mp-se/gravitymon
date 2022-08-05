@@ -117,10 +117,12 @@ void checkSleepMode(float angle, float volt) {
     Log.notice(
         F("Main: Storage mode entered, going to sleep for maximum time." CR));
 #if defined(ESP8266)
-    ESP.deepSleep(ESP.deepSleepMax());
+    // ESP.deepSleep(ESP.deepSleepMax());
+    ESP.deepSleep(0); // indefinite sleep
 #else
 #warning "Check and test the max deep sleep for esp32"
-    deepSleep(70 * 60);  // quick search on internet suggest max time is 70 min
+    //deepSleep(70 * 60);  // quick search on internet suggest max time is 70 min
+    ESP.deepSleep(0); // indefinite sleep
 #endif
   }
 }
