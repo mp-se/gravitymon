@@ -133,12 +133,9 @@ void setup() {
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
   // Add a delay so that serial is started.
   // delay(3000);
-#if defined(ESP8266)
-  Log.verbose(F("Main: Reset reason %s." CR), ESP.getResetInfo().c_str());
-#else  // defined (ESP32)
-#endif
 #endif
   // Main startup
+
 #if defined(ESP8266)
   Log.notice(F("Main: Started setup for %s." CR),
              String(ESP.getChipId(), HEX).c_str());
@@ -157,6 +154,7 @@ void setup() {
 
   LOG_PERF_START("main-config-load");
   myConfig.checkFileSystem();
+  checkResetReason();
   myConfig.loadFile();
   myWifi.init();
   myAdvancedConfig.loadFile();

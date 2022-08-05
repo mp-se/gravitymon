@@ -47,6 +47,27 @@ void tcp_cleanup() {
   while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
 }
 
+void checkResetReason() {
+#if defined(ESP8266)
+  rst_info* _rinfo;
+  _rinfo = ESP.getResetInfoPtr();
+
+  Log.notice(F("HELP: Last reset cause %d" CR), _rinfo->exccause);
+
+  if (_rinfo->exccause > 0) {
+    char s[120];
+    snprintf(&s[0], sizeof(s),
+             "HELP: Exception (%d) reason=%d epc1=0x%08x epc2=0x%08x "
+             "epc3=0x%08x execvaddr=0x%08x depc=0x%08x",
+             _rinfo->exccause, _rinfo->reason, _rinfo->epc1, _rinfo->epc2,
+             _rinfo->epc3, _rinfo->excvaddr, _rinfo->depc);
+    writeErrorLog(&s[0]);
+  }
+#else  // defined (ESP32)
+#warning "Todo: Handle reset reasons on ESP32"
+#endif
+}
+
 void writeErrorLog(const char* format, ...) {
   File f = LittleFS.open(ERR_FILENAME, "a");
 
@@ -57,20 +78,23 @@ void writeErrorLog(const char* format, ...) {
     f = LittleFS.open(ERR_FILENAME, "a");
   }
 
+  va_list arg;
+  va_start(arg, format);
+  char buf[120];
+  vsnprintf(&buf[0], sizeof(buf), format, arg);
+  va_end(arg);
+  Log.errorln(&buf[0]);
+
   if (f) {
-    va_list arg;
-    va_start(arg, format);
-    char buf[80];
-    vsnprintf(&buf[0], sizeof(buf), format, arg);
 #if defined(ESP8266)
     f.write(&buf[0], strlen(&buf[0]));
 #else  // ESP32
     f.write((unsigned char*)&buf[0], strlen(&buf[0]));
 #endif
-    Log.errorln(&buf[0]);
-    va_end(arg);
     f.println();
     f.close();
+  } else {
+    Log.warning(F("HELP: Failed to open error log." CR));
   }
 }
 

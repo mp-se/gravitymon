@@ -38,6 +38,7 @@ void tcp_cleanup();
 
 // Error logging
 void writeErrorLog(const char* format, ...);
+void checkResetReason();
 
 // Sleep mode
 void deepSleep(int t);
