@@ -141,6 +141,7 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
     LOG_PERF_STOP("push-mqtt");
   }
 
+  engine.freeMemory();
   intDelay.save();
 }
 

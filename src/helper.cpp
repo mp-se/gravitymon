@@ -63,7 +63,7 @@ void writeErrorLog(const char* format, ...) {
     char buf[80];
     vsnprintf(&buf[0], sizeof(buf), format, arg);
     f.write(&buf[0], strlen(&buf[0]));
-    Log.error(&buf[0]);
+    Log.errorln(&buf[0]);
     va_end(arg);
     f.println();
     f.close();

@@ -949,6 +949,7 @@ void WebServerHandler::webHandleTestPush() {
     enabled = true;
   }
 
+  engine.freeMemory();
   DynamicJsonDocument doc(100);
   doc[PARAM_PUSH_ENABLED] = enabled;
   doc[PARAM_PUSH_SUCCESS] = push.getLastSuccess();

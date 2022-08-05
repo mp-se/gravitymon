@@ -64,6 +64,11 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
+    <div class="alert alert-warning alert-dismissible hide fade d-none" role="alert" id="warning-length">
+      <div>The format template is quite large, its possible the device will not have enough memory to handle it.</div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <script type="text/javascript">
       function showError( msg ) {
         $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
@@ -84,6 +89,13 @@
       }
       function hideWarningHomeAssistant() {
         $('#warning-ha').addClass('d-none').removeClass('show').addClass('hide');
+      }
+
+      function showWarningLength() {
+        $('#warning-length').removeClass('d-none').addClass('show').removeClass('hide');
+      }
+      function hideWarningLength() {
+        $('#warning-length').addClass('d-none').removeClass('show').addClass('hide');
       }
     </script>
 
@@ -117,7 +129,7 @@
 
             <div class="row mb-3">
               <div class="col-sm-12">
-                <textarea rows="10" class="form-control" name="format" id="format">  
+                <textarea rows="10" class="form-control" name="format" id="format" onchange="updateStatusField()" onkeydown="updateStatusField()">
                 </textarea>
               </div>
             </div>
@@ -158,6 +170,9 @@
               </div>
             </div>
 
+            <div class="col-sm-8" id="status">             
+            </div>
+
             <hr class="my-2">
 
             <pre class="card-preview" id="preview" name="preview"></pre> 
@@ -171,6 +186,8 @@
   <script type="text/javascript">
     window.onload = getConfig;
 
+    var maxCharsInFormatTemplate = 1500;
+
     setButtonDisabled( true );
 
     // Opens the targetet according (if URL has #collapseOne to #collapseFour)
@@ -180,16 +197,17 @@
         $(location.hash + '.collapse').collapse('show');
       }
     });
-  
-/*    
-    $("#format-btn").click(function(e){
-      console.log(e)
-      var s = $("#push-target").val()
-      
-      if (s == "mqtt") {
-        console.log("Current format is mqtt, checking for HA device registration.")
+
+    function updateStatusField() {
+      var t = $("#format").val();
+      $("#status").text( t.length + " characters in template, recommended maximum is " + maxCharsInFormatTemplate );
+
+      if (t.length > maxCharsInFormatTemplate) {
+        showWarningLength();
+      } else {
+        hideWarningLength();
       }
-    });*/
+    };
 
     $("#push-target").change(function(e){
       console.log(e)
@@ -207,21 +225,31 @@
           $("#format").val( decodeURIComponent(item.format) );
         }
       });
+
+      updateStatusField();
     });
 
     // Clear the selected template
     $("#clear-btn").click(function(e) {
       $("#format").val( "" );
+      updateStatusField();
     });
 
     // Store the format
     $("#format-btn").click(function(e) {
+      var s = $("#format").val();
+
+      /*if (s.length > maxCharsInFormatTemplate) {
+        showError("Format template is too large for the device to handle, unable to save.")
+        return;
+      }*/
+
+      hideError();
+
       $('#spinner').show(); 
       setButtonDisabled( true );
+      var ha = false;   
 
-      var s = $("#format").val();
-      var ha = false;
-    
       hideWarningHomeAssistant();
       if ($("#push-target").val() == "mqtt") {
         if (s.search("homeassistant/sensor/") != -1) {
@@ -356,6 +384,7 @@
       $("#test-btn").prop("disabled", b);
       $("#copy-btn").prop("disabled", b);
       $("#clear-btn").prop("disabled", b);
+      $("#push-target").prop("disabled", b);    
     }
 
     function selectFormat() {
@@ -367,6 +396,7 @@
       console.log(s);
       $("#format").val(s);
       $("#preview").text("");
+      updateStatusField();
     }
 
     // Get the configuration values from the API
@@ -374,7 +404,7 @@
       setButtonDisabled( true );
 
       var url = "/api/config/format";
-      //var url = "/test/format.json";
+      // var url = "/test/format.json";
       $('#spinner').show(); 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
@@ -394,6 +424,8 @@
         $('#spinner').hide(); 
         setButtonDisabled( false );
       });
+
+      updateStatusField();
     }
   </script>
 

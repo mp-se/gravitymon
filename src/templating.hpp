@@ -131,6 +131,7 @@ class TemplatingEngine {
       }
     }
 
+    freeMemory();  // In case this is reused
     _output = static_cast<char *>(malloc(size + 20));
 
     if (!_output) {
@@ -159,7 +160,15 @@ class TemplatingEngine {
         }
       }
     }
-    strncat(_output, format + k, strlen(format + k));
+    strncat(_output, format + k, size - k);
+    Log.notice(F("TPL : Transformed template %d chars to %d chars" CR),
+               strlen(format), strlen(_output));
+
+#if LOG_LEVEL == 6
+    printHeap("TPL ");
+    Log.verboseln(format);
+    Log.verboseln(_output);
+#endif
   }
 
   void dumpAll() {
@@ -187,7 +196,9 @@ class TemplatingEngine {
 
   void freeMemory() {
     if (_output) free(_output);
+
     _output = 0;
+    _baseTemplate.clear();
   }
   void initialize(float angle, float gravitySG, float corrGravitySG,
                   float tempC, float runTime);
