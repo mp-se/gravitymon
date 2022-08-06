@@ -1257,6 +1257,7 @@ bool WebServerHandler::setupWebServer() {
 #endif
 
   // Static content
+  Log.notice(F("WEB : Setting up handlers for web server." CR));
 #if defined(EMBED_HTML)
   _server->on("/", std::bind(&WebServerHandler::webReturnIndexHtm, this));
   _server->on("/index.htm",
