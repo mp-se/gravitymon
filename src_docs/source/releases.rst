@@ -43,8 +43,6 @@ Features
  
 Other
 +++++
-* (beta4) Refactored error logging function to reduce memory usage and crashes
-* (beta4) Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars. 
 * Upgraded framework for ESP8266 to v5.0.0
 * Upgraded framework for ESP32 to v2.0.2
 * Updated OneWire library to be complaint with new ESP32 SDK
@@ -52,6 +50,8 @@ Other
 
 Issues adressed
 ++++++++++++++++
+* (beta4) Refactored error logging function to reduce memory usage and crashes
+* (beta4) Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars. 
 * (beta3) BUG: Refactored format api to handle larger payloads.
 * (beta3) BUG: After manual firmware upload the device would crash and go into wifi setup mode.
 * (beta3) BUG: After manual firmware upload the device will in some cases not be able to connect with the gyro, the symptom is that it will say, "Gyro moving" in the web UI. In this case the device needs to be reset (or powered on/off). I havent found a way to fix this from the code. The message after firmware update has been updated with this information.
