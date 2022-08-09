@@ -9,12 +9,47 @@ Welcome to GravityMon's documentation!
 .. note::
   This documentation reflects **v1.1 BETA 4**. Last updated 2022-08-06
 
-* Docs for: `v1.0 <https://mp-se.github.io/gravitymon/v1.0/index.html>`_
-* Docs for: `v0.9 <https://mp-se.github.io/gravitymon/v0.9/index.html>`_
+User interface overview
+-----------------------
+
+This animation shows how the user interface is structured, it reflects an older version but the structure is the same.
 
 .. image:: images/gravitymon.gif
   :width: 800
   :alt: User Inteface Walkthrough
+
+.. _main_features:
+
+Main features
+-------------
+
+* Operates in two modes gravity monitoring and configuration mode
+* Gravity mode is comparable to how the iSpindle works when collectintg data
+* Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings
+* Offloading some of the functionallity to run in the web browser, this allows for more advanced features.
+* REST API to enable scripted configuration
+* Send data to multiple endpoints and services at once (2xHTTP POST, HTTP GET, MQTT, INFLUXDB2)
+* Directly test all endpoints from user interface with feedback to simplify troubleshooting
+* Complete format customization for all endpoints using templates (dont really need to change the software to support new services)
+* Setup guides for how to send data to many popular services. Currently 10+ are documented
+* Automatic temperature adjustment of gravity (just tick a checkbox)
+* OTA support from webserver
+* Firmware update via web interface
+* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity and let GravityMon creates a formula
+* Visual graph showing how formula will be interpreted based on entered values
+* Using the temperature sensor in gyro instead of DS18B20 (faster)
+* SSL support in all endpoints (no certificate validation due to limitations on esp8266).
+* Built in performance measurements (used to optimise code)
+* Storage mode when placed on cap (indefinite sleep)
+* Customize various hardware parameters to opimize device functionallity.
+
+For a complete breakdown see the :ref:`functionallity`
+
+.. note::
+  If you are missing some feature, please reach out on `Github <https://github.com/mp-se/gravitymon/discussions>`_ or `homebrewtalk.com <https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/>`_
+
+What is GravityMon?
+--------------------
 
 GravityMon is used to measure gravity and temperature during fermentation of beer and report the progress. The graph below is
 an example on how the fermentation process can be tracked. The graph has been rendered using Fermentrack. 
@@ -46,35 +81,16 @@ The github repository can be found here; `GravityMon on Github <https://github.c
 
   I have tested this software on 40+ brews with good results.
 
-.. _main_features:
 
-Main features:
---------------
+Documentation for older versions
+--------------------------------
 
-* Operates in two modes gravity monitoring and configuration mode
-* Gravity mode is comparable to how the iSpindle works when collectintg data
-* Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings
-* Offloading some of the functionallity to run in the web browser, this allows for more advanced features.
-* REST API to enable scripted configuration
-* Send data to multiple endpoints and services at once (2xHTTP POST, HTTP GET, MQTT, INFLUXDB2)
-* Directly test all endpoints from user interface with feedback to simplify troubleshooting
-* Complete format customization for all endpoints using templates (dont really need to change the software to support new services)
-* Setup guides for how to send data to many popular services. Currently 10+ are documented
-* Automatic temperature adjustment of gravity (just tick a checkbox)
-* OTA support from webserver
-* Firmware update via web interface
-* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity and let GravityMon creates a formula
-* Visual graph showing how formula will be interpreted based on entered values
-* Using the temperature sensor in gyro instead of DS18B20 (faster)
-* SSL support in all endpoints (no certificate validation due to limitations on esp8266).
-* Built in performance measurements (used to optimise code)
-* Storage mode when placed on cap (indefinite sleep)
-* Customize various hardware parameters to opimize device functionallity.
+* Docs for: `v1.0 <https://mp-se.github.io/gravitymon/v1.0/index.html>`_
+* Docs for: `v0.9 <https://mp-se.github.io/gravitymon/v0.9/index.html>`_
 
-For a complete breakdown see the :ref:`functionallity`
 
-.. note::
-  If you are missing some feature, please reach out on `Github <https://github.com/mp-se/gravitymon/discussions>`_ or `homebrewtalk.com <https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/>`_
+Software architecture
+---------------------
 
 This is a simple overview of the different components that the software contains. The green ones are only active during `configuration mode` in 
 order to save battery.

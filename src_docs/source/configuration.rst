@@ -37,8 +37,9 @@ connection. It will show 0 if data has not been collected yet.
 
 .. tip::
 
-   The button `view error log` will show the last 15 errors on the device. This can be useful for checking errors without
-   the need to connect to the serial port or to check what errors has occured while in `gravity mode`.
+   The button `view error log` will show the last error messages on the device. This can be useful for checking errors without
+   the need to connect to the serial port or to check what errors has occured while in `gravity mode`. From v1.1 it will also detect
+   any abnormal restarts or crashes and record these in the logfile. 
 
 
 Configuration 
@@ -215,7 +216,7 @@ build this into the gravity formula.
 
    This formula assumes that the calibration has been done at 20°C / 68°F.
 
-   Formula used in temperature correction. 
+   Formula used in temperature correction. The calibration temperature can be changed under advanced settings. 
 
 ::
 
@@ -237,7 +238,8 @@ Factor used to calcualate the battery voltage. If you get a too low/high voltage
 * **Config voltage:**
 
 Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers. 
-If you dont what the device to go into configuration mode when charging, set this to 6V. 
+If you dont what the device to go into configuration mode when charging, set this to 6V. This was added since differnt batteries have different 
+voltages when fully charged. 
 
 * **Temperature correction:**
 

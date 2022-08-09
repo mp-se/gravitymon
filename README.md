@@ -21,18 +21,24 @@ Note! If Brewflasher being flagged as malware by your antivirus software, try th
 The main differences:
 ---------------------
 
-* Modern web based user interface for configuration when connected to WIFI
-* Efficient software, long lifespan (+45 days with 5min update frequencey)
-* Send data to multiple endpoints (http-post, http-get, influxdb v2, mqtt)
-* Instructions for service such as; Brewfather, Fermentrack, Ubidots, Home Assistant, Brewers Friend, Brewspy, Thingspeak, Blynk. 
-* SSL support for all remote endpoints
-* ESP32 support with Bluetooth push
-* Customize data format to be pushed
-* Automatic temperature adjustment of gravity when enabled
-* Use the temperature sensor in gyro instead of DS18B20
-* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity. 
-* Visual graph showing how gravity formula will be interpreted
-* OTA support or firmware upload via web interface
-* REST API for scripting
-
+* Operates in two modes gravity monitoring and configuration mode
+* Gravity mode is comparable to how the iSpindle works when collectintg data
+* Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings
+* Offloading some of the functionallity to run in the web browser, this allows for more advanced features.
+* REST API to enable scripted configuration
+* Send data to multiple endpoints and services at once (2xHTTP POST, HTTP GET, MQTT, INFLUXDB2)
+* Directly test all endpoints from user interface with feedback to simplify troubleshooting
+* Complete format customization for all endpoints using templates (dont really need to change the software to support new services)
+* Setup guides for how to send data to many popular services. Currently 10+ are documented
+* Automatic temperature adjustment of gravity (just tick a checkbox)
+* OTA support from webserver
+* Firmware update via web interface
+* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity and let GravityMon creates a formula
+* Visual graph showing how formula will be interpreted based on entered values
+* Using the temperature sensor in gyro instead of DS18B20 (faster)
+* SSL support in all endpoints (no certificate validation due to limitations on esp8266).
+* Built in performance measurements (used to optimise code)
+* Storage mode when placed on cap (indefinite sleep)
+* Customize various hardware parameters to opimize device functionallity.
+* 
 No code has been reused from the iSpindle project. 
