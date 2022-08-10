@@ -256,6 +256,8 @@
 <span class="w">   </span><span class="nt">"angle"</span><span class="p">:</span><span class="w"> </span><span class="mf">90.93</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gravity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.105</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"battery"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"app-ver"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.1.0"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"app-build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"build"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"platform"</span><span class="p">:</span><span class="w"> </span><span class="s2">"esp8266"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"runtime-average"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.12</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -272,6 +274,8 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">platform</span></code> can be either <code class="docutils literal notranslate"><span class="pre">esp8266</span></code> or <code class="docutils literal notranslate"><span class="pre">esp32</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">temp-c</span></code> will be set to -273 C if there is no temp sensor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">angle</span></code> will be set to 0 if no valid angle is found and -1 if there is no gyro</p></li>
 </ul>
 <p>Other parameters are the same as in the configuration guide.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
@@ -288,6 +292,7 @@
 <span class="w">   </span><span class="nt">"token2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token2"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"rssi"</span><span class="p">:</span><span class="w"> </span><span class="mi">-56</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"app-ver"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.0"</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"app-build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gitrev"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"mdns"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gravmon"</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"sleep-interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"platform"</span><span class="p">:</span><span class="w"> </span><span class="s2">"esp8266"</span><span class="p">,</span><span class="w"></span>
@@ -337,18 +342,19 @@
 <p>Used for adjusting some internal constants and other advanced settings. Should be used with caution.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gyro-read-count"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"tempsensor-resolution"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"gyro-moving-threashold"</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"formula-max-deviation"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.6</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"formula-max-deviation"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"wifi-portal-timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"wifi-connect-timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"push-timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"formula-calibration-temp"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"ignore-low-angles"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"int-http1"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"int-http2"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"int-http3"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"int-influx"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"int-mqtt"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"int-mqtt"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"tempsensor-resolution"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nt">"ignore-low-angles"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
@@ -510,7 +516,7 @@ reading data it’s sent as boolean (true,false).</p>
 <div class="section" id="calling-the-api-s-from-python">
 <h2>Calling the API’s from Python<a class="headerlink" href="#calling-the-api-s-from-python" title="Permalink to this headline">¶</a></h2>
 <p>Here is some example code for how to access the API’s from a python script. Keys should always be
-present or the API call will fail.</p>
+present or the API call will fail. You only need to include the parameters you want to change.</p>
 <p>The requests package converts the json to standard form post format.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">json</span>

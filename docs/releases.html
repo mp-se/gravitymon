@@ -199,39 +199,47 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v1-1-0-beta-2">
-<h2>v1.1.0 - beta 2<a class="headerlink" href="#v1-1-0-beta-2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-1-0-beta-4">
+<h2>v1.1.0 - beta 4<a class="headerlink" href="#v1-1-0-beta-4" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p>(beta2) Updated docs for HA integration since method was depricated</p></li>
 <li><p>Fixed errors in data format section</p></li>
 <li><p>Added q&amp;a on formula creation and value deviation</p></li>
 <li><p>Added documentation for Brewpiless as target</p></li>
 <li><p>Updated docs for ubidots service integration.</p></li>
 <li><p>Added brewblox as new service</p></li>
-<li><p>(beta2) Updated docs for HA integration since method was depricated</p></li>
 </ul>
 </div>
 <div class="section" id="user-interface">
 <h3>User interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p>(beta4) Updated format template with information on size and warning message if the template is too large</p></li>
+<li><p>(beta3) Added error message to user message if gyro connection fails.</p></li>
+<li><p>(beta3) Added  message to user message if no temp sensor can be found.</p></li>
+<li><p>(beta3) Added drop down menus in user interface to simplify navigation to sub pages</p></li>
+<li><p>(beta3) Changed behavior for Home Assistant Device registration, this is only done when format template is saved, during normal operation only data values are posted on MQTT.</p></li>
+<li><p>(beta2) Calibration temperature (for temp adjustment) can now be set under advanced settings.</p></li>
+<li><p>(beta2) Changes length of device name from 12 to 63 chars. 63 is the max limit according to mdns.</p></li>
 <li><p>Under format options its now possible to select brewfather ispindle format to avoid mixing endpoints.</p></li>
 <li><p>Added brewblox as format under format options.</p></li>
 <li><p>User can now edit the voltage level that forces the device into config mode (charging)</p></li>
-<li><p>(beta2) Calibration temperature (for temp adjustment) can now be set under advanced settings.</p></li>
-<li><p>(beta2) Changes length of device name from 12 to 63 chars. 63 is the max limit according to mdns.</p></li>
 </ul>
 </div>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>Added storage mode which is activated under hardware setting. When place on the cap (&lt;5 degres tilt) the device will go into storage mode and sleep for the max allowed time.</p></li>
-<li><p>Added ${app-ver} and ${app-build} to format template as new variables.</p></li>
-<li><p>Added format templates for HA auto registration</p></li>
+<li><p>(beta4) Added information to error log about abnormal resets (for instance crashes) to detect and fix those.</p></li>
+<li><p>(beta4) Changed storage mode so that the device will go into deep sleep until reset.</p></li>
+<li><p>(beta3) Updated sensor types in home assistant (auto registration)</p></li>
+<li><p>(beta2) Added ${app-ver} and ${app-build} to format template as new variables.</p></li>
 <li><p>(beta2) Improved error messages when creating formula so the meaasurement points can be identified.</p></li>
 <li><p>(beta2) Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula.</p></li>
 <li><p>(beta2) Updated format template for Home Assistant for using manual configuration (Aligned with new mqtt configuration format)</p></li>
 <li><p>(beta2) Added format template for Home Assistant with automatic device registration</p></li>
+<li><p>Added storage mode which is activated under hardware setting. When place on the cap (&lt;5 degres tilt) the device will go into storage mode and deep sleep.</p></li>
+<li><p>Added format templates for HA auto registration</p></li>
 </ul>
 </div>
 <div class="section" id="other">
@@ -246,11 +254,16 @@
 <div class="section" id="issues-adressed">
 <h3>Issues adressed<a class="headerlink" href="#issues-adressed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.</p></li>
-<li><p>BUG: Gravity correction formula not calculating correctly.</p></li>
+<li><p>(beta4) Refactored error logging function to reduce memory usage and crashes</p></li>
+<li><p>(beta4) Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars.</p></li>
+<li><p>(beta3) BUG: Refactored format api to handle larger payloads.</p></li>
+<li><p>(beta3) BUG: After manual firmware upload the device would crash and go into wifi setup mode.</p></li>
+<li><p>(beta3) BUG: After manual firmware upload the device will in some cases not be able to connect with the gyro, the symptom is that it will say, “Gyro moving” in the web UI. In this case the device needs to be reset (or powered on/off). I havent found a way to fix this from the code. The message after firmware update has been updated with this information.</p></li>
 <li><p>(beta2) BUG: Temp corrected gravity was not used when pushing data to removed</p></li>
 <li><p>(beta2) BUG: Low memory in format api which resulted in mqtt template to be set to null</p></li>
-<li><p>(beta2) BUG: Large format templates could be saved but when loading it’s only blank. Increased total memory from 3kb to 5kb</p></li>
+<li><p>(beta2) BUG: Large format templates could be saved but when loading it’s only blank.</p></li>
+<li><p>BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.</p></li>
+<li><p>BUG: Gravity correction formula not calculating correctly.</p></li>
 </ul>
 </div>
 </div>
@@ -474,7 +487,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v1-1-0-beta-2">v1.1.0 - beta 2</a><ul>
+<li><a class="reference internal" href="#v1-1-0-beta-4">v1.1.0 - beta 4</a><ul>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#user-interface">User interface</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>

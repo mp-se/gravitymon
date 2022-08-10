@@ -222,8 +222,9 @@ connection. It will show 0 if data has not been collected yet.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>The button <cite>view error log</cite> will show the last 15 errors on the device. This can be useful for checking errors without
-the need to connect to the serial port or to check what errors has occured while in <cite>gravity mode</cite>.</p>
+<p>The button <cite>view error log</cite> will show the last error messages on the device. This can be useful for checking errors without
+the need to connect to the serial port or to check what errors has occured while in <cite>gravity mode</cite>. From v1.1 it will also detect
+any abnormal restarts or crashes and record these in the logfile.</p>
 </div>
 </div>
 <div class="section" id="id1">
@@ -368,7 +369,7 @@ build this into the gravity formula.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This formula assumes that the calibration has been done at 20°C / 68°F.</p>
-<p>Formula used in temperature correction.</p>
+<p>Formula used in temperature correction. The calibration temperature can be changed under advanced settings.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gravity</span><span class="o">*</span><span class="p">((</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">temp</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span>
 <span class="p">(</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">cal</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">3</span><span class="p">))</span>
@@ -386,7 +387,8 @@ build this into the gravity formula.</p>
 <li><p><strong>Config voltage:</strong></p></li>
 </ul>
 <p>Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers.
-If you dont what the device to go into configuration mode when charging, set this to 6V.</p>
+If you dont what the device to go into configuration mode when charging, set this to 6V. This was added since differnt batteries have different
+voltages when fully charged.</p>
 <ul class="simple">
 <li><p><strong>Temperature correction:</strong></p></li>
 </ul>
@@ -402,9 +404,10 @@ been running the value would be totally off.</p>
 <ul class="simple">
 <li><p><strong>Enable storage mode when placed on cap</strong></p></li>
 </ul>
-<p>When place on the cap (&lt;5 degres tilt) the device will go into max sleep. In order to wake it up you need to do a reset (or wait for the device
-to wake up). One option is to attach a magnetic reed switch (default open) to the reset pin and use a magnet to force a reset without opening
-the tube. The reed switch is typically an electronic component of 14 mm long incapsulated in a small glass tube.</p>
+<p>When place on the cap (&lt;5 degres tilt) the device will go into deep sleep forever (until reset). In order to wake it
+up you need to do a reset. One option is to attach a magnetic reed switch (default open) to the reset pin and use a
+magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm
+long incapsulated in a small glass tube. See hardware section for more information, <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
 <ul class="simple">
 <li><p><strong>Bluetooth: (Only ESP32)</strong></p></li>
 </ul>
@@ -452,6 +455,10 @@ data and of the deviation on any point is bigger the formula will be rejected.</
 <li><p><strong>Ignore angles below water:</strong></p></li>
 </ul>
 <p>If this option is checked any angles below that of SG 1 will be discarded as invalid and never sent to any server. Default = off.</p>
+<ul class="simple">
+<li><p><strong>Gravity calibration temp</strong></p></li>
+</ul>
+<p>This option allows you to set the correction temperature used in the automatic temperature gravity adjustment formula. Standard is 20C.</p>
 <ul class="simple">
 <li><p><strong>DS18B20 Resolution:</strong></p></li>
 </ul>

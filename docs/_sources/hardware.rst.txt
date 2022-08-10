@@ -43,3 +43,24 @@ Schema for esp32 build
 .. image:: images/schema_esp32.png
   :width: 700
   :alt: Schema esp32
+
+Modifying with reed switch
+--------------------------
+
+A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to 
+a magnet. 
+
+.. image:: images/reed.jpg
+  :width: 400
+  :alt: Reed switch
+
+If this is connected to the reset button a magnet can be used to trigger a reset of the device. The image below shows how 
+I mounted the iSPINDLE PCB v4.0 just under the cap. The lower red circle shows the reset connection point for the reed switch.
+
+The reed switch is the glass tube visible under the esp8266.
+
+.. image:: images/reed_build.jpg
+  :width: 400
+  :alt: Reed build
+
+

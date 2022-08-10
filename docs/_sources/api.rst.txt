@@ -65,6 +65,8 @@ Other parameters are the same as in the configuration guide.
       "angle": 90.93,
       "gravity": 1.105,
       "battery": 0.04,
+      "app-ver": "0.1.0",
+      "app-build": "build",
       "platform": "esp8266",
       "runtime-average": 3.12
    }
@@ -83,6 +85,8 @@ Retrive the current device status via an HTTP GET command. Payload is in JSON fo
 
 * ``temp-format`` can be either ``C`` or ``F``
 * ``platform`` can be either ``esp8266`` or ``esp32``
+* ``temp-c`` will be set to -273 C if there is no temp sensor
+* ``angle`` will be set to 0 if no valid angle is found and -1 if there is no gyro
 
 Other parameters are the same as in the configuration guide.
 
@@ -102,6 +106,7 @@ Other parameters are the same as in the configuration guide.
       "token2": "token2",
       "rssi": -56,
       "app-ver": "0.0.0",
+      "app-build": "gitrev",
       "mdns": "gravmon",
       "sleep-interval": 30,
       "platform": "esp8266",
@@ -156,18 +161,19 @@ Used for adjusting some internal constants and other advanced settings. Should b
 
    {
       "gyro-read-count": 50,
-      "tempsensor-resolution": 9,
       "gyro-moving-threashold": 500,
-      "formula-max-deviation": 1.6,
+      "formula-max-deviation": 3.0,
       "wifi-portal-timeout": 120,
       "wifi-connect-timeout": 20,
+      "push-timeout": 10,
       "formula-calibration-temp": 20,
-      "ignore-low-angles": false,
       "int-http1": 0,
       "int-http2": 0,
       "int-http3": 0,
       "int-influx": 0,
-      "int-mqtt": 0
+      "int-mqtt": 0,
+      "tempsensor-resolution": 9,
+      "ignore-low-angles": false
    }
 
 POST: /api/config/advanced
@@ -354,7 +360,7 @@ Calling the API's from Python
 =============================
 
 Here is some example code for how to access the API's from a python script. Keys should always be 
-present or the API call will fail.
+present or the API call will fail. You only need to include the parameters you want to change. 
 
 The requests package converts the json to standard form post format. 
 

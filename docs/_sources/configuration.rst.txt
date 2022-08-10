@@ -37,8 +37,9 @@ connection. It will show 0 if data has not been collected yet.
 
 .. tip::
 
-   The button `view error log` will show the last 15 errors on the device. This can be useful for checking errors without
-   the need to connect to the serial port or to check what errors has occured while in `gravity mode`.
+   The button `view error log` will show the last error messages on the device. This can be useful for checking errors without
+   the need to connect to the serial port or to check what errors has occured while in `gravity mode`. From v1.1 it will also detect
+   any abnormal restarts or crashes and record these in the logfile. 
 
 
 Configuration 
@@ -215,7 +216,7 @@ build this into the gravity formula.
 
    This formula assumes that the calibration has been done at 20°C / 68°F.
 
-   Formula used in temperature correction. 
+   Formula used in temperature correction. The calibration temperature can be changed under advanced settings. 
 
 ::
 
@@ -237,7 +238,8 @@ Factor used to calcualate the battery voltage. If you get a too low/high voltage
 * **Config voltage:**
 
 Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers. 
-If you dont what the device to go into configuration mode when charging, set this to 6V. 
+If you dont what the device to go into configuration mode when charging, set this to 6V. This was added since differnt batteries have different 
+voltages when fully charged. 
 
 * **Temperature correction:**
 
@@ -253,9 +255,10 @@ been running the value would be totally off.
 
 * **Enable storage mode when placed on cap**
 
-When place on the cap (<5 degres tilt) the device will go into max sleep. In order to wake it up you need to do a reset (or wait for the device 
-to wake up). One option is to attach a magnetic reed switch (default open) to the reset pin and use a magnet to force a reset without opening 
-the tube. The reed switch is typically an electronic component of 14 mm long incapsulated in a small glass tube.
+When place on the cap (<5 degres tilt) the device will go into deep sleep forever (until reset). In order to wake it 
+up you need to do a reset. One option is to attach a magnetic reed switch (default open) to the reset pin and use a 
+magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm 
+long incapsulated in a small glass tube. See hardware section for more information, :ref:`hardware`.
 
 * **Bluetooth: (Only ESP32)**
 
@@ -316,6 +319,10 @@ data and of the deviation on any point is bigger the formula will be rejected.
 * **Ignore angles below water:**
 
 If this option is checked any angles below that of SG 1 will be discarded as invalid and never sent to any server. Default = off.
+
+* **Gravity calibration temp**
+
+This option allows you to set the correction temperature used in the automatic temperature gravity adjustment formula. Standard is 20C. 
 
 * **DS18B20 Resolution:**
 
