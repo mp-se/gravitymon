@@ -3,43 +3,58 @@
 Releases 
 ########
 
-v1.1.0 - beta 4
-===============
-
-Documentation
-+++++++++++++
-* (beta2) Updated docs for HA integration since method was depricated
-* Fixed errors in data format section
-* Added q&a on formula creation and value deviation
-* Added documentation for Brewpiless as target
-* Updated docs for ubidots service integration.
-* Added brewblox as new service
-
-User interface
-++++++++++++++
-* (beta4) Updated format template with information on size and warning message if the template is too large
-* (beta3) Added error message to user message if gyro connection fails.
-* (beta3) Added  message to user message if no temp sensor can be found.
-* (beta3) Added drop down menus in user interface to simplify navigation to sub pages
-* (beta3) Changed behavior for Home Assistant Device registration, this is only done when format template is saved, during normal operation only data values are posted on MQTT. 
-* (beta2) Calibration temperature (for temp adjustment) can now be set under advanced settings.
-* (beta2) Changes length of device name from 12 to 63 chars. 63 is the max limit according to mdns. 
-* Under format options its now possible to select brewfather ispindle format to avoid mixing endpoints. 
-* Added brewblox as format under format options. 
-* User can now edit the voltage level that forces the device into config mode (charging)
+v1.1.0
+======
 
 Features
 ++++++++
-* (beta4) Added information to error log about abnormal resets (for instance crashes) to detect and fix those.
-* (beta4) Changed storage mode so that the device will go into deep sleep until reset.
-* (beta3) Updated sensor types in home assistant (auto registration)
-* (beta2) Added ${app-ver} and ${app-build} to format template as new variables.
-* (beta2) Improved error messages when creating formula so the meaasurement points can be identified.
-* (beta2) Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula. 
-* (beta2) Updated format template for Home Assistant for using manual configuration (Aligned with new mqtt configuration format)
-* (beta2) Added format template for Home Assistant with automatic device registration
+* Added information to error log about abnormal resets (for instance crashes) to detect and fix those
+* Changed storage mode so that the device will go into deep sleep until reset (sleep forever)
+* Updated sensor types in home assistant for auto registration of device
+* Added ${app-ver} and ${app-build} to format template as new variables
+* Improved error messages when creating formula so the troublesome measurement points can be identified
+* Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula
+* Updated format template for Home Assistant, aligned with new mqtt configuration format
+* Added format template for Home Assistant with automatic device registration
 * Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and deep sleep. 
-* Added format templates for HA auto registration
+
+Issues adressed
+++++++++++++++++
+* Refactored error logging function to reduce memory usage and crashes
+* Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars
+* BUG: Refactored format api to handle larger payloads
+* BUG: After manual firmware upload the device would crash and go into wifi setup mode.
+* BUG: After manual firmware upload the device will in some cases not be able to connect with the gyro, the symptom is that it will say, "Gyro moving" in the web UI. In this case the device needs to be reset (or powered on/off). I havent found a way to fix this from the code. The message after firmware update has been updated with this information
+* BUG: Temp corrected gravity was not used when pushing data to removed
+* BUG: Low memory in format api which resulted in mqtt template to be set to null
+* BUG: Large format templates could be saved but when loading it's only blank
+* BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used
+* BUG: Gravity correction formula not calculating correctly
+
+User interface
+++++++++++++++
+* Updated format template with information on size and warning message if the template is too large
+* Added error message if gyro connection/initialization fails (before the message was Gyro Moving only)
+* Added error message if no temp sensor can be found
+* Added drop down menus in user interface to simplify navigation to sub pages (format, test and upload)
+* Added Assistant Device registration, this is only done when format template is saved, during normal operation only data values are posted on MQTT. If HA is restarted then the device will disappear
+* Calibration temperature (for temp adjustment) can now be set under advanced settings, default is 20C
+* Changed length of device name from 12 to 63 chars. 63 is the max limit according to mdns.
+* Under format options its now possible to select brewfather ispindle format to avoid errors connected to using the wrong format template with the various brewfather endpoints
+* Added brewblox as format under format options
+* Added home assistant (with device registration) as format under format options
+* User can now edit the voltage level that forces the device into config mode (device detects charging)
+
+Documentation
++++++++++++++
+* Added documentation for Brewpiless as target
+* Added documentation for BVrewblox as target
+* Updated documentation for HA integration since described method was deprecated
+* Updated documentation for ubidots service integration
+* Updated documentation in data format section
+* Updated hardware section with documentation on installing reed switch
+* Updated configuration section with documentation on new settings
+* Added q&a on formula creation and value deviation
  
 Other
 +++++
@@ -48,18 +63,6 @@ Other
 * Updated OneWire library to be complaint with new ESP32 SDK
 * Fixed issue in i2cdev connected to wrong usage of TwoWire on ESP32 (Gyro initialization hang). 
 
-Issues adressed
-++++++++++++++++
-* (beta4) Refactored error logging function to reduce memory usage and crashes
-* (beta4) Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars. 
-* (beta3) BUG: Refactored format api to handle larger payloads.
-* (beta3) BUG: After manual firmware upload the device would crash and go into wifi setup mode.
-* (beta3) BUG: After manual firmware upload the device will in some cases not be able to connect with the gyro, the symptom is that it will say, "Gyro moving" in the web UI. In this case the device needs to be reset (or powered on/off). I havent found a way to fix this from the code. The message after firmware update has been updated with this information.
-* (beta2) BUG: Temp corrected gravity was not used when pushing data to removed
-* (beta2) BUG: Low memory in format api which resulted in mqtt template to be set to null
-* (beta2) BUG: Large format templates could be saved but when loading it's only blank.
-* BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used.
-* BUG: Gravity correction formula not calculating correctly.
 
 v1.0.0
 ======
