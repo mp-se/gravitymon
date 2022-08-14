@@ -164,7 +164,8 @@ username / password to be able to publish messages on a topic.
 
 
 It's also possible to allow home assistant to do autodisovery and automatically create the sensor. This format 
-template will create two sensors and update the values for them. 
+template will create two sensors and update the values for them. The registration will occur when you save the format template. If Home Assistant 
+is restarted then the device will dissapear. The first method is the most persistant one. 
 
 .. warning::
   This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.

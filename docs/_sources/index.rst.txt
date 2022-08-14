@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v1.1 BETA 4**. Last updated 2022-08-06
+  This documentation reflects **v1.1**. Last updated 2022-08-14
 
 User interface overview
 -----------------------
