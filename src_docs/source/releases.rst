@@ -18,9 +18,13 @@ Features
 * Added format template for Home Assistant with automatic device registration
 * Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and deep sleep. 
 
+Known issues, not yet fixed
++++++++++++++++++++++++++++
+* When updating firmware and the feature `deep sleep` is active the device will activate deep sleep if the gyro is not responding. FIX: Reboot device
+
 Issues adressed
 ++++++++++++++++
-* Refactored error logging function to reduce memory usage and crashes
+* Refactored error logging function to reduce memory usage and crashes. Max size of error log is 2 x 4 kb
 * Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars
 * BUG: Refactored format api to handle larger payloads
 * BUG: After manual firmware upload the device would crash and go into wifi setup mode.

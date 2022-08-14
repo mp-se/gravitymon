@@ -29,7 +29,7 @@ SOFTWARE.
 
 #define ERR_FILENAME "/error.log"
 #define ERR_FILENAME2 "/error2.log"
-#define ERR_FILEMAXSIZE 250
+#define ERR_FILEMAXSIZE 4000
 
 #define RUNTIME_FILENAME "/runtime.log"
 
