@@ -153,6 +153,21 @@
           <hr class="my-2">
 
           <div class="row mb-3">
+            <label class="col-sm-2 col-form-label">Wifi</label>
+            <div class="col-sm-2">
+              <label class="col-sm-4 col-form-label" id="wifi-ssid"></label>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label">Wifi 2</label>
+            <div class="col-sm-2">
+              <label class="col-sm-4 col-form-label" id="wifi-ssid2"></label>
+            </div>
+          </div>
+
+          <hr class="my-2">
+
+          <div class="row mb-3">
             <label for="calibrate-btn" class="col-sm-2 col-form-label">Current calibration</label>
             <label for="calibrate-btn" class="col-sm-2 col-form-label" id="gyro-calibration-data">Loading...</label>
             <label for="gyro-calibration-data" class="col-sm-2 col-form-label" id="angle">Loading...</label>
@@ -901,6 +916,8 @@
         $("#angle").text(cfg["angle"]);
         $("#runtime-average").val(cfg["runtime-average"]);
         $("#water-angle").text( "(Water angle: " + cfg["formula-calculation-data"]["a1"] + ") - default off");
+        $("#wifi-ssid").text(cfg["wifi-ssid"]);
+        $("#wifi-ssid2").text(cfg["wifi-ssid2"]);
         //$("#gravity").text(cfg["gravity"] + " SG");
       })
       .fail(function () {
