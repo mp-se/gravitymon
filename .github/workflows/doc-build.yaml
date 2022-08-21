@@ -21,6 +21,7 @@ jobs:
             pip install docutils==0.16
             pip install pygments==2.11.1
             pip install furo==2022.1.2
+            pip install sphinx-copybutton
             pip list
           build-command: "sphinx-build -b html ./source ../docs"
 
