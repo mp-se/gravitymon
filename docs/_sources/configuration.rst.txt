@@ -23,22 +23,22 @@ URL: (http://gravmon.local)
   :alt: Index page
 
 
-Configuration is accessed by entering the URL for the device, this will be the mDNS name *device.local* or the IP adress. The following chapter assumes the device name is *gravmon*.
+Configuration is accessed by entering the URL for the device, this will be the mDNS name *device.local* or the IP address. The following chapter assumes the device name is *gravmon*.
 
 The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if 
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.
 
-You can also view the average time a gravity measurement takes. Under optimal setting this should be around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likley connected to slow wifi 
+You can also view the average time a gravity measurement takes. Under optimal setting this should be around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likely connected to slow wifi 
 connection. It will show 0 if data has not been collected yet.
 
 .. tip::
 
-   If you are connected to the device via a serial console (speed: 115200) you can see the connection sequence and get the Unique ID and IP adress from there. 
+   If you are connected to the device via a serial console (speed: 115200) you can see the connection sequence and get the Unique ID and IP address from there. 
 
 .. tip::
 
    The button `view error log` will show the last error messages on the device. This can be useful for checking errors without
-   the need to connect to the serial port or to check what errors has occured while in `gravity mode`. From v1.1 it will also detect
+   the need to connect to the serial port or to check what errors has occurred while in `gravity mode`. From v1.1 it will also detect
    any abnormal restarts or crashes and record these in the logfile. 
 
 
@@ -61,7 +61,7 @@ The limitation is 63 chars but using long names might break endpoints that data 
 
 * **Temperature format:** 
 
-Choose between Celsius and Farenheight when displaying temperature. 
+Choose between Celsius and Fahrenheit when displaying temperature. 
 
 * **Interval:** 
 
@@ -94,7 +94,7 @@ Push Settings
 .. note::
 
    When enabling SSL this will not validate the root CA of the remote service, this is a design decision based on two aspects. Enabling CA validation will take 3-4s extra on each connection which means way less 
-   battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I belive this is a good balance.
+   battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I believe this is a good balance.
 
 * **HTTP 1 (POST):**
 
@@ -129,7 +129,7 @@ The token is included in the default format for the HTTP GET url but can be used
    :width: 300
    :alt: HTTP Headers
 
-You can define 2 http headers per push target. This is available via a pop-up window but dont forget
+You can define 2 http headers per push target. This is available via a pop-up window but don't forget
 to press the save buttons on the post section to save the values. One common header is content type which is the 
 default setting for http targets.
 
@@ -197,14 +197,14 @@ Gravity Settings
 
 * **Gravity format:**
 
-Gravity format can be eihter `SG` or `Plato`. The device will use SG Internally and convert to Plato when displaying or sending data.
+Gravity format can be either `SG` or `Plato`. The device will use SG Internally and convert to Plato when displaying or sending data.
 
 * **Gravity formula:**
 
 Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use 
 the feature to create the formula by supplying the raw data. See :ref:`create-formula`
 
-The gravity formula accepts to paramaters, **tilt** for the angle or **temp** for temperature (temperature inserted into the formula 
+The gravity formula accepts to parameters, **tilt** for the angle or **temp** for temperature (temperature inserted into the formula 
 will be in celsius). I would recommend to use the formula calculation feature instead since this is much easier.
 
 * **Temperature correct gravity:**
@@ -233,12 +233,12 @@ Hardware Settings
 
 * **Voltage factor:**
 
-Factor used to calcualate the battery voltage. If you get a too low/high voltage you can adjust this value.
+Factor used to calculate the battery voltage. If you get a too low/high voltage you can adjust this value.
 
 * **Config voltage:**
 
 Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers. 
-If you dont what the device to go into configuration mode when charging, set this to 6V. This was added since differnt batteries have different 
+If you don't what the device to go into configuration mode when charging, set this to 6V. This was added since different batteries have different 
 voltages when fully charged. 
 
 * **Temperature correction:**
@@ -250,15 +250,15 @@ when the device starts. So changing this will not take affect until the device i
 
 Enable this feature will use the temp sensor i the gyro instead of the DS18B20, the benefit is shorter run time and
 longer battery life (this is an experimental feature). The value used is the first temperature reading from when the 
-device is activated, since the gyro should be cool this is reflecting the surronding temperature. After it has 
+device is activated, since the gyro should be cool this is reflecting the surrounding temperature. After it has 
 been running the value would be totally off.  
 
 * **Enable storage mode when placed on cap**
 
-When place on the cap (<5 degres tilt) the device will go into deep sleep forever (until reset). In order to wake it 
+When place on the cap (<5 degree tilt) the device will go into deep sleep forever (until reset). In order to wake it 
 up you need to do a reset. One option is to attach a magnetic reed switch (default open) to the reset pin and use a 
 magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm 
-long incapsulated in a small glass tube. See hardware section for more information, :ref:`hardware`.
+long encapsulated in a small glass tube. See hardware section for more information, :ref:`hardware`.
 
 * **Bluetooth: (Only ESP32)**
 
@@ -290,7 +290,7 @@ This option gives you the possibility to install an new version of the firmware 
   :alt: Update firmware
 
 
-Advanded Settings
+Advanced Settings
 +++++++++++++++++
 
 .. image:: images/config5.png
@@ -299,21 +299,21 @@ Advanded Settings
 
 .. warning::
 
-   Changeing these parameters with caution. The wrong values might cause the device to become unresponsive. 
+   Change these parameters with caution. The wrong values might cause the device to become unresponsive. 
 
 
 * **Gyro reads:**
 
 This defines how many gyro reads will be done before an angle is calculated. More reads will give better accuracy and also allow detection of 
-movement. Too many reads will take time and affecte batterylife. 50 takes about 800 ms to execute.
+movement. Too many reads will take time and affect battery life. 50 takes about 800 ms to execute.
 
-* **Gyro moving threashold:**
+* **Gyro moving threshold:**
 
 This is the max amount of deviation allowed for a stable reading. 
 
 * **Formula deviation:**
 
-This is the maximum devation on the formlula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied 
+This is the maximum deviation on the formula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied 
 data and of the deviation on any point is bigger the formula will be rejected.
 
 * **Ignore angles below water:**
@@ -335,11 +335,11 @@ This is the amount of time allowed for a wifi connect.
    
 * **Wifi portal timeout:**
 
-If the wifi portal is triggered (can be triggerd by reset) then this is the amount of time allowed before it exists again.
+If the wifi portal is triggered (can be triggered by reset) then this is the amount of time allowed before it exists again.
    
 * **Skip Interval (...):**
 
-These options allow the user to have variable push intervals for the diffrent endpoints. 0 means that every wakeup will send data to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped.
+These options allow the user to have variable push intervals for the different endpoints. 0 means that every wakeup will send data to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped.
 
 If the sleep interval is 300s and MQTT is set to 0 and HTTP1 is set to 2 then MQTT will be sent every 300s while HTTP1 would be sent 900s. This is great if you want to send data to a local mqtt server often but brewfather will only 
 accept data every 15 min.

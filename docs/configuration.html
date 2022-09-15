@@ -211,19 +211,19 @@
 <h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
 <p>URL: (<a class="reference external" href="http://gravmon.local">http://gravmon.local</a>)</p>
 <a class="reference internal image-reference" href="_images/index.png"><img alt="Index page" src="_images/index.png" style="width: 800px;"/></a>
-<p>Configuration is accessed by entering the URL for the device, this will be the mDNS name <em>device.local</em> or the IP adress. The following chapter assumes the device name is <em>gravmon</em>.</p>
+<p>Configuration is accessed by entering the URL for the device, this will be the mDNS name <em>device.local</em> or the IP address. The following chapter assumes the device name is <em>gravmon</em>.</p>
 <p>The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.</p>
-<p>You can also view the average time a gravity measurement takes. Under optimal setting this should be around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likley connected to slow wifi
+<p>You can also view the average time a gravity measurement takes. Under optimal setting this should be around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likely connected to slow wifi
 connection. It will show 0 if data has not been collected yet.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>If you are connected to the device via a serial console (speed: 115200) you can see the connection sequence and get the Unique ID and IP adress from there.</p>
+<p>If you are connected to the device via a serial console (speed: 115200) you can see the connection sequence and get the Unique ID and IP address from there.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The button <cite>view error log</cite> will show the last error messages on the device. This can be useful for checking errors without
-the need to connect to the serial port or to check what errors has occured while in <cite>gravity mode</cite>. From v1.1 it will also detect
+the need to connect to the serial port or to check what errors has occurred while in <cite>gravity mode</cite>. From v1.1 it will also detect
 any abnormal restarts or crashes and record these in the logfile.</p>
 </div>
 </div>
@@ -241,7 +241,7 @@ The limitation is 63 chars but using long names might break endpoints that data 
 <ul class="simple">
 <li><p><strong>Temperature format:</strong></p></li>
 </ul>
-<p>Choose between Celsius and Farenheight when displaying temperature.</p>
+<p>Choose between Celsius and Fahrenheit when displaying temperature.</p>
 <ul class="simple">
 <li><p><strong>Interval:</strong></p></li>
 </ul>
@@ -269,7 +269,7 @@ The device will show the estimated lifespan based on the average connection time
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When enabling SSL this will not validate the root CA of the remote service, this is a design decision based on two aspects. Enabling CA validation will take 3-4s extra on each connection which means way less
-battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I belive this is a good balance.</p>
+battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I believe this is a good balance.</p>
 </div>
 <ul class="simple">
 <li><p><strong>HTTP 1 (POST):</strong></p></li>
@@ -299,7 +299,7 @@ need to have 2 different tokens please use the <a class="reference internal" hre
 <li><p><strong>HTTP Headers</strong></p></li>
 </ul>
 <a class="reference internal image-reference" href="_images/config-popup1.png"><img alt="HTTP Headers" src="_images/config-popup1.png" style="width: 300px;"/></a>
-<p>You can define 2 http headers per push target. This is available via a pop-up window but dont forget
+<p>You can define 2 http headers per push target. This is available via a pop-up window but don’t forget
 to press the save buttons on the post section to save the values. One common header is content type which is the
 default setting for http targets.</p>
 <p>The input must have the format <strong>‘&lt;header&gt;: &lt;value&gt;’</strong> for it to work. The UI will accept any value so errors
@@ -353,13 +353,13 @@ will not show until the device tries to push data.</p>
 <ul class="simple">
 <li><p><strong>Gravity format:</strong></p></li>
 </ul>
-<p>Gravity format can be eihter <cite>SG</cite> or <cite>Plato</cite>. The device will use SG Internally and convert to Plato when displaying or sending data.</p>
+<p>Gravity format can be either <cite>SG</cite> or <cite>Plato</cite>. The device will use SG Internally and convert to Plato when displaying or sending data.</p>
 <ul class="simple">
 <li><p><strong>Gravity formula:</strong></p></li>
 </ul>
 <p>Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use
 the feature to create the formula by supplying the raw data. See <a class="reference internal" href="formula.html#create-formula"><span class="std std-ref">Create formula</span></a></p>
-<p>The gravity formula accepts to paramaters, <strong>tilt</strong> for the angle or <strong>temp</strong> for temperature (temperature inserted into the formula
+<p>The gravity formula accepts to parameters, <strong>tilt</strong> for the angle or <strong>temp</strong> for temperature (temperature inserted into the formula
 will be in celsius). I would recommend to use the formula calculation feature instead since this is much easier.</p>
 <ul class="simple">
 <li><p><strong>Temperature correct gravity:</strong></p></li>
@@ -382,12 +382,12 @@ build this into the gravity formula.</p>
 <ul class="simple">
 <li><p><strong>Voltage factor:</strong></p></li>
 </ul>
-<p>Factor used to calcualate the battery voltage. If you get a too low/high voltage you can adjust this value.</p>
+<p>Factor used to calculate the battery voltage. If you get a too low/high voltage you can adjust this value.</p>
 <ul class="simple">
 <li><p><strong>Config voltage:</strong></p></li>
 </ul>
 <p>Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers.
-If you dont what the device to go into configuration mode when charging, set this to 6V. This was added since differnt batteries have different
+If you don’t what the device to go into configuration mode when charging, set this to 6V. This was added since different batteries have different
 voltages when fully charged.</p>
 <ul class="simple">
 <li><p><strong>Temperature correction:</strong></p></li>
@@ -399,15 +399,15 @@ when the device starts. So changing this will not take affect until the device i
 </ul>
 <p>Enable this feature will use the temp sensor i the gyro instead of the DS18B20, the benefit is shorter run time and
 longer battery life (this is an experimental feature). The value used is the first temperature reading from when the
-device is activated, since the gyro should be cool this is reflecting the surronding temperature. After it has
+device is activated, since the gyro should be cool this is reflecting the surrounding temperature. After it has
 been running the value would be totally off.</p>
 <ul class="simple">
 <li><p><strong>Enable storage mode when placed on cap</strong></p></li>
 </ul>
-<p>When place on the cap (&lt;5 degres tilt) the device will go into deep sleep forever (until reset). In order to wake it
+<p>When place on the cap (&lt;5 degree tilt) the device will go into deep sleep forever (until reset). In order to wake it
 up you need to do a reset. One option is to attach a magnetic reed switch (default open) to the reset pin and use a
 magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm
-long incapsulated in a small glass tube. See hardware section for more information, <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
+long encapsulated in a small glass tube. See hardware section for more information, <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
 <ul class="simple">
 <li><p><strong>Bluetooth: (Only ESP32)</strong></p></li>
 </ul>
@@ -430,26 +430,26 @@ code the update will be done during startup.</p>
 <p>This option gives you the possibility to install an new version of the firmware (or any firmware that uses the standard flash layout).</p>
 <a class="reference internal image-reference" href="_images/firmware.png"><img alt="Update firmware" src="_images/firmware.png" style="width: 600px;"/></a>
 </div>
-<div class="section" id="advanded-settings">
-<h3>Advanded Settings<a class="headerlink" href="#advanded-settings" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="advanced-settings">
+<h3>Advanced Settings<a class="headerlink" href="#advanced-settings" title="Permalink to this headline">¶</a></h3>
 <a class="reference internal image-reference" href="_images/config5.png"><img alt="Advanced Settings" src="_images/config5.png" style="width: 800px;"/></a>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Changeing these parameters with caution. The wrong values might cause the device to become unresponsive.</p>
+<p>Change these parameters with caution. The wrong values might cause the device to become unresponsive.</p>
 </div>
 <ul class="simple">
 <li><p><strong>Gyro reads:</strong></p></li>
 </ul>
 <p>This defines how many gyro reads will be done before an angle is calculated. More reads will give better accuracy and also allow detection of
-movement. Too many reads will take time and affecte batterylife. 50 takes about 800 ms to execute.</p>
+movement. Too many reads will take time and affect battery life. 50 takes about 800 ms to execute.</p>
 <ul class="simple">
-<li><p><strong>Gyro moving threashold:</strong></p></li>
+<li><p><strong>Gyro moving threshold:</strong></p></li>
 </ul>
 <p>This is the max amount of deviation allowed for a stable reading.</p>
 <ul class="simple">
 <li><p><strong>Formula deviation:</strong></p></li>
 </ul>
-<p>This is the maximum devation on the formlula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied
+<p>This is the maximum deviation on the formula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied
 data and of the deviation on any point is bigger the formula will be rejected.</p>
 <ul class="simple">
 <li><p><strong>Ignore angles below water:</strong></p></li>
@@ -471,11 +471,11 @@ take longer time to measure..</p>
 <ul class="simple">
 <li><p><strong>Wifi portal timeout:</strong></p></li>
 </ul>
-<p>If the wifi portal is triggered (can be triggerd by reset) then this is the amount of time allowed before it exists again.</p>
+<p>If the wifi portal is triggered (can be triggered by reset) then this is the amount of time allowed before it exists again.</p>
 <ul class="simple">
 <li><p><strong>Skip Interval (…):</strong></p></li>
 </ul>
-<p>These options allow the user to have variable push intervals for the diffrent endpoints. 0 means that every wakeup will send data to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped.</p>
+<p>These options allow the user to have variable push intervals for the different endpoints. 0 means that every wakeup will send data to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped.</p>
 <p>If the sleep interval is 300s and MQTT is set to 0 and HTTP1 is set to 2 then MQTT will be sent every 300s while HTTP1 would be sent 900s. This is great if you want to send data to a local mqtt server often but brewfather will only
 accept data every 15 min.</p>
 </div>
@@ -537,7 +537,7 @@ accept data every 15 min.</p>
 <li><a class="reference internal" href="#push-settings-2">Push Settings (2)</a></li>
 <li><a class="reference internal" href="#gravity-settings">Gravity Settings</a></li>
 <li><a class="reference internal" href="#hardware-settings">Hardware Settings</a></li>
-<li><a class="reference internal" href="#advanded-settings">Advanded Settings</a></li>
+<li><a class="reference internal" href="#advanced-settings">Advanced Settings</a></li>
 </ul>
 </li>
 </ul>
