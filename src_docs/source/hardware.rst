@@ -3,7 +3,7 @@
 Hardware
 ########
 
-There are lots of resouces out there on how to build the hardware for an iSpindle so I will not go into details on that part. Here are two of my builds using the iSpindle PCB v4.
+There are lots of resources out there on how to build the hardware for an iSpindle so I will not go into details on that part. Here are two of my builds using the iSpindle PCB v4.
 
 .. image:: images/ispindel.jpg
   :width: 500
