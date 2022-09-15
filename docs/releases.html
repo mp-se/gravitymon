@@ -209,10 +209,10 @@
 <li><p>Updated sensor types in home assistant for auto registration of device</p></li>
 <li><p>Added ${app-ver} and ${app-build} to format template as new variables</p></li>
 <li><p>Improved error messages when creating formula so the troublesome measurement points can be identified</p></li>
-<li><p>Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula</p></li>
+<li><p>Changed default validation threshold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula</p></li>
 <li><p>Updated format template for Home Assistant, aligned with new mqtt configuration format</p></li>
 <li><p>Added format template for Home Assistant with automatic device registration</p></li>
-<li><p>Added storage mode which is activated under hardware setting. When place on the cap (&lt;5 degres tilt) the device will go into storage mode and deep sleep.</p></li>
+<li><p>Added storage mode which is activated under hardware setting. When place on the cap (&lt;5 degree tilt) the device will go into storage mode and deep sleep.</p></li>
 </ul>
 </div>
 <div class="section" id="known-issues-not-yet-fixed">
@@ -221,8 +221,8 @@
 <li><p>When updating firmware and the feature <cite>deep sleep</cite> is active the device will activate deep sleep if the gyro is not responding. FIX: Reboot device</p></li>
 </ul>
 </div>
-<div class="section" id="issues-adressed">
-<h3>Issues adressed<a class="headerlink" href="#issues-adressed" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="issues-addressed">
+<h3>Issues addressed<a class="headerlink" href="#issues-addressed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Refactored error logging function to reduce memory usage and crashes. Max size of error log is 2 x 4 kb</p></li>
 <li><p>Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars</p></li>
@@ -246,7 +246,7 @@
 <li><p>Added Assistant Device registration, this is only done when format template is saved, during normal operation only data values are posted on MQTT. If HA is restarted then the device will disappear</p></li>
 <li><p>Calibration temperature (for temp adjustment) can now be set under advanced settings, default is 20C</p></li>
 <li><p>Changed length of device name from 12 to 63 chars. 63 is the max limit according to mdns.</p></li>
-<li><p>Under format options its now possible to select brewfather ispindle format to avoid errors connected to using the wrong format template with the various brewfather endpoints</p></li>
+<li><p>Under format options its now possible to select brewfather iSpindle format to avoid errors connected to using the wrong format template with the various brewfather endpoints</p></li>
 <li><p>Added brewblox as format under format options</p></li>
 <li><p>Added home assistant (with device registration) as format under format options</p></li>
 <li><p>User can now edit the voltage level that forces the device into config mode (device detects charging)</p></li>
@@ -282,7 +282,7 @@
 <ul class="simple">
 <li><p>Update documentation to match v1.0</p></li>
 <li><p>Installation instructions updated on how to find the device after wifi has been configured.</p></li>
-<li><p>Documentation on brewfather has been updated to adress SG/Plato conversion</p></li>
+<li><p>Documentation on brewfather has been updated to address SG/Plato conversion</p></li>
 <li><p>Added circuit diagram for esp8266 and esp32</p></li>
 <li><p>Added additional http error codes to troubleshooting documentation</p></li>
 </ul>
@@ -291,7 +291,7 @@
 <h3>User interface<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
-<li><p>Added button on indexpage to direct to github issues.</p></li>
+<li><p>Added button on index page to direct to github issues.</p></li>
 <li><p>Added button to extract important information for support requests.</p></li>
 <li><p>First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.</p></li>
 <li><p>Changed layout on index page with measured data on top.</p></li>
@@ -304,21 +304,21 @@
 <ul class="simple">
 <li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
 <li><p>Added support for MPU6500 (standard is MPU6050).</p></li>
-<li><p>Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.</p></li>
+<li><p>Removed brewfather option (can use standard HTTP options), the old approach can still be used via changing format template.</p></li>
 <li><p>Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.</p></li>
 <li><p>Added https support for Influxdb v2</p></li>
-<li><p>Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If succesful the seconday becomes the new primary.</p></li>
+<li><p>Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If successful the secondary becomes the new primary.</p></li>
 <li><p>SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory.</p></li>
 <li><p>Advanced settings: Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather.</p></li>
 <li><p>Advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)</p></li>
 <li><p>Advanced settings: Set amount of gyro movement is allowed for a accurate read.</p></li>
 <li><p>Advanced settings: What deviation is acceptable for creating formula deviation</p></li>
 <li><p>Advanced settings: Various timeouts, wifi connect, wifi portal, http connects.</p></li>
-<li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife</p></li>
+<li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing battery life</p></li>
 </ul>
 </div>
 <div class="section" id="id5">
-<h3>Issues adressed<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3>Issues addressed<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Fixed issue in formula calculation in case there were a gap in the data series</p></li>
 <li><p>BUG: Field name for wifi strength changed from “rssi” to “RSSI”</p></li>
@@ -332,7 +332,7 @@
 <ul class="simple">
 <li><p>Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api’s.</p></li>
 <li><p>Added function to test push targets from configuration page. It will send data and show the return code as a first step.</p></li>
-<li><p>Added documetation on how to integrate with Blynk.io using http get.</p></li>
+<li><p>Added documentation on how to integrate with Blynk.io using http get.</p></li>
 <li><p>Config page now shows the estimated runtime for the device (based on a full battery and previous average runtime)</p></li>
 <li><p>Experimental release of firmware using an esp32 instead of esp8266</p></li>
 <li><p>Merged index and device pages into one so that all the needed information is available on the index page.</p></li>
@@ -349,9 +349,9 @@
 <li><p>BUG: Corrected PIN for voltage read on ESP32</p></li>
 <li><p>BUG: If using plato and not gravity formula was defined the value was set to null.</p></li>
 <li><p>BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.</p></li>
-<li><p>BUG: Temperature sensor adjusmemnt value was not handled properly when using Farenheight.</p></li>
+<li><p>BUG: Temperature sensor adjustment value was not handled properly when using Fahrenheit.</p></li>
 <li><p>BUG: If the ID was to low the device id could end up with a leading space causing errors in data post. Added leading zero to ID.</p></li>
-<li><p>BUG: Entering wifi setup and a timeout occured the wifi settings could be deleted.</p></li>
+<li><p>BUG: Entering wifi setup and a timeout occurred the wifi settings could be deleted.</p></li>
 </ul>
 </div>
 <div class="section" id="v0-8-0">
@@ -373,7 +373,7 @@ called MFLN (Maximum Fragment Length Negotiation) that allow us to reduce the bu
 from 16k to 2k. This can make a huge difference on a device with only 40k RAM. Not all
 servers might support this feature.</p></li>
 <li><p>Updated documentation pages.</p></li>
-<li><p>Tested batterylife, 47 days using an update frequency of 5 min</p></li>
+<li><p>Tested battery life, 47 days using an update frequency of 5 min</p></li>
 </ul>
 </div>
 <div class="section" id="v0-7-1">
@@ -398,7 +398,7 @@ servers might support this feature.</p></li>
 <li><p>Added support for Plato</p></li>
 <li><p>Added error handling for calibration page.</p></li>
 <li><p>Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266). Not
-really usable since wifi connection is extreamly slow with current Arduino releases (3-8 seconds).</p></li>
+really usable since wifi connection is extremely slow with current Arduino releases (3-8 seconds).</p></li>
 <li><p>Added experimental format editor so users can customize their data format used for pushing data.
 This will reduce the need for custom push targets. As long as the service is supporting http
 or https then the data format can be customized.</p></li>
@@ -431,7 +431,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
 <div class="section" id="v0-5-0">
 <h2>v0.5.0<a class="headerlink" href="#v0-5-0" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Added feature to calcuate formula on device</p></li>
+<li><p>Added feature to calculate formula on device</p></li>
 <li><p>Total rewrite of documentation</p></li>
 <li><p>WIFI settings are now stored in config file</p></li>
 <li><p>Defined version numbers for all dependant libraries to avoid updates breaking build.</p></li>
@@ -498,7 +498,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
 <li><a class="reference internal" href="#v1-1-0">v1.1.0</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#known-issues-not-yet-fixed">Known issues, not yet fixed</a></li>
-<li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
+<li><a class="reference internal" href="#issues-addressed">Issues addressed</a></li>
 <li><a class="reference internal" href="#user-interface">User interface</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#other">Other</a></li>
@@ -508,7 +508,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
 <li><a class="reference internal" href="#id2">Documentation</a></li>
 <li><a class="reference internal" href="#id3">User interface</a></li>
 <li><a class="reference internal" href="#id4">Features</a></li>
-<li><a class="reference internal" href="#id5">Issues adressed</a></li>
+<li><a class="reference internal" href="#id5">Issues addressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>
