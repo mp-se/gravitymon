@@ -17,7 +17,7 @@ To reduce the need for adding custom endpoints for various services there is an 
   :alt: Format editor
 
 You enter the format data in the text field and the test button will show an example on what the output would look like. If the data cannot be formatted in json it will just be displayed as a long string.
-The save button will save the current formla and reload the data from the device. 
+The save button will save the current formula and reload the data from the device. 
 
 You can also select a template from the list and copy that to the current endpoint. 
 
