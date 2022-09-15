@@ -202,9 +202,9 @@
 <p>This chapter contains a list of targets and what configuration is needed to interact with them.</p>
 <div class="section" id="brewfather">
 <h2>Brewfather<a class="headerlink" href="#brewfather" title="Permalink to this headline">¶</a></h2>
-<p>Brewfather is an all in one service that allows you to manage you recepies and brews.</p>
+<p>Brewfather is an all in one service that allows you to manage you recipes and brews.</p>
 <p><strong>Option 1</strong> - iSpindle Endpoint</p>
-<p>This opion makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume
+<p>This option makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume
 that the data is in plato. You can also modify the format template using the following options:</p>
 <p>Update the following part <cite>“gravity”: ${gravity-plato},</cite> or <cite>“name” : “${mdns}[SG]”,`</cite></p>
 <p>This makes use of the standard format template, no changes needed.</p>
@@ -213,7 +213,7 @@ that the data is in plato. You can also modify the format template using the fol
 </div>
 <p>Documentation on this can be found under <a class="reference external" href="https://docs.brewfather.app/integrations/ispindel">Brewfather iSpindle Endpoint</a></p>
 <p><strong>Option 2</strong> - Custom Stream</p>
-<p>This option makes use of the http push endpoint with a custom format template. Just enter the http stream adress found
+<p>This option makes use of the http push endpoint with a custom format template. Just enter the http stream address found
 on brewfather, not other settings are needed. The stream endpoint URL has the following format:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://log.brewfather.net/stream?id=&lt;yourid&gt;
 </pre></div>
@@ -252,7 +252,7 @@ on brewfather, not other settings are needed. The stream endpoint URL has the fo
 <p><a class="reference external" href="https://www.ubidots.com">UBIdots</a> is a IoT service that display data collected various sources. There is a limitation on this service where it can only handle 10 variables per device so
 you might need to reduce the number of values sent to the service. It will also treat every parameter as a number unless you create a custom device type and explicit define the string values
 as text. This will require a paid subscription (as I interpret the documentation). The example format below will only send numbers so that should work fine with the paid subscription.</p>
-<p>For this service there are two options to configure the integration. First you will need your default token which is found under <cite>API Credentials</cite> (&lt;api-tokem&gt; in the example below).
+<p>For this service there are two options to configure the integration. First you will need your default token which is found under <cite>API Credentials</cite> (&lt;api-token&gt; in the example below).
 Swap the text &lt;devicename&gt; with the name you want to show in ubidots.</p>
 <p><strong>Option 1</strong> - token as an URL parameter</p>
 <p>Enter the following as URL:</p>
@@ -271,7 +271,7 @@ Swap the text &lt;devicename&gt; with the name you want to show in ubidots.</p>
 </pre></div>
 </div>
 <p>This is the more secure option.</p>
-<p>Even though ubidots can handle the default ispindle format it probably better to just post the data you want. This is an example of a
+<p>Even though ubidots can handle the default iSpindle format it probably better to just post the data you want. This is an example of a
 format template that can be used. For information on customizing the format see <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
    "temperature": ${temp},
@@ -311,9 +311,9 @@ gravmon/${mdns}/rssi:${rssi}|
 gravmon/${mdns}/battery:${battery}|
 </pre></div>
 </div>
-<p>It’s also possible to allow home assistant to do autodisovery and automatically create the sensor. This format
+<p>It’s also possible to allow home assistant to do auto discovery and automatically create the sensor. This format
 template will create two sensors and update the values for them. The registration will occur when you save the format template. If Home Assistant
-is restarted then the device will dissapear. The first method is the most persistant one.</p>
+is restarted then the device will disappear. The first method is the most persistent one.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.
@@ -334,10 +334,10 @@ homeassistant/sensor/gravmon_${id}/battery/config:{"dev":{"name":"${mdns}","mdl"
 </div>
 <div class="section" id="brewer-s-friend">
 <h2>Brewer’s Friend<a class="headerlink" href="#brewer-s-friend" title="Permalink to this headline">¶</a></h2>
-<p>Brewer’s friend is an all in one service that allows you to manage you recepies and brews.</p>
+<p>Brewer’s friend is an all in one service that allows you to manage you recipes and brews.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>I dont have an account for brewers friend so I have not been able to verfy this completely. Its based on
+<p>I don’t have an account for brewers friend so I have not been able to verify this completely. Its based on
 the available documentation. If this works please let</p>
 </div>
 <p>You can find you API key when logged in to the service. Follow these <a class="reference external" href="https://docs.brewersfriend.com/devices/ispindel">instructions</a></p>
@@ -412,14 +412,14 @@ starting with a <code class="docutils literal notranslate"><span class="pre">?</
 <div class="section" id="brewpiless">
 <h2>Brewpiless<a class="headerlink" href="#brewpiless" title="Permalink to this headline">¶</a></h2>
 <p>If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it’s recommended to connect the device to your normal network.</p>
-<p>The device need to have a name starting with iSpindle, for example <cite>iSpindel000</cite>. Set the URL for one of the http POST targets to <cite>http://ip/gravity</cite> where ip is the ip adress of Brewpiless.</p>
+<p>The device need to have a name starting with iSpindle, for example <cite>iSpindel000</cite>. Set the URL for one of the http POST targets to <cite>http://ip/gravity</cite> where ip is the ip address of Brewpiless.</p>
 </div>
 <div class="section" id="brewblox">
 <h2>BrewBlox<a class="headerlink" href="#brewblox" title="Permalink to this headline">¶</a></h2>
 <p>To send iSpindel data to brewblox over mqtt you need to modify the format template to match the expected format. Once you have configured the mqtt information you also need to update the format template
 for this target.</p>
-<p>This format template will post the expected json document on the topic, dont forget the <cite>|</cite> character at the end of the line which is needed to parse the payload. The first to words are the topic
-name and after the first <cite>:</cite> this is the json playload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section
+<p>This format template will post the expected json document on the topic, don’t forget the <cite>|</cite> character at the end of the line which is needed to parse the payload. The first to words are the topic
+name and after the first <cite>:</cite> this is the json payload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section
 in the json document if you need other values as well.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>brewcast/history:{"key":"${mdns}","data":{"Temperature[degC]": ${temp-c},"Temperature[degF]": ${temp-f},"Battery[V]":${battery},"Tilt[deg]":${angle},"Rssi[dBm]":${rssi},"SG":${gravity-sg},"Plato":${gravity-plato}}}|
 </pre></div>
