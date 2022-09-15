@@ -16,7 +16,7 @@ This animation shows how the user interface is structured, it reflects an older 
 
 .. image:: images/gravitymon.gif
   :width: 800
-  :alt: User Interface Walkthrough
+  :alt: User Inteface Walkthrough
 
 .. _main_features:
 
@@ -43,7 +43,7 @@ Main features
 * Storage mode when placed on cap (indefinite sleep)
 * Customize various hardware parameters to optimize device functionality.
 
-For a complete breakdown see the :ref:`functionallity`
+For a complete breakdown see the :ref:`functionality`
 
 .. note::
   If you are missing some feature, please reach out on `Github <https://github.com/mp-se/gravitymon/discussions>`_ or `homebrewtalk.com <https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/>`_
