@@ -3,7 +3,7 @@
 Getting started
 ===============
 
-First you need a completed iSpindle hardware, there are several resouces around that topic so it 
+First you need a completed iSpindle hardware, there are several resources around that topic so it 
 will not be covered in this documentation. Please visit `iSpindel Homepage <https://www.ispindel.de>`_  for 
 more information.
 
@@ -29,7 +29,7 @@ Step 3 - Configuration
 ----------------------
 
 Once the device can connect to WIFI it will go into `configuration mode` and start a web server for 
-doing the initial configuration. In order to access the device you will need to find its name or ip adress.
+doing the initial configuration. In order to access the device you will need to find its name or ip address.
 
 It will broadcast a name like gravitymonXXXXXX.local over mDNS. Where the XXXXXX is the unique device id. You can 
 find the name via an mDNS browser, check your router or connect the device to a serial monitor. On windows mDNS 
@@ -50,7 +50,7 @@ Configuration - Device Settings - Gyro Calibration
 ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 You need to place the device on a flat surface and then press the 
-calibrate button. It will take a few seconds for this to complete and the angle should be close to 90 degress. Without 
+calibrate button. It will take a few seconds for this to complete and the angle should be close to 90 degrees. Without 
 calibration the device will not go into gravity mode.
 
 Configuration - Push Settings
@@ -65,7 +65,7 @@ previous calibration then you can add them here, if not follow the calibration g
 
 There are several guides for how to calibrate the device (`iSpindle Calibration <https://www.ispindel.de/docs/Calibration_en.html>`_) 
 
-This will get the data points needed to create the formula, and the datapoints will be stored on the device so you can 
+This will get the data points needed to create the formula, and the data points will be stored on the device so you can 
 adjust them when needed.
 
 Step 4 - Completed
