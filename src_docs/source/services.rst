@@ -8,11 +8,11 @@ This chapter contains a list of targets and what configuration is needed to inte
 Brewfather
 ++++++++++
 
-Brewfather is an all in one service that allows you to manage you recepies and brews. 
+Brewfather is an all in one service that allows you to manage you recipes and brews. 
 
 **Option 1** - iSpindle Endpoint
 
-This opion makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume 
+This option makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume 
 that the data is in plato. You can also modify the format template using the following options:
 
 Update the following part `"gravity": ${gravity-plato},` or `"name" : "${mdns}[SG]",``
@@ -29,7 +29,7 @@ Documentation on this can be found under `Brewfather iSpindle Endpoint <https://
 
 **Option 2** - Custom Stream
 
-This option makes use of the http push endpoint with a custom format template. Just enter the http stream adress found 
+This option makes use of the http push endpoint with a custom format template. Just enter the http stream address found 
 on brewfather, not other settings are needed. The stream endpoint URL has the following format:
 
 .. code-block::
@@ -79,7 +79,7 @@ UBIdots
 you might need to reduce the number of values sent to the service. It will also treat every parameter as a number unless you create a custom device type and explicit define the string values 
 as text. This will require a paid subscription (as I interpret the documentation). The example format below will only send numbers so that should work fine with the paid subscription. 
 
-For this service there are two options to configure the integration. First you will need your default token which is found under `API Credentials` (<api-tokem> in the example below).
+For this service there are two options to configure the integration. First you will need your default token which is found under `API Credentials` (<api-token> in the example below).
 Swap the text <devicename> with the name you want to show in ubidots. 
 
 **Option 1** - token as an URL parameter
@@ -112,7 +112,7 @@ Under `Headers` (button after the http url in the UI) enter the following string
 
 This is the more secure option.
 
-Even though ubidots can handle the default ispindle format it probably better to just post the data you want. This is an example of a 
+Even though ubidots can handle the default iSpindle format it probably better to just post the data you want. This is an example of a 
 format template that can be used. For information on customizing the format see :ref:`format-editor`.
 
 .. code-block:: 
@@ -163,9 +163,9 @@ username / password to be able to publish messages on a topic.
    gravmon/${mdns}/battery:${battery}|
 
 
-It's also possible to allow home assistant to do autodisovery and automatically create the sensor. This format 
+It's also possible to allow home assistant to do auto discovery and automatically create the sensor. This format 
 template will create two sensors and update the values for them. The registration will occur when you save the format template. If Home Assistant 
-is restarted then the device will dissapear. The first method is the most persistant one. 
+is restarted then the device will disappear. The first method is the most persistent one. 
 
 .. warning::
   This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.
@@ -189,10 +189,10 @@ is restarted then the device will dissapear. The first method is the most persis
 Brewer's Friend
 +++++++++++++++
 
-Brewer's friend is an all in one service that allows you to manage you recepies and brews. 
+Brewer's friend is an all in one service that allows you to manage you recipes and brews. 
 
 .. warning::
-  I dont have an account for brewers friend so I have not been able to verfy this completely. Its based on
+  I don't have an account for brewers friend so I have not been able to verify this completely. Its based on
   the available documentation. If this works please let 
 
 You can find you API key when logged in to the service. Follow these `instructions <https://docs.brewersfriend.com/devices/ispindel>`_
@@ -293,7 +293,7 @@ Brewpiless
 
 If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it's recommended to connect the device to your normal network. 
 
-The device need to have a name starting with iSpindle, for example `iSpindel000`. Set the URL for one of the http POST targets to `http://ip/gravity` where ip is the ip adress of Brewpiless. 
+The device need to have a name starting with iSpindle, for example `iSpindel000`. Set the URL for one of the http POST targets to `http://ip/gravity` where ip is the ip address of Brewpiless. 
 
 
 BrewBlox
@@ -302,8 +302,8 @@ BrewBlox
 To send iSpindel data to brewblox over mqtt you need to modify the format template to match the expected format. Once you have configured the mqtt information you also need to update the format template 
 for this target. 
 
-This format template will post the expected json document on the topic, dont forget the `|` character at the end of the line which is needed to parse the payload. The first to words are the topic 
-name and after the first `:` this is the json playload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section 
+This format template will post the expected json document on the topic, don't forget the `|` character at the end of the line which is needed to parse the payload. The first to words are the topic 
+name and after the first `:` this is the json payload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section 
 in the json document if you need other values as well.
 
 .. code-block::
