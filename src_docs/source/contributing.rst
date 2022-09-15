@@ -7,11 +7,11 @@ In order to keep the source code in good condition I use `pre-commit <https://pr
 
 .. note::  
 
-  If you are using Windows as a base platform I would suggest that you install pre-commit under wsl (Windows Subssytem for Windows) and run it from there, I have found 
+  If you are using Windows as a base platform I would suggest that you install pre-commit under wsl (Windows Subsystem for Windows) and run it from there, I have found 
   that this approach works fine. 
 
 
-The following command will run pre-commit on all the source files. Assuming you are inte project directory.
+The following command will run pre-commit on all the source files. Assuming you are in the project directory.
 
 .. code-block:: 
 
