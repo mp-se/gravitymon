@@ -134,7 +134,7 @@ version.json
 ============
 
 Contents version.json. The version is used by the device to check if the this version is newer. The html files will also be downloaded if the are present on the server. This way it's easy to 
-upgrade to a version that serve the html files from the file system. If they dont exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system 
+upgrade to a version that serve the html files from the file system. If they don't exist nothing will happen, the OTA flashing will still work. If the html files are missing from the file system 
 they can be uploaded manually afterwards. 
 
 .. code-block:: json
