@@ -207,7 +207,7 @@
 </ul>
 <div class="section" id="brewflasher">
 <h2>Brewflasher<a class="headerlink" href="#brewflasher" title="Permalink to this headline">¶</a></h2>
-<p>The prefered option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works
+<p>The preferred option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works
 on both Windows and Mac. You can download the latest version from here: <a class="reference external" href="https://www.brewflasher.com/">Brewflasher</a> there is also a web based version
 available here <a class="reference external" href="https://web.brewflasher.com/">Brewflasher WEB</a>.</p>
 <a class="reference internal image-reference" href="_images/brewflasher.png"><img alt="Serial output" src="_images/brewflasher.png" style="width: 600px;"/></a>
@@ -216,7 +216,7 @@ available here <a class="reference external" href="https://web.brewflasher.com/"
 <p>In the /bin directory you will find 3 different firmware builds;</p>
 <ul>
 <li><p><strong>firmware.bin</strong></p>
-<p>This is the standard release build (prefered version)</p>
+<p>This is the standard release build (preferred version)</p>
 </li>
 <li><p><strong>firmware-perf.bin</strong></p>
 <p>This version also submits performance data to an influx database with detailed execution times.</p>
@@ -246,7 +246,7 @@ here; <a class="reference external" href="https://docs.espressif.com/projects/es
 <div class="section" id="ispindel">
 <h2>iSpindel<a class="headerlink" href="#ispindel" title="Permalink to this headline">¶</a></h2>
 <p>If you already have the device flashed with iSpindel firmware you can go into the configuration mode where you will find
-an option for updating firmware. The option is under the maintence meny.</p>
+an option for updating firmware. The option is under the maintenance menu.</p>
 <p>Select the esp8266 version of the firmware called firmware.bin and press upload.</p>
 </div>
 <div class="section" id="updating-firmware">
@@ -276,27 +276,27 @@ Just select a baud rate of 115200, 8N1.</p>
 <span id="setup-wifi"></span><h2>Configuring WIFI<a class="headerlink" href="#configuring-wifi" title="Permalink to this headline">¶</a></h2>
 <p>When the device is flashed it will need to have WIFI configuration in order to work. If you have used other software on
 the device its possible that wifi settings already exist.</p>
-<p>If this is not configured in the device it will create an wirless access point called <cite>GravMon</cite>. The default password is <cite>password</cite>.</p>
-<p>Connect to this AP and enter the SSID and password you want to use. If the web page dont open automatically you can enter the following adress
+<p>If this is not configured in the device it will create an wireless access point called <cite>GravMon</cite>. The default password is <cite>password</cite>.</p>
+<p>Connect to this AP and enter the SSID and password you want to use. If the web page don’t open automatically you can enter the following address
 in the browser: <strong>http://192.168.4.1</strong></p>
-<p>Before pressing save on the network infomration, make a note of the devicename that is shown on the screen, this will be the name that is used
+<p>Before pressing save on the network information, make a note of the devicename that is shown on the screen, this will be the name that is used
 in the next step to access the configuration pages. The link would look like this: <strong>http://gravitymon56EA34.local</strong></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When selecting a SSID in the list this will be populated in both wifi fields. This is the behaviour of the wifi manager library that I’m using,
 in the future this is planned to be moved to the normal UI.</p>
 </div>
-<p>Under wifi settings you can define a primary and seconday wifi SSID. The seconday will be used in case the primary fails. If the seconday is
+<p>Under wifi settings you can define a primary and secondary wifi SSID. The secondary will be used in case the primary fails. If the secondary is
 successful then it will be used as primary. <em>The second wifi setting is optional and not needed.</em></p>
 <a class="reference internal image-reference" href="_images/wifi.png"><img alt="Wifi page" src="_images/wifi.png" style="width: 200px;"/></a>
 </div>
 <div class="section" id="finding-the-device-adress">
 <span id="setup-ip"></span><h2>Finding the device adress<a class="headerlink" href="#finding-the-device-adress" title="Permalink to this headline">¶</a></h2>
 <p>Once the wifi network settings have been added then the device will reboot and connect to your network. If the blue led is flashing then it’s up and running and is ready to be configured.</p>
-<p>If your computer supports mDNS the adress you saw before can be used in your web browser to connect to the device. Windows does not have the best support for mDNS so if you are having issues
+<p>If your computer supports mDNS the address you saw before can be used in your web browser to connect to the device. Windows does not have the best support for mDNS so if you are having issues
 with finding the network name you can try the following:</p>
 <ul class="simple">
-<li><p>Check your wireless router for the IP adress and use that to connect instead, for example; <a class="reference external" href="http://192.168.1.56">http://192.168.1.56</a></p></li>
+<li><p>Check your wireless router for the IP address and use that to connect instead, for example; <a class="reference external" href="http://192.168.1.56">http://192.168.1.56</a></p></li>
 <li><p>Download an IP scanner / Port Scanner on your Windows computer or mobile device and use that to find what devices are listening on port 80.</p></li>
 </ul>
 <p>Once you can access the user interface then proceed to the next step.</p>
