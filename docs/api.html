@@ -202,7 +202,7 @@
 <p>All the API’s use a key called <code class="docutils literal notranslate"><span class="pre">ID</span></code> which is the unique device id (chip id). This is used as an API key when sending requests to the device.</p>
 <div class="section" id="get-api-config">
 <h2>GET: /api/config<a class="headerlink" href="#get-api-config" title="Permalink to this headline">¶</a></h2>
-<p>Retrive the current configuation of the device via an HTTP GET command. Payload is in JSON format.</p>
+<p>Retrieve the current configuration of the device via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gravity-format</span></code> is always <code class="docutils literal notranslate"><span class="pre">G</span></code> (plato is not yet supported)</p></li>
@@ -270,7 +270,7 @@
 </div>
 <div class="section" id="get-api-status">
 <h2>GET: /api/status<a class="headerlink" href="#get-api-status" title="Permalink to this headline">¶</a></h2>
-<p>Retrive the current device status via an HTTP GET command. Payload is in JSON format.</p>
+<p>Retrieve the current device status via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">F</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">platform</span></code> can be either <code class="docutils literal notranslate"><span class="pre">esp8266</span></code> or <code class="docutils literal notranslate"><span class="pre">esp32</span></code></p></li>
@@ -303,10 +303,10 @@
 </div>
 <div class="section" id="get-api-config-formula">
 <h2>GET: /api/config/formula<a class="headerlink" href="#get-api-config-formula" title="Permalink to this headline">¶</a></h2>
-<p>Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.</p>
+<p>Retrieve the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a10</span></code> are the angles/tilt readings (up to 10 are currently supported)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g10</span></code> are the corresponding gravity reaadings in SG or Plato depending on the device-format.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g10</span></code> are the corresponding gravity readings in SG or Plato depending on the device-format.</p></li>
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">   </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ee1bfc"</span><span class="p">,</span><span class="w"></span>
@@ -409,7 +409,7 @@ from a checkbox, when reading data it’s sent as boolean (true,false).</p>
 <p>Used to update device settings via an HTTP POST command.</p>
 <p>Payload should be in standard format used for posting a form. Such as as: <cite>id=value&amp;mdns=value</cite> etc. Key value pairs are shown below.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> (Celcius) or <code class="docutils literal notranslate"><span class="pre">F</span></code> (Farenheight)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">temp-format</span></code> can be either <code class="docutils literal notranslate"><span class="pre">C</span></code> (Celsius) or <code class="docutils literal notranslate"><span class="pre">F</span></code> (Fahrenheit)</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span><span class="o">=</span><span class="n">ee1bfc</span>
 <span class="n">mdns</span><span class="o">=</span><span class="n">gravmon</span>
@@ -486,7 +486,7 @@ reading data it’s sent as boolean (true,false).</p>
 <p>Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">a1</span></code>-<code class="docutils literal notranslate"><span class="pre">a10</span></code> are the angles/tilt readings (up to 10 are currently supported)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g10</span></code> are the corresponding gravity reaadings (in SG)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g1</span></code>-<code class="docutils literal notranslate"><span class="pre">g10</span></code> are the corresponding gravity readings (in SG)</p></li>
 </ul>
 <p>Payload should be in standard format used for posting a form. Such as as: <cite>id=value&amp;mdns=value</cite> etc. Key value pairs are shown below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span><span class="o">=</span><span class="n">ee1bfc</span>
@@ -521,7 +521,7 @@ present or the API call will fail. You only need to include the parameters you w
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">json</span>
 
-<span class="n">host</span> <span class="o">=</span> <span class="s2">"192.168.1.1"</span>           <span class="c1"># IP adress (or name) of the device to send these settings to</span>
+<span class="n">host</span> <span class="o">=</span> <span class="s2">"192.168.1.1"</span>           <span class="c1"># IP address (or name) of the device to send these settings to</span>
 <span class="nb">id</span> <span class="o">=</span> <span class="s2">"ee1bfc"</span>                  <span class="c1"># Device ID (shown in serial console during startup or in UI)</span>
 
 <span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">):</span>
@@ -577,7 +577,7 @@ present or the API call will fail. You only need to include the parameters you w
          <span class="s2">"temp-adjustment"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>                   <span class="c1"># If temp sensor needs to be corrected</span>
          <span class="s2">"gyro-temp"</span><span class="p">:</span> <span class="s2">"on"</span><span class="p">,</span>                      <span class="c1"># Use the temp sensor in the gyro instead (on/off)</span>
          <span class="s2">"ble"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">,</span>                           <span class="c1"># Enable ble on esp32</span>
-         <span class="s2">"ota-url"</span><span class="p">:</span> <span class="s2">""</span>                           <span class="c1"># if the device should seach for a new update when active</span>
+         <span class="s2">"ota-url"</span><span class="p">:</span> <span class="s2">""</span>                           <span class="c1"># if the device should search for a new update when active</span>
       <span class="p">}</span>
 <span class="n">set_config</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span> <span class="p">)</span>
 
