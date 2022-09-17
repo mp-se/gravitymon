@@ -157,7 +157,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
@@ -212,13 +211,13 @@
 <span id="id1"></span><h2>Main features<a class="headerlink" href="#main-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Operates in two modes gravity monitoring and configuration mode</p></li>
-<li><p>Gravity mode is comparable to how the iSpindle works when collectintg data</p></li>
+<li><p>Gravity mode is comparable to how the iSpindle works when collecting data</p></li>
 <li><p>Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings</p></li>
-<li><p>Offloading some of the functionallity to run in the web browser, this allows for more advanced features.</p></li>
+<li><p>Offloading some of the functionality to run in the web browser, this allows for more advanced features.</p></li>
 <li><p>REST API to enable scripted configuration</p></li>
 <li><p>Send data to multiple endpoints and services at once (2xHTTP POST, HTTP GET, MQTT, INFLUXDB2)</p></li>
 <li><p>Directly test all endpoints from user interface with feedback to simplify troubleshooting</p></li>
-<li><p>Complete format customization for all endpoints using templates (dont really need to change the software to support new services)</p></li>
+<li><p>Complete format customization for all endpoints using templates (don’t really need to change the software to support new services)</p></li>
 <li><p>Setup guides for how to send data to many popular services. Currently 10+ are documented</p></li>
 <li><p>Automatic temperature adjustment of gravity (just tick a checkbox)</p></li>
 <li><p>OTA support from webserver</p></li>
@@ -227,11 +226,11 @@
 <li><p>Visual graph showing how formula will be interpreted based on entered values</p></li>
 <li><p>Using the temperature sensor in gyro instead of DS18B20 (faster)</p></li>
 <li><p>SSL support in all endpoints (no certificate validation due to limitations on esp8266).</p></li>
-<li><p>Built in performance measurements (used to optimise code)</p></li>
+<li><p>Built in performance measurements (used to optimize code)</p></li>
 <li><p>Storage mode when placed on cap (indefinite sleep)</p></li>
-<li><p>Customize various hardware parameters to opimize device functionallity.</p></li>
+<li><p>Customize various hardware parameters to optimize device functionality.</p></li>
 </ul>
-<p>For a complete breakdown see the <a class="reference internal" href="functionallity.html#functionallity"><span class="std std-ref">Functionallity</span></a></p>
+<p>For a complete breakdown see the <span class="xref std std-ref">functionality</span></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you are missing some feature, please reach out on <a class="reference external" href="https://github.com/mp-se/gravitymon/discussions">Github</a> or <a class="reference external" href="https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/">homebrewtalk.com</a></p>
@@ -243,7 +242,7 @@
 an example on how the fermentation process can be tracked. The graph has been rendered using Fermentrack.</p>
 <a class="reference internal image-reference" href="_images/fermentation.png"><img alt="Example fermentation" src="_images/fermentation.png" style="width: 500px;"/></a>
 <p>GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
-implements a lot of the features that has been requested in the orginal iSpindle project but never implemented for
+implements a lot of the features that has been requested in the original iSpindle project but never implemented for
 various reasons. Here is a list of <a class="reference internal" href="#main-features"><span class="std std-ref">Main features</span></a>.</p>
 <p>From v0.9 the firmware also supports a iSpindle built using an ESP32 d1 mini (pin compatible with esp8266). Currently this is an experimental
 version but since it has more memory and processing capacity it could support more functions. See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
@@ -255,7 +254,7 @@ information on this topic and function please visit <a class="reference external
 <p>The github repository can be found here; <a class="reference external" href="https://github.com/mp-se/gravitymon">GravityMon on Github</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>I dont take responsibility for any errors or issues caused by the software. The software is provided as-is. I will however
+<p>I don’t take responsibility for any errors or issues caused by the software. The software is provided as-is. I will however
 try my best to fix issues that might occur.</p>
 <p>I have tested this software on 40+ brews with good results.</p>
 </div>
@@ -275,14 +274,14 @@ order to save battery.</p>
 </div>
 <div class="section" id="credits-to">
 <h2>Credits to<a class="headerlink" href="#credits-to" title="Permalink to this headline">¶</a></h2>
-<p>Ideas to some of these functions have been picked up from disucssions in the iSpindle forums. This software uses
-the following libraries and without these this would have been much more difficult to acheive:</p>
+<p>Ideas to some of these functions have been picked up from discussions in the iSpindle forums. This software uses
+the following libraries and without these this would have been much more difficult to achieve:</p>
 <ul>
 <li><p><a class="reference external" href="https://github.com/jrowberg/i2cdevlib">https://github.com/jrowberg/i2cdevlib</a></p>
 <p>This library contains the basic code to interact with the gyro + many more chips.</p>
 </li>
 <li><p><a class="reference external" href="https://github.com/codeplea/tinyexpr">https://github.com/codeplea/tinyexpr</a></p>
-<p>Proccess the gravity formula and calculate the gravity and various corrections.</p>
+<p>Process the gravity formula and calculate the gravity and various corrections.</p>
 </li>
 <li><p><a class="reference external" href="https://github.com/graphitemaster/incbin">https://github.com/graphitemaster/incbin</a></p>
 <p>Include binary files into the code, used to service html files.</p>
@@ -309,7 +308,7 @@ the following libraries and without these this would have been much more difficu
 <p>Create the gravity formula.</p>
 </li>
 <li><p><a class="reference external" href="https://github.com/256dpi/arduino-mqtt">https://github.com/256dpi/arduino-mqtt</a></p>
-<p>Library for sending data to mqtt based on lightweight mqtt implemenentation.</p>
+<p>Library for sending data to mqtt based on lightweight mqtt implementation.</p>
 </li>
 <li><p><a class="reference external" href="https://graphjs.com/">https://graphjs.com/</a></p>
 <p>Render the graphs in the UI.</p>
@@ -347,12 +346,6 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-6-0">v0.6.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-5-0">v0.5.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v0-4-0">v0.4.0</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="functionallity.html">Functionallity</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="functionallity.html#the-main-features">The main features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functionallity.html#battery-life">Battery life</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functionallity.html#performance">Performance</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
