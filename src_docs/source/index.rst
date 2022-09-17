@@ -24,13 +24,13 @@ Main features
 -------------
 
 * Operates in two modes gravity monitoring and configuration mode
-* Gravity mode is comparable to how the iSpindle works when collectintg data
+* Gravity mode is comparable to how the iSpindle works when collecting data
 * Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings
-* Offloading some of the functionallity to run in the web browser, this allows for more advanced features.
+* Offloading some of the functionality to run in the web browser, this allows for more advanced features.
 * REST API to enable scripted configuration
 * Send data to multiple endpoints and services at once (2xHTTP POST, HTTP GET, MQTT, INFLUXDB2)
 * Directly test all endpoints from user interface with feedback to simplify troubleshooting
-* Complete format customization for all endpoints using templates (dont really need to change the software to support new services)
+* Complete format customization for all endpoints using templates (don't really need to change the software to support new services)
 * Setup guides for how to send data to many popular services. Currently 10+ are documented
 * Automatic temperature adjustment of gravity (just tick a checkbox)
 * OTA support from webserver
@@ -39,11 +39,11 @@ Main features
 * Visual graph showing how formula will be interpreted based on entered values
 * Using the temperature sensor in gyro instead of DS18B20 (faster)
 * SSL support in all endpoints (no certificate validation due to limitations on esp8266).
-* Built in performance measurements (used to optimise code)
+* Built in performance measurements (used to optimize code)
 * Storage mode when placed on cap (indefinite sleep)
-* Customize various hardware parameters to opimize device functionallity.
+* Customize various hardware parameters to optimize device functionality.
 
-For a complete breakdown see the :ref:`functionallity`
+For a complete breakdown see the :ref:`functionality`
 
 .. note::
   If you are missing some feature, please reach out on `Github <https://github.com/mp-se/gravitymon/discussions>`_ or `homebrewtalk.com <https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/>`_
@@ -59,7 +59,7 @@ an example on how the fermentation process can be tracked. The graph has been re
   :alt: Example fermentation
 
 GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
-implements a lot of the features that has been requested in the orginal iSpindle project but never implemented for 
+implements a lot of the features that has been requested in the original iSpindle project but never implemented for 
 various reasons. Here is a list of :ref:`main_features`.
 
 From v0.9 the firmware also supports a iSpindle built using an ESP32 d1 mini (pin compatible with esp8266). Currently this is an experimental 
@@ -76,7 +76,7 @@ My approach to this software is a little different from that the original iSpind
 The github repository can be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
 
 .. note::  
-  I dont take responsibility for any errors or issues caused by the software. The software is provided as-is. I will however
+  I don't take responsibility for any errors or issues caused by the software. The software is provided as-is. I will however
   try my best to fix issues that might occur. 
 
   I have tested this software on 40+ brews with good results.
@@ -102,8 +102,8 @@ order to save battery.
 
 Credits to
 ----------
-Ideas to some of these functions have been picked up from disucssions in the iSpindle forums. This software uses 
-the following libraries and without these this would have been much more difficult to acheive:
+Ideas to some of these functions have been picked up from discussions in the iSpindle forums. This software uses 
+the following libraries and without these this would have been much more difficult to achieve:
 
 * https://github.com/jrowberg/i2cdevlib 
 
@@ -111,7 +111,7 @@ the following libraries and without these this would have been much more difficu
 
 * https://github.com/codeplea/tinyexpr
 
-  Proccess the gravity formula and calculate the gravity and various corrections.
+  Process the gravity formula and calculate the gravity and various corrections.
 
 * https://github.com/graphitemaster/incbin 		
 
@@ -147,7 +147,7 @@ the following libraries and without these this would have been much more difficu
 
 * https://github.com/256dpi/arduino-mqtt
 
-  Library for sending data to mqtt based on lightweight mqtt implemenentation. 
+  Library for sending data to mqtt based on lightweight mqtt implementation. 
 
 * https://graphjs.com/
 
@@ -175,7 +175,7 @@ the following libraries and without these this would have been much more difficu
 
    intro
    releases
-   functionallity
+   functionality
    installation
    configuration
    troubleshooting
