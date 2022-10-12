@@ -30,7 +30,6 @@ SOFTWARE.
 #include <WiFiClient.h>
 #include <WiFiClientSecure.h>
 #endif
-#include <incbin.h>
 
 #include <config.hpp>
 #include <main.hpp>
@@ -59,16 +58,10 @@ WifiConnection myWifi;
 const char *userSSID = USER_SSID;
 const char *userPWD = USER_SSID_PWD;
 
-//
-// Initialize
-//
 void WifiConnection::init() {
   myDRD = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
 }
 
-//
-// Check if we have a valid wifi configuration
-//
 bool WifiConnection::hasConfig() {
   if (strlen(myConfig.getWifiSSID(0))) return true;
   if (strlen(userSSID)) return true;
@@ -85,45 +78,32 @@ bool WifiConnection::hasConfig() {
     myConfig.saveFile();
     return true;
   }
-#else  // defined( ESP32 )
-#warning "Cant read SSID property on ESP32 until a connection has been made!"
 #endif
 
   return false;
 }
 
-//
-// Check if the wifi is connected
-//
 bool WifiConnection::isConnected() { return WiFi.status() == WL_CONNECTED; }
 
-//
-// Get the IP adress
-//
 String WifiConnection::getIPAddress() { return WiFi.localIP().toString(); }
 
-//
-// Additional method to detect double reset.
-//
 bool WifiConnection::isDoubleResetDetected() {
   if (strlen(userSSID))
     return false;  // Ignore this if we have hardcoded settings.
   return myDRD->detectDoubleReset();
 }
 
-//
-// Stop double reset detection
-//
 void WifiConnection::stopDoubleReset() { myDRD->stop(); }
 
-//
-// Start the wifi manager
-//
 void WifiConnection::startPortal() {
   Log.notice(F("WIFI: Starting Wifi config portal." CR));
 
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
+
+#if defined(ESP32C3)
+  WiFi.setTxPower(WIFI_POWER_8_5dBm); // Required for ESP32C3 Mini
+#endif
 
   myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
   myWifiManager->setMinimumSignalQuality(-1);
@@ -165,17 +145,16 @@ void WifiConnection::startPortal() {
   ESP_RESET();
 }
 
-//
-// Call the wifi manager in loop
-//
 void WifiConnection::loop() { myDRD->loop(); }
 
-//
-// Connect to last known access point, non blocking mode.
-//
 void WifiConnection::connectAsync(int wifiIndex) {
   WiFi.persistent(true);
   WiFi.mode(WIFI_STA);
+
+#if defined(ESP32C3)
+  WiFi.setTxPower(WIFI_POWER_8_5dBm); // Required for ESP32C3 Mini
+#endif
+
   if (strlen(userSSID)) {
     Log.notice(F("WIFI: Connecting to wifi using hardcoded settings %s." CR),
                userSSID);
@@ -188,9 +167,6 @@ void WifiConnection::connectAsync(int wifiIndex) {
   }
 }
 
-//
-// Blocks until wifi connection has been found
-//
 bool WifiConnection::waitForConnection(int maxTime) {
 #if DEBUG_LEVEL == 6
   WiFi.printDiag(Serial);
@@ -216,9 +192,6 @@ bool WifiConnection::waitForConnection(int maxTime) {
   return true;
 }
 
-//
-// Check what network is the strongest.
-//
 int WifiConnection::findStrongestNetwork() {
   if (!myConfig.dualWifiConfigured()) {
     Log.notice(F("WIFI: Only one wifi SSID is configured, skipping scan." CR));
@@ -252,9 +225,6 @@ int WifiConnection::findStrongestNetwork() {
   return 1;  // Second network is the strongest
 }
 
-//
-// Connect to last known access point, blocking mode.
-//
 bool WifiConnection::connect() {
   /*
   // Alternative code for connecting to strongest wifi.
@@ -300,10 +270,6 @@ bool WifiConnection::connect() {
   return true;
 }
 
-//
-// This will erase the stored credentials and forcing the WIFI manager to AP
-// mode.
-//
 bool WifiConnection::disconnect() {
   Log.notice(F("WIFI: Erasing stored WIFI credentials." CR));
   // Erase WIFI credentials
@@ -311,10 +277,6 @@ bool WifiConnection::disconnect() {
 }
 
 #if defined(ACTIVATE_OTA)
-
-//
-//
-//
 bool WifiConnection::updateFirmware() {
   if (!_newFirmware) {
     Log.notice(F("WIFI: No newer version exist, skipping update." CR));
@@ -359,9 +321,6 @@ bool WifiConnection::updateFirmware() {
   return false;
 }
 
-//
-// Download and save file
-//
 void WifiConnection::downloadFile(HTTPClient &http, String &fname) {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Download file %s." CR), fname);
@@ -378,9 +337,6 @@ void WifiConnection::downloadFile(HTTPClient &http, String &fname) {
   }
 }
 
-//
-// Check what firmware version is available over OTA
-//
 bool WifiConnection::checkFirmwareVersion() {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
   Log.verbose(F("WIFI: Checking if new version exist." CR));
@@ -469,9 +425,6 @@ bool WifiConnection::checkFirmwareVersion() {
   return _newFirmware;
 }
 
-//
-// Parse a version string in the format M.m.p (eg. 1.2.10)
-//
 bool WifiConnection::parseFirmwareVersionString(int (&num)[3],
                                                 const char *version) {
 #if LOG_LEVEL == 6 && !defined(WIFI_DISABLE_LOGGING)
@@ -492,6 +445,6 @@ bool WifiConnection::parseFirmwareVersionString(int (&num)[3],
   return true;
 }
 
-#endif  // ACTIVATE_OTA
+#endif // ACTIVATE_OTA
 
 // EOF
