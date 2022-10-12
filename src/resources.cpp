@@ -23,23 +23,15 @@ SOFTWARE.
  */
 #if defined(ESP8266)
 #define INCBIN_OUTPUT_SECTION ".irom.text"
-#endif
 #include <incbin.h>
-
 #include <resources.hpp>
-
-#if defined(EMBED_HTML)
-// Using minify to reduce memory usage. Reducing RAM memory usage with about 7%
 INCBIN(IndexHtm, "data/index.min.htm");
 INCBIN(ConfigHtm, "data/config.min.htm");
 INCBIN(CalibrationHtm, "data/calibration.min.htm");
 INCBIN(FormatHtm, "data/format.min.htm");
 INCBIN(TestHtm, "data/test.min.htm");
 INCBIN(AboutHtm, "data/about.min.htm");
-#else
-// Minium web interface for uploading htm files
-INCBIN(UploadHtm, "data/upload.min.htm");
-#endif
 INCBIN(FirmwareHtm, "data/firmware.min.htm");
+#endif
 
 // EOF

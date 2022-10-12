@@ -29,26 +29,39 @@ SOFTWARE.
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #define MAX_SKETCH_SPACE 1044464
-#else  // defined (ESP32)
+#else 
 #include <ESPmDNS.h>
 #include <Update.h>
 #include <WebServer.h>
 #include <WiFi.h>
 #define MAX_SKETCH_SPACE 1835008
 #endif
-#include <incbin.h>
 
-#if defined(EMBED_HTML)
+#if defined(ESP8266)
+#include <incbin.h>
 INCBIN_EXTERN(IndexHtm);
 INCBIN_EXTERN(ConfigHtm);
 INCBIN_EXTERN(CalibrationHtm);
 INCBIN_EXTERN(FormatHtm);
 INCBIN_EXTERN(TestHtm);
 INCBIN_EXTERN(AboutHtm);
-#else
-INCBIN_EXTERN(UploadHtm);
-#endif
 INCBIN_EXTERN(FirmwareHtm);
+#else
+extern const uint8_t indexHtmStart[] asm("_binary_html_index_min_htm_start");
+extern const uint8_t indexHtmEnd[] asm("_binary_html_index_min_htm_end");
+extern const uint8_t configHtmStart[] asm("_binary_html_config_min_htm_start");
+extern const uint8_t configHtmEnd[] asm("_binary_html_config_min_htm_end");
+extern const uint8_t calibrationHtmStart[] asm("_binary_html_calibration_min_htm_start");
+extern const uint8_t calibrationHtmEnd[] asm("_binary_html_calibration_min_htm_end");
+extern const uint8_t formatHtmStart[] asm("_binary_html_format_min_htm_start");
+extern const uint8_t formatHtmEnd[] asm("_binary_html_format_min_htm_end");
+extern const uint8_t testHtmStart[] asm("_binary_html_test_min_htm_start");
+extern const uint8_t testHtmEnd[] asm("_binary_html_test_min_htm_end");
+extern const uint8_t aboutHtmStart[] asm("_binary_html_about_min_htm_start");
+extern const uint8_t aboutHtmEnd[] asm("_binary_html_about_min_htm_end");
+extern const uint8_t firmwareHtmStart[] asm("_binary_html_firmware_min_htm_start");
+extern const uint8_t firmwareHtmEnd[] asm("_binary_html_firmware_min_htm_end");
+#endif
 
 class WebServerHandler {
  private:
@@ -75,7 +88,6 @@ class WebServerHandler {
   void webHandleFactoryDefaults();
   void webHandleCalibrate();
   void webHandleUploadFile();
-  void webHandleUpload();
   void webHandleLogClear();
   void webHandlePageNotFound();
 
@@ -86,7 +98,7 @@ class WebServerHandler {
 
   // Inline functions.
   void webReturnOK() { _server->send(_uploadReturn); }
-#if defined(EMBED_HTML)
+#if defined(ESP8266)
   void webReturnIndexHtm() {
     _server->send_P(200, "text/html", (const char*)gIndexHtmData,
                     gIndexHtmSize);
@@ -110,31 +122,37 @@ class WebServerHandler {
   void webReturnTestHtm() {
     _server->send_P(200, "text/html", (const char*)gTestHtmData, gTestHtmSize);
   }
-#else
-  void webReturnUploadHtm() {
-    _server->send_P(200, "text/html", (const char*)gUploadHtmData,
-                    gUploadHtmSize);
-  }
-#endif
   void webReturnFirmwareHtm() {
     _server->send_P(200, "text/html", (const char*)gFirmwareHtmData,
                     gFirmwareHtmSize);
   }
+#else
+  void webReturnIndexHtm() {
+    _server->send_P(200, "text/html", (const char*)indexHtmStart, indexHtmEnd-indexHtmStart);
+  }
+  void webReturnConfigHtm() {
+    _server->send_P(200, "text/html", (const char*)configHtmStart, configHtmEnd-configHtmStart);
+  }
+  void webReturnCalibrationHtm() {
+    _server->send_P(200, "text/html", (const char*)calibrationHtmStart, calibrationHtmEnd-calibrationHtmStart);
+  }
+  void webReturnFormatHtm() {
+    _server->send_P(200, "text/html", (const char*)formatHtmStart, formatHtmEnd-formatHtmStart);
+  }
+  void webReturnAboutHtm() {
+    _server->send_P(200, "text/html", (const char*)aboutHtmStart, aboutHtmEnd-aboutHtmStart);
+  }
+  void webReturnTestHtm() {
+    _server->send_P(200, "text/html", (const char*)testHtmStart, testHtmEnd-testHtmStart);
+  }
+  void webReturnFirmwareHtm() {
+    _server->send_P(200, "text/html", (const char*)firmwareHtmStart, firmwareHtmEnd-firmwareHtmStart);
+  }
+#endif
 
  public:
-  enum HtmlFile {
-    HTML_INDEX = 0,
-    HTML_CONFIG = 1,
-    HTML_ABOUT = 2,
-    HTML_CALIBRATION = 3,
-    HTML_FORMAT = 4,
-    HTML_TEST = 5
-  };
-
   bool setupWebServer();
   void loop();
-  bool checkHtmlFile(HtmlFile item);
-  const char* getHtmlFileName(HtmlFile item);
 };
 
 // Global instance created

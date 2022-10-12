@@ -37,9 +37,6 @@ WebServerHandler myWebServerHandler;  // My wrapper class fr webserver functions
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
-//
-// Callback from webServer when / has been accessed.
-//
 void WebServerHandler::webHandleConfig() {
   LOG_PERF_START("webserver-api-config");
   Log.notice(F("WEB : webServer callback for /api/config(get)." CR));
@@ -107,173 +104,65 @@ void WebServerHandler::webHandleConfig() {
   LOG_PERF_STOP("webserver-api-config");
 }
 
-//
-// Callback from webServer when / has been accessed.
-//
-void WebServerHandler::webHandleUpload() {
-  LOG_PERF_START("webserver-api-upload");
-  Log.notice(F("WEB : webServer callback for /api/upload(get)." CR));
-  DynamicJsonDocument doc(300);
-
-  doc["index"] = checkHtmlFile(WebServerHandler::HTML_INDEX);
-  doc["config"] = checkHtmlFile(WebServerHandler::HTML_CONFIG);
-  doc["calibration"] = checkHtmlFile(WebServerHandler::HTML_CALIBRATION);
-  doc["format"] = checkHtmlFile(WebServerHandler::HTML_FORMAT);
-  doc["about"] = checkHtmlFile(WebServerHandler::HTML_ABOUT);
-  doc["test"] = checkHtmlFile(WebServerHandler::HTML_TEST);
-
-#if defined(ESP8266)
-  JsonArray files = doc.createNestedArray(PARAM_FILES);
-
-  // Show files in the filessytem at startup
-  FSInfo fs;
-  LittleFS.info(fs);
-  Dir dir = LittleFS.openDir("/");
-  while (dir.next()) {
-    JsonObject obj = files.createNestedObject();
-    obj[PARAM_FILE_NAME] = dir.fileName();
-    obj[PARAM_FILE_SIZE] = dir.fileSize();
-  }
-#else  // defined(ESP32)
-  JsonArray files = doc.createNestedArray(PARAM_FILES);
-
-  File dir = LittleFS.open("/");
-
-  while (true) {
-    File entry = dir.openNextFile();
-    if (!entry) {
-      // no more files
-      break;
-    }
-
-    if (!entry.isDirectory()) {
-      JsonObject obj = files.createNestedObject();
-      obj[PARAM_FILE_NAME] = entry.name();
-      obj[PARAM_FILE_SIZE] = entry.size();
-    }
-    entry.close();
-  }
-  dir.close();
-#endif
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, Serial);
-  Serial.print(CR);
-#endif
-
-  String out;
-  out.reserve(300);
-  serializeJson(doc, out);
-  doc.clear();
-  _server->send(200, "application/json", out.c_str());
-  LOG_PERF_STOP("webserver-api-upload");
-}
 
 void WebServerHandler::webHandleUploadFile() {
   LOG_PERF_START("webserver-api-upload-file");
   Log.verbose(F("WEB : webServer callback for /api/upload(post)." CR));
   HTTPUpload& upload = _server->upload();
   String f = upload.filename;
-  bool validFilename = false;
-  bool firmware = false;
-
-  if (f.equalsIgnoreCase("index.min.htm") ||
-      f.equalsIgnoreCase("calibration.min.htm") ||
-      f.equalsIgnoreCase("config.min.htm") ||
-      f.equalsIgnoreCase("format.min.htm") ||
-      f.equalsIgnoreCase("test.min.htm") ||
-      f.equalsIgnoreCase("about.min.htm")) {
-    validFilename = true;
-  }
-
-  if (f.endsWith(".bin")) {
-    validFilename = true;
-    firmware = true;
-  }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   Log.verbose(
-      F("WEB : webServer callback for /api/upload, receiving file %s, %d(%d) "
-        "valid=%s, firmware=%s." CR),
-      f.c_str(), upload.currentSize, upload.totalSize,
-      validFilename ? "yes" : "no", firmware ? "yes" : "no");
+      F("WEB : webServer callback for /api/upload, receiving file %s, %d(%d)." CR),
+      f.c_str(), upload.currentSize, upload.totalSize);
 #endif
 
-  if (firmware) {
-    // Handle firmware update, hardcode since function return wrong value.
-    // (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
-    uint32_t maxSketchSpace = MAX_SKETCH_SPACE;
+  // Handle firmware update, hardcode since function return wrong value.
+  // (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+  uint32_t maxSketchSpace = MAX_SKETCH_SPACE;
 
-    if (upload.status == UPLOAD_FILE_START) {
-      _uploadReturn = 200;
-      Log.notice(F("WEB : Start firmware upload, max sketch size %d kb." CR),
-                 maxSketchSpace / 1024);
+  if (upload.status == UPLOAD_FILE_START) {
+    _uploadReturn = 200;
+    Log.notice(F("WEB : Start firmware upload, max sketch size %d kb." CR),
+                maxSketchSpace / 1024);
 
-      if (!Update.begin(maxSketchSpace, U_FLASH, PIN_LED)) {
-        writeErrorLog("WEB : Not enough space to store for this firmware.");
-        _uploadReturn = 500;
-      }
-    } else if (upload.status == UPLOAD_FILE_WRITE) {
-      Log.notice(F("WEB : Writing firmware upload %d (%d)." CR),
-                 upload.totalSize, maxSketchSpace);
-
-      if (upload.totalSize > maxSketchSpace) {
-        Log.error(F("WEB : Firmware file is to large." CR));
-        _uploadReturn = 500;
-      } else if (Update.write(upload.buf, upload.currentSize) !=
-                 upload.currentSize) {
-        Log.warning(F("WEB : Firmware write was unsuccessful." CR));
-        _uploadReturn = 500;
-      }
-    } else if (upload.status == UPLOAD_FILE_END) {
-      Log.notice(F("WEB : Finish firmware upload." CR));
-      if (Update.end(true)) {
-        _server->send(200);
-        delay(500);
-        ESP_RESET();
-      } else {
-        writeErrorLog("WEB : Failed to finish firmware flashing error=%d",
-                      Update.getError());
-        _uploadReturn = 500;
-      }
-    } else {
-      Update.end();
-      Log.notice(F("WEB : Firmware flashing aborted." CR));
+    if (!Update.begin(maxSketchSpace, U_FLASH, PIN_LED)) {
+      writeErrorLog("WEB : Not enough space to store for this firmware.");
       _uploadReturn = 500;
     }
+  } else if (upload.status == UPLOAD_FILE_WRITE) {
+    Log.notice(F("WEB : Writing firmware upload %d (%d)." CR),
+                upload.totalSize, maxSketchSpace);
 
-    delay(0);
-
-  } else {
-    // Handle HTML file upload
-    if (upload.status == UPLOAD_FILE_START) {
-      _uploadReturn = 200;
-      Log.notice(F("WEB : Start html upload." CR));
-
-      if (validFilename) _uploadFile = LittleFS.open(f, "w");
-    } else if (upload.status == UPLOAD_FILE_WRITE) {
-      Log.notice(F("WEB : Writing html upload." CR));
-      if (_uploadFile) _uploadFile.write(upload.buf, upload.currentSize);
-    } else if (upload.status == UPLOAD_FILE_END) {
-      Log.notice(F("WEB : Finish html upload." CR));
-      if (_uploadFile) {
-        _uploadFile.close();
-        Log.notice(F("WEB : Html file uploaded %d bytes." CR),
-                   upload.totalSize);
-      }
-      _server->sendHeader("Location", "/");
-      _server->send(303);
-    } else {
-      _server->send(500, "text/plain", "Couldn't upload html file.");
+    if (upload.totalSize > maxSketchSpace) {
+      Log.error(F("WEB : Firmware file is to large." CR));
+      _uploadReturn = 500;
+    } else if (Update.write(upload.buf, upload.currentSize) !=
+                upload.currentSize) {
+      Log.warning(F("WEB : Firmware write was unsuccessful." CR));
+      _uploadReturn = 500;
     }
+  } else if (upload.status == UPLOAD_FILE_END) {
+    Log.notice(F("WEB : Finish firmware upload." CR));
+    if (Update.end(true)) {
+      _server->send(200);
+      delay(500);
+      ESP_RESET();
+    } else {
+      writeErrorLog("WEB : Failed to finish firmware flashing error=%d",
+                    Update.getError());
+      _uploadReturn = 500;
+    }
+  } else {
+    Update.end();
+    Log.notice(F("WEB : Firmware flashing aborted." CR));
+    _uploadReturn = 500;
   }
 
+  delay(0);
   LOG_PERF_STOP("webserver-api-upload-file");
 }
 
-//
-// Callback from webServer when / has been accessed.
-//
 void WebServerHandler::webHandleCalibrate() {
   LOG_PERF_START("webserver-api-calibrate");
   String id = _server->arg(PARAM_ID);
@@ -439,9 +328,6 @@ void WebServerHandler::webHandleStatusSleepmode() {
   LOG_PERF_STOP("webserver-api-sleepmode");
 }
 
-//
-// Update device settings.
-//
 void WebServerHandler::webHandleConfigDevice() {
   LOG_PERF_START("webserver-api-config-device");
   String id = _server->arg(PARAM_ID);
@@ -471,9 +357,6 @@ void WebServerHandler::webHandleConfigDevice() {
   LOG_PERF_STOP("webserver-api-config-device");
 }
 
-//
-// Update push settings.
-//
 void WebServerHandler::webHandleConfigPush() {
   LOG_PERF_START("webserver-api-config-push");
   String id = _server->arg(PARAM_ID);
@@ -535,9 +418,6 @@ void WebServerHandler::webHandleConfigPush() {
   LOG_PERF_STOP("webserver-api-config-push");
 }
 
-//
-// Get string with all received arguments. Used for debugging only.
-//
 String WebServerHandler::getRequestArguments() {
   String debug;
 
@@ -554,9 +434,6 @@ String WebServerHandler::getRequestArguments() {
   return debug;
 }
 
-//
-// Update gravity settings.
-//
 void WebServerHandler::webHandleConfigGravity() {
   LOG_PERF_START("webserver-api-config-gravity");
   String id = _server->arg(PARAM_ID);
@@ -591,9 +468,6 @@ void WebServerHandler::webHandleConfigGravity() {
   LOG_PERF_STOP("webserver-api-config-gravity");
 }
 
-//
-// Update hardware settings.
-//
 void WebServerHandler::webHandleConfigHardware() {
   LOG_PERF_START("webserver-api-config-hardware");
   String id = _server->arg(PARAM_ID);
@@ -645,9 +519,6 @@ void WebServerHandler::webHandleConfigHardware() {
   LOG_PERF_STOP("webserver-api-config-hardware");
 }
 
-//
-// Update advanced settings.
-//
 void WebServerHandler::webHandleConfigAdvancedWrite() {
   LOG_PERF_START("webserver-api-config-advanced");
   String id = _server->arg(PARAM_ID);
@@ -723,9 +594,6 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
   LOG_PERF_STOP("webserver-api-config-advanced");
 }
 
-//
-// Read advanced settings
-//
 void WebServerHandler::webHandleConfigAdvancedRead() {
   LOG_PERF_START("webserver-api-config-advanced");
   Log.notice(F("WEB : webServer callback for /api/config/advanced(get)." CR));
@@ -766,9 +634,6 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   LOG_PERF_STOP("webserver-api-config-advanced");
 }
 
-//
-// Callback from webServer when / has been accessed.
-//
 void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_START("webserver-api-formula-read");
   Log.notice(F("WEB : webServer callback for /api/formula(get)." CR));
@@ -852,9 +717,6 @@ void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_STOP("webserver-api-formula-read");
 }
 
-//
-// Update format template
-//
 void WebServerHandler::webHandleConfigFormatWrite() {
   LOG_PERF_START("webserver-api-config-format-write");
   String id = _server->arg(PARAM_ID);
@@ -898,9 +760,6 @@ void WebServerHandler::webHandleConfigFormatWrite() {
   LOG_PERF_STOP("webserver-api-config-format-write");
 }
 
-//
-// Get format with real data
-//
 void WebServerHandler::webHandleTestPush() {
   LOG_PERF_START("webserver-api-test-push");
   String id = _server->arg(PARAM_ID);
@@ -969,10 +828,6 @@ void WebServerHandler::webHandleTestPush() {
   LOG_PERF_STOP("webserver-api-test-push");
 }
 
-//
-// Write file to disk, if there is no data then delete the current file (if it
-// exists) = reset to default.
-//
 bool WebServerHandler::writeFile(String fname, String data) {
   if (data.length()) {
     data = urldecode(data);
@@ -998,9 +853,6 @@ bool WebServerHandler::writeFile(String fname, String data) {
   return false;
 }
 
-//
-// Read file from disk
-//
 String WebServerHandler::readFile(String fname) {
   File file = LittleFS.open(fname, "r");
   if (file) {
@@ -1014,9 +866,6 @@ String WebServerHandler::readFile(String fname) {
   return "";
 }
 
-//
-// Get format templates
-//
 void WebServerHandler::webHandleConfigFormatRead() {
   LOG_PERF_START("webserver-api-config-format-read");
   Log.notice(F("WEB : webServer callback for /api/config/formula(get)." CR));
@@ -1071,9 +920,6 @@ void WebServerHandler::webHandleConfigFormatRead() {
   LOG_PERF_STOP("webserver-api-config-format-read");
 }
 
-//
-// Update hardware settings.
-//
 void WebServerHandler::webHandleFormulaWrite() {
   LOG_PERF_START("webserver-api-formula-write");
   String id = _server->arg(PARAM_ID);
@@ -1166,57 +1012,11 @@ void WebServerHandler::webHandleFormulaWrite() {
   LOG_PERF_STOP("webserver-api-formula-write");
 }
 
-//
-// Helper function to check if files exist on file system.
-//
-const char* WebServerHandler::getHtmlFileName(HtmlFile item) {
-  Log.notice(F("WEB : Looking up filename for %d." CR), item);
-
-  switch (item) {
-    case HtmlFile::HTML_INDEX:
-      return "index.min.htm";
-    case HtmlFile::HTML_CONFIG:
-      return "config.min.htm";
-    case HtmlFile::HTML_CALIBRATION:
-      return "calibration.min.htm";
-    case HtmlFile::HTML_FORMAT:
-      return "format.min.htm";
-    case HtmlFile::HTML_ABOUT:
-      return "about.min.htm";
-    case HtmlFile::HTML_TEST:
-      return "test.min.htm";
-  }
-
-  return "";
-}
-
-//
-// Helper function to check if files exist on file system.
-//
-bool WebServerHandler::checkHtmlFile(HtmlFile item) {
-  const char* fn = getHtmlFileName(item);
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : Checking for file %s." CR), fn);
-#endif
-
-  // TODO: We might need to add more checks here like zero file size etc. But
-  // for now we only check if the file exist.
-
-  return LittleFS.exists(fn);
-}
-
-//
-// Handler for page not found
-//
 void WebServerHandler::webHandlePageNotFound() {
   Log.error(F("WEB : URL not found %s received." CR), _server->uri().c_str());
   _server->send(404, "text/plain", F("URL not found"));
 }
 
-//
-// Setup the Web Server callbacks and start it
-//
 bool WebServerHandler::setupWebServer() {
   Log.notice(F("WEB : Configuring web server." CR));
 
@@ -1240,7 +1040,7 @@ bool WebServerHandler::setupWebServer() {
       LittleFS.remove(dir.fileName().c_str());
     }
   }
-#else  // defined( ESP32 )
+#else
   File root = LittleFS.open("/");
   File f = root.openNextFile();
   while (f) {
@@ -1258,7 +1058,6 @@ bool WebServerHandler::setupWebServer() {
 
   // Static content
   Log.notice(F("WEB : Setting up handlers for web server." CR));
-#if defined(EMBED_HTML)
   _server->on("/", std::bind(&WebServerHandler::webReturnIndexHtm, this));
   _server->on("/index.htm",
               std::bind(&WebServerHandler::webReturnIndexHtm, this));
@@ -1272,31 +1071,6 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webReturnAboutHtm, this));
   _server->on("/test.htm",
               std::bind(&WebServerHandler::webReturnTestHtm, this));
-#else
-  // Check if the html files exist, if so serve them, else show the static
-  // upload page.
-  if (checkHtmlFile(HTML_INDEX) && checkHtmlFile(HTML_CONFIG) &&
-      checkHtmlFile(HTML_CALIBRATION) && checkHtmlFile(HTML_FORMAT) &&
-      checkHtmlFile(HTML_ABOUT) && checkHtmlFile(HTML_TEST)) {
-    Log.notice(F("WEB : All html files exist, starting in normal mode." CR));
-
-    _server->serveStatic("/", LittleFS, "/index.min.htm");
-    _server->serveStatic("/index.htm", LittleFS, "/index.min.htm");
-    _server->serveStatic("/config.htm", LittleFS, "/config.min.htm");
-    _server->serveStatic("/about.htm", LittleFS, "/about.min.htm");
-    _server->serveStatic("/test.htm", LittleFS, "/test.min.htm");
-    _server->serveStatic("/calibration.htm", LittleFS, "/calibration.min.htm");
-    _server->serveStatic("/format.htm", LittleFS, "/format.min.htm");
-
-    // Also add the static upload view in case we we have issues that needs to
-    // be fixed.
-    _server->on("/upload.htm",
-                std::bind(&WebServerHandler::webReturnUploadHtm, this));
-  } else {
-    Log.error(F("WEB : Missing html files, starting with upload UI." CR));
-    _server->on("/", std::bind(&WebServerHandler::webReturnUploadHtm, this));
-  }
-#endif
   _server->on("/firmware.htm",
               std::bind(&WebServerHandler::webReturnFirmwareHtm, this));
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
@@ -1320,9 +1094,6 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webHandleStatus, this));
   _server->on("/api/clearwifi", HTTP_GET,
               std::bind(&WebServerHandler::webHandleClearWIFI, this));
-  _server->on(
-      "/api/upload", HTTP_GET,
-      std::bind(&WebServerHandler::webHandleUpload, this));  // Get upload.json
 
   _server->on("/api/upload", HTTP_POST,
               std::bind(&WebServerHandler::webReturnOK, this),

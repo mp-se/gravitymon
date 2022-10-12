@@ -91,8 +91,6 @@ This is a list of C++ defines that is used to enable/disable functions in the co
      - Done include verbose logging in the corresponding class. Excessive logging may crash device.
    * - USE_LITTLEFS
      - Use the new filesystem in Ardurino
-   * - EMBED_HTML
-     - Html files are included in code, if not defined they are served from the file system.
    * - USER_SSID
      - If defined the device will always use this SSID
    * - USER_SSID_PWD
