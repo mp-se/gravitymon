@@ -46,9 +46,14 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
-    if name == "gravity32-release2" :
-        target = dir + "/bin/firmware32_2.bin"
+    if name == "gravity32-c3-release" :
+        target = dir + "/bin/firmware32_c3.bin"
         source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32_c3.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
