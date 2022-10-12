@@ -33,6 +33,8 @@ SOFTWARE.
 #include <wifi.hpp>
 
 // #define FORCE_GRAVITY_MODE
+SerialDebug mySerial;
+BatteryVoltage myBatteryVoltage;
 
 // Define constats for this program
 #ifdef DEACTIVATE_SLEEPMODE

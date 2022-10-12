@@ -1,0 +1,35 @@
+
+User exception (panic/abort/assert)
+--------------- CUT HERE FOR EXCEPTION DECODER ---------------
+
+Panic core_esp8266_main.cpp:215 loop_task
+
+>>>stack>>>
+
+ctx: sys
+sp: 3fffff10 end: 3fffffb0 offset: 0000
+3fffff10:  00000000 02ac3bd9 40280793 3ffeaec4
+3fffff20:  000000fe 00000000 00000000 00000000  
+3fffff30:  00000000 00000000 00000000 3fff1edc
+3fffff40:  3fff1fa8 3fff1fa8 3fff0280 3fff1e94
+3fffff50:  3fffdad0 00000000 3ffe8648 4022d992  
+3fffff60:  402854b2 3fffdab0 00000000 4022d9ff
+3fffff70:  00000000 3fffdad0 3fff1e94 4022d0d8
+3fffff80:  40000f49 40000f49 3fffdab0 40000f49
+3fffff90:  40000e19 000b5a21 00000000 00000005  
+3fffffa0:  00000000 aa55aa55 000000d0 401057f9
+<<<stack<<<
+
+--------------- CUT HERE FOR EXCEPTION DECODER ---------------
+
+ ets Jan  8 2013,rst cause:2, boot mode:(3,6)
+
+load 0x4010f000, len 3460, room 16 
+tail 4
+chksum 0xcc
+load 0x3fff20b8, len 40, room 4
+tail 4
+chksum 0xc9
+csum 0xc9
+v000b5a30
+~ld

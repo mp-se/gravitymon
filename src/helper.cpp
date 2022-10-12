@@ -36,9 +36,6 @@ SOFTWARE.
 #include <tempsensor.hpp>
 #include <wifi.hpp>
 
-SerialDebug mySerial;
-BatteryVoltage myBatteryVoltage;
-
 // tcp cleanup, to avoid memory crash.
 struct tcp_pcb;
 extern struct tcp_pcb* tcp_tw_pcbs;
@@ -181,8 +178,9 @@ void printBuildOptions() {
 
 SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   // Start serial with auto-detected rate (default to defined BAUD)
-  Serial.flush();
+  //Serial.flush();
   Serial.begin(serialSpeed);
+  Serial.println("Serial connection established");
 
   getLog()->begin(LOG_LEVEL, &Serial, true);
   getLog()->setPrefix(printTimestamp);
