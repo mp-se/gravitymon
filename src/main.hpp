@@ -45,17 +45,41 @@ extern RunMode runMode;
 #define PIN_DS D6
 #define PIN_LED 2
 // #define PIN_A0 A0
+#elif  defined(ESP32C3)
+#include <FS.h>
+#include <LittleFS.h>
+#define ESPhttpUpdate httpUpdate
+#define ESP_RESET ESP.restart
+#define ESP8266WebServer WebServer
+#define PIN_SDA SDA
+#define PIN_SCL SCL
+#define PIN_DS A3
+#define PIN_A0 A0
+#define PIN_LED LED_BUILTIN
+/*
+#elif  defined(ESP32S2)
+#include <FS.h>
+#include <LittleFS.h>
+#define ESPhttpUpdate httpUpdate
+#define ESP_RESET ESP.restart
+#define ESP8266WebServer WebServer
+#define PIN_SDA SDA
+#define PIN_SCL SCL
+#define PIN_DS A8
+#define PIN_A0 A2
+#define PIN_LED LED_BUILTIN
+*/
 #else  // defined (ESP32)
 #include <FS.h>
 #include <LittleFS.h>
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart
 #define ESP8266WebServer WebServer
-#define PIN_SDA 17
-#define PIN_SCL 16
-#define PIN_DS 19
-#define PIN_A0 36
-#define PIN_LED 2
+#define PIN_SDA TX
+#define PIN_SCL RX
+#define PIN_DS MISO
+#define PIN_A0 A4
+#define PIN_LED LED_BUILTIN
 #endif
 
 #define PIN_LED 2
