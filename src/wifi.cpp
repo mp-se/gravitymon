@@ -69,16 +69,21 @@ bool WifiConnection::hasConfig() {
     // Check if there are stored WIFI Settings we can use.
 #if defined(ESP8266)
   String ssid = WiFi.SSID();
+  String pwd = WiFi.psk();
+#else
+  ESP_WiFiManager wifiMgr;
+  String ssid = wifiMgr.WiFi_SSID();
+  String pwd = wifiMgr.WiFi_Pass();
+#endif
   if (ssid.length()) {
-    Log.notice(F("WIFI: Found credentials in EEPORM." CR));
+    Log.notice(F("WIFI: Found stored credentials." CR));
     myConfig.setWifiSSID(ssid, 0);
 
-    if (WiFi.psk().length()) myConfig.setWifiPass(WiFi.psk(), 0);
+    if (pwd.length()) myConfig.setWifiPass(pwd, 0);
 
     myConfig.saveFile();
     return true;
   }
-#endif
 
   return false;
 }
@@ -101,10 +106,6 @@ void WifiConnection::startPortal() {
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
 
-#if defined(ESP32C3)
-  WiFi.setTxPower(WIFI_POWER_8_5dBm); // Required for ESP32C3 Mini
-#endif
-
   myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
   myWifiManager->setMinimumSignalQuality(-1);
   myWifiManager->setConfigPortalChannel(0);
@@ -116,6 +117,11 @@ void WifiConnection::startPortal() {
   mdns += ".local<p>";
   ESP_WMParameter deviceName(mdns.c_str());
   myWifiManager->addParameter(&deviceName);
+
+#if defined(ESP32C3)
+  Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
+  WiFi.setTxPower(WIFI_POWER_8_5dBm); // Required for ESP32C3 Mini
+#endif
 
   myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD);
 
@@ -152,6 +158,7 @@ void WifiConnection::connectAsync(int wifiIndex) {
   WiFi.mode(WIFI_STA);
 
 #if defined(ESP32C3)
+  Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
   WiFi.setTxPower(WIFI_POWER_8_5dBm); // Required for ESP32C3 Mini
 #endif
 
@@ -292,7 +299,11 @@ bool WifiConnection::updateFirmware() {
   String serverPath = myConfig.getOtaURL();
 #if defined(ESP8266)
   serverPath += "firmware.bin";
-#else  // defined (ESP32)
+#elif defined(ESP32C3)
+  serverPath += "firmware32c3.bin";
+#elif defined(ESP32S2)
+  serverPath += "firmware32s2.bin";
+#else // defined (ESP32)
   serverPath += "firmware32.bin";
 #endif
 
