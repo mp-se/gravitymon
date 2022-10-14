@@ -3,6 +3,17 @@
 Releases 
 ########
 
+v1.2.0 - beta1
+==============
+
+Features
+++++++++
+* Added support for the ESP32 C3 mini board
+
+Issues adressed
+++++++++++++++++
+* BUG: The first portion of a format template was lost when doing conversion. 
+
 v1.1.0
 ======
 

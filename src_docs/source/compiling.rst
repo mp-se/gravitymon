@@ -29,14 +29,9 @@ In the platformio config there are 3 targets defined
 
 * gravity-debug; Maximum logging for trouble shooting, deep sleep is disabled.
 * gravity-release; Standard release
-* gravity-perf; Standard release but contains code for measuring performance.
-* gravity32-release: Version for ESP32.
-* gravity32-perf: Version for ESP32 but contains code for measuring performance.
-
-.. note::
-  There is an experimental ESP32 target but since platformio only supports SDK 1.0.6 and the WIFI connection is really slow compared to ESP8266, 
-  so the recommendation is to wait for support on 2.0.x branch. With the tested version an wifi connection takes 3-8s on a ESP32 compared 
-  to 0.5s on an ESP8266. There is also a bug in OneWire connected to ESP32 that has not been fixed in the main repository yet.
+* gravity32-release: Version for ESP32 mini.
+* gravity32-c3-release: Version for ESP32 C3 mini.
+* gravity32-s2-release: Version for ESP32 S2 mini.
 
 .. warning::
   The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes. 
