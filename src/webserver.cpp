@@ -196,6 +196,7 @@ void WebServerHandler::webHandleFactoryDefaults() {
     LittleFS.remove(TPL_FNAME_INFLUXDB);
     LittleFS.remove(TPL_FNAME_MQTT);
     LittleFS.end();
+    Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
     delay(500);
     ESP_RESET();
   } else {
