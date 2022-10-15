@@ -52,8 +52,14 @@ extern RunMode runMode;
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart
 #define ESP8266WebServer WebServer
+#if defined(JTAG_DEBUG)
+#define PIN_SDA 8
+#define PIN_SCL 9
+#warning "ESP32C3 JTAG debugging enabled, using GYRO on GPIO 8/9"
+#else
 #define PIN_SDA 7
 #define PIN_SCL 6
+#endif
 #define PIN_DS A3
 #define PIN_A0 A0
 // This should be the LED_BUILTIN, but that is also connected SDA (Gyro) so we cannot use both. So we point LED to pin 8 which is not used.
