@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(ESP32)
+#if defined(ESP32) && !defined(ESP32S2)
 
 #include <ble.hpp>
 #include <string>
@@ -99,4 +99,4 @@ void BleSender::sendData(float tempF, float gravSG) {
   delay(100);
 }
 
-#endif  // ESP32
+#endif  // ESP32 && !ESP32S2

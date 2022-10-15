@@ -24,7 +24,7 @@ SOFTWARE.
 #ifndef SRC_BLE_HPP_
 #define SRC_BLE_HPP_
 
-#if defined(ESP32)
+#if defined(ESP32) && !defined(ESP32S2)
 
 #include <NimBLEBeacon.h>
 #include <NimBLEDevice.h>
@@ -43,5 +43,5 @@ class BleSender {
   void sendData(float tempF, float gravSG);
 };
 
-#endif  // ESP32
+#endif  // ESP32 && !ESP32S2
 #endif  // SRC_BLE_HPP_

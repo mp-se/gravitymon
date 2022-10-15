@@ -159,7 +159,7 @@ void setup() {
 
   LOG_PERF_START("main-config-load");
   myConfig.checkFileSystem();
-  checkResetReason();
+  //checkResetReason();
   myConfig.loadFile();
   myWifi.init();
   myAdvancedConfig.loadFile();
@@ -310,13 +310,13 @@ bool loopReadGravity() {
       pushMillis = millis();
       LOG_PERF_START("loop-push");
 
-#if defined(ESP32)
+#if defined(ESP32) && !defined(ESP32S2)
       if (myConfig.isBLEActive()) {
         BleSender ble(myConfig.getColorBLE());
         ble.sendData(convertCtoF(tempC), gravitySG);
         Log.notice(F("MAIN: Broadcast data over bluetooth." CR));
       }
-#endif
+#endif // ESP32 && !ESP32S2
 
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.
