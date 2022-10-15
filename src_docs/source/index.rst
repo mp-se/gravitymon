@@ -7,7 +7,7 @@ Welcome to GravityMon's documentation!
 ######################################
 
 .. note::
-  This documentation reflects **v1.1**. Last updated 2022-08-14
+  This documentation reflects **v1.2 - beta 1**. Last updated 2022-10-15
 
 User interface overview
 -----------------------
@@ -23,6 +23,7 @@ This animation shows how the user interface is structured, it reflects an older 
 Main features
 -------------
 
+* Support either an ESP8266 or ESP32C3 board
 * Operates in two modes gravity monitoring and configuration mode
 * Gravity mode is comparable to how the iSpindle works when collectintg data
 * Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings

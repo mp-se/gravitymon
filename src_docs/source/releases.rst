@@ -14,6 +14,10 @@ Issues adressed
 ++++++++++++++++
 * BUG: The first portion of a format template was lost when doing conversion. 
 
+Documentation
++++++++++++++
+* Updated hardware section with options for ESP32 boards
+
 v1.1.0
 ======
 
