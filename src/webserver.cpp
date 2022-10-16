@@ -87,7 +87,11 @@ void WebServerHandler::webHandleConfig() {
 
 #if defined(ESP8266)
   doc[PARAM_PLATFORM] = "esp8266";
-#else
+#elif defined(ESP32C3)
+  doc[PARAM_PLATFORM] = "esp32c3";
+#elif defined(ESP32S2)
+  doc[PARAM_PLATFORM] = "esp32s3";
+#else // esp32 mini
   doc[PARAM_PLATFORM] = "esp32";
 #endif
 
@@ -267,7 +271,11 @@ void WebServerHandler::webHandleStatus() {
 
 #if defined(ESP8266)
   doc[PARAM_PLATFORM] = "esp8266";
-#else
+#elif defined(ESP32C3)
+  doc[PARAM_PLATFORM] = "esp32c3";
+#elif defined(ESP32S2)
+  doc[PARAM_PLATFORM] = "esp32s3";
+#else // esp32 mini
   doc[PARAM_PLATFORM] = "esp32";
 #endif
 

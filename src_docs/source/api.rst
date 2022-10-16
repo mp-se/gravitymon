@@ -84,7 +84,7 @@ GET: /api/status
 Retrive the current device status via an HTTP GET command. Payload is in JSON format.
 
 * ``temp-format`` can be either ``C`` or ``F``
-* ``platform`` can be either ``esp8266`` or ``esp32``
+* ``platform`` can be either ``esp8266``, ``esp32c3``, ``esp32s2`` or ``esp32``
 * ``temp-c`` will be set to -273 C if there is no temp sensor
 * ``angle`` will be set to 0 if no valid angle is found and -1 if there is no gyro
 
