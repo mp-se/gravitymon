@@ -203,11 +203,9 @@ void printBuildOptions() {
 
 SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   // Start serial with auto-detected rate (default to defined BAUD)
-  //Serial.flush();
-  Serial.begin(serialSpeed);
-  Serial.println("Serial connection established");
-
-  getLog()->begin(LOG_LEVEL, &Serial, true);
+  EspSerial.begin(serialSpeed);
+  EspSerial.println("Serial connection established");
+  getLog()->begin(LOG_LEVEL, &EspSerial, true);
   getLog()->setPrefix(printTimestamp);
   getLog()->notice(F("SDBG: Serial logging started at %u." CR), serialSpeed);
 }

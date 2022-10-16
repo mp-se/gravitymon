@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #include <ble.hpp>
+#undef LOG_LEVEL_ERROR
+#undef LOG_LEVEL_INFO
 #include <calc.hpp>
 #include <config.hpp>
 #include <gyro.hpp>

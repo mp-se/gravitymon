@@ -96,8 +96,8 @@ void WebServerHandler::webHandleConfig() {
 #endif
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
 
   String out;
@@ -280,8 +280,8 @@ void WebServerHandler::webHandleStatus() {
 #endif
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
 
   String out;
@@ -631,8 +631,8 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   doc[PARAM_HW_IGNORE_LOW_ANGLES] = myAdvancedConfig.isIgnoreLowAnges();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
 
   String out;
@@ -714,8 +714,8 @@ void WebServerHandler::webHandleFormulaRead() {
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
 
   String out;
@@ -829,8 +829,8 @@ void WebServerHandler::webHandleTestPush() {
   doc.clear();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
 
   _server->send(200, "application/json", out.c_str());
@@ -921,8 +921,8 @@ void WebServerHandler::webHandleConfigFormatRead() {
   out += "\"}";
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Serial.print(out.c_str());
-  Serial.print(CR);
+  EspSerial.print(out.c_str());
+  EspSerial.print(CR);
 #endif
 
   _server->send(200, "application/json", out.c_str());

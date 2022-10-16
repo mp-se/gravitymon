@@ -174,11 +174,11 @@ class TemplatingEngine {
   void dumpAll() {
     int max = sizeof(_items) / sizeof(KeyVal);
     for (int i = 0; i < max; i++) {
-      Serial.print("Key=\'");
-      Serial.print(_items[i].key.c_str());
-      Serial.print("\', Val=\'");
-      Serial.print(_items[i].val.c_str());
-      Serial.println("\'");
+      EspSerial.print("Key=\'");
+      EspSerial.print(_items[i].key.c_str());
+      EspSerial.print("\', Val=\'");
+      EspSerial.print(_items[i].val.c_str());
+      EspSerial.println("\'");
     }
   }
 

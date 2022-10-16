@@ -176,23 +176,23 @@ void WifiConnection::connectAsync(int wifiIndex) {
 
 bool WifiConnection::waitForConnection(int maxTime) {
 #if DEBUG_LEVEL == 6
-  WiFi.printDiag(Serial);
+  WiFi.printDiag(EspSerial);
 #endif
   int i = 0;
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
 
-    if (i % 10) Serial.print(".");
+    if (i % 10) EspSerial.print(".");
 
     if (i++ >
         (maxTime * 10)) {  // Try for maxTime seconds. Since delay is 100ms.
       writeErrorLog("WIFI: Failed to connect to wifi %d", WiFi.status());
       WiFi.disconnect();
-      Serial.print(CR);
+      EspSerial.print(CR);
       return false;  // Return to main that we have failed to connect.
     }
   }
-  Serial.print(CR);
+  EspSerial.print(CR);
   Log.notice(F("WIFI: Connected to wifi %s ip=%s." CR), WiFi.SSID().c_str(),
              getIPAddress().c_str());
   Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS());

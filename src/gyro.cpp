@@ -314,14 +314,14 @@ void GyroSensor::calibrateSensor() {
   Log.verbose(F("GYRO: Calibrating sensor" CR));
 #endif
   // accelgyro.PrintActiveOffsets();
-  // Serial.print( CR );
+  // EspSerial.print( CR );
 
   accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
   accelgyro.CalibrateAccel(6);  // 6 = 600 readings
   accelgyro.CalibrateGyro(6);
 
   accelgyro.PrintActiveOffsets();
-  Serial.print(CR);
+  EspSerial.print(CR);
 
   _calibrationOffset.ax = accelgyro.getXAccelOffset();
   _calibrationOffset.ay = accelgyro.getYAccelOffset();

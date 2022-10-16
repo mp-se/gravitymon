@@ -153,8 +153,8 @@ bool Config::saveFile() {
   createJson(doc);
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
 
   serializeJson(doc, configFile);
@@ -192,8 +192,8 @@ bool Config::loadFile() {
   DynamicJsonDocument doc(3000);
   DeserializationError err = deserializeJson(doc, configFile);
 #if LOG_LEVEL == 6
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
   configFile.close();
 
@@ -395,8 +395,8 @@ bool AdvancedConfig::saveFile() {
   doc[PARAM_HW_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
 
   serializeJson(doc, configFile);
@@ -434,8 +434,8 @@ bool AdvancedConfig::loadFile() {
   DynamicJsonDocument doc(512);
   DeserializationError err = deserializeJson(doc, configFile);
 #if LOG_LEVEL == 6
-  serializeJson(doc, Serial);
-  Serial.print(CR);
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
 #endif
   configFile.close();
 
