@@ -54,7 +54,7 @@
 		#endif
   #endif
   
-  #warning You have to select Flash size 2MB and Minimal APP (1.3MB + 700KB) for some boards
+  // #warning You have to select Flash size 2MB and Minimal APP (1.3MB + 700KB) for some boards
   #define USING_ESP32_C3        true
 #elif ( defined(ARDUINO_ESP32S3_DEV) || defined(ARDUINO_ESP32_S3_BOX) || defined(ARDUINO_TINYS3) || \
         defined(ARDUINO_PROS3) || defined(ARDUINO_FEATHERS3) )
