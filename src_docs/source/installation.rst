@@ -23,30 +23,30 @@ available here `Brewflasher WEB <https://web.brewflasher.com/>`_.
 Binaries
 ********
 
-In the /bin directory you will find 3 different firmware builds;
+In the /bin directory you will find 4 different firmware builds;
 
 * **firmware.bin**
 
   This is the standard release build (prefered version) 
 
-* **firmware-perf.bin**
-
-  This version also submits performance data to an influx database with detailed execution times.
-
 * **firmware32.bin**
 
-  This is the standard release build for an ESP32 variant. When flashing an ESP32 you also need the **partition32.bin** file that outlines the flash memory structure. Due to 
+  This is the release build for an ESP32-d1-mini variant. When flashing an ESP32 you also need the *partition32.bin* file that outlines the flash memory structure. Due to 
   the size of the firmware we are using a custom partition setup.
 
-In these versions all the html files are embedded in the binaries. The file system is currently only used for storing 
-the configuration file. 
+* **firmware32c3.bin**
 
-If the software becomes so large the html files can be moved to the file system, but this is not enabled by 
-default (see compiling for details). This approach makes installation much easier and ensure that html files 
-and code is in sync.
+  This is the release build for an ESP32c3-mini variant. When flashing an ESP32 you also need the *partition32c3.bin* file that outlines the flash memory structure. Due to 
+  the size of the firmware we are using a custom partition setup.
 
-Esptool
-=======
+* **firmware32s2.bin**
+
+  This is the release build for an ESP32s2-mini variant. When flashing an ESP32 you also need the *partition32s2.bin* file that outlines the flash memory structure. Due to 
+  the size of the firmware we are using a custom partition setup.
+
+
+Esptool (esp8266)
+=================
 
 The other option for flashing esp8266 device is via the official esptool. Documentation can be found 
 here; `esptool home page <https://docs.espressif.com/projects/esptool/en/latest/esp32/>`_
@@ -61,8 +61,8 @@ If there are issues you can try do erase the flash first using this command;
 
 ``esptool.py --port COM4 erase_flash``
 
-iSpindel
-========
+iSpindel (esp8266)
+==================
 
 If you already have the device flashed with iSpindel firmware you can go into the configuration mode where you will find
 an option for updating firmware. The option is under the maintence meny.
@@ -101,9 +101,21 @@ To check output from the device (logs) there are several tools out there. I foun
 Just select a baud rate of 115200, 8N1.
 
 .. image:: images/serial.png
-  :width: 800
+  :width: 600
   :alt: Serial output
 
+On the build for esp32c3 the serial output is written to UART0 which is connected to the RX/TX pins on the chip. This way the serial output can be viewed 
+without a connection to the USB port, convinient when running the device on battery power. 
+
+You need a USB to TTL cable that you connect the TX, RX and GND pins. **Dont connect the power pin** if you are powering the device from USB or Battery.
+
+.. image:: images/usb-ttl.jpg
+  :width: 300
+  :alt: USB to TTL cable
+
+.. image:: images/serial_esp32c3.jpg
+  :width: 300
+  :alt: Serial output ESP32c3
 
 .. _setup_wifi:
 
@@ -130,7 +142,7 @@ successful then it will be used as primary. *The second wifi setting is optional
 
 
 .. image:: images/wifi.png
-  :width: 200
+  :width: 300
   :alt: Wifi page
 
 

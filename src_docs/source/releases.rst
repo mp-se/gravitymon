@@ -9,6 +9,7 @@ v1.2.0 - beta1
 Features
 ++++++++
 * Added support for the ESP32 C3 mini board
+* Serial output is written to TX/RX pins instead of the USB connection for the ESP32c3. This way the serial console can be viewed when running on battery power.
 
 Issues adressed
 ++++++++++++++++
@@ -17,6 +18,8 @@ Issues adressed
 Documentation
 +++++++++++++
 * Updated hardware section with options for ESP32 boards
+* Updated installation instructions.
+
 
 v1.1.0
 ======
