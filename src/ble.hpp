@@ -28,9 +28,7 @@ SOFTWARE.
 
 #include <NimBLEBeacon.h>
 #include <NimBLEDevice.h>
-
-#include <config.hpp>
-#include <main.hpp>
+#include <Arduino.h>
 
 class BleSender {
  private:
