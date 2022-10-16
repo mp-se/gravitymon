@@ -25,6 +25,9 @@ iSpindle based on esp32
 
 I've experimented with porting my software version to esp32 and this is a selection of options i have been testing. 
 
+.. warning::
+  Work to support esp32s2 is still ongoing, ESP32-mini and ESP32c3-mini is confirmed to be working. However I would recommend the C3 variant. 
+
 .. image:: images/esp32_hardware.jpg
   :width: 500
   :alt: iSpindle esp32 hardware options
@@ -33,7 +36,7 @@ I've experimented with porting my software version to esp32 and this is a select
 * esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support. 
 * esp32s2 mini, similar to the c3 board but without bluetooth support. 
 
-It's possible to use this PCB and mount an ESP32 mini on top of that (c3 and s2 are prefeered). The esp32 mini is a larger formfactor and can be hard to fit into the tube.
+It's possible to use this PCB and mount an ESP32 mini on top of that (c3 and s2 are prefered). The esp32 mini is a larger formfactor and can be hard to fit into the tube.
 
 .. note::
   You need to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor for a voltage divider 
@@ -43,15 +46,28 @@ It's possible to use this PCB and mount an ESP32 mini on top of that (c3 and s2 
 ESP32c3 mini
 ++++++++++++
 
-Work in progress...
+This is model is now fully supported by gravitymon
+
+.. image:: images/ispindel_esp32c3.jpg
+  :width: 500
+  :alt: Esp32c3 mini build
+
+.. warning::
+  TODO: Need to confim the part related to voltage divider is applicable to ESP32C3
+
+Here is an image of where I added the resistor for the voltage divider. 
+
+.. image:: images/esp32_res.jpg
+  :width: 500
+  :alt: Esp32c3 adding resistor as voltage dividier.
 
 ESP32s2 mini
 ++++++++++++
 
 Work in progress...
 
-ESP32 mini
-++++++++++
+ESP32 d1 mini
++++++++++++++
 
 I would suggest that you try how it fits into the PET tube before soldering it to the PCB. Make sure that the battery is attached since this will be a really tight fit.
 
@@ -63,10 +79,9 @@ Schema for esp32 build
 ++++++++++++++++++++++
 
 .. note::  
-  This schema assumes that an ESP32 D1 Mini (pin compatible with ESP8266 D1 Mini is used)
-  The ESP32 has two rows of pins but only the inner row is used. The main difference is the added resistor R3 so we 
-  get a voltage divider for measuring battery. The ESP8266 has a built in resistor thats not visible on the schema. 
-
+  This schema assumes that an ESP32 D1 Mini (pin compatible with ESP8266 D1 Mini is used). The ESP32 has two rows of pins but 
+  only the inner row is used. The main difference is the added resistor R3 so we get a voltage divider for measuring battery. 
+  The ESP8266 has a built in resistor thats not visible on the schema and this acts as a voltage divider. 
 
 .. image:: images/schema_esp32.png
   :width: 700
