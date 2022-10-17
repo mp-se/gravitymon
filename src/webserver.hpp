@@ -46,7 +46,7 @@ INCBIN_EXTERN(FormatHtm);
 INCBIN_EXTERN(TestHtm);
 INCBIN_EXTERN(AboutHtm);
 INCBIN_EXTERN(FirmwareHtm);
-#else // ESP32
+#else  // ESP32
 extern const uint8_t indexHtmStart[] asm("_binary_html_index_min_htm_start");
 extern const uint8_t indexHtmEnd[] asm("_binary_html_index_min_htm_end");
 extern const uint8_t configHtmStart[] asm("_binary_html_config_min_htm_start");
