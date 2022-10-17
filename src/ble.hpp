@@ -26,9 +26,9 @@ SOFTWARE.
 
 #if defined(ESP32) && !defined(ESP32S2)
 
+#include <Arduino.h>
 #include <NimBLEBeacon.h>
 #include <NimBLEDevice.h>
-#include <Arduino.h>
 
 class BleSender {
  private:

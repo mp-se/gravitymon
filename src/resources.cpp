@@ -24,6 +24,7 @@ SOFTWARE.
 #if defined(ESP8266)
 #define INCBIN_OUTPUT_SECTION ".irom.text"
 #include <incbin.h>
+
 #include <resources.hpp>
 INCBIN(IndexHtm, "data/index.min.htm");
 INCBIN(ConfigHtm, "data/config.min.htm");

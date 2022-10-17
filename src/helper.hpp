@@ -88,9 +88,10 @@ class FloatHistoryLog {
 
 class BatteryVoltage {
  private:
-  float _batteryLevel;
+  float _batteryLevel = 0;
 
  public:
+  BatteryVoltage();
   void read();
   float getVoltage() { return _batteryLevel; }
 };

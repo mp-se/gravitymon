@@ -120,7 +120,7 @@ void WifiConnection::startPortal() {
 
 #if defined(ESP32C3)
   Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
-  WiFi.setTxPower(WIFI_POWER_8_5dBm); // Required for ESP32C3 Mini
+  WiFi.setTxPower(WIFI_POWER_8_5dBm);  // Required for ESP32C3 Mini
 #endif
 
   myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD);
@@ -159,7 +159,7 @@ void WifiConnection::connectAsync(int wifiIndex) {
 
 #if defined(ESP32C3)
   Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
-  WiFi.setTxPower(WIFI_POWER_8_5dBm); // Required for ESP32C3 Mini
+  WiFi.setTxPower(WIFI_POWER_8_5dBm);  // Required for ESP32C3 Mini
 #endif
 
   if (strlen(userSSID)) {
@@ -303,7 +303,7 @@ bool WifiConnection::updateFirmware() {
   serverPath += "firmware32c3.bin";
 #elif defined(ESP32S2)
   serverPath += "firmware32s2.bin";
-#else // defined (ESP32)
+#else  // defined (ESP32)
   serverPath += "firmware32.bin";
 #endif
 
@@ -456,6 +456,6 @@ bool WifiConnection::parseFirmwareVersionString(int (&num)[3],
   return true;
 }
 
-#endif // ACTIVATE_OTA
+#endif  // ACTIVATE_OTA
 
 // EOF

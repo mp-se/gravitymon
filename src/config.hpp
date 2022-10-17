@@ -143,7 +143,15 @@ class Config {
   String _mDNS = "";
   String _otaURL = "";
   char _tempFormat = 'C';
+#if defined(ESP8266)
   float _voltageFactor = 1.59;
+#elif defined(ESP32C3)
+  float _voltageFactor = 1.3;
+#elif defined(ESP32S2)
+  float _voltageFactor = 1.3;
+#else  // ESP32
+  float _voltageFactor = 1.3;
+#endif
   float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;
   int _sleepInterval = 900;

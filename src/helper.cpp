@@ -61,32 +61,67 @@ void checkResetReason() {
     writeErrorLog(&s[0]);
   }
 #else  // defined (ESP32)
-  RESET_REASON r = rtc_get_reset_reason(0); // We only check cpu0 since we dont use cpu1 on the esp32
+  RESET_REASON r = rtc_get_reset_reason(
+      0);  // We only check cpu0 since we dont use cpu1 on the esp32
   String rStr;
 
   switch (r) {
-    case 0  : rStr = F("None"); break;
-    case 1  : rStr = F("vbat power on reset"); break;
-    case 3  : rStr = F("software reset digital core"); break;
-    case 4  : rStr = F("legacy watch dog reset digital core"); break;
-    case 5  : rStr = F("deep Sleep reset digital core"); break;
-    case 6  : rStr = F("reset by SLC module, reset digital core"); break;
-    case 7  : rStr = F("timer Group0 Watch dog reset digital core"); break;
-    case 8  : rStr = F("timer Group1 Watch dog reset digital core"); break;
-    case 9  : rStr = F("RTC Watch dog Reset digital core"); break;
-    case 10 : rStr = F("instrusion tested to reset CPU"); break;
-    case 11 : rStr = F("time Group reset CPU"); break;
-    case 12 : rStr = F("software reset CPU"); break;
-    case 13 : rStr = F("RTC Watch dog Reset CPU"); break;
-    case 14 : rStr = F("for APP CPU, reseted by PRO CPU"); break;
-    case 15 : rStr = F("reset when the vdd voltage is not stable"); break;
-    case 16 : rStr = F("RTC Watch dog reset digital core and rtc module"); break;
-    default : rStr = F("unknown reset reason"); break;
-  }  
+    case 0:
+      rStr = F("None");
+      break;
+    case 1:
+      rStr = F("vbat power on reset");
+      break;
+    case 3:
+      rStr = F("software reset digital core");
+      break;
+    case 4:
+      rStr = F("legacy watch dog reset digital core");
+      break;
+    case 5:
+      rStr = F("deep Sleep reset digital core");
+      break;
+    case 6:
+      rStr = F("reset by SLC module, reset digital core");
+      break;
+    case 7:
+      rStr = F("timer Group0 Watch dog reset digital core");
+      break;
+    case 8:
+      rStr = F("timer Group1 Watch dog reset digital core");
+      break;
+    case 9:
+      rStr = F("RTC Watch dog Reset digital core");
+      break;
+    case 10:
+      rStr = F("instrusion tested to reset CPU");
+      break;
+    case 11:
+      rStr = F("time Group reset CPU");
+      break;
+    case 12:
+      rStr = F("software reset CPU");
+      break;
+    case 13:
+      rStr = F("RTC Watch dog Reset CPU");
+      break;
+    case 14:
+      rStr = F("for APP CPU, reseted by PRO CPU");
+      break;
+    case 15:
+      rStr = F("reset when the vdd voltage is not stable");
+      break;
+    case 16:
+      rStr = F("RTC Watch dog reset digital core and rtc module");
+      break;
+    default:
+      rStr = F("unknown reset reason");
+      break;
+  }
 
   Log.notice(F("HELP: Last reset cause '%s' (%d)" CR), rStr.c_str(), r);
 
-  #warning "TODO: Implement logging of crashes for esp32"
+#warning "TODO: Implement logging of crashes for esp32"
 #endif
 }
 
@@ -214,6 +249,14 @@ void printTimestamp(Print* _logOutput, int _logLevel) {
   char c[12];
   snprintf(c, sizeof(c), "%10lu ", millis());
   _logOutput->print(c);
+}
+
+BatteryVoltage::BatteryVoltage() {
+#if defined(ESP8266)
+  pinMode(PIN_A0, INPUT);
+#else
+  pinMode(PIN_A0, INPUT_PULLDOWN);
+#endif
 }
 
 void BatteryVoltage::read() {
@@ -363,7 +406,7 @@ void PerfLogging::pushInflux() {
   // Send HTTP POST request
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
   http.addHeader(F("Authorization"), auth.c_str());
-  http.setTimeout(myAdvancedConfig.getPushTimeout());
+  http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
   int httpResponseCode = http.POST(body);
 
   if (httpResponseCode == 204) {

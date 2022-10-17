@@ -91,7 +91,7 @@ void WebServerHandler::webHandleConfig() {
   doc[PARAM_PLATFORM] = "esp32c3";
 #elif defined(ESP32S2)
   doc[PARAM_PLATFORM] = "esp32s3";
-#else // esp32 mini
+#else  // esp32 mini
   doc[PARAM_PLATFORM] = "esp32";
 #endif
 
@@ -108,7 +108,6 @@ void WebServerHandler::webHandleConfig() {
   LOG_PERF_STOP("webserver-api-config");
 }
 
-
 void WebServerHandler::webHandleUploadFile() {
   LOG_PERF_START("webserver-api-upload-file");
   Log.verbose(F("WEB : webServer callback for /api/upload(post)." CR));
@@ -116,9 +115,9 @@ void WebServerHandler::webHandleUploadFile() {
   String f = upload.filename;
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(
-      F("WEB : webServer callback for /api/upload, receiving file %s, %d(%d)." CR),
-      f.c_str(), upload.currentSize, upload.totalSize);
+  Log.verbose(F("WEB : webServer callback for /api/upload, receiving file %s, "
+                "%d(%d)." CR),
+              f.c_str(), upload.currentSize, upload.totalSize);
 #endif
 
   // Handle firmware update, hardcode since function return wrong value.
@@ -128,21 +127,21 @@ void WebServerHandler::webHandleUploadFile() {
   if (upload.status == UPLOAD_FILE_START) {
     _uploadReturn = 200;
     Log.notice(F("WEB : Start firmware upload, max sketch size %d kb." CR),
-                maxSketchSpace / 1024);
+               maxSketchSpace / 1024);
 
     if (!Update.begin(maxSketchSpace, U_FLASH, PIN_LED)) {
       writeErrorLog("WEB : Not enough space to store for this firmware.");
       _uploadReturn = 500;
     }
   } else if (upload.status == UPLOAD_FILE_WRITE) {
-    Log.notice(F("WEB : Writing firmware upload %d (%d)." CR),
-                upload.totalSize, maxSketchSpace);
+    Log.notice(F("WEB : Writing firmware upload %d (%d)." CR), upload.totalSize,
+               maxSketchSpace);
 
     if (upload.totalSize > maxSketchSpace) {
       Log.error(F("WEB : Firmware file is to large." CR));
       _uploadReturn = 500;
     } else if (Update.write(upload.buf, upload.currentSize) !=
-                upload.currentSize) {
+               upload.currentSize) {
       Log.warning(F("WEB : Firmware write was unsuccessful." CR));
       _uploadReturn = 500;
     }
@@ -275,7 +274,7 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_PLATFORM] = "esp32c3";
 #elif defined(ESP32S2)
   doc[PARAM_PLATFORM] = "esp32s3";
-#else // esp32 mini
+#else  // esp32 mini
   doc[PARAM_PLATFORM] = "esp32";
 #endif
 
@@ -1026,10 +1025,31 @@ void WebServerHandler::webHandlePageNotFound() {
   _server->send(404, "text/plain", F("URL not found"));
 }
 
+int indexHtmLength = 0;
+int configHtmLength = 0;
+int calibrationHtmLength = 0;
+int formatHtmLength = 0;
+int testHtmLength = 0;
+int aboutHtmLength = 0;
+int firmwareHtmLength = 0;
+
 bool WebServerHandler::setupWebServer() {
   Log.notice(F("WEB : Configuring web server." CR));
 
   _server = new ESP8266WebServer();
+  indexHtmLength = strlen(reinterpret_cast<const char*>(&indexHtmStart[0]));
+  configHtmLength = strlen(reinterpret_cast<const char*>(&configHtmStart[0]));
+  calibrationHtmLength =
+      strlen(reinterpret_cast<const char*>(&calibrationHtmStart[0]));
+  formatHtmLength = strlen(reinterpret_cast<const char*>(&formatHtmStart[0]));
+  testHtmLength = strlen(reinterpret_cast<const char*>(&testHtmStart[0]));
+  aboutHtmLength = strlen(reinterpret_cast<const char*>(&aboutHtmStart[0]));
+  firmwareHtmLength =
+      strlen(reinterpret_cast<const char*>(&firmwareHtmStart[0]));
+  Log.notice(F("WEB : Embedded HTML size; index=%d, config=%d, calibration=%d, "
+               "format=%d, test=%d, about=%d, firmware=%d." CR),
+             indexHtmLength, configHtmLength, calibrationHtmLength,
+             formatHtmLength, testHtmLength, aboutHtmLength, firmwareHtmLength);
 
   MDNS.begin(myConfig.getMDNS());
   MDNS.addService("http", "tcp", 80);
@@ -1049,7 +1069,7 @@ bool WebServerHandler::setupWebServer() {
       LittleFS.remove(dir.fileName().c_str());
     }
   }
-#else
+#else  // ESP32
   File root = LittleFS.open("/");
   File f = root.openNextFile();
   while (f) {

@@ -45,9 +45,10 @@ extern RunMode runMode;
 #define PIN_DS D6
 #define PIN_LED 2
 // #define PIN_A0 A0
-#elif  defined(ESP32C3)
+#elif defined(ESP32C3)
 #include <FS.h>
 #include <LittleFS.h>
+
 #include "esp32c3/rom/rtc.h"
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart
@@ -62,12 +63,14 @@ extern RunMode runMode;
 #endif
 #define PIN_DS A3
 #define PIN_A0 A0
-// This should be the LED_BUILTIN, but that is also connected SDA (Gyro) so we cannot use both. So we point LED to pin 8 which is not used.
-#define PIN_LED 8 
+// This should be the LED_BUILTIN, but that is also connected SDA (Gyro) so we
+// cannot use both. So we point LED to pin 8 which is not used.
+#define PIN_LED 8
 /*
 #elif  defined(ESP32S2)
 #include <FS.h>
 #include <LittleFS.h>
+
 #include "esp32s2/rom/rtc.h"
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart
@@ -81,6 +84,7 @@ extern RunMode runMode;
 #else  // defined (ESP32)
 #include <FS.h>
 #include <LittleFS.h>
+
 #include "esp32/rom/rtc.h"
 #define ESPhttpUpdate httpUpdate
 #define ESP_RESET ESP.restart

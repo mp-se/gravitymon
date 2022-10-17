@@ -121,12 +121,8 @@ void checkSleepMode(float angle, float volt) {
     Log.notice(
         F("Main: Storage mode entered, going to sleep for maximum time." CR));
 #if defined(ESP8266)
-    // ESP.deepSleep(ESP.deepSleepMax());
     ESP.deepSleep(0);  // indefinite sleep
 #else
-#warning "Check and test the max deep sleep for esp32"
-    // deepSleep(70 * 60);  // quick search on internet suggest max time is 70
-    // min
     ESP.deepSleep(0);  // indefinite sleep
 #endif
   }
@@ -141,8 +137,8 @@ void setup() {
   // Add a delay so that serial is started.
   // delay(3000);
 #endif
-  // Main startup
 
+  // Main startup
 #if defined(ESP8266)
   Log.notice(F("Main: Started setup for %s." CR),
              String(ESP.getChipId(), HEX).c_str());
@@ -161,7 +157,7 @@ void setup() {
 
   LOG_PERF_START("main-config-load");
   myConfig.checkFileSystem();
-  //checkResetReason();
+  checkResetReason();
   myConfig.loadFile();
   myWifi.init();
   myAdvancedConfig.loadFile();
@@ -209,6 +205,8 @@ void setup() {
 
       myBatteryVoltage.read();
       checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      Log.notice(F("Main: Battery %F V, Gyro=%F, Run-mode=%d." CR),
+                 myBatteryVoltage.getVoltage(), myGyro.getAngle(), runMode);
 
 #if defined(ESP32)
       if (!myConfig.isWifiPushActive() && runMode == RunMode::gravityMode) {
@@ -318,7 +316,7 @@ bool loopReadGravity() {
         ble.sendData(convertCtoF(tempC), gravitySG);
         Log.notice(F("MAIN: Broadcast data over bluetooth." CR));
       }
-#endif // ESP32 && !ESP32S2
+#endif  // ESP32 && !ESP32S2
 
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.

@@ -29,7 +29,7 @@ SOFTWARE.
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #define MAX_SKETCH_SPACE 1044464
-#else 
+#else
 #include <ESPmDNS.h>
 #include <Update.h>
 #include <WebServer.h>
@@ -51,16 +51,26 @@ extern const uint8_t indexHtmStart[] asm("_binary_html_index_min_htm_start");
 extern const uint8_t indexHtmEnd[] asm("_binary_html_index_min_htm_end");
 extern const uint8_t configHtmStart[] asm("_binary_html_config_min_htm_start");
 extern const uint8_t configHtmEnd[] asm("_binary_html_config_min_htm_end");
-extern const uint8_t calibrationHtmStart[] asm("_binary_html_calibration_min_htm_start");
-extern const uint8_t calibrationHtmEnd[] asm("_binary_html_calibration_min_htm_end");
+extern const uint8_t calibrationHtmStart[] asm(
+    "_binary_html_calibration_min_htm_start");
+extern const uint8_t calibrationHtmEnd[] asm(
+    "_binary_html_calibration_min_htm_end");
 extern const uint8_t formatHtmStart[] asm("_binary_html_format_min_htm_start");
 extern const uint8_t formatHtmEnd[] asm("_binary_html_format_min_htm_end");
 extern const uint8_t testHtmStart[] asm("_binary_html_test_min_htm_start");
 extern const uint8_t testHtmEnd[] asm("_binary_html_test_min_htm_end");
 extern const uint8_t aboutHtmStart[] asm("_binary_html_about_min_htm_start");
 extern const uint8_t aboutHtmEnd[] asm("_binary_html_about_min_htm_end");
-extern const uint8_t firmwareHtmStart[] asm("_binary_html_firmware_min_htm_start");
+extern const uint8_t firmwareHtmStart[] asm(
+    "_binary_html_firmware_min_htm_start");
 extern const uint8_t firmwareHtmEnd[] asm("_binary_html_firmware_min_htm_end");
+extern int indexHtmLength;
+extern int configHtmLength;
+extern int calibrationHtmLength;
+extern int formatHtmLength;
+extern int testHtmLength;
+extern int aboutHtmLength;
+extern int firmwareHtmLength;
 #endif
 
 class WebServerHandler {
@@ -128,25 +138,31 @@ class WebServerHandler {
   }
 #else
   void webReturnIndexHtm() {
-    _server->send_P(200, "text/html", (const char*)indexHtmStart, indexHtmEnd-indexHtmStart);
+    _server->send_P(200, "text/html", (const char*)indexHtmStart,
+                    indexHtmLength);
   }
   void webReturnConfigHtm() {
-    _server->send_P(200, "text/html", (const char*)configHtmStart, configHtmEnd-configHtmStart);
+    _server->send_P(200, "text/html", (const char*)configHtmStart,
+                    configHtmLength);
   }
   void webReturnCalibrationHtm() {
-    _server->send_P(200, "text/html", (const char*)calibrationHtmStart, calibrationHtmEnd-calibrationHtmStart);
+    _server->send_P(200, "text/html", (const char*)calibrationHtmStart,
+                    calibrationHtmLength);
   }
   void webReturnFormatHtm() {
-    _server->send_P(200, "text/html", (const char*)formatHtmStart, formatHtmEnd-formatHtmStart);
+    _server->send_P(200, "text/html", (const char*)formatHtmStart,
+                    formatHtmLength);
   }
   void webReturnAboutHtm() {
-    _server->send_P(200, "text/html", (const char*)aboutHtmStart, aboutHtmEnd-aboutHtmStart);
+    _server->send_P(200, "text/html", (const char*)aboutHtmStart,
+                    aboutHtmLength);
   }
   void webReturnTestHtm() {
-    _server->send_P(200, "text/html", (const char*)testHtmStart, testHtmEnd-testHtmStart);
+    _server->send_P(200, "text/html", (const char*)testHtmStart, testHtmLength);
   }
   void webReturnFirmwareHtm() {
-    _server->send_P(200, "text/html", (const char*)firmwareHtmStart, firmwareHtmEnd-firmwareHtmStart);
+    _server->send_P(200, "text/html", (const char*)firmwareHtmStart,
+                    firmwareHtmLength);
   }
 #endif
 
