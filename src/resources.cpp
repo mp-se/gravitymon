@@ -26,13 +26,13 @@ SOFTWARE.
 #include <incbin.h>
 
 #include <resources.hpp>
-INCBIN(IndexHtm, "data/index.min.htm");
-INCBIN(ConfigHtm, "data/config.min.htm");
-INCBIN(CalibrationHtm, "data/calibration.min.htm");
-INCBIN(FormatHtm, "data/format.min.htm");
-INCBIN(TestHtm, "data/test.min.htm");
-INCBIN(AboutHtm, "data/about.min.htm");
-INCBIN(FirmwareHtm, "data/firmware.min.htm");
+INCBIN(IndexHtm, "html/index.min.htm");
+INCBIN(ConfigHtm, "html/config.min.htm");
+INCBIN(CalibrationHtm, "html/calibration.min.htm");
+INCBIN(FormatHtm, "html/format.min.htm");
+INCBIN(TestHtm, "html/test.min.htm");
+INCBIN(AboutHtm, "html/about.min.htm");
+INCBIN(FirmwareHtm, "html/firmware.min.htm");
 #endif
 
 // EOF
