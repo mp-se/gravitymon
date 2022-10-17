@@ -1025,32 +1025,9 @@ void WebServerHandler::webHandlePageNotFound() {
   _server->send(404, "text/plain", F("URL not found"));
 }
 
-int indexHtmLength = 0;
-int configHtmLength = 0;
-int calibrationHtmLength = 0;
-int formatHtmLength = 0;
-int testHtmLength = 0;
-int aboutHtmLength = 0;
-int firmwareHtmLength = 0;
-
 bool WebServerHandler::setupWebServer() {
   Log.notice(F("WEB : Configuring web server." CR));
-
   _server = new ESP8266WebServer();
-  indexHtmLength = strlen(reinterpret_cast<const char*>(&indexHtmStart[0]));
-  configHtmLength = strlen(reinterpret_cast<const char*>(&configHtmStart[0]));
-  calibrationHtmLength =
-      strlen(reinterpret_cast<const char*>(&calibrationHtmStart[0]));
-  formatHtmLength = strlen(reinterpret_cast<const char*>(&formatHtmStart[0]));
-  testHtmLength = strlen(reinterpret_cast<const char*>(&testHtmStart[0]));
-  aboutHtmLength = strlen(reinterpret_cast<const char*>(&aboutHtmStart[0]));
-  firmwareHtmLength =
-      strlen(reinterpret_cast<const char*>(&firmwareHtmStart[0]));
-  Log.notice(F("WEB : Embedded HTML size; index=%d, config=%d, calibration=%d, "
-               "format=%d, test=%d, about=%d, firmware=%d." CR),
-             indexHtmLength, configHtmLength, calibrationHtmLength,
-             formatHtmLength, testHtmLength, aboutHtmLength, firmwareHtmLength);
-
   MDNS.begin(myConfig.getMDNS());
   MDNS.addService("http", "tcp", 80);
 

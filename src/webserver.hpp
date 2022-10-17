@@ -46,7 +46,7 @@ INCBIN_EXTERN(FormatHtm);
 INCBIN_EXTERN(TestHtm);
 INCBIN_EXTERN(AboutHtm);
 INCBIN_EXTERN(FirmwareHtm);
-#else
+#else // ESP32
 extern const uint8_t indexHtmStart[] asm("_binary_html_index_min_htm_start");
 extern const uint8_t indexHtmEnd[] asm("_binary_html_index_min_htm_end");
 extern const uint8_t configHtmStart[] asm("_binary_html_config_min_htm_start");
@@ -64,13 +64,6 @@ extern const uint8_t aboutHtmEnd[] asm("_binary_html_about_min_htm_end");
 extern const uint8_t firmwareHtmStart[] asm(
     "_binary_html_firmware_min_htm_start");
 extern const uint8_t firmwareHtmEnd[] asm("_binary_html_firmware_min_htm_end");
-extern int indexHtmLength;
-extern int configHtmLength;
-extern int calibrationHtmLength;
-extern int formatHtmLength;
-extern int testHtmLength;
-extern int aboutHtmLength;
-extern int firmwareHtmLength;
 #endif
 
 class WebServerHandler {
@@ -136,33 +129,36 @@ class WebServerHandler {
     _server->send_P(200, "text/html", (const char*)gFirmwareHtmData,
                     gFirmwareHtmSize);
   }
-#else
+#else  // ESP32
   void webReturnIndexHtm() {
     _server->send_P(200, "text/html", (const char*)indexHtmStart,
-                    indexHtmLength);
+                    strlen(reinterpret_cast<const char*>(&indexHtmStart[0])));
   }
   void webReturnConfigHtm() {
     _server->send_P(200, "text/html", (const char*)configHtmStart,
-                    configHtmLength);
+                    strlen(reinterpret_cast<const char*>(&configHtmStart[0])));
   }
   void webReturnCalibrationHtm() {
-    _server->send_P(200, "text/html", (const char*)calibrationHtmStart,
-                    calibrationHtmLength);
+    _server->send_P(
+        200, "text/html", (const char*)calibrationHtmStart,
+        strlen(reinterpret_cast<const char*>(&calibrationHtmStart[0])));
   }
   void webReturnFormatHtm() {
     _server->send_P(200, "text/html", (const char*)formatHtmStart,
-                    formatHtmLength);
+                    strlen(reinterpret_cast<const char*>(&formatHtmStart[0])));
   }
   void webReturnAboutHtm() {
     _server->send_P(200, "text/html", (const char*)aboutHtmStart,
-                    aboutHtmLength);
+                    strlen(reinterpret_cast<const char*>(&aboutHtmStart[0])));
   }
   void webReturnTestHtm() {
-    _server->send_P(200, "text/html", (const char*)testHtmStart, testHtmLength);
+    _server->send_P(200, "text/html", (const char*)testHtmStart,
+                    strlen(reinterpret_cast<const char*>(&testHtmStart[0])));
   }
   void webReturnFirmwareHtm() {
-    _server->send_P(200, "text/html", (const char*)firmwareHtmStart,
-                    firmwareHtmLength);
+    _server->send_P(
+        200, "text/html", (const char*)firmwareHtmStart,
+        strlen(reinterpret_cast<const char*>(&firmwareHtmStart[0])));
   }
 #endif
 
