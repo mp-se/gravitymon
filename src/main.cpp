@@ -388,10 +388,10 @@ void loop() {
       break;
 
     case RunMode::configurationMode:
-      if (myWifi.isConnected()) myWebServerHandler.loop();
-
+      myWebServerHandler.loop();
       myWifi.loop();
       loopGravityOnInterval();
+      delay(1);
 
       // If we switched mode, dont include this in the log.
       if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
