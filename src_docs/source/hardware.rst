@@ -46,14 +46,11 @@ It's possible to use this PCB and mount an ESP32 mini on top of that (c3 and s2 
 ESP32c3 mini
 ++++++++++++
 
-This is model is now fully supported by gravitymon
+This is model is now fully supported by gravitymon. 
 
 .. image:: images/ispindel_esp32c3.jpg
   :width: 500
   :alt: Esp32c3 mini build
-
-.. warning::
-  TODO: Need to confim the part related to voltage divider is applicable to ESP32C3
 
 Here is an image of where I added the resistor for the voltage divider. 
 
