@@ -3,7 +3,6 @@
 Releases 
 ########
 
-<<<<<<< HEAD
 v1.2.0 - beta1
 ==============
 
@@ -21,11 +20,9 @@ Documentation
 * Updated hardware section with options for ESP32 boards
 * Updated installation instructions.
 
-=======
 v1.1.1
 ======
 * BUG: The text before the first variable was missed in the conversion of a format template.
->>>>>>> master
 
 v1.1.0
 ======
