@@ -53,9 +53,13 @@ here; `esptool home page <https://docs.espressif.com/projects/esptool/en/latest/
 
 Windows 10 should install a driver for the USB -> Serial automatically when you connect a esp8266.
 
-The basic command for flashing on Windows is;
+The basic command for flashing an ESP8266 on Windows is;
 
 ``esptool.py --port COM4 write_flash 0x0 firmware.bin``
+
+The basic command for flashing an ESP32C3 on Windows is;
+
+``esptool.py --port COM6 write_flash --flash_mode dio 0x8000 .\partitions32c3.bin 0x10000 .\firmware32c3.bin``
 
 If there are issues you can try do erase the flash first using this command;
 
