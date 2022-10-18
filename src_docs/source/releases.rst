@@ -3,6 +3,10 @@
 Releases 
 ########
 
+v1.1.1
+======
+* BUG: The text before the first variable was missed in the conversion of a format template.
+
 v1.1.0
 ======
 
