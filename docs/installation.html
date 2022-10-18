@@ -239,8 +239,10 @@ the size of the firmware we are using a custom partition setup.</p>
 <p>The other option for flashing esp8266 device is via the official esptool. Documentation can be found
 here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">esptool home page</a></p>
 <p>Windows 10 should install a driver for the USB -&gt; Serial automatically when you connect a esp8266.</p>
-<p>The basic command for flashing on Windows is;</p>
+<p>The basic command for flashing an ESP8266 on Windows is;</p>
 <p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">write_flash</span> <span class="pre">0x0</span> <span class="pre">firmware.bin</span></code></p>
+<p>The basic command for flashing an ESP32C3 on Windows is;</p>
+<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM6</span> <span class="pre">write_flash</span> <span class="pre">--flash_mode</span> <span class="pre">dio</span> <span class="pre">0x8000</span> <span class="pre">.\partitions32c3.bin</span> <span class="pre">0x10000</span> <span class="pre">.\firmware32c3.bin</span></code></p>
 <p>If there are issues you can try do erase the flash first using this command;</p>
 <p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">erase_flash</span></code></p>
 </div>
