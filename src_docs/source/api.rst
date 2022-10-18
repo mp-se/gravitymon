@@ -8,7 +8,7 @@ All the API's use a key called ``ID`` which is the unique device id (chip id). T
 GET: /api/config
 ================
 
-Retrive the current configuation of the device via an HTTP GET command. Payload is in JSON format.
+Retrieve the current configuration of the device via an HTTP GET command. Payload is in JSON format.
 
 * ``temp-format`` can be either ``C`` or ``F``
 * ``gravity-format`` is always ``G`` (plato is not yet supported)
@@ -81,7 +81,7 @@ This API has been removed from 0.9 and merged with /api/status
 GET: /api/status
 ================
 
-Retrive the current device status via an HTTP GET command. Payload is in JSON format.
+Retrieve the current device status via an HTTP GET command. Payload is in JSON format.
 
 * ``temp-format`` can be either ``C`` or ``F``
 * ``platform`` can be either ``esp8266``, ``esp32c3``, ``esp32s2`` or ``esp32``
@@ -117,10 +117,10 @@ Other parameters are the same as in the configuration guide.
 GET: /api/config/formula
 ========================
 
-Retrive the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
+Retrieve the data used for formula calculation data via an HTTP GET command. Payload is in JSON format.
 
 * ``a1``-``a10`` are the angles/tilt readings (up to 10 are currently supported)
-* ``g1``-``g10`` are the corresponding gravity reaadings in SG or Plato depending on the device-format.
+* ``g1``-``g10`` are the corresponding gravity readings in SG or Plato depending on the device-format.
 
 .. code-block:: json
 
@@ -239,7 +239,7 @@ Used to update device settings via an HTTP POST command.
 
 Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
-* ``temp-format`` can be either ``C`` (Celcius) or ``F`` (Farenheight)
+* ``temp-format`` can be either ``C`` (Celsius) or ``F`` (Fahrenheit)
 
 .. code-block:: 
 
@@ -327,7 +327,7 @@ POST: /api/config/formula
 Used to update formula calculation data via an HTTP POST command. Payload is in JSON format.
 
 * ``a1``-``a10`` are the angles/tilt readings (up to 10 are currently supported)
-* ``g1``-``g10`` are the corresponding gravity reaadings (in SG)
+* ``g1``-``g10`` are the corresponding gravity readings (in SG)
 
 Payload should be in standard format used for posting a form. Such as as: `id=value&mdns=value` etc. Key value pairs are shown below.
 
@@ -369,7 +369,7 @@ The requests package converts the json to standard form post format.
    import requests
    import json
 
-   host = "192.168.1.1"           # IP adress (or name) of the device to send these settings to
+   host = "192.168.1.1"           # IP address (or name) of the device to send these settings to
    id = "ee1bfc"                  # Device ID (shown in serial console during startup or in UI)
 
    def set_config( url, json ):
@@ -425,7 +425,7 @@ The requests package converts the json to standard form post format.
             "temp-adjustment": 0,                   # If temp sensor needs to be corrected
             "gyro-temp": "on",                      # Use the temp sensor in the gyro instead (on/off)
             "ble": "red",                           # Enable ble on esp32
-            "ota-url": ""                           # if the device should seach for a new update when active
+            "ota-url": ""                           # if the device should search for a new update when active
          }
    set_config( url, json )
 

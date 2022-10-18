@@ -3,6 +3,7 @@
 Releases 
 ########
 
+<<<<<<< HEAD
 v1.2.0 - beta1
 ==============
 
@@ -20,6 +21,11 @@ Documentation
 * Updated hardware section with options for ESP32 boards
 * Updated installation instructions.
 
+=======
+v1.1.1
+======
+* BUG: The text before the first variable was missed in the conversion of a format template.
+>>>>>>> master
 
 v1.1.0
 ======
@@ -31,16 +37,16 @@ Features
 * Updated sensor types in home assistant for auto registration of device
 * Added ${app-ver} and ${app-build} to format template as new variables
 * Improved error messages when creating formula so the troublesome measurement points can be identified
-* Changed defaule validation threashold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula
+* Changed default validation threshold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula
 * Updated format template for Home Assistant, aligned with new mqtt configuration format
 * Added format template for Home Assistant with automatic device registration
-* Added storage mode which is activated under hardware setting. When place on the cap (<5 degres tilt) the device will go into storage mode and deep sleep. 
+* Added storage mode which is activated under hardware setting. When place on the cap (<5 degree tilt) the device will go into storage mode and deep sleep. 
 
 Known issues, not yet fixed
 +++++++++++++++++++++++++++
 * When updating firmware and the feature `deep sleep` is active the device will activate deep sleep if the gyro is not responding. FIX: Reboot device
 
-Issues adressed
+Issues addressed
 ++++++++++++++++
 * Refactored error logging function to reduce memory usage and crashes. Max size of error log is 2 x 4 kb
 * Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars
@@ -62,7 +68,7 @@ User interface
 * Added Assistant Device registration, this is only done when format template is saved, during normal operation only data values are posted on MQTT. If HA is restarted then the device will disappear
 * Calibration temperature (for temp adjustment) can now be set under advanced settings, default is 20C
 * Changed length of device name from 12 to 63 chars. 63 is the max limit according to mdns.
-* Under format options its now possible to select brewfather ispindle format to avoid errors connected to using the wrong format template with the various brewfather endpoints
+* Under format options its now possible to select brewfather iSpindle format to avoid errors connected to using the wrong format template with the various brewfather endpoints
 * Added brewblox as format under format options
 * Added home assistant (with device registration) as format under format options
 * User can now edit the voltage level that forces the device into config mode (device detects charging)
@@ -93,14 +99,14 @@ Documentation
 +++++++++++++
 * Update documentation to match v1.0
 * Installation instructions updated on how to find the device after wifi has been configured. 
-* Documentation on brewfather has been updated to adress SG/Plato conversion
+* Documentation on brewfather has been updated to address SG/Plato conversion
 * Added circuit diagram for esp8266 and esp32
 * Added additional http error codes to troubleshooting documentation
 
 User interface
 ++++++++++++++
 * Upgraded to bootstrap v5.1 for web pages.
-* Added button on indexpage to direct to github issues.
+* Added button on index page to direct to github issues.
 * Added button to extract important information for support requests. 
 * First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.
 * Changed layout on index page with measured data on top.
@@ -111,19 +117,19 @@ Features
 ++++++++
 * Added advanced setting to ignore angles that are lower than water. This is disabled by default.
 * Added support for MPU6500 (standard is MPU6050).
-* Removed brewfather option (can use standard HTTP options), the old apporach can still be used via changing format template.
+* Removed brewfather option (can use standard HTTP options), the old approach can still be used via changing format template.
 * Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.
 * Added https support for Influxdb v2
-* Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If succesful the seconday becomes the new primary.
+* Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If successful the secondary becomes the new primary.
 * SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory. 
 * Advanced settings: Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather. 
 * Advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)
 * Advanced settings: Set amount of gyro movement is allowed for a accurate read.
 * Advanced settings: What deviation is acceptable for creating formula deviation
 * Advanced settings: Various timeouts, wifi connect, wifi portal, http connects.
-* Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing batterylife
+* Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing battery life
 
-Issues adressed
+Issues addressed
 ++++++++++++++++
 * BUG: Fixed issue in formula calculation in case there were a gap in the data series
 * BUG: Field name for wifi strength changed from "rssi" to "RSSI"
@@ -134,7 +140,7 @@ v0.9.0
 ======
 * Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api's. 
 * Added function to test push targets from configuration page. It will send data and show the return code as a first step. 
-* Added documetation on how to integrate with Blynk.io using http get.
+* Added documentation on how to integrate with Blynk.io using http get.
 * Config page now shows the estimated runtime for the device (based on a full battery and previous average runtime)
 * Experimental release of firmware using an esp32 instead of esp8266
 * Merged index and device pages into one so that all the needed information is available on the index page.
@@ -151,9 +157,9 @@ v0.9.0
 * BUG: Corrected PIN for voltage read on ESP32
 * BUG: If using plato and not gravity formula was defined the value was set to null.
 * BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.
-* BUG: Temperature sensor adjusmemnt value was not handled properly when using Farenheight.
+* BUG: Temperature sensor adjustment value was not handled properly when using Fahrenheit.
 * BUG: If the ID was to low the device id could end up with a leading space causing errors in data post. Added leading zero to ID.
-* BUG: Entering wifi setup and a timeout occured the wifi settings could be deleted.
+* BUG: Entering wifi setup and a timeout occurred the wifi settings could be deleted.
 
 v0.8.0
 ======
@@ -173,7 +179,7 @@ v0.8.0
   from 16k to 2k. This can make a huge difference on a device with only 40k RAM. Not all 
   servers might support this feature.
 * Updated documentation pages.
-* Tested batterylife, 47 days using an update frequency of 5 min
+* Tested battery life, 47 days using an update frequency of 5 min
 
 v0.7.1
 ======
@@ -195,7 +201,7 @@ Latest stable version. `Release v0.7 on Github <https://github.com/mp-se/gravity
 * Added support for Plato
 * Added error handling for calibration page.
 * Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266). Not 
-  really usable since wifi connection is extreamly slow with current Arduino releases (3-8 seconds).
+  really usable since wifi connection is extremely slow with current Arduino releases (3-8 seconds).
 * Added experimental format editor so users can customize their data format used for pushing data. 
   This will reduce the need for custom push targets. As long as the service is supporting http 
   or https then the data format can be customized.
@@ -226,7 +232,7 @@ v0.6.0
 
 v0.5.0
 ======
-* Added feature to calcuate formula on device
+* Added feature to calculate formula on device
 * Total rewrite of documentation
 * WIFI settings are now stored in config file
 * Defined version numbers for all dependant libraries to avoid updates breaking build.

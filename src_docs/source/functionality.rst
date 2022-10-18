@@ -1,6 +1,6 @@
-.. _functionallity:
+.. _functionality:
 
-Functionallity
+Functionality
 ==============
 
 The main features
@@ -68,7 +68,7 @@ The main features
   Currently the device can handle 10 data points which should be enough to get a accurate formula. At least 3 data points 
   is needed to get an accurate formula.
 
-* **Customize the data format beeing sent to push targets**
+* **Customize the data format being sent to push targets**
 
   In order to make it easier to support more targets there is a built in format editor that can be used to 
   customize the data that is to be sent. This way you can easily adapt the software to new targets without coding. 
@@ -79,7 +79,7 @@ The main features
 * **Automatic temperature adjustment of gravity reading**
 
   If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice 
-  feature that can correct the gravity as a second step making this independant of the formula. 
+  feature that can correct the gravity as a second step making this independent of the formula. 
 
 * **OTA support from webserver**
 
@@ -99,8 +99,8 @@ The main features
 
 * **WIFI connection issues**
 
-  The software will not wait indefiently for a wifi connection. If it takes longer than 20 seconds to connect then
-  the device will try the seconday wifi configuration, and that also failes it will go into deep sleep for 60 seconds and then 
+  The software will not wait indefinitely for a wifi connection. If it takes longer than 20 seconds to connect then
+  the device will try the secondary wifi configuration, and that also fails it will go into deep sleep for 60 seconds and then 
   retry later. This to conserve batter as much as possible.
 
 * **Use gyro temperature sensor**
@@ -119,7 +119,7 @@ The main features
   :width: 800
   :alt: Gyro temp vs DS18B20
 
-* **Celsius or Farenheigt**
+* **Celsius or Fahrenheit**
 
   You can switch between different temperature formats. GravityMon will always use C for it's internal calculations and 
   convert to F when displayed.
@@ -131,15 +131,15 @@ The main features
 
 * **Stable gyro data**
 
-  The device will read the gyro 50 times to get an accurate reading. If the standad deviation is to high it will not 
-  use the data since this is inacurate and the device is probably moving, probably do to active fermentation or movement of 
+  The device will read the gyro 50 times to get an accurate reading. If the standard deviation is to high it will not 
+  use the data since this is inaccurate and the device is probably moving, probably do to active fermentation or movement of 
   fermentation vessel. This sequence takes 900 ms seconds to execute and besides wifi connection this is what consumes the most
   battery. With more testing this might be changes to either speed up or provide more stable readings.
 
 * **Performance measurements** 
 
   I've also create a small library to measure execution code in some areas of the code that i know is time consuming. This 
-  way I can find a good balance between performace and quality. This is a lot of help trying to figure out where bottlenecks 
+  way I can find a good balance between performance and quality. This is a lot of help trying to figure out where bottlenecks 
   are in the code and where to put optimization efforts. Examples of real measurements:
 
   * Reading the gyro: 885 ms
@@ -160,7 +160,7 @@ The main features
 Battery life
 ------------
 
-The long term battery test has now been completed. Using a 2200 mA battery and sending data every 5 minutes to a local server on my network. The battery lasted 47 days which is excellet battery life. 
+The long term battery test has now been completed. Using a 2200 mA battery and sending data every 5 minutes to a local server on my network. The battery lasted 47 days which is excellent battery life. 
 
 In another test I had a device running with an sleep interval of only 30s with ok wifi connection. The device lasted 12 days which i think is excellent considering the short sleep interval. 
 
@@ -173,7 +173,7 @@ Performance
 Since I have the possibility to measure the performance of different function in the code this is what I have been able to gather.
 
 The typical runtime in a measurement cycle is approx 2 seconds and in some cases it can take up to 6-8 seconds but this is mainly related to establishing the WIFI connection. So stable wifi is 
-essential for long batterylife. Out of the 2 seconds of run-time the major time is spent on gyro readings (1.3s) and temperature measurements of (0.6s) so using the gyro sensor for measureing 
+essential for long battery life. Out of the 2 seconds of run-time the major time is spent on gyro readings (1.3s) and temperature measurements of (0.6s) so using the gyro sensor for measuring 
 temperature would reduce the total runtime with 25%. Sending data over http takes less than 100ms (on my local network) so this is not drawing much power. 
 
 The image below shows how the run-time varies over time. The pink line is the wifi connection time and this is why the time varies. The orange is the total runtime for the awake period.

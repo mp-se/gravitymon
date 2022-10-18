@@ -12,7 +12,7 @@ You have these 3 options for flashing this firmware.
 Brewflasher
 ===========
 
-The prefered option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works 
+The preferred option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works 
 on both Windows and Mac. You can download the latest version from here: `Brewflasher <https://www.brewflasher.com/>`_ there is also a web based version 
 available here `Brewflasher WEB <https://web.brewflasher.com/>`_.
 
@@ -27,7 +27,7 @@ In the /bin directory you will find 4 different firmware builds;
 
 * **firmware.bin**
 
-  This is the standard release build (prefered version) 
+  This is the standard release build (preferred version) 
 
 * **firmware32.bin**
 
@@ -65,7 +65,7 @@ iSpindel (esp8266)
 ==================
 
 If you already have the device flashed with iSpindel firmware you can go into the configuration mode where you will find
-an option for updating firmware. The option is under the maintence meny.
+an option for updating firmware. The option is under the maintenance menu.
 
 Select the esp8266 version of the firmware called firmware.bin and press upload. 
 
@@ -125,19 +125,19 @@ Configuring WIFI
 When the device is flashed it will need to have WIFI configuration in order to work. If you have used other software on 
 the device its possible that wifi settings already exist.
 
-If this is not configured in the device it will create an wirless access point called `GravMon`. The default password is `password`.
+If this is not configured in the device it will create an wireless access point called `GravMon`. The default password is `password`.
 
-Connect to this AP and enter the SSID and password you want to use. If the web page dont open automatically you can enter the following adress 
+Connect to this AP and enter the SSID and password you want to use. If the web page don't open automatically you can enter the following address 
 in the browser: **http://192.168.4.1**
 
-Before pressing save on the network infomration, make a note of the devicename that is shown on the screen, this will be the name that is used 
+Before pressing save on the network information, make a note of the devicename that is shown on the screen, this will be the name that is used 
 in the next step to access the configuration pages. The link would look like this: **http://gravitymon56EA34.local**
 
 .. note::
   When selecting a SSID in the list this will be populated in both wifi fields. This is the behaviour of the wifi manager library that I'm using,
   in the future this is planned to be moved to the normal UI.
 
-Under wifi settings you can define a primary and seconday wifi SSID. The seconday will be used in case the primary fails. If the seconday is 
+Under wifi settings you can define a primary and secondary wifi SSID. The secondary will be used in case the primary fails. If the secondary is 
 successful then it will be used as primary. *The second wifi setting is optional and not needed.*
 
 
@@ -153,10 +153,10 @@ Finding the device adress
 
 Once the wifi network settings have been added then the device will reboot and connect to your network. If the blue led is flashing then it's up and running and is ready to be configured. 
 
-If your computer supports mDNS the adress you saw before can be used in your web browser to connect to the device. Windows does not have the best support for mDNS so if you are having issues 
+If your computer supports mDNS the address you saw before can be used in your web browser to connect to the device. Windows does not have the best support for mDNS so if you are having issues 
 with finding the network name you can try the following:
 
-* Check your wireless router for the IP adress and use that to connect instead, for example; http://192.168.1.56
+* Check your wireless router for the IP address and use that to connect instead, for example; http://192.168.1.56
 * Download an IP scanner / Port Scanner on your Windows computer or mobile device and use that to find what devices are listening on port 80.
 
 Once you can access the user interface then proceed to the next step.

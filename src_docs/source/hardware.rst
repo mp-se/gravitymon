@@ -3,8 +3,12 @@
 Hardware
 ########
 
+<<<<<<< HEAD
 iSpindle based on esp8266
 =========================
+=======
+There are lots of resources out there on how to build the hardware for an iSpindle so I will not go into details on that part. Here are two of my builds using the iSpindle PCB v4.
+>>>>>>> master
 
 There are lots of resouces out there on how to build the hardware for an iSpindle so I will not go into details on that part. I typically use one of the 
 excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip. Here is one of my standard builds using an esp8266.
