@@ -5,9 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Licence" href="license.html" /><link rel="prev" title="Contributing" href="contributing.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Hardware - GravityMon 1.1.0 documentation</title>
+        <title>Hardware - GravityMon 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
     
     
@@ -122,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 1.1.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon 1.2.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">GravityMon 1.1.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon 1.2.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -199,32 +200,65 @@
         <article role="main">
           <div class="section" id="hardware">
 <span id="id1"></span><h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h1>
-<p>There are lots of resources out there on how to build the hardware for an iSpindle so I will not go into details on that part. Here are two of my builds using the iSpindle PCB v4.</p>
-<a class="reference internal image-reference" href="_images/ispindel.jpg"><img alt="Builds of iSpindel" src="_images/ispindel.jpg" style="width: 500px;"/></a>
-<p>It’s possible to use this PCB and mount an ESP32 on top of that. It must be an pin compatible ESP32 and the one I used was called <em>ESP32 d1 mini</em>. Since this is the same width as the PCB you need to
-mount it really close to the PCB in order for it to fit in the PET tube/container. I also had to smooth the edge of the ESP32 in order for it to fit.</p>
-<p>I would suggest that you try how it fits into the PET tube before soldering it to the PCB. Make sure that the battery is attached since this will be a really tight fit.</p>
-<p>You also need to desolder (remove) the RED ON LED from the ESP32 or the battery power will be reduced a lot.</p>
-<p>Final thing is to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor which
-the esp32 does not have. So in order to get a valid voltage (less than 3.2V) on the A0 pin this is needed. Once the modification is done you might
-need to adjust the voltage factor so the battery reading is correct.</p>
-<a class="reference internal image-reference" href="_images/esp32.jpg"><img alt="Mounting esp32" src="_images/esp32.jpg" style="width: 500px;"/></a>
+<div class="section" id="ispindle-based-on-esp8266">
+<h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this headline">¶</a></h2>
+<p>There are lots of resouces out there on how to build the hardware for an iSpindle so I will not go into details on that part. I typically use one of the
+excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip. Here is one of my standard builds using an esp8266.</p>
+<a class="reference internal image-reference" href="_images/ispindel_esp8266.jpg"><img alt="iSpindle esp8266" src="_images/ispindel_esp8266.jpg" style="width: 500px;"/></a>
 <div class="section" id="schema-for-esp8266-build">
-<h2>Schema for esp8266 build<a class="headerlink" href="#schema-for-esp8266-build" title="Permalink to this headline">¶</a></h2>
+<h3>Schema for esp8266 build<a class="headerlink" href="#schema-for-esp8266-build" title="Permalink to this headline">¶</a></h3>
 <a class="reference internal image-reference" href="_images/schema_esp8266.png"><img alt="Schema esp8266" src="_images/schema_esp8266.png" style="width: 700px;"/></a>
 </div>
-<div class="section" id="schema-for-esp32-build">
-<h2>Schema for esp32 build<a class="headerlink" href="#schema-for-esp32-build" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ispindle-based-on-esp32">
+<h2>iSpindle based on esp32<a class="headerlink" href="#ispindle-based-on-esp32" title="Permalink to this headline">¶</a></h2>
+<p>I’ve experimented with porting my software version to esp32 and this is a selection of options i have been testing.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Work to support esp32s2 is still ongoing, ESP32-mini and ESP32c3-mini is confirmed to be working. However I would recommend the C3 variant.</p>
+</div>
+<a class="reference internal image-reference" href="_images/esp32_hardware.jpg"><img alt="iSpindle esp32 hardware options" src="_images/esp32_hardware.jpg" style="width: 500px;"/></a>
+<ul class="simple">
+<li><p>esp32 mini, this was the first board i tried which is a smaller form factor of the first generetion esp32 with 2 cores. Slow on connecting to wifi is the main downside.</p></li>
+<li><p>esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support.</p></li>
+<li><p>esp32s2 mini, similar to the c3 board but without bluetooth support.</p></li>
+</ul>
+<p>It’s possible to use this PCB and mount an ESP32 mini on top of that (c3 and s2 are prefered). The esp32 mini is a larger formfactor and can be hard to fit into the tube.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This schema assumes that an ESP32 D1 Mini (pin compatible with ESP8266 D1 Mini is used)
-The ESP32 has two rows of pins but only the inner row is used. The main difference is the added resistor R3 so we
-get a voltage divider for measuring battery. The ESP8266 has a built in resistor thats not visible on the schema.</p>
+<p>You need to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor for a voltage divider
+which the esp32 does not have. So in order to get a valid voltage (less than 3.2V) on the A0 pin this is needed. Once the modification is done you might
+need to adjust the voltage factor so the battery reading is correct.</p>
+</div>
+<div class="section" id="esp32c3-mini">
+<h3>ESP32c3 mini<a class="headerlink" href="#esp32c3-mini" title="Permalink to this headline">¶</a></h3>
+<p>This is model is now fully supported by gravitymon.</p>
+<a class="reference internal image-reference" href="_images/ispindel_esp32c3.jpg"><img alt="Esp32c3 mini build" src="_images/ispindel_esp32c3.jpg" style="width: 500px;"/></a>
+<p>Here is an image of where I added the resistor for the voltage divider.</p>
+<a class="reference internal image-reference" href="_images/esp32_res.jpg"><img alt="Esp32c3 adding resistor as voltage dividier." src="_images/esp32_res.jpg" style="width: 500px;"/></a>
+</div>
+<div class="section" id="esp32s2-mini">
+<h3>ESP32s2 mini<a class="headerlink" href="#esp32s2-mini" title="Permalink to this headline">¶</a></h3>
+<p>Work in progress…</p>
+</div>
+<div class="section" id="esp32-d1-mini">
+<h3>ESP32 d1 mini<a class="headerlink" href="#esp32-d1-mini" title="Permalink to this headline">¶</a></h3>
+<p>I would suggest that you try how it fits into the PET tube before soldering it to the PCB. Make sure that the battery is attached since this will be a really tight fit.</p>
+<a class="reference internal image-reference" href="_images/ispindel_esp32.jpg"><img alt="Esp32 mini build" src="_images/ispindel_esp32.jpg" style="width: 500px;"/></a>
+</div>
+<div class="section" id="schema-for-esp32-build">
+<h3>Schema for esp32 build<a class="headerlink" href="#schema-for-esp32-build" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This schema assumes that an ESP32 D1 Mini (pin compatible with ESP8266 D1 Mini is used). The ESP32 has two rows of pins but
+only the inner row is used. The main difference is the added resistor R3 so we get a voltage divider for measuring battery.
+The ESP8266 has a built in resistor thats not visible on the schema and this acts as a voltage divider.</p>
 </div>
 <a class="reference internal image-reference" href="_images/schema_esp32.png"><img alt="Schema esp32" src="_images/schema_esp32.png" style="width: 700px;"/></a>
 </div>
-<div class="section" id="modifying-with-reed-switch">
-<h2>Modifying with reed switch<a class="headerlink" href="#modifying-with-reed-switch" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="adding-a-reed-magnetic-reset-switch">
+<h2>Adding a reed (magnetic) reset switch<a class="headerlink" href="#adding-a-reed-magnetic-reset-switch" title="Permalink to this headline">¶</a></h2>
 <p>A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to
 a magnet.</p>
 <a class="reference internal image-reference" href="_images/reed.jpg"><img alt="Reed switch" src="_images/reed.jpg" style="width: 400px;"/></a>
@@ -283,9 +317,18 @@ I mounted the iSPINDLE PCB v4.0 just under the cap. The lower red circle shows t
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Hardware</a><ul>
+<li><a class="reference internal" href="#ispindle-based-on-esp8266">iSpindle based on esp8266</a><ul>
 <li><a class="reference internal" href="#schema-for-esp8266-build">Schema for esp8266 build</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ispindle-based-on-esp32">iSpindle based on esp32</a><ul>
+<li><a class="reference internal" href="#esp32c3-mini">ESP32c3 mini</a></li>
+<li><a class="reference internal" href="#esp32s2-mini">ESP32s2 mini</a></li>
+<li><a class="reference internal" href="#esp32-d1-mini">ESP32 d1 mini</a></li>
 <li><a class="reference internal" href="#schema-for-esp32-build">Schema for esp32 build</a></li>
-<li><a class="reference internal" href="#modifying-with-reed-switch">Modifying with reed switch</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#adding-a-reed-magnetic-reset-switch">Adding a reed (magnetic) reset switch</a></li>
 </ul>
 </li>
 </ul>
@@ -302,5 +345,7 @@ I mounted the iSPINDLE PCB v4.0 just under the cap. The lower red circle shows t
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/scripts/furo.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
     </body>
 </html>
