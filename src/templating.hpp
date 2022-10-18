@@ -198,7 +198,6 @@ class TemplatingEngine {
     if (_output) free(_output);
 
     _output = 0;
-    _baseTemplate.clear();
   }
   void initialize(float angle, float gravitySG, float corrGravitySG,
                   float tempC, float runTime);
