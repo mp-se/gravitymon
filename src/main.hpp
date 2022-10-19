@@ -91,9 +91,9 @@ extern RunMode runMode;
 // #define PIN_A0 A4
 #endif
 
-#if defined(ESP32C3) && defined(USE_SERIAL0)
-#define EspSerial Serial0
-// #warning "Using Serial0 for output RX/TX pins on ESP32C3"
+#if defined(USE_SERIAL_PINS) && defined(ESP32)
+// #define EspSerial Serial0 // We cant use Serial on newer boards since this is using USBC port
+#define EspSerial Serial0 // We cant use Serial on newer boards since this is using USBC port
 #else
 #define EspSerial Serial
 #endif

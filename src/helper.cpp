@@ -237,7 +237,24 @@ void printBuildOptions() {
 
 SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   // Start serial with auto-detected rate (default to defined BAUD)
+#if defined(USE_SERIAL_PINS) && defined(ESP8266)
   EspSerial.begin(serialSpeed);
+#elif defined(ESP8266)
+  EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
+#elif defined(USE_SERIAL_PINS) && defined(ESP32C3)
+  EspSerial.begin(115200L, SERIAL_8N1, 20, 21);
+#elif defined(ESP32C3)
+  EspSerial.begin(115200L);
+#elif defined(USE_SERIAL_PINS) && defined(ESP32S2)
+  EspSerial.begin(115200L, SERIAL_8N1, 37, 39);
+#elif defined(ESP32S2)
+  EspSerial.begin(115200L);
+#elif defined(USE_SERIAL_PINS) && defined(ESP32)
+  EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
+#elif defined(ESP32)
+  EspSerial.begin(115200L);
+#endif
+
   EspSerial.println("Serial connection established");
   getLog()->begin(LOG_LEVEL, &EspSerial, true);
   getLog()->setPrefix(printTimestamp);
