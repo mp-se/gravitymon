@@ -120,8 +120,7 @@ void checkResetReason() {
   }
 
   Log.notice(F("HELP: Last reset cause '%s' (%d)" CR), rStr.c_str(), r);
-
-#warning "TODO: Implement logging of crashes for esp32"
+  // Havent found a good way to get exception cause from an ESP32
 #endif
 }
 

@@ -90,7 +90,7 @@ void WebServerHandler::webHandleConfig() {
 #elif defined(ESP32C3)
   doc[PARAM_PLATFORM] = "esp32c3";
 #elif defined(ESP32S2)
-  doc[PARAM_PLATFORM] = "esp32s3";
+  doc[PARAM_PLATFORM] = "esp32s2";
 #else  // esp32 mini
   doc[PARAM_PLATFORM] = "esp32";
 #endif
@@ -273,7 +273,7 @@ void WebServerHandler::webHandleStatus() {
 #elif defined(ESP32C3)
   doc[PARAM_PLATFORM] = "esp32c3";
 #elif defined(ESP32S2)
-  doc[PARAM_PLATFORM] = "esp32s3";
+  doc[PARAM_PLATFORM] = "esp32s2";
 #else  // esp32 mini
   doc[PARAM_PLATFORM] = "esp32";
 #endif

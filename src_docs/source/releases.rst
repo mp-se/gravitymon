@@ -3,6 +3,13 @@
 Releases 
 ########
 
+v1.2.0 - beta2
+==============
+
+Features
+++++++++
+* Added support for the ESP32 S2 mini board
+
 v1.2.0 - beta1
 ==============
 
