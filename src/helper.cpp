@@ -238,9 +238,11 @@ void printBuildOptions() {
 SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   // Start serial with auto-detected rate (default to defined BAUD)
 #if defined(USE_SERIAL_PINS) && defined(ESP8266)
+  // EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
   EspSerial.begin(serialSpeed);
+#warning "SerialPins is not implemented on ESP8266"
 #elif defined(ESP8266)
-  EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
+  EspSerial.begin(serialSpeed);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32C3)
   EspSerial.begin(115200L, SERIAL_8N1, 20, 21);
 #elif defined(ESP32C3)
