@@ -256,6 +256,7 @@ SerialDebug::SerialDebug(const uint32_t serialSpeed) {
 #endif
 
   EspSerial.println("Serial connection established");
+  EspSerial.setDebugOutput(true);
   getLog()->begin(LOG_LEVEL, &EspSerial, true);
   getLog()->setPrefix(printTimestamp);
   getLog()->notice(F("SDBG: Serial logging started at %u." CR), serialSpeed);
