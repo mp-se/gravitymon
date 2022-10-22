@@ -3,11 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to GravityMon's documentation!
-######################################
+Welcome to GravityMon
+#####################
 
 .. note::
-  This documentation reflects **v1.2 - beta 1**. Last updated 2022-10-15
+  This documentation reflects **v1.2 - beta 1**. Last updated 2022-10-22
 
 User interface overview
 -----------------------
@@ -23,7 +23,7 @@ This animation shows how the user interface is structured, it reflects an older 
 Main features
 -------------
 
-* Support either an ESP8266-d1-mini, ESP32-mini or ESP32C3-mini board (see :ref:`hardware`)
+* Support either an ESP8266-d1-mini, ESP32-mini, ESP32S2-mini or ESP32C3-mini board (see :ref:`hardware`)
 * Operates in two modes gravity monitoring and configuration mode
 * Gravity mode is comparable to how the iSpindle works when collecting data
 * Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings

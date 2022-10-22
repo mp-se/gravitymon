@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionality" href="functionality.html" /><link rel="prev" title="Getting started" href="intro.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Releases - GravityMon 1.2.0 documentation</title>
+        <title>Releases - GravityMon v1.2.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon 1.2.0 documentation</div></a>
+      <a href="index.html"><div class="brand">GravityMon v1.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -143,10 +143,13 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">GravityMon 1.2.0 documentation</span>
+  <span class="sidebar-brand-text">GravityMon v1.2.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -200,10 +203,19 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v1-2-0-beta1">
-<h2>v1.2.0 - beta1<a class="headerlink" href="#v1-2-0-beta1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-2-0-beta2">
+<h2>v1.2.0 - beta2<a class="headerlink" href="#v1-2-0-beta2" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for the ESP32 S2 mini board</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v1-2-0-beta1">
+<h2>v1.2.0 - beta1<a class="headerlink" href="#v1-2-0-beta1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>Features<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added support for the ESP32 C3 mini board</p></li>
 <li><p>Serial output is written to TX/RX pins instead of the USB connection for the ESP32c3. This way the serial console can be viewed when running on battery power.</p></li>
@@ -231,8 +243,8 @@
 </div>
 <div class="section" id="v1-1-0">
 <h2>v1.1.0<a class="headerlink" href="#v1-1-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id2">
-<h3>Features<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Features<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added information to error log about abnormal resets (for instance crashes) to detect and fix those</p></li>
 <li><p>Changed storage mode so that the device will go into deep sleep until reset (sleep forever)</p></li>
@@ -282,8 +294,8 @@
 <li><p>User can now edit the voltage level that forces the device into config mode (device detects charging)</p></li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h3>Documentation<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added documentation for Brewpiless as target</p></li>
 <li><p>Added documentation for BVrewblox as target</p></li>
@@ -307,8 +319,8 @@
 </div>
 <div class="section" id="v1-0-0">
 <h2>v1.0.0<a class="headerlink" href="#v1-0-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id4">
-<h3>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Documentation<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Update documentation to match v1.0</p></li>
 <li><p>Installation instructions updated on how to find the device after wifi has been configured.</p></li>
@@ -317,8 +329,8 @@
 <li><p>Added additional http error codes to troubleshooting documentation</p></li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h3>User interface<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>User interface<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
 <li><p>Added button on index page to direct to github issues.</p></li>
@@ -329,8 +341,8 @@
 <li><p>Added function on format page so that it’s easy to copy a format template from the docs (simplify service integration).</p></li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h3>Features<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h3>Features<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
 <li><p>Added support for MPU6500 (standard is MPU6050).</p></li>
@@ -347,8 +359,8 @@
 <li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing battery life</p></li>
 </ul>
 </div>
-<div class="section" id="id7">
-<h3>Issues addressed<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>Issues addressed<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Fixed issue in formula calculation in case there were a gap in the data series</p></li>
 <li><p>BUG: Field name for wifi strength changed from “rssi” to “RSSI”</p></li>
@@ -525,27 +537,31 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v1-2-0-beta1">v1.2.0 - beta1</a><ul>
+<li><a class="reference internal" href="#v1-2-0-beta2">v1.2.0 - beta2</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v1-2-0-beta1">v1.2.0 - beta1</a><ul>
+<li><a class="reference internal" href="#id2">Features</a></li>
 <li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-1-1">v1.1.1</a></li>
 <li><a class="reference internal" href="#v1-1-0">v1.1.0</a><ul>
-<li><a class="reference internal" href="#id2">Features</a></li>
+<li><a class="reference internal" href="#id3">Features</a></li>
 <li><a class="reference internal" href="#known-issues-not-yet-fixed">Known issues, not yet fixed</a></li>
 <li><a class="reference internal" href="#issues-addressed">Issues addressed</a></li>
 <li><a class="reference internal" href="#user-interface">User interface</a></li>
-<li><a class="reference internal" href="#id3">Documentation</a></li>
+<li><a class="reference internal" href="#id4">Documentation</a></li>
 <li><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-0-0">v1.0.0</a><ul>
-<li><a class="reference internal" href="#id4">Documentation</a></li>
-<li><a class="reference internal" href="#id5">User interface</a></li>
-<li><a class="reference internal" href="#id6">Features</a></li>
-<li><a class="reference internal" href="#id7">Issues addressed</a></li>
+<li><a class="reference internal" href="#id5">Documentation</a></li>
+<li><a class="reference internal" href="#id6">User interface</a></li>
+<li><a class="reference internal" href="#id7">Features</a></li>
+<li><a class="reference internal" href="#id8">Issues addressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>

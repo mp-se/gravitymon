@@ -61,7 +61,7 @@ Here is an image of where I added the resistor for the voltage divider.
 ESP32s2 mini
 ++++++++++++
 
-Work in progress...
+This is model is now fully supported by gravitymon. Same setup as for ESP32C3 mini.
 
 ESP32 d1 mini
 +++++++++++++
