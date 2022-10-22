@@ -8,19 +8,19 @@
 
 # Gravity Monitor for Beer Brewing
 
+![GravityMon Logo](src_docs/source/images/gravitymon_logo_s.png)
+
 GravityMon is a replacement firmware for the iSpindle firmware. It's 100% compatible with the iSpindle hardware design so it does not require any hardware changes. 
 
 Now also works with ESP32, either an ESP32 d1 mini or ESP32 c3 mini which both are compatible with ESP8266.
 
-Installation can be made using https://www.brewflasher.com or https://web.brewflasher.com
+Installation can be made using https://www.brewflasher.com or the web version at https://web.brewflasher.com
 
 The documenation can be found here: https://mp-se.github.io/gravitymon/index.html
 
-Note! If Brewflasher being flagged as malware by your antivirus software, try the web version.
+## The main differences:
 
-The main differences:
----------------------
-
+* Support either an ESP8266-d1-mini, ESP32-mini, ESP32S2-mini or ESP32C3-mini board
 * Operates in two modes gravity monitoring and configuration mode
 * Gravity mode is comparable to how the iSpindle works when collectintg data
 * Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings
@@ -40,5 +40,12 @@ The main differences:
 * Built in performance measurements (used to optimise code)
 * Storage mode when placed on cap (indefinite sleep)
 * Customize various hardware parameters to opimize device functionallity.
-* 
-No code has been reused from the iSpindle project. 
+* No code has been reused from the iSpindle project. 
+
+## Supported boards
+
+| | | |
+| ----------- | ----------- |----------- |
+| ![ESP8266](/d1_mini_v4.0.0.png) | ![ESP32C3](/c3_mini_v2.1.0.jpg) | ![ESP32S2](/s2_mini_v1.0.0.jpg) |
+| HW: Any version | HW: v1.0+ | HW: v1.0+ |
+| SW: GravityMon v0.1+ | SW: GravityMon v1.2.0+ | SW: GravityMon v1.2.0+ |
