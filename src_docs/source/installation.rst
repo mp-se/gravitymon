@@ -3,11 +3,13 @@
 Installation 
 ------------
 
-You have these 3 options for flashing this firmware. 
+You have these 5 options for flashing this firmware. 
 
 * Brewflasher via USB serial
+* Brewflasher WEB via USB serial
 * Esptool via USB serial
-* iSpindel web interface
+* iSpindel web interface (only ESP8266)
+* Build from source and flash via VSCode + Platformio
 
 Brewflasher
 ===========
@@ -15,6 +17,13 @@ Brewflasher
 The preferred option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works 
 on both Windows and Mac. You can download the latest version from here: `Brewflasher <https://www.brewflasher.com/>`_ there is also a web based version 
 available here `Brewflasher WEB <https://web.brewflasher.com/>`_.
+
+In order to flash an C3 board you will need Brewflasher 1.5 or newer. 
+
+.. note::
+  The S2 and C3 chips might need to be put in flash mode before flashing can be done. Hold the button on the opposite side from the RST button,
+  press the RST button and release it before the first button you pressed. This should force the chip into download mode. If you connect a serial 
+  terminal it should say "waiting for download".
 
 .. image:: images/brewflasher.png
   :width: 600
@@ -108,7 +117,7 @@ Just select a baud rate of 115200, 8N1.
   :width: 600
   :alt: Serial output
 
-On the build for esp32c3 the serial output is written to UART0 which is connected to the RX/TX pins on the chip. This way the serial output can be viewed 
+On the build for ESP32C3 and ESP32S2 the serial output is written to UART0 which is connected to the RX/TX pins on the chip. This way the serial output can be viewed 
 without a connection to the USB port, convinient when running the device on battery power. 
 
 You need a USB to TTL cable that you connect the TX, RX and GND pins. **Dont connect the power pin** if you are powering the device from USB or Battery.
