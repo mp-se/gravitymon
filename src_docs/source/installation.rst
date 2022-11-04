@@ -113,23 +113,6 @@ Serial Monitoring
 To check output from the device (logs) there are several tools out there. I found this simple tool in the Windows Store called ``Serial Port Monitoring``. 
 Just select a baud rate of 115200, 8N1.
 
-.. image:: images/serial.png
-  :width: 600
-  :alt: Serial output
-
-On the build for ESP32C3 and ESP32S2 the serial output is written to UART0 which is connected to the RX/TX pins on the chip. This way the serial output can be viewed 
-without a connection to the USB port, convinient when running the device on battery power. 
-
-You need a USB to TTL cable that you connect the TX, RX and GND pins. **Dont connect the power pin** if you are powering the device from USB or Battery.
-
-.. image:: images/usb-ttl.jpg
-  :width: 300
-  :alt: USB to TTL cable
-
-.. image:: images/serial_esp32c3.jpg
-  :width: 300
-  :alt: Serial output ESP32c3
-
 .. _setup_wifi:
 
 Configuring WIFI

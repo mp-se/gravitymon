@@ -37,6 +37,26 @@ In the platformio config there are 3 targets defined
   The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes. 
   So only enable enough debugging to troubleshoot your changes.
 
+Serial debugging on battery
+===========================
+
+.. image:: images/serial.png
+  :width: 600
+  :alt: Serial output
+
+On the ESP32 builds the serial output can be  written to UART0 which is connected to the RX/TX pins on the chip. This way the serial output can be viewed 
+without a connection to the USB port, convinient when running the device on battery power. In order to get this to work you need to compile the sofware 
+with the option **DUSE_SERIAL_PINS** and attach as USB to TTL cable to the correct pins. 
+
+You connect the USB to TTL cable that you connect the TX, RX and GND pins. **Dont connect the power pin** if you are powering the device from USB or Battery.
+
+.. image:: images/usb-ttl.jpg
+  :width: 300
+  :alt: USB to TTL cable
+
+.. image:: images/serial_esp32c3.jpg
+  :width: 300
+  :alt: Serial output ESP32c3
 
 Source structure 
 ================
@@ -92,4 +112,6 @@ This is a list of C++ defines that is used to enable/disable functions in the co
      - Password to the SSID
    * - CFG_APPVER
      - Defines the version of the compiled software
+   * - USE_SERIAL_PINS
+     - Will send the serial console to the TX/RX pins on an ESP32 target so that debugging can be done when on battery
 

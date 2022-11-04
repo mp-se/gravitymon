@@ -10,7 +10,7 @@ One of the following conditions will place the device in ``configuration mode``:
 - Gyro has not been calibrated
 - Sleep mode has been disabled in the web interface
 - Placed in horizontal mode 85-90 degrees
-- Charger connected >4.15V
+- Charger connected >4.15V (or the value that is configured)
 
 
 Status 
@@ -39,7 +39,7 @@ connection. It will show 0 if data has not been collected yet.
 
    The button `view error log` will show the last error messages on the device. This can be useful for checking errors without
    the need to connect to the serial port or to check what errors has occurred while in `gravity mode`. From v1.1 it will also detect
-   any abnormal restarts or crashes and record these in the logfile. 
+   any abnormal restarts or crashes and record these in the logfile (this applies to esp8266 only). 
 
 
 Configuration 
