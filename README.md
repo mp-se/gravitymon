@@ -16,7 +16,7 @@ Now also works with ESP32, either an ESP32 d1 mini or ESP32 c3 mini which both a
 
 Installation can be made using https://www.brewflasher.com or the web version at https://web.brewflasher.com
 
-The documentation can be found here: https://www.gravitymon.com/docs/index.html
+The documentation can be found here: https://www.gravitymon.com/docs.html
 
 Visit the gravitymon homepage here for more information about the project: https://www.gravitymon.com
 
