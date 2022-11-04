@@ -12,40 +12,14 @@
 
 GravityMon is a replacement firmware for the iSpindle firmware. It's 100% compatible with the iSpindle hardware design so it does not require any hardware changes. 
 
-Now also works with ESP32, either an ESP32 d1 mini or ESP32 c3 mini which both are compatible with ESP8266.
+Now also works with ESP32, either an ESP32 d1 mini or ESP32 c3 mini which both are pin compatible with ESP8266.
 
 Installation can be made using https://www.brewflasher.com or the web version at https://web.brewflasher.com
 
-The documenation can be found here: https://mp-se.github.io/gravitymon/index.html
+The documentation can be found here: https://www.gravitymon.com/docs/index.html
 
-## The main differences:
+Visit the gravitymon homepage here for more information about the project: https://www.gravitymon.com
 
-* Support either an ESP8266-d1-mini, ESP32-mini, ESP32S2-mini or ESP32C3-mini board
-* Operates in two modes gravity monitoring and configuration mode
-* Gravity mode is comparable to how the iSpindle works when collectintg data
-* Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings
-* Offloading some of the functionallity to run in the web browser, this allows for more advanced features.
-* REST API to enable scripted configuration
-* Send data to multiple endpoints and services at once (2xHTTP POST, HTTP GET, MQTT, INFLUXDB2)
-* Directly test all endpoints from user interface with feedback to simplify troubleshooting
-* Complete format customization for all endpoints using templates (dont really need to change the software to support new services)
-* Setup guides for how to send data to many popular services. Currently 10+ are documented
-* Automatic temperature adjustment of gravity (just tick a checkbox)
-* OTA support from webserver
-* Firmware update via web interface
-* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity and let GravityMon creates a formula
-* Visual graph showing how formula will be interpreted based on entered values
-* Using the temperature sensor in gyro instead of DS18B20 (faster)
-* SSL support in all endpoints (no certificate validation due to limitations on esp8266).
-* Built in performance measurements (used to optimise code)
-* Storage mode when placed on cap (indefinite sleep)
-* Customize various hardware parameters to opimize device functionallity.
-* No code has been reused from the iSpindle project. 
+If you want to support my work you can do that through these options
 
-## Supported boards
-
-| | | |
-| ----------- | ----------- |----------- |
-| ![ESP8266](/d1_mini_v4.0.0.png) | ![ESP32C3](/c3_mini_v2.1.0.jpg) | ![ESP32S2](/s2_mini_v1.0.0.jpg) |
-| HW: Any version | HW: v1.0+ | HW: v1.0+ |
-| SW: GravityMon v0.1+ | SW: GravityMon v1.2.0+ | SW: GravityMon v1.2.0+ |
+[<img src="https://gravitymon.com/images/buymecoffee.png" height=40>](https://www.buymeacoffee.com/mpse/) [<img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" height=40>](https://github.com/sponsors/mp-se)
