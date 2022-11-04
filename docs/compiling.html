@@ -159,13 +159,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -173,8 +172,9 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 </ul>
 
 </div>
@@ -237,6 +237,16 @@
 <p>The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes.
 So only enable enough debugging to troubleshoot your changes.</p>
 </div>
+</div>
+<div class="section" id="serial-debugging-on-battery">
+<h2>Serial debugging on battery<a class="headerlink" href="#serial-debugging-on-battery" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/serial.png"><img alt="Serial output" src="_images/serial.png" style="width: 600px;"/></a>
+<p>On the ESP32 builds the serial output can be  written to UART0 which is connected to the RX/TX pins on the chip. This way the serial output can be viewed
+without a connection to the USB port, convinient when running the device on battery power. In order to get this to work you need to compile the sofware
+with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable to the correct pins.</p>
+<p>You connect the USB to TTL cable that you connect the TX, RX and GND pins. <strong>Dont connect the power pin</strong> if you are powering the device from USB or Battery.</p>
+<a class="reference internal image-reference" href="_images/usb-ttl.jpg"><img alt="USB to TTL cable" src="_images/usb-ttl.jpg" style="width: 300px;"/></a>
+<a class="reference internal image-reference" href="_images/serial_esp32c3.jpg"><img alt="Serial output ESP32c3" src="_images/serial_esp32c3.jpg" style="width: 300px;"/></a>
 </div>
 <div class="section" id="source-structure">
 <h2>Source structure<a class="headerlink" href="#source-structure" title="Permalink to this headline">¶</a></h2>
@@ -321,6 +331,9 @@ So only enable enough debugging to troubleshoot your changes.</p>
 <tr class="row-even"><td><p>CFG_APPVER</p></td>
 <td><p>Defines the version of the compiled software</p></td>
 </tr>
+<tr class="row-odd"><td><p>USE_SERIAL_PINS</p></td>
+<td><p>Will send the serial console to the TX/RX pins on an ESP32 target so that debugging can be done when on battery</p></td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -377,6 +390,7 @@ So only enable enough debugging to troubleshoot your changes.</p>
 <li><a class="reference internal" href="#tools">Tools</a></li>
 <li><a class="reference internal" href="#code-formatting">Code Formatting</a></li>
 <li><a class="reference internal" href="#targets">Targets</a></li>
+<li><a class="reference internal" href="#serial-debugging-on-battery">Serial debugging on battery</a></li>
 <li><a class="reference internal" href="#source-structure">Source structure</a></li>
 <li><a class="reference internal" href="#options">Options</a></li>
 </ul>

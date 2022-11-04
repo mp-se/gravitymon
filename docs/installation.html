@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="Functionality" href="functionality.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="Getting started" href="intro.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Installation - GravityMon v1.2.0</title>
@@ -159,13 +159,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -173,8 +172,9 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 </ul>
 
 </div>
@@ -285,12 +285,6 @@ browser and select the firmware.bin file that corresponds to the version you wan
 <span id="id3"></span><h2>Serial Monitoring<a class="headerlink" href="#serial-monitoring" title="Permalink to this headline">¶</a></h2>
 <p>To check output from the device (logs) there are several tools out there. I found this simple tool in the Windows Store called <code class="docutils literal notranslate"><span class="pre">Serial</span> <span class="pre">Port</span> <span class="pre">Monitoring</span></code>.
 Just select a baud rate of 115200, 8N1.</p>
-<a class="reference internal image-reference" href="_images/serial.png"><img alt="Serial output" src="_images/serial.png" style="width: 600px;"/></a>
-<p>On the build for ESP32C3 and ESP32S2 the serial output is written to UART0 which is connected to the RX/TX pins on the chip. This way the serial output can be viewed
-without a connection to the USB port, convinient when running the device on battery power.</p>
-<p>You need a USB to TTL cable that you connect the TX, RX and GND pins. <strong>Dont connect the power pin</strong> if you are powering the device from USB or Battery.</p>
-<a class="reference internal image-reference" href="_images/usb-ttl.jpg"><img alt="USB to TTL cable" src="_images/usb-ttl.jpg" style="width: 300px;"/></a>
-<a class="reference internal image-reference" href="_images/serial_esp32c3.jpg"><img alt="Serial output ESP32c3" src="_images/serial_esp32c3.jpg" style="width: 300px;"/></a>
 </div>
 <div class="section" id="configuring-wifi">
 <span id="setup-wifi"></span><h2>Configuring WIFI<a class="headerlink" href="#configuring-wifi" title="Permalink to this headline">¶</a></h2>
@@ -337,14 +331,14 @@ with finding the network name you can try the following:</p>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="functionality.html">
+          <a class="prev-page" href="intro.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Functionality</div>
+                <div class="title">Getting started</div>
                 
               </div>
             </a>

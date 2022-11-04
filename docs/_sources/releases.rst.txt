@@ -3,19 +3,15 @@
 Releases 
 ########
 
-v1.2.0 - beta2
-==============
-
-Features
-++++++++
-* Added support for the ESP32 S2 mini board
-
 v1.2.0 - beta1
 ==============
+
+* Changes to 1.2.0 only affect the ESP32 hardware, the ESP8266 is the same as for v1.1.1
 
 Features
 ++++++++
 * Added support for the ESP32 C3 mini board
+* Added support for the ESP32 S2 mini board
 * Serial output is written to TX/RX pins instead of the USB connection for the ESP32c3. This way the serial console can be viewed when running on battery power.
 
 Issues adressed

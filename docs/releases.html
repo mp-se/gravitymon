@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionality" href="functionality.html" /><link rel="prev" title="Getting started" href="intro.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Hardware" href="hardware.html" /><link rel="prev" title="Configuration" href="configuration.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Releases - GravityMon v1.2.0</title>
@@ -159,13 +159,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -173,8 +172,9 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 </ul>
 
 </div>
@@ -203,21 +203,16 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v1-2-0-beta2">
-<h2>v1.2.0 - beta2<a class="headerlink" href="#v1-2-0-beta2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-2-0-beta1">
+<h2>v1.2.0 - beta1<a class="headerlink" href="#v1-2-0-beta1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Changes to 1.2.0 only affect the ESP32 hardware, the ESP8266 is the same as for v1.1.1</p></li>
+</ul>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>Added support for the ESP32 S2 mini board</p></li>
-</ul>
-</div>
-</div>
-<div class="section" id="v1-2-0-beta1">
-<h2>v1.2.0 - beta1<a class="headerlink" href="#v1-2-0-beta1" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id2">
-<h3>Features<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
 <li><p>Added support for the ESP32 C3 mini board</p></li>
+<li><p>Added support for the ESP32 S2 mini board</p></li>
 <li><p>Serial output is written to TX/RX pins instead of the USB connection for the ESP32c3. This way the serial console can be viewed when running on battery power.</p></li>
 </ul>
 </div>
@@ -243,8 +238,8 @@
 </div>
 <div class="section" id="v1-1-0">
 <h2>v1.1.0<a class="headerlink" href="#v1-1-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id3">
-<h3>Features<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Features<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added information to error log about abnormal resets (for instance crashes) to detect and fix those</p></li>
 <li><p>Changed storage mode so that the device will go into deep sleep until reset (sleep forever)</p></li>
@@ -294,8 +289,8 @@
 <li><p>User can now edit the voltage level that forces the device into config mode (device detects charging)</p></li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h3>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Documentation<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added documentation for Brewpiless as target</p></li>
 <li><p>Added documentation for BVrewblox as target</p></li>
@@ -319,8 +314,8 @@
 </div>
 <div class="section" id="v1-0-0">
 <h2>v1.0.0<a class="headerlink" href="#v1-0-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id5">
-<h3>Documentation<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Update documentation to match v1.0</p></li>
 <li><p>Installation instructions updated on how to find the device after wifi has been configured.</p></li>
@@ -329,8 +324,8 @@
 <li><p>Added additional http error codes to troubleshooting documentation</p></li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h3>User interface<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>User interface<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
 <li><p>Added button on index page to direct to github issues.</p></li>
@@ -341,8 +336,8 @@
 <li><p>Added function on format page so that it’s easy to copy a format template from the docs (simplify service integration).</p></li>
 </ul>
 </div>
-<div class="section" id="id7">
-<h3>Features<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>Features<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
 <li><p>Added support for MPU6500 (standard is MPU6050).</p></li>
@@ -359,8 +354,8 @@
 <li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing battery life</p></li>
 </ul>
 </div>
-<div class="section" id="id8">
-<h3>Issues addressed<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h3>Issues addressed<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Fixed issue in formula calculation in case there were a gap in the data series</p></li>
 <li><p>BUG: Field name for wifi strength changed from “rssi” to “RSSI”</p></li>
@@ -494,23 +489,23 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="functionality.html">
+          <a class="next-page" href="hardware.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Functionality</div>
+                <div class="title">Hardware</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="intro.html">
+          <a class="prev-page" href="configuration.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Getting started</div>
+                <div class="title">Configuration</div>
                 
               </div>
             </a>
@@ -537,31 +532,27 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v1-2-0-beta2">v1.2.0 - beta2</a><ul>
-<li><a class="reference internal" href="#features">Features</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#v1-2-0-beta1">v1.2.0 - beta1</a><ul>
-<li><a class="reference internal" href="#id2">Features</a></li>
+<li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-1-1">v1.1.1</a></li>
 <li><a class="reference internal" href="#v1-1-0">v1.1.0</a><ul>
-<li><a class="reference internal" href="#id3">Features</a></li>
+<li><a class="reference internal" href="#id2">Features</a></li>
 <li><a class="reference internal" href="#known-issues-not-yet-fixed">Known issues, not yet fixed</a></li>
 <li><a class="reference internal" href="#issues-addressed">Issues addressed</a></li>
 <li><a class="reference internal" href="#user-interface">User interface</a></li>
-<li><a class="reference internal" href="#id4">Documentation</a></li>
+<li><a class="reference internal" href="#id3">Documentation</a></li>
 <li><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-0-0">v1.0.0</a><ul>
-<li><a class="reference internal" href="#id5">Documentation</a></li>
-<li><a class="reference internal" href="#id6">User interface</a></li>
-<li><a class="reference internal" href="#id7">Features</a></li>
-<li><a class="reference internal" href="#id8">Issues addressed</a></li>
+<li><a class="reference internal" href="#id4">Documentation</a></li>
+<li><a class="reference internal" href="#id5">User interface</a></li>
+<li><a class="reference internal" href="#id6">Features</a></li>
+<li><a class="reference internal" href="#id7">Issues addressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>

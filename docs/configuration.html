@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Troubleshooting" href="troubleshooting.html" /><link rel="prev" title="Installation" href="installation.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Releases" href="releases.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Configuration - GravityMon v1.2.0</title>
@@ -159,13 +159,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -173,8 +172,9 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 </ul>
 
 </div>
@@ -209,7 +209,7 @@
 <li><p>Gyro has not been calibrated</p></li>
 <li><p>Sleep mode has been disabled in the web interface</p></li>
 <li><p>Placed in horizontal mode 85-90 degrees</p></li>
-<li><p>Charger connected &gt;4.15V</p></li>
+<li><p>Charger connected &gt;4.15V (or the value that is configured)</p></li>
 </ul>
 <div class="section" id="status">
 <h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
@@ -228,7 +228,7 @@ connection. It will show 0 if data has not been collected yet.</p>
 <p class="admonition-title">Tip</p>
 <p>The button <cite>view error log</cite> will show the last error messages on the device. This can be useful for checking errors without
 the need to connect to the serial port or to check what errors has occurred while in <cite>gravity mode</cite>. From v1.1 it will also detect
-any abnormal restarts or crashes and record these in the logfile.</p>
+any abnormal restarts or crashes and record these in the logfile (this applies to esp8266 only).</p>
 </div>
 </div>
 <div class="section" id="id1">
@@ -491,12 +491,12 @@ accept data every 15 min.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="troubleshooting.html">
+          <a class="next-page" href="releases.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Troubleshooting</div>
+                <div class="title">Releases</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>

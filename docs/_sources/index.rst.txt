@@ -7,53 +7,14 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.2 - beta 1**. Last updated 2022-10-22
-
-User interface overview
------------------------
-
-This animation shows how the user interface is structured, it reflects an older version but the structure is the same.
-
-.. image:: images/gravitymon.gif
-  :width: 800
-  :alt: User Inteface Walkthrough
-
-.. _main_features:
-
-Main features
--------------
-
-* Support either an ESP8266-d1-mini, ESP32-mini, ESP32S2-mini or ESP32C3-mini board (see :ref:`hardware`)
-* Operates in two modes gravity monitoring and configuration mode
-* Gravity mode is comparable to how the iSpindle works when collecting data
-* Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings
-* Offloading some of the functionality to run in the web browser, this allows for more advanced features.
-* REST API to enable scripted configuration
-* Send data to multiple endpoints and services at once (2xHTTP POST, HTTP GET, MQTT, INFLUXDB2)
-* Directly test all endpoints from user interface with feedback to simplify troubleshooting
-* Complete format customization for all endpoints using templates (don't really need to change the software to support new services)
-* Setup guides for how to send data to many popular services. Currently 10+ are documented
-* Automatic temperature adjustment of gravity (just tick a checkbox)
-* OTA support from webserver
-* Firmware update via web interface
-* Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity and let GravityMon creates a formula
-* Visual graph showing how formula will be interpreted based on entered values
-* Using the temperature sensor in gyro instead of DS18B20 (faster)
-* SSL support in all endpoints (no certificate validation due to limitations on esp8266).
-* Built in performance measurements (used to optimize code)
-* Storage mode when placed on cap (indefinite sleep)
-* Customize various hardware parameters to optimize device functionality.
-
-For a complete breakdown see the :ref:`functionality`
-
-.. note::
-  If you are missing some feature, please reach out on `Github <https://github.com/mp-se/gravitymon/discussions>`_ or `homebrewtalk.com <https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/>`_
+  This documentation reflects **v1.2 - beta 1**. Last updated 2022-11-04
 
 What is GravityMon?
 --------------------
 
-GravityMon is used to measure gravity and temperature during fermentation of beer and report the progress. The graph below is
-an example on how the fermentation process can be tracked. The graph has been rendered using Fermentrack. 
+GravityMon is a electronic hydrometer software that can be used to measure gravity and temperature during fermentation of beer and report the progress to a number of external 
+services. Is uses a gyro to measure the gravity since there is a correlation between gravity an the density of the fluid. Based on the density the hydrometer will float at a different angle. 
+The graph below is an example on how the fermentation process can be tracked. The graph has been rendered using Fermentrack. 
 
 .. image:: images/fermentation.png
   :width: 500
@@ -61,10 +22,11 @@ an example on how the fermentation process can be tracked. The graph has been re
 
 GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
 implements a lot of the features that has been requested in the original iSpindle project but never implemented for 
-various reasons. Here is a list of :ref:`main_features`.
+various reasons. 
 
-From v0.9 the firmware also supports a iSpindle built using an ESP32 d1 mini (pin compatible with esp8266). Currently this is an experimental 
-version but since it has more memory and processing capacity it could support more functions. See :ref:`hardware`.
+The firmware also supports a iSpindle built using an ESP32 which is pin compatible with esp8266, currently there are 3 options that are 
+supported ESP32-D1 mini, ESP32-C3 mini and ESP32-S2 mini. See :ref:`hardware`. The more modern hardware will allow better support for SSL and 
+other memory intensive functions.
 
 I started GravityMon because I like to create software and wanted to do some microcontroller programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural. 
@@ -82,13 +44,14 @@ The github repository can be found here; `GravityMon on Github <https://github.c
 
   I have tested this software on 40+ brews with good results.
 
+User interface overview
+-----------------------
 
-Documentation for older versions
---------------------------------
+This animation shows how the features of the user interface. It's for an older version but the main features are the same.
 
-* Docs for: `v1.0 <https://mp-se.github.io/gravitymon/v1.0/index.html>`_
-* Docs for: `v0.9 <https://mp-se.github.io/gravitymon/v0.9/index.html>`_
-
+.. image:: images/gravitymon.gif
+  :width: 800
+  :alt: User Inteface Walkthrough
 
 Software architecture
 ---------------------
@@ -174,13 +137,12 @@ the following libraries and without these this would have been much more difficu
    :maxdepth: 2
    :caption: Contents:
 
-   intro
-   releases
    functionality
+   intro
    installation
    configuration
-   troubleshooting
-   q_and_a
+   releases
+   hardware
    formula
    services
    advanced
@@ -188,8 +150,9 @@ the following libraries and without these this would have been much more difficu
    data
    compiling
    contributing
-   hardware
    license
+   troubleshooting
+   q_and_a
 
 Indices and tables
 ==================

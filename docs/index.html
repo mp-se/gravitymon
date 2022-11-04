@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Getting started" href="intro.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionality" href="functionality.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>GravityMon v1.2.0</title>
@@ -159,13 +159,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
@@ -173,8 +172,9 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 </ul>
 
 </div>
@@ -205,53 +205,20 @@
 <h1>Welcome to GravityMon<a class="headerlink" href="#welcome-to-gravitymon" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v1.2 - beta 1</strong>. Last updated 2022-10-22</p>
-</div>
-<div class="section" id="user-interface-overview">
-<h2>User interface overview<a class="headerlink" href="#user-interface-overview" title="Permalink to this headline">¶</a></h2>
-<p>This animation shows how the user interface is structured, it reflects an older version but the structure is the same.</p>
-<a class="reference internal image-reference" href="_images/gravitymon.gif"><img alt="User Inteface Walkthrough" src="_images/gravitymon.gif" style="width: 800px;"/></a>
-</div>
-<div class="section" id="main-features">
-<span id="id1"></span><h2>Main features<a class="headerlink" href="#main-features" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Support either an ESP8266-d1-mini, ESP32-mini, ESP32S2-mini or ESP32C3-mini board (see <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>)</p></li>
-<li><p>Operates in two modes gravity monitoring and configuration mode</p></li>
-<li><p>Gravity mode is comparable to how the iSpindle works when collecting data</p></li>
-<li><p>Configuration mode has a modern HTML5 based web UI. No need to start the access point to change settings</p></li>
-<li><p>Offloading some of the functionality to run in the web browser, this allows for more advanced features.</p></li>
-<li><p>REST API to enable scripted configuration</p></li>
-<li><p>Send data to multiple endpoints and services at once (2xHTTP POST, HTTP GET, MQTT, INFLUXDB2)</p></li>
-<li><p>Directly test all endpoints from user interface with feedback to simplify troubleshooting</p></li>
-<li><p>Complete format customization for all endpoints using templates (don’t really need to change the software to support new services)</p></li>
-<li><p>Setup guides for how to send data to many popular services. Currently 10+ are documented</p></li>
-<li><p>Automatic temperature adjustment of gravity (just tick a checkbox)</p></li>
-<li><p>OTA support from webserver</p></li>
-<li><p>Firmware update via web interface</p></li>
-<li><p>Built in function to create gravity formulas, no need for additional software, just enter tilt/gravity and let GravityMon creates a formula</p></li>
-<li><p>Visual graph showing how formula will be interpreted based on entered values</p></li>
-<li><p>Using the temperature sensor in gyro instead of DS18B20 (faster)</p></li>
-<li><p>SSL support in all endpoints (no certificate validation due to limitations on esp8266).</p></li>
-<li><p>Built in performance measurements (used to optimize code)</p></li>
-<li><p>Storage mode when placed on cap (indefinite sleep)</p></li>
-<li><p>Customize various hardware parameters to optimize device functionality.</p></li>
-</ul>
-<p>For a complete breakdown see the <a class="reference internal" href="functionality.html#functionality"><span class="std std-ref">Functionality</span></a></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you are missing some feature, please reach out on <a class="reference external" href="https://github.com/mp-se/gravitymon/discussions">Github</a> or <a class="reference external" href="https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/">homebrewtalk.com</a></p>
-</div>
+<p>This documentation reflects <strong>v1.2 - beta 1</strong>. Last updated 2022-11-04</p>
 </div>
 <div class="section" id="what-is-gravitymon">
 <h2>What is GravityMon?<a class="headerlink" href="#what-is-gravitymon" title="Permalink to this headline">¶</a></h2>
-<p>GravityMon is used to measure gravity and temperature during fermentation of beer and report the progress. The graph below is
-an example on how the fermentation process can be tracked. The graph has been rendered using Fermentrack.</p>
+<p>GravityMon is a electronic hydrometer software that can be used to measure gravity and temperature during fermentation of beer and report the progress to a number of external
+services. Is uses a gyro to measure the gravity since there is a correlation between gravity an the density of the fluid. Based on the density the hydrometer will float at a different angle.
+The graph below is an example on how the fermentation process can be tracked. The graph has been rendered using Fermentrack.</p>
 <a class="reference internal image-reference" href="_images/fermentation.png"><img alt="Example fermentation" src="_images/fermentation.png" style="width: 500px;"/></a>
 <p>GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
 implements a lot of the features that has been requested in the original iSpindle project but never implemented for
-various reasons. Here is a list of <a class="reference internal" href="#main-features"><span class="std std-ref">Main features</span></a>.</p>
-<p>From v0.9 the firmware also supports a iSpindle built using an ESP32 d1 mini (pin compatible with esp8266). Currently this is an experimental
-version but since it has more memory and processing capacity it could support more functions. See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
+various reasons.</p>
+<p>The firmware also supports a iSpindle built using an ESP32 which is pin compatible with esp8266, currently there are 3 options that are
+supported ESP32-D1 mini, ESP32-C3 mini and ESP32-S2 mini. See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>. The more modern hardware will allow better support for SSL and
+other memory intensive functions.</p>
 <p>I started GravityMon because I like to create software and wanted to do some microcontroller programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural.</p>
 <p>The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. For more
@@ -265,12 +232,10 @@ try my best to fix issues that might occur.</p>
 <p>I have tested this software on 40+ brews with good results.</p>
 </div>
 </div>
-<div class="section" id="documentation-for-older-versions">
-<h2>Documentation for older versions<a class="headerlink" href="#documentation-for-older-versions" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Docs for: <a class="reference external" href="https://mp-se.github.io/gravitymon/v1.0/index.html">v1.0</a></p></li>
-<li><p>Docs for: <a class="reference external" href="https://mp-se.github.io/gravitymon/v0.9/index.html">v0.9</a></p></li>
-</ul>
+<div class="section" id="user-interface-overview">
+<h2>User interface overview<a class="headerlink" href="#user-interface-overview" title="Permalink to this headline">¶</a></h2>
+<p>This animation shows how the features of the user interface. It’s for an older version but the main features are the same.</p>
+<a class="reference internal image-reference" href="_images/gravitymon.gif"><img alt="User Inteface Walkthrough" src="_images/gravitymon.gif" style="width: 800px;"/></a>
 </div>
 <div class="section" id="software-architecture">
 <h2>Software architecture<a class="headerlink" href="#software-architecture" title="Permalink to this headline">¶</a></h2>
@@ -335,32 +300,17 @@ the following libraries and without these this would have been much more difficu
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functionality.html#the-main-features">The main features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functionality.html#battery-life">Battery life</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functionality.html#performance">Performance</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-1-flash-the-device">Step 1 - Flash the device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-2-setup-wifi">Step 2 - Setup WIFI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-3-configuration">Step 3 - Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-4-completed">Step 4 - Completed</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-2-0-beta2">v1.2.0 - beta2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-2-0-beta1">v1.2.0 - beta1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-1-1">v1.1.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-1-0">v1.1.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-0-0">v1.0.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-9-0">v0.9.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-8-0">v0.8.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-1">v0.7.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-0">v0.7.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-6-0">v0.6.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-5-0">v0.5.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-4-0">v0.4.0</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="functionality.html#the-main-features">The main features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functionality.html#battery-life">Battery life</a></li>
-<li class="toctree-l2"><a class="reference internal" href="functionality.html#performance">Performance</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
@@ -378,16 +328,24 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#id1">Configuration</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#log-errors">Log errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-2-0-beta1">v1.2.0 - beta1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-1-1">v1.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-1-0">v1.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-0-0">v1.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-9-0">v0.9.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-8-0">v0.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-1">v0.7.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-7-0">v0.7.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-6-0">v0.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-5-0">v0.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v0-4-0">v0.4.0</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#calibration-error-unable-to-find-a-valid-formula">Calibration error (unable to find a valid formula)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#user-interface-does-not-render-correctly">User interface does not render correctly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#data-is-not-populated-in-the-fields">Data is not populated in the fields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp8266">iSpindle based on esp8266</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp32">iSpindle based on esp32</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#adding-a-reed-magnetic-reset-switch">Adding a reed (magnetic) reset switch</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
@@ -438,6 +396,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#tools">Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#code-formatting">Code Formatting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#targets">Targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compiling.html#serial-debugging-on-battery">Serial debugging on battery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#source-structure">Source structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#options">Options</a></li>
 </ul>
@@ -446,13 +405,19 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#design-goals">Design goals</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp8266">iSpindle based on esp8266</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp32">iSpindle based on esp32</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hardware.html#adding-a-reed-magnetic-reset-switch">Adding a reed (magnetic) reset switch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#log-errors">Log errors</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#calibration-error-unable-to-find-a-valid-formula">Calibration error (unable to find a valid formula)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#user-interface-does-not-render-correctly">User interface does not render correctly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#data-is-not-populated-in-the-fields">Data is not populated in the fields</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="indices-and-tables">
@@ -471,12 +436,12 @@ the following libraries and without these this would have been much more difficu
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="intro.html">
+          <a class="next-page" href="functionality.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Getting started</div>
+                <div class="title">Functionality</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -504,10 +469,8 @@ the following libraries and without these this would have been much more difficu
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Welcome to GravityMon</a><ul>
-<li><a class="reference internal" href="#user-interface-overview">User interface overview</a></li>
-<li><a class="reference internal" href="#main-features">Main features</a></li>
 <li><a class="reference internal" href="#what-is-gravitymon">What is GravityMon?</a></li>
-<li><a class="reference internal" href="#documentation-for-older-versions">Documentation for older versions</a></li>
+<li><a class="reference internal" href="#user-interface-overview">User interface overview</a></li>
 <li><a class="reference internal" href="#software-architecture">Software architecture</a></li>
 <li><a class="reference internal" href="#credits-to">Credits to</a><ul>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
