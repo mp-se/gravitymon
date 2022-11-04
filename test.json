@@ -1,0 +1,21 @@
+gravmon/${mdns}/temperature:${temp}|
+gravmon/${mdns}/gravity:${gravity}|
+gravmon/${mdns}/rssi:${rssi}|
+gravmon/${mdns}/tilt:${tilt}|
+gravmon/${mdns}/battery:${battery}|
+homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
+homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","dev_cla":"temperature","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
+homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"signal_strength","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
+homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","dev_cla":"temperature","stat_t":"gravmon/${mdns}/tilt"}|
+homeassistant/sensor/gravmon_${id}/battery/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_batt","name":"battery","dev_cla":"voltage","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"}|
+
+gravmon/garvmon1/temperature:27.0|
+gravmon/garvmon1/gravity:0.0000|
+gravmon/garvmon1/rssi:-65|
+gravmon/garvmon1/tilt:84.76|
+gravmon/garvmon1/battery:4.99|
+homeassistant/sensor/gravmon_66a1b0/temperature/config:{"dev":{"name":"garvmon1","mdl":"gravmon","sw":"1.1.0","ids":"66a1b0"},"uniq_id":"66a1b0_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"C","stat_t":"gravmon/garvmon1/temperature"}|
+homeassistant/sensor/gravmon_66a1b0/gravity/config:{"dev":{"name":"garvmon1","mdl":"gravmon","sw":"1.1.0","ids":"66a1b0"},"uniq_id":"66a1b0_grav","name":"gravity","dev_cla":"temperature","unit_of_meas":" G","stat_t":"gravmon/garvmon1/gravity"}|
+homeassistant/sensor/gravmon_66a1b0/rssi/config:{"dev":{"name":"garvmon1","mdl":"gravmon","sw":"1.1.0","ids":"66a1b0"},"uniq_id":"66a1b0_rssi","name":"rssi","dev_cla":"signal_strength","unit_of_meas":"dBm","stat_t":"gravmon/garvmon1/rssi"}|
+homeassistant/sensor/gravmon_66a1b0/tilt/config:{"dev":{"name":"garvmon1","mdl":"gravmon","sw":"1.1.0","ids":"66a1b0"},"uniq_id":"66a1b0_tilt","name":"tilt","dev_cla":"temperature","stat_t":"gravmon/garvmon1/tilt"}|
+homeassistant/sensor/gravmon_66a1b0/battery/config:{"dev":{"name":"garvmon1","mdl":"gravmon","sw":"1.1.0","ids":"66a1b0"},"uniq_id":"66a1b0_batt","name":"battery","dev_cla":"voltage","unit_of_meas":"V","stat_t":"gravmon/garvmon1/battery"}|
