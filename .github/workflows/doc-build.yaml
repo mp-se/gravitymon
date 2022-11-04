@@ -48,8 +48,8 @@ jobs:
           username: ${{ secrets.SFTP_USER }}
           password: ${{ secrets.SFTP_PASSWD }}
           forceUpload: false 
-          localDir: '../docs'
-          remoteDir: '/run/www/docs'
+          localDir: 'docs/'
+          remoteDir: '/run/www/docs/'
           exclude: ''
           dryRun: false
 
