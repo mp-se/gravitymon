@@ -79,6 +79,19 @@ extern RunMode runMode;
 #define PIN_DS A8
 #define PIN_A0 A2
 #define PIN_LED LED_BUILTIN
+#elif defined(ESP32LITE)
+#include <FS.h>
+#include <LittleFS.h>
+
+#include "esp32/rom/rtc.h"
+#define ESPhttpUpdate httpUpdate
+#define ESP_RESET ESP.restart
+#define ESP8266WebServer WebServer
+#define PIN_SDA A17
+#define PIN_SCL A19
+#define PIN_DS A3
+#define PIN_A0 A0
+#define PIN_LED LED_BUILTIN
 #else  // defined (ESP32)
 #include <FS.h>
 #include <LittleFS.h>

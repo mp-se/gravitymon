@@ -149,13 +149,19 @@ class Config {
   float _voltageFactor = 1.3;
 #elif defined(ESP32S2)
   float _voltageFactor = 0.59;
+#elif defined(ESP32LITE)
+  float _voltageFactor = 1.59;
 #else  // ESP32
   float _voltageFactor = 1.3;
 #endif
   float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;
   int _sleepInterval = 900;
+#if defined(FLOATY)
+  bool _gyroTemp = true;
+#else
   bool _gyroTemp = false;
+#endif
   bool _storageSleep = false;
 
   // Wifi Config
@@ -211,8 +217,12 @@ class Config {
 
   const bool isGyroTemp() { return _gyroTemp; }
   void setGyroTemp(bool b) {
+#if defined(FLOATY)
+    // Floaty hardware dont have a temp sensor, uses gyro temperature
+#else
     _gyroTemp = b;
     _saveNeeded = true;
+#endif
   }
 
   const bool isStorageSleep() { return _storageSleep; }
