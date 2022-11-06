@@ -740,10 +740,19 @@
       // MPU-6050 consumes 4mA
       // DS18B20 consumes 1mA
       // For this estimation we use an average of 160mA
+      var pwrActive = 160; // mA per hour (120-170 mA)
+      var pwrSleep = 15; // mA per day (include all pheripials as well)
+      var batt = 2200; // mA
 
-      var pwrActive = 170; // mA per hour
-      var pwrSleep = 15; // mA per day
-      var batt = 2000; // mA
+      if(cfg["platform"]=="esp32") {
+        var pwrActive = 330; // mA per hour (260-379 mA)
+      } else if(cfg["platform"]=="esp32c3") {
+        var pwrActive = 320; // mA per hour (290-350 mA)
+      } else if(cfg["platform"]=="esp32s2") {
+        var pwrActive = 280; // mA per hour (260-300 mA)
+      } else if(cfg["platform"]=="esp32lite") {
+        var pwrActive = 330; // mA per hour (260-379 mA)
+      }
 
       if(rt<1) rt = 2;
 
@@ -869,9 +878,13 @@
       $.getJSON(url, function (cfg) {
         console.log( cfg );
 
-        if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3") {
+        if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3" || cfg["platform"]=="esp32lite") {
           $('#ble').prop('disabled', false);
           $("#ble").val(cfg["ble"]);
+        }
+
+        if(cfg["platform"]=="esp32lite") {
+          $('#gyro-temp').prop('disabled', true);
         }
 
         $("#id1").val(cfg["id"]);
