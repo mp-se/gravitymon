@@ -118,7 +118,7 @@ void WifiConnection::startPortal() {
   ESP_WMParameter deviceName(mdns.c_str());
   myWifiManager->addParameter(&deviceName);
 
-#if defined(ESP32C3)
+#if defined(ESP32C3) && defined(REDUCE_WIFI_POWER)
   Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
   WiFi.setTxPower(WIFI_POWER_8_5dBm);  // Required for ESP32C3 Mini
 #endif
@@ -157,7 +157,7 @@ void WifiConnection::connectAsync(int wifiIndex) {
   WiFi.persistent(true);
   WiFi.mode(WIFI_STA);
 
-#if defined(ESP32C3)
+#if defined(ESP32C3) && defined(REDUCE_WIFI_POWER)
   Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
   WiFi.setTxPower(WIFI_POWER_8_5dBm);  // Required for ESP32C3 Mini
 #endif

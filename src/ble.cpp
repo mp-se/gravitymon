@@ -41,7 +41,7 @@ BleSender::BleSender(const char* color) {
 
   // boost power to maximum, these might be changed once battery life using BLE
   // has been tested.
-#if defined(ESP32C3)
+#if defined(ESP32C3) && defined(REDUCE_WIFI_POWER)
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P6);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P6);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P6);
