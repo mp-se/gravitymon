@@ -38,7 +38,7 @@ bool GyroSensor::setup() {
   pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
   digitalWrite(PIN_VCC, HIGH);
   digitalWrite(PIN_GND, LOW);
-  delay(10); // Wait for the pins to settle or we will fail to connect
+  delay(10);  // Wait for the pins to settle or we will fail to connect
 #else
 #endif
   /* For testing pin config of new boards with led.
@@ -60,7 +60,7 @@ bool GyroSensor::setup() {
   Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
   Wire.begin(PIN_SDA, PIN_SCL);
-  Wire.setClock(clock);  // 400kHz I2C clock. 
+  Wire.setClock(clock);  // 400kHz I2C clock.
 
   uint8_t id = accelgyro.getDeviceID();
 

@@ -38,7 +38,7 @@ enum RunMode {
 extern RunMode runMode;
 
 #if defined(ESP8266)
-// Hardware config for ESP8266-d1, iSpindel hardware 
+// Hardware config for ESP8266-d1, iSpindel hardware
 // ------------------------------------------------------
 #include <LittleFS.h>
 #define ESP_RESET ESP.reset
@@ -48,7 +48,7 @@ extern RunMode runMode;
 #define PIN_LED 2
 // #define PIN_A0 A0
 #elif defined(ESP32C3)
-// Hardware config for ESP32-c3-mini, iSpindel hardware 
+// Hardware config for ESP32-c3-mini, iSpindel hardware
 // ------------------------------------------------------
 #include <FS.h>
 #include <LittleFS.h>
@@ -71,7 +71,7 @@ extern RunMode runMode;
 // cannot use both. So we point LED to pin 8 which is not used.
 #define PIN_LED 8
 #elif defined(ESP32S2)
-// Hardware config for ESP32-s2-mini, iSpindel hardware 
+// Hardware config for ESP32-s2-mini, iSpindel hardware
 // ------------------------------------------------------
 #include <FS.h>
 #include <LittleFS.h>
@@ -86,7 +86,7 @@ extern RunMode runMode;
 #define PIN_A0 A2
 #define PIN_LED LED_BUILTIN
 #elif defined(ESP32LITE)
-// Hardware config for ESP32-lite, Floaty hardware 
+// Hardware config for ESP32-lite, Floaty hardware
 // ------------------------------------------------------
 #include <FS.h>
 #include <LittleFS.h>
@@ -103,7 +103,7 @@ extern RunMode runMode;
 #define PIN_GND A18
 #define PIN_LED LED_BUILTIN
 #else  // defined (ESP32)
-// Hardware config for ESP32-d1-min, iSpindel hardware 
+// Hardware config for ESP32-d1-min, iSpindel hardware
 // ------------------------------------------------------
 #include <FS.h>
 #include <LittleFS.h>
