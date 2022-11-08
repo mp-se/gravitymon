@@ -256,11 +256,8 @@ void setup() {
       millis();  // Dont include time for wifi connection
 }
 
-//
 // Main loop that does gravity readings and push data to targets
-//
 // Return true if gravity reading was successful
-//
 bool loopReadGravity() {
   float angle = 0;
 
@@ -339,10 +336,8 @@ bool loopReadGravity() {
   return false;
 }
 
-//
 // Wrapper for loopGravity that only calls every 200ms so that we dont overload
 // this.
-//
 void loopGravityOnInterval() {
   if (abs((int32_t)(millis() - loopMillis)) > interval) {
     loopReadGravity();
@@ -358,9 +353,6 @@ void loopGravityOnInterval() {
 
 bool skipRunTimeLog = false;
 
-//
-// Main loop that determines if device should go to sleep
-//
 void goToSleep(int sleepInterval) {
   float volt = myBatteryVoltage.getVoltage();
   float runtime = (millis() - runtimeMillis);
