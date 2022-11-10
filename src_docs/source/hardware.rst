@@ -85,7 +85,7 @@ Schema for esp32 build
   :alt: Schema esp32
 
 Adding a reed (magnetic) reset switch
-=====================================
++++++++++++++++++++++++++++++++++++++
 
 A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to 
 a magnet. 
@@ -104,3 +104,13 @@ The reed switch is the glass tube visible under the esp8266.
   :alt: Reed build
 
 
+Floaty Hydrometer DIY based on esp32 lite
+=========================================
+
+Here we have another projects that has build a device similar to the iSpindel but based on an ESP32 instead.
+
+The setup is much simpler and attaches the GYRO to an ESP32 with a build in charger chip. GravityMon works on 
+this hardware platform as well but there are a few limitations:
+
+* Temperature is read from the GYRO and cannot be changed. This works fine when measuring gravity but when in configuration mode the temperature will increase since it shows the chip temperature.
+* No possibility to measure battery level (can be added with additional hardware). 

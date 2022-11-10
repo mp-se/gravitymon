@@ -3,6 +3,19 @@
 Releases 
 ########
 
+v1.2.0 - beta2
+==============
+
+Features
+++++++++
+* Added option to calculate voltage factor based on measured reference value.
+* Added support for the ESP32 lite board which is used in the Floaty Hydrometer variant.
+
+Documentation
++++++++++++++
+* Added section about the Floaty hardware
+
+
 v1.2.0 - beta1
 ==============
 

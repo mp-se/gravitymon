@@ -136,6 +136,11 @@ The main features
   fermentation vessel. This sequence takes 900 ms seconds to execute and besides wifi connection this is what consumes the most
   battery. With more testing this might be changes to either speed up or provide more stable readings.
 
+* **Crash detection and Error Logging** 
+
+  There is a build in logging function so that errors that occurs can be detected and logged to a file. On the ESP8266 crashes will also 
+  be logged so that these problems can be detected and fixed. Crash logging is not available on the ESP32 variants.
+
 * **Performance measurements** 
 
   I've also create a small library to measure execution code in some areas of the code that i know is time consuming. This 

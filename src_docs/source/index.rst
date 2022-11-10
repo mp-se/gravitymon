@@ -7,7 +7,7 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.2 - beta 1**. Last updated 2022-11-04
+  This documentation reflects **v1.2 - beta 2**. Last updated 2022-11-09
 
 What is GravityMon?
 --------------------
