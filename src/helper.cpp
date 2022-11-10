@@ -272,7 +272,7 @@ void printTimestamp(Print* _logOutput, int _logLevel) {
 
 BatteryVoltage::BatteryVoltage() {
 #if defined(ESP8266)
-  pinMode(PIN_A0, INPUT);
+  pinMode(PIN_VOLT, INPUT);
 #else
   pinMode(PIN_VOLT, INPUT_PULLDOWN);
 #endif
