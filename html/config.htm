@@ -111,6 +111,7 @@
 
           <input type="text" name="runtime-average" id="runtime-average" hidden>
           <input type="text" name="platform" id="platform" hidden>
+          <input type="text" name="voltage-factor-calc" id="voltage-factor-calc" hidden>
 
           <form action="/api/config/device" method="post">
             <input type="text" name="id" id="id1" hidden>
@@ -243,17 +244,11 @@
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="push-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
-              </div>
+                <button type="button" class="btn btn-secondary" id="format-btn" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
+                <button type="button" class="btn btn-secondary" id="test-btn" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
+                </div>
             </div>
           </form>
-
-          <div class="row mb-3">
-            <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="format-btn" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
-              <button class="btn btn-secondary" id="test-btn" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
@@ -332,16 +327,11 @@
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="push-btn2" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
-              </div>
+                <button type="button" class="btn btn-secondary" id="format-btn2" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
+                <button type="button" class="btn btn-secondary" id="test-btn2" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
+                </div>
             </div>
           </form>
-
-          <div class="row mb-3">
-            <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="format-btn2" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
-              <button class="btn btn-secondary" id="test-btn2" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
-            </div>
-          </div>
 
         </div>
       </div>
@@ -418,7 +408,15 @@
               <div class="col-sm-2">
                 <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor" placeholder="1.59" data-bs-toggle="tooltip" title="Factor used to calculate the battery voltage. Can vary depending on the R2 value">
               </div>
-              <label for="voltage-factor" class="col-sm-3 col-form-label" id="battery">Loading...</label>
+              <div class="col-sm-2">
+                <label for="voltage-factor" class="col-sm-3 col-form-label" id="battery">Loading...</label>
+              </div>
+              <div class="col-sm-1">
+                <button type="button" class="btn btn-secondary" id="volt-factor-btn" data-bs-toggle="tooltip" title="Calcualte the voltage factor based on measured battery voltage">Calculate</button>
+              </div>
+              <div class="col-sm-2">
+                <input type="number" step=".01" class="form-control" name="measured-voltage" id="measured-voltage" placeholder="" data-bs-toggle="tooltip" title="Enter the measured battery voltage to calcualte the factor">
+              </div>
             </div>
 
             <div class="row mb-3">
@@ -487,6 +485,21 @@
             </div>
 
             <script>
+              $("#volt-factor-btn").click(function(e) {
+                var f = $("#voltage-factor-calc").val();
+                var mv = parseFloat( $("#measured-voltage").val() ); 
+
+                if( isNaN(mv) ) {
+                  showError("You need to enter a measured voltage in order to calculate the factor");
+                  return;
+                }
+
+                var vf = mv / f;
+                $("#voltage-factor").val( parseFloat(vf).toFixed(2) );
+              });
+            </script> 
+
+            <script>
               var gravitymonUrl = "https://www.gravitymon.com/firmware/";
 
               $("#gravitymon-com").click(function(e){
@@ -504,13 +517,13 @@
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="hardware-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
+                <button type="button" class="btn btn-secondary" id="firmware-btn" checked data-bs-toggle="tooltip" title="Manually upload a new firmware version to the device">Upload firmware</button>
               </div>
             </div>
           </form>
 
           <div class="row mb-3">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="firmware-btn" checked data-bs-toggle="tooltip" title="Manually upload a new firmware version to the device">Upload firmware</button>
             </div>
           </div>
         </div>
@@ -924,7 +937,7 @@
       setButtonDisabled( true );
 
       var url = "/api/config";
-      //var url = "/test/config.json";
+      var url = "/test/config.json";
       $('#spinner').show(); 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
@@ -989,6 +1002,7 @@
         $("#wifi-ssid").text(cfg["wifi-ssid"]);
         $("#wifi-ssid2").text(cfg["wifi-ssid2"]);
         $("#platform").val(cfg["platform"]);
+        $("#voltage-factor-calc").val( cfg["battery"] / cfg["voltage-factor"] );
         //$("#gravity").text(cfg["gravity"] + " SG");
       })
       .fail(function () {
