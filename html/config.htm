@@ -785,19 +785,19 @@
       if(platform == "esp32" && wifi) {
         var pwrActive = 320; // mA per hour (260-379 mA)
       } else if(platform == "esp32" && !wifi) {
-        var pwrActive = 80; // mA per hour (260-379 mA)
+        var pwrActive = 160; 
       } else if(platform == "esp32c3" && wifi) {
         var pwrActive = 320; // mA per hour (290-350 mA)
       } else if(platform == "esp32c3" && !wifi) {
-        var pwrActive = 80; // mA per hour (290-350 mA)
+        var pwrActive = 160; 
       } else if(platform == "esp32s2" && wifi) {
         var pwrActive = 280; // mA per hour (260-300 mA)
       } else if(platform == "esp32s2" && !wifi) {
-        var pwrActive = 80; // mA per hour (260-300 mA)
+        var pwrActive = 160; 
       } else if(platform == "esp32lite" && wifi) {
         var pwrActive = 330; // mA per hour (260-379 mA)
       } else if(platform == "esp32lite" && !wifi) {
-        var pwrActive = 80; // mA per hour (260-379 mA)
+        var pwrActive = 160; 
       }
 
       console.log( "Estimated power per hour = " + pwrActive.toString() + "mA on platform = " + platform);
