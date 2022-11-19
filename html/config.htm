@@ -109,6 +109,9 @@
       <div id="collapseDevice" class="accordion-collapse collapse show" aria-labelledby="headingDevice" data-bs-parent="#accordion">
         <div class="accordion-body">
 
+          <input type="text" name="runtime-average" id="runtime-average" hidden>
+          <input type="text" name="platform" id="platform" hidden>
+
           <form action="/api/config/device" method="post">
             <input type="text" name="id" id="id1" hidden>
 
@@ -767,16 +770,37 @@
       var pwrActive = 160; // mA per hour (120-170 mA)
       var pwrSleep = 15; // mA per day (include all pheripials as well)
       var batt = 2200; // mA
+      var ble = false;
+      var wifi = true;
+      var platform = $("#platform").val();
 
-      if(cfg["platform"]=="esp32") {
-        var pwrActive = 330; // mA per hour (260-379 mA)
-      } else if(cfg["platform"]=="esp32c3") {
+      if($("#ble").val() != "") 
+        ble = true;
+
+      if($("#http-push").val() == "" && $("#http-push2").val() == "" && $("#http-push3").val() == "" && $("#influxdb2-push").val() == "" && $("#mqtt-push").val() == "") 
+        wifi = false;
+
+      console.log( "Connection options: BLE=" + (ble?"on":"off") + " WIFI=" + (wifi?"on":"off") );
+
+      if(platform == "esp32" && wifi) {
+        var pwrActive = 320; // mA per hour (260-379 mA)
+      } else if(platform == "esp32" && !wifi) {
+        var pwrActive = 80; // mA per hour (260-379 mA)
+      } else if(platform == "esp32c3" && wifi) {
         var pwrActive = 320; // mA per hour (290-350 mA)
-      } else if(cfg["platform"]=="esp32s2") {
+      } else if(platform == "esp32c3" && !wifi) {
+        var pwrActive = 80; // mA per hour (290-350 mA)
+      } else if(platform == "esp32s2" && wifi) {
         var pwrActive = 280; // mA per hour (260-300 mA)
-      } else if(cfg["platform"]=="esp32lite") {
+      } else if(platform == "esp32s2" && !wifi) {
+        var pwrActive = 80; // mA per hour (260-300 mA)
+      } else if(platform == "esp32lite" && wifi) {
         var pwrActive = 330; // mA per hour (260-379 mA)
+      } else if(platform == "esp32lite" && !wifi) {
+        var pwrActive = 80; // mA per hour (260-379 mA)
       }
+
+      console.log( "Estimated power per hour = " + pwrActive.toString() + "mA on platform = " + platform);
 
       if(rt<1) rt = 2;
 
@@ -790,8 +814,11 @@
       var rt = parseInt($("#runtime-average").val());
       var j = 0;
 
-      if( rt>0 )
+      console.log("Average runtime " + $("#runtime-average").val() )
+
+      if( rt>0 ) {
         j = estimateBatteryLife(i, rt);
+      }
 
       var t1 = Math.floor(i/60) + " m " + (i%60) + " s";
       var t2 = Math.floor(j/7) + " weeks " + Math.floor(j%7) + " days";
@@ -961,6 +988,7 @@
         $("#water-angle").text( "(Water angle: " + cfg["formula-calculation-data"]["a1"] + ") - default off");
         $("#wifi-ssid").text(cfg["wifi-ssid"]);
         $("#wifi-ssid2").text(cfg["wifi-ssid2"]);
+        $("#platform").val(cfg["platform"]);
         //$("#gravity").text(cfg["gravity"] + " SG");
       })
       .fail(function () {
