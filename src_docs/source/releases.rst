@@ -8,6 +8,7 @@ v1.2.0 - beta2
 
 Features
 ++++++++
+* Added function to calcualate voltage factor based on measured value.
 * Updated battery estimation for the various esp32 boards.
 * Added support for the ESP32 lite board which is used in the Floaty Hydrometer variant.
 
