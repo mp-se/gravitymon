@@ -23,3 +23,9 @@ Visit the gravitymon homepage here for more information about the project: https
 If you want to support my work you can do that through these options
 
 [<img src="https://gravitymon.com/images/buymecoffee.png" height=40>](https://www.buymeacoffee.com/mpse/) [<img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" height=40>](https://github.com/sponsors/mp-se)
+
+# Supporters
+
+Thanks to the following persons for supporting me and this project:
+
+* David Conde
