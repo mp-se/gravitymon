@@ -10,7 +10,7 @@ One of the following conditions will place the device in ``configuration mode``:
 - Gyro has not been calibrated
 - Sleep mode has been disabled in the web interface
 - Placed in horizontal mode 85-90 degrees
-- Charger connected >4.15V (or the value that is configured)
+- Charger connected >4.15V (or the value that is configured). This does not work on the Floaty variant due to lack of hardware support.
 
 
 Status 

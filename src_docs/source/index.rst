@@ -7,7 +7,7 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.2 - beta 2**. Last updated 2022-11-09
+  This documentation reflects **v1.2 - beta 2**. Last updated 2022-11-19
 
 What is GravityMon?
 --------------------
@@ -25,7 +25,7 @@ implements a lot of the features that has been requested in the original iSpindl
 various reasons. 
 
 The firmware also supports a iSpindle built using an ESP32 which is pin compatible with esp8266, currently there are 3 options that are 
-supported ESP32-D1 mini, ESP32-C3 mini and ESP32-S2 mini. See :ref:`hardware`. The more modern hardware will allow better support for SSL and 
+supported ESP32-D1 mini, ESP32-C3 mini, ESP32-S2 mini, ESP32 lite (floaty). See :ref:`hardware`. The more modern hardware will allow better support for SSL and 
 other memory intensive functions.
 
 I started GravityMon because I like to create software and wanted to do some microcontroller programming. I had done a few

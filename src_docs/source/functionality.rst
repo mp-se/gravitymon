@@ -157,20 +157,45 @@ The main features
 
   See the :ref:`compiling-the-software` for more information.
 
-* **Power measurements** 
-
-  I've also create a project to measure the power consumption of the device, but more on this later.
-
 
 Battery life
 ------------
 
-The long term battery test has now been completed. Using a 2200 mA battery and sending data every 5 minutes to a local server on my network. The battery lasted 47 days which is excellent battery life. 
+For the 1.2 version I have been running some long term battery tests on a few of the boards and also comparing wifi vs Bluetooth. I was using a standard 2200 mA battery 
+that was fully charged at the start of the tests. All devices started with factory settings with only a change in push destination and sleep interval. 
 
-In another test I had a device running with an sleep interval of only 30s with ok wifi connection. The device lasted 12 days which i think is excellent considering the short sleep interval. 
+For the wifi tests, I was pushing data every 30 seconds to a local influxdb2 server to reduce errors connected to slow response on the server side. The devices 
+was placed 2 meters from the wifi AP to ensure a good and stable wifi connection (so ideal conditions). 
 
-From what I have discovered it's the WIFI connection or latency to internet hosted that has the most impact on the battery life. The typical runtime in the tests above was around 2 seconds. 
+For the Bluetooth tests I was pusing data every 10 seconds to a linux server. 
 
+To make this comparable I measured how many times the device was able to wake up and push data before the battery was dead. I theory the power consumption when in 
+deep sleep is to low it can almost be ignored for the calculations. So the impact on battery is mainly caused by how long the device is awake. In the most optimal case 
+this can be as low as 1.5-2.0 seconds but in reality its probably around 3-4 seconds. Wifi consumes a lot of power so Bluetooth is a better option for long battery life. 
+
+.. list-table:: Battery power
+   :widths: 30 20 20 20 
+   :header-rows: 1
+
+   * - Device
+     - Transmissions
+     - 30s
+     - 300s / 15min
+   * - ESP 8266 (wifi)
+     - 26,000
+     - 9 days
+     - 90 days
+   * - ESP32 c3 (wifi)
+     - 12,000
+     - 4 days
+     - 43 days
+   * - ESP32 d1 (ble)
+     - 56,000
+     - 20 days
+     - 196 days
+
+
+As you can see from the table above there is quite some differences between the boards and connection methods. 
 
 Performance 
 -----------

@@ -32,6 +32,7 @@ In the platformio config there are 3 targets defined
 * gravity32-release: Version for ESP32 mini.
 * gravity32-c3-release: Version for ESP32 C3 mini.
 * gravity32-s2-release: Version for ESP32 S2 mini.
+* gravity32-lite-release: Version for ESP32 lite (Floaty hardware).
 
 .. warning::
   The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes. 
