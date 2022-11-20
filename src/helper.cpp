@@ -238,9 +238,8 @@ void printBuildOptions() {
 SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   // Start serial with auto-detected rate (default to defined BAUD)
 #if defined(USE_SERIAL_PINS) && defined(ESP8266)
-  // EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
-  EspSerial.begin(serialSpeed);
-#warning "SerialPins is not implemented on ESP8266"
+  uint8_t txPin = 3;
+  EspSerial.begin(serialSpeed, SERIAL_8N1, SERIAL_TX_ONLY, txPin);
 #elif defined(ESP8266)
   EspSerial.begin(serialSpeed);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32C3)
@@ -251,8 +250,10 @@ SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   EspSerial.begin(115200L, SERIAL_8N1, 37, 39);
 #elif defined(ESP32S2)
   EspSerial.begin(115200L);
+#elif defined(USE_SERIAL_PINS) && defined(ESP32LITE)
+  EspSerial.begin(serialSpeed, SERIAL_8N1, 16, 17);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32)
-  EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
+  EspSerial.begin(serialSpeed, SERIAL_8N1, 1, 3);
 #elif defined(ESP32)
   EspSerial.begin(115200L);
 #endif
@@ -270,11 +271,26 @@ void printTimestamp(Print* _logOutput, int _logLevel) {
   _logOutput->print(c);
 }
 
+bool checkPinConnected() {
+#if defined(ESP8266)
+  pinMode(PIN_CFG1, INPUT);
+#else
+  pinMode(PIN_CFG1, INPUT_PULLDOWN);
+#endif
+  pinMode(PIN_CFG2, OUTPUT);
+  delay(5);
+  digitalWrite(PIN_CFG2, 1);
+  delay(5);
+  int i = digitalRead(PIN_CFG1);
+  digitalWrite(PIN_CFG2, 0);
+  return i == LOW ? false : true;
+}
+
 BatteryVoltage::BatteryVoltage() {
 #if defined(ESP8266)
-  pinMode(PIN_A0, INPUT);
+  pinMode(PIN_VOLT, INPUT);
 #else
-  pinMode(PIN_A0, INPUT_PULLDOWN);
+  pinMode(PIN_VOLT, INPUT_PULLDOWN);
 #endif
 }
 
@@ -282,7 +298,7 @@ void BatteryVoltage::read() {
   // The analog pin can only handle 3.3V maximum voltage so we need to reduce
   // the voltage (from max 5V)
   float factor = myConfig.getVoltageFactor();  // Default value is 1.63
-  int v = analogRead(PIN_A0);
+  int v = analogRead(PIN_VOLT);
 
   // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V

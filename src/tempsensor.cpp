@@ -35,15 +35,7 @@ DallasTemperature mySensors(&myOneWire);
 
 TempSensor myTempSensor;
 
-//
-// Setup DS18B20 temp sensor. Doing setup is not that time consuming.
-//
 void TempSensor::setup() {
-#if defined(SIMULATE_TEMP)
-  hasSensors = true;
-  return;
-#endif
-
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
   Log.verbose(F("TSEN: Looking for temp sensors." CR));
 #endif
@@ -70,10 +62,6 @@ void TempSensor::setup() {
 // Retrieving value from sensor, value is in Celcius
 //
 float TempSensor::getValue(bool useGyro) {
-#if defined(SIMULATE_TEMP)
-  return 21;
-#endif
-
   if (useGyro) {
     // When using the gyro temperature only the first read value will be
     // accurate so we will use this for processing.

@@ -32,6 +32,7 @@ In the platformio config there are 3 targets defined
 * gravity32-release: Version for ESP32 mini.
 * gravity32-c3-release: Version for ESP32 C3 mini.
 * gravity32-s2-release: Version for ESP32 S2 mini.
+* gravity32-lite-release: Version for ESP32 lite (Floaty hardware).
 
 .. warning::
   The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes. 
@@ -114,4 +115,7 @@ This is a list of C++ defines that is used to enable/disable functions in the co
      - Defines the version of the compiled software
    * - USE_SERIAL_PINS
      - Will send the serial console to the TX/RX pins on an ESP32 target so that debugging can be done when on battery
-
+   * - REDUCE_WIFI_POWER
+     - Will reduce wifi power to support the ESP32C3 v1.0 which has a bad antenna
+   * - FLOATY
+     - Build for the ESP32lite FLOATY hardware option (no DS18B20 and no battery monitor)

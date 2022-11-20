@@ -30,22 +30,41 @@ MPU6050 accelgyro;
 #define GYRO_USE_INTERRUPT  // Use interrupt to detect when new sample is ready
 #define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
                             // calibration
-// #define GYRO_CALIBRATE_STARTUP          // Will  calibrate sensor at startup
 
-//
-// Initialize the sensor chip.
-//
 bool GyroSensor::setup() {
+  int clock = 400000;
+#if defined(FLOATY)
+  pinMode(PIN_VCC, OUTPUT);
+  pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
+  digitalWrite(PIN_VCC, HIGH);
+  digitalWrite(PIN_GND, LOW);
+  delay(10);  // Wait for the pins to settle or we will fail to connect
+#else
+#endif
+  /* For testing pin config of new boards with led.
+  pinMode(PIN_SDA, OUTPUT);
+  pinMode(PIN_SCL, OUTPUT);
+  for(int i = 0, j = LOW, k = LOW; i < 100; i++) {
+
+    digitalWrite(PIN_SDA, k);
+    digitalWrite(PIN_SCL, j);
+    k = !k;
+    delay(300);
+    digitalWrite(PIN_SDA, k);
+    k = !k;
+    j = !j;
+    delay(300);
+  }*/
+
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
   Wire.begin(PIN_SDA, PIN_SCL);
-  Wire.setClock(400000);  // 400kHz I2C clock. Comment this line if having
-                          // compilation difficulties
+  Wire.setClock(clock);  // 400kHz I2C clock.
 
   uint8_t id = accelgyro.getDeviceID();
 
-  if (id != 0x34 && id != 0x38) {  // Allow both MPU6050 and MPU6000
+  if (id != 0x34 && id != 0x38) {  // Allow both MPU6050 and MPU6500
     writeErrorLog("GYRO: Failed to connect to gyro, is it connected?");
     _sensorConnected = false;
   } else {
@@ -68,11 +87,6 @@ bool GyroSensor::setup() {
     accelgyro.setIntDataReadyEnabled(true);
 #endif
 
-#if defined(GYRO_CALIBRATE_STARTUP)
-    // Run the calibration at start, useful for testing.
-    calibrateSensor();
-#endif
-
     // Once we have calibration values stored we just apply them from the
     // config.
     _calibrationOffset = myConfig.getGyroCalibration();
@@ -81,19 +95,17 @@ bool GyroSensor::setup() {
   return _sensorConnected;
 }
 
-//
-// Set sensor in sleep mode to conserve battery
-//
 void GyroSensor::enterSleep() {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
+#if defined(FLOATY)
+  digitalWrite(PIN_VCC, LOW);
+#else
   accelgyro.setSleepEnabled(true);
+#endif
 }
 
-//
-// Do a number of reads to get a more stable value.
-//
 void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
                             const int delayTime) {
   RawGyroDataL average = {0, 0, 0, 0, 0, 0};
@@ -105,7 +117,8 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
 
   // Set some initial values
 #if defined(GYRO_SHOW_MINMAX)
-  RawGyroData min, max;
+  RawGyroData min = {0, 0, 0};
+  RawGyroData max = {0, 0, 0};
   accelgyro.getAcceleration(&min.ax, &min.ay, &min.az);
   min.temp = accelgyro.getTemperature();
   max = min;
@@ -179,9 +192,6 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
 #endif
 }
 
-//
-// Calcuate the angles (tilt)
-//
 float GyroSensor::calculateAngle(RawGyroData &raw) {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Calculating the angle." CR));
@@ -209,9 +219,6 @@ float GyroSensor::calculateAngle(RawGyroData &raw) {
   return vY;
 }
 
-//
-// Check if the values are high that indicate that the sensor is moving.
-//
 bool GyroSensor::isSensorMoving(RawGyroData &raw) {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Checking for sensor movement." CR));
@@ -229,9 +236,6 @@ bool GyroSensor::isSensorMoving(RawGyroData &raw) {
   return false;
 }
 
-//
-// Read the tilt angle from the gyro.
-//
 bool GyroSensor::read() {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Getting new gyro position." CR));
@@ -270,9 +274,6 @@ bool GyroSensor::read() {
   return _validValue;
 }
 
-//
-// Dump the stored calibration values.
-//
 void GyroSensor::dumpCalibration() {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Accel offset\t%d\t%d\t%d" CR), _calibrationOffset.ax,
@@ -282,9 +283,6 @@ void GyroSensor::dumpCalibration() {
 #endif
 }
 
-//
-// Update the sensor with out calculated offsets.
-//
 void GyroSensor::applyCalibration() {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Applying calibration offsets to sensor." CR));
@@ -306,9 +304,6 @@ void GyroSensor::applyCalibration() {
   accelgyro.setZGyroOffset(_calibrationOffset.gz);
 }
 
-//
-// Calculate the offsets for calibration.
-//
 void GyroSensor::calibrateSensor() {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Calibrating sensor" CR));
@@ -330,14 +325,10 @@ void GyroSensor::calibrateSensor() {
   _calibrationOffset.gy = accelgyro.getYGyroOffset();
   _calibrationOffset.gz = accelgyro.getZGyroOffset();
 
-  // Save the calibrated values
   myConfig.setGyroCalibration(_calibrationOffset);
   myConfig.saveFile();
 }
 
-//
-// Calibrate the device.
-//
 void GyroSensor::debug() {
 #if LOG_LEVEL == 6 && !defined(GYRO_DISABLE_LOGGING)
   Log.verbose(F("GYRO: Debug - Clock src   %d." CR),
