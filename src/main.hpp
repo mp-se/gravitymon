@@ -44,6 +44,8 @@ extern RunMode runMode;
 #define ESP_RESET ESP.reset
 #define PIN_SDA D3
 #define PIN_SCL D4
+#define PIN_CFG1 D8
+#define PIN_CFG2 D7
 #define PIN_DS D6
 #define PIN_LED 2
 #define PIN_VOLT PIN_A0
@@ -65,6 +67,8 @@ extern RunMode runMode;
 #define PIN_SDA 7
 #define PIN_SCL 6
 #endif  // JTAG_DEBUG
+#define PIN_CFG1 A5
+#define PIN_CFG2 A4
 #define PIN_DS A3
 #define PIN_VOLT A0
 // This should be the LED_BUILTIN, but that is also connected SDA (Gyro) so we
@@ -82,6 +86,8 @@ extern RunMode runMode;
 #define ESP8266WebServer WebServer
 #define PIN_SDA A17
 #define PIN_SCL A15
+#define PIN_CFG1 A11
+#define PIN_CFG2 A10
 #define PIN_DS A8
 #define PIN_VOLT A2
 #define PIN_LED LED_BUILTIN
@@ -99,6 +105,8 @@ extern RunMode runMode;
 #define PIN_SCL A19
 #define PIN_DS A3
 #define PIN_VOLT A7
+#define PIN_CFG1 A14
+#define PIN_CFG2 A13
 #define PIN_VCC A5
 #define PIN_GND A18
 #define PIN_LED LED_BUILTIN
@@ -115,11 +123,13 @@ extern RunMode runMode;
 #define PIN_SDA D3
 #define PIN_SCL D4
 #define PIN_DS D6
+#define PIN_CFG1 D8
+#define PIN_CFG2 D7
 #define PIN_LED LED_BUILTIN
 #define PIN_VOLT PIN_A0
 #endif
 
-#if defined(USE_SERIAL_PINS) && defined(ESP32)
+#if defined(USE_SERIAL_PINS) && ( defined(ESP32C3) || defined(ESP32S2) )
 // #define EspSerial Serial0 // We cant use Serial on newer boards since this is
 // using USBC port
 #define EspSerial \

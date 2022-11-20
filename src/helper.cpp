@@ -250,8 +250,10 @@ SerialDebug::SerialDebug(const uint32_t serialSpeed) {
   EspSerial.begin(115200L, SERIAL_8N1, 37, 39);
 #elif defined(ESP32S2)
   EspSerial.begin(115200L);
+#elif defined(USE_SERIAL_PINS) && defined(ESP32LITE)
+  EspSerial.begin(serialSpeed, SERIAL_8N1, 16, 17);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32)
-  EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
+  EspSerial.begin(serialSpeed, SERIAL_8N1, 1, 3);
 #elif defined(ESP32)
   EspSerial.begin(115200L);
 #endif
@@ -267,6 +269,21 @@ void printTimestamp(Print* _logOutput, int _logLevel) {
   char c[12];
   snprintf(c, sizeof(c), "%10lu ", millis());
   _logOutput->print(c);
+}
+
+bool checkPinConnected() {
+#if defined(ESP8266)
+  pinMode(PIN_CFG1, INPUT);
+#else
+  pinMode(PIN_CFG1, INPUT_PULLDOWN);
+#endif
+  pinMode(PIN_CFG2, OUTPUT);
+  delay(5);
+  digitalWrite(PIN_CFG2, 1);
+  delay(5);
+  int i = digitalRead(PIN_CFG1);
+  digitalWrite(PIN_CFG2, 0);
+  return i == LOW ? false : true;
 }
 
 BatteryVoltage::BatteryVoltage() {

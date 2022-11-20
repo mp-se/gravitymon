@@ -20,6 +20,7 @@ Schema for esp8266 build
   :width: 700
   :alt: Schema esp8266
 
+
 iSpindle based on esp32
 =======================
 
@@ -114,3 +115,25 @@ this hardware platform as well but there are a few limitations:
 
 * Temperature is read from the GYRO and cannot be changed. This works fine when measuring gravity but when in configuration mode the temperature will increase since it shows the chip temperature.
 * No possibility to measure battery level (can be added with additional hardware). 
+
+
+Hardware extensions
+===================
+
+GravityMon has implemented a few additions to the standard iSpindel hardware. It's possible to channel the serial console to the TX/RX pins on the chip (these position also applies to all the 
+ESP32 chips for iSpindel). You need a USB to TTL converter for this to work. This enables you to read the serial console even when on battery (newer chips dont have a diode to remove).
+
+.. note::
+  You need to compile the software using the -DUSE_SERIAL_PINS option to enable this feature. 
+
+Its also possible to force the device into configuration mode by connecting D7/D8 on the board during the startup sequence. This will enable the feature "gravity mode enabled during float".
+
+.. image:: images/8266_pins.jpg
+  :width: 500
+  :alt: iSpindel pins
+
+For the floaty device pins 16/17 are used as TX/RX pins and the 13/15 pins are used to force the device into configuration mode. Pin 35 can also be connected to the battery voltage via an voltage divider to be able to read the battery voltage. 
+
+.. image:: images/32lite_pins.jpg
+  :width: 500
+  :alt: Floaty pins

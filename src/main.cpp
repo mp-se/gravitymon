@@ -137,6 +137,7 @@ void setup() {
   // Add a delay so that serial is started.
   // delay(3000);
 #endif
+  delay(2000);
 
   // Main startup
 #if defined(ESP8266)
@@ -162,6 +163,11 @@ void setup() {
   myWifi.init();
   myAdvancedConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
+
+  sleepModeAlwaysSkip = checkPinConnected();
+  if (sleepModeAlwaysSkip) {
+    Log.notice(F("Main: Forcing config mode since D7/D8 are connected." CR));
+  }
 
   // Setup watchdog
 #if defined(ESP8266)
@@ -331,7 +337,7 @@ bool loopReadGravity() {
     }
     return true;
   } else {
-    Log.error(F("MAIN: No gyro value found, the device might be moving." CR));
+    // Log.error(F("MAIN: No gyro value found, the device might be moving." CR));
   }
   return false;
 }
