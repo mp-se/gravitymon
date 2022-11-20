@@ -129,7 +129,7 @@ extern RunMode runMode;
 #define PIN_VOLT PIN_A0
 #endif
 
-#if defined(USE_SERIAL_PINS) && ( defined(ESP32C3) || defined(ESP32S2) )
+#if defined(USE_SERIAL_PINS) && (defined(ESP32C3) || defined(ESP32S2))
 // #define EspSerial Serial0 // We cant use Serial on newer boards since this is
 // using USBC port
 #define EspSerial \

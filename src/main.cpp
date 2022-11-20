@@ -337,7 +337,8 @@ bool loopReadGravity() {
     }
     return true;
   } else {
-    // Log.error(F("MAIN: No gyro value found, the device might be moving." CR));
+    // Log.error(F("MAIN: No gyro value found, the device might be moving."
+    // CR));
   }
   return false;
 }

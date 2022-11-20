@@ -117,7 +117,8 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
 
   // Set some initial values
 #if defined(GYRO_SHOW_MINMAX)
-  RawGyroData min, max;
+  RawGyroData min = {0, 0, 0};
+  RawGyroData max = {0, 0, 0};
   accelgyro.getAcceleration(&min.ax, &min.ay, &min.az);
   min.temp = accelgyro.getTemperature();
   max = min;
