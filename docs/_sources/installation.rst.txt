@@ -53,6 +53,9 @@ In the /bin directory you will find 4 different firmware builds;
   This is the release build for an ESP32s2-mini variant. When flashing an ESP32 you also need the *partition32s2.bin* file that outlines the flash memory structure. Due to 
   the size of the firmware we are using a custom partition setup.
 
+* **firmware32lite.bin**
+
+  This is the release build for an ESP32lite which is used by the floaty build (clone).
 
 Esptool (esp8266)
 =================

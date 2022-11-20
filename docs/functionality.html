@@ -312,6 +312,10 @@ use the data since this is inaccurate and the device is probably moving, probabl
 fermentation vessel. This sequence takes 900 ms seconds to execute and besides wifi connection this is what consumes the most
 battery. With more testing this might be changes to either speed up or provide more stable readings.</p>
 </li>
+<li><p><strong>Crash detection and Error Logging</strong></p>
+<p>There is a build in logging function so that errors that occurs can be detected and logged to a file. On the ESP8266 crashes will also
+be logged so that these problems can be detected and fixed. Crash logging is not available on the ESP32 variants.</p>
+</li>
 <li><p><strong>Performance measurements</strong></p>
 <p>I’ve also create a small library to measure execution code in some areas of the code that i know is time consuming. This
 way I can find a good balance between performance and quality. This is a lot of help trying to figure out where bottlenecks
@@ -327,16 +331,52 @@ are in the code and where to put optimization efforts. Examples of real measurem
 </ul>
 <p>See the <a class="reference internal" href="compiling.html#compiling-the-software"><span class="std std-ref">Compiling the software</span></a> for more information.</p>
 </li>
-<li><p><strong>Power measurements</strong></p>
-<p>I’ve also create a project to measure the power consumption of the device, but more on this later.</p>
-</li>
 </ul>
 </div>
 <div class="section" id="battery-life">
 <h2>Battery life<a class="headerlink" href="#battery-life" title="Permalink to this headline">¶</a></h2>
-<p>The long term battery test has now been completed. Using a 2200 mA battery and sending data every 5 minutes to a local server on my network. The battery lasted 47 days which is excellent battery life.</p>
-<p>In another test I had a device running with an sleep interval of only 30s with ok wifi connection. The device lasted 12 days which i think is excellent considering the short sleep interval.</p>
-<p>From what I have discovered it’s the WIFI connection or latency to internet hosted that has the most impact on the battery life. The typical runtime in the tests above was around 2 seconds.</p>
+<p>For the 1.2 version I have been running some long term battery tests on a few of the boards and also comparing wifi vs Bluetooth. I was using a standard 2200 mA battery
+that was fully charged at the start of the tests. All devices started with factory settings with only a change in push destination and sleep interval.</p>
+<p>For the wifi tests, I was pushing data every 30 seconds to a local influxdb2 server to reduce errors connected to slow response on the server side. The devices
+was placed 2 meters from the wifi AP to ensure a good and stable wifi connection (so ideal conditions).</p>
+<p>For the Bluetooth tests I was pusing data every 10 seconds to a linux server.</p>
+<p>To make this comparable I measured how many times the device was able to wake up and push data before the battery was dead. I theory the power consumption when in
+deep sleep is to low it can almost be ignored for the calculations. So the impact on battery is mainly caused by how long the device is awake. In the most optimal case
+this can be as low as 1.5-2.0 seconds but in reality its probably around 3-4 seconds. Wifi consumes a lot of power so Bluetooth is a better option for long battery life.</p>
+<div class="table-wrapper"><table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Battery power</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 22%"/>
+<col style="width: 22%"/>
+<col style="width: 22%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Device</p></th>
+<th class="head"><p>Transmissions</p></th>
+<th class="head"><p>30s</p></th>
+<th class="head"><p>300s / 15min</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ESP 8266 (wifi)</p></td>
+<td><p>26,000</p></td>
+<td><p>9 days</p></td>
+<td><p>90 days</p></td>
+</tr>
+<tr class="row-odd"><td><p>ESP32 c3 (wifi)</p></td>
+<td><p>12,000</p></td>
+<td><p>4 days</p></td>
+<td><p>43 days</p></td>
+</tr>
+<tr class="row-even"><td><p>ESP32 d1 (ble)</p></td>
+<td><p>56,000</p></td>
+<td><p>20 days</p></td>
+<td><p>196 days</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>As you can see from the table above there is quite some differences between the boards and connection methods.</p>
 </div>
 <div class="section" id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
