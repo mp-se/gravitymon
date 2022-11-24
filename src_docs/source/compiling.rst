@@ -30,9 +30,10 @@ In the platformio config there are 3 targets defined
 * gravity-debug; Maximum logging for trouble shooting, deep sleep is disabled.
 * gravity-release; Standard release
 * gravity32-release: Version for ESP32 mini.
-* gravity32-c3-release: Version for ESP32 C3 mini.
-* gravity32-s2-release: Version for ESP32 S2 mini.
-* gravity32-lite-release: Version for ESP32 lite (Floaty hardware).
+* gravity32c3-release: Version for ESP32 C3 mini v2.1+.
+* gravity32c3v1-release: Version for ESP32 C3 mini v1.0.
+* gravity32s2-release: Version for ESP32 S2 mini.
+* gravity32lite-release: Version for ESP32 lite (Floaty hardware).
 
 .. warning::
   The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes. 
