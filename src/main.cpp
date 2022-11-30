@@ -133,12 +133,6 @@ void setup() {
   LOG_PERF_START("main-setup");
   runtimeMillis = millis();
 
-#if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
-  // Add a delay so that serial is started.
-  // delay(3000);
-#endif
-  delay(2000);
-
   // Main startup
 #if defined(ESP8266)
   Log.notice(F("Main: Started setup for %s." CR),
