@@ -25,57 +25,9 @@ SOFTWARE.
 #include <main.hpp>
 #include <AUnit.h>
 
-using aunit::TestRunner;
-using aunit::Printer;
-using aunit::Verbosity;
-
-/*
-  // Boolean
-  assertEqual(a, b)
-  assertNotEqual(a, b)
-  assertLess(a, b)
-  assertMore(a, b)
-  assertLessOrEqual(a, b)
-  assertMoreOrEqual(a, b)
-
-  // String
-  assertStringCaseEqual(a, b)
-  assertStringCaseNotEqual(a, b)
-  assertNear(a, b, error)
-  assertNotNear(a, b, error)
-  checkTestDone(name)
-  checkTestNotDone(name)
-  checkTestPass(name)
-  checkTestNotPass(name)
-  checkTestFail(name)
-  checkTestNotFail(name)
-  checkTestSkip(name)
-  checkTestNotSkip(name)
-  checkTestExpire(name) [*]
-  checkTestNotExpire(name) [*]
-  assertTestDone(name)
-  assertTestNotDone(name)
-  assertTestPass(name)
-  assertTestNotPass(name)
-  assertTestFail(name)
-  assertTestNotFail(name)
-  assertTestSkip(name)
-  assertTestNotSkip(name)
-  assertTestExpire(name) [*]
-  assertTestNotExpire(name) [*]
-*/
-
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Gravitymon - Unit Test Build");
-  delay(2000);
-  Printer::setPrinter(&Serial);
-  TestRunner::setVerbosity(Verbosity::kAll);
-}
-
-void loop() {
-  TestRunner::run();
-  delay(10);
+test(correct) {
+  int x = 1;
+  assertEqual(x, 1);
 }
 
 // EOF
