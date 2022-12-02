@@ -21,24 +21,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <Arduino.h>
-#include <main.hpp>
+#include <gyro.hpp>
 #include <AUnit.h>
 
 test(gyro_connectGyro) {
-  Serial.println("Not implemented yet (gyro_connectGyro)");
+  myGyro.setup();
+  assertEqual(myGyro.isConnected(), true);
 }
 
 test(gyro_readGyro) {
-  Serial.println("Not implemented yet (gyro_readGyro)");
-}
-
-test(gyro_calibrate) {
-  Serial.println("Not implemented yet (gyro_calibrate)");
+  myGyro.setup();
+  assertEqual(myGyro.read(), true);
 }
 
 test(gyro_readGyroTemp) {
-  Serial.println("Not implemented yet (gyro_readGyroTemp)");
+  myGyro.setup();
+  assertNotEqual(myGyro.getInitialSensorTempC(), -273.0);
+  assertNotEqual(myGyro.getSensorTempC(), -273.0);
 }
 
 // EOF
