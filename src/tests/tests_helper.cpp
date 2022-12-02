@@ -21,44 +21,72 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <Arduino.h>
-#include <main.hpp>
+#include <helper.hpp>
 #include <AUnit.h>
 
+BatteryVoltage myBatteryVoltage;
+
 test(helper_convertToPlato) {
-  Serial.println("Not implemented yet (helper_convertToPlato)");
+  double p = convertToPlato(1.008);
+  char buffer[20];
+  String s = convertFloatToString(p, &buffer[0], 2);
+  s.trim();
+  assertEqual(s, "2.06");
 }
 
 test(helper_convertToSG) {
-  Serial.println("Not implemented yet (helper_convertToSG)");
+  double p = convertToSG(2.06);
+  char buffer[20];
+  String s = convertFloatToString(p, &buffer[0], 3);
+  s.trim();
+  assertEqual(s, "1.008");
 }
 
 test(helper_convertCtoF) {
-  Serial.println("Not implemented yet (helper_convertCtoF)");
+  float t = convertCtoF(20.0);
+  assertEqual(t, 68.0);
 }
 
 test(helper_convertFtoC) {
-  Serial.println("Not implemented yet (helper_convertFtoC)");
+  float t = convertFtoC(68.0);
+  assertEqual(t, 20.0);
 }
 
 test(helper_urlEncode) {
-  Serial.println("Not implemented yet (helper_urlEncode)");
+  String s = urlencode("Hello world");
+  assertEqual(s, "Hello\%20world");
 }
 
 test(helper_urlDecode) {
-  Serial.println("Not implemented yet (helper_urlDecode)");
+  String s = urldecode("Hello\%20world");
+  assertEqual(s, "Hello world");
 }
 
 test(helper_convertFloatToString) {
-  Serial.println("Not implemented yet (helper_convertFloatToString)");
+  char buffer[20];
+  String s = convertFloatToString(20.2, &buffer[0], 2);
+  s.trim();
+  assertEqual(s, "20.20");
 }
 
-test(helper_reduceFloatPrecision) {
-  Serial.println("Not implemented yet (reduceFloatPrecision)");
+test(helper_reduceFloatPrecision1) {
+  float v = 20.233;
+  float f = reduceFloatPrecision(v, 2);
+  v = 20.23;
+  assertEqual(f, v);
+}
+
+test(helper_reduceFloatPrecision2) {
+  float v = 20.238;
+  float f = reduceFloatPrecision(v, 2);
+  v = 20.24;
+  assertEqual(f, v);
 }
 
 test(helper_readBatteryVoltage) {
-  Serial.println("Not implemented yet (helper_readBatteryVoltage)");
+  myBatteryVoltage.read();
+  float f = myBatteryVoltage.getVoltage();
+  assertMoreOrEqual(f, 2.0);
 }
 
 // EOF
