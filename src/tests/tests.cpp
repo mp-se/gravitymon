@@ -70,7 +70,7 @@ void setup() {
   Serial.println("Gravitymon - Unit Test Build");
   delay(2000);
   Printer::setPrinter(&Serial);
-  TestRunner::setVerbosity(Verbosity::kAll);
+  //TestRunner::setVerbosity(Verbosity::kAll);
 }
 
 void loop() {
