@@ -25,9 +25,20 @@ SOFTWARE.
 #include <main.hpp>
 #include <AUnit.h>
 
-test(incorrect) {
-  int x = 1;
-  assertNotEqual(x, 1);
+test(gyro_connectGyro) {
+  Serial.println("Not implemented yet (gyro_connectGyro)");
+}
+
+test(gyro_readGyro) {
+  Serial.println("Not implemented yet (gyro_readGyro)");
+}
+
+test(gyro_calibrate) {
+  Serial.println("Not implemented yet (gyro_calibrate)");
+}
+
+test(gyro_readGyroTemp) {
+  Serial.println("Not implemented yet (gyro_readGyroTemp)");
 }
 
 // EOF

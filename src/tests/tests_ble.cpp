@@ -25,9 +25,6 @@ SOFTWARE.
 #include <main.hpp>
 #include <AUnit.h>
 
-test(correct) {
-  int x = 1;
-  assertEqual(x, 1);
-}
+// No unit testing for the BLE module.
 
 // EOF

@@ -27,9 +27,6 @@ SOFTWARE.
 #include <calc.hpp>
 #include <main.hpp>
 
-//
-// Use values to derive a formula
-//
 int createFormula(RawFormulaData &fd, char *formulaBuffer,
                   int formulaBufferSize, int order) {
   int noAngles = 0;
@@ -118,10 +115,6 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
   return ERR_FORMULA_INTERNAL;
 }
 
-//
-// Calculates gravity according to supplied formula, compatible with
-// iSpindle/Fermentrack formula
-//
 double calculateGravity(double angle, double temp, const char *tempFormula) {
   const char *formula = myConfig.getGravityFormula();
 
@@ -163,12 +156,10 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
   return 0;
 }
 
-//
 // Do a standard gravity temperature correction. This is a simple way to adjust
 // for differnt worth temperatures. This function uses C as temperature.
 //
 // Source: https://homebrewacademy.com/hydrometer-temperature-correction/
-//
 double gravityTemperatureCorrectionC(double gravitySG, double tempC,
                                      double calTempC) {
 #if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
