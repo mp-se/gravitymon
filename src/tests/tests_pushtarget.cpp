@@ -25,6 +25,6 @@ SOFTWARE.
 #include <main.hpp>
 #include <AUnit.h>
 
-// No unit testing for the PUSH module. These tests are done using python script and the API's
+// TODO: Build some php scripts that run on gravitymon.com for testing the push data.
 
 // EOF

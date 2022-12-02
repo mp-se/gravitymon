@@ -24,6 +24,8 @@ python3 -m unittest -v apitests.API.test_status -v
 
 # Unit testing - Specific build
 
-Ive added a specific build that uses the AUnit testing framework so that we can test functions or classed on the device itself. 
+I've added a specific build that uses the AUnit (https://github.com/bxparks/AUnit) testing framework so that we can test functions or classes on the device itself. I hope this will simplify the release and testing cycle.
 
-Select the build target and build/upload the code to an iSpindle device. Check the output from the serial console.
+1. Select the build target (gravity-unit)
+2. Build/upload the code to an iSpindle device. 
+3. Check the output from the serial console.
