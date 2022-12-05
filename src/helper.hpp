@@ -43,6 +43,9 @@ void checkResetReason();
 // Sleep mode
 void deepSleep(int t);
 
+// Force config mode
+bool checkPinConnected();
+
 // Show build options
 void printBuildOptions();
 

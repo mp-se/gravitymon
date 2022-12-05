@@ -12,7 +12,7 @@
 
 GravityMon is a replacement firmware for the iSpindle firmware. It's 100% compatible with the iSpindle hardware design so it does not require any hardware changes. 
 
-Now also works with ESP32, either an ESP32 d1 mini or ESP32 c3 mini which both are pin compatible with ESP8266.
+Now also works with ESP32 d1 mini, ESP32 c3 mini, ESP32 S2 mini which both are pin compatible with ESP8266.
 
 Installation can be made using https://www.brewflasher.com or the web version at https://web.brewflasher.com
 
@@ -23,3 +23,9 @@ Visit the gravitymon homepage here for more information about the project: https
 If you want to support my work you can do that through these options
 
 [<img src="https://gravitymon.com/images/buymecoffee.png" height=40>](https://www.buymeacoffee.com/mpse/) [<img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" height=40>](https://github.com/sponsors/mp-se)
+
+# Supporters
+
+Thanks to the following persons for supporting me and this project:
+
+* David Conde

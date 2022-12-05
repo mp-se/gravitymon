@@ -38,14 +38,20 @@ enum RunMode {
 extern RunMode runMode;
 
 #if defined(ESP8266)
+// Hardware config for ESP8266-d1, iSpindel hardware
+// ------------------------------------------------------
 #include <LittleFS.h>
 #define ESP_RESET ESP.reset
 #define PIN_SDA D3
 #define PIN_SCL D4
+#define PIN_CFG1 D8
+#define PIN_CFG2 D7
 #define PIN_DS D6
 #define PIN_LED 2
-// #define PIN_A0 A0
+#define PIN_VOLT PIN_A0
 #elif defined(ESP32C3)
+// Hardware config for ESP32-c3-mini, iSpindel hardware
+// ------------------------------------------------------
 #include <FS.h>
 #include <LittleFS.h>
 
@@ -61,12 +67,16 @@ extern RunMode runMode;
 #define PIN_SDA 7
 #define PIN_SCL 6
 #endif  // JTAG_DEBUG
+#define PIN_CFG1 A5
+#define PIN_CFG2 A4
 #define PIN_DS A3
-#define PIN_A0 A0
+#define PIN_VOLT A0
 // This should be the LED_BUILTIN, but that is also connected SDA (Gyro) so we
 // cannot use both. So we point LED to pin 8 which is not used.
 #define PIN_LED 8
 #elif defined(ESP32S2)
+// Hardware config for ESP32-s2-mini, iSpindel hardware
+// ------------------------------------------------------
 #include <FS.h>
 #include <LittleFS.h>
 
@@ -76,10 +86,33 @@ extern RunMode runMode;
 #define ESP8266WebServer WebServer
 #define PIN_SDA A17
 #define PIN_SCL A15
+#define PIN_CFG1 A11
+#define PIN_CFG2 A10
 #define PIN_DS A8
-#define PIN_A0 A2
+#define PIN_VOLT A2
+#define PIN_LED LED_BUILTIN
+#elif defined(ESP32LITE)
+// Hardware config for ESP32-lite, Floaty hardware
+// ------------------------------------------------------
+#include <FS.h>
+#include <LittleFS.h>
+
+#include "esp32/rom/rtc.h"
+#define ESPhttpUpdate httpUpdate
+#define ESP_RESET ESP.restart
+#define ESP8266WebServer WebServer
+#define PIN_SDA A17
+#define PIN_SCL A19
+#define PIN_DS A3
+#define PIN_VOLT A7
+#define PIN_CFG1 A14
+#define PIN_CFG2 A13
+#define PIN_VCC A5
+#define PIN_GND A18
 #define PIN_LED LED_BUILTIN
 #else  // defined (ESP32)
+// Hardware config for ESP32-d1-min, iSpindel hardware
+// ------------------------------------------------------
 #include <FS.h>
 #include <LittleFS.h>
 
@@ -90,11 +123,13 @@ extern RunMode runMode;
 #define PIN_SDA D3
 #define PIN_SCL D4
 #define PIN_DS D6
+#define PIN_CFG1 D8
+#define PIN_CFG2 D7
 #define PIN_LED LED_BUILTIN
-// #define PIN_A0 A4
+#define PIN_VOLT PIN_A0
 #endif
 
-#if defined(USE_SERIAL_PINS) && defined(ESP32)
+#if defined(USE_SERIAL_PINS) && (defined(ESP32C3) || defined(ESP32S2))
 // #define EspSerial Serial0 // We cant use Serial on newer boards since this is
 // using USBC port
 #define EspSerial \

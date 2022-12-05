@@ -109,6 +109,10 @@
       <div id="collapseDevice" class="accordion-collapse collapse show" aria-labelledby="headingDevice" data-bs-parent="#accordion">
         <div class="accordion-body">
 
+          <input type="text" name="runtime-average" id="runtime-average" hidden>
+          <input type="text" name="platform" id="platform" hidden>
+          <input type="text" name="voltage-factor-calc" id="voltage-factor-calc" hidden>
+
           <form action="/api/config/device" method="post">
             <input type="text" name="id" id="id1" hidden>
 
@@ -240,17 +244,11 @@
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="push-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
-              </div>
+                <button type="button" class="btn btn-secondary" id="format-btn" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
+                <button type="button" class="btn btn-secondary" id="test-btn" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
+                </div>
             </div>
           </form>
-
-          <div class="row mb-3">
-            <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="format-btn" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
-              <button class="btn btn-secondary" id="test-btn" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
@@ -329,16 +327,11 @@
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="push-btn2" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
-              </div>
+                <button type="button" class="btn btn-secondary" id="format-btn2" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
+                <button type="button" class="btn btn-secondary" id="test-btn2" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
+                </div>
             </div>
           </form>
-
-          <div class="row mb-3">
-            <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="format-btn2" data-bs-toggle="tooltip" title="Open up the format editor to change data format posted">Format editor</button>
-              <button class="btn btn-secondary" id="test-btn2" data-bs-toggle="tooltip" title="Test posting data to defined push targets">Test Push</button>
-            </div>
-          </div>
 
         </div>
       </div>
@@ -415,7 +408,15 @@
               <div class="col-sm-2">
                 <input type="number" step=".01" class="form-control" name="voltage-factor" id="voltage-factor" placeholder="1.59" data-bs-toggle="tooltip" title="Factor used to calculate the battery voltage. Can vary depending on the R2 value">
               </div>
-              <label for="voltage-factor" class="col-sm-3 col-form-label" id="battery">Loading...</label>
+              <div class="col-sm-2">
+                <label for="voltage-factor" class="col-sm-3 col-form-label" id="battery">Loading...</label>
+              </div>
+              <div class="col-sm-1">
+                <button type="button" class="btn btn-secondary" id="volt-factor-btn" data-bs-toggle="tooltip" title="Calcualte the voltage factor based on measured battery voltage">Calculate</button>
+              </div>
+              <div class="col-sm-2">
+                <input type="number" step=".01" class="form-control" name="measured-voltage" id="measured-voltage" placeholder="" data-bs-toggle="tooltip" title="Enter the measured battery voltage to calcualte the factor">
+              </div>
             </div>
 
             <div class="row mb-3">
@@ -475,15 +476,54 @@
             </div>
 
             <div class="row mb-3">
+              <div class="col-sm-4 offset-sm-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="gravitymon-com" id="gravitymon-com" data-bs-toggle="tooltip" title="If enabled gravitymon.com will be checked for new versions.">
+                  <label class="form-check-label" for="gravitymon-com">OTA from gravitymon.com</label>
+                </div>
+              </div>
+            </div>
+
+            <script>
+              $("#volt-factor-btn").click(function(e) {
+                var f = $("#voltage-factor-calc").val();
+                var mv = parseFloat( $("#measured-voltage").val() ); 
+
+                if( isNaN(mv) ) {
+                  showError("You need to enter a measured voltage in order to calculate the factor");
+                  return;
+                }
+
+                var vf = mv / f;
+                $("#voltage-factor").val( parseFloat(vf).toFixed(2) );
+              });
+            </script> 
+
+            <script>
+              var gravitymonUrl = "https://www.gravitymon.com/firmware/";
+
+              $("#gravitymon-com").click(function(e){
+                var b = $("#gravitymon-com").is(":checked");
+
+                if ( b ) {
+                  $("#ota-url").val(gravitymonUrl);
+                  $("#ota-url").prop("disabled", true);
+                } else {
+                  $("#ota-url").prop("disabled", false);
+                }
+              });
+            </script> 
+
+            <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="hardware-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
+                <button type="button" class="btn btn-secondary" id="firmware-btn" checked data-bs-toggle="tooltip" title="Manually upload a new firmware version to the device">Upload firmware</button>
               </div>
             </div>
           </form>
 
           <div class="row mb-3">
             <div class="col-sm-8 offset-sm-2">
-              <button class="btn btn-secondary" id="firmware-btn" checked data-bs-toggle="tooltip" title="Manually upload a new firmware version to the device">Upload firmware</button>
             </div>
           </div>
         </div>
@@ -740,10 +780,40 @@
       // MPU-6050 consumes 4mA
       // DS18B20 consumes 1mA
       // For this estimation we use an average of 160mA
+      var pwrActive = 160; // mA per hour (120-170 mA)
+      var pwrSleep = 15; // mA per day (include all pheripials as well)
+      var batt = 2200; // mA
+      var ble = false;
+      var wifi = true;
+      var platform = $("#platform").val();
 
-      var pwrActive = 170; // mA per hour
-      var pwrSleep = 15; // mA per day
-      var batt = 2000; // mA
+      if($("#ble").val() != "") 
+        ble = true;
+
+      if($("#http-push").val() == "" && $("#http-push2").val() == "" && $("#http-push3").val() == "" && $("#influxdb2-push").val() == "" && $("#mqtt-push").val() == "") 
+        wifi = false;
+
+      console.log( "Connection options: BLE=" + (ble?"on":"off") + " WIFI=" + (wifi?"on":"off") );
+
+      if(platform == "esp32" && wifi) {
+        var pwrActive = 320; // mA per hour (260-379 mA)
+      } else if(platform == "esp32" && !wifi) {
+        var pwrActive = 160; 
+      } else if(platform == "esp32c3" && wifi) {
+        var pwrActive = 320; // mA per hour (290-350 mA)
+      } else if(platform == "esp32c3" && !wifi) {
+        var pwrActive = 160; 
+      } else if(platform == "esp32s2" && wifi) {
+        var pwrActive = 280; // mA per hour (260-300 mA)
+      } else if(platform == "esp32s2" && !wifi) {
+        var pwrActive = 160; 
+      } else if(platform == "esp32lite" && wifi) {
+        var pwrActive = 330; // mA per hour (260-379 mA)
+      } else if(platform == "esp32lite" && !wifi) {
+        var pwrActive = 160; 
+      }
+
+      console.log( "Estimated power per hour = " + pwrActive.toString() + "mA on platform = " + platform);
 
       if(rt<1) rt = 2;
 
@@ -757,8 +827,11 @@
       var rt = parseInt($("#runtime-average").val());
       var j = 0;
 
-      if( rt>0 )
+      console.log("Average runtime " + $("#runtime-average").val() )
+
+      if( rt>0 ) {
         j = estimateBatteryLife(i, rt);
+      }
 
       var t1 = Math.floor(i/60) + " m " + (i%60) + " s";
       var t2 = Math.floor(j/7) + " weeks " + Math.floor(j%7) + " days";
@@ -795,14 +868,14 @@
       $("#test-btn2").prop("disabled", b);
       $("#advanced-btn").prop("disabled", b);
 
-      checkAdvancedSection( b );
+      checkAdvancedSection();
     }
 
     $("#adv-config").click(function(e){
       checkAdvancedSection();
     });
 
-    function checkAdvancedSection( b ) {
+    function checkAdvancedSection() {
       var b = $("#adv-config").is(":checked");
    
       $("#advanced-btn").prop("disabled", b);
@@ -869,9 +942,13 @@
       $.getJSON(url, function (cfg) {
         console.log( cfg );
 
-        if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3") {
+        if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3" || cfg["platform"]=="esp32lite") {
           $('#ble').prop('disabled', false);
           $("#ble").val(cfg["ble"]);
+        }
+
+        if(cfg["platform"]=="esp32lite") {
+          $('#gyro-temp').prop('disabled', true);
         }
 
         $("#id1").val(cfg["id"]);
@@ -886,6 +963,12 @@
         if( cfg["gravity-format"] == "G" ) $("#gravity-format-g").click();
         else $("#gravity-format-p").click();
         $("#ota-url").val(cfg["ota-url"]);
+
+        if( cfg["ota-url"] == gravitymonUrl) {
+          $("#gravitymon-com").prop( "checked", true );
+          $("#ota-url").prop("disabled", true);
+        }
+
         $("#token").val(cfg["token"]);
         $("#token2").val(cfg["token2"]);
         $("#http-push").val(cfg["http-push"]);
@@ -918,6 +1001,8 @@
         $("#water-angle").text( "(Water angle: " + cfg["formula-calculation-data"]["a1"] + ") - default off");
         $("#wifi-ssid").text(cfg["wifi-ssid"]);
         $("#wifi-ssid2").text(cfg["wifi-ssid2"]);
+        $("#platform").val(cfg["platform"]);
+        $("#voltage-factor-calc").val( cfg["battery"] / cfg["voltage-factor"] );
         //$("#gravity").text(cfg["gravity"] + " SG");
       })
       .fail(function () {

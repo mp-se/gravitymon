@@ -137,6 +137,7 @@ void setup() {
   // Add a delay so that serial is started.
   // delay(3000);
 #endif
+  delay(2000);
 
   // Main startup
 #if defined(ESP8266)
@@ -162,6 +163,11 @@ void setup() {
   myWifi.init();
   myAdvancedConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
+
+  sleepModeAlwaysSkip = checkPinConnected();
+  if (sleepModeAlwaysSkip) {
+    Log.notice(F("Main: Forcing config mode since D7/D8 are connected." CR));
+  }
 
   // Setup watchdog
 #if defined(ESP8266)
@@ -256,11 +262,8 @@ void setup() {
       millis();  // Dont include time for wifi connection
 }
 
-//
 // Main loop that does gravity readings and push data to targets
-//
 // Return true if gravity reading was successful
-//
 bool loopReadGravity() {
   float angle = 0;
 
@@ -334,15 +337,14 @@ bool loopReadGravity() {
     }
     return true;
   } else {
-    Log.error(F("MAIN: No gyro value found, the device might be moving." CR));
+    // Log.error(F("MAIN: No gyro value found, the device might be moving."
+    // CR));
   }
   return false;
 }
 
-//
 // Wrapper for loopGravity that only calls every 200ms so that we dont overload
 // this.
-//
 void loopGravityOnInterval() {
   if (abs((int32_t)(millis() - loopMillis)) > interval) {
     loopReadGravity();
@@ -358,9 +360,6 @@ void loopGravityOnInterval() {
 
 bool skipRunTimeLog = false;
 
-//
-// Main loop that determines if device should go to sleep
-//
 void goToSleep(int sleepInterval) {
   float volt = myBatteryVoltage.getVoltage();
   float runtime = (millis() - runtimeMillis);
