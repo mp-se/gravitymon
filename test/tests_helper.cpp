@@ -21,8 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <helper.hpp>
 #include <AUnit.h>
+
+#include <helper.hpp>
 
 BatteryVoltage myBatteryVoltage;
 
@@ -54,11 +55,11 @@ test(helper_convertFtoC) {
 
 test(helper_urlEncode) {
   String s = urlencode("Hello world");
-  assertEqual(s, "Hello\%20world");
+  assertEqual(s, "Hello%20world");
 }
 
 test(helper_urlDecode) {
-  String s = urldecode("Hello\%20world");
+  String s = urldecode("Hello%20world");
   assertEqual(s, "Hello world");
 }
 

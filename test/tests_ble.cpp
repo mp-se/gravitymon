@@ -21,10 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <Arduino.h>
-#include <main.hpp>
 #include <AUnit.h>
+#include <Arduino.h>
 
-// TODO: Build some php scripts that run on gravitymon.com for testing the push data.
+#include <main.hpp>
+
+// No unit testing for the BLE module.
 
 // EOF

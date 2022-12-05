@@ -21,10 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <Arduino.h>
-#include <main.hpp>
 #include <AUnit.h>
+#include <Arduino.h>
 
-// No unit testing for the WEB module. These tests are done using python script and the API's
+#include <main.hpp>
+
+// No unit testing for the WEB module. These tests are done using python script
+// and the API's
 
 // EOF

@@ -21,23 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <gyro.hpp>
 #include <AUnit.h>
+#include <Arduino.h>
 
-test(gyro_connectGyro) {
-  myGyro.setup();
-  assertEqual(myGyro.isConnected(), true);
-}
+#include <main.hpp>
 
-test(gyro_readGyro) {
-  myGyro.setup();
-  assertEqual(myGyro.read(), true);
-}
-
-test(gyro_readGyroTemp) {
-  myGyro.setup();
-  assertNotEqual(myGyro.getInitialSensorTempC(), -273.0);
-  assertNotEqual(myGyro.getSensorTempC(), -273.0);
-}
+// No unit testing for the WIFI module. These tests are manual when testing the
+// installation steps.
 
 // EOF

@@ -21,9 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <templating.hpp>
-#include <config.hpp>
 #include <AUnit.h>
+
+#include <config.hpp>
+#include <templating.hpp>
 
 test(template_applyTemplate1) {
   TemplatingEngine e;
@@ -33,9 +34,16 @@ test(template_applyTemplate1) {
   e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
   String s = e.create(TemplatingEngine::TEMPLATE_HTTP1);
   String id = myConfig.getID();
-  String batt = convertFloatToString( myBatteryVoltage.getVoltage(), &buffer[0], 2);
+  String batt =
+      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
   batt.trim();
-  String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id + "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.2, \"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.00, \"battery\": " + batt + ", \"RSSI\": 31, \"corr-gravity\": 1.2230, \"gravity-unit\": \"G\", \"run-time\": 3.0 }";
+  String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id +
+             "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.2, "
+             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.00, "
+             "\"battery\": " +
+             batt +
+             ", \"RSSI\": 31, \"corr-gravity\": 1.2230, \"gravity-unit\": "
+             "\"G\", \"run-time\": 3.0 }";
   assertEqual(s, v);
 }
 
@@ -47,9 +55,16 @@ test(template_applyTemplate2) {
   e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
   String s = e.create(TemplatingEngine::TEMPLATE_HTTP2);
   String id = myConfig.getID();
-  String batt = convertFloatToString( myBatteryVoltage.getVoltage(), &buffer[0], 2);
+  String batt =
+      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
   batt.trim();
-  String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id + "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.2, \"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.00, \"battery\": " + batt + ", \"RSSI\": 31, \"corr-gravity\": 1.2230, \"gravity-unit\": \"G\", \"run-time\": 3.0 }";
+  String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id +
+             "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.2, "
+             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.00, "
+             "\"battery\": " +
+             batt +
+             ", \"RSSI\": 31, \"corr-gravity\": 1.2230, \"gravity-unit\": "
+             "\"G\", \"run-time\": 3.0 }";
   assertEqual(s, v);
 }
 
@@ -61,9 +76,13 @@ test(template_applyTemplate3) {
   e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
   String s = e.create(TemplatingEngine::TEMPLATE_HTTP3);
   String id = myConfig.getID();
-  String batt = convertFloatToString( myBatteryVoltage.getVoltage(), &buffer[0], 2);
+  String batt =
+      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
   batt.trim();
-  String v = "?name=gravitymon&id=" + id + "&token=&interval=900&temperature=21.2&temp-units=C&gravity=1.1230&angle=45.00&battery=" + batt + "&rssi=31&corr-gravity=1.2230&gravity-unit=G&run-time=3.0";
+  String v = "?name=gravitymon&id=" + id +
+             "&token=&interval=900&temperature=21.2&temp-units=C&gravity=1."
+             "1230&angle=45.00&battery=" +
+             batt + "&rssi=31&corr-gravity=1.2230&gravity-unit=G&run-time=3.0";
   assertEqual(s, v);
 }
 
@@ -75,9 +94,14 @@ test(template_applyTemplate4) {
   e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
   String s = e.create(TemplatingEngine::TEMPLATE_INFLUX);
   String id = myConfig.getID();
-  String batt = convertFloatToString( myBatteryVoltage.getVoltage(), &buffer[0], 2);
+  String batt =
+      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
   batt.trim();
-  String v = "measurement,host=gravitymon,device=" + id + ",temp-format=C,gravity-format=G gravity=1.1230,corr-gravity=1.2230,angle=45.00,temp=21.2,battery=" + batt + ",rssi=31\n";
+  String v =
+      "measurement,host=gravitymon,device=" + id +
+      ",temp-format=C,gravity-format=G "
+      "gravity=1.1230,corr-gravity=1.2230,angle=45.00,temp=21.2,battery=" +
+      batt + ",rssi=31\n";
   assertEqual(s, v);
 }
 
@@ -88,9 +112,16 @@ test(template_applyTemplate5) {
 
   e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
   String s = e.create(TemplatingEngine::TEMPLATE_MQTT);
-  String batt = convertFloatToString( myBatteryVoltage.getVoltage(), &buffer[0], 2);
+  String batt =
+      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
   batt.trim();
-  String v = "ispindel/gravitymon/tilt:45.00|ispindel/gravitymon/temperature:21.2|ispindel/gravitymon/temp_units:C|ispindel/gravitymon/battery:" + batt + "|ispindel/gravitymon/gravity:1.1230|ispindel/gravitymon/interval:900|ispindel/gravitymon/RSSI:31|";
+  String v =
+      "ispindel/gravitymon/tilt:45.00|ispindel/gravitymon/"
+      "temperature:21.2|ispindel/gravitymon/temp_units:C|ispindel/gravitymon/"
+      "battery:" +
+      batt +
+      "|ispindel/gravitymon/gravity:1.1230|ispindel/gravitymon/"
+      "interval:900|ispindel/gravitymon/RSSI:31|";
   assertEqual(s, v);
 }
 
