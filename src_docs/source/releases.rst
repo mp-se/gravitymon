@@ -15,6 +15,7 @@ Features
 * Added support for the ESP32 S2 mini board
 * Serial output is written to TX/RX pins instead of the USB connection for the ESP32c3. This way the serial console can be viewed when running on battery power.
 * Merged in unit tests and api tests into this project
+* Added option to download firmware updates from https://www.gravitymon.com
 
 Documentation
 +++++++++++++
