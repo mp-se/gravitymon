@@ -468,7 +468,7 @@
               </div>
             </div>
 
-            <div class="row mb-3">
+            <div class="row mb-3" id="ota-hide">
               <label for="ota-url" class="col-sm-2 col-form-label">OTA base URL</label>
               <div class="col-sm-8">
                 <input type="url" maxlength="90" class="form-control" name="ota-url" id="ota-url" placeholder="http://www.local.com/path/" data-bs-toggle="tooltip" title="Base URL to where firmware and version.json file can be found. Needs to end with '/', example: http://www.mysite.com/firmware/">
@@ -507,9 +507,9 @@
 
                 if ( b ) {
                   $("#ota-url").val(gravitymonUrl);
-                  $("#ota-url").prop("disabled", true);
+                  $('#ota-hide').hide();
                 } else {
-                  $("#ota-url").prop("disabled", false);
+                  $('#ota-hide').show();
                 }
               });
             </script> 
@@ -966,7 +966,7 @@
 
         if( cfg["ota-url"] == gravitymonUrl) {
           $("#gravitymon-com").prop( "checked", true );
-          $("#ota-url").prop("disabled", true);
+          $("#ota-hide").hide();
         }
 
         $("#token").val(cfg["token"]);
