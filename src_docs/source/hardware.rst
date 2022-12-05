@@ -3,6 +3,11 @@
 Hardware
 ########
 
+I'm not a hardware designer or expert so I would recommend the following resouces for more in depth information on this tipiuc.
+
+* `Cherry Philip Hardware design, <https://github.com/cherryphilip74/iSpindel-PCB>`_
+* `OpenSource Distilling, <https://www.opensourcedistilling.com/ispindel>`_
+
 iSpindle based on esp8266
 =========================
 
@@ -102,5 +107,3 @@ The reed switch is the glass tube visible under the esp8266.
 .. image:: images/reed_build.jpg
   :width: 400
   :alt: Reed build
-
-
