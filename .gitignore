@@ -2,3 +2,5 @@
 .vscode/*
 *.map
 src_docs/_build/*
+.env/*
+*.pyc
