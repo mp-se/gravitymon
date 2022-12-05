@@ -3,6 +3,11 @@
 Hardware
 ########
 
+I'm not a hardware designer so I would recommend the following resources for more in depth information on this topic.
+
+* `Cherry Philip Hardware design, <https://github.com/cherryphilip74/iSpindel-PCB>`_
+* `OpenSource Distilling, <https://www.opensourcedistilling.com/ispindel>`_
+
 iSpindle based on esp8266
 =========================
 
