@@ -3,39 +3,29 @@
 Releases 
 ########
 
-v1.2.0 - beta2
-==============
+v1.2.0
+======
 
 Features
 ++++++++
 * Added function to calcualate voltage factor based on measured value.
 * Updated battery estimation for the various esp32 boards.
 * Added support for the ESP32 lite board which is used in the Floaty Hydrometer variant.
-
-Documentation
-+++++++++++++
-* Added section about the Floaty hardware.
-
-
-v1.2.0 - beta1
-==============
-
-* Changes to 1.2.0 only affect the ESP32 hardware, the ESP8266 is the same as for v1.1.1
-
-Features
-++++++++
 * Added support for the ESP32 C3 mini board
 * Added support for the ESP32 S2 mini board
 * Serial output is written to TX/RX pins instead of the USB connection for the ESP32c3. This way the serial console can be viewed when running on battery power.
+* Merged in unit tests and api tests into this project
+
+Documentation
++++++++++++++
+* Added section about the Floaty hardware
+* Fixed schema errors in hardware section and linked PCB options
+* Updated hardware section with options for ESP32 boards
+* Updated installation instructions.
 
 Issues adressed
 ++++++++++++++++
 * BUG: The first portion of a format template was lost when doing conversion. 
-
-Documentation
-+++++++++++++
-* Updated hardware section with options for ESP32 boards
-* Updated installation instructions.
 
 v1.1.1
 ======

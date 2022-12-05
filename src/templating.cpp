@@ -136,7 +136,8 @@ void TemplatingEngine::initialize(float angle, float gravitySG,
 }
 
 // the useDefaultTemplate param is there to support unit tests.
-const char* TemplatingEngine::create(TemplatingEngine::Templates idx, bool useDefaultTemplate) {
+const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
+                                     bool useDefaultTemplate) {
   String fname;
   _baseTemplate.reserve(600);
 
