@@ -430,6 +430,8 @@ bool WifiConnection::checkFirmwareVersion() {
   }
   http.end();
 
+  if (_newFirmware) Log.notice(F("WIFI: Found new version." CR));
+
 #if LOG_LEVEL == 6
   Log.verbose(F("WIFI: OTA found new version %s." CR),
               _newFirmware ? "true" : "false");
