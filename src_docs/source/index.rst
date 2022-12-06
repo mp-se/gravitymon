@@ -7,7 +7,7 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.2.0**. Last updated 2022-12-05
+  This documentation reflects **v1.2.0**. Last updated 2022-12-06
 
 What is GravityMon?
 --------------------
@@ -39,8 +39,8 @@ My approach to this software is a little different from that the original iSpind
 The github repository can be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
 
 .. note::  
-  I don't take responsibility for any errors or issues caused by the software. The software is provided as-is. I will however
-  try my best to fix issues that might occur. 
+  I don't take responsibility for any errors or issues caused by the software or hardware. 
+  The software is provided as-is. I will however try my best to fix issues that might occur. 
 
   I have tested this software on 40+ brews with good results.
 
