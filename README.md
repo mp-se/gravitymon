@@ -29,3 +29,4 @@ If you want to support my work you can do that through these options
 Thanks to the following persons for supporting me and this project:
 
 * David Conde, @davidconde
+* Lars H.
