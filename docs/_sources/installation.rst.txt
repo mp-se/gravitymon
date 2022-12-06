@@ -45,8 +45,8 @@ In the /bin directory you will find 4 different firmware builds;
 
 * **firmware32c3.bin**
 
-  This is the release build for an ESP32c3-mini variant. When flashing an ESP32 you also need the *partition32c3.bin* file that outlines the flash memory structure. Due to 
-  the size of the firmware we are using a custom partition setup.
+  This is the release build for an ESP32c3-mini variant v2.1 or newer. When flashing an ESP32 you also need the *partition32c3.bin* file that outlines the flash memory structure. Due to 
+  the size of the firmware we are using a custom partition setup. If you have a v1.0 board use the firmware32c3v1.bin instead.
 
 * **firmware32s2.bin**
 

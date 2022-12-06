@@ -205,8 +205,8 @@
 <span id="id1"></span><h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h1>
 <p>I’m not a hardware designer so I would recommend the following resources for more in depth information on this topic.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/cherryphilip74/iSpindel-PCB">Cherry Philip Hardware design,</a></p></li>
-<li><p><a class="reference external" href="https://www.opensourcedistilling.com/ispindel">OpenSource Distilling,</a></p></li>
+<li><p><a class="reference external" href="https://github.com/cherryphilip74/iSpindel-PCB">Cherry Philip Hardware design</a></p></li>
+<li><p><a class="reference external" href="https://www.opensourcedistilling.com/ispindel">OpenSource Distilling</a></p></li>
 </ul>
 <div class="section" id="ispindle-based-on-esp8266">
 <h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this headline">¶</a></h2>
@@ -220,18 +220,14 @@ excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip.
 </div>
 <div class="section" id="ispindle-based-on-esp32">
 <h2>iSpindle based on esp32<a class="headerlink" href="#ispindle-based-on-esp32" title="Permalink to this headline">¶</a></h2>
-<p>I’ve experimented with porting my software version to esp32 and this is a selection of options i have been testing.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Work to support esp32s2 is still ongoing, ESP32-mini and ESP32c3-mini is confirmed to be working. However I would recommend the C3 variant.</p>
-</div>
+<p>Gravitymon supports a number of ESP32 boards that offers bluetooth support.</p>
 <a class="reference internal image-reference" href="_images/esp32_hardware.jpg"><img alt="iSpindle esp32 hardware options" src="_images/esp32_hardware.jpg" style="width: 500px;"/></a>
 <ul class="simple">
-<li><p>esp32 mini, this was the first board i tried which is a smaller form factor of the first generetion esp32 with 2 cores. Slow on connecting to wifi is the main downside.</p></li>
-<li><p>esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support.</p></li>
+<li><p>esp32d1 mini, this was the first board i tried which is a smaller form factor of the first generetion esp32 with 2 cores. Slow on connecting to wifi is the main downside.</p></li>
+<li><p>esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support. Don’t buy v1.0 since that has a faulty wifi antenna.</p></li>
 <li><p>esp32s2 mini, similar to the c3 board but without bluetooth support.</p></li>
 </ul>
-<p>It’s possible to use this PCB and mount an ESP32 mini on top of that (c3 and s2 are prefered). The esp32 mini is a larger formfactor and can be hard to fit into the tube.</p>
+<p>It’s possible to use this PCB and mount an ESP32 mini on top of that (c3 or s2 are prefered). The esp32 d1 mini is a larger formfactor and can be hard to fit into the tube.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You need to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor for a voltage divider
@@ -240,14 +236,14 @@ need to adjust the voltage factor so the battery reading is correct.</p>
 </div>
 <div class="section" id="esp32c3-mini">
 <h3>ESP32c3 mini<a class="headerlink" href="#esp32c3-mini" title="Permalink to this headline">¶</a></h3>
-<p>This is model is now fully supported by gravitymon.</p>
+<p>This is model is fully supported by gravitymon.</p>
 <a class="reference internal image-reference" href="_images/ispindel_esp32c3.jpg"><img alt="Esp32c3 mini build" src="_images/ispindel_esp32c3.jpg" style="width: 500px;"/></a>
 <p>Here is an image of where I added the resistor for the voltage divider.</p>
 <a class="reference internal image-reference" href="_images/esp32_res.jpg"><img alt="Esp32c3 adding resistor as voltage dividier." src="_images/esp32_res.jpg" style="width: 500px;"/></a>
 </div>
 <div class="section" id="esp32s2-mini">
 <h3>ESP32s2 mini<a class="headerlink" href="#esp32s2-mini" title="Permalink to this headline">¶</a></h3>
-<p>This is model is now fully supported by gravitymon. Same setup as for ESP32C3 mini.</p>
+<p>This is model is fully supported by gravitymon. Same setup as for ESP32C3 mini.</p>
 </div>
 <div class="section" id="esp32-d1-mini">
 <h3>ESP32 d1 mini<a class="headerlink" href="#esp32-d1-mini" title="Permalink to this headline">¶</a></h3>
@@ -258,7 +254,7 @@ need to adjust the voltage factor so the battery reading is correct.</p>
 <h3>Schema for esp32 build<a class="headerlink" href="#schema-for-esp32-build" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This schema assumes that an ESP32 D1 Mini (pin compatible with ESP8266 D1 Mini is used). The ESP32 has two rows of pins but
+<p>This schema assumes that an ESP32 d1 mini (pin compatible with ESP8266). The ESP32 has two rows of pins but
 only the inner row is used. The main difference is the added resistor R3 so we get a voltage divider for measuring battery.
 The ESP8266 has a built in resistor thats not visible on the schema and this acts as a voltage divider.</p>
 </div>
