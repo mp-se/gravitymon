@@ -200,7 +200,8 @@ class TemplatingEngine {
   }
   void initialize(float angle, float gravitySG, float corrGravitySG,
                   float tempC, float runTime);
-  const char *create(TemplatingEngine::Templates idx);
+  const char *create(TemplatingEngine::Templates idx,
+                     bool useDefaultTemplate = false);
 };
 
 #endif  // SRC_TEMPLATING_HPP_

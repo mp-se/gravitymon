@@ -80,9 +80,6 @@ const char mqttFormat[] PROGMEM =
     "ispindel/${mdns}/interval:${sleep-interval}|"
     "ispindel/${mdns}/RSSI:${rssi}|";
 
-//
-// Initialize the variables
-//
 void TemplatingEngine::initialize(float angle, float gravitySG,
                                   float corrGravitySG, float tempC,
                                   float runTime) {
@@ -138,10 +135,9 @@ void TemplatingEngine::initialize(float angle, float gravitySG,
 #endif
 }
 
-//
-// Create the data using defined template.
-//
-const char* TemplatingEngine::create(TemplatingEngine::Templates idx) {
+// the useDefaultTemplate param is there to support unit tests.
+const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
+                                     bool useDefaultTemplate) {
   String fname;
   _baseTemplate.reserve(600);
 
@@ -169,15 +165,16 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx) {
       break;
   }
 
-  // TODO: Add code to load templates from disk if they exist.
-  File file = LittleFS.open(fname, "r");
-  if (file) {
-    char buf[file.size() + 1];
-    memset(&buf[0], 0, file.size() + 1);
-    file.readBytes(&buf[0], file.size());
-    _baseTemplate = String(&buf[0]);
-    file.close();
-    Log.notice(F("TPL : Template loaded from disk %s." CR), fname.c_str());
+  if (!useDefaultTemplate) {
+    File file = LittleFS.open(fname, "r");
+    if (file) {
+      char buf[file.size() + 1];
+      memset(&buf[0], 0, file.size() + 1);
+      file.readBytes(&buf[0], file.size());
+      _baseTemplate = String(&buf[0]);
+      file.close();
+      Log.notice(F("TPL : Template loaded from disk %s." CR), fname.c_str());
+    }
   }
 
 #if LOG_LEVEL == 6

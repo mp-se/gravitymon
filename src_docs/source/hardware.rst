@@ -5,8 +5,8 @@ Hardware
 
 I'm not a hardware designer so I would recommend the following resources for more in depth information on this topic.
 
-* `Cherry Philip Hardware design, <https://github.com/cherryphilip74/iSpindel-PCB>`_
-* `OpenSource Distilling, <https://www.opensourcedistilling.com/ispindel>`_
+* `Cherry Philip Hardware design <https://github.com/cherryphilip74/iSpindel-PCB>`_
+* `OpenSource Distilling <https://www.opensourcedistilling.com/ispindel>`_
 
 iSpindle based on esp8266
 =========================
@@ -25,24 +25,20 @@ Schema for esp8266 build
   :width: 700
   :alt: Schema esp8266
 
-
 iSpindle based on esp32
 =======================
 
-I've experimented with porting my software version to esp32 and this is a selection of options i have been testing. 
-
-.. warning::
-  Work to support esp32s2 is still ongoing, ESP32-mini and ESP32c3-mini is confirmed to be working. However I would recommend the C3 variant. 
+Gravitymon supports a number of ESP32 boards that offers bluetooth support. 
 
 .. image:: images/esp32_hardware.jpg
   :width: 500
   :alt: iSpindle esp32 hardware options
 
-* esp32 mini, this was the first board i tried which is a smaller form factor of the first generetion esp32 with 2 cores. Slow on connecting to wifi is the main downside. 
-* esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support. 
+* esp32d1 mini, this was the first board i tried which is a smaller form factor of the first generetion esp32 with 2 cores. Slow on connecting to wifi is the main downside. 
+* esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support. Don't buy v1.0 since that has a faulty wifi antenna.
 * esp32s2 mini, similar to the c3 board but without bluetooth support. 
 
-It's possible to use this PCB and mount an ESP32 mini on top of that (c3 and s2 are prefered). The esp32 mini is a larger formfactor and can be hard to fit into the tube.
+It's possible to use this PCB and mount an ESP32 mini on top of that (c3 or s2 are prefered). The esp32 d1 mini is a larger formfactor and can be hard to fit into the tube.
 
 .. note::
   You need to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor for a voltage divider 
@@ -52,7 +48,7 @@ It's possible to use this PCB and mount an ESP32 mini on top of that (c3 and s2 
 ESP32c3 mini
 ++++++++++++
 
-This is model is now fully supported by gravitymon. 
+This is model is fully supported by gravitymon. 
 
 .. image:: images/ispindel_esp32c3.jpg
   :width: 500
@@ -67,7 +63,7 @@ Here is an image of where I added the resistor for the voltage divider.
 ESP32s2 mini
 ++++++++++++
 
-This is model is now fully supported by gravitymon. Same setup as for ESP32C3 mini.
+This is model is fully supported by gravitymon. Same setup as for ESP32C3 mini.
 
 ESP32 d1 mini
 +++++++++++++
@@ -82,7 +78,7 @@ Schema for esp32 build
 ++++++++++++++++++++++
 
 .. note::  
-  This schema assumes that an ESP32 D1 Mini (pin compatible with ESP8266 D1 Mini is used). The ESP32 has two rows of pins but 
+  This schema assumes that an ESP32 d1 mini (pin compatible with ESP8266). The ESP32 has two rows of pins but 
   only the inner row is used. The main difference is the added resistor R3 so we get a voltage divider for measuring battery. 
   The ESP8266 has a built in resistor thats not visible on the schema and this acts as a voltage divider. 
 

@@ -58,9 +58,6 @@ void TempSensor::setup() {
 #endif
 }
 
-//
-// Retrieving value from sensor, value is in Celcius
-//
 float TempSensor::getValue(bool useGyro) {
   if (useGyro) {
     // When using the gyro temperature only the first read value will be
