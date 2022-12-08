@@ -97,7 +97,7 @@ OTA Option
 You can use the OTA option by adding this URL to your configuration and when the device starts up in configuration mode it 
 will check for a new version and if it finds a newer version it will do an update.
 
-``https://mp-se.github.io/gravitymon/release/``
+``https://gravitymon.com/firmware/``
 
 Manual update
 *************
