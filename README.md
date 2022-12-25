@@ -3,8 +3,8 @@
 ![release](https://img.shields.io/github/v/release/mp-se/gravitymon?label=latest%20release)
 ![issues](https://img.shields.io/github/issues/mp-se/gravitymon)
 ![pr](https://img.shields.io/github/issues-pr/mp-se/gravitymon)
-![dev_build](https://img.shields.io/github/workflow/status/mp-se/gravitymon/PlatformIO%20CI/dev?label=dev%20build)
-![doc_build](https://img.shields.io/github/workflow/status/mp-se/gravitymon/Sphinx%20Build/dev?label=doc%20build)
+![dev_build](https://img.shields.io/github/actions/workflow/status/mp-se/gravitymon/pio-build.yaml?branch=dev)
+![doc_build](https://img.shields.io/github/actions/workflow/status/mp-se/gravitymon/doc-build.yaml?branch=master)
 
 # Gravity Monitor for Beer Brewing
 
