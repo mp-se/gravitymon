@@ -194,4 +194,17 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
   return "";
 }
 
+// added to support more unit test scenarios.
+const char* TemplatingEngine::create(const char* formatTemplate) {
+  _baseTemplate = String(formatTemplate);
+
+  // Insert data into template.
+  transform();
+  _baseTemplate.clear();
+
+  if (_output) return _output;
+
+  return "";
+}
+
 // EOF

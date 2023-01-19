@@ -125,4 +125,26 @@ test(template_applyTemplate5) {
   assertEqual(s, v);
 }
 
+test(template_applyTemplate6) {
+  TemplatingEngine e;
+  char buffer[20];
+  myConfig.setMDNS("gravitymon");
+
+  const char* tpl = 
+    "<prtg><result><channel>Densite</channel><float>1</float><value>${gravity}</value></result>"
+    "<result><channel>Batterie</channel><float>1</float><value>${battery}</value></result>"
+    "<result><channel>Temperature</channel><float>1</float><value>${temp}</value></result></prtg>";
+
+  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
+  String s = e.create(tpl);
+  String batt =
+      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
+  batt.trim();
+
+  String v = "<prtg><result><channel>Densite</channel><float>1</float><value>1.1230</value></result>"
+             "<result><channel>Batterie</channel><float>1</float><value>" + batt + "</value></result>"
+             "<result><channel>Temperature</channel><float>1</float><value>21.2</value></result></prtg>";
+  assertEqual(s, v);
+}
+
 // EOF
