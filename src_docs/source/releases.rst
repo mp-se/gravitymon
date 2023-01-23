@@ -3,6 +3,18 @@
 Releases 
 ########
 
+v1.2.1
+======
+
+Issues adressed
+++++++++++++++++
+* BUG: Under some circumstances the last part of the format template was omitted. 
+
+Other
++++++
+* Update platformio arduino core libraries to ESP8266 4.1.0 and ESP32 6.0.0. 
+* Update tinyexpr library to latest baseline.
+
 v1.2.0
 ======
 
