@@ -12,8 +12,7 @@ Issues adressed
 
 Other
 +++++
-* Update platformio arduino core libraries to ESP8266 4.1.0 and ESP32 6.0.0. 
-* Update tinyexpr library to latest baseline.
+* Update tinyexpr library to latest baseline. For forumula evaluation.
 
 v1.2.0
 ======
