@@ -160,7 +160,8 @@ class TemplatingEngine {
         }
       }
     }
-    strncat(_output, format + k, size - k);
+    // strncat(_output, format + k, size - k);
+    strncat(_output, format + k, strlen(format + k));
     Log.notice(F("TPL : Transformed template %d chars to %d chars" CR),
                strlen(format), strlen(_output));
 
@@ -202,6 +203,7 @@ class TemplatingEngine {
                   float tempC, float runTime);
   const char *create(TemplatingEngine::Templates idx,
                      bool useDefaultTemplate = false);
+  const char *create(const char *formatTemplate);
 };
 
 #endif  // SRC_TEMPLATING_HPP_

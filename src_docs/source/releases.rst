@@ -3,6 +3,17 @@
 Releases 
 ########
 
+v1.2.1
+======
+
+Issues adressed
+++++++++++++++++
+* BUG: Under some circumstances the last part of the format template was omitted. 
+
+Other
++++++
+* Update tinyexpr library to latest baseline. For forumula evaluation.
+
 v1.2.0
 ======
 
