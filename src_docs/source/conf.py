@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'GravityMon'
-copyright = '2021-2022, Magnus Persson'
+copyright = '2021-2023, Magnus Persson'
 author = 'Magnus Persson'
 
 # The full version, including alpha/beta/rc tags
-release = '1.2.0'
+release = '1.2.1'
 
 
 # -- General configuration ---------------------------------------------------

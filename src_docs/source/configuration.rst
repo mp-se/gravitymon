@@ -165,7 +165,7 @@ Name of organisation in Influx.
 
 * **Influx DB v2 Bucket:**
 
-Identifier for bucket.
+Token for bucket. Don't use the bucket name.
 
 * **Influx DB v2 Token:**
 

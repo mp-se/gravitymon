@@ -1,6 +1,22 @@
 Q & A
 #####
 
+User interface does not render correctly
+----------------------------------------
+
+Since the user interface is built using bootstrap v5 the device requires access to the internet 
+to download required javascript and css files. Due to size it would not be possible to store these
+on the device. Make sure the device can access: https://cdn.jsdelivr.net/npm/bootstrap
+
+Data is not populated in the fields
+------------------------------------
+
+The user interface uses JQuery to fetch data from the device. This javascript library needs to be downloaded 
+from the internet.  Due to size it would not be possible to store these on the device. Make sure the 
+device can access: https://code.jquery.com
+
+Also ensure that any security tools does not block the execution of these features.
+
 My device is no going in to sleep after fully charged
 -----------------------------------------------------
 - Calibrate the device in the web interface
@@ -11,7 +27,7 @@ My device is no going in to sleep after fully charged
 My device reports a temperature of -273C or -491F
 -------------------------------------------------
 - The DS18B20 temperature sensor cannot be found and this is the default value reported in this case.
-- Check the orientation of the sensor and soldering.
+- Check the orientation of the sensor and the soldering.
 
 Calibration error (unable to find a valid formula)
 --------------------------------------------------
@@ -30,18 +46,26 @@ To fix these this you can;
 
 In the case above this parameter was changed from 1.6 SG to 4 SG and the formula was accepted. The deviation on this point was just above 3 SG. 
 
-User interface does not render correctly
-----------------------------------------
+How can I filter data on influxdb without needing to know the time range
+------------------------------------------------------------------------
 
-Since the user interface is built using bootstrap v5 the device requires access to the internet 
-to download required javascript and css files. Due to size it would not be possible to store these
-on the device. Make sure the device can access: https://cdn.jsdelivr.net/npm/bootstrap
+You can use any of the available fields to enter your custom data. An option is to use the token fields to 
+add some custom information to identify your brew. This can then be used to filter your data in influxdb.
 
-Data is not populated in the fields
-------------------------------------
+When you switch brews you need to go in and change the token to identify the brewing session.
 
-The user interface uses JQuery to fetch data from the device. This javascript library needs to be downloaded 
-from the internet.  Due to size it would not be possible to store these on the device. Make sure the 
-device can access: https://code.jquery.com
+Change the format template for the influx target to include the token field. Now you will have an 
+field called event that you can filter on in influx.
 
-Also ensure that any security tools does not block the execution of these features.
+.. code-block::
+
+  gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},
+  angle=${angle},temp=${temp},battery=${battery},rssi=${rssi}
+
+to
+
+.. code-block::
+
+  gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},
+  angle=${angle},temp=${temp},battery=${battery},rssi=${rssi},event=${token}
+
