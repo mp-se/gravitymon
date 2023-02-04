@@ -44,7 +44,7 @@
 
 #ifndef ESP_DOUBLE_RESET_DETECTOR_VERSION
   #define ESP_DOUBLE_RESET_DETECTOR_VERSION             "ESP_DoubleResetDetector v1.3.2"
-  
+
   #define ESP_DOUBLE_RESET_DETECTOR_VERSION_MAJOR       1
   #define ESP_DOUBLE_RESET_DETECTOR_VERSION_MINOR       3
   #define ESP_DOUBLE_RESET_DETECTOR_VERSION_PATCH       2
@@ -61,11 +61,11 @@
 
 #ifdef ESP32
   #if (!ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS && !ESP_DRD_USE_LITTLEFS)
-  
+
     #if (DOUBLERESETDETECTOR_DEBUG)
       #warning Neither EEPROM, SPIFFS nor LittleFS selected. Default to EEPROM
     #endif
-      
+
     #ifdef ESP_DRD_USE_EEPROM
       #undef ESP_DRD_USE_EEPROM
       #define ESP_DRD_USE_EEPROM      true
@@ -77,8 +77,8 @@
   #if (!ESP8266_DRD_USE_RTC && !ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS && !ESP_DRD_USE_LITTLEFS)
     #if (DOUBLERESETDETECTOR_DEBUG)
       #warning Neither RTC, EEPROM, LITTLEFS nor SPIFFS selected. Default to EEPROM
-    #endif   
-    
+    #endif
+
     #ifdef ESP_DRD_USE_EEPROM
       #undef ESP_DRD_USE_EEPROM
       #define ESP_DRD_USE_EEPROM      true
@@ -102,55 +102,55 @@
 
 #elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
 
-#include <FS.h>
+  #include <FS.h>
 
-#ifdef ESP32
+  #ifdef ESP32
 
-  #if ESP_DRD_USE_LITTLEFS
-    // Check cores/esp32/esp_arduino_version.h and cores/esp32/core_version.h
-    //#if ( ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2, 0, 0) )  //(ESP_ARDUINO_VERSION_MAJOR >= 2)
-    #if ( defined(ESP_ARDUINO_VERSION_MAJOR) && (ESP_ARDUINO_VERSION_MAJOR >= 2) )
-      #if (DOUBLERESETDETECTOR_DEBUG)
-        #warning Using ESP32 Core 1.0.6 or 2.0.0+
-      #endif 
-      
-      // The library has been merged into esp32 core from release 1.0.6
-      #include <LittleFS.h>
-      
-      #define FileFS        LittleFS
-      #define FS_Name       "LittleFS"
+    #if ESP_DRD_USE_LITTLEFS
+      // Check cores/esp32/esp_arduino_version.h and cores/esp32/core_version.h
+      //#if ( ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2, 0, 0) )  //(ESP_ARDUINO_VERSION_MAJOR >= 2)
+      #if ( defined(ESP_ARDUINO_VERSION_MAJOR) && (ESP_ARDUINO_VERSION_MAJOR >= 2) )
+        #if (DOUBLERESETDETECTOR_DEBUG)
+          #warning Using ESP32 Core 1.0.6 or 2.0.0+
+        #endif
+
+        // The library has been merged into esp32 core from release 1.0.6
+        #include <LittleFS.h>
+
+        #define FileFS        LittleFS
+        #define FS_Name       "LittleFS"
+      #else
+        #if (DOUBLERESETDETECTOR_DEBUG)
+          #warning Using ESP32 Core 1.0.5-. You must install LITTLEFS library
+        #endif
+
+        // The library has been merged into esp32 core from release 1.0.6
+        #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
+
+        #define FileFS        LITTLEFS
+        #define FS_Name       "LittleFS"
+      #endif
     #else
-      #if (DOUBLERESETDETECTOR_DEBUG)
-        #warning Using ESP32 Core 1.0.5-. You must install LITTLEFS library
-      #endif 
-      
-      // The library has been merged into esp32 core from release 1.0.6
-      #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
-      
-      #define FileFS        LITTLEFS
-      #define FS_Name       "LittleFS"
+      #include "SPIFFS.h"
+      // ESP32 core 1.0.4 still uses SPIFFS
+      #define FileFS   SPIFFS
     #endif
+
   #else
-    #include "SPIFFS.h"
-    // ESP32 core 1.0.4 still uses SPIFFS
-    #define FileFS   SPIFFS
-  #endif
+    // From ESP8266 core 2.7.1
+    #include <LittleFS.h>
 
-#else
-  // From ESP8266 core 2.7.1
-  #include <LittleFS.h>
+    #if ESP_DRD_USE_LITTLEFS
+      #define FileFS    LittleFS
+    #else
+      #define FileFS   SPIFFS
+    #endif
 
-  #if ESP_DRD_USE_LITTLEFS
-    #define FileFS    LittleFS
-  #else
-    #define FileFS   SPIFFS
-  #endif
-
-#endif    // #if ESP_DRD_USE_EEPROM
+  #endif    // #if ESP_DRD_USE_EEPROM
 
 
 
-#define  DRD_FILENAME     "/drd.dat"
+  #define  DRD_FILENAME     "/drd.dat"
 
 #endif    //#if ESP_DRD_USE_EEPROM
 
@@ -171,6 +171,7 @@ class DoubleResetDetector
 
       EEPROM.begin(EEPROM_SIZE);
 #elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
+
       // LittleFS / SPIFFS code
       if (!FileFS.begin())
       {
@@ -184,6 +185,7 @@ class DoubleResetDetector
 
 #endif
       }
+
 #else
 #ifdef ESP8266
       //RTC only for ESP8266
@@ -221,7 +223,7 @@ class DoubleResetDetector
       return doubleResetDetected;
 
     };
-    
+
     bool waitingForDRD()
     {
       return waitingForDoubleReset;
@@ -264,6 +266,7 @@ class DoubleResetDetector
       Serial.printf("EEPROM Flag read = 0x%X\n", DOUBLERESETDETECTOR_FLAG);
 #endif
 #elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
+
       // LittleFS / SPIFFS code
       if (FileFS.exists(DRD_FILENAME))
       {
@@ -292,6 +295,7 @@ class DoubleResetDetector
 
         file.close();
       }
+
 #else
 #ifdef ESP8266
       //RTC only for ESP8266
@@ -340,6 +344,7 @@ class DoubleResetDetector
         Serial.println("Saving config file failed");
 #endif
       }
+
 #else
 #ifdef ESP8266
       //RTC only for ESP8266
