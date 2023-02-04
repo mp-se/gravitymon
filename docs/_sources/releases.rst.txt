@@ -14,6 +14,11 @@ Other
 +++++
 * Update tinyexpr library to latest baseline. For forumula evaluation.
 
+Documentation
++++++++++++++
+* Minor updates and corrections to the documetation.
+* Updated Q&A section
+
 v1.2.0
 ======
 

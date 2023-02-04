@@ -10,7 +10,7 @@ To reduce the need for adding custom endpoints for various services there is an 
 
 .. warning::
 
-   Since the format templates can be big this function can be quite slow on a small device such as the esp8266. 
+   If format templates are large this feature can be slow on a small device such as the esp8266. 
 
 .. image:: images/format.png
   :width: 800
