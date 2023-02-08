@@ -6,6 +6,10 @@ Releases
 v1.3.0
 ======
 
+Features
+++++++++
+* Increased the number of decimals for tilt/angle, temperature, gravity (plato & sg), runtime.
+
 Issues adressed
 ++++++++++++++++
 * BUG: Clarified that its the bucket ID and auth TOKEN for influxdb (config page) 

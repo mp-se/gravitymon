@@ -91,40 +91,40 @@ void TemplatingEngine::initialize(float angle, float gravitySG,
 
   // Temperature
   if (myConfig.isTempC()) {
-    setVal(TPL_TEMP, tempC, 1);
+    setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
   } else {
-    setVal(TPL_TEMP, convertCtoF(tempC), 1);
+    setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
   }
 
-  setVal(TPL_TEMP_C, tempC, 1);
-  setVal(TPL_TEMP_F, convertCtoF(tempC), 1);
+  setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
+  setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
   setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
 
   // Battery & Timer
-  setVal(TPL_BATTERY, myBatteryVoltage.getVoltage());
+  setVal(TPL_BATTERY, myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
   setVal(TPL_SLEEP_INTERVAL, myConfig.getSleepInterval());
 
   // Performance metrics
-  setVal(TPL_RUN_TIME, runTime, 1);
+  setVal(TPL_RUN_TIME, runTime, DECIMALS_RUNTIME);
   setVal(TPL_RSSI, WiFi.RSSI());
 
   // Angle/Tilt
-  setVal(TPL_TILT, angle);
-  setVal(TPL_ANGLE, angle);
+  setVal(TPL_TILT, angle, DECIMALS_TILT);
+  setVal(TPL_ANGLE, angle,DECIMALS_TILT);
 
   // Gravity options
   if (myConfig.isGravitySG()) {
-    setVal(TPL_GRAVITY, gravitySG, 4);
-    setVal(TPL_GRAVITY_CORR, corrGravitySG, 4);
+    setVal(TPL_GRAVITY, gravitySG, DECIMALS_SG);
+    setVal(TPL_GRAVITY_CORR, corrGravitySG, DECIMALS_SG);
   } else {
-    setVal(TPL_GRAVITY, convertToPlato(gravitySG), 1);
-    setVal(TPL_GRAVITY_CORR, convertToPlato(corrGravitySG), 1);
+    setVal(TPL_GRAVITY, convertToPlato(gravitySG), DECIMALS_PLATO);
+    setVal(TPL_GRAVITY_CORR, convertToPlato(corrGravitySG), DECIMALS_PLATO);
   }
 
-  setVal(TPL_GRAVITY_G, gravitySG, 4);
-  setVal(TPL_GRAVITY_P, convertToPlato(gravitySG), 1);
-  setVal(TPL_GRAVITY_CORR_G, corrGravitySG, 4);
-  setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG), 1);
+  setVal(TPL_GRAVITY_G, gravitySG, DECIMALS_SG);
+  setVal(TPL_GRAVITY_P, convertToPlato(gravitySG), DECIMALS_PLATO);
+  setVal(TPL_GRAVITY_CORR_G, corrGravitySG, DECIMALS_SG);
+  setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG), DECIMALS_PLATO);
   setVal(TPL_GRAVITY_UNIT, myConfig.getGravityFormat());
 
   setVal(TPL_APP_VER, CFG_APPVER);

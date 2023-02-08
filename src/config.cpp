@@ -104,27 +104,27 @@ void Config::createJson(DynamicJsonDocument& doc) {
   cal["gz"] = _gyroCalibration.gz;
 
   JsonObject cal2 = doc.createNestedObject(PARAM_FORMULA_DATA);
-  cal2["a1"] = reduceFloatPrecision(_formulaData.a[0], 2);
-  cal2["a2"] = reduceFloatPrecision(_formulaData.a[1], 2);
-  cal2["a3"] = reduceFloatPrecision(_formulaData.a[2], 2);
-  cal2["a4"] = reduceFloatPrecision(_formulaData.a[3], 2);
-  cal2["a5"] = reduceFloatPrecision(_formulaData.a[4], 2);
-  cal2["a6"] = reduceFloatPrecision(_formulaData.a[5], 2);
-  cal2["a7"] = reduceFloatPrecision(_formulaData.a[6], 2);
-  cal2["a8"] = reduceFloatPrecision(_formulaData.a[7], 2);
-  cal2["a9"] = reduceFloatPrecision(_formulaData.a[8], 2);
-  cal2["a10"] = reduceFloatPrecision(_formulaData.a[9], 2);
+  cal2["a1"] = reduceFloatPrecision(_formulaData.a[0], DECIMALS_TILT);
+  cal2["a2"] = reduceFloatPrecision(_formulaData.a[1], DECIMALS_TILT);
+  cal2["a3"] = reduceFloatPrecision(_formulaData.a[2], DECIMALS_TILT);
+  cal2["a4"] = reduceFloatPrecision(_formulaData.a[3], DECIMALS_TILT);
+  cal2["a5"] = reduceFloatPrecision(_formulaData.a[4], DECIMALS_TILT);
+  cal2["a6"] = reduceFloatPrecision(_formulaData.a[5], DECIMALS_TILT);
+  cal2["a7"] = reduceFloatPrecision(_formulaData.a[6], DECIMALS_TILT);
+  cal2["a8"] = reduceFloatPrecision(_formulaData.a[7], DECIMALS_TILT);
+  cal2["a9"] = reduceFloatPrecision(_formulaData.a[8], DECIMALS_TILT);
+  cal2["a10"] = reduceFloatPrecision(_formulaData.a[9], DECIMALS_TILT);
 
-  cal2["g1"] = reduceFloatPrecision(_formulaData.g[0], 4);
-  cal2["g2"] = reduceFloatPrecision(_formulaData.g[1], 4);
-  cal2["g3"] = reduceFloatPrecision(_formulaData.g[2], 4);
-  cal2["g4"] = reduceFloatPrecision(_formulaData.g[3], 4);
-  cal2["g5"] = reduceFloatPrecision(_formulaData.g[4], 4);
-  cal2["g6"] = reduceFloatPrecision(_formulaData.g[5], 4);
-  cal2["g7"] = reduceFloatPrecision(_formulaData.g[6], 4);
-  cal2["g8"] = reduceFloatPrecision(_formulaData.g[7], 4);
-  cal2["g9"] = reduceFloatPrecision(_formulaData.g[8], 4);
-  cal2["g10"] = reduceFloatPrecision(_formulaData.g[9], 4);
+  cal2["g1"] = reduceFloatPrecision(_formulaData.g[0], DECIMALS_SG);
+  cal2["g2"] = reduceFloatPrecision(_formulaData.g[1], DECIMALS_SG);
+  cal2["g3"] = reduceFloatPrecision(_formulaData.g[2], DECIMALS_SG);
+  cal2["g4"] = reduceFloatPrecision(_formulaData.g[3], DECIMALS_SG);
+  cal2["g5"] = reduceFloatPrecision(_formulaData.g[4], DECIMALS_SG);
+  cal2["g6"] = reduceFloatPrecision(_formulaData.g[5], DECIMALS_SG);
+  cal2["g7"] = reduceFloatPrecision(_formulaData.g[6], DECIMALS_SG);
+  cal2["g8"] = reduceFloatPrecision(_formulaData.g[7], DECIMALS_SG);
+  cal2["g9"] = reduceFloatPrecision(_formulaData.g[8], DECIMALS_SG);
+  cal2["g10"] = reduceFloatPrecision(_formulaData.g[9], DECIMALS_SG);
 }
 
 //

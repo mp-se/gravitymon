@@ -138,4 +138,11 @@ extern RunMode runMode;
 #define EspSerial Serial
 #endif
 
+#define DECIMALS_SG 4
+#define DECIMALS_PLATO 2
+#define DECIMALS_TEMP 2
+#define DECIMALS_RUNTIME 2
+#define DECIMALS_TILT 3
+#define DECIMALS_BATTERY 2
+
 #endif  // SRC_MAIN_HPP_

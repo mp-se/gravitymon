@@ -365,7 +365,7 @@ void goToSleep(int sleepInterval) {
 
   Log.notice(F("MAIN: Entering deep sleep for %ds, run time %Fs, "
                "battery=%FV." CR),
-             sleepInterval, reduceFloatPrecision(runtime / 1000, 2), volt);
+             sleepInterval, reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
   LittleFS.end();
   myGyro.enterSleep();
   LOG_PERF_STOP("run-time");
