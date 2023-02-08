@@ -63,10 +63,11 @@ void WebServerHandler::webHandleConfig() {
   // Format the adjustment so we get rid of rounding errors
   if (myConfig.isTempF())
     // We want the delta value (32F = 0C).
-    doc[PARAM_TEMP_ADJ] =
-        reduceFloatPrecision(convertCtoF(myConfig.getTempSensorAdjC()) - 32, DECIMALS_TEMP);
+    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(
+        convertCtoF(myConfig.getTempSensorAdjC()) - 32, DECIMALS_TEMP);
   else
-    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(myConfig.getTempSensorAdjC(), DECIMALS_TEMP);
+    doc[PARAM_TEMP_ADJ] =
+        reduceFloatPrecision(myConfig.getTempSensorAdjC(), DECIMALS_TEMP);
 
   if (myConfig.isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
@@ -74,12 +75,14 @@ void WebServerHandler::webHandleConfig() {
   }
 
   if (myConfig.isGravityPlato()) {
-    doc[PARAM_GRAVITY] = reduceFloatPrecision(convertToPlato(gravity), DECIMALS_PLATO);
+    doc[PARAM_GRAVITY] =
+        reduceFloatPrecision(convertToPlato(gravity), DECIMALS_PLATO);
   } else {
     doc[PARAM_GRAVITY] = reduceFloatPrecision(gravity, DECIMALS_SG);
   }
 
-  doc[PARAM_BATTERY] = reduceFloatPrecision(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
+  doc[PARAM_BATTERY] =
+      reduceFloatPrecision(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
   doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
@@ -246,13 +249,15 @@ void WebServerHandler::webHandleStatus() {
         gravity, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
   }
   if (myConfig.isGravityPlato()) {
-    doc[PARAM_GRAVITY] = reduceFloatPrecision(convertToPlato(gravity), DECIMALS_PLATO);
+    doc[PARAM_GRAVITY] =
+        reduceFloatPrecision(convertToPlato(gravity), DECIMALS_PLATO);
   } else {
     doc[PARAM_GRAVITY] = reduceFloatPrecision(gravity, DECIMALS_SG);
   }
   doc[PARAM_TEMP_C] = reduceFloatPrecision(tempC, DECIMALS_TEMP);
   doc[PARAM_TEMP_F] = reduceFloatPrecision(convertCtoF(tempC), DECIMALS_TEMP);
-  doc[PARAM_BATTERY] = reduceFloatPrecision(myBatteryVoltage.getVoltage()), DECIMALS_BATTERY;
+  doc[PARAM_BATTERY] =
+      reduceFloatPrecision(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
   doc[PARAM_TEMPFORMAT] = String(myConfig.getTempFormat());
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   doc[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
@@ -623,7 +628,8 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   doc[PARAM_HW_PUSH_TIMEOUT] = myAdvancedConfig.getPushTimeout();
   float t = myAdvancedConfig.getDefaultCalibrationTemp();
   doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
-      myConfig.isTempC() ? t : reduceFloatPrecision(convertCtoF(t), DECIMALS_TEMP);
+      myConfig.isTempC() ? t
+                         : reduceFloatPrecision(convertCtoF(t), DECIMALS_TEMP);
   doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = myAdvancedConfig.getPushIntervalHttp1();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = myAdvancedConfig.getPushIntervalHttp2();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = myAdvancedConfig.getPushIntervalHttp3();
@@ -796,7 +802,7 @@ void WebServerHandler::webHandleTestPush() {
       gravitySG, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
 
   TemplatingEngine engine;
-  engine.initialize(angle, gravitySG, corrGravitySG, tempC, 2.1);
+  engine.initialize(angle, gravitySG, corrGravitySG, tempC, 1.0, myBatteryVoltage.getVoltage());
 
   const String& type = _server->arg(PARAM_PUSH_FORMAT);
   PushTarget push;

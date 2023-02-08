@@ -84,6 +84,20 @@ test(helper_reduceFloatPrecision2) {
   assertEqual(f, v);
 }
 
+test(helper_reduceFloatPrecision3) {
+  float v = 20.23844;
+  float f = reduceFloatPrecision(v, 3);
+  v = 20.238;
+  assertEqual(f, v);
+}
+
+test(helper_reduceFloatPrecision4) {
+  float v = 20.238444;
+  float f = reduceFloatPrecision(v, 4);
+  v = 20.2384;
+  assertEqual(f, v);
+}
+
 test(helper_readBatteryVoltage) {
   myBatteryVoltage.read();
   float f = myBatteryVoltage.getVoltage();

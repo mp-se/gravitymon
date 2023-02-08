@@ -134,21 +134,23 @@ from multiple devices.
 
 This setup uses the MQTT integration with home assistant to collect values from the device.
 
+**option 1** - Static MQTT sensor setup
+
 This part of the configuration goes into the home assistant configuration.yaml file. The example assumes that the
 device is named `gravmon2`
 
 ::
 
    mqtt:
-   sensor:
-      - name: "Gravmon2-Gravity"
-         state_topic: "gravmon/gravmon2/gravity"
-         unique_id: gravmon2_grav
-         unit_of_measurement: "SG"
-      - name: "Gravmon2-RSSI"
-         state_topic: "gravmon/gravmon2/rssi"
-         unique_id: gravmon2_rssi
-         unit_of_measurement: "dBm"
+      sensor:
+         - name: "Gravmon2-Gravity"
+            state_topic: "gravmon/gravmon2/gravity"
+            unique_id: gravmon2_grav
+            unit_of_measurement: "SG"
+         - name: "Gravmon2-RSSI"
+            state_topic: "gravmon/gravmon2/rssi"
+            unique_id: gravmon2_rssi
+            unit_of_measurement: "dBm"
 
 
 Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option 
@@ -161,16 +163,79 @@ username / password to be able to publish messages on a topic.
    gravmon/${mdns}/gravity:${gravity}|
    gravmon/${mdns}/rssi:${rssi}|
    gravmon/${mdns}/battery:${battery}|
+   gravmon/${mdns}/temperature:${temp}|
+   gravmon/${mdns}/tilt:${tilt}|
+   
+**option 2** - Autodiscover using HA automation
 
+Replace the ${key} with data applicable to your device. Add this as an automation script (edit in yaml).
+
+::
+
+   alias: gravmon_${id}
+   sequence:
+     - service: mqtt.publish
+       data:
+         qos: 0
+         retain: false
+         topic: homeassistant/sensor/gravmon_${id}/gravity/config
+         payload: >-
+           {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+           "uniq_id":"${id}_grav", "name":"gravity",
+           "unit_of_meas":"${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"
+           }   
+     - service: mqtt.publish
+       data:
+         qos: 0
+         retain: true
+         topic: homeassistant/sensor/gravmon_${id}/temperature/config
+         payload: >-
+           {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+           "uniq_id":"${id}_temp","name":"temperature",
+           "dev_cla":"temperature","unit_of_meas":"°${temp-unit}","stat_t":"gravmon/${mdns}/temperature"
+           }   
+     - service: mqtt.publish
+       data:
+         retain: true
+         topic: homeassistant/sensor/gravmon_${id}/rssi/config
+         payload: >-
+           {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+           "uniq_id":"${id}_rssi","name":"rssi",
+           "dev_cla":"signal_strength","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"
+           }
+   - service: mqtt.publish
+      data:
+         retain: true
+         topic: homeassistant/sensor/gravmon_${id}/tilt/config
+         payload: >-
+           {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+           "uniq_id":"${id}_tilt","name":"tilt","stat_t":"gravmon/${mdns}/tilt"
+           }
+   - service: mqtt.publish
+      data:
+         retain: true
+         topic: homeassistant/sensor/gravmon_${id}/battery/config
+         payload: >-
+           {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+           "uniq_id":"${id}_batt","name":"battery",
+           "dev_cla":"voltage","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"
+           }
+   mode: restart
+
+
+**option 3** - Autodiscover using gravitymon
 
 It's also possible to allow home assistant to do auto discovery and automatically create the sensor. This format 
-template will create two sensors and update the values for them. The registration will occur when you save the format template. If Home Assistant 
-is restarted then the device will disappear. The first method is the most persistent one. 
+template will create two sensors and update the values for them. 
+
+.. warning::
+
+   The registration will occur when you save the format template. If Home Assistant 
+   is restarted then the device will disappear. The first method is the most persistent one. 
 
 .. warning::
   This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.
   Earlier version can handle 2 of the values.
-
 
 ::
 
@@ -179,10 +244,10 @@ is restarted then the device will disappear. The first method is the most persis
    gravmon/${mdns}/rssi:${rssi}|
    gravmon/${mdns}/tilt:${tilt}|
    gravmon/${mdns}/battery:${battery}|
-   homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
-   homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","dev_cla":"temperature","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
-   homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"temperature","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
-   homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","dev_cla":"temperature","stat_t":"gravmon/${mdns}/tilt"}|
+   homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"°${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
+   homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
+   homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"signal_strength","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
+   homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","stat_t":"gravmon/${mdns}/tilt"}|
    homeassistant/sensor/gravmon_${id}/battery/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_batt","name":"battery","dev_cla":"voltage","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"}|
 
 

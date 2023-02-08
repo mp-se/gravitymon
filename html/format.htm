@@ -348,6 +348,7 @@
         doc = doc.replaceAll("${temp-f}", cfg["temp-f"]);
         doc = doc.replaceAll("${temp-unit}", cfg["temp-format"]);
         doc = doc.replaceAll("${battery}", cfg["battery"]);
+        doc = doc.replaceAll("${battery-percent}", 100);
         doc = doc.replaceAll("${rssi}", cfg["rssi"]);
         doc = doc.replaceAll("${run-time}", cfg["runtime-average"]);
         doc = doc.replaceAll("${gravity}", cfg["gravity"]);

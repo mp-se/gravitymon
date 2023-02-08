@@ -82,7 +82,7 @@ const char mqttFormat[] PROGMEM =
 
 void TemplatingEngine::initialize(float angle, float gravitySG,
                                   float corrGravitySG, float tempC,
-                                  float runTime) {
+                                  float runTime, float  voltage) {
   // Names
   setVal(TPL_MDNS, myConfig.getMDNS());
   setVal(TPL_ID, myConfig.getID());
@@ -101,8 +101,35 @@ void TemplatingEngine::initialize(float angle, float gravitySG,
   setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
 
   // Battery & Timer
-  setVal(TPL_BATTERY, myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
+  setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
   setVal(TPL_SLEEP_INTERVAL, myConfig.getSleepInterval());
+
+  int charge = 0;
+
+  if (voltage > 4.15)
+    charge = 100;
+  else if (voltage > 4.05)
+    charge = 90;
+  else if (voltage > 3.97)
+    charge = 80;
+  else if (voltage > 3.91)
+    charge = 70;
+  else if (voltage > 3.86)
+    charge = 60;
+  else if (voltage > 3.81)
+    charge = 50;
+  else if (voltage > 3.78)
+    charge = 40;
+  else if (voltage > 3.76)
+    charge = 30;
+  else if (voltage > 3.73)
+    charge = 20;
+  else if (voltage > 3.67)
+    charge = 10;
+  else if (voltage > 3.44)
+    charge = 5;
+
+  setVal(TPL_BATTERY_PERCENT, charge);
 
   // Performance metrics
   setVal(TPL_RUN_TIME, runTime, DECIMALS_RUNTIME);
@@ -110,7 +137,7 @@ void TemplatingEngine::initialize(float angle, float gravitySG,
 
   // Angle/Tilt
   setVal(TPL_TILT, angle, DECIMALS_TILT);
-  setVal(TPL_ANGLE, angle,DECIMALS_TILT);
+  setVal(TPL_ANGLE, angle, DECIMALS_TILT);
 
   // Gravity options
   if (myConfig.isGravitySG()) {

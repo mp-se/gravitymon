@@ -31,19 +31,15 @@ test(template_applyTemplate1) {
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
+  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(TemplatingEngine::TEMPLATE_HTTP1);
   String id = myConfig.getID();
-  String batt =
-      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
-  batt.trim();
   String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id +
-             "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.2, "
-             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.00, "
-             "\"battery\": " +
-             batt +
+             "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.20, "
+             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.000, "
+             "\"battery\": 3.88"
              ", \"RSSI\": 31, \"corr-gravity\": 1.2230, \"gravity-unit\": "
-             "\"G\", \"run-time\": 3.0 }";
+             "\"G\", \"run-time\": 2.98 }";
   assertEqual(s, v);
 }
 
@@ -52,19 +48,15 @@ test(template_applyTemplate2) {
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
+  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(TemplatingEngine::TEMPLATE_HTTP2);
   String id = myConfig.getID();
-  String batt =
-      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
-  batt.trim();
   String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id +
-             "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.2, "
-             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.00, "
-             "\"battery\": " +
-             batt +
+             "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.20, "
+             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.000, "
+             "\"battery\": 3.88"
              ", \"RSSI\": 31, \"corr-gravity\": 1.2230, \"gravity-unit\": "
-             "\"G\", \"run-time\": 3.0 }";
+             "\"G\", \"run-time\": 2.98 }";
   assertEqual(s, v);
 }
 
@@ -73,16 +65,13 @@ test(template_applyTemplate3) {
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
+  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(TemplatingEngine::TEMPLATE_HTTP3);
   String id = myConfig.getID();
-  String batt =
-      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
-  batt.trim();
   String v = "?name=gravitymon&id=" + id +
-             "&token=&interval=900&temperature=21.2&temp-units=C&gravity=1."
-             "1230&angle=45.00&battery=" +
-             batt + "&rssi=31&corr-gravity=1.2230&gravity-unit=G&run-time=3.0";
+             "&token=&interval=900&temperature=21.20&temp-units=C&gravity=1."
+             "1230&angle=45.000&battery=3.88"
+             "&rssi=31&corr-gravity=1.2230&gravity-unit=G&run-time=2.98";
   assertEqual(s, v);
 }
 
@@ -91,17 +80,14 @@ test(template_applyTemplate4) {
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
+  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(TemplatingEngine::TEMPLATE_INFLUX);
   String id = myConfig.getID();
-  String batt =
-      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
-  batt.trim();
   String v =
       "measurement,host=gravitymon,device=" + id +
       ",temp-format=C,gravity-format=G "
-      "gravity=1.1230,corr-gravity=1.2230,angle=45.00,temp=21.2,battery=" +
-      batt + ",rssi=31\n";
+      "gravity=1.1230,corr-gravity=1.2230,angle=45.000,temp=21.20,battery=3.88"
+      ",rssi=31\n";
   assertEqual(s, v);
 }
 
@@ -110,16 +96,12 @@ test(template_applyTemplate5) {
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
+  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(TemplatingEngine::TEMPLATE_MQTT);
-  String batt =
-      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
-  batt.trim();
   String v =
-      "ispindel/gravitymon/tilt:45.00|ispindel/gravitymon/"
-      "temperature:21.2|ispindel/gravitymon/temp_units:C|ispindel/gravitymon/"
-      "battery:" +
-      batt +
+      "ispindel/gravitymon/tilt:45.000|ispindel/gravitymon/"
+      "temperature:21.20|ispindel/gravitymon/temp_units:C|ispindel/gravitymon/"
+      "battery:3.88"
       "|ispindel/gravitymon/gravity:1.1230|ispindel/gravitymon/"
       "interval:900|ispindel/gravitymon/RSSI:31|";
   assertEqual(s, v);
@@ -135,15 +117,27 @@ test(template_applyTemplate6) {
     "<result><channel>Batterie</channel><float>1</float><value>${battery}</value></result>"
     "<result><channel>Temperature</channel><float>1</float><value>${temp}</value></result></prtg>";
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98);
+  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(tpl);
-  String batt =
-      convertFloatToString(myBatteryVoltage.getVoltage(), &buffer[0], 2);
-  batt.trim();
-
   String v = "<prtg><result><channel>Densite</channel><float>1</float><value>1.1230</value></result>"
-             "<result><channel>Batterie</channel><float>1</float><value>" + batt + "</value></result>"
-             "<result><channel>Temperature</channel><float>1</float><value>21.2</value></result></prtg>";
+             "<result><channel>Batterie</channel><float>1</float><value>3.88</value></result>"
+             "<result><channel>Temperature</channel><float>1</float><value>21.20</value></result></prtg>";
+  assertEqual(s, v);
+}
+
+test(template_applyTemplate7) {
+  TemplatingEngine e;
+  char buffer[20];
+  myConfig.setMDNS("gravitymon");
+
+  const char* tpl = 
+    "${battery}-${battery-percent}";
+
+  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 4.20);
+  String s = e.create(tpl);
+
+  // When run using charger the level should be 100%
+  String v = "4.20-100";
   assertEqual(s, v);
 }
 

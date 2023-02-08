@@ -106,7 +106,7 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
   _httpSecure.setReuse(true);
 
   TemplatingEngine engine;
-  engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime);
+  engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime, myBatteryVoltage.getVoltage());
 
   PushIntervalTracker intDelay;
   intDelay.load();
