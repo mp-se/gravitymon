@@ -802,7 +802,8 @@ void WebServerHandler::webHandleTestPush() {
       gravitySG, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
 
   TemplatingEngine engine;
-  engine.initialize(angle, gravitySG, corrGravitySG, tempC, 1.0, myBatteryVoltage.getVoltage());
+  engine.initialize(angle, gravitySG, corrGravitySG, tempC, 1.0,
+                    myBatteryVoltage.getVoltage());
 
   const String& type = _server->arg(PARAM_PUSH_FORMAT);
   PushTarget push;

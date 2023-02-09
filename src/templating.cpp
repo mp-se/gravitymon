@@ -82,7 +82,7 @@ const char mqttFormat[] PROGMEM =
 
 void TemplatingEngine::initialize(float angle, float gravitySG,
                                   float corrGravitySG, float tempC,
-                                  float runTime, float  voltage) {
+                                  float runTime, float voltage) {
   // Names
   setVal(TPL_MDNS, myConfig.getMDNS());
   setVal(TPL_ID, myConfig.getID());
