@@ -168,7 +168,8 @@ username / password to be able to publish messages on a topic.
    
 **option 2** - Autodiscover using HA automation
 
-Replace the ${key} with data applicable to your device. Add this as an automation script (edit in yaml).
+Replace the ${key} with data applicable to your device. Add this as an automation script (edit in yaml). 
+It should show up as an entity under the MQTT integration. If not, check the logfiles for any parsing errors. 
 
 ::
 
