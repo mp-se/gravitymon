@@ -178,7 +178,7 @@ It should show up as an entity under the MQTT integration. If not, check the log
      - service: mqtt.publish
        data:
          qos: 0
-         retain: false
+         retain: true
          topic: homeassistant/sensor/gravmon_${id}/gravity/config
          payload: >-
            {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
