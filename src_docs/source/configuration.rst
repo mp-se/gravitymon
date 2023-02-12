@@ -3,7 +3,9 @@
 Configuration
 #############
 
-The device can operate in two modes and must be in ``configuration mode`` in order for the web server to be active.
+The device can operate in two modes and must be in ``configuration mode`` in order for the web 
+server to be active. The device (esp) LED will blink when the device is in configration 
+mode (1 second interval). If the LED is constantly on then the device is in WIFI setup mode. 
 
 One of the following conditions will place the device in ``configuration mode``:
 
@@ -11,6 +13,12 @@ One of the following conditions will place the device in ``configuration mode``:
 - Sleep mode has been disabled in the web interface
 - Placed in horizontal mode 85-90 degrees
 - Charger connected >4.15V (or the value that is configured). This does not work on the Floaty variant due to lack of hardware support.
+
+.. tip::
+
+   The easiest way to enter configuration mode is to place the device on a flat surface and press the 
+   reset button on the esp. If the LED is solid on then it detected a double reset and has entered WIFI 
+   setup mode, in this case just press reset button again.
 
 
 Status 
