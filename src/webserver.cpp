@@ -606,9 +606,8 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
     myAdvancedConfig.setIgnoreLowAnges(false);
   if (_server->hasArg(PARAM_HW_BATTERY_SAVING))
     myAdvancedConfig.setBatterySaving(
-        _server->arg(PARAM_HW_BATTERY_SAVING).equalsIgnoreCase("on")
-            ? true
-            : false);
+        _server->arg(PARAM_HW_BATTERY_SAVING).equalsIgnoreCase("on") ? true
+                                                                     : false);
   else
     myAdvancedConfig.setBatterySaving(false);
 

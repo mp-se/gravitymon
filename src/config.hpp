@@ -69,11 +69,11 @@ class AdvancedConfig {
   int _pushIntervalInflux = 0;
   int _pushIntervalMqtt = 0;
   bool _ignoreLowAnges = false;
-#if defined(ESP32LITE) 
+#if defined(ESP32LITE)
   bool _batterySaving = false;
 #else
   bool _batterySaving = true;
-#endif 
+#endif
 
  public:
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
