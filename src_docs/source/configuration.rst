@@ -320,6 +320,10 @@ data and of the deviation on any point is bigger the formula will be rejected.
 
 If this option is checked any angles below that of SG 1 will be discarded as invalid and never sent to any server. Default = off.
 
+* **Battery saving:**
+
+If this option is checked the sleep interval will be changed to 1 hour when battery drops below 20%. Default = on. This setting is set to off for Floaty builds.
+
 * **Gravity calibration temp**
 
 This option allows you to set the correction temperature used in the automatic temperature gravity adjustment formula. Standard is 20C. 

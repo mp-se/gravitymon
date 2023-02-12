@@ -362,9 +362,6 @@ void Config::checkFileSystem() {
   }
 }
 
-//
-// Save json document to file
-//
 bool AdvancedConfig::saveFile() {
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   Log.verbose(F("CFG : Saving hardware configuration to file." CR));
@@ -377,7 +374,7 @@ bool AdvancedConfig::saveFile() {
     return false;
   }
 
-  DynamicJsonDocument doc(512);
+  DynamicJsonDocument doc(700);
 
   doc[PARAM_HW_GYRO_READ_COUNT] = this->getGyroReadCount();
   // doc[PARAM_HW_GYRO_READ_DELAY] = this->getGyroReadDelay();
@@ -393,6 +390,7 @@ bool AdvancedConfig::saveFile() {
   doc[PARAM_HW_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
   doc[PARAM_HW_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
   doc[PARAM_HW_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
+  doc[PARAM_HW_BATTERY_SAVING] = this->isBatterySaving();
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   serializeJson(doc, EspSerial);
@@ -407,9 +405,6 @@ bool AdvancedConfig::saveFile() {
   return true;
 }
 
-//
-// Load config file from disk
-//
 bool AdvancedConfig::loadFile() {
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   Log.verbose(F("CFG : Loading hardware configuration from file." CR));
@@ -482,6 +477,8 @@ bool AdvancedConfig::loadFile() {
         doc[PARAM_HW_TEMPSENSOR_RESOLUTION].as<int>());
   if (!doc[PARAM_HW_IGNORE_LOW_ANGLES].isNull())
     setIgnoreLowAnges(doc[PARAM_HW_IGNORE_LOW_ANGLES].as<bool>());
+  if (!doc[PARAM_HW_BATTERY_SAVING].isNull())
+    setBatterySaving(doc[PARAM_HW_BATTERY_SAVING].as<bool>());
 
   Log.notice(F("CFG : Configuration file " CFG_HW_FILENAME " loaded." CR));
   return true;

@@ -371,6 +371,11 @@ void goToSleep(int sleepInterval) {
   myGyro.enterSleep();
   LOG_PERF_STOP("run-time");
   LOG_PERF_PUSH();
+
+  if (myAdvancedConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
+    sleepInterval = 3600;
+  }
+
   delay(100);
   deepSleep(sleepInterval);
 }

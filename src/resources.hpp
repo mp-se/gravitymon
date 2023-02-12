@@ -93,6 +93,7 @@ SOFTWARE.
 #define PARAM_HW_PUSH_INTERVAL_INFLUX "int-influx"
 #define PARAM_HW_PUSH_INTERVAL_MQTT "int-mqtt"
 #define PARAM_HW_IGNORE_LOW_ANGLES "ignore-low-angles"
+#define PARAM_HW_BATTERY_SAVING "battery-saving"
 #define PARAM_FORMAT_HTTP1 "http-1"
 #define PARAM_FORMAT_HTTP2 "http-2"
 #define PARAM_FORMAT_HTTP3 "http-3"

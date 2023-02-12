@@ -10,6 +10,7 @@ Features
 ++++++++
 * Increased the number of decimals for tilt/angle (3), temperature (2), plato (2), runtime (2).
 * Added ${battery-percent} as new variable for use in format templates.
+* Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.
 
 Documentation
 +++++++++++++

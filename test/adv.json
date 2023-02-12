@@ -12,5 +12,6 @@
   "int-influx": 0,
   "int-mqtt": 0,
   "tempsensor-resolution": 9,
+  "battery-saving": true,
   "ignore-low-angles": false
 }

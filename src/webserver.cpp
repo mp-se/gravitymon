@@ -604,6 +604,13 @@ void WebServerHandler::webHandleConfigAdvancedWrite() {
             : false);
   else
     myAdvancedConfig.setIgnoreLowAnges(false);
+  if (_server->hasArg(PARAM_HW_BATTERY_SAVING))
+    myAdvancedConfig.setBatterySaving(
+        _server->arg(PARAM_HW_BATTERY_SAVING).equalsIgnoreCase("on")
+            ? true
+            : false);
+  else
+    myAdvancedConfig.setBatterySaving(false);
 
   myAdvancedConfig.saveFile();
   _server->sendHeader("Location", "/config.htm#collapseAdvanced", true);
@@ -638,6 +645,7 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   doc[PARAM_HW_TEMPSENSOR_RESOLUTION] =
       myAdvancedConfig.getTempSensorResolution();
   doc[PARAM_HW_IGNORE_LOW_ANGLES] = myAdvancedConfig.isIgnoreLowAnges();
+  doc[PARAM_HW_BATTERY_SAVING] = myAdvancedConfig.isBatterySaving();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, EspSerial);
