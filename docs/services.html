@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Advanced Configuration" href="advanced.html" /><link rel="prev" title="Create formula" href="formula.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Service Integration - GravityMon v1.2.0</title>
+        <title>Service Integration - GravityMon v1.3.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v1.2.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v1.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.2.0</span>
+  <span class="sidebar-brand-text">GravityMon v1.3.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -292,18 +292,19 @@ format template that can be used. For information on customizing the format see 
 <p><a class="reference external" href="https://www.homeassistant.io">HomeAssistant</a> is a platform for home automation and can collect sensor data
 from multiple devices.</p>
 <p>This setup uses the MQTT integration with home assistant to collect values from the device.</p>
+<p><strong>option 1</strong> - Static MQTT sensor setup</p>
 <p>This part of the configuration goes into the home assistant configuration.yaml file. The example assumes that the
 device is named <cite>gravmon2</cite></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mqtt</span><span class="p">:</span>
-<span class="n">sensor</span><span class="p">:</span>
-   <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">"Gravmon2-Gravity"</span>
-      <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/gravity"</span>
-      <span class="n">unique_id</span><span class="p">:</span> <span class="n">gravmon2_grav</span>
-      <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">"SG"</span>
-   <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">"Gravmon2-RSSI"</span>
-      <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/rssi"</span>
-      <span class="n">unique_id</span><span class="p">:</span> <span class="n">gravmon2_rssi</span>
-      <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">"dBm"</span>
+   <span class="n">sensor</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">"Gravmon2-Gravity"</span>
+         <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/gravity"</span>
+         <span class="n">unique_id</span><span class="p">:</span> <span class="n">gravmon2_grav</span>
+         <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">"SG"</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">"Gravmon2-RSSI"</span>
+         <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/rssi"</span>
+         <span class="n">unique_id</span><span class="p">:</span> <span class="n">gravmon2_rssi</span>
+         <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">"dBm"</span>
 </pre></div>
 </div>
 <p>Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option
@@ -313,11 +314,72 @@ username / password to be able to publish messages on a topic.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>gravmon/${mdns}/gravity:${gravity}|
 gravmon/${mdns}/rssi:${rssi}|
 gravmon/${mdns}/battery:${battery}|
+gravmon/${mdns}/temperature:${temp}|
+gravmon/${mdns}/tilt:${tilt}|
 </pre></div>
 </div>
+<p><strong>option 2</strong> - Autodiscover using HA automation</p>
+<p>Replace the ${key} with data applicable to your device. Add this as an automation script (edit in yaml).
+It should show up as an entity under the MQTT integration. If not, check the logfiles for any parsing errors.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>alias: gravmon_${id}
+sequence:
+  - service: mqtt.publish
+    data:
+      qos: 0
+      retain: true
+      topic: homeassistant/sensor/gravmon_${id}/gravity/config
+      payload: &gt;-
+        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+        "uniq_id":"${id}_grav", "name":"gravity",
+        "unit_of_meas":"${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"
+        }
+  - service: mqtt.publish
+    data:
+      qos: 0
+      retain: true
+      topic: homeassistant/sensor/gravmon_${id}/temperature/config
+      payload: &gt;-
+        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+        "uniq_id":"${id}_temp","name":"temperature",
+        "dev_cla":"temperature","unit_of_meas":"°${temp-unit}","stat_t":"gravmon/${mdns}/temperature"
+        }
+  - service: mqtt.publish
+    data:
+      retain: true
+      topic: homeassistant/sensor/gravmon_${id}/rssi/config
+      payload: &gt;-
+        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+        "uniq_id":"${id}_rssi","name":"rssi",
+        "dev_cla":"signal_strength","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"
+        }
+- service: mqtt.publish
+   data:
+      retain: true
+      topic: homeassistant/sensor/gravmon_${id}/tilt/config
+      payload: &gt;-
+        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+        "uniq_id":"${id}_tilt","name":"tilt","stat_t":"gravmon/${mdns}/tilt"
+        }
+- service: mqtt.publish
+   data:
+      retain: true
+      topic: homeassistant/sensor/gravmon_${id}/battery/config
+      payload: &gt;-
+        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
+        "uniq_id":"${id}_batt","name":"battery",
+        "dev_cla":"voltage","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"
+        }
+mode: restart
+</pre></div>
+</div>
+<p><strong>option 3</strong> - Autodiscover using gravitymon</p>
 <p>It’s also possible to allow home assistant to do auto discovery and automatically create the sensor. This format
-template will create two sensors and update the values for them. The registration will occur when you save the format template. If Home Assistant
+template will create two sensors and update the values for them.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The registration will occur when you save the format template. If Home Assistant
 is restarted then the device will disappear. The first method is the most persistent one.</p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.
@@ -328,10 +390,10 @@ gravmon/${mdns}/gravity:${gravity}|
 gravmon/${mdns}/rssi:${rssi}|
 gravmon/${mdns}/tilt:${tilt}|
 gravmon/${mdns}/battery:${battery}|
-homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
-homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","dev_cla":"temperature","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
-homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"temperature","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
-homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","dev_cla":"temperature","stat_t":"gravmon/${mdns}/tilt"}|
+homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"°${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
+homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
+homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"signal_strength","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
+homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","stat_t":"gravmon/${mdns}/tilt"}|
 homeassistant/sensor/gravmon_${id}/battery/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_batt","name":"battery","dev_cla":"voltage","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"}|
 </pre></div>
 </div>

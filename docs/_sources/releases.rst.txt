@@ -3,6 +3,36 @@
 Releases 
 ########
 
+v1.3.0 beta 1
+=============
+
+Features
+++++++++
+* Increased the number of decimals for tilt/angle (3), temperature (2), plato (2), runtime (2).
+* Added ${battery-percent} as new variable for use in format templates.
+* Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.
+
+Documentation
++++++++++++++
+* Added new option for home assistant sensor registration through automation script.
+* Added description for how to get voltage measurement on a floaty, see Hardware section.
+
+Issues adressed
+++++++++++++++++
+* BUG: Clarified that its the bucket ID and auth TOKEN for influxdb (config page) 
+* BUG: Fixed wrong device classes in home assistant template.
+
+Other
++++++
+* Updated platformio esp8266 to v4.1.0
+* Updated platformio esp32 to v6.0.0
+* Updated h2zero/NimBLE-Arduino to b 1.4.1
+* Updated 256dpi/arduino-mqtt to v2.5.1 
+* Created tag v1.0.0 for codeplea/tinyexpr to get control over releases
+* Created tag v1.0.0 for graphitemaster/incbin to get control over releases
+* Updated khoih-prog/ESP_WiFiManager to v1.12.1
+* Updated khoih-prog/ESP_DoubleResetDetector to v1.3.2
+
 v1.2.1
 ======
 
@@ -12,7 +42,7 @@ Issues adressed
 
 Other
 +++++
-* Update tinyexpr library to latest baseline. For forumula evaluation.
+* Update tinyexpr library to latest baseline (Used for forumula evaluation).
 
 Documentation
 +++++++++++++

@@ -157,6 +157,11 @@ The main features
 
   See the :ref:`compiling-the-software` for more information.
 
+* **Battery saving**
+
+  If the battery voltage drops below 20%, then the device will enter battery savings mode 
+  and change the sleep interval to 1 hour.
+
 
 Battery life
 ------------

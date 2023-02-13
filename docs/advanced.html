@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="REST API" href="api.html" /><link rel="prev" title="Service Integration" href="services.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Advanced Configuration - GravityMon v1.2.0</title>
+        <title>Advanced Configuration - GravityMon v1.3.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v1.2.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v1.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.2.0</span>
+  <span class="sidebar-brand-text">GravityMon v1.3.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -255,16 +255,16 @@ The save button will save the current formula and reload the data from the devic
 <td><p>900</p></td>
 </tr>
 <tr class="row-odd"><td><p>${temp}</p></td>
-<td><p>Temperature in format configured on device, one decimal</p></td>
-<td><p>21.2</p></td>
+<td><p>Temperature in format configured on device, two decimals</p></td>
+<td><p>21.23</p></td>
 </tr>
 <tr class="row-even"><td><p>${temp-c}</p></td>
-<td><p>Temperature in C, one decimal</p></td>
-<td><p>21.2</p></td>
+<td><p>Temperature in C, two decimals</p></td>
+<td><p>21.23</p></td>
 </tr>
 <tr class="row-odd"><td><p>${temp-f}</p></td>
-<td><p>Temperature in F, one decimal</p></td>
-<td><p>58.0</p></td>
+<td><p>Temperature in F, two decimals</p></td>
+<td><p>58.02</p></td>
 </tr>
 <tr class="row-even"><td><p>${temp-unit}</p></td>
 <td><p>Temperature format <cite>C</cite> or <cite>F</cite></p></td>
@@ -274,55 +274,59 @@ The save button will save the current formula and reload the data from the devic
 <td><p>Battery voltage, two decimals</p></td>
 <td><p>3.89</p></td>
 </tr>
-<tr class="row-even"><td><p>${rssi}</p></td>
+<tr class="row-even"><td><p>${battery-percent}</p></td>
+<td><p>Battery percentage</p></td>
+<td><p>20</p></td>
+</tr>
+<tr class="row-odd"><td><p>${rssi}</p></td>
 <td><p>Wifi signal strength</p></td>
 <td><p>-75</p></td>
 </tr>
-<tr class="row-odd"><td><p>${run-time}</p></td>
+<tr class="row-even"><td><p>${run-time}</p></td>
 <td><p>How long the last measurement took, two decimals</p></td>
 <td><p>3.87</p></td>
 </tr>
-<tr class="row-even"><td><p>${angle}</p></td>
-<td><p>Angle of the gyro, two decimals</p></td>
-<td><p>28.67</p></td>
+<tr class="row-odd"><td><p>${angle}</p></td>
+<td><p>Angle of the gyro, tree decimals</p></td>
+<td><p>28.673</p></td>
 </tr>
-<tr class="row-odd"><td><p>${tilt}</p></td>
+<tr class="row-even"><td><p>${tilt}</p></td>
 <td><p>Same as angle.</p></td>
-<td><p>28.67</p></td>
+<td><p>28.673</p></td>
 </tr>
-<tr class="row-even"><td><p>${gravity}</p></td>
-<td><p>Calculated gravity, 4 decimals for SG and 1 for Plato.</p></td>
+<tr class="row-odd"><td><p>${gravity}</p></td>
+<td><p>Calculated gravity, 4 decimals for SG and 2 for Plato.</p></td>
 <td><p>1.0456</p></td>
 </tr>
-<tr class="row-odd"><td><p>${gravity-sg}</p></td>
+<tr class="row-even"><td><p>${gravity-sg}</p></td>
 <td><p>Calculated gravity in SG, 4 decimals</p></td>
 <td><p>1.0456</p></td>
 </tr>
-<tr class="row-even"><td><p>${gravity-plato}</p></td>
-<td><p>Calculated gravity in Plato, 1 decimal</p></td>
-<td><p>8.5</p></td>
+<tr class="row-odd"><td><p>${gravity-plato}</p></td>
+<td><p>Calculated gravity in Plato, 2 decimals</p></td>
+<td><p>8.52</p></td>
 </tr>
-<tr class="row-odd"><td><p>${corr-gravity}</p></td>
-<td><p>Temperature corrected gravity, 4 decimals for SG and 1 for Plato.</p></td>
+<tr class="row-even"><td><p>${corr-gravity}</p></td>
+<td><p>Temperature corrected gravity, 4 decimals for SG and 2 for Plato.</p></td>
 <td><p>1.0456</p></td>
 </tr>
-<tr class="row-even"><td><p>${corr-gravity-sg}</p></td>
+<tr class="row-odd"><td><p>${corr-gravity-sg}</p></td>
 <td><p>Temperature corrected gravity in SG, 4 decimals</p></td>
 <td><p>1.0456</p></td>
 </tr>
-<tr class="row-odd"><td><p>${corr-gravity-plato}</p></td>
-<td><p>Temperature corrected gravity in Plato, 1 decimal</p></td>
-<td><p>8.5</p></td>
+<tr class="row-even"><td><p>${corr-gravity-plato}</p></td>
+<td><p>Temperature corrected gravity in Plato, 2 decimals</p></td>
+<td><p>8.52</p></td>
 </tr>
-<tr class="row-even"><td><p>${gravity-unit}</p></td>
+<tr class="row-odd"><td><p>${gravity-unit}</p></td>
 <td><p>Gravity format, <cite>G</cite> or <cite>P</cite></p></td>
 <td><p>G</p></td>
 </tr>
-<tr class="row-odd"><td><p>${app-ver}</p></td>
+<tr class="row-even"><td><p>${app-ver}</p></td>
 <td><p>Software version</p></td>
-<td><p>1.1.0</p></td>
+<td><p>1.3.0</p></td>
 </tr>
-<tr class="row-even"><td><p>${app-build}</p></td>
+<tr class="row-odd"><td><p>${app-build}</p></td>
 <td><p>Software revision (git hash)</p></td>
 <td><p>..e456743</p></td>
 </tr>

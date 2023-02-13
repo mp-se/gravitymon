@@ -52,20 +52,23 @@ These are the format keys available for use in the format.
      - Seconds between data is pushed
      - 900
    * - ${temp}
-     - Temperature in format configured on device, one decimal
-     - 21.2
+     - Temperature in format configured on device, two decimals
+     - 21.23
    * - ${temp-c}
-     - Temperature in C, one decimal
-     - 21.2
+     - Temperature in C, two decimals
+     - 21.23
    * - ${temp-f}
-     - Temperature in F, one decimal
-     - 58.0
+     - Temperature in F, two decimals
+     - 58.02
    * - ${temp-unit}
      - Temperature format `C` or `F`
      - C
    * - ${battery}
      - Battery voltage, two decimals
      - 3.89
+   * - ${battery-percent}
+     - Battery percentage
+     - 20
    * - ${rssi}
      - Wifi signal strength
      - -75
@@ -73,35 +76,35 @@ These are the format keys available for use in the format.
      - How long the last measurement took, two decimals
      - 3.87
    * - ${angle}
-     - Angle of the gyro, two decimals
-     - 28.67
+     - Angle of the gyro, tree decimals
+     - 28.673
    * - ${tilt}
      - Same as angle.
-     - 28.67
+     - 28.673
    * - ${gravity}
-     - Calculated gravity, 4 decimals for SG and 1 for Plato.
+     - Calculated gravity, 4 decimals for SG and 2 for Plato.
      - 1.0456
    * - ${gravity-sg}
      - Calculated gravity in SG, 4 decimals
      - 1.0456
    * - ${gravity-plato}
-     - Calculated gravity in Plato, 1 decimal
-     - 8.5
+     - Calculated gravity in Plato, 2 decimals
+     - 8.52
    * - ${corr-gravity}
-     - Temperature corrected gravity, 4 decimals for SG and 1 for Plato.
+     - Temperature corrected gravity, 4 decimals for SG and 2 for Plato.
      - 1.0456
    * - ${corr-gravity-sg}
      - Temperature corrected gravity in SG, 4 decimals
      - 1.0456
    * - ${corr-gravity-plato}
-     - Temperature corrected gravity in Plato, 1 decimal
-     - 8.5
+     - Temperature corrected gravity in Plato, 2 decimals
+     - 8.52
    * - ${gravity-unit}
      - Gravity format, `G` or `P`
      - G
    * - ${app-ver}
      - Software version
-     - 1.1.0
+     - 1.3.0
    * - ${app-build}
      - Software revision (git hash)
      - ..e456743
