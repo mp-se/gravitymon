@@ -3,8 +3,8 @@
 Releases 
 ########
 
-v1.3.0
-======
+v1.3.0 beta 1
+=============
 
 Features
 ++++++++
@@ -15,6 +15,7 @@ Features
 Documentation
 +++++++++++++
 * Added new option for home assistant sensor registration through automation script.
+* Added description for how to get voltage measurement on a floaty, see Hardware section.
 
 Issues adressed
 ++++++++++++++++

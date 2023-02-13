@@ -138,3 +138,10 @@ For the floaty device pins 16/17 are used as TX/RX pins and the 13/15 pins are u
 .. image:: images/32lite_pins.jpg
   :width: 500
   :alt: Floaty pins
+
+It's possible to modify the floaty hardware and add a real voltage measurement to enable more features in GravityMon. You connect the +5V to the + on the battery and GND to ground. The connection between the resistors 
+is connected to PIN 35 on the floaty. You might need to correct the voltage factor after the modification to ensure the calculated measurement is correct. 
+
+.. image:: images/floaty_voltage.jpg
+  :width: 200
+  :alt: Voltage divider for floaty
