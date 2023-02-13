@@ -375,17 +375,17 @@
 
         if(isPlato()) {
           $("#gravity-header").text("Gravity (Plato):");
-          $("#g1").val( parseFloat(cfg["g1"]).toFixed(1) );
-          $("#g1a").val( "0.0" );
-          $("#g2").val( parseFloat(cfg["g2"]).toFixed(1) );
-          $("#g3").val( parseFloat(cfg["g3"]).toFixed(1) );
-          $("#g4").val( parseFloat(cfg["g4"]).toFixed(1) );
-          $("#g5").val( parseFloat(cfg["g5"]).toFixed(1) );
-          $("#g6").val( parseFloat(cfg["g6"]).toFixed(1) );
-          $("#g7").val( parseFloat(cfg["g7"]).toFixed(1) );
-          $("#g8").val( parseFloat(cfg["g8"]).toFixed(1) );
-          $("#g9").val( parseFloat(cfg["g9"]).toFixed(1) );
-          $("#g10").val( parseFloat(cfg["g10"]).toFixed(1) );
+          $("#g1").val( parseFloat(cfg["g1"]).toFixed(2) );
+          $("#g1a").val( "0.00" );
+          $("#g2").val( parseFloat(cfg["g2"]).toFixed(2) );
+          $("#g3").val( parseFloat(cfg["g3"]).toFixed(2) );
+          $("#g4").val( parseFloat(cfg["g4"]).toFixed(2) );
+          $("#g5").val( parseFloat(cfg["g5"]).toFixed(2) );
+          $("#g6").val( parseFloat(cfg["g6"]).toFixed(2) );
+          $("#g7").val( parseFloat(cfg["g7"]).toFixed(2) );
+          $("#g8").val( parseFloat(cfg["g8"]).toFixed(2) );
+          $("#g9").val( parseFloat(cfg["g9"]).toFixed(2) );
+          $("#g10").val( parseFloat(cfg["g10"]).toFixed(2) );
         } else {
           $("#gravity-header").text("Gravity (SG):");
           $("#g1").val( parseFloat(cfg["g1"]).toFixed(4) );
@@ -401,16 +401,16 @@
           $("#g10").val( parseFloat(cfg["g10"]).toFixed(4) );
         }
 
-        $("#a1").val( parseFloat(cfg["a1"]).toFixed(2) );
-        $("#a2").val( parseFloat(cfg["a2"]).toFixed(2) );
-        $("#a3").val( parseFloat(cfg["a3"]).toFixed(2) );
-        $("#a4").val( parseFloat(cfg["a4"]).toFixed(2) );
-        $("#a5").val( parseFloat(cfg["a5"]).toFixed(2) );
-        $("#a6").val( parseFloat(cfg["a6"]).toFixed(2) );
-        $("#a7").val( parseFloat(cfg["a7"]).toFixed(2) );
-        $("#a8").val( parseFloat(cfg["a8"]).toFixed(2) );
-        $("#a9").val( parseFloat(cfg["a9"]).toFixed(2) );
-        $("#a10").val( parseFloat(cfg["a10"]).toFixed(2) );
+        $("#a1").val( parseFloat(cfg["a1"]).toFixed(3) );
+        $("#a2").val( parseFloat(cfg["a2"]).toFixed(3) );
+        $("#a3").val( parseFloat(cfg["a3"]).toFixed(3) );
+        $("#a4").val( parseFloat(cfg["a4"]).toFixed(3) );
+        $("#a5").val( parseFloat(cfg["a5"]).toFixed(3) );
+        $("#a6").val( parseFloat(cfg["a6"]).toFixed(3) );
+        $("#a7").val( parseFloat(cfg["a7"]).toFixed(3) );
+        $("#a8").val( parseFloat(cfg["a8"]).toFixed(3) );
+        $("#a9").val( parseFloat(cfg["a9"]).toFixed(3) );
+        $("#a10").val( parseFloat(cfg["a10"]).toFixed(3) );
 
         if( cfg["error"]!="" ) {
           showError(cfg["error"]);
@@ -430,6 +430,6 @@
 
   <!-- START FOOTER -->
 
-  <div class="container themed-container bg-primary text-light row-margin-10">(C) Copyright 2021-22 Magnus Persson</div>
+  <div class="container themed-container bg-primary text-light row-margin-10">(C) Copyright 2021-23 Magnus Persson</div>
 </body>
 </html>

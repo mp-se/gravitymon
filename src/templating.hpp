@@ -42,6 +42,7 @@ SOFTWARE.
 #define TPL_TEMP_F "${temp-f}"
 #define TPL_TEMP_UNITS "${temp-unit}"  // C or F
 #define TPL_BATTERY "${battery}"
+#define TPL_BATTERY_PERCENT "${battery-percent}"
 #define TPL_RSSI "${rssi}"
 #define TPL_RUN_TIME "${run-time}"
 #define TPL_ANGLE "${angle}"
@@ -75,7 +76,7 @@ class TemplatingEngine {
     String val;
   };
 
-  KeyVal _items[23] = {{TPL_MDNS, ""},           {TPL_ID, ""},
+  KeyVal _items[24] = {{TPL_MDNS, ""},           {TPL_ID, ""},
                        {TPL_SLEEP_INTERVAL, ""}, {TPL_TEMP, ""},
                        {TPL_TEMP_C, ""},         {TPL_TEMP_F, ""},
                        {TPL_TEMP_UNITS, ""},     {TPL_BATTERY, ""},
@@ -86,7 +87,7 @@ class TemplatingEngine {
                        {TPL_GRAVITY_CORR_G, ""}, {TPL_GRAVITY_CORR_P, ""},
                        {TPL_GRAVITY_UNIT, ""},   {TPL_TOKEN, ""},
                        {TPL_TOKEN2, ""},         {TPL_APP_VER, ""},
-                       {TPL_APP_BUILD, ""}};
+                       {TPL_APP_BUILD, ""},      {TPL_BATTERY_PERCENT, ""}};
 
   char _buffer[20] = "";
   String _baseTemplate;
@@ -200,7 +201,7 @@ class TemplatingEngine {
     _output = 0;
   }
   void initialize(float angle, float gravitySG, float corrGravitySG,
-                  float tempC, float runTime);
+                  float tempC, float runTime, float voltage);
   const char *create(TemplatingEngine::Templates idx,
                      bool useDefaultTemplate = false);
   const char *create(const char *formatTemplate);

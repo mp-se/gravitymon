@@ -468,8 +468,9 @@ char* convertFloatToString(float f, char* buffer, int dec) {
 }
 
 float reduceFloatPrecision(float f, int dec) {
-  char buffer[5];
+  char buffer[10];
   dtostrf(f, 6, dec, &buffer[0]);
+  // Log.notice(F("HELP: %s, %F" CR), &buffer[0], atof(&buffer[0]));
   return atof(&buffer[0]);
 }
 

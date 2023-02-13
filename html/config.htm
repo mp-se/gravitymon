@@ -281,14 +281,14 @@
             </div>
 
             <div class="row mb-3">
-              <label for="influxdb2-bucket" class="col-sm-2 col-form-label">InfluxDB v2 Bucket</label>
+              <label for="influxdb2-bucket" class="col-sm-2 col-form-label">InfluxDB v2 Bucket ID</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="50" class="form-control" name="influxdb2-bucket" id="influxdb2-bucket" data-bs-toggle="tooltip" title="Identifier for the data bucket to use">
               </div>
             </div>
 
             <div class="row mb-3">
-              <label for="influxdb2-auth" class="col-sm-2 col-form-label">InfluxDB v2 Auth</label>
+              <label for="influxdb2-auth" class="col-sm-2 col-form-label">InfluxDB v2 Auth Token</label>
               <div class="col-sm-4">
                 <input type="text" maxlength="100" class="form-control" name="influxdb2-auth" id="influxdb2-auth" data-bs-toggle="tooltip" title="Authentication token for accessing data bucket">
               </div>
@@ -582,6 +582,16 @@
                 </div>
               </div>
               <div class="col-sm-5" name="water-angle" id="water-angle"></div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-3 offset-sm-3">
+                <div class="form-check">
+                  <input disabled class="form-check-input" type="checkbox" class="form-control" name="battery-saving" id="battery-saving" data-bs-toggle="tooltip" title="When active, the sleep interval will be changed to 1 hour when battery drops below 20% (3.73V)">
+                  <label class="form-check-label" for="battery-saving">Enable battery saving</label>
+                </div>
+              </div>
+              <div class="col-sm-5">default on</div>
             </div>
 
             <div class="row mb-3">
@@ -892,6 +902,7 @@
       $("#int-mqtt").prop("disabled", b);
       $("#tempsensor-resolution").prop("disabled", b);
       $("#ignore-low-angles").prop("disabled", b);
+      $("#battery-saving").prop("disabled", b);
     }
 
     // Get the advanced values from the API
@@ -899,7 +910,7 @@
       setButtonDisabled( true );
 
       var url = "/api/config/advanced";
-      //var url = "/test/adv.json";
+      // var url = "/test/adv.json";
       $('#spinner').show(); 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
@@ -911,6 +922,7 @@
         $("#wifi-connect-timeout").val(cfg["wifi-connect-timeout"]);
         $("#tempsensor-resolution").val(cfg["tempsensor-resolution"]);
         $("#ignore-low-angles").prop( "checked", cfg["ignore-low-angles"] );
+        $("#battery-saving").prop( "checked", cfg["battery-saving"] );
         $("#formula-calibration-temp").val(cfg["formula-calibration-temp"]);
         $("#int-http1").val(cfg["int-http1"]);
         $("#int-http2").val(cfg["int-http2"]);
@@ -919,7 +931,7 @@
         $("#int-mqtt").val(cfg["int-mqtt"]);
 
         if ( cfg["gyro-read-count"] != 50 || cfg["gyro-moving-threashold"] != 500 || cfg["formula-max-deviation"] != 3 || cfg["wifi-portal-timeout"] != 120 || cfg["wifi-connect-timeout"] != 20 || cfg["tempsensor-resolution"] != 9 || 
-             cfg["int-http1"] != 0 || cfg["int-http2"] != 0 || cfg["int-http3"] != 0 || cfg["int-influx"] != 0 || cfg["int-mqtt"] != 0 || cfg["ignore-low-angles"] != false || (cfg["formula-calibration-temp"] != 20 && cfg["formula-calibration-temp"] != 68)) {
+             cfg["int-http1"] != 0 || cfg["int-http2"] != 0 || cfg["int-http3"] != 0 || cfg["int-influx"] != 0 || cfg["int-mqtt"] != 0 || cfg["ignore-low-angles"] != false || cfg["battery-saving"] != true || (cfg["formula-calibration-temp"] != 20 && cfg["formula-calibration-temp"] != 68)) {
           $("#adv-config").attr("checked", false );
         }
       })
@@ -937,7 +949,7 @@
       setButtonDisabled( true );
 
       var url = "/api/config";
-      //var url = "/test/config.json";
+      // var url = "/test/config.json";
       $('#spinner').show(); 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
@@ -1019,6 +1031,6 @@
 
   <!-- START FOOTER -->
 
-  <div class="container themed-container bg-primary text-light row-margin-10">(C) Copyright 2021-22 Magnus Persson</div>
+  <div class="container themed-container bg-primary text-light row-margin-10">(C) Copyright 2021-23 Magnus Persson</div>
 </body>
 </html>

@@ -68,7 +68,12 @@ class AdvancedConfig {
   int _pushIntervalHttp3 = 0;
   int _pushIntervalInflux = 0;
   int _pushIntervalMqtt = 0;
-  bool _IgnoreLowAnges = false;
+  bool _ignoreLowAnges = false;
+#if defined(ESP32LITE)
+  bool _batterySaving = false;
+#else
+  bool _batterySaving = true;
+#endif
 
  public:
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
@@ -126,8 +131,11 @@ class AdvancedConfig {
                : true;
   }
 
-  const bool isIgnoreLowAnges() { return _IgnoreLowAnges; }
-  void setIgnoreLowAnges(bool b) { _IgnoreLowAnges = b; }
+  const bool isIgnoreLowAnges() { return _ignoreLowAnges; }
+  void setIgnoreLowAnges(bool b) { _ignoreLowAnges = b; }
+
+  const bool isBatterySaving() { return _batterySaving; }
+  void setBatterySaving(bool b) { _batterySaving = b; }
 
   bool saveFile();
   bool loadFile();

@@ -1,12 +1,15 @@
 import unittest, requests, json, time
 
-ver  = "1.2.0"
+ver  = "1.3.0"
+
+host = "192.168.1.196"
+id = "6ac6f6"
 
 #host = "192.168.1.195"
 #id = "6ac6f6"
 
-host = "192.168.1.106"
-id = "3045f4"
+#host = "192.168.1.106"
+#id = "3045f4"
 
 # python3 -m unittest -v apitests.API.test_bug_79
 # python3 -m unittest -v apitests
@@ -264,7 +267,7 @@ class API(unittest.TestCase):
 
     def test_formula_plato_2(self):
         # Fails due to to few values
-        j = { "id": id, "g1": 0, "g2": 3, "g3": 5.3, "g4": 7.44, "g5": 8.555, "g6": 9, "g7": 9.1, "g8": 9.2, "g9": 9.3, "g10": 9.4, "a1": 0, "a2": 25, "a3": 25.5, "a4": 25.55, "a5": 25.555, "a6": 35, "a7": 36, "a8": 37, "a9": 38, "a10": 39, "gravity-formula": "ThisShouldChange" }
+        j = { "id": id, "g1": 0, "g2": 3, "g3": 5.3, "g4": 7.44, "g5": 8.555, "g6": 9, "g7": 9.1, "g8": 9.2, "g9": 9.3, "g10": 9.4, "a1": 0, "a2": 25, "a3": 25.5, "a4": 25.55, "a5": 25.5555, "a6": 35, "a7": 36, "a8": 37, "a9": 38, "a10": 39, "gravity-formula": "ThisShouldChange" }
         r = call_api_post("/api/formula", j)
         self.assertEqual(r.status_code, 200) 
 
@@ -276,8 +279,8 @@ class API(unittest.TestCase):
         self.assertEqual(j["g1"], 0)
         self.assertEqual(j["g2"], 3)
         self.assertEqual(j["g3"], 5.3)
-        self.assertEqual(j["g4"], 7.4)
-        self.assertEqual(j["g5"], 8.6)
+        self.assertEqual(j["g4"], 7.44)
+        self.assertEqual(j["g5"], 8.56)
         self.assertEqual(j["g6"], 9)
         self.assertEqual(j["g7"], 9.1)
         self.assertEqual(j["g8"], 9.2)
@@ -287,14 +290,14 @@ class API(unittest.TestCase):
         self.assertEqual(j["a2"], 25)
         self.assertEqual(j["a3"], 25.5)
         self.assertEqual(j["a4"], 25.55)
-        self.assertEqual(j["a5"], 25.56)
+        self.assertEqual(j["a5"], 25.556)
         self.assertEqual(j["a6"], 35)
         self.assertEqual(j["a7"], 36)
         self.assertEqual(j["a8"], 37)
         self.assertEqual(j["a9"], 38)
         self.assertEqual(j["a10"], 39)
         self.assertEqual(j["gravity-format"], "P")
-        self.assertEqual(j["gravity-formula"], "-0.00012155*tilt^2+0.00874785*tilt+0.88003318")
+        self.assertEqual(j["gravity-formula"], "-0.00012160*tilt^2+0.00875074*tilt+0.87998845")
         self.assertEqual(j["error"], "")
 
     def test_formula_plato_3(self):
