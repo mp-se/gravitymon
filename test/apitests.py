@@ -2,7 +2,7 @@ import unittest, requests, json, time
 
 ver  = "1.3.0"
 
-host = "192.168.1.196"
+host = "192.168.1.195"
 id = "6ac6f6"
 
 #host = "192.168.1.195"
@@ -555,6 +555,7 @@ class API(unittest.TestCase):
         self.assertEqual(j["wifi-portal-timeout"], 120)
         self.assertEqual(j["wifi-connect-timeout"], 20)
         self.assertEqual(j["ignore-low-angles"], False)
+        self.assertEqual(j["battery-saving"], True)
         self.assertEqual(j["formula-calibration-temp"], 20)
         self.assertEqual(j["int-http1"], 0)
         self.assertEqual(j["int-http2"], 0)
@@ -564,7 +565,7 @@ class API(unittest.TestCase):
 
     def test_advanced_config_2(self):
         j = { "id": id, "gyro-read-count": 51, "tempsensor-resolution": 10, "gyro-moving-threashold": 501, "formula-max-deviation": 1.7, "ignore-low-angles": "on",
-              "formula-calibration-temp": 21, "wifi-portal-timeout": 121, "wifi-connect-timeout": 21, "int-http1": 1, "int-http2": 2, "int-http3": 3, "int-influx": 4, "int-mqtt": 5  }
+              "formula-calibration-temp": 21, "wifi-portal-timeout": 121, "wifi-connect-timeout": 21, "int-http1": 1, "int-http2": 2, "int-http3": 3, "int-influx": 4, "int-mqtt": 5, "battery-saving": "off"  }
         r = call_api_post( "/api/config/advanced", j )
         self.assertEqual(r.status_code, 200)
     
@@ -579,6 +580,7 @@ class API(unittest.TestCase):
         self.assertEqual(j["wifi-portal-timeout"], 121)
         self.assertEqual(j["wifi-connect-timeout"], 21)
         self.assertEqual(j["ignore-low-angles"], True)
+        self.assertEqual(j["battery-saving"], False)
         self.assertEqual(j["int-http1"], 1)
         self.assertEqual(j["int-http2"], 2)
         self.assertEqual(j["int-http3"], 3)
