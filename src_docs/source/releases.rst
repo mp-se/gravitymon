@@ -3,6 +3,13 @@
 Releases 
 ########
 
+v1.3.0 beta 2
+=============
+
+Issues adressed
+++++++++++++++++
+* BUG: Sometimes it could be hard to get into config mode and ended up in wifi portal instead due to double restet detect. 
+
 v1.3.0 beta 1
 =============
 
