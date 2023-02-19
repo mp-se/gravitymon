@@ -6,6 +6,10 @@ Releases
 v1.3.0 beta 2
 =============
 
+Features
+++++++++
+* Added feature to do backup and restore of device settings. Data will be exported as a text (json) file. 
+
 Issues adressed
 ++++++++++++++++
 * BUG: Sometimes it could be hard to get into config mode and ended up in wifi portal instead due to double restet detect. 
@@ -251,7 +255,7 @@ v0.7.1
 
 v0.7.0
 ======
-Latest stable version. `Release v0.7 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.7.0>`_
+Latest stable version.
 
 * SSL support for HTTP targets
 * SSL support for MQTT targets

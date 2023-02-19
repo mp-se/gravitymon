@@ -7,7 +7,7 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.3.0 beta1**. Last updated 2023-02-12
+  This documentation reflects **v1.3.0 beta2**. Last updated 2023-02-19
 
 What is GravityMon?
 --------------------
@@ -44,6 +44,7 @@ The github repository can be found here; `GravityMon on Github <https://github.c
 
   I have tested this software on 40+ brews with good results.
 
+
 User interface overview
 -----------------------
 
@@ -52,6 +53,15 @@ This animation shows how the features of the user interface. It's for an older v
 .. image:: images/gravitymon.gif
   :width: 800
   :alt: User Inteface Walkthrough
+
+
+Other resouces
+--------------
+
+* `HomeBrewTalk Forum, discussion forum for GravityMon <https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/>`_
+* `Article on diybrewers (Spanish) <https://www.diyhomebrewers.com/2023/02/gravity-mon-software-alternativo-para.html>`_
+* `Podcast S2E4 with Peter Symons <https://homebrewingdiy.beer/index.php/2022/04/28/s2-e4-beer-history-and-open-source-projects-with-peter-symons/>`_
+
 
 Software architecture
 ---------------------
@@ -62,7 +72,6 @@ order to save battery.
 .. image:: images/software_design.png
   :width: 600
   :alt: Software design
-
 
 Credits to
 ----------

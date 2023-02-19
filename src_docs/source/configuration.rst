@@ -355,3 +355,20 @@ These options allow the user to have variable push intervals for the different e
 
 If the sleep interval is 300s and MQTT is set to 0 and HTTP1 is set to 2 then MQTT will be sent every 300s while HTTP1 would be sent 900s. This is great if you want to send data to a local mqtt server often but brewfather will only 
 accept data every 15 min.
+
+Backup and Restore
+++++++++++++++++++
+
+.. image:: images/backup.png
+  :width: 800
+  :alt: Backup and Restore
+
+Here you can download a file with all of the device settings and also restore data if needed. Each file is unique for a device which is determined by the field "id". 
+Modifying this field will allow you to create a template that can be used on any device. This field is stored in more than one place of the file and all needs to be 
+changed for this to work.
+
+When downloading a backup the file will be named **gravitymon<deviceid>.txt**
+
+.. note::
+
+   The gravity formula will be recreated if calibration points are available on the device, so the formula might be different than what is in the file.

@@ -1097,6 +1097,8 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webReturnTestHtm, this));
   _server->on("/firmware.htm",
               std::bind(&WebServerHandler::webReturnFirmwareHtm, this));
+  _server->on("/backup.htm",
+              std::bind(&WebServerHandler::webReturnBackupHtm, this));
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
   _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);

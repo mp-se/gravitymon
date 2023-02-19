@@ -87,6 +87,12 @@ The main features
   way to keep the software up to date. In the future I might add a hosted endpoint for providing updates. OTA can also be 
   done over a SSL connection.
 
+* **Backup and Restore of settings**
+
+  All the configuration of the device can be exported and stored as a text file (json). This can be used to restore settings in case of 
+  hardware problems. You can also create a template of your settings and use that on multiple devices. Just make sure to change the "id" fields 
+  to match your device id (can be found on the index page). 
+ 
 * **DS18B20 temperature adjustments**
 
   You can adjust the temperature reading of the temperature sensor. In normal cases this should not be needed since 
