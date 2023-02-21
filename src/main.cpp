@@ -77,6 +77,8 @@ void checkSleepMode(float angle, float volt) {
           "active." CR));
 #endif
     runMode = RunMode::configurationMode;
+  } else if(!myGyro.hasValue() || !myGyro.isConnected()) {
+    runMode = RunMode::configurationMode;
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration
     // mode.
