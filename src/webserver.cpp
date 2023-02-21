@@ -287,6 +287,26 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_PLATFORM] = "esp32";
 #endif
 
+  JsonObject self = doc.createNestedObject(PARAM_SELF);
+  float v = myBatteryVoltage.getVoltage();
+#if defined(ESP32LITE)
+  self[PARAM_SELF_BATTERY_LEVEL] = true;
+  self[PARAM_SELF_TEMP_CONNECTED] = true;
+#else
+  self[PARAM_SELF_BATTERY_LEVEL] = v < 3.0 || v > 4.4 ? false : true;
+  self[PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
+#endif
+  self[PARAM_SELF_GRAVITY_FORMULA] =
+      strlen(myConfig.getGravityFormula()) > 0 ? true : false;
+  self[PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
+  self[PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
+  self[PARAM_SELF_PUSH_TARGET] =
+      myConfig.isBLEActive() || myConfig.isHttpActive() ||
+              myConfig.isHttp2Active() || myConfig.isHttp3Active() ||
+              myConfig.isMqttActive() || myConfig.isInfluxDb2Active()
+          ? true
+          : false;
+
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, EspSerial);
   EspSerial.print(CR);

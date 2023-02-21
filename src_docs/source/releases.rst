@@ -9,6 +9,12 @@ v1.3.0 beta 2
 Features
 ++++++++
 * Added feature to do backup and restore of device settings. Data will be exported as a text (json) file. 
+* Added validation feature that checks for configuration errors or missing steps in setup. Warnings will be displayed on index page.
+* Added restore to factory default button under configuration
+
+Documentation
++++++++++++++
+* Updated getting started section to clarify what needs to be done during setup.
 
 Issues adressed
 ++++++++++++++++

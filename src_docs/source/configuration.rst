@@ -83,7 +83,6 @@ be set between 10 - 3600 seconds (60 minutes).
    there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain. 
    The device will show the estimated lifespan based on the average connection time, if no data exist it will not be shown.
    
-
 * **Calibration values:** 
 
 These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.
@@ -91,6 +90,10 @@ These are calibration data for the gyro. Place the device flat on a table and pr
 .. warning::
 
    The device will **not** go into `gravity monitoring` mode unless calibrated
+
+* **Factory default**
+
+   This function will reset all settings to factory default. Use with caution!
 
 Push Settings
 +++++++++++++

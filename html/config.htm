@@ -100,6 +100,37 @@
       }
     </script>
 
+  <div class="modal fade" id="yesNoModal" tabindex="-1" aria-labelledby="yesNoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Do you really want to restore to factory defaults?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="factory-btn" data-bs-dismiss="modal">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $("#factory-btn").click(function(e){
+      console.log( "Restore factory defaults..." );
+      $.ajax( { 
+        type: "GET",  
+        url: "/api/factory", 
+        data: { id: $("#id1").val() }, 
+        success: function(result) { showSuccess('Factory settings was restored. Refreshing in 2 seconds'); setTimeout(() => { window.location = "/config.htm"; }, 2000); },
+        error: function(result) { showError('Unable to do factory reset.'); }
+      } );
+    });
+  </script>
+
   <div class="accordion" id="accordion">
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingDevice">
@@ -151,6 +182,7 @@
             <div class="row mb-3">
               <div class="col-sm-4 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="device-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#yesNoModal" data-bs-toggle="tooltip" title="Restore factory defaults">Factory defaults</button>
               </div>
             </div>
           </form>
@@ -752,7 +784,6 @@
       }
     });
 
-    // Trigger the calibration
     $("#calibrate-btn").click(function(e){
       console.log( "Calibrating..." );
       $.ajax( { 

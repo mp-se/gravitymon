@@ -76,6 +76,18 @@ The main features
   for other users to enjoy. See the :ref:`format-editor` for more information. See :ref:`services` for a list of
   services currently validated.
 
+* **Validation of common configuration errors**
+
+  Common configuration errors or hardware problems will now be displayed on the front page. The following are checked:
+
+  - No gyro connected
+  - Gyro not calibrated at 90 degrees
+  - Missing gravity formula
+  - No push targets defined
+  - Skip sleep mode setting
+  - No temperature sensor connected (not Floaty build) 
+  - Battery voltage out of range (Not Floaty build)
+
 * **Automatic temperature adjustment of gravity reading**
 
   If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice 

@@ -15,5 +15,13 @@
     "mdns": "gravmon",
     "platform": "esp32",
     "wifi-ssid": "wifi",
-    "runtime-average": 3.12
+    "runtime-average": 3.12,
+    "self-check": {
+        "gyro-connected": true,
+        "gyro-calibration": true,
+        "temp-connected": true,
+        "gravity-formula": true,
+        "battery-level": true,
+        "push-targets": true
+    }
 }

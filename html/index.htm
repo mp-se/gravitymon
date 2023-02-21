@@ -56,27 +56,43 @@
 
   <div class="container row-margin-10">
 
-    <div class="alert alert-success alert-dismissible hide fade d-none" role="alert">
-      <div id="alert"></div>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert alert-success alert-dismissible hide fade d-none" role="alert" id="alert">
+      <div id="alert-msg"></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" id="alert-btn"></button>
+    </div>
+
+    <div class="alert alert-warning alert-dismissible hide fade d-none" role="alert" id="warning">
+      <div id="warning-msg"></div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" id="warning-btn"></button>
     </div>
 
     <script type="text/javascript">
       function showError( msg ) {
         console.log("Error:" + msg);
-        $('.alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
-        $('#alert').text( msg );
+        $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert-msg').text( msg );
       }
 
       function showSuccess( msg ) {
         console.log("Success:" + msg);
-        $('.alert').addClass('alert-success').removeClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
-        $('#alert').text( msg );
+        $('#alert').addClass('alert-success').removeClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#alert-msg').text( msg );
       }
 
       $("#alert-btn").click(function(e){
-        console.log("Disable");
-        $('.alert').addClass('hide').removeClass('show').addClass('d-none');
+        console.log("Disable alert");
+        $('#alert').addClass('hide').removeClass('show').addClass('d-none');
+      });    
+
+      function showWarning( msg ) {
+        console.log("Warning:" + msg);
+        $('#warning').removeClass('alert-success').addClass('alert-warning').removeClass('hide').addClass('show').removeClass('d-none');
+        $('#warning-msg').html( msg );
+      }
+
+      $("#warning-btn").click(function(e){
+        console.log("Disable warning");
+        $('#warning').addClass('hide').removeClass('show').addClass('d-none');
       });    
     </script>
 
@@ -235,7 +251,7 @@
       $('#spinner').show(); 
 
       var url = "/api/config";
-      //var url = "/test/config.json";
+      // var url = "/test/config.json";
       $.getJSON(url, function (cfg) {
         debug = {};
         debug["mdns"] = cfg["mdns"];
@@ -308,11 +324,45 @@
 
     function getStatus() {
       var url = "/api/status";
-      //var url = "/test/status.json";
+      // var url = "/test/status.json";
       $('#spinner').show(); 
 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
+        var selfTest = cfg["self-check"];
+
+        var warning = "";
+
+        if(!selfTest["gyro-connected"]) {
+          warning += "<li>No gyro is detected. Try to reboot and if this persists, check hardware.</li>";
+        }
+
+        if(!selfTest["gyro-calibration"]) {
+          warning += "<li>Gyro has not been calibrated at 90 degrees. Device will not enter gravity mode. Perform calibration under configuration / device</li>";
+        }
+
+        if(!selfTest["temp-connected"]) {
+          warning += "<li>No temperature sensor detected. Check hardware</li>";
+        }
+
+        if(!selfTest["gravity-formula"]) {
+          warning += "<li>No gravity formula is defined. No gravity will be calculated/reported. Add formula or use formula creator</li>";
+        }
+
+        if(!selfTest["battery-level"]) {
+          warning += "<li>Battery level not valid, either low or high. Check voltage factor, charge battery or check hardware</li>";
+        }
+
+        if(!selfTest["push-targets"]) {
+          warning += "<li>No data will be sent. Check push setting or bluetooth settings</li>";
+        }
+
+        if( cfg["sleep-mode"] ) {
+          warning += "<li>Gravity mode is blocked by below checkbox (don't enter sleep)</li>";
+        }
+
+        if(warning.length > 0)
+          showWarning("<ul>" + warning + "</ul>");
 
         $("#app-ver").text(cfg["app-ver"] + " (" + cfg["app-build"] + ")");
         $("#mdns").text(cfg["mdns"]);
@@ -322,9 +372,9 @@
         $("#runtime").text(cfg["runtime-average"] + " seconds");
     
         var angle = cfg["angle"];
-        
-        if(angle==-1) {
-          showError("Unable to connect to gyro, try a reset or power off/on")
+
+        if(!selfTest["gyro-connected"]) {
+          showError("Unable to connect to gyro, try a reset or power off/on");
           $("#angle").text("No gyro"); 
           $("#gravity").text("No gyro");
         } else if(angle==0) {
@@ -356,8 +406,8 @@
 
         $("#battery").text(batt + " V (" + charge + "%)" );
 
-        if( cfg["temp-c"] == -273) {
-          $("#temp").text("No temp sensor");
+        if( selfTest["temp-connected"]) {
+          $("#temp").text("No temp sensor detected");
         } else {
           if( cfg["temp-format"] == "C") 
             $("#temp").text(cfg["temp-c"] + " C");
