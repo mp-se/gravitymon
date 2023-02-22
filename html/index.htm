@@ -329,7 +329,7 @@
       var newVersion = false;
 
       var url = "/api/status";
-      var url = "/test/status.json";
+      // var url = "/test/status.json";
 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
@@ -344,7 +344,7 @@
         var warning = "";
 
         if(newVersion) {
-          warning += "<li>New version of GravityMon exists, please upgrade to " + getLatestGravMonVersion() + ".</li>";
+          warning += "<li>New version exists, please upgrade to " + getLatestGravMonVersion() + ". <a class=\"alert-link\" href=\"/firmware.htm\">Firmware update</a></li>";
         }
 
         if(!selfTest["gyro-connected"]) {
@@ -352,7 +352,7 @@
         }
 
         if(!selfTest["gyro-calibration"]) {
-          warning += "<li>Gyro has not been calibrated at 90 degrees. Device will not enter gravity mode. Perform calibration under configuration / device</li>";
+          warning += "<li>Gyro has not been calibrated at 90 degrees. Device will not enter gravity mode. <a class=\"alert-link\" href=\"/config.htm#collapseDevice\">Gyro calibration</a></li>";
         }
 
         if(!selfTest["temp-connected"]) {
@@ -360,15 +360,15 @@
         }
 
         if(!selfTest["gravity-formula"]) {
-          warning += "<li>No gravity formula is defined. No gravity will be calculated/reported. Add formula or use formula creator</li>";
+          warning += "<li>No gravity formula is defined. No gravity will be calculated/reported. <a class=\"alert-link\" href=\"/calibration.htm\">Create forumla</a></li>";
         }
 
         if(!selfTest["battery-level"]) {
-          warning += "<li>Battery level not valid, either low or high. Check voltage factor, charge battery or check hardware</li>";
+          warning += "<li>Battery level not valid, either low or high. Check voltage factor, charge battery or check hardware. <a class=\"alert-link\" href=\"/config.htm#collapseHardware\">Update voltage factor</a></li>";
         }
 
         if(!selfTest["push-targets"]) {
-          warning += "<li>No data will be sent. Check push setting or bluetooth settings</li>";
+          warning += "<li>No remote service is active. Check push setting or bluetooth settings. <a class=\"alert-link\" href=\"/config.htm#collapsePush\">Setup push</a></li>";
         }
 
         if( cfg["sleep-mode"] ) {
