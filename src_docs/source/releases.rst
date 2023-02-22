@@ -11,6 +11,8 @@ Features
 * Added feature to do backup and restore of device settings. Data will be exported as a text (json) file. 
 * Added validation feature that checks for configuration errors or missing steps in setup. Warnings will be displayed on index page.
 * Added restore to factory default button under configuration
+* Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1
+* Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).
 
 Documentation
 +++++++++++++

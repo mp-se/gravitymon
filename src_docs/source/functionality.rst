@@ -80,6 +80,7 @@ The main features
 
   Common configuration errors or hardware problems will now be displayed on the front page. The following are checked:
 
+  - Newer software version available
   - No gyro connected
   - Gyro not calibrated at 90 degrees
   - Missing gravity formula
