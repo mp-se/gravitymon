@@ -103,6 +103,7 @@ void WifiConnection::stopDoubleReset() { myDRD->stop(); }
 void WifiConnection::startPortal() {
   Log.notice(F("WIFI: Starting Wifi config portal." CR));
 
+  stopDoubleReset();
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
 
@@ -146,7 +147,6 @@ void WifiConnection::startPortal() {
   }
 
   Log.notice(F("WIFI: Exited wifi config portal. Rebooting..." CR));
-  stopDoubleReset();
   delay(500);
   ESP_RESET();
 }

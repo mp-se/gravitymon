@@ -67,15 +67,15 @@ void checkSleepMode(float angle, float volt) {
   return;
 #endif
 
-  const RawGyroData &g = myConfig.getGyroCalibration();
-
-  if (!g.ax && !g.ay && !g.az && !g.gx && !g.gy && !g.gz) {
+  if (!myConfig.hasGyroCalibration()) {
     // Will not enter sleep mode if: no calibration data
 #if !defined(MAIN_DISABLE_LOGGING)
     Log.notice(
         F("MAIN: Missing calibration data, so forcing webserver to be "
           "active." CR));
 #endif
+    runMode = RunMode::configurationMode;
+  } else if (!myGyro.hasValue() || !myGyro.isConnected()) {
     runMode = RunMode::configurationMode;
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration

@@ -468,6 +468,14 @@ class Config {
     _saveNeeded = true;
   }
 
+  bool hasGyroCalibration() {
+    return (!_gyroCalibration.ax && !_gyroCalibration.ay &&
+            !_gyroCalibration.az && !_gyroCalibration.gx &&
+            !_gyroCalibration.gy && !_gyroCalibration.gz)
+               ? false
+               : true;
+  }
+
   const RawFormulaData& getFormulaData() { return _formulaData; }
   void setFormulaData(const RawFormulaData& r) {
     _formulaData = r;

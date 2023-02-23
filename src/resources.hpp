@@ -103,5 +103,13 @@ SOFTWARE.
 #define PARAM_PUSH_SUCCESS "success"
 #define PARAM_PUSH_CODE "code"
 #define PARAM_PUSH_ENABLED "enabled"
+#define PARAM_SELF "self-check"
+#define PARAM_SELF_GYRO_CONNECTED "gyro-connected"
+#define PARAM_SELF_GYRO_CALIBRATION "gyro-calibration"
+#define PARAM_SELF_GYRO_CALIBRATION "gyro-calibration"
+#define PARAM_SELF_TEMP_CONNECTED "temp-connected"
+#define PARAM_SELF_GRAVITY_FORMULA "gravity-formula"
+#define PARAM_SELF_BATTERY_LEVEL "battery-level"
+#define PARAM_SELF_PUSH_TARGET "push-targets"
 
 #endif  // SRC_RESOURCES_HPP_

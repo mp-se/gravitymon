@@ -46,6 +46,7 @@ INCBIN_EXTERN(FormatHtm);
 INCBIN_EXTERN(TestHtm);
 INCBIN_EXTERN(AboutHtm);
 INCBIN_EXTERN(FirmwareHtm);
+INCBIN_EXTERN(BackupHtm);
 #else  // ESP32
 extern const uint8_t indexHtmStart[] asm("_binary_html_index_min_htm_start");
 extern const uint8_t indexHtmEnd[] asm("_binary_html_index_min_htm_end");
@@ -64,6 +65,8 @@ extern const uint8_t aboutHtmEnd[] asm("_binary_html_about_min_htm_end");
 extern const uint8_t firmwareHtmStart[] asm(
     "_binary_html_firmware_min_htm_start");
 extern const uint8_t firmwareHtmEnd[] asm("_binary_html_firmware_min_htm_end");
+extern const uint8_t backupHtmStart[] asm("_binary_html_backup_min_htm_start");
+extern const uint8_t backupHtmEnd[] asm("_binary_html_backup_min_htm_end");
 #endif
 
 class WebServerHandler {
@@ -129,6 +132,10 @@ class WebServerHandler {
     _server->send_P(200, "text/html", (const char*)gFirmwareHtmData,
                     gFirmwareHtmSize);
   }
+  void webReturnBackupHtm() {
+    _server->send_P(200, "text/html", (const char*)gBackupHtmData,
+                    gBackupHtmSize);
+  }
 #else  // ESP32
   void webReturnIndexHtm() {
     _server->send_P(200, "text/html", (const char*)indexHtmStart,
@@ -159,6 +166,10 @@ class WebServerHandler {
     _server->send_P(
         200, "text/html", (const char*)firmwareHtmStart,
         strlen(reinterpret_cast<const char*>(&firmwareHtmStart[0])));
+  }
+  void webReturnBackupHtm() {
+    _server->send_P(200, "text/html", (const char*)backupHtmStart,
+                    strlen(reinterpret_cast<const char*>(&backupHtmStart[0])));
   }
 #endif
 

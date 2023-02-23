@@ -225,6 +225,19 @@ void deepSleep(int t) {
 
 void printBuildOptions() {
   Log.notice(F("Build options: %s (%s) LOGLEVEL %d "
+#if defined(ESP8266)
+               "ESP8266 "
+#elif defined(ESP32C3) && defined(REDUCE_WIFI_POWER)
+               "ESP32C3 (v1) "
+#elif defined(ESP32C3)
+               "ESP32C3 (v2+) "
+#elif defined(ESP32S2)
+               "ESP32S2 "
+#elif defined(ESP32LITE)
+               "ESP32LITE (FLOATY) "
+#else  // defined (ESP32)
+               "ESP32D1 "
+#endif
 #ifdef SKIP_SLEEPMODE
                "SKIP_SLEEP "
 #endif

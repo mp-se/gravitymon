@@ -183,8 +183,15 @@ void WebServerHandler::webHandleCalibrate() {
     LOG_PERF_STOP("webserver-api-calibrate");
     return;
   }
-  myGyro.calibrateSensor();
-  _server->send(200, "text/plain", "Device calibrated");
+
+  if (myGyro.isConnected()) {
+    myGyro.calibrateSensor();
+    _server->send(200, "text/plain", "Device calibrated");
+  } else {
+    Log.error(F("WEB : No gyro connected, skipping calibrate" CR));
+    _server->send(400, "text/plain", "No gyro connected.");
+  }
+
   LOG_PERF_STOP("webserver-api-calibrate");
 }
 
@@ -286,6 +293,26 @@ void WebServerHandler::webHandleStatus() {
 #else  // esp32 mini
   doc[PARAM_PLATFORM] = "esp32";
 #endif
+
+  JsonObject self = doc.createNestedObject(PARAM_SELF);
+  float v = myBatteryVoltage.getVoltage();
+#if defined(ESP32LITE)
+  self[PARAM_SELF_BATTERY_LEVEL] = true;
+  self[PARAM_SELF_TEMP_CONNECTED] = true;
+#else
+  self[PARAM_SELF_BATTERY_LEVEL] = v < 3.0 || v > 4.4 ? false : true;
+  self[PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
+#endif
+  self[PARAM_SELF_GRAVITY_FORMULA] =
+      strlen(myConfig.getGravityFormula()) > 0 ? true : false;
+  self[PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
+  self[PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
+  self[PARAM_SELF_PUSH_TARGET] =
+      myConfig.isBLEActive() || myConfig.isHttpActive() ||
+              myConfig.isHttp2Active() || myConfig.isHttp3Active() ||
+              myConfig.isMqttActive() || myConfig.isInfluxDb2Active()
+          ? true
+          : false;
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
   serializeJson(doc, EspSerial);
@@ -1097,6 +1124,8 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webReturnTestHtm, this));
   _server->on("/firmware.htm",
               std::bind(&WebServerHandler::webReturnFirmwareHtm, this));
+  _server->on("/backup.htm",
+              std::bind(&WebServerHandler::webReturnBackupHtm, this));
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
   _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);

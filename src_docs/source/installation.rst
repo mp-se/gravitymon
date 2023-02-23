@@ -1,15 +1,18 @@
 .. _installation:
 
-Installation 
-------------
+Software Installation 
+---------------------
 
-You have these 5 options for flashing this firmware. 
+Checklist for configuring the device
+====================================
 
-* Brewflasher via USB serial
-* Brewflasher WEB via USB serial
-* Esptool via USB serial
-* iSpindel web interface (only ESP8266)
-* Build from source and flash via VSCode + Platformio
+Install the firmware using one of the following options:
+
+- Brewflasher via USB serial
+- Brewflasher WEB via USB serial
+- Esptool via USB serial
+- iSpindel web interface (only ESP8266)
+- Build from source and flash via VSCode + Platformio
 
 Brewflasher
 ===========
