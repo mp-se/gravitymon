@@ -2,14 +2,13 @@ import unittest, requests, json, time
 
 ver  = "1.3.0"
 
+# esp8266
 host = "192.168.1.195"
 id = "6ac6f6"
 
-#host = "192.168.1.195"
-#id = "6ac6f6"
-
-#host = "192.168.1.106"
-#id = "3045f4"
+# esp32c3 v1
+#host = "192.168.1.216"
+#id = "37322c"
 
 # python3 -m unittest -v apitests.API.test_bug_79
 # python3 -m unittest -v apitests
@@ -35,6 +34,8 @@ class API(unittest.TestCase):
 
     # Check that all parameters exist
     def test_status(self):
+        call_api_get( "/api/factory?id=" + id)
+        time.sleep(4)
         r = call_api_get( "/api/status" )
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
@@ -54,6 +55,12 @@ class API(unittest.TestCase):
         self.assertNotEqual(j["mdns"], "")
         self.assertNotEqual(j["platform"], "")
         self.assertNotEqual(j["runtime-average"], -1)
+        self.assertEqual(j["self-check"]["gyro-connected"], True)
+        self.assertEqual(j["self-check"]["gyro-calibration"], False)
+        self.assertEqual(j["self-check"]["temp-connected"], True)
+        self.assertEqual(j["self-check"]["gravity-formula"], False)
+        self.assertEqual(j["self-check"]["battery-level"], True)
+        self.assertEqual(j["self-check"]["push-targets"], False)
 
     # Check that all parameters exist
     def test_config_1(self):
