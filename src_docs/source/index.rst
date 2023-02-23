@@ -7,7 +7,7 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.3.0 beta2**. Last updated 2023-02-21
+  This documentation reflects **v1.3.0 beta2**. Last updated 2023-02-23
 
 What is GravityMon?
 --------------------
@@ -147,10 +147,10 @@ the following libraries and without these this would have been much more difficu
    :caption: Contents:
 
    functionality
+   releases
    intro
    installation
    configuration
-   releases
    hardware
    formula
    services
