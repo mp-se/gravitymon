@@ -190,7 +190,7 @@ void WebServerHandler::webHandleCalibrate() {
   } else {
     Log.error(F("WEB : No gyro connected, skipping calibrate" CR));
     _server->send(400, "text/plain", "No gyro connected.");
-  } 
+  }
 
   LOG_PERF_STOP("webserver-api-calibrate");
 }
