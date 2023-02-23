@@ -13,6 +13,7 @@ Features
 * Added restore to factory default button under configuration
 * Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1
 * Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).
+* Added chip information to startup for easier support
 
 Documentation
 +++++++++++++
