@@ -1,5 +1,4 @@
-# plot "Population" vs "Employed"
-#from pandas import read_csv
+# Create linear calibration formula based on provided data in calibrations.csv
 import csv
 from matplotlib import pyplot
 from scipy.optimize import curve_fit
@@ -15,8 +14,6 @@ with open('calibrations.csv','r') as f:
     for row in reader:
         x.append(float(row[0]))
         y.append(float(row[1]))
-#print( x ) # Angle
-#print( y ) # Gravity
 pyplot.scatter(x, y)
 
 # calculate the linear factors

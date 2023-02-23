@@ -1,5 +1,4 @@
-# plot "Population" vs "Employed"
-#from pandas import read_csv
+# Create 3rd grade calibration formula based on provided data in calibrations.csv
 import csv
 from matplotlib import pyplot
 from scipy.optimize import curve_fit
@@ -15,14 +14,11 @@ with open('calibrations.csv','r') as f:
     for row in reader:
         x.append(float(row[0]))
         y.append(float(row[1]))
-#print( x ) # Angle
-#print( y ) # Gravity
 pyplot.scatter(x, y)
 
 # calculate the curve factors
 popt, _ = curve_fit(objective, x, y)
 a, b, c = popt
-#print('y = %.5f * x + %.5f * x^2 + %.5f' % (a, b, c))
 print('SG=%.8f*tilt+%.8f*tilt^2+%.8f' % (a, b, c))
 
 # use the factors to calculate the gravity (verify)
