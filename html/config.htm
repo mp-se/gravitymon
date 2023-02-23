@@ -417,6 +417,7 @@
             <div class="row mb-3">
               <div class="col-sm-4 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="gravity-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
+                <button type="button" class="btn btn-secondary" id="formula-btn" data-bs-toggle="tooltip" title="Use a rough formula for calculation, not as accurate as doing proper calibration.">Use default formula</button>    
               </div>
             </div>
           </form>
@@ -782,6 +783,11 @@
         $('.collapse').removeClass('in');
         $(location.hash + '.collapse').collapse('show');
       }
+    });
+
+    $("#formula-btn").click(function(e){
+      console.log("Default formula.");
+      $("#gravity-formula").val("0.00162535*tilt+0.96347412");
     });
 
     $("#calibrate-btn").click(function(e){

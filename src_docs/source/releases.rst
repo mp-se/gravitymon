@@ -14,6 +14,7 @@ Features
 * Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1
 * Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).
 * Added chip information to startup for easier support
+* Added option to select a default gravity formula under settings. This is based on measurements from several different devices.
 
 Documentation
 +++++++++++++
@@ -23,6 +24,7 @@ Issues adressed
 ++++++++++++++++
 * BUG: Sometimes it could be hard to get into config mode and ended up in wifi portal instead due to double restet detect. 
 * BUG: If the gyro value was invalid (moving) during startup that would cause the device to go into gravitymode instead of config mode.
+* BUG: When trying to do calibration without a connected gyro the device would enter endless loop.
 
 v1.3.0 beta 1
 =============

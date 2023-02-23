@@ -183,8 +183,15 @@ void WebServerHandler::webHandleCalibrate() {
     LOG_PERF_STOP("webserver-api-calibrate");
     return;
   }
-  myGyro.calibrateSensor();
-  _server->send(200, "text/plain", "Device calibrated");
+
+  if (myGyro.isConnected()) {
+    myGyro.calibrateSensor();
+    _server->send(200, "text/plain", "Device calibrated");
+  } else {
+    Log.error(F("WEB : No gyro connected, skipping calibrate" CR));
+    _server->send(400, "text/plain", "No gyro connected.");
+  } 
+
   LOG_PERF_STOP("webserver-api-calibrate");
 }
 
