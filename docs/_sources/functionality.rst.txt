@@ -76,6 +76,19 @@ The main features
   for other users to enjoy. See the :ref:`format-editor` for more information. See :ref:`services` for a list of
   services currently validated.
 
+* **Validation of common configuration errors**
+
+  Common configuration errors or hardware problems will now be displayed on the front page. The following are checked:
+
+  - Newer software version available
+  - No gyro connected
+  - Gyro not calibrated at 90 degrees
+  - Missing gravity formula
+  - No push targets defined
+  - Skip sleep mode setting
+  - No temperature sensor connected (not Floaty build) 
+  - Battery voltage out of range (Not Floaty build)
+
 * **Automatic temperature adjustment of gravity reading**
 
   If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice 
@@ -87,6 +100,12 @@ The main features
   way to keep the software up to date. In the future I might add a hosted endpoint for providing updates. OTA can also be 
   done over a SSL connection.
 
+* **Backup and Restore of settings**
+
+  All the configuration of the device can be exported and stored as a text file (json). This can be used to restore settings in case of 
+  hardware problems. You can also create a template of your settings and use that on multiple devices. Just make sure to change the "id" fields 
+  to match your device id (can be found on the index page). 
+ 
 * **DS18B20 temperature adjustments**
 
   You can adjust the temperature reading of the temperature sensor. In normal cases this should not be needed since 

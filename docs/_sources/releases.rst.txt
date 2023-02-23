@@ -3,6 +3,30 @@
 Releases 
 ########
 
+v1.3.0 beta 2
+=============
+
+Features
+++++++++
+* Added feature to do backup and restore of device settings. Data will be exported as a text (json) file. 
+* Added validation feature that checks for configuration errors or missing steps in setup. Warnings will be displayed on index page.
+* Added restore to factory default button under configuration
+* Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1
+* Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).
+* Added chip information to startup for easier support
+* Added option to select a default gravity formula under settings. This is based on measurements from several different devices.
+
+Documentation
++++++++++++++
+* Updated getting started section to clarify what needs to be done during setup.
+* Updated documentation with new images and text
+
+Issues adressed
+++++++++++++++++
+* BUG: Sometimes it could be hard to get into config mode and ended up in wifi portal instead due to double restet detect. 
+* BUG: If the gyro value was invalid (moving) during startup that would cause the device to go into gravitymode instead of config mode.
+* BUG: When trying to do calibration without a connected gyro the device would enter endless loop.
+
 v1.3.0 beta 1
 =============
 
@@ -244,7 +268,7 @@ v0.7.1
 
 v0.7.0
 ======
-Latest stable version. `Release v0.7 on Github <https://github.com/mp-se/gravitymon/releases/tag/v0.7.0>`_
+Latest stable version.
 
 * SSL support for HTTP targets
 * SSL support for MQTT targets

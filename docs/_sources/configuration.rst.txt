@@ -33,6 +33,9 @@ URL: (http://gravmon.local)
 
 Configuration is accessed by entering the URL for the device, this will be the mDNS name *device.local* or the IP address. The following chapter assumes the device name is *gravmon*.
 
+If the device is not fully configured or there are some hardware issues then these will be displayed on the top of the screen. There are also
+links to where the settings can be changed.
+
 The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if 
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.
 
@@ -83,7 +86,6 @@ be set between 10 - 3600 seconds (60 minutes).
    there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain. 
    The device will show the estimated lifespan based on the average connection time, if no data exist it will not be shown.
    
-
 * **Calibration values:** 
 
 These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.
@@ -91,6 +93,10 @@ These are calibration data for the gyro. Place the device flat on a table and pr
 .. warning::
 
    The device will **not** go into `gravity monitoring` mode unless calibrated
+
+* **Factory default**
+
+   This function will reset all settings to factory default. Use with caution!
 
 Push Settings
 +++++++++++++
@@ -231,6 +237,12 @@ build this into the gravity formula.
    gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0.00000000232820948*temp^3)/
    (1.00130346-0.000134722124*cal+0.00000204052596*cal^2-0.00000000232820948*cal^3))
 
+* **Use default formula:**
+
+If you dont need high accuracy then you can use the default formula. This is estimated based on values from several
+devices and assume that the water angle is 25 degrees. Accuracy will depend on your build and weight but based on the
+data it will be +/- 2%. If you send in your calibration data I can include this and perhaps improve the formula.
+
 
 Hardware Settings
 +++++++++++++++++
@@ -355,3 +367,20 @@ These options allow the user to have variable push intervals for the different e
 
 If the sleep interval is 300s and MQTT is set to 0 and HTTP1 is set to 2 then MQTT will be sent every 300s while HTTP1 would be sent 900s. This is great if you want to send data to a local mqtt server often but brewfather will only 
 accept data every 15 min.
+
+Backup and Restore
+++++++++++++++++++
+
+.. image:: images/backup.png
+  :width: 800
+  :alt: Backup and Restore
+
+Here you can download a file with all of the device settings and also restore data if needed. Each file is unique for a device which is determined by the field "id". 
+Modifying this field will allow you to create a template that can be used on any device. This field is stored in more than one place of the file and all needs to be 
+changed for this to work.
+
+When downloading a backup the file will be named **gravitymon<deviceid>.txt**
+
+.. note::
+
+   The gravity formula will be recreated if calibration points are available on the device, so the formula might be different than what is in the file.

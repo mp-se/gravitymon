@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Getting started" href="intro.html" /><link rel="prev" title="Welcome to GravityMon" href="index.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Releases" href="releases.html" /><link rel="prev" title="Welcome to GravityMon" href="index.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Functionality - GravityMon v1.3.0</title>
@@ -160,10 +160,10 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Functionality</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
@@ -263,6 +263,19 @@ If you have a good template please share it on the github repository and I will 
 for other users to enjoy. See the <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a> for more information. See <a class="reference internal" href="services.html#services"><span class="std std-ref">Service Integration</span></a> for a list of
 services currently validated.</p>
 </li>
+<li><p><strong>Validation of common configuration errors</strong></p>
+<p>Common configuration errors or hardware problems will now be displayed on the front page. The following are checked:</p>
+<ul class="simple">
+<li><p>Newer software version available</p></li>
+<li><p>No gyro connected</p></li>
+<li><p>Gyro not calibrated at 90 degrees</p></li>
+<li><p>Missing gravity formula</p></li>
+<li><p>No push targets defined</p></li>
+<li><p>Skip sleep mode setting</p></li>
+<li><p>No temperature sensor connected (not Floaty build)</p></li>
+<li><p>Battery voltage out of range (Not Floaty build)</p></li>
+</ul>
+</li>
 <li><p><strong>Automatic temperature adjustment of gravity reading</strong></p>
 <p>If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice
 feature that can correct the gravity as a second step making this independent of the formula.</p>
@@ -271,6 +284,11 @@ feature that can correct the gravity as a second step making this independent of
 <p>When starting up in configuration mode the device will check for a software update from a webserver. This is an easily
 way to keep the software up to date. In the future I might add a hosted endpoint for providing updates. OTA can also be
 done over a SSL connection.</p>
+</li>
+<li><p><strong>Backup and Restore of settings</strong></p>
+<p>All the configuration of the device can be exported and stored as a text file (json). This can be used to restore settings in case of
+hardware problems. You can also create a template of your settings and use that on multiple devices. Just make sure to change the “id” fields
+to match your device id (can be found on the index page).</p>
 </li>
 <li><p><strong>DS18B20 temperature adjustments</strong></p>
 <p>You can adjust the temperature reading of the temperature sensor. In normal cases this should not be needed since
@@ -398,12 +416,12 @@ temperature would reduce the total runtime with 25%. Sending data over http take
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="intro.html">
+          <a class="next-page" href="releases.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Getting started</div>
+                <div class="title">Releases</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>

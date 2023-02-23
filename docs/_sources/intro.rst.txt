@@ -39,7 +39,8 @@ might not work so then use the IP address instead. Once connected you will meet 
   :width: 800
   :alt: Index page
 
-The next step is then to configure the device, most settings should work but there are a few that should be changed.
+In order for the software to work properly there are a few steps that needs to be configured. When you open up the
+index page a selftest will be run and common issues will be shown for your action.
 
 Configuration - Device Settings - Device Name
 +++++++++++++++++++++++++++++++++++++++++++++
@@ -49,16 +50,15 @@ Give your device a good name.
 Configuration - Device Settings - Gyro Calibration
 ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-You need to place the device on a flat surface and then press the 
-calibrate button. It will take a few seconds for this to complete and the angle should be close to 90 degrees. Without 
-calibration the device will not go into gravity mode.
+You need to place the device on a flat surface and then press the calibrate button. It will take a few seconds 
+for this to complete and the angle should be close to 90 degrees. Without calibration the device will not go into gravity mode.
 
 Configuration - Push Settings
 +++++++++++++++++++++++++++++
 Add the endpoints where you want data to be transmitted. All URLs that contain a valid endpoint will receive the data.
 
-Calibration 
-+++++++++++
+Gyro Calibration 
+++++++++++++++++
 
 I recommend to use the calibration feature to create a gravity formula. If you have values from a 
 previous calibration then you can add them here, if not follow the calibration guidelines on the iSpindle site.
@@ -67,6 +67,22 @@ There are several guides for how to calibrate the device (`iSpindle Calibration 
 
 This will get the data points needed to create the formula, and the data points will be stored on the device so you can 
 adjust them when needed.
+
+.. warning::
+  
+  If this step is skipped the device will not enter sleep mode and the battery will be drained.
+
+Calibrate device / Create gravity formula 
++++++++++++++++++++++++++++++++++++++++++
+
+In order to calculate the gravity a formula needs to be added. You can either enter the formula directly or add
+the measurements and let the device derive the formula for you.
+
+Check battery voltage
++++++++++++++++++++++
+
+Check the battery voltage so the value is correctly measured. If the wrong resistor values in the
+voltage are then the calculation is off. This could block the device from going to sleep properly.   
 
 Step 4 - Completed
 ------------------

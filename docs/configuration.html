@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Releases" href="releases.html" /><link rel="prev" title="Installation" href="installation.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Hardware" href="hardware.html" /><link rel="prev" title="Software Installation" href="installation.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Configuration - GravityMon v1.3.0</title>
@@ -160,10 +160,10 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
@@ -224,6 +224,8 @@ setup mode, in this case just press reset button again.</p>
 <p>URL: (<a class="reference external" href="http://gravmon.local">http://gravmon.local</a>)</p>
 <a class="reference internal image-reference" href="_images/index.png"><img alt="Index page" src="_images/index.png" style="width: 800px;"/></a>
 <p>Configuration is accessed by entering the URL for the device, this will be the mDNS name <em>device.local</em> or the IP address. The following chapter assumes the device name is <em>gravmon</em>.</p>
+<p>If the device is not fully configured or there are some hardware issues then these will be displayed on the top of the screen. There are also
+links to where the settings can be changed.</p>
 <p>The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.</p>
 <p>You can also view the average time a gravity measurement takes. Under optimal setting this should be around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likely connected to slow wifi
@@ -274,6 +276,13 @@ The device will show the estimated lifespan based on the average connection time
 <p class="admonition-title">Warning</p>
 <p>The device will <strong>not</strong> go into <cite>gravity monitoring</cite> mode unless calibrated</p>
 </div>
+<ul>
+<li><p><strong>Factory default</strong></p>
+<blockquote>
+<div><p>This function will reset all settings to factory default. Use with caution!</p>
+</div></blockquote>
+</li>
+</ul>
 </div>
 <div class="section" id="push-settings">
 <h3>Push Settings<a class="headerlink" href="#push-settings" title="Permalink to this headline">¶</a></h3>
@@ -387,6 +396,12 @@ build this into the gravity formula.</p>
 <span class="p">(</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">cal</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><p><strong>Use default formula:</strong></p></li>
+</ul>
+<p>If you dont need high accuracy then you can use the default formula. This is estimated based on values from several
+devices and assume that the water angle is 25 degrees. Accuracy will depend on your build and weight but based on the
+data it will be +/- 2%. If you send in your calibration data I can include this and perhaps improve the formula.</p>
 </div>
 <div class="section" id="hardware-settings">
 <h3>Hardware Settings<a class="headerlink" href="#hardware-settings" title="Permalink to this headline">¶</a></h3>
@@ -495,6 +510,18 @@ take longer time to measure..</p>
 <p>If the sleep interval is 300s and MQTT is set to 0 and HTTP1 is set to 2 then MQTT will be sent every 300s while HTTP1 would be sent 900s. This is great if you want to send data to a local mqtt server often but brewfather will only
 accept data every 15 min.</p>
 </div>
+<div class="section" id="backup-and-restore">
+<h3>Backup and Restore<a class="headerlink" href="#backup-and-restore" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/backup.png"><img alt="Backup and Restore" src="_images/backup.png" style="width: 800px;"/></a>
+<p>Here you can download a file with all of the device settings and also restore data if needed. Each file is unique for a device which is determined by the field “id”.
+Modifying this field will allow you to create a template that can be used on any device. This field is stored in more than one place of the file and all needs to be
+changed for this to work.</p>
+<p>When downloading a backup the file will be named <strong>gravitymon&lt;deviceid&gt;.txt</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The gravity formula will be recreated if calibration points are available on the device, so the formula might be different than what is in the file.</p>
+</div>
+</div>
 </div>
 </div>
 
@@ -503,12 +530,12 @@ accept data every 15 min.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="releases.html">
+          <a class="next-page" href="hardware.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Releases</div>
+                <div class="title">Hardware</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -519,7 +546,7 @@ accept data every 15 min.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Installation</div>
+                <div class="title">Software Installation</div>
                 
               </div>
             </a>
@@ -554,6 +581,7 @@ accept data every 15 min.</p>
 <li><a class="reference internal" href="#gravity-settings">Gravity Settings</a></li>
 <li><a class="reference internal" href="#hardware-settings">Hardware Settings</a></li>
 <li><a class="reference internal" href="#advanced-settings">Advanced Settings</a></li>
+<li><a class="reference internal" href="#backup-and-restore">Backup and Restore</a></li>
 </ul>
 </li>
 </ul>

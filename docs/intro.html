@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" /><link rel="prev" title="Functionality" href="functionality.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Software Installation" href="installation.html" /><link rel="prev" title="Releases" href="releases.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Getting started - GravityMon v1.3.0</title>
@@ -160,10 +160,10 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
@@ -209,7 +209,7 @@ more information.</p>
 <div class="section" id="step-1-flash-the-device">
 <h2>Step 1 - Flash the device<a class="headerlink" href="#step-1-flash-the-device" title="Permalink to this headline">¶</a></h2>
 <p>The first step is to flash the firmware, I recommend using Brewflasher as the easy option. Detailed
-instructions can be found here <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a></p>
+instructions can be found here <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Software Installation</span></a></p>
 </div>
 <div class="section" id="step-2-setup-wifi">
 <h2>Step 2 - Setup WIFI<a class="headerlink" href="#step-2-setup-wifi" title="Permalink to this headline">¶</a></h2>
@@ -230,28 +230,42 @@ doing the initial configuration. In order to access the device you will need to 
 find the name via an mDNS browser, check your router or connect the device to a serial monitor. On windows mDNS
 might not work so then use the IP address instead. Once connected you will meet a web interface that looks like this.</p>
 <a class="reference internal image-reference" href="_images/index.png"><img alt="Index page" src="_images/index.png" style="width: 800px;"/></a>
-<p>The next step is then to configure the device, most settings should work but there are a few that should be changed.</p>
+<p>In order for the software to work properly there are a few steps that needs to be configured. When you open up the
+index page a selftest will be run and common issues will be shown for your action.</p>
 <div class="section" id="configuration-device-settings-device-name">
 <h3>Configuration - Device Settings - Device Name<a class="headerlink" href="#configuration-device-settings-device-name" title="Permalink to this headline">¶</a></h3>
 <p>Give your device a good name.</p>
 </div>
 <div class="section" id="configuration-device-settings-gyro-calibration">
 <h3>Configuration - Device Settings - Gyro Calibration<a class="headerlink" href="#configuration-device-settings-gyro-calibration" title="Permalink to this headline">¶</a></h3>
-<p>You need to place the device on a flat surface and then press the
-calibrate button. It will take a few seconds for this to complete and the angle should be close to 90 degrees. Without
-calibration the device will not go into gravity mode.</p>
+<p>You need to place the device on a flat surface and then press the calibrate button. It will take a few seconds
+for this to complete and the angle should be close to 90 degrees. Without calibration the device will not go into gravity mode.</p>
 </div>
 <div class="section" id="configuration-push-settings">
 <h3>Configuration - Push Settings<a class="headerlink" href="#configuration-push-settings" title="Permalink to this headline">¶</a></h3>
 <p>Add the endpoints where you want data to be transmitted. All URLs that contain a valid endpoint will receive the data.</p>
 </div>
-<div class="section" id="calibration">
-<h3>Calibration<a class="headerlink" href="#calibration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="gyro-calibration">
+<h3>Gyro Calibration<a class="headerlink" href="#gyro-calibration" title="Permalink to this headline">¶</a></h3>
 <p>I recommend to use the calibration feature to create a gravity formula. If you have values from a
 previous calibration then you can add them here, if not follow the calibration guidelines on the iSpindle site.</p>
 <p>There are several guides for how to calibrate the device (<a class="reference external" href="https://www.ispindel.de/docs/Calibration_en.html">iSpindle Calibration</a>)</p>
 <p>This will get the data points needed to create the formula, and the data points will be stored on the device so you can
 adjust them when needed.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If this step is skipped the device will not enter sleep mode and the battery will be drained.</p>
+</div>
+</div>
+<div class="section" id="calibrate-device-create-gravity-formula">
+<h3>Calibrate device / Create gravity formula<a class="headerlink" href="#calibrate-device-create-gravity-formula" title="Permalink to this headline">¶</a></h3>
+<p>In order to calculate the gravity a formula needs to be added. You can either enter the formula directly or add
+the measurements and let the device derive the formula for you.</p>
+</div>
+<div class="section" id="check-battery-voltage">
+<h3>Check battery voltage<a class="headerlink" href="#check-battery-voltage" title="Permalink to this headline">¶</a></h3>
+<p>Check the battery voltage so the value is correctly measured. If the wrong resistor values in the
+voltage are then the calculation is off. This could block the device from going to sleep properly.</p>
 </div>
 </div>
 <div class="section" id="step-4-completed">
@@ -273,18 +287,18 @@ Its recommended to attach the device to power when you have it in <cite>configur
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Installation</div>
+                <div class="title">Software Installation</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="functionality.html">
+          <a class="prev-page" href="releases.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Functionality</div>
+                <div class="title">Releases</div>
                 
               </div>
             </a>
@@ -317,7 +331,9 @@ Its recommended to attach the device to power when you have it in <cite>configur
 <li><a class="reference internal" href="#configuration-device-settings-device-name">Configuration - Device Settings - Device Name</a></li>
 <li><a class="reference internal" href="#configuration-device-settings-gyro-calibration">Configuration - Device Settings - Gyro Calibration</a></li>
 <li><a class="reference internal" href="#configuration-push-settings">Configuration - Push Settings</a></li>
-<li><a class="reference internal" href="#calibration">Calibration</a></li>
+<li><a class="reference internal" href="#gyro-calibration">Gyro Calibration</a></li>
+<li><a class="reference internal" href="#calibrate-device-create-gravity-formula">Calibrate device / Create gravity formula</a></li>
+<li><a class="reference internal" href="#check-battery-voltage">Check battery voltage</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#step-4-completed">Step 4 - Completed</a></li>
