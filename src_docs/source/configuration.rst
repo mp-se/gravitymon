@@ -33,6 +33,9 @@ URL: (http://gravmon.local)
 
 Configuration is accessed by entering the URL for the device, this will be the mDNS name *device.local* or the IP address. The following chapter assumes the device name is *gravmon*.
 
+If the device is not fully configured or there are some hardware issues then these will be displayed on the top of the screen. There are also
+links to where the settings can be changed.
+
 The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if 
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.
 
@@ -233,6 +236,12 @@ build this into the gravity formula.
 
    gravity*((1.00130346-0.000134722124*temp+0.00000204052596*temp^2-0.00000000232820948*temp^3)/
    (1.00130346-0.000134722124*cal+0.00000204052596*cal^2-0.00000000232820948*cal^3))
+
+* **Use default formula:**
+
+If you dont need high accuracy then you can use the default formula. This is estimated based on values from several
+devices and assume that the water angle is 25 degrees. Accuracy will depend on your build and weight but based on the
+data it will be +/- 2%. If you send in your calibration data I can include this and perhaps improve the formula.
 
 
 Hardware Settings

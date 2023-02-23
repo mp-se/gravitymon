@@ -19,6 +19,7 @@ Features
 Documentation
 +++++++++++++
 * Updated getting started section to clarify what needs to be done during setup.
+* Updated documentation with new images and text
 
 Issues adressed
 ++++++++++++++++
