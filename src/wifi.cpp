@@ -36,11 +36,12 @@ SOFTWARE.
 #include <wifi.hpp>
 
 // Settings for DRD
-#define ESP_DRD_USE_LITTLEFS true
+#define ESP_DRD_USE_LITTLEFS false
 #define ESP_DRD_USE_SPIFFS false
-#define ESP_DRD_USE_EEPROM false
+#define ESP_DRD_USE_EEPROM true
+// #define DOUBLERESETDETECTOR_DEBUG true
 #include <ESP_DoubleResetDetector.h>
-#define DRD_TIMEOUT 3
+#define DRD_TIMEOUT 5
 #define DRD_ADDRESS 0
 
 // Settings for WIFI Manager
@@ -98,7 +99,12 @@ bool WifiConnection::isDoubleResetDetected() {
   return myDRD->detectDoubleReset();
 }
 
-void WifiConnection::stopDoubleReset() { myDRD->stop(); }
+void WifiConnection::stopDoubleReset() {
+  Log.notice(F("WIFI: Stop double reset detection." CR));
+  myDRD->stop();
+  // Log.notice(F("WIFI: Double reset status=%s." CR),
+  // myDRD->detectDoubleReset() ? "true" : "false");
+}
 
 void WifiConnection::startPortal() {
   Log.notice(F("WIFI: Starting Wifi config portal." CR));

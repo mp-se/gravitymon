@@ -3,6 +3,13 @@
 Releases 
 ########
 
+v1.3.0 beta 3
+=============
+
+Issues adressed
+++++++++++++++++
+* BUG: Double reset was detected incorrectly on ESP32C3, moving to EEPROM instead of file seams to work better.
+
 v1.3.0 beta 2
 =============
 
