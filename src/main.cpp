@@ -152,9 +152,9 @@ void setup() {
 
   LOG_PERF_START("main-config-load");
   myConfig.checkFileSystem();
+  myWifi.init(); // double reset check
   checkResetReason();
   myConfig.loadFile();
-  myWifi.init();
   myAdvancedConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
 

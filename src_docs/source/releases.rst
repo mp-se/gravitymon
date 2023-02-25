@@ -8,7 +8,11 @@ v1.3.0 beta 3
 
 Issues adressed
 ++++++++++++++++
-* BUG: Double reset was detected incorrectly on ESP32C3, moving to EEPROM instead of file seams to work better.
+* BUG: Double reset was detected incorrectly on ESP32C3, created own code and dropped douoble reset detection library for better stability. Will now require 3 taps within 3 seconds each to go into wifi configuration.
+
+Other
++++++
+* Removed khoih-prog/ESP_DoubleResetDetector since this didnt work properly on the ESP32c3, this library has no support from author anymore.
 
 v1.3.0 beta 2
 =============

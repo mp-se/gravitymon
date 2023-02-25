@@ -35,32 +35,51 @@ SOFTWARE.
 #include <main.hpp>
 #include <wifi.hpp>
 
-// Settings for DRD
-#define ESP_DRD_USE_LITTLEFS false
-#define ESP_DRD_USE_SPIFFS false
-#define ESP_DRD_USE_EEPROM true
-// #define DOUBLERESETDETECTOR_DEBUG true
-#include <ESP_DoubleResetDetector.h>
-#define DRD_TIMEOUT 5
-#define DRD_ADDRESS 0
-
 // Settings for WIFI Manager
 #define USE_ESP_WIFIMANAGER_NTP false
 #define USE_CLOUDFLARE_NTP false
 #define USING_CORS_FEATURE false
 #define NUM_WIFI_CREDENTIALS 1
 #define USE_STATIC_IP_CONFIG_IN_CP false
-#define _WIFIMGR_LOGLEVEL_ 3
+// #define _WIFIMGR_LOGLEVEL_ 4
 #include <ESP_WiFiManager.h>
-ESP_WiFiManager *myWifiManager;
-DoubleResetDetector *myDRD;
+ESP_WiFiManager *myWifiManager = 0;
 WifiConnection myWifi;
 
 const char *userSSID = USER_SSID;
 const char *userPWD = USER_SSID_PWD;
 
+const char *resetFilename = "/reset.dat";
+
 void WifiConnection::init() {
-  myDRD = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
+  readReset();
+  Log.notice(F("WIFI: Current reset counter %u." CR), _resetCounter);
+  _resetCounter++;
+  writeReset();
+}
+
+void WifiConnection::readReset() {
+  File file = LittleFS.open(resetFilename, "r");
+
+  if (file) {
+    file.read((uint8_t *) &this->_resetCounter, sizeof(_resetCounter));
+    file.close();
+  } else {
+    Log.warning(F("WIFI: Failed to read reset counter." CR));
+    _resetCounter = 0;
+  }
+}
+
+void WifiConnection::writeReset() {
+  File file = LittleFS.open(resetFilename, "w");
+
+  if (file) {
+    file.write((uint8_t *) &this->_resetCounter, sizeof(_resetCounter));
+    file.close();
+  } else {
+    Log.warning(F("WIFI: Failed to write reset counter." CR));
+    _resetCounter = 0;
+  }
 }
 
 bool WifiConnection::hasConfig() {
@@ -72,9 +91,11 @@ bool WifiConnection::hasConfig() {
   String ssid = WiFi.SSID();
   String pwd = WiFi.psk();
 #else
-  ESP_WiFiManager wifiMgr;
-  String ssid = wifiMgr.WiFi_SSID();
-  String pwd = wifiMgr.WiFi_Pass();
+  if (myWifiManager == 0)
+    myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
+
+  String ssid = myWifiManager->WiFi_SSID();
+  String pwd = myWifiManager->WiFi_Pass();
 #endif
   if (ssid.length()) {
     Log.notice(F("WIFI: Found stored credentials." CR));
@@ -96,14 +117,14 @@ String WifiConnection::getIPAddress() { return WiFi.localIP().toString(); }
 bool WifiConnection::isDoubleResetDetected() {
   if (strlen(userSSID))
     return false;  // Ignore this if we have hardcoded settings.
-  return myDRD->detectDoubleReset();
+
+  return _resetCounter > _minResetCount;
 }
 
 void WifiConnection::stopDoubleReset() {
   Log.notice(F("WIFI: Stop double reset detection." CR));
-  myDRD->stop();
-  // Log.notice(F("WIFI: Double reset status=%s." CR),
-  // myDRD->detectDoubleReset() ? "true" : "false");
+  _resetCounter = 0;
+  writeReset();
 }
 
 void WifiConnection::startPortal() {
@@ -113,7 +134,9 @@ void WifiConnection::startPortal() {
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
 
-  myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
+  if (myWifiManager == 0)
+    myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
+
   myWifiManager->setMinimumSignalQuality(-1);
   myWifiManager->setConfigPortalChannel(0);
   myWifiManager->setConfigPortalTimeout(
@@ -157,9 +180,16 @@ void WifiConnection::startPortal() {
   ESP_RESET();
 }
 
-void WifiConnection::loop() { myDRD->loop(); }
+void WifiConnection::loop() { 
+  if (abs((int32_t)(millis() - _timer)) > _timeout) {
+    _timer = millis();
+    _resetCounter = 0;
+    writeReset();
+  }
+}
 
 void WifiConnection::connectAsync(int wifiIndex) {
+  WiFi.setHostname(myConfig.getMDNS());
   WiFi.persistent(true);
   WiFi.mode(WIFI_STA);
 
@@ -193,6 +223,7 @@ bool WifiConnection::waitForConnection(int maxTime) {
     if (i++ >
         (maxTime * 10)) {  // Try for maxTime seconds. Since delay is 100ms.
       writeErrorLog("WIFI: Failed to connect to wifi %d", WiFi.status());
+      stopDoubleReset();
       WiFi.disconnect();
       EspSerial.print(CR);
       return false;  // Return to main that we have failed to connect.

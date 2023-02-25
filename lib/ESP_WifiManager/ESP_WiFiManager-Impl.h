@@ -220,9 +220,6 @@ ESP_WiFiManager::ESP_WiFiManager(const char *iHostname)
   _params = (ESP_WMParameter**)malloc(_max_params * sizeof(ESP_WMParameter*));
 #endif
 
-  //WiFi not yet started here, must call WiFi.mode(WIFI_STA) and modify function WiFiGenericClass::mode(wifi_mode_t m) !!!
-  WiFi.mode(WIFI_STA);
-
   if (iHostname[0] == 0)
   {
 #ifdef ESP8266
@@ -245,6 +242,9 @@ ESP_WiFiManager::ESP_WiFiManager(const char *iHostname)
   LOGWARN1(F("RFC925 Hostname ="), RFC952_hostname);
 
   setHostname();
+
+  //WiFi not yet started here, must call WiFi.mode(WIFI_STA) and modify function WiFiGenericClass::mode(wifi_mode_t m) !!!
+  WiFi.mode(WIFI_STA);
 
   networkIndices = NULL;
 }
