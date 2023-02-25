@@ -420,7 +420,7 @@
 
         $("#battery").text(batt + " V (" + charge + "%)" );
 
-        if( selfTest["temp-connected"]) {
+        if(!selfTest["temp-connected"]) {
           $("#temp").text("No temp sensor detected");
         } else {
           if( cfg["temp-format"] == "C") 
