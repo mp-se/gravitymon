@@ -42,9 +42,9 @@ void TempSensor::setup() {
   mySensors.begin();
 
   if (mySensors.getDS18Count()) {
-    Log.notice(
-        F("TSEN: Found %d temperature sensor(s). Using %d bit" CR),
-        mySensors.getDS18Count(), myAdvancedConfig.getTempSensorResolution());
+    Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d bit" CR),
+               mySensors.getDS18Count(),
+               myAdvancedConfig.getTempSensorResolution());
   } else {
     Log.warning(F("TSEN: No temp sensors found" CR));
   }

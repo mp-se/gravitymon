@@ -62,7 +62,8 @@ void WifiConnection::readReset() {
   File file = LittleFS.open(resetFilename, "r");
 
   if (file) {
-    file.read((uint8_t *) &this->_resetCounter, sizeof(_resetCounter));
+    file.read(reinterpret_cast<uint8_t *>(&this->_resetCounter),
+              sizeof(_resetCounter));
     file.close();
   } else {
     Log.warning(F("WIFI: Failed to read reset counter." CR));
@@ -74,7 +75,8 @@ void WifiConnection::writeReset() {
   File file = LittleFS.open(resetFilename, "w");
 
   if (file) {
-    file.write((uint8_t *) &this->_resetCounter, sizeof(_resetCounter));
+    file.write(reinterpret_cast<uint8_t *>(&this->_resetCounter),
+               sizeof(_resetCounter));
     file.close();
   } else {
     Log.warning(F("WIFI: Failed to write reset counter." CR));
@@ -91,8 +93,7 @@ bool WifiConnection::hasConfig() {
   String ssid = WiFi.SSID();
   String pwd = WiFi.psk();
 #else
-  if (myWifiManager == 0)
-    myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
+  if (myWifiManager == 0) myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
 
   String ssid = myWifiManager->WiFi_SSID();
   String pwd = myWifiManager->WiFi_Pass();
@@ -134,8 +135,7 @@ void WifiConnection::startPortal() {
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
 
-  if (myWifiManager == 0)
-    myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
+  if (myWifiManager == 0) myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
 
   myWifiManager->setMinimumSignalQuality(-1);
   myWifiManager->setConfigPortalChannel(0);
@@ -180,7 +180,7 @@ void WifiConnection::startPortal() {
   ESP_RESET();
 }
 
-void WifiConnection::loop() { 
+void WifiConnection::loop() {
   if (abs((int32_t)(millis() - _timer)) > _timeout) {
     _timer = millis();
     _resetCounter = 0;
