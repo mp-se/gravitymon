@@ -149,6 +149,7 @@ void setup() {
   digitalWrite(PIN_LED, HIGH);
 #endif
   printBuildOptions();
+  detectChipRevision();
 
   LOG_PERF_START("main-config-load");
   myConfig.checkFileSystem();

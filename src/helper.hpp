@@ -48,6 +48,8 @@ bool checkPinConnected();
 
 // Show build options
 void printBuildOptions();
+void detectChipRevision();
+bool isEsp32c3();
 
 // Data conversion
 double convertToPlato(double sg);
