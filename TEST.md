@@ -29,3 +29,16 @@ I've added a specific build that uses the AUnit (https://github.com/bxparks/AUni
 1. Select the build target (gravity-unit)
 2. Build/upload the code to an iSpindle device. 
 3. Check the output from the serial console.
+
+
+# Tests to run for each release
+
+- Run unit test on esp8266 
+
+For each platform
+
+- Run unit python api tests
+- Enter gravity mode and check web user interface
+- Test that is possible to enter wifi setup mode via pressing reset button more than two times
+- Check gyro and temperature sensor readings
+- Run long term gravity measurement
