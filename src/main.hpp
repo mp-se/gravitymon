@@ -69,8 +69,13 @@ extern RunMode runMode;
 #endif  // JTAG_DEBUG
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
+#if defined(ESP32C3_REV1)
+#define PIN_DS A3
+#define PIN_VOLT A0
+#else
 #define PIN_DS A0
 #define PIN_VOLT A3
+#endif
 // This should be the LED_BUILTIN, but that is also connected SDA (Gyro) so we
 // cannot use both. So we point LED to pin 8 which is not used.
 #define PIN_LED 8
