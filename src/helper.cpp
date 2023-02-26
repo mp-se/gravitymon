@@ -62,24 +62,25 @@ void detectChipRevision() {
     ESP32C3 = ESP32C3 rev 3
   */
 
-  switch( chip_info.model ) {
-    case CHIP_ESP32: 
-      chipModel = "ESP32"; 
+  switch (chip_info.model) {
+    case CHIP_ESP32:
+      chipModel = "ESP32";
       break;
-    case CHIP_ESP32S2: 
-      chipModel = "ESP32S2"; 
+    case CHIP_ESP32S2:
+      chipModel = "ESP32S2";
       break;
-    case CHIP_ESP32C3: 
-      chipModel = "ESP32C3"; 
+    case CHIP_ESP32C3:
+      chipModel = "ESP32C3";
       break;
-    case CHIP_ESP32S3:  
+    case CHIP_ESP32S3:
     case CHIP_ESP32H2:
     default:
-      chipModel = "Unsupported"; 
-    break;
+      chipModel = "Unsupported";
+      break;
   }
-  
-  Log.notice(F("HELP: Chip=%s, Rev=%d, Feat=%X" CR), chipModel.c_str(), chip_info.revision, chip_info.features);
+
+  Log.notice(F("HELP: Chip=%s, Rev=%d, Feat=%X" CR), chipModel.c_str(),
+             chip_info.revision, chip_info.features);
 }
 #endif
 
