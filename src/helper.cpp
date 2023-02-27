@@ -50,8 +50,6 @@ bool isEsp32c3() { return false; }
 #else
 esp_chip_info_t chip_info;
 
-bool isEsp32c3() { return (chip_info.model == CHIP_ESP32C3); }
-
 void detectChipRevision() {
   esp_chip_info(&chip_info);
   String chipModel;
