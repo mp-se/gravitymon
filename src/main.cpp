@@ -151,6 +151,14 @@ void setup() {
   printBuildOptions();
   detectChipRevision();
 
+#if defined(RUN_HARDWARE_TEST)
+  Log.notice(
+      F("Main: Entering harware pin test, ensure that LED are connected to all "
+        "relevant pints." CR));
+  delay(2000);
+  runGpioHardwareTests();
+#endif
+
   LOG_PERF_START("main-config-load");
   myConfig.checkFileSystem();
   myWifi.init();  // double reset check

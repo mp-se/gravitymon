@@ -44,6 +44,77 @@ void tcp_cleanup() {
   while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
 }
 
+void runGpioHardwareTests() {
+#if defined(RUN_HARDWARE_TEST)
+  int max = 10;
+
+  Log.notice(F("HELP: Configuring GPIO for output." CR));
+  pinMode(PIN_SDA, OUTPUT);
+  pinMode(PIN_SCL, OUTPUT);
+  pinMode(PIN_CFG1, OUTPUT);
+  pinMode(PIN_CFG2, OUTPUT);
+  pinMode(PIN_DS, OUTPUT);
+  pinMode(PIN_VOLT, OUTPUT);
+  pinMode(PIN_LED, OUTPUT);
+  delay(100);
+  digitalWrite(PIN_SDA, LOW);
+  digitalWrite(PIN_SCL, LOW);
+  digitalWrite(PIN_CFG1, LOW);
+  digitalWrite(PIN_CFG2, LOW);
+  digitalWrite(PIN_DS, LOW);
+  digitalWrite(PIN_VOLT, LOW);
+  digitalWrite(PIN_LED, LOW);
+  delay(100);
+
+  int sleep = 700;
+
+  Log.notice(F("HELP: Testing SDA." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_SDA, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_SDA, LOW);
+
+  Log.notice(F("HELP: Testing SCL." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_SCL, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_SCL, LOW);
+
+  Log.notice(F("HELP: Testing CFG1." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_CFG1, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_CFG1, LOW);
+
+  Log.notice(F("HELP: Testing CFG2." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_CFG2, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_CFG2, LOW);
+
+  Log.notice(F("HELP: Testing DS." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_DS, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_DS, LOW);
+
+  Log.notice(F("HELP: Testing VOLT." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_VOLT, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_VOLT, LOW);
+
+  Log.notice(F("HELP: Tests finished, enter waiting for reset." CR));
+  while (true) delay(sleep);
+#endif
+}
+
 #if defined(ESP8266)
 void detectChipRevision() {}
 bool isEsp32c3() { return false; }

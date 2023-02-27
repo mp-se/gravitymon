@@ -49,6 +49,7 @@ bool checkPinConnected();
 // Show build options
 void printBuildOptions();
 void detectChipRevision();
+void runGpioHardwareTests();
 
 // Data conversion
 double convertToPlato(double sg);
