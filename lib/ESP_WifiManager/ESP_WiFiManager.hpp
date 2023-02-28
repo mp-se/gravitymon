@@ -37,6 +37,8 @@
 #ifndef ESP_WiFiManager_hpp
 #define ESP_WiFiManager_hpp
 
+#include <ArduinoLog.h>
+
 ////////////////////////////////////////////////////
 
 #if !( defined(ESP8266) ||  defined(ESP32) )
@@ -78,10 +80,6 @@
 #define ESP_WIFIMANAGER_VERSION_PATCH     1
 
 #define ESP_WIFIMANAGER_VERSION_INT       1012001
-
-////////////////////////////////////////////////////
-
-#include "ESP_WiFiManager_Debug.h"
 
 ////////////////////////////////////////////////////
 
@@ -802,8 +800,7 @@ class ESP_WiFiManager
     
     auto optionalIPFromString(...) -> bool 
     {
-      LOGINFO("NO fromString METHOD ON IPAddress, you need ESP8266 core 2.1.0 or newer for Custom IP configuration to work.");
-      
+      Log.notice(F("WM  : NO fromString METHOD ON IPAddress, you need ESP8266 core 2.1.0 or newer for Custom IP configuration to work." CR));      
       return false;
     }
 };

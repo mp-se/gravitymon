@@ -8,11 +8,10 @@ v1.3.0 beta 3
 
 Features
 ++++++++
-* 
+* Refactored logoutput from WifiManager to be consistent with other logs.
 
 Known issues
 ++++++++++++
-* On a ESP32C3/S2 board it might take a while to get the access point started
 * On a ESP32C3 the double reset is sometimes not detected properly
 
 Issues adressed
@@ -21,6 +20,7 @@ Issues adressed
 * BUG: Gyro and Tempsensor was not detected after a reset on ESP32 (needed power cycle), reverted to older Arduino version to solve the problem. 
 * BUG: Pin numbers on the newer ESP32C3 is different from v1
 * BUG: Wrong OTA filename for ESP32C3v1
+* BUG: Fixed long statup delay when creating access point on ESP32C3
 
 Other
 +++++
