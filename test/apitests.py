@@ -3,12 +3,20 @@ import unittest, requests, json, time
 ver  = "1.3.0"
 
 # esp8266
-host = "192.168.1.195"
-id = "6ac6f6"
+#host = "192.168.1.195"
+#id = "6ac6f6"
 
-# esp32c3 v1
-#host = "192.168.1.216"
-#id = "37322c"
+# esp32c3
+#host = "192.168.1.160"
+#id = "1ee9dc"
+
+# esp32d1
+#host = "192.168.1.113"
+#id = "cb3818"
+
+# esp32s2
+host = "192.168.1.169"
+id = "f4adfe"
 
 # python3 -m unittest -v apitests.API.test_bug_79
 # python3 -m unittest -v apitests

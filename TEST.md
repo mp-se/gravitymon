@@ -29,3 +29,35 @@ I've added a specific build that uses the AUnit (https://github.com/bxparks/AUni
 1. Select the build target (gravity-unit)
 2. Build/upload the code to an iSpindle device. 
 3. Check the output from the serial console.
+
+
+# Tests to run for each release
+
+- Run unit test on esp8266 
+
+For each platform
+
+- Run unit python api tests
+- Enter gravity mode and check web user interface
+- Test that is possible to enter wifi setup mode via pressing reset button more than two times
+- Check gyro and temperature sensor readings
+- Run long term gravity measurement
+
+# Flashing
+
+## ESP32S2
+
+esptool.py --port COM9 --chip esp32s2 write_flash 0x10000 bin\firmware32s2.bin
+
+## ESP32C3
+
+esptool.py --port COM10 --chip esp32c3 write_flash 0x10000 bin\firmware32c3.bin
+## ESP8266
+
+esptool.py --port COM9 --chip esp8266 write_flash 0x0 bin\firmware.bin
+## ESP32LITE
+
+esptool.py --port COM9 --chip esp32 write_flash 0x10000 bin\firmware32lite.bin
+## ESP32D1
+
+esptool.py --port COM9 --chip esp32 write_flash 0x10000 bin\firmware32.bin

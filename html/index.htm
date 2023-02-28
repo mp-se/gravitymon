@@ -360,7 +360,7 @@
         }
 
         if(!selfTest["gravity-formula"]) {
-          warning += "<li>No gravity formula is defined. No gravity will be calculated/reported. <a class=\"alert-link\" href=\"/calibration.htm\">Create forumla</a> or <a class=\"alert-link\" href=\"/config.htm#collapseGravity\">Enter forumla</a></li>";
+          warning += "<li>No gravity formula is defined. No gravity will be calculated/reported. <a class=\"alert-link\" href=\"/calibration.htm\">Create formula</a> or <a class=\"alert-link\" href=\"/config.htm#collapseGravity\">Enter formula</a></li>";
         }
 
         if(!selfTest["battery-level"]) {
@@ -420,7 +420,7 @@
 
         $("#battery").text(batt + " V (" + charge + "%)" );
 
-        if( selfTest["temp-connected"]) {
+        if(!selfTest["temp-connected"]) {
           $("#temp").text("No temp sensor detected");
         } else {
           if( cfg["temp-format"] == "C") 

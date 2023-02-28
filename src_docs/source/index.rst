@@ -90,10 +90,6 @@ the following libraries and without these this would have been much more difficu
 
   Include binary files into the code, used to service html files.
 
-* https://github.com/khoih-prog/ESP_DoubleResetDetector
-
-  Can detect if the reset button is pressed twice, is used to enter WIFI config mode.
-
 * https://github.com/khoih-prog/ESP_WiFiManager
 
   Configure wifi settings.

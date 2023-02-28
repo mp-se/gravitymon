@@ -106,7 +106,7 @@ ESP_WMParameter::~ESP_WMParameter()
 // Using Struct to get/set whole data at once
 void ESP_WMParameter::setWMParam_Data(const WMParam_Data& WMParam_data)
 {
-  LOGINFO(F("setWMParam_Data"));
+  // Log.verbose(F("WM  : setWMParam_Data" CR));
 
   memcpy(&_WMParam_data, &WMParam_data, sizeof(_WMParam_data));
 }
@@ -115,7 +115,7 @@ void ESP_WMParameter::setWMParam_Data(const WMParam_Data& WMParam_data)
 
 void ESP_WMParameter::getWMParam_Data(WMParam_Data &WMParam_data)
 {
-  LOGINFO(F("getWMParam_Data"));
+  // Log.verbose(F("WM  : getWMParam_Data" CR));
 
   memcpy(&WMParam_data, &_WMParam_data, sizeof(WMParam_data));
 }
@@ -220,9 +220,6 @@ ESP_WiFiManager::ESP_WiFiManager(const char *iHostname)
   _params = (ESP_WMParameter**)malloc(_max_params * sizeof(ESP_WMParameter*));
 #endif
 
-  //WiFi not yet started here, must call WiFi.mode(WIFI_STA) and modify function WiFiGenericClass::mode(wifi_mode_t m) !!!
-  WiFi.mode(WIFI_STA);
-
   if (iHostname[0] == 0)
   {
 #ifdef ESP8266
@@ -242,9 +239,12 @@ ESP_WiFiManager::ESP_WiFiManager(const char *iHostname)
     getRFC952_hostname(iHostname);
   }
 
-  LOGWARN1(F("RFC925 Hostname ="), RFC952_hostname);
+  Log.notice(F("WM  : RFC925 hostname = %s" CR), &RFC952_hostname[0]);
 
   setHostname();
+
+  //WiFi not yet started here, must call WiFi.mode(WIFI_STA) and modify function WiFiGenericClass::mode(wifi_mode_t m) !!!
+  WiFi.mode(WIFI_STA);
 
   networkIndices = NULL;
 }
@@ -257,7 +257,7 @@ ESP_WiFiManager::~ESP_WiFiManager()
 
   if (_params != NULL)
   {
-    LOGINFO(F("freeing allocated params!"));
+    // Log.verbose(F("WM  : freeing allocated params!" CR));
 
     free(_params);
   }
@@ -285,7 +285,7 @@ ESP_WiFiManager::~ESP_WiFiManager()
     // rezise the params array
     _max_params += WIFI_MANAGER_MAX_PARAMS;
 
-    LOGINFO1(F("Increasing _max_params to:"), _max_params);
+    // Log.verbose(F("WM  : Increasing _max_params to: %d" CR), _max_params);
 
     ESP_WMParameter** new_params = (ESP_WMParameter**)realloc(_params, _max_params * sizeof(ESP_WMParameter*));
 
@@ -295,8 +295,7 @@ ESP_WiFiManager::~ESP_WiFiManager()
     }
     else
     {
-      LOGINFO(F("ERROR: failed to realloc params, size not increased!"));
-
+      Log.error(F("WM  : failed to realloc params, size not increased!" CR));
       return false;
     }
   }
@@ -304,7 +303,7 @@ ESP_WiFiManager::~ESP_WiFiManager()
   _params[_paramsCount] = p;
   _paramsCount++;
 
-  LOGINFO1(F("Adding parameter"), p->getID());
+  // Log.verbose(F("WM  : Adding parameter %s" CR), p->getID());
 
   return true;
 
@@ -316,11 +315,11 @@ ESP_WiFiManager::~ESP_WiFiManager()
     _params[_paramsCount] = p;
     _paramsCount++;
 
-    LOGINFO1(F("Adding parameter"), p->getID());
+    // Log.verbose(F("WM  : Adding parameter %s" CR), p->getID());
   }
   else
   {
-    LOGINFO("Can't add parameter. Full");
+    Log.error(F("WM  : Can't add parameter, list is full." CR));
   }
 
 #endif
@@ -351,8 +350,8 @@ void ESP_WiFiManager::setupConfigPortal()
   // Check (https://github.com/khoih-prog/ESP_WiFiManager/issues/58)
   if (_WiFi_AP_IPconfig._ap_static_ip)
   {
-    LOGWARN3(F("Custom AP IP/GW/Subnet = "), _WiFi_AP_IPconfig._ap_static_ip, _WiFi_AP_IPconfig._ap_static_gw,
-             _WiFi_AP_IPconfig._ap_static_sn);
+    Log.notice(F("WM  : Custom AP IP/GW/Subnet = %s, %s, %s" CR), _WiFi_AP_IPconfig._ap_static_ip.toString().c_str(), _WiFi_AP_IPconfig._ap_static_gw.toString().c_str(),
+             _WiFi_AP_IPconfig._ap_static_sn.toString().c_str());
 
     WiFi.softAPConfig(_WiFi_AP_IPconfig._ap_static_ip, _WiFi_AP_IPconfig._ap_static_gw, _WiFi_AP_IPconfig._ap_static_sn);
   }
@@ -366,30 +365,29 @@ void ESP_WiFiManager::setupConfigPortal()
     if (! dnsServer->start(DNS_PORT, "*", WiFi.softAPIP()))
     {
       // No socket available
-      LOGERROR(F("Can't start DNS Server. No available socket"));
+      Log.error(F("WM  : Can't start DNS Server. No available socket." CR));
     }
   }
   else
   {
     // No space available
-    LOGERROR(F("Can't initiate DNS Server. No enough space"));
+    Log.error(F("WM  : Can't initiate DNS Server. No enough space." CR));
   }
 
   _configPortalStart = millis();
 
-  LOGWARN1(F("Configuring AP SSID ="), _apName);
+  Log.notice(F("WM  : Configuring AP SSID = %s" CR), _apName);
 
   if (_apPassword != NULL)
   {
     if (strlen(_apPassword) < 8 || strlen(_apPassword) > 63)
     {
       // fail passphrase to short or long!
-      LOGERROR(F("Invalid AccessPoint password. Ignoring"));
-
+      Log.error(F("WM  : Invalid AccessPoint password. Ignoring" CR));
       _apPassword = NULL;
     }
 
-    LOGWARN1(F("AP PWD ="), _apPassword);
+    // Log.notice(F("WM  : AP PWD = %s" CR), _apPassword == NULL ? "<null>" : _apPassword);
   }
 
   // KH, To enable dynamic/random channel
@@ -401,13 +399,13 @@ void ESP_WiFiManager::setupConfigPortal()
   else
     channel = _WiFiAPChannel;
 
-  LOGWARN1(F("AP Channel ="), channel);
+  Log.notice(F("WM  : AP Channel = %d" CR), channel);
 
   WiFi.softAP(_apName, _apPassword, channel);
 
   delay(500); // Without delay I've seen the IP address blank
 
-  LOGWARN1(F("AP IP address ="), WiFi.softAPIP());
+  Log.notice(F("WM  : AP IP address = %s" CR), WiFi.softAPIP().toString().c_str());
 
   /* Setup web pages: root, wifi config pages, SO captive portal detectors and not found. */
   server->on("/", std::bind(&ESP_WiFiManager::handleRoot, this));
@@ -423,7 +421,7 @@ void ESP_WiFiManager::setupConfigPortal()
   server->onNotFound(std::bind(&ESP_WiFiManager::handleNotFound, this));
   server->begin(); // Web server start
 
-  LOGWARN(F("HTTP server started"));
+  Log.notice(F("WM  : HTTP server for wifi portal is started." CR));
 }
 
 //////////////////////////////////////////
@@ -459,11 +457,11 @@ bool ESP_WiFiManager::autoConnect()
 bool ESP_WiFiManager::autoConnect(char const *apName, char const *apPassword)
 {
 #if AUTOCONNECT_NO_INVALIDATE
-  LOGINFO(F("\nAutoConnect using previously saved SSID/PW, but keep previous settings"));
+  Log.notice(F("WM  : AutoConnect using previously saved SSID/PW, but keep previous settings." CR));
   // Connect to previously saved SSID/PW, but keep previous settings
   connectWifi();
 #else
-  LOGINFO(F("\nAutoConnect using previously saved SSID/PW, but invalidate previous settings"));
+  Log.notice(F("WM  : AutoConnect using previously saved SSID/PW, but invalidate previous settings." CR));
   // Connect to previously saved SSID/PW, but invalidate previous settings
   connectWifi(WiFi_SSID(), WiFi_Pass());
 #endif
@@ -472,14 +470,14 @@ bool ESP_WiFiManager::autoConnect(char const *apName, char const *apPassword)
 
   while (millis() - startedAt < 10000)
   {
-    delay(200);
+    delay(100);
 
     if (WiFi.status() == WL_CONNECTED)
     {
       float waited = (millis() - startedAt);
 
-      LOGWARN1(F("Connected after waiting (s) :"), waited / 1000);
-      LOGWARN1(F("Local ip ="), WiFi.localIP());
+      Log.notice(F("WM  : Connected after waiting %F s." CR), waited / 1000);
+      Log.notice(F("WM  : Local ip = %s" CR), WiFi.localIP().toString().c_str());
 
       return true;
     }
@@ -507,19 +505,25 @@ bool  ESP_WiFiManager::startConfigPortal()
 bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassword)
 {
   //setup AP
-  int connRes = WiFi.waitForConnectResult();
+  Log.notice(F("WM  : Creating AP for wifi portal." CR));
 
-  LOGINFO("WiFi.waitForConnectResult Done");
+#if defined(ESP8266)
+  int connRes = WiFi.waitForConnectResult();
+#else // ESP32
+  int connRes = WiFi.waitForConnectResult(1000);
+#endif
+
+  // Log.verbose(F("WM  : WiFi.waitForConnectResult Done" CR));
 
   if (connRes == WL_CONNECTED)
   {
-    LOGINFO("SET AP_STA");
+    // Log.verbose(F("WM  : WIFI connected." CR));
 
     WiFi.mode(WIFI_AP_STA); //Dual mode works fine if it is connected to WiFi
   }
   else
   {
-    LOGINFO("SET AP");
+    // Log.verbose(F("WM  : WIFI not connected." CR));
 
     // Dual mode becomes flaky if not connected to a WiFi network.
     // When ESP8266 station is trying to find a target AP, it will scan on every channel,
@@ -535,7 +539,7 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
   //notify we entered AP mode
   if (_apcallback != NULL)
   {
-    LOGINFO("_apcallback");
+    // Log.verbose(F("WM  : _apcallback" CR));
 
     _apcallback(this);
   }
@@ -546,7 +550,7 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
 
   bool TimedOut = true;
 
-  LOGINFO("startConfigPortal : Enter loop");
+  Log.notice(F("WM  : WIFI Portal started, enter loop." CR));
 
   while (_configPortalTimeout == 0 || millis() < _configPortalStart + _configPortalTimeout)
   {
@@ -555,7 +559,8 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
     //HTTP
     server->handleClient();
 
-#if ( USING_ESP32_S2 || USING_ESP32_C3 )
+// #if ( USING_ESP32_S2 || USING_ESP32_C3 )
+#if defined( ESP32S2 ) || defined( ESP32C3 )
     // Fix ESP32-S2 issue with WebServer (https://github.com/espressif/arduino-esp32/issues/4348)
     delay(1);
 #endif
@@ -563,14 +568,15 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
     if (connect)
     {
       TimedOut = false;
-      delay(2000);
+      // delay(2000);
+      delay(500);
 
-      LOGERROR(F("Connecting to new AP"));
+      Log.notice(F("WM  : Connecting to new AP." CR));
 
       // using user-provided  _ssid, _pass in place of system-stored ssid and pass
       if (connectWifi(_ssid, _pass) != WL_CONNECTED)
       {
-        LOGERROR(F("Failed to connect"));
+        Log.error(F("WM  : Failed to connect to AP." CR));
 
         WiFi.mode(WIFI_AP); // Dual mode becomes flaky if not connected to a WiFi network.
       }
@@ -604,7 +610,7 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
     {
       //TimedOut = false;
 
-      LOGERROR("Stop ConfigPortal");    //KH
+      Log.notice(F("WM  : Stopped wifi portal." CR));
 
       stopConfigPortal = false;
       break;
@@ -625,7 +631,7 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
     WiFi.begin();
     int connRes = waitForConnectResult();
 
-    LOGERROR1("Timed out connection result:", getStatus(connRes));
+    Log.error(F("WM  : WIFI connection timeout: %s" CR), getStatus(connRes));
   }
 
   server->stop();
@@ -644,37 +650,37 @@ void ESP_WiFiManager::setWifiStaticIP()
 
   if (_WiFi_STA_IPconfig._sta_static_ip)
   {
-    LOGWARN(F("Custom STA IP/GW/Subnet"));
+    // Log.verbose(F("WM  : Custom STA IP/GW/Subnet" CR));
 
     //***** Added section for DNS config option *****
     if (_WiFi_STA_IPconfig._sta_static_dns1 && _WiFi_STA_IPconfig._sta_static_dns2)
     {
-      LOGWARN(F("DNS1 and DNS2 set"));
+      // Log.verbose(F("WM  : DNS1 and DNS2 set" CR));
 
       WiFi.config(_WiFi_STA_IPconfig._sta_static_ip, _WiFi_STA_IPconfig._sta_static_gw, _WiFi_STA_IPconfig._sta_static_sn,
                   _WiFi_STA_IPconfig._sta_static_dns1, _WiFi_STA_IPconfig._sta_static_dns2);
     }
     else if (_WiFi_STA_IPconfig._sta_static_dns1)
     {
-      LOGWARN(F("Only DNS1 set"));
+      // Log.verbose(F("WM  : Only DNS1 set" CR));
 
       WiFi.config(_WiFi_STA_IPconfig._sta_static_ip, _WiFi_STA_IPconfig._sta_static_gw, _WiFi_STA_IPconfig._sta_static_sn,
                   _WiFi_STA_IPconfig._sta_static_dns1);
     }
     else
     {
-      LOGWARN(F("No DNS server set"));
+      // Log.verbose(F("WM  : No DNS server set" CR));
 
       WiFi.config(_WiFi_STA_IPconfig._sta_static_ip, _WiFi_STA_IPconfig._sta_static_gw, _WiFi_STA_IPconfig._sta_static_sn);
     }
 
     //***** End added section for DNS config option *****
 
-    LOGINFO1(F("setWifiStaticIP IP ="), WiFi.localIP());
+    Log.notice(F("WM  : Using static IP = %s"), WiFi.localIP().toString().c_str());
   }
   else
   {
-    LOGWARN(F("Can't use Custom STA IP/GW/Subnet"));
+    Log.error(F("WM  : Failed to use Custom STA IP/GW/Subnet." CR));
   }
 
 #else
@@ -684,7 +690,7 @@ void ESP_WiFiManager::setWifiStaticIP()
   {
     WiFi.config(_WiFi_STA_IPconfig._sta_static_ip, _WiFi_STA_IPconfig._sta_static_gw, _WiFi_STA_IPconfig._sta_static_sn);
 
-    LOGWARN1(F("Custom STA IP/GW/Subnet : "), WiFi.localIP());
+    Log.notice(F("WM  : Using custom STA IP/GW/Subnet: %s" CR), WiFi.localIP().toString().c_str());
   }
 
 #endif
@@ -699,18 +705,17 @@ int ESP_WiFiManager::reconnectWifi()
   // using user-provided _ssid, _pass instead of system-stored
   if ( ( connectResult = connectWifi(_ssid, _pass) ) != WL_CONNECTED)
   {
-    LOGERROR1(F("Failed to connect to"), _ssid);
+    Log.error(F("WM  : Failed to connect to %s" CR), _ssid.c_str());
 
     if ( ( connectResult = connectWifi(_ssid1, _pass1) ) != WL_CONNECTED)
     {
-      LOGERROR1(F("Failed to connect to"), _ssid1);
-
+      Log.error(F("WM  : Failed to connect to %s" CR), _ssid1.c_str());
     }
     else
-      LOGERROR1(F("Connected to"), _ssid1);
+      Log.error(F("WM  : Connected to %s" CR), _ssid1.c_str());
   }
   else
-    LOGERROR1(F("Connected to"), _ssid);
+    Log.error(F("WM  : Connected to %s" CR), _ssid.c_str());
 
   return connectResult;
 }
@@ -726,7 +731,7 @@ int ESP_WiFiManager::connectWifi(const String& ssid, const String& pass)
     //fix for auto connect racing issue, to avoid resetSettings()
     if (WiFi.status() == WL_CONNECTED)
     {
-      LOGWARN(F("Already connected. Bailing out."));
+      Log.notice(F("WM  : Already connected. Bailing out." CR));
       return WL_CONNECTED;
     }
 
@@ -749,26 +754,26 @@ int ESP_WiFiManager::connectWifi(const String& ssid, const String& pass)
     if (ssid != "")
     {
       // Start Wifi with new values.
-      LOGWARN(F("Connect to new WiFi using new IP parameters"));
+      Log.notice(F("WM  : Connect to new WiFi using new IP parameters" CR));
 
       WiFi.begin(ssid.c_str(), pass.c_str());
     }
     else
     {
       // Start Wifi with old values.
-      LOGWARN(F("Connect to previous WiFi using new IP parameters"));
+      Log.notice(F("WM  : Connect to previous WiFi using new IP parameters" CR));
 
       WiFi.begin();
     }
   }
   else if (WiFi_SSID() == "")
   {
-    LOGWARN(F("No saved credentials"));
+    Log.notice(F("WM  : No saved credentials" CR));
   }
 
   int connRes = waitForConnectResult();
 
-  LOGWARN1("Connection result: ", getStatus(connRes));
+  Log.notice(F("WM  : Connection result: %s" CR), getStatus(connRes));
 
   //not connected, WPS enabled, no pass - first attempt
   if (_tryWPS && connRes != WL_CONNECTED && pass == "")
@@ -797,8 +802,8 @@ uint8_t ESP_WiFiManager::waitForConnectResult()
 
     float waited = (millis() - startedAt);
 
-    LOGWARN1(F("Connected after waiting (s) :"), waited / 1000);
-    LOGWARN1(F("Local ip ="), WiFi.localIP());
+    Log.notice(F("WM  : Connected after waiting %F s" CR), waited / 1000);
+    Log.notice(F("WM  : Local ip = %s" CR), WiFi.localIP().toString().c_str());
 
     // Fix bug, connRes is sometimes not correct.
     //return connRes;
@@ -806,7 +811,7 @@ uint8_t ESP_WiFiManager::waitForConnectResult()
   }
   else
   {
-    LOGERROR(F("Waiting WiFi connection with time out"));
+    Log.notice(F("WM  : Waiting WiFi connection with time out." CR));
 
     unsigned long start = millis();
     bool keepConnecting = true;
@@ -819,7 +824,7 @@ uint8_t ESP_WiFiManager::waitForConnectResult()
       if (millis() > start + _connectTimeout)
       {
         keepConnecting = false;
-        LOGERROR(F("Connection timed out"));
+        Log.error(F("WM  : WIFI connection timed out." CR));
       }
 
       if (status == WL_CONNECTED || status == WL_CONNECT_FAILED)
@@ -839,12 +844,12 @@ uint8_t ESP_WiFiManager::waitForConnectResult()
 void ESP_WiFiManager::startWPS()
 {
 #ifdef ESP8266
-  LOGINFO("START WPS");
+  // Log.verbose(F("WM  : START WPS" CR));
   WiFi.beginWPSConfig();
-  LOGINFO("END WPS");
+  // Log.verbose(F("WM  : END WPS" CR));
 #else   //ESP32
   // TODO
-  LOGINFO("ESP32 WPS TODO");
+  Log.verbose(F("WM  : ESP32 WPS TODO" CR));
 #endif
 }
 
@@ -894,7 +899,7 @@ String ESP_WiFiManager::getConfigPortalPW()
 
 void ESP_WiFiManager::resetSettings()
 {
-  LOGINFO(F("Previous settings invalidated"));
+  // Log.verbose(F("WM  : Previous settings invalidated" CR));
 
 #ifdef ESP8266
   WiFi.disconnect(true);
@@ -960,7 +965,7 @@ int ESP_WiFiManager::setConfigPortalChannel(const int& channel)
 
 void ESP_WiFiManager::setAPStaticIPConfig(const IPAddress& ip, const IPAddress& gw, const IPAddress& sn)
 {
-  LOGINFO(F("setAPStaticIPConfig"));
+  // Log.verbose(F("WM  : setAPStaticIPConfig" CR));
   _WiFi_AP_IPconfig._ap_static_ip = ip;
   _WiFi_AP_IPconfig._ap_static_gw = gw;
   _WiFi_AP_IPconfig._ap_static_sn = sn;
@@ -970,7 +975,7 @@ void ESP_WiFiManager::setAPStaticIPConfig(const IPAddress& ip, const IPAddress& 
 
 void ESP_WiFiManager::setAPStaticIPConfig(const WiFi_AP_IPConfig&  WM_AP_IPconfig)
 {
-  LOGINFO(F("setAPStaticIPConfig"));
+  // Log.verbose(F("WM  : setAPStaticIPConfig" CR));
 
   memcpy((void*) &_WiFi_AP_IPconfig, &WM_AP_IPconfig, sizeof(_WiFi_AP_IPconfig));
 }
@@ -979,7 +984,7 @@ void ESP_WiFiManager::setAPStaticIPConfig(const WiFi_AP_IPConfig&  WM_AP_IPconfi
 
 void ESP_WiFiManager::getAPStaticIPConfig(WiFi_AP_IPConfig  &WM_AP_IPconfig)
 {
-  LOGINFO(F("getAPStaticIPConfig"));
+  // Log.verbose(F("WM  : getAPStaticIPConfig" CR));
 
   memcpy((void*) &WM_AP_IPconfig, &_WiFi_AP_IPconfig, sizeof(WM_AP_IPconfig));
 }
@@ -988,7 +993,7 @@ void ESP_WiFiManager::getAPStaticIPConfig(WiFi_AP_IPConfig  &WM_AP_IPconfig)
 
 void ESP_WiFiManager::setSTAStaticIPConfig(const IPAddress& ip, const IPAddress& gw, const IPAddress& sn)
 {
-  LOGINFO(F("setSTAStaticIPConfig"));
+  // Log.verbose(F("WM  : setSTAStaticIPConfig" CR));
   _WiFi_STA_IPconfig._sta_static_ip = ip;
   _WiFi_STA_IPconfig._sta_static_gw = gw;
   _WiFi_STA_IPconfig._sta_static_sn = sn;
@@ -998,7 +1003,7 @@ void ESP_WiFiManager::setSTAStaticIPConfig(const IPAddress& ip, const IPAddress&
 
 void ESP_WiFiManager::setSTAStaticIPConfig(const WiFi_STA_IPConfig& WM_STA_IPconfig)
 {
-  LOGINFO(F("setSTAStaticIPConfig"));
+  // Log.verbose(F("WM  : setSTAStaticIPConfig" CR));
 
   memcpy((void*) &_WiFi_STA_IPconfig, &WM_STA_IPconfig, sizeof(_WiFi_STA_IPconfig));
 }
@@ -1007,7 +1012,7 @@ void ESP_WiFiManager::setSTAStaticIPConfig(const WiFi_STA_IPConfig& WM_STA_IPcon
 
 void ESP_WiFiManager::getSTAStaticIPConfig(WiFi_STA_IPConfig &WM_STA_IPconfig)
 {
-  LOGINFO(F("getSTAStaticIPConfig"));
+  // Log.verbose(F("WM  : getSTAStaticIPConfig" CR));
 
   memcpy((void*) &WM_STA_IPconfig, &_WiFi_STA_IPconfig, sizeof(WM_STA_IPconfig));
 }
@@ -1018,7 +1023,7 @@ void ESP_WiFiManager::getSTAStaticIPConfig(WiFi_STA_IPConfig &WM_STA_IPconfig)
 void ESP_WiFiManager::setSTAStaticIPConfig(const IPAddress& ip, const IPAddress& gw, const IPAddress& sn,
                                            const IPAddress& dns_address_1, const IPAddress& dns_address_2)
 {
-  LOGINFO(F("setSTAStaticIPConfig for USE_CONFIGURABLE_DNS"));
+  // Log.verbose(F("WM  : setSTAStaticIPConfig for USE_CONFIGURABLE_DNS" CR));
   _WiFi_STA_IPconfig._sta_static_ip = ip;
   _WiFi_STA_IPconfig._sta_static_gw = gw;
   _WiFi_STA_IPconfig._sta_static_sn = sn;
@@ -1076,7 +1081,7 @@ void ESP_WiFiManager::reportStatus(String &page)
 /** Handle root or redirect to captive portal */
 void ESP_WiFiManager::handleRoot()
 {
-  LOGDEBUG(F("Handle root"));
+  Log.notice(F("WM  : Webserver, handle root." CR));
 
   // Disable _configPortalTimeout when someone accessing Portal to give some time to config
   _configPortalTimeout = 0;   //KH
@@ -1131,7 +1136,6 @@ void ESP_WiFiManager::handleRoot()
   page += FPSTR(WM_HTTP_END);
 
   server->send(200, "text/html", page);
-
 }
 
 //////////////////////////////////////////
@@ -1139,7 +1143,7 @@ void ESP_WiFiManager::handleRoot()
 /** Wifi config page handler */
 void ESP_WiFiManager::handleWifi()
 {
-  LOGDEBUG(F("Handle WiFi"));
+  Log.notice(F("WM  : WebServer, handle WiFi" CR));
 
   // Disable _configPortalTimeout when someone accessing Portal to give some time to config
   _configPortalTimeout = 0;   //KH
@@ -1182,9 +1186,9 @@ void ESP_WiFiManager::handleWifi()
       if (networkIndices[i] == -1)
         continue; // skip dups and those that are below the required quality
 
-      LOGDEBUG1(F("Index ="), i);
-      LOGDEBUG1(F("SSID ="), WiFi.SSID(networkIndices[i]));
-      LOGDEBUG1(F("RSSI ="), WiFi.RSSI(networkIndices[i]));
+      Log.notice(F("WM  : Index = %d" CR), i);
+      Log.notice(F("WM  : SSID = %s" CR), WiFi.SSID(networkIndices[i]).c_str());
+      Log.notice(F("WM  : RSSI = %d" CR), WiFi.RSSI(networkIndices[i]));
 
       int quality = getRSSIasQuality(WiFi.RSSI(networkIndices[i]));
 
@@ -1207,8 +1211,6 @@ void ESP_WiFiManager::handleWifi()
       {
         item.replace("{i}", "");
       }
-
-      //LOGDEBUG(item);
 
       page += item;
       delay(0);
@@ -1289,7 +1291,7 @@ void ESP_WiFiManager::handleWifi()
     page += "<br/>";
   }
 
-  LOGDEBUG1(F("Static IP ="), _WiFi_STA_IPconfig._sta_static_ip.toString());
+  Log.notice(F("WM  : Static IP = %s"), _WiFi_STA_IPconfig._sta_static_ip.toString().c_str());
 
   // KH, Comment out to permit changing from DHCP to static IP, or vice versa
   // and add staticIP label in CP
@@ -1372,7 +1374,7 @@ void ESP_WiFiManager::handleWifi()
 
   server->send(200, "text/html", page);
 
-  LOGDEBUG(F("Sent config page"));
+  Log.notice(F("WM  : Webserver, sent config page." CR));
 }
 
 //////////////////////////////////////////
@@ -1380,7 +1382,7 @@ void ESP_WiFiManager::handleWifi()
 /** Handle the WLAN save form and redirect to WLAN config page again */
 void ESP_WiFiManager::handleWifiSave()
 {
-  LOGDEBUG(F("WiFi save"));
+  Log.notice(F("WM  : Webserver, handle WiFi save." CR));
 
   //SAVE/connect here
   _ssid = server->arg("s").c_str();
@@ -1401,11 +1403,11 @@ void ESP_WiFiManager::handleWifiSave()
   if (server->arg("timezone") != "")
   {
     _timezoneName = server->arg("timezone");
-    LOGDEBUG1(F("TZ name ="), _timezoneName);
+    Log.notice(F("WM  : TZ name = %s" CR), _timezoneName.c_str());
   }
   else
   {
-    LOGDEBUG(F("No TZ arg"));
+    Log.notice(F("WM  : No TZ arg" CR));
   }
 
 #endif
@@ -1425,7 +1427,7 @@ void ESP_WiFiManager::handleWifiSave()
     //store it in array
     value.toCharArray(_params[i]->_WMParam_data._value, _params[i]->_WMParam_data._length);
 
-    LOGDEBUG2(F("Parameter and value :"), _params[i]->getID(), value);
+    Log.notice(F("WM  : Parameter and value %s %s" CR), _params[i]->getID(), value.c_str());
   }
 
   if (server->arg("ip") != "")
@@ -1433,7 +1435,7 @@ void ESP_WiFiManager::handleWifiSave()
     String ip = server->arg("ip");
     optionalIPFromString(&_WiFi_STA_IPconfig._sta_static_ip, ip.c_str());
 
-    LOGDEBUG1(F("New Static IP ="), _WiFi_STA_IPconfig._sta_static_ip.toString());
+    // Log.verbose(F("WM  : New Static IP = %s" CR), _WiFi_STA_IPconfig._sta_static_ip.toString().c_str());
   }
 
   if (server->arg("gw") != "")
@@ -1441,7 +1443,7 @@ void ESP_WiFiManager::handleWifiSave()
     String gw = server->arg("gw");
     optionalIPFromString(&_WiFi_STA_IPconfig._sta_static_gw, gw.c_str());
 
-    LOGDEBUG1(F("New Static Gateway ="), _WiFi_STA_IPconfig._sta_static_gw.toString());
+    // Log.verbose(F("WM  : New Static Gateway = %s" CR), _WiFi_STA_IPconfig._sta_static_gw.toString().c_str());
   }
 
   if (server->arg("sn") != "")
@@ -1449,7 +1451,7 @@ void ESP_WiFiManager::handleWifiSave()
     String sn = server->arg("sn");
     optionalIPFromString(&_WiFi_STA_IPconfig._sta_static_sn, sn.c_str());
 
-    LOGDEBUG1(F("New Static Netmask ="), _WiFi_STA_IPconfig._sta_static_sn.toString());
+    // Log.verbose(F("WM  : New Static Netmask = %s" CR), _WiFi_STA_IPconfig._sta_static_sn.toString().c_str());
   }
 
 #if USE_CONFIGURABLE_DNS
@@ -1460,7 +1462,7 @@ void ESP_WiFiManager::handleWifiSave()
     String dns1 = server->arg("dns1");
     optionalIPFromString(&_WiFi_STA_IPconfig._sta_static_dns1, dns1.c_str());
 
-    LOGDEBUG1(F("New Static DNS1 ="), _WiFi_STA_IPconfig._sta_static_dns1.toString());
+    // Log.verbose(F("WM  : New Static DNS1 = %s" CR), _WiFi_STA_IPconfig._sta_static_dns1.toString().c_str());
   }
 
   if (server->arg("dns2") != "")
@@ -1468,7 +1470,7 @@ void ESP_WiFiManager::handleWifiSave()
     String dns2 = server->arg("dns2");
     optionalIPFromString(&_WiFi_STA_IPconfig._sta_static_dns2, dns2.c_str());
 
-    LOGDEBUG1(F("New Static DNS2 ="), _WiFi_STA_IPconfig._sta_static_dns2.toString());
+    // Log.verbose(F("WM  : New Static DNS2 = %s" CR), _WiFi_STA_IPconfig._sta_static_dns2.toString().c_str());
   }
 
   //*****  End added for DNS Options *****
@@ -1490,7 +1492,7 @@ void ESP_WiFiManager::handleWifiSave()
 
   server->send(200, "text/html", page);
 
-  LOGDEBUG(F("Sent wifi save page"));
+  Log.notice(F("WM  : Sent wifi save page" CR));
 
   connect = true; //signal ready to connect/reset
 
@@ -1503,7 +1505,7 @@ void ESP_WiFiManager::handleWifiSave()
 /** Handle shut down the server page */
 void ESP_WiFiManager::handleServerClose()
 {
-  LOGDEBUG(F("Server Close"));
+  Log.notice(F("WM  : Webserver, handle server Close" CR));
 
   server->sendHeader(FPSTR(WM_HTTP_CACHE_CONTROL), FPSTR(WM_HTTP_NO_STORE));
 
@@ -1539,7 +1541,7 @@ void ESP_WiFiManager::handleServerClose()
 
   stopConfigPortal = true; //signal ready to shutdown config portal
 
-  LOGDEBUG(F("Sent server close page"));
+  Log.notice(F("WM  : Sent server close page" CR));
 
   // Restore when Press Save WiFi
   _configPortalTimeout = DEFAULT_PORTAL_TIMEOUT;
@@ -1550,7 +1552,7 @@ void ESP_WiFiManager::handleServerClose()
 /** Handle the info page */
 void ESP_WiFiManager::handleInfo()
 {
-  LOGDEBUG(F("Info"));
+  Log.notice(F("WM  : WebServer, handle info." CR));
 
   // Disable _configPortalTimeout when someone accessing Portal to give some time to config
   _configPortalTimeout = 0;   //KH
@@ -1663,7 +1665,7 @@ void ESP_WiFiManager::handleInfo()
 
   server->send(200, "text/html", page);
 
-  LOGDEBUG(F("Sent info page"));
+  Log.notice(F("WM  : Sent info page" CR));
 }
 
 //////////////////////////////////////////
@@ -1671,7 +1673,7 @@ void ESP_WiFiManager::handleInfo()
 /** Handle the state page */
 void ESP_WiFiManager::handleState()
 {
-  LOGDEBUG(F("State - json"));
+  Log.notice(F("WM  : Webserver, handle state - json" CR));
 
   server->sendHeader(FPSTR(WM_HTTP_CACHE_CONTROL), FPSTR(WM_HTTP_NO_STORE));
 
@@ -1709,7 +1711,7 @@ void ESP_WiFiManager::handleState()
 
   server->send(200, "application/json", page);
 
-  LOGDEBUG(F("Sent state page in json format"));
+  Log.notice(F("WM  : Sent state page in json format" CR));
 }
 
 //////////////////////////////////////////
@@ -1717,12 +1719,12 @@ void ESP_WiFiManager::handleState()
 /** Handle the scan page */
 void ESP_WiFiManager::handleScan()
 {
-  LOGDEBUG(F("Scan"));
+  Log.notice(F("WM  : WebServer, handle scan" CR));
 
   // Disable _configPortalTimeout when someone accessing Portal to give some time to config
   _configPortalTimeout = 0;   //KH
 
-  LOGDEBUG(F("State-Json"));
+  // Log.verbose(F("WM  : State-Json" CR));
 
   server->sendHeader(FPSTR(WM_HTTP_CACHE_CONTROL), FPSTR(WM_HTTP_NO_STORE));
 
@@ -1742,7 +1744,7 @@ void ESP_WiFiManager::handleScan()
 
   n = scanWifiNetworks(&indices);
 
-  LOGDEBUG(F("In handleScan, scanWifiNetworks done"));
+  Log.notice(F("WM  : In handleScan, scanWifiNetworks done" CR));
 
   String page = F("{\"Access_Points\":[");
 
@@ -1755,9 +1757,9 @@ void ESP_WiFiManager::handleScan()
     if (i != 0)
       page += F(", ");
 
-    LOGDEBUG1(F("Index ="), i);
-    LOGDEBUG1(F("SSID ="), WiFi.SSID(indices[i]));
-    LOGDEBUG1(F("RSSI ="), WiFi.RSSI(indices[i]));
+    Log.notice(F("WM  : Index = %d" CR), i);
+    Log.notice(F("WM  : SSID = %s" CR), WiFi.SSID(indices[i]).c_str());
+    Log.notice(F("WM  : RSSI = %d" CR), WiFi.RSSI(indices[i]));
 
     int quality = getRSSIasQuality(WiFi.RSSI(indices[i]));
     String item = FPSTR(JSON_ITEM);
@@ -1796,7 +1798,7 @@ void ESP_WiFiManager::handleScan()
 
   server->send(200, "application/json", page);
 
-  LOGDEBUG(F("Sent WiFiScan Data in Json format"));
+  Log.notice(F("WM  : Sent WiFiScan Data in Json format" CR));
 }
 
 //////////////////////////////////////////
@@ -1804,7 +1806,7 @@ void ESP_WiFiManager::handleScan()
 /** Handle the reset page */
 void ESP_WiFiManager::handleReset()
 {
-  LOGDEBUG(F("Reset"));
+  Log.notice(F("WM  : Webserver, handle reset." CR));
 
   server->sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   server->sendHeader("Pragma", "no-cache");
@@ -1822,7 +1824,7 @@ void ESP_WiFiManager::handleReset()
 
   server->send(200, "text/html", page);
 
-  LOGDEBUG(F("Sent reset page"));
+  Log.notice(F("WM  : Sent reset page" CR));
   delay(5000);
 
   // Temporary fix for issue of not clearing WiFi SSID/PW from flash of ESP32
@@ -1882,18 +1884,18 @@ void ESP_WiFiManager::handleNotFound()
 */
 bool ESP_WiFiManager::captivePortal()
 {
-  LOGDEBUG1(F("captivePortal: hostHeader = "), server->hostHeader());
+  Log.notice(F("WM  : captivePortal: hostHeader = %s" CR), server->hostHeader().c_str());
 
   if (!isIp(server->hostHeader()))
   {
-    LOGINFO1(F("Request redirected to captive portal : "), server->client().localIP());
+    Log.notice(F("WM  : Request redirected to captive portal : %s"), server->client().localIP().toString().c_str());
 
     server->sendHeader(F("Location"), (String)F("http://") + toStringIp(server->client().localIP()), true);
 
     // Empty content inhibits Content-length header so we have to close the socket ourselves.
-    server->send(302, FPSTR(WM_HTTP_HEAD_CT2), "");
+    server->send(302, FPSTR(WM_HTTP_HEAD_CT2), "Redirect to captive portal.");
 
-    server->client().stop(); // Stop is needed because we sent no content length
+    // server->client().stop(); // Stop is needed because we sent no content length
 
     return true;
   }
@@ -1937,11 +1939,11 @@ void ESP_WiFiManager::setRemoveDuplicateAPs(bool removeDuplicates)
 //space for indices array allocated on the heap and should be freed when no longer required
 int ESP_WiFiManager::scanWifiNetworks(int **indicesptr)
 {
-  LOGDEBUG(F("Scanning Network"));
+  Log.notice(F("WM  : Scanning Network" CR));
 
   int n = WiFi.scanNetworks(false, true);
 
-  LOGDEBUG1(F("scanWifiNetworks: Done, Scanned Networks n ="), n);
+  Log.notice(F("WM  : scanWifiNetworks: Done, Scanned Networks n = %d" CR), n);
 
   //KH, Terrible bug here. WiFi.scanNetworks() returns n < 0 => malloc( negative == very big ) => crash!!!
   //In .../esp32/libraries/WiFi/src/WiFiType.h
@@ -1950,7 +1952,7 @@ int ESP_WiFiManager::scanWifiNetworks(int **indicesptr)
   //if (n == 0)
   if (n <= 0)
   {
-    LOGDEBUG(F("No network found"));
+    Log.notice(F("WM  : No network found" CR));
 
     return (0);
   }
@@ -1962,7 +1964,7 @@ int ESP_WiFiManager::scanWifiNetworks(int **indicesptr)
 
     if (indices == NULL)
     {
-      LOGDEBUG(F("ERROR: Out of memory"));
+      Log.error(F("WM  : Out of memory" CR));
       *indicesptr = NULL;
 
       return (0);
@@ -1976,7 +1978,7 @@ int ESP_WiFiManager::scanWifiNetworks(int **indicesptr)
       indices[i] = i;
     }
 
-    LOGDEBUG(F("Sorting"));
+    // Log.verbose(F("WM  : Sorting" CR));
 
     // RSSI SORT
     // old sort
@@ -1991,7 +1993,7 @@ int ESP_WiFiManager::scanWifiNetworks(int **indicesptr)
       }
     }
 
-    LOGDEBUG(F("Removing Dup"));
+    // Log.verbose(F("WM  : Removing Dup" CR));
 
     // remove duplicates ( must be RSSI sorted )
     if (_removeDuplicateAPs)
@@ -2009,7 +2011,7 @@ int ESP_WiFiManager::scanWifiNetworks(int **indicesptr)
         {
           if (cssid == WiFi.SSID(indices[j]))
           {
-            LOGDEBUG1("DUP AP:", WiFi.SSID(indices[j]));
+            Log.verbose(F("WM  : DUP AP: %s" CR), WiFi.SSID(indices[j]).c_str());
             indices[j] = -1; // set dup aps to index -1
           }
         }
@@ -2026,11 +2028,11 @@ int ESP_WiFiManager::scanWifiNetworks(int **indicesptr)
       if (!(_minimumQuality == -1 || _minimumQuality < quality))
       {
         indices[i] = -1;
-        LOGDEBUG(F("Skipping low quality"));
+        // Log.verbose(F("WM  : Skipping low quality" CR));
       }
     }
 
-#if (DEBUG_WIFIMGR > 2)
+/*#if (DEBUG_WIFIMGR > 2)
 
     for (int i = 0; i < n; i++)
     {
@@ -2040,7 +2042,7 @@ int ESP_WiFiManager::scanWifiNetworks(int **indicesptr)
         Serial.println(WiFi.SSID(indices[i]));
     }
 
-#endif
+#endif*/
 
     return (n);
   }

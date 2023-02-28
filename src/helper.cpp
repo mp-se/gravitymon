@@ -44,6 +44,115 @@ void tcp_cleanup() {
   while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
 }
 
+void runGpioHardwareTests() {
+#if defined(RUN_HARDWARE_TEST)
+  int max = 10;
+
+  Log.notice(F("HELP: Configuring GPIO for output." CR));
+  pinMode(PIN_SDA, OUTPUT);
+  pinMode(PIN_SCL, OUTPUT);
+  pinMode(PIN_CFG1, OUTPUT);
+  pinMode(PIN_CFG2, OUTPUT);
+  pinMode(PIN_DS, OUTPUT);
+  pinMode(PIN_VOLT, OUTPUT);
+  pinMode(PIN_LED, OUTPUT);
+  delay(100);
+  digitalWrite(PIN_SDA, LOW);
+  digitalWrite(PIN_SCL, LOW);
+  digitalWrite(PIN_CFG1, LOW);
+  digitalWrite(PIN_CFG2, LOW);
+  digitalWrite(PIN_DS, LOW);
+  digitalWrite(PIN_VOLT, LOW);
+  digitalWrite(PIN_LED, LOW);
+  delay(100);
+
+  int sleep = 700;
+
+  Log.notice(F("HELP: Testing SDA." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_SDA, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_SDA, LOW);
+
+  Log.notice(F("HELP: Testing SCL." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_SCL, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_SCL, LOW);
+
+  Log.notice(F("HELP: Testing CFG1." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_CFG1, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_CFG1, LOW);
+
+  Log.notice(F("HELP: Testing CFG2." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_CFG2, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_CFG2, LOW);
+
+  Log.notice(F("HELP: Testing DS." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_DS, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_DS, LOW);
+
+  Log.notice(F("HELP: Testing VOLT." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_VOLT, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_VOLT, LOW);
+
+  Log.notice(F("HELP: Tests finished, enter waiting for reset." CR));
+  while (true) delay(sleep);
+#endif
+}
+
+#if defined(ESP8266)
+void detectChipRevision() {}
+bool isEsp32c3() { return false; }
+#else
+esp_chip_info_t chip_info;
+
+void detectChipRevision() {
+  esp_chip_info(&chip_info);
+  String chipModel;
+
+  /*
+    ESP32D1 = ESP32 rev 1
+    ESP32S2 = ESP32S2 rev 0
+    ESP32C3 = ESP32C3 rev 3
+  */
+
+  switch (chip_info.model) {
+    case CHIP_ESP32:
+      chipModel = "ESP32";
+      break;
+    case CHIP_ESP32S2:
+      chipModel = "ESP32S2";
+      break;
+    case CHIP_ESP32C3:
+      chipModel = "ESP32C3";
+      break;
+    case CHIP_ESP32S3:
+    case CHIP_ESP32H2:
+    default:
+      chipModel = "Unsupported";
+      break;
+  }
+
+  Log.notice(F("HELP: Chip=%s, Rev=%d, Feat=%X" CR), chipModel.c_str(),
+             chip_info.revision, chip_info.features);
+}
+#endif
+
 void checkResetReason() {
 #if defined(ESP8266)
   rst_info* _rinfo;
@@ -227,16 +336,8 @@ void printBuildOptions() {
   Log.notice(F("Build options: %s (%s) LOGLEVEL %d "
 #if defined(ESP8266)
                "ESP8266 "
-#elif defined(ESP32C3) && defined(REDUCE_WIFI_POWER)
-               "ESP32C3 (v1) "
-#elif defined(ESP32C3)
-               "ESP32C3 (v2+) "
-#elif defined(ESP32S2)
-               "ESP32S2 "
 #elif defined(ESP32LITE)
-               "ESP32LITE (FLOATY) "
-#else  // defined (ESP32)
-               "ESP32D1 "
+               "FLOATY "
 #endif
 #ifdef SKIP_SLEEPMODE
                "SKIP_SLEEP "

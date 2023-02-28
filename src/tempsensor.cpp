@@ -42,11 +42,11 @@ void TempSensor::setup() {
   mySensors.begin();
 
   if (mySensors.getDS18Count()) {
-#if !defined(TSEN_DISABLE_LOGGING)
-    Log.notice(
-        F("TSEN: Found %d temperature sensor(s). Using %d resolution" CR),
-        mySensors.getDS18Count(), myAdvancedConfig.getTempSensorResolution());
-#endif
+    Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d bit" CR),
+               mySensors.getDS18Count(),
+               myAdvancedConfig.getTempSensorResolution());
+  } else {
+    Log.warning(F("TSEN: No temp sensors found" CR));
   }
 
   // Set the temp sensor adjustment values
