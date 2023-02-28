@@ -17,8 +17,9 @@ One of the following conditions will place the device in ``configuration mode``:
 .. tip::
 
    The easiest way to enter configuration mode is to place the device on a flat surface and press the 
-   reset button on the esp. If the LED is solid on then it detected a double reset and has entered WIFI 
-   setup mode, in this case just press reset button again.
+   reset button on the esp a 3 times, each attempt must be within 3 seconds. 
+   
+   If the LED is solid on then it detected a double reset and has entered WIFI setup mode, in this case just press reset twice again.
 
 
 Status 
@@ -359,7 +360,7 @@ This is the amount of time allowed for a wifi connect.
    
 * **Wifi portal timeout:**
 
-If the wifi portal is triggered (can be triggered by reset) then this is the amount of time allowed before it exists again.
+If the wifi portal is triggered (can be triggered by tapping the reset button 2-3 times within 3 seconds) then this is the amount of time allowed before it exists again.
    
 * **Skip Interval (...):**
 

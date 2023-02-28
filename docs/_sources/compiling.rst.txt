@@ -116,7 +116,5 @@ This is a list of C++ defines that is used to enable/disable functions in the co
      - Defines the version of the compiled software
    * - USE_SERIAL_PINS
      - Will send the serial console to the TX/RX pins on an ESP32 target so that debugging can be done when on battery
-   * - REDUCE_WIFI_POWER
-     - Will reduce wifi power to support the ESP32C3 v1.0 which has a bad antenna
    * - FLOATY
      - Build for the ESP32lite FLOATY hardware option (no DS18B20 and no battery monitor)
