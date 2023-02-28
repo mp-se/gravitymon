@@ -51,13 +51,13 @@ esptool.py --port COM9 --chip esp32s2 write_flash 0x10000 bin\firmware32s2.bin
 
 ## ESP32C3
 
-esptool.py --port COM10 --chip esp32c3 write_flash 0x10000 bin\firmware32c3.bin
+esptool.py --port COM6 --chip esp32c3 write_flash 0x10000 bin\firmware32c3.bin
 ## ESP8266
 
-esptool.py --port COM9 --chip esp8266 write_flash 0x0 bin\firmware.bin
+esptool.py --port COM7 --chip esp8266 write_flash 0x0 bin\firmware.bin
 ## ESP32LITE
 
 esptool.py --port COM9 --chip esp32 write_flash 0x10000 bin\firmware32lite.bin
 ## ESP32D1
 
-esptool.py --port COM9 --chip esp32 write_flash 0x10000 bin\firmware32.bin
+esptool.py --port COM3 --chip esp32 write_flash 0x10000 bin\firmware32.bin
