@@ -384,11 +384,10 @@ void ESP_WiFiManager::setupConfigPortal()
     {
       // fail passphrase to short or long!
       Log.error(F("WM  : Invalid AccessPoint password. Ignoring" CR));
-
       _apPassword = NULL;
     }
 
-    Log.warning(F("WM  : AP PWD = %s" CR), _apPassword == NULL ? "<null>" : _apPassword);
+    // Log.notice(F("WM  : AP PWD = %s" CR), _apPassword == NULL ? "<null>" : _apPassword);
   }
 
   // KH, To enable dynamic/random channel
@@ -508,20 +507,23 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
   //setup AP
   Log.notice(F("WM  : Creating AP for wifi portal." CR));
 
-/*
+#if defined(ESP8266)
   int connRes = WiFi.waitForConnectResult();
+#else // ESP32
+  int connRes = WiFi.waitForConnectResult(1000);
+#endif
 
   // Log.verbose(F("WM  : WiFi.waitForConnectResult Done" CR));
 
   if (connRes == WL_CONNECTED)
   {
-    Log.notice(F("WM  : WIFI connected." CR));
+    // Log.verbose(F("WM  : WIFI connected." CR));
 
     WiFi.mode(WIFI_AP_STA); //Dual mode works fine if it is connected to WiFi
   }
   else
   {
-    Log.notice(F("WM  : WIFI not connected." CR));
+    // Log.verbose(F("WM  : WIFI not connected." CR));
 
     // Dual mode becomes flaky if not connected to a WiFi network.
     // When ESP8266 station is trying to find a target AP, it will scan on every channel,
@@ -530,7 +532,6 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
 
     WiFi.mode(WIFI_AP);
   }
-*/
 
   _apName = apName;
   _apPassword = apPassword;
@@ -558,7 +559,8 @@ bool  ESP_WiFiManager::startConfigPortal(char const *apName, char const *apPassw
     //HTTP
     server->handleClient();
 
-#if ( USING_ESP32_S2 || USING_ESP32_C3 )
+// #if ( USING_ESP32_S2 || USING_ESP32_C3 )
+#if defined( ESP32S2 ) || defined( ESP32C3 )
     // Fix ESP32-S2 issue with WebServer (https://github.com/espressif/arduino-esp32/issues/4348)
     delay(1);
 #endif

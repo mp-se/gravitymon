@@ -12,7 +12,8 @@ Features
 
 Known issues
 ++++++++++++
-* On a ESP32C3 the double reset is sometimes not detected properly
+* On an ESP32C3 the double reset is sometimes not detected properly
+* On an ESP32C3 it might not be able to connect to the wifi AP or it takes time. 
 
 Issues adressed
 ++++++++++++++++

@@ -41,6 +41,7 @@
 
 ////////////////////////////////////////////////////
 
+/*
 #if !( defined(ESP8266) ||  defined(ESP32) )
   #error This code is intended to run on the ESP8266 or ESP32 platform! Please check your Tools->Board setting.
 #elif ( ARDUINO_ESP32S2_DEV || ARDUINO_FEATHERS2 || ARDUINO_ESP32S2_THING_PLUS || ARDUINO_MICROS2 || \
@@ -70,6 +71,7 @@
   #endif
   #define USING_ESP32_S3        true   
 #endif
+*/
 
 ////////////////////////////////////////////////////
 
@@ -83,6 +85,7 @@
 
 ////////////////////////////////////////////////////
 
+/*
 #if ( defined(HTTP_PORT) && (HTTP_PORT < 65536) && (HTTP_PORT > 0) )
   #if (_WIFIMGR_LOGLEVEL_ > 3)
     #warning Using custom HTTP_PORT
@@ -96,6 +99,8 @@
   
   #define HTTP_PORT_TO_USE     80
 #endif
+*/
+#define HTTP_PORT_TO_USE 80
 
 ////////////////////////////////////////////////////
 
