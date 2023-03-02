@@ -127,10 +127,10 @@ Configuring WIFI
 When the device is flashed it will need to have WIFI configuration in order to work. If you have used other software on 
 the device its possible that wifi settings already exist.
 
-If you have difficulties to connect to the create Access Point then try to do a reset and try again. Every time the AP 
-is create it chooses a random channel. 
+If you need to enter the WIFI setup mode after it has been configured, tap the reset button at least 3 times. Tap the reset 
+button in 1-2 second intervals. Not to fast and not to slow. 
 
-If this is not configured in the device it will create an wireless access point called `GravMon`. The default password is `password`.
+If this is not configured in the device it will create an wireless access point called `GravityMon`. The default password is `password`.
 
 Connect to this AP and enter the SSID and password you want to use. If the web page don't open automatically you can enter the following address 
 in the browser: **http://192.168.4.1**
