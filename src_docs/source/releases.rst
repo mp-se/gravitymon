@@ -3,17 +3,29 @@
 Releases 
 ########
 
-v1.3.0 beta 3
-=============
+v1.3.0
+======
 
 Features
 ++++++++
 * Refactored logoutput from WifiManager to be consistent with other logs.
+* Added feature to do backup and restore of device settings. Data will be exported as a text (json) file. 
+* Added validation feature that checks for configuration errors or missing steps in setup. Warnings will be displayed on index page.
+* Added restore to factory default button under configuration
+* Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1
+* Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).
+* Added chip information to startup for easier support
+* Added option to select a default gravity formula under settings. This is based on measurements from several different devices.
+* Increased the number of decimals for tilt/angle (3), temperature (2), plato (2), runtime (2).
+* Added ${battery-percent} as new variable for use in format templates.
+* Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.
 
-Known issues
-++++++++++++
-* On an ESP32C3 the double reset is sometimes not detected properly
-* On an ESP32C3 it might not be able to connect to the wifi AP or it takes time. 
+Documentation
++++++++++++++
+* Updated getting started section to clarify what needs to be done during setup.
+* Updated documentation with new images and text
+* Added new option for home assistant sensor registration through automation script.
+* Added description for how to get voltage measurement on a floaty, see Hardware section.
 
 Issues adressed
 ++++++++++++++++
@@ -22,56 +34,15 @@ Issues adressed
 * BUG: Pin numbers on the newer ESP32C3 is different from v1
 * BUG: Wrong OTA filename for ESP32C3v1
 * BUG: Fixed long statup delay when creating access point on ESP32C3
-
-Other
-+++++
-* Removed khoih-prog/ESP_DoubleResetDetector since this didnt work properly on the ESP32c3, this library has no support from author anymore.
-
-v1.3.0 beta 2
-=============
-
-Features
-++++++++
-* Added feature to do backup and restore of device settings. Data will be exported as a text (json) file. 
-* Added validation feature that checks for configuration errors or missing steps in setup. Warnings will be displayed on index page.
-* Added restore to factory default button under configuration
-* Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1
-* Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).
-* Added chip information to startup for easier support
-* Added option to select a default gravity formula under settings. This is based on measurements from several different devices.
-
-Documentation
-+++++++++++++
-* Updated getting started section to clarify what needs to be done during setup.
-* Updated documentation with new images and text
-
-Issues adressed
-++++++++++++++++
 * BUG: Sometimes it could be hard to get into config mode and ended up in wifi portal instead due to double restet detect. 
 * BUG: If the gyro value was invalid (moving) during startup that would cause the device to go into gravitymode instead of config mode.
 * BUG: When trying to do calibration without a connected gyro the device would enter endless loop.
-
-v1.3.0 beta 1
-=============
-
-Features
-++++++++
-* Increased the number of decimals for tilt/angle (3), temperature (2), plato (2), runtime (2).
-* Added ${battery-percent} as new variable for use in format templates.
-* Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.
-
-Documentation
-+++++++++++++
-* Added new option for home assistant sensor registration through automation script.
-* Added description for how to get voltage measurement on a floaty, see Hardware section.
-
-Issues adressed
-++++++++++++++++
 * BUG: Clarified that its the bucket ID and auth TOKEN for influxdb (config page) 
 * BUG: Fixed wrong device classes in home assistant template.
 
 Other
 +++++
+* Removed khoih-prog/ESP_DoubleResetDetector since this didnt work properly on the ESP32c3, this library has no support from author anymore.
 * Updated platformio esp8266 to v4.1.0
 * Updated platformio esp32 to v6.0.0
 * Updated h2zero/NimBLE-Arduino to b 1.4.1
