@@ -69,3 +69,9 @@ to
   gravity-format=${gravity-unit} gravity=${gravity},corr-gravity=${corr-gravity},
   angle=${angle},temp=${temp},battery=${battery},rssi=${rssi},event=${token}
 
+
+Device only reporting data once
+-------------------------------
+
+If the device does not wake up from a deep sleep, this is most likely a hardware problem,
+check the resistor / diode between D0 and RST. Wrong value can stop the device from wakeing up.

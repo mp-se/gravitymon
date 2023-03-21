@@ -65,3 +65,4 @@ Log errors
   * -6 - Network write failed
   * -10 - Connection denied
   * -11 - Failed subscription
+
