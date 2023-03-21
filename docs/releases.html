@@ -203,19 +203,31 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v1-3-0-beta-3">
-<h2>v1.3.0 beta 3<a class="headerlink" href="#v1-3-0-beta-3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-3-0">
+<h2>v1.3.0<a class="headerlink" href="#v1-3-0" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Refactored logoutput from WifiManager to be consistent with other logs.</p></li>
+<li><p>Added feature to do backup and restore of device settings. Data will be exported as a text (json) file.</p></li>
+<li><p>Added validation feature that checks for configuration errors or missing steps in setup. Warnings will be displayed on index page.</p></li>
+<li><p>Added restore to factory default button under configuration</p></li>
+<li><p>Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1</p></li>
+<li><p>Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).</p></li>
+<li><p>Added chip information to startup for easier support</p></li>
+<li><p>Added option to select a default gravity formula under settings. This is based on measurements from several different devices.</p></li>
+<li><p>Increased the number of decimals for tilt/angle (3), temperature (2), plato (2), runtime (2).</p></li>
+<li><p>Added ${battery-percent} as new variable for use in format templates.</p></li>
+<li><p>Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.</p></li>
 </ul>
 </div>
-<div class="section" id="known-issues">
-<h3>Known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>On an ESP32C3 the double reset is sometimes not detected properly</p></li>
-<li><p>On an ESP32C3 it might not be able to connect to the wifi AP or it takes time.</p></li>
+<li><p>Updated getting started section to clarify what needs to be done during setup.</p></li>
+<li><p>Updated documentation with new images and text</p></li>
+<li><p>Added new option for home assistant sensor registration through automation script.</p></li>
+<li><p>Added description for how to get voltage measurement on a floaty, see Hardware section.</p></li>
 </ul>
 </div>
 <div class="section" id="issues-adressed">
@@ -226,72 +238,17 @@
 <li><p>BUG: Pin numbers on the newer ESP32C3 is different from v1</p></li>
 <li><p>BUG: Wrong OTA filename for ESP32C3v1</p></li>
 <li><p>BUG: Fixed long statup delay when creating access point on ESP32C3</p></li>
+<li><p>BUG: Sometimes it could be hard to get into config mode and ended up in wifi portal instead due to double restet detect.</p></li>
+<li><p>BUG: If the gyro value was invalid (moving) during startup that would cause the device to go into gravitymode instead of config mode.</p></li>
+<li><p>BUG: When trying to do calibration without a connected gyro the device would enter endless loop.</p></li>
+<li><p>BUG: Clarified that its the bucket ID and auth TOKEN for influxdb (config page)</p></li>
+<li><p>BUG: Fixed wrong device classes in home assistant template.</p></li>
 </ul>
 </div>
 <div class="section" id="other">
 <h3>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Removed khoih-prog/ESP_DoubleResetDetector since this didnt work properly on the ESP32c3, this library has no support from author anymore.</p></li>
-</ul>
-</div>
-</div>
-<div class="section" id="v1-3-0-beta-2">
-<h2>v1.3.0 beta 2<a class="headerlink" href="#v1-3-0-beta-2" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id2">
-<h3>Features<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>Added feature to do backup and restore of device settings. Data will be exported as a text (json) file.</p></li>
-<li><p>Added validation feature that checks for configuration errors or missing steps in setup. Warnings will be displayed on index page.</p></li>
-<li><p>Added restore to factory default button under configuration</p></li>
-<li><p>Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1</p></li>
-<li><p>Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).</p></li>
-<li><p>Added chip information to startup for easier support</p></li>
-<li><p>Added option to select a default gravity formula under settings. This is based on measurements from several different devices.</p></li>
-</ul>
-</div>
-<div class="section" id="documentation">
-<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>Updated getting started section to clarify what needs to be done during setup.</p></li>
-<li><p>Updated documentation with new images and text</p></li>
-</ul>
-</div>
-<div class="section" id="id3">
-<h3>Issues adressed<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>BUG: Sometimes it could be hard to get into config mode and ended up in wifi portal instead due to double restet detect.</p></li>
-<li><p>BUG: If the gyro value was invalid (moving) during startup that would cause the device to go into gravitymode instead of config mode.</p></li>
-<li><p>BUG: When trying to do calibration without a connected gyro the device would enter endless loop.</p></li>
-</ul>
-</div>
-</div>
-<div class="section" id="v1-3-0-beta-1">
-<h2>v1.3.0 beta 1<a class="headerlink" href="#v1-3-0-beta-1" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id4">
-<h3>Features<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>Increased the number of decimals for tilt/angle (3), temperature (2), plato (2), runtime (2).</p></li>
-<li><p>Added ${battery-percent} as new variable for use in format templates.</p></li>
-<li><p>Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.</p></li>
-</ul>
-</div>
-<div class="section" id="id5">
-<h3>Documentation<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>Added new option for home assistant sensor registration through automation script.</p></li>
-<li><p>Added description for how to get voltage measurement on a floaty, see Hardware section.</p></li>
-</ul>
-</div>
-<div class="section" id="id6">
-<h3>Issues adressed<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>BUG: Clarified that its the bucket ID and auth TOKEN for influxdb (config page)</p></li>
-<li><p>BUG: Fixed wrong device classes in home assistant template.</p></li>
-</ul>
-</div>
-<div class="section" id="id7">
-<h3>Other<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
 <li><p>Updated platformio esp8266 to v4.1.0</p></li>
 <li><p>Updated platformio esp32 to v6.0.0</p></li>
 <li><p>Updated h2zero/NimBLE-Arduino to b 1.4.1</p></li>
@@ -305,20 +262,20 @@
 </div>
 <div class="section" id="v1-2-1">
 <h2>v1.2.1<a class="headerlink" href="#v1-2-1" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id8">
-<h3>Issues adressed<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Issues adressed<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Under some circumstances the last part of the format template was omitted.</p></li>
 </ul>
 </div>
-<div class="section" id="id9">
-<h3>Other<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Other<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Update tinyexpr library to latest baseline (Used for forumula evaluation).</p></li>
 </ul>
 </div>
-<div class="section" id="id10">
-<h3>Documentation<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Minor updates and corrections to the documetation.</p></li>
 <li><p>Updated Q&amp;A section</p></li>
@@ -327,8 +284,8 @@
 </div>
 <div class="section" id="v1-2-0">
 <h2>v1.2.0<a class="headerlink" href="#v1-2-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id11">
-<h3>Features<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Features<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added function to calcualate voltage factor based on measured value.</p></li>
 <li><p>Updated battery estimation for the various esp32 boards.</p></li>
@@ -340,8 +297,8 @@
 <li><p>Added option to download firmware updates from <a class="reference external" href="https://www.gravitymon.com">https://www.gravitymon.com</a></p></li>
 </ul>
 </div>
-<div class="section" id="id12">
-<h3>Documentation<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>Documentation<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added section about the Floaty hardware</p></li>
 <li><p>Fixed schema errors in hardware section and linked PCB options</p></li>
@@ -349,8 +306,8 @@
 <li><p>Updated installation instructions.</p></li>
 </ul>
 </div>
-<div class="section" id="id13">
-<h3>Issues adressed<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h3>Issues adressed<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: The first portion of a format template was lost when doing conversion.</p></li>
 </ul>
@@ -364,8 +321,8 @@
 </div>
 <div class="section" id="v1-1-0">
 <h2>v1.1.0<a class="headerlink" href="#v1-1-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id14">
-<h3>Features<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>Features<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added information to error log about abnormal resets (for instance crashes) to detect and fix those</p></li>
 <li><p>Changed storage mode so that the device will go into deep sleep until reset (sleep forever)</p></li>
@@ -415,8 +372,8 @@
 <li><p>User can now edit the voltage level that forces the device into config mode (device detects charging)</p></li>
 </ul>
 </div>
-<div class="section" id="id15">
-<h3>Documentation<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id9">
+<h3>Documentation<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added documentation for Brewpiless as target</p></li>
 <li><p>Added documentation for BVrewblox as target</p></li>
@@ -428,8 +385,8 @@
 <li><p>Added q&amp;a on formula creation and value deviation</p></li>
 </ul>
 </div>
-<div class="section" id="id16">
-<h3>Other<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id10">
+<h3>Other<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Upgraded framework for ESP8266 to v5.0.0</p></li>
 <li><p>Upgraded framework for ESP32 to v2.0.2</p></li>
@@ -440,8 +397,8 @@
 </div>
 <div class="section" id="v1-0-0">
 <h2>v1.0.0<a class="headerlink" href="#v1-0-0" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id17">
-<h3>Documentation<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id11">
+<h3>Documentation<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Update documentation to match v1.0</p></li>
 <li><p>Installation instructions updated on how to find the device after wifi has been configured.</p></li>
@@ -450,8 +407,8 @@
 <li><p>Added additional http error codes to troubleshooting documentation</p></li>
 </ul>
 </div>
-<div class="section" id="id18">
-<h3>User interface<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id12">
+<h3>User interface<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
 <li><p>Added button on index page to direct to github issues.</p></li>
@@ -462,8 +419,8 @@
 <li><p>Added function on format page so that it’s easy to copy a format template from the docs (simplify service integration).</p></li>
 </ul>
 </div>
-<div class="section" id="id19">
-<h3>Features<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h3>Features<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
 <li><p>Added support for MPU6500 (standard is MPU6050).</p></li>
@@ -480,8 +437,8 @@
 <li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing battery life</p></li>
 </ul>
 </div>
-<div class="section" id="id20">
-<h3>Issues addressed<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id14">
+<h3>Issues addressed<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Fixed issue in formula calculation in case there were a gap in the data series</p></li>
 <li><p>BUG: Field name for wifi strength changed from “rssi” to “RSSI”</p></li>
@@ -658,53 +615,40 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v1-3-0-beta-3">v1.3.0 beta 3</a><ul>
+<li><a class="reference internal" href="#v1-3-0">v1.3.0</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
-<li><a class="reference internal" href="#known-issues">Known issues</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
 <li><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#v1-3-0-beta-2">v1.3.0 beta 2</a><ul>
-<li><a class="reference internal" href="#id2">Features</a></li>
-<li><a class="reference internal" href="#documentation">Documentation</a></li>
-<li><a class="reference internal" href="#id3">Issues adressed</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#v1-3-0-beta-1">v1.3.0 beta 1</a><ul>
-<li><a class="reference internal" href="#id4">Features</a></li>
-<li><a class="reference internal" href="#id5">Documentation</a></li>
-<li><a class="reference internal" href="#id6">Issues adressed</a></li>
-<li><a class="reference internal" href="#id7">Other</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#v1-2-1">v1.2.1</a><ul>
-<li><a class="reference internal" href="#id8">Issues adressed</a></li>
-<li><a class="reference internal" href="#id9">Other</a></li>
-<li><a class="reference internal" href="#id10">Documentation</a></li>
+<li><a class="reference internal" href="#id2">Issues adressed</a></li>
+<li><a class="reference internal" href="#id3">Other</a></li>
+<li><a class="reference internal" href="#id4">Documentation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-2-0">v1.2.0</a><ul>
-<li><a class="reference internal" href="#id11">Features</a></li>
-<li><a class="reference internal" href="#id12">Documentation</a></li>
-<li><a class="reference internal" href="#id13">Issues adressed</a></li>
+<li><a class="reference internal" href="#id5">Features</a></li>
+<li><a class="reference internal" href="#id6">Documentation</a></li>
+<li><a class="reference internal" href="#id7">Issues adressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-1-1">v1.1.1</a></li>
 <li><a class="reference internal" href="#v1-1-0">v1.1.0</a><ul>
-<li><a class="reference internal" href="#id14">Features</a></li>
+<li><a class="reference internal" href="#id8">Features</a></li>
 <li><a class="reference internal" href="#known-issues-not-yet-fixed">Known issues, not yet fixed</a></li>
 <li><a class="reference internal" href="#issues-addressed">Issues addressed</a></li>
 <li><a class="reference internal" href="#user-interface">User interface</a></li>
-<li><a class="reference internal" href="#id15">Documentation</a></li>
-<li><a class="reference internal" href="#id16">Other</a></li>
+<li><a class="reference internal" href="#id9">Documentation</a></li>
+<li><a class="reference internal" href="#id10">Other</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-0-0">v1.0.0</a><ul>
-<li><a class="reference internal" href="#id17">Documentation</a></li>
-<li><a class="reference internal" href="#id18">User interface</a></li>
-<li><a class="reference internal" href="#id19">Features</a></li>
-<li><a class="reference internal" href="#id20">Issues addressed</a></li>
+<li><a class="reference internal" href="#id11">Documentation</a></li>
+<li><a class="reference internal" href="#id12">User interface</a></li>
+<li><a class="reference internal" href="#id13">Features</a></li>
+<li><a class="reference internal" href="#id14">Issues addressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>

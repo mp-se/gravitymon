@@ -261,6 +261,11 @@ angle=${angle},temp=${temp},battery=${battery},rssi=${rssi},event=${token}
 </pre></div>
 </div>
 </div>
+<div class="section" id="device-only-reporting-data-once">
+<h2>Device only reporting data once<a class="headerlink" href="#device-only-reporting-data-once" title="Permalink to this headline">¶</a></h2>
+<p>If the device does not wake up from a deep sleep, this is most likely a hardware problem,
+check the resistor / diode between D0 and RST. Wrong value can stop the device from wakeing up.</p>
+</div>
 </div>
 
         </article>
@@ -309,6 +314,7 @@ angle=${angle},temp=${temp},battery=${battery},rssi=${rssi},event=${token}
 <li><a class="reference internal" href="#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
 <li><a class="reference internal" href="#calibration-error-unable-to-find-a-valid-formula">Calibration error (unable to find a valid formula)</a></li>
 <li><a class="reference internal" href="#how-can-i-filter-data-on-influxdb-without-needing-to-know-the-time-range">How can I filter data on influxdb without needing to know the time range</a></li>
+<li><a class="reference internal" href="#device-only-reporting-data-once">Device only reporting data once</a></li>
 </ul>
 </li>
 </ul>
