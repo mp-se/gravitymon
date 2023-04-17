@@ -475,6 +475,40 @@ starting with a <code class="docutils literal notranslate"><span class="pre">?</
 </pre></div>
 </div>
 </div>
+<div class="section" id="brewpi-remix">
+<h2>BrewPi Remix<a class="headerlink" href="#brewpi-remix" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://brewpiremix.com">BrewPi Remix</a> is a temperature fermentation controller that runs on a Pi and an Arduino or ESP8266 microcontroller.
+BrewPi Remix can recieve SG, Voltage and Temperature from Gravitymon.</p>
+<ul class="simple">
+<li><p>In Gravitymon, take note of your Host name (Home –&gt; Device –&gt; Host name:)</p></li>
+<li><p>On your Pi running BrewPi Remix, edit this file: <cite>/home/brewpi/settings/config.php</cite> and add this line:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">iSpindel</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">Gravitymon</span><span class="o">-</span><span class="n">host</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If not already set, add these lines (Clamps the readings to prevent wide swings):</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">clampSGUpper</span> <span class="o">=</span> <span class="mf">1.175</span>
+<span class="n">clampSGLower</span> <span class="o">=</span> <span class="mf">0.970</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>After saving the changes, restart the script:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">brewpi</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>In Gravitymon, add push settings in: Configuration –&gt; Push settings –&gt; HTTP 1 (POST)</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">ip</span><span class="o">-</span><span class="n">address</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">BrewPi</span><span class="o">&gt;/</span><span class="n">brewpi</span><span class="o">-</span><span class="n">api</span><span class="o">.</span><span class="n">php</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Save settings and run a test push: (Configuration –&gt; Test push –&gt; Test)</p></li>
+</ul>
+</div>
 <div class="section" id="brewpiless">
 <h2>Brewpiless<a class="headerlink" href="#brewpiless" title="Permalink to this headline">¶</a></h2>
 <p>If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it’s recommended to connect the device to your normal network.</p>
@@ -564,6 +598,7 @@ in the json document if you need other values as well.</p>
 <li><a class="reference internal" href="#brewspy">Brewspy</a></li>
 <li><a class="reference internal" href="#thingspeak">Thingspeak</a></li>
 <li><a class="reference internal" href="#blynk-io">Blynk.io</a></li>
+<li><a class="reference internal" href="#brewpi-remix">BrewPi Remix</a></li>
 <li><a class="reference internal" href="#brewpiless">Brewpiless</a></li>
 <li><a class="reference internal" href="#brewblox">BrewBlox</a></li>
 </ul>
