@@ -357,7 +357,7 @@ starting with a ``?``. This string will be added to the URL above when doing the
 BrewPi Remix
 ++++++++++++
 
-BrewPi Remix <https://brewpiremix.com> is a temperature fermentation controller that runs on a Pi and an Arduino or ESP8266 microcontroller.
+`BrewPi Remix <https://brewpiremix.com>`_ is a temperature fermentation controller that runs on a Pi and an Arduino or ESP8266 microcontroller.
 BrewPi Remix can recieve SG, Voltage and Temperature from Gravitymon.
 
 1:
@@ -394,11 +394,16 @@ BrewPi Remix can recieve SG, Voltage and Temperature from Gravitymon.
 3:
 
 * In Gravitymon, add push settings in:
- Configuration --> Push settings --> HTTP 1 (POST)
+
+Configuration --> Push settings --> HTTP 1 (POST)
+
 * Content:
- http://IP-address-of-your-BrewPi/brewpi-api.php
+
+http://IP-address-of-your-BrewPi/brewpi-api.php
+
 * Save settings and run a test push:
- (Configuration --> Test push --> Test)
+
+(Configuration --> Test push --> Test)
 
 
 
