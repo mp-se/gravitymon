@@ -354,6 +354,42 @@ starting with a ``?``. This string will be added to the URL above when doing the
    ?token=${token2}&v1=${temp}&v2=${gravity}&v3=${angle}
 
 
+BrewPi Remix
+++++++++++++
+
+`BrewPi Remix <https://brewpiremix.com>`_ is a temperature fermentation controller that runs on a Pi and an Arduino or ESP8266 microcontroller.
+BrewPi Remix can recieve SG, Voltage and Temperature from Gravitymon.
+
+- In Gravitymon, take note of your Host name (Home --> Device --> Host name:)
+
+- On your Pi running BrewPi Remix, edit this file: `/home/brewpi/settings/config.php` and add this line:
+
+.. code-block::
+
+   iSpindel = <your-Gravitymon-host-name>
+ 
+- If not already set, add these lines (Clamps the readings to prevent wide swings):
+
+.. code-block::
+
+   clampSGUpper = 1.175
+   clampSGLower = 0.970
+ 
+* After saving the changes, restart the script:
+
+.. code-block::
+
+   sudo systemctl restart brewpi.service
+
+- In Gravitymon, add push settings in: Configuration --> Push settings --> HTTP 1 (POST)
+
+.. code-block::
+
+   http://<ip-address-of-your-BrewPi>/brewpi-api.php
+
+- Save settings and run a test push: (Configuration --> Test push --> Test)
+
+
 Brewpiless
 ++++++++++
 
