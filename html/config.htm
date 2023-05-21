@@ -183,9 +183,22 @@
               <div class="col-sm-4 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="device-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#yesNoModal" data-bs-toggle="tooltip" title="Restore factory defaults">Factory defaults</button>
+                <button type="button" class="btn btn-secondary" id="restart-btn" data-bs-toggle="tooltip" title="Restart device">Restart</button>
               </div>
             </div>
           </form>
+
+          <script>
+            $("#restart-btn").click(function(e){
+              console.log( "Restarting device..." );
+              $.ajax( { 
+                type: "GET",  
+                url: "/api/restart", 
+                success: function(result) { showSuccess('Device restarting. Refreshing in 2 seconds'); setTimeout(() => { window.location = "/config.htm"; }, 2000); },
+                error: function(result) { showError('Unable to restart device.'); }
+              } );
+            });
+          </script>
 
           <hr class="my-2">
 
@@ -212,7 +225,7 @@
               <button type="button" class="btn btn-warning" id="calibrate-btn" data-bs-toggle="tooltip" title="Perform a calibration. The device should be flat on a surface (90 degrees) with the battery down">Calibrate device</button>
             </div>
           </div>
-
+     
         </div>
       </div>
     </div>

@@ -347,6 +347,13 @@ void WebServerHandler::webHandleClearWIFI() {
   }
 }
 
+void WebServerHandler::webHandleRestart() {
+  Log.notice(F("WEB : webServer callback for /api/restart." CR));
+  _server->send(200, "text/plain", "Restarting...");
+  delay(1000);
+  ESP_RESET();
+}
+
 void WebServerHandler::webHandleStatusSleepmode() {
   LOG_PERF_START("webserver-api-sleepmode");
   String id = _server->arg(PARAM_ID);
@@ -1147,6 +1154,8 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webHandleStatus, this));
   _server->on("/api/clearwifi", HTTP_GET,
               std::bind(&WebServerHandler::webHandleClearWIFI, this));
+  _server->on("/api/restart", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleRestart, this));
 
   _server->on("/api/upload", HTTP_POST,
               std::bind(&WebServerHandler::webReturnOK, this),

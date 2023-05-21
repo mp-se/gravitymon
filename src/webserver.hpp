@@ -96,6 +96,7 @@ class WebServerHandler {
   void webHandleUploadFile();
   void webHandleLogClear();
   void webHandlePageNotFound();
+  void webHandleRestart();
 
   String readFile(String fname);
   bool writeFile(String fname, String data);
