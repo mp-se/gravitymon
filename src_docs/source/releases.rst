@@ -3,6 +3,12 @@
 Releases 
 ########
 
+v1.3.1
+======
+
+* Added option to restart device from the configuration menu (user request).
+* Updated to latest arduino builds for both esp8266 and esp32.
+
 v1.3.0
 ======
 
