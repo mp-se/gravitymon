@@ -23,22 +23,45 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#include <gyro.hpp>
+#include <ArduinoJson.h>
 
-/*test(gyro_connectGyro) {
-  myGyro.setup();
-  assertEqual(myGyro.isConnected(), true);
+test(json_FormattingString) {
+  String out;
+  DynamicJsonDocument doc(500);
+
+  doc["key-string"] = "string-1";
+  serializeJson(doc, out);
+
+  assertEqual(out, "{\"key-string\":\"string-1\"}");
 }
 
-test(gyro_readGyro) {
-  myGyro.setup();
-  assertEqual(myGyro.read(), true);
+test(json_FormattingString2) {
+  String in = "{\"key-string\":\"string-1\"}";
+  DynamicJsonDocument doc(500);
+
+  deserializeJson(doc, in);
+  String val = doc["key-string"];
+  assertEqual(val, "string-1");
 }
 
-test(gyro_readGyroTemp) {
-  myGyro.setup();
-  assertNotEqual(myGyro.getInitialSensorTempC(), -273.0);
-  assertNotEqual(myGyro.getSensorTempC(), -273.0);
-}*/
+test(json_FormattingFloat) {
+  String out;
+  DynamicJsonDocument doc(500);
+
+  doc["key-float"] = 1.1234;
+  serializeJson(doc, out);
+
+  assertEqual(out, "{\"key-float\":1.1234}");
+}
+
+test(json_FormattingFloat2) {
+  String in = "{\"key-float\":1.1234}";
+  DynamicJsonDocument doc(500);
+
+  deserializeJson(doc, in);
+  float val = doc["key-float"];
+  float val2 = 1.1234;
+  assertEqual(val, val2);
+}
 
 // EOF
