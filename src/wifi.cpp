@@ -42,7 +42,7 @@ SOFTWARE.
 #define NUM_WIFI_CREDENTIALS 1
 #define USE_STATIC_IP_CONFIG_IN_CP false
 // #define _WIFIMGR_LOGLEVEL_ 4
-#include <ESP_WiFiManager.h>
+#include "wifimanager.hpp"
 ESP_WiFiManager *myWifiManager = 0;
 WifiConnection myWifi;
 
