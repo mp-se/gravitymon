@@ -3,6 +3,13 @@
 Releases 
 ########
 
+v1.4.0 (beta)
+=============
+
+* Changed wifi manager to modified version since the source project is no longer supported by author
+* Added possibility to set wifi settings in config (need manual reboot to apply)
+* Updated dependencies to latest versions as of Aug -23
+
 v1.3.1
 ======
 

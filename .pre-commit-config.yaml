@@ -9,5 +9,6 @@ repos:
         files: ^src/
         exclude: 'lib/'
     -   id: cppcheck
+        args: [--force]
         files: ^src/
         exclude: 'lib/'

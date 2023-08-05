@@ -87,6 +87,7 @@ class WebServerHandler {
   void webHandleConfigDevice();
   void webHandleConfigFormatRead();
   void webHandleConfigFormatWrite();
+  void webHandleConfigWifi();
   void webHandleTestPush();
   void webHandleStatusSleepmode();
   void webHandleClearWIFI();

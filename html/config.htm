@@ -104,7 +104,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm</h1>
+          <h1 class="modal-title fs-5">Confirm</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -130,6 +130,54 @@
       } );
     });
   </script>
+
+  <div class="modal fade" id="wifiModal" tabindex="-1" aria-labelledby="wifiModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Update wifi settings</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/api/config/wifi" method="post">
+            <input type="text" name="id" id="id7" hidden>
+
+            <div class="row mb-2">
+              <label for="wifi-ssid" class="col-sm-3 col-form-label">SSID 1</label>
+              <div class="col-sm-8">
+                <input type="text" maxlength="60" class="form-control" name="wifi-ssid" id="wifi-ssid" placeholder="ssid" data-bs-toggle="tooltip" title="Wifi SSID">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label for="wifi-pass" class="col-sm-3 col-form-label">Password 1</label>
+              <div class="col-sm-8">
+                <input type="text" maxlength="60" class="form-control" name="wifi-pass" id="wifi-pass" placeholder="password" data-bs-toggle="tooltip" title="Wifi password">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label for="wifi-ssid2" class="col-sm-3 col-form-label">SSID 2</label>
+              <div class="col-sm-8">
+                <input type="text" maxlength="60" class="form-control" name="wifi-ssid2" id="wifi-ssid2" placeholder="ssid" data-bs-toggle="tooltip" title="Wifi SSID">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label for="wifi-pass2" class="col-sm-3 col-form-label">Password 2</label>
+              <div class="col-sm-8">
+                <input type="text" maxlength="60" class="form-control" name="wifi-pass2" id="wifi-pass2" placeholder="password" data-bs-toggle="tooltip" title="Wifi password">
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" id="wifi-save-btn">Save</button>
+            </div>
+    
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <div class="accordion" id="accordion">
     <div class="accordion-item">
@@ -180,9 +228,10 @@
             </div>
 
             <div class="row mb-3">
-              <div class="col-sm-4 offset-sm-2">
+              <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="device-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#yesNoModal" data-bs-toggle="tooltip" title="Restore factory defaults">Factory defaults</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#wifiModal" data-bs-toggle="tooltip" title="Update wifi settings">Wifi settings</button>
                 <button type="button" class="btn btn-secondary" id="restart-btn" data-bs-toggle="tooltip" title="Restart device">Restart</button>
               </div>
             </div>
@@ -205,13 +254,13 @@
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">Wifi</label>
             <div class="col-sm-2">
-              <label class="col-sm-4 col-form-label" id="wifi-ssid"></label>
+              <label class="col-sm-4 col-form-label" id="wifi-ssid-text"></label>
             </div>
           </div>
           <div class="row mb-3">
             <label class="col-sm-2 col-form-label">Wifi 2</label>
             <div class="col-sm-2">
-              <label class="col-sm-4 col-form-label" id="wifi-ssid2"></label>
+              <label class="col-sm-4 col-form-label" id="wifi-ssid2-text"></label>
             </div>
           </div>
 
@@ -1020,6 +1069,7 @@
         $("#id4").val(cfg["id"]);
         $("#id5").val(cfg["id"]);
         $("#id6").val(cfg["id"]);
+        $("#id7").val(cfg["id"]);
         $("#mdns").val(cfg["mdns"]);
         if( cfg["temp-format"] == "C" ) $("#temp-format-c").click();
         else $("#temp-format-f").click();
@@ -1031,6 +1081,9 @@
           $("#gravitymon-com").prop( "checked", true );
           $("#ota-hide").hide();
         }
+
+        $("#wifi-ssid").val(cfg["wifi-ssid"]);
+        $("#wifi-ssid2").val(cfg["wifi-ssid2"]);
 
         $("#token").val(cfg["token"]);
         $("#token2").val(cfg["token2"]);
@@ -1062,8 +1115,8 @@
         $("#angle").text(cfg["angle"]);
         $("#runtime-average").val(cfg["runtime-average"]);
         $("#water-angle").text( "(Water angle: " + cfg["formula-calculation-data"]["a1"] + ") - default off");
-        $("#wifi-ssid").text(cfg["wifi-ssid"]);
-        $("#wifi-ssid2").text(cfg["wifi-ssid2"]);
+        $("#wifi-ssid-text").text(cfg["wifi-ssid"]);
+        $("#wifi-ssid2-text").text(cfg["wifi-ssid2"]);
         $("#platform").val(cfg["platform"]);
         $("#voltage-factor-calc").val( cfg["battery"] / cfg["voltage-factor"] );
         //$("#gravity").text(cfg["gravity"] + " SG");

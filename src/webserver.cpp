@@ -570,6 +570,43 @@ void WebServerHandler::webHandleConfigHardware() {
   LOG_PERF_STOP("webserver-api-config-hardware");
 }
 
+void WebServerHandler::webHandleConfigWifi() {
+  LOG_PERF_START("webserver-api-config-wifi");
+  String id = _server->arg(PARAM_ID);
+  Log.notice(F("WEB : webServer callback for /api/config/wifi(post)." CR));
+
+  if (!id.equalsIgnoreCase(myConfig.getID())) {
+    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
+              myConfig.getID());
+    _server->send(400, "text/plain", "Invalid ID.");
+    LOG_PERF_STOP("webserver-api-config-wifi");
+    return;
+  }
+
+#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
+#endif
+
+  if (_server->hasArg(PARAM_SSID))
+    myConfig.setWifiSSID(_server->arg(PARAM_SSID), 0);
+  if (_server->hasArg(PARAM_SSID2))
+    myConfig.setWifiSSID(_server->arg(PARAM_SSID2), 1);
+  if (_server->hasArg(PARAM_PASS))
+    myConfig.setWifiPass(_server->arg(PARAM_PASS), 0);
+  if (_server->hasArg(PARAM_PASS2))
+    myConfig.setWifiPass(_server->arg(PARAM_PASS2), 1);
+
+  Serial.println(myConfig.getWifiSSID(0));
+  Serial.println(myConfig.getWifiSSID(1));
+  Serial.println(myConfig.getWifiPass(0));
+  Serial.println(myConfig.getWifiPass(1));
+
+  myConfig.saveFile();
+  _server->sendHeader("Location", "/config.htm#collapseDevice", true);
+  _server->send(302, "text/plain", "Device config updated");
+  LOG_PERF_STOP("webserver-api-config-wifi");
+}
+
 void WebServerHandler::webHandleConfigAdvancedWrite() {
   LOG_PERF_START("webserver-api-config-advanced");
   String id = _server->arg(PARAM_ID);
@@ -1188,6 +1225,9 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/config/advanced", HTTP_POST,
               std::bind(&WebServerHandler::webHandleConfigAdvancedWrite,
                         this));  // Change advanced params
+  _server->on("/api/config/wifi", HTTP_POST,
+              std::bind(&WebServerHandler::webHandleConfigWifi,
+                        this));  // Change wiif settings
   _server->on("/api/test/push", HTTP_GET,
               std::bind(&WebServerHandler::webHandleTestPush,
                         this));  //

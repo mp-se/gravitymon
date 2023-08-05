@@ -34,15 +34,7 @@ SOFTWARE.
 #include <config.hpp>
 #include <main.hpp>
 #include <wifi.hpp>
-
-// Settings for WIFI Manager
-#define USE_ESP_WIFIMANAGER_NTP false
-#define USE_CLOUDFLARE_NTP false
-#define USING_CORS_FEATURE false
-#define NUM_WIFI_CREDENTIALS 1
-#define USE_STATIC_IP_CONFIG_IN_CP false
-// #define _WIFIMGR_LOGLEVEL_ 4
-#include "wifimanager.hpp"
+#include <wifimanager.hpp>
 ESP_WiFiManager *myWifiManager = 0;
 WifiConnection myWifi;
 

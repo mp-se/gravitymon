@@ -1,10 +1,10 @@
 import unittest, requests, json, time
 
-ver  = "1.3.0"
+ver  = "1.4.0"
 
 # esp8266
-#host = "192.168.1.195"
-#id = "6ac6f6"
+host = "192.168.2.139"
+id = "3e23f7"
 
 # esp32c3
 #host = "192.168.1.160"
@@ -15,8 +15,8 @@ ver  = "1.3.0"
 #id = "cb3818"
 
 # esp32s2
-host = "192.168.1.169"
-id = "f4adfe"
+#host = "192.168.1.169"
+#id = "f4adfe"
 
 # python3 -m unittest -v apitests.API.test_bug_79
 # python3 -m unittest -v apitests
@@ -658,6 +658,12 @@ class API(unittest.TestCase):
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["error"], '')
+
+    def test_wifi(self):
+        j = { "id": id, "wifi-ssid": "ssid1", "wifi-ssid2": "ssid2", "wifi-pass": "pass1", "wifi-pass2": "pass2",   }
+        r = call_api_post( "/api/config/wifi", j )
+        self.assertEqual(r.status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()
