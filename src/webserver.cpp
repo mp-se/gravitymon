@@ -57,17 +57,17 @@ void WebServerHandler::webHandleConfig() {
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
 
-  doc[PARAM_ANGLE] = reduceFloatPrecision(angle, DECIMALS_TILT);
+  doc[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
 
   // Format the adjustment so we get rid of rounding errors
   if (myConfig.isTempF())
     // We want the delta value (32F = 0C).
-    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(
-        convertCtoF(myConfig.getTempSensorAdjC()) - 32, DECIMALS_TEMP);
+    doc[PARAM_TEMP_ADJ] = serialized(
+        String(convertCtoF(myConfig.getTempSensorAdjC()) - 32, DECIMALS_TEMP));
   else
     doc[PARAM_TEMP_ADJ] =
-        reduceFloatPrecision(myConfig.getTempSensorAdjC(), DECIMALS_TEMP);
+        serialized(String(myConfig.getTempSensorAdjC(), DECIMALS_TEMP));
 
   if (myConfig.isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
@@ -76,17 +76,17 @@ void WebServerHandler::webHandleConfig() {
 
   if (myConfig.isGravityPlato()) {
     doc[PARAM_GRAVITY] =
-        reduceFloatPrecision(convertToPlato(gravity), DECIMALS_PLATO);
+        serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
   } else {
-    doc[PARAM_GRAVITY] = reduceFloatPrecision(gravity, DECIMALS_SG);
+    doc[PARAM_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
   }
 
   doc[PARAM_BATTERY] =
-      reduceFloatPrecision(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
+      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
-      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME);
+  doc[PARAM_RUNTIME_AVERAGE] = serialized(String(
+      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME));
 
 #if defined(ESP8266)
   doc[PARAM_PLATFORM] = "esp8266";
@@ -247,9 +247,12 @@ void WebServerHandler::webHandleStatus() {
   double gravity = calculateGravity(angle, tempC);
 
   doc[PARAM_ID] = myConfig.getID();
-  doc[PARAM_ANGLE] = myGyro.isConnected()
-                         ? reduceFloatPrecision(angle, DECIMALS_TILT)
-                         : -1;  // Indicate that we have no connection to gyro
+
+  if (myGyro.isConnected()) {
+    doc[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+  } else {
+    doc[PARAM_ANGLE] = -1;  // Indicate that there is no connection to gyro
+  }
 
   if (myConfig.isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
@@ -257,14 +260,14 @@ void WebServerHandler::webHandleStatus() {
   }
   if (myConfig.isGravityPlato()) {
     doc[PARAM_GRAVITY] =
-        reduceFloatPrecision(convertToPlato(gravity), DECIMALS_PLATO);
+        serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
   } else {
-    doc[PARAM_GRAVITY] = reduceFloatPrecision(gravity, DECIMALS_SG);
+    doc[PARAM_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
   }
-  doc[PARAM_TEMP_C] = reduceFloatPrecision(tempC, DECIMALS_TEMP);
-  doc[PARAM_TEMP_F] = reduceFloatPrecision(convertCtoF(tempC), DECIMALS_TEMP);
+  doc[PARAM_TEMP_C] = serialized(String(tempC, DECIMALS_TEMP));
+  doc[PARAM_TEMP_F] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
   doc[PARAM_BATTERY] =
-      reduceFloatPrecision(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
+      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
   doc[PARAM_TEMPFORMAT] = String(myConfig.getTempFormat());
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   doc[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
@@ -285,8 +288,8 @@ void WebServerHandler::webHandleStatus() {
 #endif
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
-      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME);
+  doc[PARAM_RUNTIME_AVERAGE] = serialized(String(
+      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME));
 
 #if defined(ESP8266)
   doc[PARAM_PLATFORM] = "esp8266";
@@ -710,9 +713,15 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = myAdvancedConfig.getWifiConnectTimeout();
   doc[PARAM_HW_PUSH_TIMEOUT] = myAdvancedConfig.getPushTimeout();
   float t = myAdvancedConfig.getDefaultCalibrationTemp();
-  doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
-      myConfig.isTempC() ? t
-                         : reduceFloatPrecision(convertCtoF(t), DECIMALS_TEMP);
+
+  if (myConfig.isTempC()) {
+    doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
+        serialized(String(t, DECIMALS_TEMP));
+  } else {
+    doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
+        serialized(String(convertCtoF(t), DECIMALS_TEMP));
+  }
+
   doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = myAdvancedConfig.getPushIntervalHttp1();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = myAdvancedConfig.getPushIntervalHttp2();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = myAdvancedConfig.getPushIntervalHttp3();
@@ -748,7 +757,7 @@ void WebServerHandler::webHandleFormulaRead() {
 #endif
 
   doc[PARAM_ID] = myConfig.getID();
-  doc[PARAM_ANGLE] = reduceFloatPrecision(myGyro.getAngle(), DECIMALS_TILT);
+  doc[PARAM_ANGLE] = serialized(String(myGyro.getAngle(), DECIMALS_TILT));
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   doc[PARAM_GRAVITY_FORMULA] = "";
   doc[PARAM_ERROR] = "";
@@ -771,39 +780,39 @@ void WebServerHandler::webHandleFormulaRead() {
       break;
   }
 
-  doc["a1"] = reduceFloatPrecision(fd.a[0], DECIMALS_TILT);
-  doc["a2"] = reduceFloatPrecision(fd.a[1], DECIMALS_TILT);
-  doc["a3"] = reduceFloatPrecision(fd.a[2], DECIMALS_TILT);
-  doc["a4"] = reduceFloatPrecision(fd.a[3], DECIMALS_TILT);
-  doc["a5"] = reduceFloatPrecision(fd.a[4], DECIMALS_TILT);
-  doc["a6"] = reduceFloatPrecision(fd.a[5], DECIMALS_TILT);
-  doc["a7"] = reduceFloatPrecision(fd.a[6], DECIMALS_TILT);
-  doc["a8"] = reduceFloatPrecision(fd.a[7], DECIMALS_TILT);
-  doc["a9"] = reduceFloatPrecision(fd.a[8], DECIMALS_TILT);
-  doc["a10"] = reduceFloatPrecision(fd.a[9], DECIMALS_TILT);
+  doc["a1"] = serialized(String(fd.a[0], DECIMALS_TILT));
+  doc["a2"] = serialized(String(fd.a[1], DECIMALS_TILT));
+  doc["a3"] = serialized(String(fd.a[2], DECIMALS_TILT));
+  doc["a4"] = serialized(String(fd.a[3], DECIMALS_TILT));
+  doc["a5"] = serialized(String(fd.a[4], DECIMALS_TILT));
+  doc["a6"] = serialized(String(fd.a[5], DECIMALS_TILT));
+  doc["a7"] = serialized(String(fd.a[6], DECIMALS_TILT));
+  doc["a8"] = serialized(String(fd.a[7], DECIMALS_TILT));
+  doc["a9"] = serialized(String(fd.a[8], DECIMALS_TILT));
+  doc["a10"] = serialized(String(fd.a[9], DECIMALS_TILT));
 
   if (myConfig.isGravityPlato()) {
-    doc["g1"] = reduceFloatPrecision(convertToPlato(fd.g[0]), DECIMALS_PLATO);
-    doc["g2"] = reduceFloatPrecision(convertToPlato(fd.g[1]), DECIMALS_PLATO);
-    doc["g3"] = reduceFloatPrecision(convertToPlato(fd.g[2]), DECIMALS_PLATO);
-    doc["g4"] = reduceFloatPrecision(convertToPlato(fd.g[3]), DECIMALS_PLATO);
-    doc["g5"] = reduceFloatPrecision(convertToPlato(fd.g[4]), DECIMALS_PLATO);
-    doc["g6"] = reduceFloatPrecision(convertToPlato(fd.g[5]), DECIMALS_PLATO);
-    doc["g7"] = reduceFloatPrecision(convertToPlato(fd.g[6]), DECIMALS_PLATO);
-    doc["g8"] = reduceFloatPrecision(convertToPlato(fd.g[7]), DECIMALS_PLATO);
-    doc["g9"] = reduceFloatPrecision(convertToPlato(fd.g[8]), DECIMALS_PLATO);
-    doc["g10"] = reduceFloatPrecision(convertToPlato(fd.g[9]), DECIMALS_PLATO);
+    doc["g1"] = serialized(String(convertToPlato(fd.g[0]), DECIMALS_PLATO));
+    doc["g2"] = serialized(String(convertToPlato(fd.g[1]), DECIMALS_PLATO));
+    doc["g3"] = serialized(String(convertToPlato(fd.g[2]), DECIMALS_PLATO));
+    doc["g4"] = serialized(String(convertToPlato(fd.g[3]), DECIMALS_PLATO));
+    doc["g5"] = serialized(String(convertToPlato(fd.g[4]), DECIMALS_PLATO));
+    doc["g6"] = serialized(String(convertToPlato(fd.g[5]), DECIMALS_PLATO));
+    doc["g7"] = serialized(String(convertToPlato(fd.g[6]), DECIMALS_PLATO));
+    doc["g8"] = serialized(String(convertToPlato(fd.g[7]), DECIMALS_PLATO));
+    doc["g9"] = serialized(String(convertToPlato(fd.g[8]), DECIMALS_PLATO));
+    doc["g10"] = serialized(String(convertToPlato(fd.g[9]), DECIMALS_PLATO));
   } else {
-    doc["g1"] = reduceFloatPrecision(fd.g[0], DECIMALS_SG);
-    doc["g2"] = reduceFloatPrecision(fd.g[1], DECIMALS_SG);
-    doc["g3"] = reduceFloatPrecision(fd.g[2], DECIMALS_SG);
-    doc["g4"] = reduceFloatPrecision(fd.g[3], DECIMALS_SG);
-    doc["g5"] = reduceFloatPrecision(fd.g[4], DECIMALS_SG);
-    doc["g6"] = reduceFloatPrecision(fd.g[5], DECIMALS_SG);
-    doc["g7"] = reduceFloatPrecision(fd.g[6], DECIMALS_SG);
-    doc["g8"] = reduceFloatPrecision(fd.g[7], DECIMALS_SG);
-    doc["g9"] = reduceFloatPrecision(fd.g[8], DECIMALS_SG);
-    doc["g10"] = reduceFloatPrecision(fd.g[9], DECIMALS_SG);
+    doc["g1"] = serialized(String(fd.g[0], DECIMALS_SG));
+    doc["g2"] = serialized(String(fd.g[1], DECIMALS_SG));
+    doc["g3"] = serialized(String(fd.g[2], DECIMALS_SG));
+    doc["g4"] = serialized(String(fd.g[3], DECIMALS_SG));
+    doc["g5"] = serialized(String(fd.g[4], DECIMALS_SG));
+    doc["g6"] = serialized(String(fd.g[5], DECIMALS_SG));
+    doc["g7"] = serialized(String(fd.g[6], DECIMALS_SG));
+    doc["g8"] = serialized(String(fd.g[7], DECIMALS_SG));
+    doc["g9"] = serialized(String(fd.g[8], DECIMALS_SG));
+    doc["g10"] = serialized(String(fd.g[9], DECIMALS_SG));
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)

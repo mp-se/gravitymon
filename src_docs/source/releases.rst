@@ -10,6 +10,7 @@ v1.4.0 (beta)
 * Added possibility to set wifi settings in config (need manual reboot to apply)
 * Updated dependencies to latest versions as of Aug -23
 * Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don't do a full erase)
+* Updated code so it now works with newer versions of ArduniJSON
 
 v1.3.1
 ======
