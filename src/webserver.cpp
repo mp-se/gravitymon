@@ -278,6 +278,12 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_MDNS] = myConfig.getMDNS();
   doc[PARAM_SSID] = WiFi.SSID();
 
+#if defined(ESP8266)
+  doc[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
+#else
+  doc[PARAM_ISPINDEL_CONFIG] = false;
+#endif
+
   FloatHistoryLog runLog(RUNTIME_FILENAME);
   doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
       runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME);
@@ -1109,6 +1115,43 @@ void WebServerHandler::webHandleFormulaWrite() {
   LOG_PERF_STOP("webserver-api-formula-write");
 }
 
+void WebServerHandler::webHandleMigrate() {
+  LOG_PERF_START("webserver-api-migrate");
+  Log.notice(F("WEB : webServer callback for /api/migrate." CR));
+
+#if defined(ESP8266)
+  DynamicJsonDocument doc(500);
+  DeserializationError err = deserializeJson(doc, _server->arg("plain"));
+
+  if (err) {
+    writeErrorLog("CFG : Failed to parse migration data (json)");
+    _server->send(400, "text/plain", F("Unable to parse data"));
+    LOG_PERF_STOP("webserver-api-migrate");
+    return;
+  }
+
+  myConfig.setGravityFormula( doc[PARAM_GRAVITY_FORMULA] );
+
+  RawGyroData gyroCalibration;
+  gyroCalibration.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];
+  gyroCalibration.ay = doc[PARAM_GYRO_CALIBRATION]["ay"];
+  gyroCalibration.az = doc[PARAM_GYRO_CALIBRATION]["az"];
+  gyroCalibration.gx = doc[PARAM_GYRO_CALIBRATION]["gx"];
+  gyroCalibration.gy = doc[PARAM_GYRO_CALIBRATION]["gy"];
+  gyroCalibration.gz = doc[PARAM_GYRO_CALIBRATION]["gz"];
+
+  myConfig.setGyroCalibration( gyroCalibration );
+  myConfig.saveFile();
+
+  LittleFS.rename("/config.json", "/ispindel.json");
+  _server->send(200, "text/plain", F("Data migrated"));
+#else
+  _server->send(404, "text/plain", F("Not implemented"));
+#endif
+
+  LOG_PERF_STOP("webserver-api-migrate");
+}
+
 void WebServerHandler::webHandlePageNotFound() {
   Log.error(F("WEB : URL not found %s received." CR), _server->uri().c_str());
   _server->send(404, "text/plain", F("URL not found"));
@@ -1173,6 +1216,7 @@ bool WebServerHandler::setupWebServer() {
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
   _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
+  _server->serveStatic("/migrate", LittleFS, "/config.json");
 
   // Dynamic content
   _server->on("/api/clearlog", HTTP_GET,
@@ -1193,6 +1237,8 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webHandleClearWIFI, this));
   _server->on("/api/restart", HTTP_GET,
               std::bind(&WebServerHandler::webHandleRestart, this));
+  _server->on("/api/migrate", HTTP_POST,
+              std::bind(&WebServerHandler::webHandleMigrate, this));
 
   _server->on("/api/upload", HTTP_POST,
               std::bind(&WebServerHandler::webReturnOK, this),

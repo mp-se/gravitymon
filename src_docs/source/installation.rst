@@ -88,6 +88,9 @@ an option for updating firmware. The option is under the maintenance menu.
 
 Select the esp8266 version of the firmware called firmware.bin and press upload. 
 
+If you do an update this way GravityMon will notice that there is a stored configuration file and you will get the option to do a migration 
+of the gravity formula and gyro calibration values so you don't need to do a new calibration. 
+
 Updating firmware 
 =================
 

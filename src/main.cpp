@@ -167,6 +167,9 @@ void setup() {
   myAdvancedConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
 
+  // For restoring ispindel backup to test migration
+  // LittleFS.rename("/ispindel.json", "/config.json");
+
   sleepModeAlwaysSkip = checkPinConnected();
   if (sleepModeAlwaysSkip) {
     Log.notice(F("Main: Forcing config mode since D7/D8 are connected." CR));

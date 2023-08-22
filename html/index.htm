@@ -81,7 +81,6 @@
       }
 
       $("#alert-btn").click(function(e){
-        console.log("Disable alert");
         $('#alert').addClass('hide').removeClass('show').addClass('d-none');
       });    
 
@@ -92,8 +91,69 @@
       }
 
       $("#warning-btn").click(function(e){
-        console.log("Disable warning");
         $('#warning').addClass('hide').removeClass('show').addClass('d-none');
+      });    
+    </script>
+
+    <div class="alert alert-warning d-none" id="migrate">
+      <div class="row mb-2">
+        <div class="col-md-10">
+          iSpindel configuration file has been detected, do you want to copy formula and gyro calibration ?
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary btn-sm" type="button" id="migrate-btn" data-bs-toggle="collapse" data-bs-target="#collapseSupport" aria-expanded="false" aria-controls="collapseSupport" data-bs-toggle="tooltip" name="support-btn" id="support-btn" title="Collect data relevant for a support case">
+            Migrate
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      function showMigration() {
+        $('#migrate').addClass('show').removeClass('d-none');
+      }
+
+      function hideMigration() {
+        $('#migrate').removeClass('show').addClass('d-none');
+      }      
+
+      $("#migrate-btn").click(function(e){
+        $('#spinner').show(); 
+
+        var url = "/migrate";
+        // var url = "/test/migrate.json";
+        $.getJSON(url, function (cfg) {
+          console.log( cfg );
+
+          gyro = {}
+          gyro["ax"] = cfg["Offset"][0];
+          gyro["ay"] = cfg["Offset"][1];
+          gyro["az"] = cfg["Offset"][2];
+          gyro["gx"] = cfg["Offset"][3];
+          gyro["gy"] = cfg["Offset"][4];
+          gyro["gz"] = cfg["Offset"][5];
+          
+          data = {}
+          data["gyro-calibration-data"] = gyro;
+          data["gravity-formula"] = cfg["POLY"];
+
+          $.ajax( "/api/migrate", { 
+            type: "POST", 
+            data: JSON.stringify(data), 
+            statusCode: { 
+              200: function(response) { 
+                showSuccess("Migration completed!");
+                hideMigration();
+                $('#spinner').hide(); 
+              },
+              400: function(response) { 
+                showError("Migration failed!");
+                hideMigration();
+                $('#spinner').hide(); 
+              }
+            }
+          });
+        });    
       });    
     </script>
 
@@ -434,6 +494,10 @@
         else 
           $("#sleep-mode").attr("checked", false );
         $("#sleep-mode").removeAttr("disabled");
+
+        if( cfg["ispindel-config"] ) {
+          showMigration();
+        }
       })
       .fail(function () {
         showError('Unable to get data from the device.');
