@@ -1130,17 +1130,17 @@ void WebServerHandler::webHandleMigrate() {
     return;
   }
 
-  myConfig.setGravityFormula( doc[PARAM_GRAVITY_FORMULA] );
+  myConfig.setGravityFormula(doc[PARAM_GRAVITY_FORMULA]);
 
-  RawGyroData gyroCalibration;
-  gyroCalibration.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];
-  gyroCalibration.ay = doc[PARAM_GYRO_CALIBRATION]["ay"];
-  gyroCalibration.az = doc[PARAM_GYRO_CALIBRATION]["az"];
-  gyroCalibration.gx = doc[PARAM_GYRO_CALIBRATION]["gx"];
-  gyroCalibration.gy = doc[PARAM_GYRO_CALIBRATION]["gy"];
-  gyroCalibration.gz = doc[PARAM_GYRO_CALIBRATION]["gz"];
+  RawGyroData gyro = {0, 0, 0, 0, 0, 0};
+  gyro.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];
+  gyro.ay = doc[PARAM_GYRO_CALIBRATION]["ay"];
+  gyro.az = doc[PARAM_GYRO_CALIBRATION]["az"];
+  gyro.gx = doc[PARAM_GYRO_CALIBRATION]["gx"];
+  gyro.gy = doc[PARAM_GYRO_CALIBRATION]["gy"];
+  gyro.gz = doc[PARAM_GYRO_CALIBRATION]["gz"];
 
-  myConfig.setGyroCalibration( gyroCalibration );
+  myConfig.setGyroCalibration(gyro);
   myConfig.saveFile();
 
   LittleFS.rename("/config.json", "/ispindel.json");
