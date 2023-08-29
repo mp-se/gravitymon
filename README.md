@@ -32,3 +32,5 @@ Thanks to the following persons for supporting me and this project:
 * Lars H.
 * Vonchilliman
 * Andreas Dohl
+* StodgyWaif
+
