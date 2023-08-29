@@ -203,8 +203,8 @@
         <article role="main">
           <div class="section" id="troubleshooting">
 <span id="id1"></span><h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="log-errors">
-<h2>Log errors<a class="headerlink" href="#log-errors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="errors-in-the-logfile">
+<h2>Errors in the logfile<a class="headerlink" href="#errors-in-the-logfile" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>Not enough values for deriving formula</p>
 <p>To create a formula its required to have at least 3 measurements.</p>
@@ -262,6 +262,26 @@ to memory leaks.</p>
 <li><p>-11 - Failed subscription</p></li>
 </ul>
 </li>
+<li><p>WIFI Connection errors</p>
+<ul class="simple">
+<li><p>1 - No SSID is available / found</p></li>
+<li><p>4 - Connection failed</p></li>
+<li><p>5 - Connection lost</p></li>
+<li><p>6 - Wrong password</p></li>
+<li><p>7 - Disconnected, failed to establish a connections</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="esp8266-wifi-compatibility">
+<h2>ESP8266 wifi compatibility<a class="headerlink" href="#esp8266-wifi-compatibility" title="Permalink to this headline">¶</a></h2>
+<p>The ESP has limited support for modern wifi standards, if you have problems to connect then consider the following:</p>
+<ul class="simple">
+<li><p>Require 2.4Ghz frequency (802.11 b/g/n modes)</p></li>
+<li><p>No space in SSID or password</p></li>
+<li><p>SSID must be visible (not hidden)</p></li>
+<li><p>Channels supported must be between 1-13</p></li>
+<li><p>Channels between 20-25 Mhz wide bands</p></li>
 </ul>
 </div>
 </div>
@@ -314,7 +334,8 @@ to memory leaks.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Troubleshooting</a><ul>
-<li><a class="reference internal" href="#log-errors">Log errors</a></li>
+<li><a class="reference internal" href="#errors-in-the-logfile">Errors in the logfile</a></li>
+<li><a class="reference internal" href="#esp8266-wifi-compatibility">ESP8266 wifi compatibility</a></li>
 </ul>
 </li>
 </ul>

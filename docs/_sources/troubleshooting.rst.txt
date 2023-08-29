@@ -3,8 +3,8 @@
 Troubleshooting
 ###############
 
-Log errors
-++++++++++
+Errors in the logfile
++++++++++++++++++++++
 
 * Not enough values for deriving formula
 
@@ -66,3 +66,21 @@ Log errors
   * -10 - Connection denied
   * -11 - Failed subscription
 
+* WIFI Connection errors
+  
+  * 1 - No SSID is available / found
+  * 4 - Connection failed
+  * 5 - Connection lost
+  * 6 - Wrong password
+  * 7 - Disconnected, failed to establish a connections
+
+ESP8266 wifi compatibility
+++++++++++++++++++++++++++
+
+The ESP has limited support for modern wifi standards, if you have problems to connect then consider the following:
+
+* Require 2.4Ghz frequency (802.11 b/g/n modes)
+* No space in SSID or password
+* SSID must be visible (not hidden)
+* Channels supported must be between 1-13
+* Channels between 20-25 Mhz wide bands
