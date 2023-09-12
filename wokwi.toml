@@ -1,0 +1,9 @@
+[wokwi]
+version = 1
+firmware = '.pio/build/gravity32-wokwi/firmware_merged.bin'
+elf = '.pio/build/gravity32-wokwi/firmware.elf'
+gdbServerPort = 3333
+
+[[net.forward]]
+from = "localhost:8180"
+to = "target:80"

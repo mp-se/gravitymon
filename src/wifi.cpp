@@ -38,8 +38,13 @@ SOFTWARE.
 ESP_WiFiManager *myWifiManager = 0;
 WifiConnection myWifi;
 
+#if defined(USER_SSID)
 const char *userSSID = USER_SSID;
 const char *userPWD = USER_SSID_PWD;
+#else
+const char *userSSID = "";
+const char *userPWD = "";
+#endif
 
 const char *resetFilename = "/reset.dat";
 
@@ -77,8 +82,8 @@ void WifiConnection::writeReset() {
 }
 
 bool WifiConnection::hasConfig() {
-  if (strlen(myConfig.getWifiSSID(0))) return true;
   if (strlen(userSSID)) return true;
+  if (strlen(myConfig.getWifiSSID(0))) return true;
 
     // Check if there are stored WIFI Settings we can use.
 #if defined(ESP8266)

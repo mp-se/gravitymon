@@ -354,12 +354,20 @@ void Config::checkFileSystem() {
   Log.verbose(F("CFG : Checking if filesystem is valid." CR));
 #endif
 
+#if defined(ESP8266)
   if (LittleFS.begin()) {
     Log.notice(F("CFG : Filesystem mounted." CR));
   } else {
     Log.error(F("CFG : Unable to mount file system, formatting..." CR));
     LittleFS.format();
   }
+#else
+  if (LittleFS.begin(true)) {
+    Log.notice(F("CFG : Filesystem mounted." CR));
+  } else {
+    Log.error(F("CFG : Unable to mount file system..." CR));
+  }
+#endif
 }
 
 bool AdvancedConfig::saveFile() {
