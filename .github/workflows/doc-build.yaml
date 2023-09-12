@@ -1,17 +1,17 @@
 name: Sphinx Build
 
 on: 
+  pull_request:
   push:
     branches: 
       - master
-     #- dev
 
 jobs:
-  build:
+  doc-build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: ammaraskar/sphinx-action@master
         with:
@@ -40,18 +40,6 @@ jobs:
           git config --local user.name "GitHub Action"
           git add .
           git commit -m "Update documentation" -a || true
-
-      - uses: wangyucode/sftp-upload-action@v1.4.8
-        with:
-          host: ${{ secrets.SFTP_HOST }}   
-          port: 22
-          username: ${{ secrets.SFTP_USER }}
-          password: ${{ secrets.SFTP_PASSWD }}
-          forceUpload: false 
-          localDir: 'docs/'
-          remoteDir: '/run/www/docs/'
-          exclude: ''
-          dryRun: false
 
       - name: Push changes
         uses: ad-m/github-push-action@master
