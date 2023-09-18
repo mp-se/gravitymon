@@ -124,7 +124,12 @@ extern RunMode runMode;
 // Hardware config for ESP32-d1-min, iSpindel hardware
 // ------------------------------------------------------
 #include <FS.h>
+#if defined(WOKWI) // TEMPORARY FIX FOR ISSUE https://github.com/wokwi/wokwi-features/issues/642
+#include <SPIFFS.h>
+#define LittleFS SPIFFS
+#else
 #include <LittleFS.h>
+#endif
 
 #include "esp32/rom/rtc.h"
 #define ESPhttpUpdate httpUpdate

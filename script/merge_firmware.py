@@ -6,9 +6,14 @@ BOARD_CONFIG = env.BoardConfig()
 
 
 def merge_bin(source, target, env):
+    print( "Running merge bin." )
+
     # The list contains all extra images (bootloader, partitions, eboot) and
     # the final application binary
     flash_images = env.Flatten(env.get("FLASH_EXTRA_IMAGES", [])) + ["$ESP32_APP_OFFSET", APP_BIN]
+
+    #flash_images.append( "0x390000" )
+    #flash_images.append( ".pio/build/gravity32-wokwi/spiffs.bin" )
 
     # Run esptool to merge images into a single binary
     env.Execute(
