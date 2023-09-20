@@ -12,8 +12,8 @@ def merge_bin(source, target, env):
     # the final application binary
     flash_images = env.Flatten(env.get("FLASH_EXTRA_IMAGES", [])) + ["$ESP32_APP_OFFSET", APP_BIN]
 
-    #flash_images.append( "0x390000" )
-    #flash_images.append( ".pio/build/gravity32-wokwi/spiffs.bin" )
+    flash_images.append( "0x390000" )
+    flash_images.append( "bin/littlefs.bin" )
 
     # Run esptool to merge images into a single binary
     env.Execute(

@@ -4,3 +4,5 @@
 src_docs/_build/*
 .env/*
 *.pyc
+*.json
+*.txt

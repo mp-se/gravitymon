@@ -707,8 +707,8 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   // doc[PARAM_HW_GYRO_READ_DELAY] = myAdvancedConfig.getGyroReadDelay();
   doc[PARAM_HW_GYRO_MOVING_THREASHOLD] =
       myAdvancedConfig.getGyroSensorMovingThreashold();
-  doc[PARAM_HW_FORMULA_DEVIATION] =
-      serialized(String(myAdvancedConfig.getMaxFormulaCreationDeviation(), DECIMALS_SG));
+  doc[PARAM_HW_FORMULA_DEVIATION] = serialized(
+      String(myAdvancedConfig.getMaxFormulaCreationDeviation(), DECIMALS_SG));
   doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = myAdvancedConfig.getWifiPortalTimeout();
   doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = myAdvancedConfig.getWifiConnectTimeout();
   doc[PARAM_HW_PUSH_TIMEOUT] = myAdvancedConfig.getPushTimeout();
