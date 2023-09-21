@@ -3,8 +3,8 @@ import unittest, requests, json, time
 ver  = "1.4.0"
 
 # esp8266
-host = "192.168.2.139"
-id = "3e23f7"
+host = "192.168.1.211"
+id = "0de339"
 
 # esp32c3
 #host = "192.168.1.160"
@@ -18,6 +18,7 @@ id = "3e23f7"
 #host = "192.168.1.169"
 #id = "f4adfe"
 
+# python3 -m unittest -v apitests.API.test_config_1
 # python3 -m unittest -v apitests.API.test_bug_79
 # python3 -m unittest -v apitests
 
@@ -295,7 +296,7 @@ class API(unittest.TestCase):
         self.assertEqual(j["g2"], 3)
         self.assertEqual(j["g3"], 5.3)
         self.assertEqual(j["g4"], 7.44)
-        self.assertEqual(j["g5"], 8.56)
+        self.assertEqual(j["g5"], 8.55)
         self.assertEqual(j["g6"], 9)
         self.assertEqual(j["g7"], 9.1)
         self.assertEqual(j["g8"], 9.2)

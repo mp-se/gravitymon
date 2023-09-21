@@ -749,7 +749,7 @@ void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_START("webserver-api-formula-read");
   Log.notice(F("WEB : webServer callback for /api/formula(get)." CR));
 
-  DynamicJsonDocument doc(500);
+  DynamicJsonDocument doc(1000);
   const RawFormulaData& fd = myConfig.getFormulaData();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -821,7 +821,7 @@ void WebServerHandler::webHandleFormulaRead() {
 #endif
 
   String out;
-  out.reserve(500);
+  out.reserve(100);
   serializeJson(doc, out);
   doc.clear();
   _server->send(200, "application/json", out.c_str());

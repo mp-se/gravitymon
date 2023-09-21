@@ -86,11 +86,13 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_PUSH_MQTT_USER] = getMqttUser();
   doc[PARAM_PUSH_MQTT_PASS] = getMqttPass();
   doc[PARAM_SLEEP_INTERVAL] = getSleepInterval();
-  doc[PARAM_VOLTAGE_FACTOR] = getVoltageFactor();
-  doc[PARAM_VOLTAGE_CONFIG] = getVoltageConfig();
+  doc[PARAM_VOLTAGE_FACTOR] =
+      serialized(String(getVoltageFactor(), DECIMALS_BATTERY));
+  doc[PARAM_VOLTAGE_CONFIG] =
+      serialized(String(getVoltageConfig(), DECIMALS_BATTERY));
   doc[PARAM_GRAVITY_FORMULA] = getGravityFormula();
   doc[PARAM_GRAVITY_FORMAT] = String(getGravityFormat());
-  doc[PARAM_TEMP_ADJ] = getTempSensorAdjC();
+  doc[PARAM_TEMP_ADJ] = serialized(String(getTempSensorAdjC(), DECIMALS_TEMP));
   doc[PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
   doc[PARAM_GYRO_TEMP] = isGyroTemp();
   doc[PARAM_STORAGE_SLEEP] = isStorageSleep();
