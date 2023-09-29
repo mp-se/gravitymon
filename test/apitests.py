@@ -2,25 +2,17 @@ import unittest, requests, json, time
 
 ver  = "1.4.0"
 
-# esp8266
-host = "192.168.1.211"
-id = "0de339"
+# wokwi
+#host = "localhost:8180"
+#id = "000110"
 
-# esp32c3
-#host = "192.168.1.160"
-#id = "1ee9dc"
+# Physical device
+host = "192.168.1.212"
+id = "66a1b0"
 
-# esp32d1
-#host = "192.168.1.113"
-#id = "cb3818"
-
-# esp32s2
-#host = "192.168.1.169"
-#id = "f4adfe"
-
+# python3 -m unittest -v apitests
 # python3 -m unittest -v apitests.API.test_config_1
 # python3 -m unittest -v apitests.API.test_bug_79
-# python3 -m unittest -v apitests
 
 def call_api_post( path, json ):
     url = "http://" + host + path
@@ -346,7 +338,7 @@ class API(unittest.TestCase):
        
             # Check format api
     def test_pushtest_1(self):
-        j = { "id": id, "http-push": "http://push.me", "token": "mytoken", "token2": "mytoken2", "http-push2": "http://push.me", "http-push3": "http://push.me", "brewfather-push": "http://push.me", "influxdb2-push": "http://influx.db", "influxdb2-org": "my-org", 
+        j = { "id": id, "http-push": "http://unknown.push.me", "token": "mytoken", "token2": "mytoken2", "http-push2": "http://unknown.push.me", "http-push3": "http://unknown.push.me", "brewfather-push": "http://unknown.push.me", "influxdb2-push": "http://influx.db", "influxdb2-org": "my-org", 
               "influxdb2-bucket": "my-bucket", "influxdb2-auth": "my-secret", "mqtt-push": "mqtt.com", "mqtt-port": 1883, "mqtt-user": "my-user", 
               "mqtt-pass": "my-pass", "http-push-h1": "header1", "http-push-h2": "header2", "http-push2-h1": "header1(2)", "http-push2-h2": "header2(2)" }
         r = call_api_post( "/api/config/push", j )
@@ -405,6 +397,7 @@ class API(unittest.TestCase):
     def test_push_2(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=http-1" )
         j = json.loads(r.text)
+        print(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["success"], True)
 

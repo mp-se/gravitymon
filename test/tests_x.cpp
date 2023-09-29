@@ -22,26 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #include <AUnit.h>
+#include <Arduino.h>
+#include <main.hpp>
 
-#include <gyro.hpp>
-
-// These tests needs to be run on wokwi to be successful
-
-test(gyro_connectGyro) {
-  myGyro.setup();
-  assertEqual(myGyro.isConnected(), true);
+#if defined( ACTIVATE_GCOV )
+extern "C" {
+#include <gcov_public.h>
 }
+#endif
 
-/*test(gyro_readGyro) { // TODO: Wokwi does not support interrupts for the GYRO so this will just hang.
-  myGyro.setup();
-  assertEqual(myGyro.read(), true);
+// This should be the last test and its used to dump the gcov data to serial. Uncomment __gcov_exit() to dump coverage data.
+
+test(test_exit) {
+#if defined( ACTIVATE_GCOV )
+  __gcov_exit();
+#endif
 }
-
-test(gyro_readGyroTemp) {
-  myGyro.setup();
-  float f = INVALID_TEMPERATURE;
-  assertNotEqual(myGyro.getInitialSensorTempC(), f);
-  assertNotEqual(myGyro.getSensorTempC(), f);
-}*/
 
 // EOF

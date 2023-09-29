@@ -6,3 +6,6 @@ src_docs/_build/*
 *.pyc
 *.json
 *.txt
+gcov/*.gcno
+gcov/*.gcov
+gcov/*.gcda

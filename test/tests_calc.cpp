@@ -49,12 +49,70 @@ test(calc_createFormula2) {
   assertEqual(&buffer[0], "0.00000909*tilt^2+0.00124545*tilt+0.96445455");
 }
 
-test(calc_calculateGravity) {
+test(calc_createFormula3) {
+  char buffer[100];
+  RawFormulaData fd = {
+      {25.0, 30.0, 35.0, 45.0, 55.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+      {1.0, 1.1, 1.2, 1.3, 1.4, 0.0, 0.0, 0.0, 0.0, 0.0}};
+  float f = myAdvancedConfig.getMaxFormulaCreationDeviation(); 
+  myAdvancedConfig.setMaxFormulaCreationDeviation(10); // Change threashold to pass
+  int i = createFormula(fd, &buffer[0], sizeof(buffer), 3);
+  myAdvancedConfig.setMaxFormulaCreationDeviation(f); // Restore to default for next test
+  assertEqual(i, 0);
+  assertEqual(&buffer[0], "0.00001140*tilt^3+-0.00161278*tilt^2+0.08512845*tilt+-0.30122180");
+}
+
+test(calc_createFormula4) {
+  char buffer[100];
+  RawFormulaData fd = {
+      {25.0, 30.0, 35.0, 45.0, 55.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+      {1.0, 1.1, 1.2, 1.3, 1.4, 1.0, 1.0, 1.0, 1.0, 1.0}};
+  int i = createFormula(fd, &buffer[0], sizeof(buffer), 4);
+  assertEqual(i, 0);
+  assertEqual(&buffer[0], "0.00000200*tilt^4+-0.00030333*tilt^3+0.01645000*tilt^2+-0.36241667*tilt+3.73750001");
+}
+
+test(calc_createFormula5) {
+  char buffer[100];
+  RawFormulaData fd = {
+      {25.0, 30.0, 35.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+      {1.0, 1.1, 1.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+  int i = createFormula(fd, &buffer[0], sizeof(buffer), 1);
+  assertEqual(i, 0);
+  assertEqual(&buffer[0], "0.02000000*tilt+0.50000000");
+}
+
+test(calc_createFormula6) {
+  char buffer[100];
+  RawFormulaData fd = {
+      {25.0, 30.0, 35.0, 45.0, 55.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+      {1.0, 1.1, 1.2, 1.3, 1.4, 0.0, 0.0, 0.0, 0.0, 0.0}};
+  int i = createFormula(fd, &buffer[0], sizeof(buffer), 3);
+  assertEqual(i, -3);
+}
+
+/*test(calc_createFormula7) { // TODO: Find data that will cause INTERNAL_ERROR in the fitCurve library...
+  char buffer[100];
+  RawFormulaData fd = {
+      {25.0, 30.0, 35.0, 45.0, 55.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+      {1.0, 1.1, 1.2, 1.3, 1.4, 0.0, 0.0, 0.0, 0.0, 0.0}};
+  int i = createFormula(fd, &buffer[0], sizeof(buffer), 3);
+  assertEqual(i, -1);
+}*/
+
+test(calc_calculateGravity1) {
   const char* formula = "0.00000909*tilt^2+0.00124545*tilt+0.96445455";
   double g = calculateGravity(30, 20, formula);
   float v1 = reduceFloatPrecision(g, 2);
   float v2 = 1.01;
   assertEqual(v1, v2);
+}
+
+test(calc_calculateGravity2) {
+  const char* formula = "0.00000909*tilt2^2+0.00124545*tilt+0.96445455";
+  double g = calculateGravity(30, 20, formula);
+  double g2 = 0.0;
+  assertEqual(g, g2);
 }
 
 test(calc_gravityTemperatureCorrectionC) {
