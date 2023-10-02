@@ -7,7 +7,7 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.4.0 beta**. Last updated 2023-08-21
+  This documentation reflects **v1.4.0 beta**. Last updated 2023-10-02
 
 What is GravityMon?
 --------------------
@@ -156,7 +156,6 @@ the following libraries and without these this would have been much more difficu
    compiling
    contributing
    license
-   troubleshooting
    q_and_a
 
 Indices and tables

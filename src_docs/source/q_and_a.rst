@@ -5,14 +5,18 @@ User interface does not render correctly
 ----------------------------------------
 
 Since the user interface is built using bootstrap v5 the device requires access to the internet 
-to download required javascript and css files. Due to size it would not be possible to store these
+to download required javascript and css files. 
+
+Due to size it would not be possible to store these
 on the device. Make sure the device can access: https://cdn.jsdelivr.net/npm/bootstrap
 
 Data is not populated in the fields
 ------------------------------------
 
 The user interface uses JQuery to fetch data from the device. This javascript library needs to be downloaded 
-from the internet.  Due to size it would not be possible to store these on the device. Make sure the 
+from the internet.  
+
+Due to size it would not be possible to store these on the device. Make sure the 
 device can access: https://code.jquery.com
 
 Also ensure that any security tools does not block the execution of these features.
@@ -75,3 +79,79 @@ Device only reporting data once
 
 If the device does not wake up from a deep sleep, this is most likely a hardware problem,
 check the resistor / diode between D0 and RST. Wrong value can stop the device from wakeing up.
+
+
+What does the messages in the error log mean
+--------------------------------------------
+
+* Not enough values for deriving formula
+
+  To create a formula its required to have at least 3 measurements. 
+
+* Error validating created formula. Deviation to large, formula rejected
+
+  The device will try to create formulas with different complexities. It will try to 
+  validate the formula using the supplied values. If the difference is more than 1.6 SG on any point
+  the formula will be rejected. Check the entered values if they seams to be reasonable.
+
+* No valid calibration values, please calibrate the device.
+
+  The gyro needs to be calibrated at 90 degrees (flat). This is done on the configuration page.
+
+* Low on memory, skipping push
+
+  The arduino libraries sometimes leak memory, this only occurs when running in configuration mode. To avoid
+  crashes the device will skip pushing data if the memory drops to much. Network connections seams to be connected
+  to memory leaks. 
+
+* Unable to set header, invalid value
+
+  Check the format for your custom header. This means it has not a correct format.
+
+What does the http error codes mean
+-----------------------------------
+
+All these errors are standard http error codes. This are the common ones;
+
+*  400 - Bad request. Probably an issue with the post format. Check format in the format editor.
+*  401 - Unauthorized. The service needs an token or other means to authenticate the device. 
+*  403 - Forbidden. Could be an issue with token or URL. 
+*  404 - Not found. Probably a wrong URL.
+
+What does the mqtt error codes mean
+-----------------------------------
+
+In some cases there can be negative error codes which have the following meaning:
+
+* -1 - Connection refused
+* -2 - Send header failed
+* -3 - Send payload failed
+* -4 - Not connected
+* -5 - Connection lost
+* -6 - No stream
+* -7 - No HTTP server
+* -8 - Too little RAM available
+* -9 - Error encoding
+* -10 - Error writing to stream
+* -11 - Read timeout
+* -100 - Endpoint skipped since its SSL and the device is in gravity mode
+
+* MQTT push on <topic> failed error
+
+* -1 - Buffer to short
+* -2 - Overflow
+* -3 - Network failed connected
+* -4 - Network timeout
+* -5 - Network read failed
+* -6 - Network write failed
+* -10 - Connection denied
+* -11 - Failed subscription
+
+What does the wifi error codes mean
+-----------------------------------
+
+* 1 - No SSID found.
+* 4 - Connection failed. 
+* 5 - Connection lot.
+* 6 - Wrong password.
+* 7 - Disconnected by AP.
