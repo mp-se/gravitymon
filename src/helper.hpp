@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,9 @@ SOFTWARE.
 
 // tcp cleanup
 void tcp_cleanup();
+
+// forced reset as alternative to reset()
+void forcedReset();
 
 // Error logging
 void writeErrorLog(const char* format, ...);

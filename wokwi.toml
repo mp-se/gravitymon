@@ -1,7 +1,9 @@
 [wokwi]
 version = 1
-firmware = '.pio/build/gravity32-wokwi/firmware_merged.bin'
-elf = '.pio/build/gravity32-wokwi/firmware.elf'
+#firmware = '.pio/build/cov-wokwi/firmware_merged.bin'
+#elf = '.pio/build/cov-wokwi/firmware.elf'
+firmware = '.pio/build/cov-esp32/firmware_merged.bin'
+elf = '.pio/build/cov-esp32/firmware.elf'
 gdbServerPort = 3333
 
 [[net.forward]]

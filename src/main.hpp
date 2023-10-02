@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ extern RunMode runMode;
 
 #include "esp32c3/rom/rtc.h"
 #define ESPhttpUpdate httpUpdate
-#define ESP_RESET ESP.restart
+#define ESP_RESET forcedReset
 #define ESP8266WebServer WebServer
 #if defined(JTAG_DEBUG)
 #define PIN_SDA 8
@@ -87,7 +87,7 @@ extern RunMode runMode;
 
 #include "esp32s2/rom/rtc.h"
 #define ESPhttpUpdate httpUpdate
-#define ESP_RESET ESP.restart
+#define ESP_RESET forcedReset
 #define ESP8266WebServer WebServer
 #define PIN_SDA A17
 #define PIN_SCL A15
@@ -104,7 +104,7 @@ extern RunMode runMode;
 
 #include "esp32/rom/rtc.h"
 #define ESPhttpUpdate httpUpdate
-#define ESP_RESET ESP.restart
+#define ESP_RESET forcedReset
 #define ESP8266WebServer WebServer
 #define PIN_SDA A17
 #define PIN_SCL A19
@@ -123,7 +123,7 @@ extern RunMode runMode;
 
 #include "esp32/rom/rtc.h"
 #define ESPhttpUpdate httpUpdate
-#define ESP_RESET ESP.restart
+#define ESP_RESET forcedReset
 #define ESP8266WebServer WebServer
 #define PIN_SDA D3
 #define PIN_SCL D4

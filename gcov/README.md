@@ -15,5 +15,6 @@ This directory will contain the code coverage reports from testing.
 | resources.cpp | - | No tests needed, only data |
 | templating.cpp | 80 % | Good |
 | tempsensor.cpp | 80 % | Good |
-| webserver.cpp | - | Covered by pytests |
-| wifi.cpp | - | Manual tests needed |
+| webserver.cpp | 76 % | Covered by api tests (apitests.py) |
+| wifi.cpp | 33 % | Covered by api tests (apitests.py) |
+| wifimanager.cpp | - | Manual tests needed |
