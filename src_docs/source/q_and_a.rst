@@ -108,8 +108,8 @@ What does the messages in the error log mean
 
   Check the format for your custom header. This means it has not a correct format.
 
-What does the http error codes mean
------------------------------------
+HTTP error codes
+----------------
 
 All these errors are standard http error codes. This are the common ones;
 
@@ -118,10 +118,10 @@ All these errors are standard http error codes. This are the common ones;
 *  403 - Forbidden. Could be an issue with token or URL. 
 *  404 - Not found. Probably a wrong URL.
 
-What does the mqtt error codes mean
------------------------------------
+MQTT error codes
+----------------
 
-In some cases there can be negative error codes which have the following meaning:
+MQTT connection errors:
 
 * -1 - Connection refused
 * -2 - Send header failed
@@ -136,7 +136,7 @@ In some cases there can be negative error codes which have the following meaning
 * -11 - Read timeout
 * -100 - Endpoint skipped since its SSL and the device is in gravity mode
 
-* MQTT push on <topic> failed error
+MQTT push on topic errors:
 
 * -1 - Buffer to short
 * -2 - Overflow
@@ -147,8 +147,8 @@ In some cases there can be negative error codes which have the following meaning
 * -10 - Connection denied
 * -11 - Failed subscription
 
-What does the wifi error codes mean
------------------------------------
+WIFI error codes
+----------------
 
 * 1 - No SSID found.
 * 4 - Connection failed. 
