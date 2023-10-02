@@ -31,3 +31,6 @@ Thanks to the following persons for supporting me and this project:
 * David Conde, @davidconde
 * Lars H.
 * Vonchilliman
+* Andreas Dohl
+* StodgyWaif
+
