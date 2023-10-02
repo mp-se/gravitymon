@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionality" href="functionality.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>GravityMon v1.3.0</title>
+        <title>GravityMon v1.4.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">GravityMon v1.3.0</div></a>
+      <a href="#"><div class="brand">GravityMon v1.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.3.0</span>
+  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -173,7 +173,6 @@
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 </ul>
 
@@ -205,7 +204,7 @@
 <h1>Welcome to GravityMon<a class="headerlink" href="#welcome-to-gravitymon" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v1.3.0</strong>. Last updated 2023-08-29</p>
+<p>This documentation reflects <strong>v1.4.0 beta</strong>. Last updated 2023-10-02</p>
 </div>
 <div class="section" id="what-is-gravitymon">
 <h2>What is GravityMon?<a class="headerlink" href="#what-is-gravitymon" title="Permalink to this headline">¶</a></h2>
@@ -312,6 +311,8 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-4-0-beta">v1.4.0 (beta)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-3-1">v1.3.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-3-0">v1.3.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-2-1">v1.2.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-2-0">v1.2.0</a></li>
@@ -341,6 +342,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="installation.html#ispindel-esp8266">iSpindel (esp8266)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#updating-firmware">Updating firmware</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#serial-monitoring">Serial Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#wifi-compatibility">WIFI compatibility</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#configuring-wifi">Configuring WIFI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#finding-the-device-adress">Finding the device adress</a></li>
 </ul>
@@ -416,11 +418,6 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#errors-in-the-logfile">Errors in the logfile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#esp8266-wifi-compatibility">ESP8266 wifi compatibility</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#user-interface-does-not-render-correctly">User interface does not render correctly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#data-is-not-populated-in-the-fields">Data is not populated in the fields</a></li>
@@ -429,6 +426,10 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#calibration-error-unable-to-find-a-valid-formula">Calibration error (unable to find a valid formula)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#how-can-i-filter-data-on-influxdb-without-needing-to-know-the-time-range">How can I filter data on influxdb without needing to know the time range</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#device-only-reporting-data-once">Device only reporting data once</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#what-does-the-messages-in-the-error-log-mean">What does the messages in the error log mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#http-error-codes">HTTP error codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#mqtt-error-codes">MQTT error codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#wifi-error-codes">WIFI error codes</a></li>
 </ul>
 </li>
 </ul>

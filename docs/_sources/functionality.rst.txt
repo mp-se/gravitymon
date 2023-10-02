@@ -94,6 +94,11 @@ The main features
   If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice 
   feature that can correct the gravity as a second step making this independent of the formula. 
 
+* **Migration of formula and gyro calibration from iSpindel**
+
+  If GravityMon is installed over an working ispindel it can migrate calibration formula and gyro settings making 
+  the transition smooth.
+
 * **OTA support from webserver**
 
   When starting up in configuration mode the device will check for a software update from a webserver. This is an easily

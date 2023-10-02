@@ -97,7 +97,16 @@ These are calibration data for the gyro. Place the device flat on a table and pr
 
 * **Factory default**
 
-   This function will reset all settings to factory default. Use with caution!
+This function will reset all settings to factory default. Use with caution!
+
+* **WIFI settings**
+
+Here you can set the wifi settings, for security reasons its not possible to see the current passwords.
+
+* **Restart**
+
+Restarts the device, similar to pressing the reset button
+
 
 Push Settings
 +++++++++++++

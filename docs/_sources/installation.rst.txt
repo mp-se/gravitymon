@@ -88,6 +88,9 @@ an option for updating firmware. The option is under the maintenance menu.
 
 Select the esp8266 version of the firmware called firmware.bin and press upload. 
 
+If you do an update this way GravityMon will notice that there is a stored configuration file and you will get the option to do a migration 
+of the gravity formula and gyro calibration values so you don't need to do a new calibration. 
+
 Updating firmware 
 =================
 
@@ -120,6 +123,18 @@ To check output from the device (logs) there are several tools out there. I foun
 Just select a baud rate of 115200, 8N1.
 
 .. _setup_wifi:
+
+WIFI compatibility
+==================
+
+The esp has limited wifi support and still relies on old standards so these are a few things to consider on the wifi setup.
+
+* Don't use space in your wifi SSID or wifi password
+* Only supports 2.4Ghz bands, channels must be 1-13, other channels are not supported (In 802.11 b/g/n modes)
+* Channels between 20-25 Mhz bands
+* SSID must be visible (hidden SSID dont work)
+
+Source: https://www.espressif.com/sites/default/files/esp8266_wi-fi_channel_selection_guidelines.pdf
 
 Configuring WIFI
 ================

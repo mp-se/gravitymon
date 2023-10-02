@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Troubleshooting" href="troubleshooting.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Licence" href="license.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Q &amp; A - GravityMon v1.3.0</title>
+        <title>Q &amp; A - GravityMon v1.4.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v1.3.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v1.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.3.0</span>
+  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -173,7 +173,6 @@
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Q &amp; A</a></li>
 </ul>
 
@@ -206,13 +205,15 @@
 <div class="section" id="user-interface-does-not-render-correctly">
 <h2>User interface does not render correctly<a class="headerlink" href="#user-interface-does-not-render-correctly" title="Permalink to this headline">¶</a></h2>
 <p>Since the user interface is built using bootstrap v5 the device requires access to the internet
-to download required javascript and css files. Due to size it would not be possible to store these
+to download required javascript and css files.</p>
+<p>Due to size it would not be possible to store these
 on the device. Make sure the device can access: <a class="reference external" href="https://cdn.jsdelivr.net/npm/bootstrap">https://cdn.jsdelivr.net/npm/bootstrap</a></p>
 </div>
 <div class="section" id="data-is-not-populated-in-the-fields">
 <h2>Data is not populated in the fields<a class="headerlink" href="#data-is-not-populated-in-the-fields" title="Permalink to this headline">¶</a></h2>
 <p>The user interface uses JQuery to fetch data from the device. This javascript library needs to be downloaded
-from the internet.  Due to size it would not be possible to store these on the device. Make sure the
+from the internet.</p>
+<p>Due to size it would not be possible to store these on the device. Make sure the
 device can access: <a class="reference external" href="https://code.jquery.com">https://code.jquery.com</a></p>
 <p>Also ensure that any security tools does not block the execution of these features.</p>
 </div>
@@ -266,6 +267,79 @@ angle=${angle},temp=${temp},battery=${battery},rssi=${rssi},event=${token}
 <p>If the device does not wake up from a deep sleep, this is most likely a hardware problem,
 check the resistor / diode between D0 and RST. Wrong value can stop the device from wakeing up.</p>
 </div>
+<div class="section" id="what-does-the-messages-in-the-error-log-mean">
+<h2>What does the messages in the error log mean<a class="headerlink" href="#what-does-the-messages-in-the-error-log-mean" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Not enough values for deriving formula</p>
+<p>To create a formula its required to have at least 3 measurements.</p>
+</li>
+<li><p>Error validating created formula. Deviation to large, formula rejected</p>
+<p>The device will try to create formulas with different complexities. It will try to
+validate the formula using the supplied values. If the difference is more than 1.6 SG on any point
+the formula will be rejected. Check the entered values if they seams to be reasonable.</p>
+</li>
+<li><p>No valid calibration values, please calibrate the device.</p>
+<p>The gyro needs to be calibrated at 90 degrees (flat). This is done on the configuration page.</p>
+</li>
+<li><p>Low on memory, skipping push</p>
+<p>The arduino libraries sometimes leak memory, this only occurs when running in configuration mode. To avoid
+crashes the device will skip pushing data if the memory drops to much. Network connections seams to be connected
+to memory leaks.</p>
+</li>
+<li><p>Unable to set header, invalid value</p>
+<p>Check the format for your custom header. This means it has not a correct format.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="http-error-codes">
+<h2>HTTP error codes<a class="headerlink" href="#http-error-codes" title="Permalink to this headline">¶</a></h2>
+<p>All these errors are standard http error codes. This are the common ones;</p>
+<ul class="simple">
+<li><p>400 - Bad request. Probably an issue with the post format. Check format in the format editor.</p></li>
+<li><p>401 - Unauthorized. The service needs an token or other means to authenticate the device.</p></li>
+<li><p>403 - Forbidden. Could be an issue with token or URL.</p></li>
+<li><p>404 - Not found. Probably a wrong URL.</p></li>
+</ul>
+</div>
+<div class="section" id="mqtt-error-codes">
+<h2>MQTT error codes<a class="headerlink" href="#mqtt-error-codes" title="Permalink to this headline">¶</a></h2>
+<p>MQTT connection errors:</p>
+<ul class="simple">
+<li><p>-1 - Connection refused</p></li>
+<li><p>-2 - Send header failed</p></li>
+<li><p>-3 - Send payload failed</p></li>
+<li><p>-4 - Not connected</p></li>
+<li><p>-5 - Connection lost</p></li>
+<li><p>-6 - No stream</p></li>
+<li><p>-7 - No HTTP server</p></li>
+<li><p>-8 - Too little RAM available</p></li>
+<li><p>-9 - Error encoding</p></li>
+<li><p>-10 - Error writing to stream</p></li>
+<li><p>-11 - Read timeout</p></li>
+<li><p>-100 - Endpoint skipped since its SSL and the device is in gravity mode</p></li>
+</ul>
+<p>MQTT push on topic errors:</p>
+<ul class="simple">
+<li><p>-1 - Buffer to short</p></li>
+<li><p>-2 - Overflow</p></li>
+<li><p>-3 - Network failed connected</p></li>
+<li><p>-4 - Network timeout</p></li>
+<li><p>-5 - Network read failed</p></li>
+<li><p>-6 - Network write failed</p></li>
+<li><p>-10 - Connection denied</p></li>
+<li><p>-11 - Failed subscription</p></li>
+</ul>
+</div>
+<div class="section" id="wifi-error-codes">
+<h2>WIFI error codes<a class="headerlink" href="#wifi-error-codes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>1 - No SSID found.</p></li>
+<li><p>4 - Connection failed.</p></li>
+<li><p>5 - Connection lot.</p></li>
+<li><p>6 - Wrong password.</p></li>
+<li><p>7 - Disconnected by AP.</p></li>
+</ul>
+</div>
 </div>
 
         </article>
@@ -274,14 +348,14 @@ check the resistor / diode between D0 and RST. Wrong value can stop the device f
         
         <div class="related-pages">
           
-          <a class="prev-page" href="troubleshooting.html">
+          <a class="prev-page" href="license.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Troubleshooting</div>
+                <div class="title">Licence</div>
                 
               </div>
             </a>
@@ -315,6 +389,10 @@ check the resistor / diode between D0 and RST. Wrong value can stop the device f
 <li><a class="reference internal" href="#calibration-error-unable-to-find-a-valid-formula">Calibration error (unable to find a valid formula)</a></li>
 <li><a class="reference internal" href="#how-can-i-filter-data-on-influxdb-without-needing-to-know-the-time-range">How can I filter data on influxdb without needing to know the time range</a></li>
 <li><a class="reference internal" href="#device-only-reporting-data-once">Device only reporting data once</a></li>
+<li><a class="reference internal" href="#what-does-the-messages-in-the-error-log-mean">What does the messages in the error log mean</a></li>
+<li><a class="reference internal" href="#http-error-codes">HTTP error codes</a></li>
+<li><a class="reference internal" href="#mqtt-error-codes">MQTT error codes</a></li>
+<li><a class="reference internal" href="#wifi-error-codes">WIFI error codes</a></li>
 </ul>
 </li>
 </ul>
