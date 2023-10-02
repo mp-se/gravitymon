@@ -29,8 +29,10 @@ SOFTWARE.
 #include <WiFi.h>
 #endif
 
+#if !defined(ESP8266)
 #include <esp_int_wdt.h>
 #include <esp_task_wdt.h>
+#endif
 
 #include <config.hpp>
 #include <gyro.hpp>
@@ -57,8 +59,9 @@ void forcedReset() {
   delay(100);
   esp_task_wdt_init(1, true);
   esp_task_wdt_add(NULL);
-  while (true)
-    ;  // wait for watchdog timer to be triggered
+  while (true) {
+    // wait for watchdog timer to be triggered
+  }
 #endif
 }
 
