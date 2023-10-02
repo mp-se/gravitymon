@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -87,6 +87,7 @@ class WebServerHandler {
   void webHandleConfigDevice();
   void webHandleConfigFormatRead();
   void webHandleConfigFormatWrite();
+  void webHandleConfigWifi();
   void webHandleTestPush();
   void webHandleStatusSleepmode();
   void webHandleClearWIFI();
@@ -96,6 +97,8 @@ class WebServerHandler {
   void webHandleUploadFile();
   void webHandleLogClear();
   void webHandlePageNotFound();
+  void webHandleRestart();
+  void webHandleMigrate();
 
   String readFile(String fname);
   bool writeFile(String fname, String data);

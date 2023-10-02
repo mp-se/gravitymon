@@ -25,20 +25,23 @@ SOFTWARE.
 
 #include <gyro.hpp>
 
+// These tests needs to be run on wokwi to be successful
+
 test(gyro_connectGyro) {
   myGyro.setup();
   assertEqual(myGyro.isConnected(), true);
 }
 
-test(gyro_readGyro) {
+/*test(gyro_readGyro) { // TODO: Wokwi does not support interrupts for the GYRO so this will just hang.
   myGyro.setup();
   assertEqual(myGyro.read(), true);
 }
 
 test(gyro_readGyroTemp) {
   myGyro.setup();
-  assertNotEqual(myGyro.getInitialSensorTempC(), -273.0);
-  assertNotEqual(myGyro.getSensorTempC(), -273.0);
-}
+  float f = INVALID_TEMPERATURE;
+  assertNotEqual(myGyro.getInitialSensorTempC(), f);
+  assertNotEqual(myGyro.getSensorTempC(), f);
+}*/
 
 // EOF

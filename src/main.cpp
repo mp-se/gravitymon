@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,12 @@ SOFTWARE.
 #include <tempsensor.hpp>
 #include <webserver.hpp>
 #include <wifi.hpp>
+
+#if defined(ACTIVATE_GCOV)
+extern "C" {
+#include <gcov_public.h>
+}
+#endif
 
 // #define FORCE_GRAVITY_MODE
 SerialDebug mySerial;
@@ -166,6 +172,9 @@ void setup() {
   myConfig.loadFile();
   myAdvancedConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
+
+  // For restoring ispindel backup to test migration
+  // LittleFS.rename("/ispindel.json", "/config.json");
 
   sleepModeAlwaysSkip = checkPinConnected();
   if (sleepModeAlwaysSkip) {

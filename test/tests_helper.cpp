@@ -104,4 +104,29 @@ test(helper_readBatteryVoltage) {
   assertMoreOrEqual(f, 2.0);
 }
 
+test(helper_chipRevision) { // Include for code coverage
+  detectChipRevision();
+  assertEqual(1,1);
+}
+
+test(helper_resetReason) { // Include for code coverage
+  checkResetReason();
+  assertEqual(1,1);
+}
+
+test(helper_writeErrorLog) { // Include for code coverage
+  writeErrorLog("Write to error log.");
+  assertEqual(1,1);
+}
+
+/*test(helper_floatHistory) { // TODO: Issues with opening the file system on WOKWI
+  LittleFS.begin(true);
+
+  FloatHistoryLog hist("/history.log");
+  hist.addEntry(1.0);
+  hist.addEntry(1.0);
+  float f = hist.getAverage();
+  assertEqual(f, 1.0);
+}*/
+
 // EOF

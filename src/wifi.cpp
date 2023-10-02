@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,20 +34,17 @@ SOFTWARE.
 #include <config.hpp>
 #include <main.hpp>
 #include <wifi.hpp>
-
-// Settings for WIFI Manager
-#define USE_ESP_WIFIMANAGER_NTP false
-#define USE_CLOUDFLARE_NTP false
-#define USING_CORS_FEATURE false
-#define NUM_WIFI_CREDENTIALS 1
-#define USE_STATIC_IP_CONFIG_IN_CP false
-// #define _WIFIMGR_LOGLEVEL_ 4
-#include <ESP_WiFiManager.h>
+#include <wifimanager.hpp>
 ESP_WiFiManager *myWifiManager = 0;
 WifiConnection myWifi;
 
+#if defined(USER_SSID)
 const char *userSSID = USER_SSID;
 const char *userPWD = USER_SSID_PWD;
+#else
+const char *userSSID = "";
+const char *userPWD = "";
+#endif
 
 const char *resetFilename = "/reset.dat";
 
@@ -85,8 +82,8 @@ void WifiConnection::writeReset() {
 }
 
 bool WifiConnection::hasConfig() {
-  if (strlen(myConfig.getWifiSSID(0))) return true;
   if (strlen(userSSID)) return true;
+  if (strlen(myConfig.getWifiSSID(0))) return true;
 
     // Check if there are stored WIFI Settings we can use.
 #if defined(ESP8266)

@@ -1,0 +1,11 @@
+[wokwi]
+version = 1
+#firmware = '.pio/build/cov-wokwi/firmware_merged.bin'
+#elf = '.pio/build/cov-wokwi/firmware.elf'
+firmware = '.pio/build/cov-esp32/firmware_merged.bin'
+elf = '.pio/build/cov-esp32/firmware.elf'
+gdbServerPort = 3333
+
+[[net.forward]]
+from = "localhost:8180"
+to = "target:80"

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,11 @@ SOFTWARE.
 #include <WiFi.h>
 #endif
 
+#if !defined(ESP8266)
+#include <esp_int_wdt.h>
+#include <esp_task_wdt.h>
+#endif
+
 #include <config.hpp>
 #include <gyro.hpp>
 #include <helper.hpp>
@@ -42,6 +47,22 @@ extern struct tcp_pcb* tcp_tw_pcbs;
 extern "C" void tcp_abort(struct tcp_pcb* pcb);
 void tcp_cleanup() {
   while (tcp_tw_pcbs) tcp_abort(tcp_tw_pcbs);
+}
+
+extern "C" {
+void write_bytes(int fd, char* buf, int n) { EspSerial.print(*buf); }
+}
+
+void forcedReset() {
+#if !defined(ESP8266)
+  LittleFS.end();
+  delay(100);
+  esp_task_wdt_init(1, true);
+  esp_task_wdt_add(NULL);
+  while (true) {
+    // wait for watchdog timer to be triggered
+  }
+#endif
 }
 
 void runGpioHardwareTests() {

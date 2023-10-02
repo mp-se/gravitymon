@@ -16,6 +16,7 @@
     "platform": "esp32",
     "wifi-ssid": "wifi",
     "runtime-average": 3.12,
+    "ispindel-config": true,
     "self-check": {
         "gyro-connected": false,
         "gyro-calibration": false,

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -78,6 +78,7 @@ SOFTWARE.
 #define PARAM_ERROR "error"
 #define PARAM_PLATFORM "platform"
 #define PARAM_BLE "ble"
+#define PARAM_ISPINDEL_CONFIG "ispindel-config"
 #define PARAM_HW_GYRO_READ_COUNT "gyro-read-count"
 // #define PARAM_HW_GYRO_READ_DELAY "gyro-read-delay"
 #define PARAM_HW_GYRO_MOVING_THREASHOLD "gyro-moving-threashold"

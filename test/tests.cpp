@@ -21,14 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <AUnit.h>
 #include <Arduino.h>
-
 #include <main.hpp>
+#include <helper.hpp>
+#if defined( ACTIVATE_GCOV )
+extern "C" {
+#include <gcov_public.h>
+}
+#endif
+#include <AUnit.h>
 
 using aunit::Printer;
 using aunit::TestRunner;
 using aunit::Verbosity;
+
+extern "C" {
+  void write_bytes(int fd, char* buf, int n) {
+    Serial.print(*buf);
+  } 
+}
 
 /*
   // Boolean
@@ -66,12 +77,26 @@ using aunit::Verbosity;
   assertTestNotExpire(name) [*]
 */
 
+//SerialDebug mySerial;
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Gravitymon - Unit Test Build");
   delay(2000);
   Printer::setPrinter(&Serial);
   // TestRunner::setVerbosity(Verbosity::kAll);
+  /*
+  TestRunner::exclude("calc_*");
+  TestRunner::exclude("ble_*");
+  TestRunner::exclude("config_*");
+  TestRunner::exclude("gyro_*");
+  TestRunner::exclude("helper_*");
+  TestRunner::exclude("json_*");
+  TestRunner::exclude("templating_*");
+  TestRunner::exclude("tempsensor_*");
+  TestRunner::exclude("webserver_*");
+  TestRunner::exclude("wifi_*");
+  */
 }
 
 void loop() {

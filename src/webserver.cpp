@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,12 @@ SOFTWARE.
 #include <webserver.hpp>
 #include <wifi.hpp>
 
+#if defined(ACTIVATE_GCOV)
+extern "C" {
+#include <gcov_public.h>
+}
+#endif
+
 WebServerHandler myWebServerHandler;  // My wrapper class fr webserver functions
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
@@ -57,17 +63,17 @@ void WebServerHandler::webHandleConfig() {
   double tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
   double gravity = calculateGravity(angle, tempC);
 
-  doc[PARAM_ANGLE] = reduceFloatPrecision(angle, DECIMALS_TILT);
+  doc[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
 
   // Format the adjustment so we get rid of rounding errors
   if (myConfig.isTempF())
     // We want the delta value (32F = 0C).
-    doc[PARAM_TEMP_ADJ] = reduceFloatPrecision(
-        convertCtoF(myConfig.getTempSensorAdjC()) - 32, DECIMALS_TEMP);
+    doc[PARAM_TEMP_ADJ] = serialized(
+        String(convertCtoF(myConfig.getTempSensorAdjC()) - 32, DECIMALS_TEMP));
   else
     doc[PARAM_TEMP_ADJ] =
-        reduceFloatPrecision(myConfig.getTempSensorAdjC(), DECIMALS_TEMP);
+        serialized(String(myConfig.getTempSensorAdjC(), DECIMALS_TEMP));
 
   if (myConfig.isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
@@ -76,17 +82,17 @@ void WebServerHandler::webHandleConfig() {
 
   if (myConfig.isGravityPlato()) {
     doc[PARAM_GRAVITY] =
-        reduceFloatPrecision(convertToPlato(gravity), DECIMALS_PLATO);
+        serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
   } else {
-    doc[PARAM_GRAVITY] = reduceFloatPrecision(gravity, DECIMALS_SG);
+    doc[PARAM_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
   }
 
   doc[PARAM_BATTERY] =
-      reduceFloatPrecision(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
+      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
-      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME);
+  doc[PARAM_RUNTIME_AVERAGE] = serialized(String(
+      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME));
 
 #if defined(ESP8266)
   doc[PARAM_PLATFORM] = "esp8266";
@@ -231,6 +237,9 @@ void WebServerHandler::webHandleLogClear() {
   } else {
     _server->send(400, "text/plain", "Unknown ID.");
   }
+#if defined(ACTIVATE_GCOV)
+  __gcov_exit();
+#endif
 }
 
 void WebServerHandler::webHandleStatus() {
@@ -247,9 +256,12 @@ void WebServerHandler::webHandleStatus() {
   double gravity = calculateGravity(angle, tempC);
 
   doc[PARAM_ID] = myConfig.getID();
-  doc[PARAM_ANGLE] = myGyro.isConnected()
-                         ? reduceFloatPrecision(angle, DECIMALS_TILT)
-                         : -1;  // Indicate that we have no connection to gyro
+
+  if (myGyro.isConnected()) {
+    doc[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+  } else {
+    doc[PARAM_ANGLE] = -1;  // Indicate that there is no connection to gyro
+  }
 
   if (myConfig.isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
@@ -257,14 +269,14 @@ void WebServerHandler::webHandleStatus() {
   }
   if (myConfig.isGravityPlato()) {
     doc[PARAM_GRAVITY] =
-        reduceFloatPrecision(convertToPlato(gravity), DECIMALS_PLATO);
+        serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
   } else {
-    doc[PARAM_GRAVITY] = reduceFloatPrecision(gravity, DECIMALS_SG);
+    doc[PARAM_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
   }
-  doc[PARAM_TEMP_C] = reduceFloatPrecision(tempC, DECIMALS_TEMP);
-  doc[PARAM_TEMP_F] = reduceFloatPrecision(convertCtoF(tempC), DECIMALS_TEMP);
+  doc[PARAM_TEMP_C] = serialized(String(tempC, DECIMALS_TEMP));
+  doc[PARAM_TEMP_F] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
   doc[PARAM_BATTERY] =
-      reduceFloatPrecision(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY);
+      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
   doc[PARAM_TEMPFORMAT] = String(myConfig.getTempFormat());
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   doc[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
@@ -278,9 +290,15 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_MDNS] = myConfig.getMDNS();
   doc[PARAM_SSID] = WiFi.SSID();
 
+#if defined(ESP8266)
+  doc[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
+#else
+  doc[PARAM_ISPINDEL_CONFIG] = false;
+#endif
+
   FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = reduceFloatPrecision(
-      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME);
+  doc[PARAM_RUNTIME_AVERAGE] = serialized(String(
+      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME));
 
 #if defined(ESP8266)
   doc[PARAM_PLATFORM] = "esp8266";
@@ -345,6 +363,13 @@ void WebServerHandler::webHandleClearWIFI() {
   } else {
     _server->send(400, "text/plain", "Unknown ID.");
   }
+}
+
+void WebServerHandler::webHandleRestart() {
+  Log.notice(F("WEB : webServer callback for /api/restart." CR));
+  _server->send(200, "text/plain", "Restarting...");
+  delay(1000);
+  ESP_RESET();
 }
 
 void WebServerHandler::webHandleStatusSleepmode() {
@@ -563,6 +588,43 @@ void WebServerHandler::webHandleConfigHardware() {
   LOG_PERF_STOP("webserver-api-config-hardware");
 }
 
+void WebServerHandler::webHandleConfigWifi() {
+  LOG_PERF_START("webserver-api-config-wifi");
+  String id = _server->arg(PARAM_ID);
+  Log.notice(F("WEB : webServer callback for /api/config/wifi(post)." CR));
+
+  if (!id.equalsIgnoreCase(myConfig.getID())) {
+    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
+              myConfig.getID());
+    _server->send(400, "text/plain", "Invalid ID.");
+    LOG_PERF_STOP("webserver-api-config-wifi");
+    return;
+  }
+
+#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
+  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
+#endif
+
+  if (_server->hasArg(PARAM_SSID))
+    myConfig.setWifiSSID(_server->arg(PARAM_SSID), 0);
+  if (_server->hasArg(PARAM_SSID2))
+    myConfig.setWifiSSID(_server->arg(PARAM_SSID2), 1);
+  if (_server->hasArg(PARAM_PASS))
+    myConfig.setWifiPass(_server->arg(PARAM_PASS), 0);
+  if (_server->hasArg(PARAM_PASS2))
+    myConfig.setWifiPass(_server->arg(PARAM_PASS2), 1);
+
+  Serial.println(myConfig.getWifiSSID(0));
+  Serial.println(myConfig.getWifiSSID(1));
+  Serial.println(myConfig.getWifiPass(0));
+  Serial.println(myConfig.getWifiPass(1));
+
+  myConfig.saveFile();
+  _server->sendHeader("Location", "/config.htm#collapseDevice", true);
+  _server->send(302, "text/plain", "Device config updated");
+  LOG_PERF_STOP("webserver-api-config-wifi");
+}
+
 void WebServerHandler::webHandleConfigAdvancedWrite() {
   LOG_PERF_START("webserver-api-config-advanced");
   String id = _server->arg(PARAM_ID);
@@ -654,15 +716,21 @@ void WebServerHandler::webHandleConfigAdvancedRead() {
   // doc[PARAM_HW_GYRO_READ_DELAY] = myAdvancedConfig.getGyroReadDelay();
   doc[PARAM_HW_GYRO_MOVING_THREASHOLD] =
       myAdvancedConfig.getGyroSensorMovingThreashold();
-  doc[PARAM_HW_FORMULA_DEVIATION] =
-      myAdvancedConfig.getMaxFormulaCreationDeviation();
+  doc[PARAM_HW_FORMULA_DEVIATION] = serialized(
+      String(myAdvancedConfig.getMaxFormulaCreationDeviation(), DECIMALS_SG));
   doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = myAdvancedConfig.getWifiPortalTimeout();
   doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = myAdvancedConfig.getWifiConnectTimeout();
   doc[PARAM_HW_PUSH_TIMEOUT] = myAdvancedConfig.getPushTimeout();
   float t = myAdvancedConfig.getDefaultCalibrationTemp();
-  doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
-      myConfig.isTempC() ? t
-                         : reduceFloatPrecision(convertCtoF(t), DECIMALS_TEMP);
+
+  if (myConfig.isTempC()) {
+    doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
+        serialized(String(t, DECIMALS_TEMP));
+  } else {
+    doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
+        serialized(String(convertCtoF(t), DECIMALS_TEMP));
+  }
+
   doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = myAdvancedConfig.getPushIntervalHttp1();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = myAdvancedConfig.getPushIntervalHttp2();
   doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = myAdvancedConfig.getPushIntervalHttp3();
@@ -690,7 +758,7 @@ void WebServerHandler::webHandleFormulaRead() {
   LOG_PERF_START("webserver-api-formula-read");
   Log.notice(F("WEB : webServer callback for /api/formula(get)." CR));
 
-  DynamicJsonDocument doc(500);
+  DynamicJsonDocument doc(1000);
   const RawFormulaData& fd = myConfig.getFormulaData();
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -698,7 +766,7 @@ void WebServerHandler::webHandleFormulaRead() {
 #endif
 
   doc[PARAM_ID] = myConfig.getID();
-  doc[PARAM_ANGLE] = reduceFloatPrecision(myGyro.getAngle(), DECIMALS_TILT);
+  doc[PARAM_ANGLE] = serialized(String(myGyro.getAngle(), DECIMALS_TILT));
   doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   doc[PARAM_GRAVITY_FORMULA] = "";
   doc[PARAM_ERROR] = "";
@@ -721,39 +789,39 @@ void WebServerHandler::webHandleFormulaRead() {
       break;
   }
 
-  doc["a1"] = reduceFloatPrecision(fd.a[0], DECIMALS_TILT);
-  doc["a2"] = reduceFloatPrecision(fd.a[1], DECIMALS_TILT);
-  doc["a3"] = reduceFloatPrecision(fd.a[2], DECIMALS_TILT);
-  doc["a4"] = reduceFloatPrecision(fd.a[3], DECIMALS_TILT);
-  doc["a5"] = reduceFloatPrecision(fd.a[4], DECIMALS_TILT);
-  doc["a6"] = reduceFloatPrecision(fd.a[5], DECIMALS_TILT);
-  doc["a7"] = reduceFloatPrecision(fd.a[6], DECIMALS_TILT);
-  doc["a8"] = reduceFloatPrecision(fd.a[7], DECIMALS_TILT);
-  doc["a9"] = reduceFloatPrecision(fd.a[8], DECIMALS_TILT);
-  doc["a10"] = reduceFloatPrecision(fd.a[9], DECIMALS_TILT);
+  doc["a1"] = serialized(String(fd.a[0], DECIMALS_TILT));
+  doc["a2"] = serialized(String(fd.a[1], DECIMALS_TILT));
+  doc["a3"] = serialized(String(fd.a[2], DECIMALS_TILT));
+  doc["a4"] = serialized(String(fd.a[3], DECIMALS_TILT));
+  doc["a5"] = serialized(String(fd.a[4], DECIMALS_TILT));
+  doc["a6"] = serialized(String(fd.a[5], DECIMALS_TILT));
+  doc["a7"] = serialized(String(fd.a[6], DECIMALS_TILT));
+  doc["a8"] = serialized(String(fd.a[7], DECIMALS_TILT));
+  doc["a9"] = serialized(String(fd.a[8], DECIMALS_TILT));
+  doc["a10"] = serialized(String(fd.a[9], DECIMALS_TILT));
 
   if (myConfig.isGravityPlato()) {
-    doc["g1"] = reduceFloatPrecision(convertToPlato(fd.g[0]), DECIMALS_PLATO);
-    doc["g2"] = reduceFloatPrecision(convertToPlato(fd.g[1]), DECIMALS_PLATO);
-    doc["g3"] = reduceFloatPrecision(convertToPlato(fd.g[2]), DECIMALS_PLATO);
-    doc["g4"] = reduceFloatPrecision(convertToPlato(fd.g[3]), DECIMALS_PLATO);
-    doc["g5"] = reduceFloatPrecision(convertToPlato(fd.g[4]), DECIMALS_PLATO);
-    doc["g6"] = reduceFloatPrecision(convertToPlato(fd.g[5]), DECIMALS_PLATO);
-    doc["g7"] = reduceFloatPrecision(convertToPlato(fd.g[6]), DECIMALS_PLATO);
-    doc["g8"] = reduceFloatPrecision(convertToPlato(fd.g[7]), DECIMALS_PLATO);
-    doc["g9"] = reduceFloatPrecision(convertToPlato(fd.g[8]), DECIMALS_PLATO);
-    doc["g10"] = reduceFloatPrecision(convertToPlato(fd.g[9]), DECIMALS_PLATO);
+    doc["g1"] = serialized(String(convertToPlato(fd.g[0]), DECIMALS_PLATO));
+    doc["g2"] = serialized(String(convertToPlato(fd.g[1]), DECIMALS_PLATO));
+    doc["g3"] = serialized(String(convertToPlato(fd.g[2]), DECIMALS_PLATO));
+    doc["g4"] = serialized(String(convertToPlato(fd.g[3]), DECIMALS_PLATO));
+    doc["g5"] = serialized(String(convertToPlato(fd.g[4]), DECIMALS_PLATO));
+    doc["g6"] = serialized(String(convertToPlato(fd.g[5]), DECIMALS_PLATO));
+    doc["g7"] = serialized(String(convertToPlato(fd.g[6]), DECIMALS_PLATO));
+    doc["g8"] = serialized(String(convertToPlato(fd.g[7]), DECIMALS_PLATO));
+    doc["g9"] = serialized(String(convertToPlato(fd.g[8]), DECIMALS_PLATO));
+    doc["g10"] = serialized(String(convertToPlato(fd.g[9]), DECIMALS_PLATO));
   } else {
-    doc["g1"] = reduceFloatPrecision(fd.g[0], DECIMALS_SG);
-    doc["g2"] = reduceFloatPrecision(fd.g[1], DECIMALS_SG);
-    doc["g3"] = reduceFloatPrecision(fd.g[2], DECIMALS_SG);
-    doc["g4"] = reduceFloatPrecision(fd.g[3], DECIMALS_SG);
-    doc["g5"] = reduceFloatPrecision(fd.g[4], DECIMALS_SG);
-    doc["g6"] = reduceFloatPrecision(fd.g[5], DECIMALS_SG);
-    doc["g7"] = reduceFloatPrecision(fd.g[6], DECIMALS_SG);
-    doc["g8"] = reduceFloatPrecision(fd.g[7], DECIMALS_SG);
-    doc["g9"] = reduceFloatPrecision(fd.g[8], DECIMALS_SG);
-    doc["g10"] = reduceFloatPrecision(fd.g[9], DECIMALS_SG);
+    doc["g1"] = serialized(String(fd.g[0], DECIMALS_SG));
+    doc["g2"] = serialized(String(fd.g[1], DECIMALS_SG));
+    doc["g3"] = serialized(String(fd.g[2], DECIMALS_SG));
+    doc["g4"] = serialized(String(fd.g[3], DECIMALS_SG));
+    doc["g5"] = serialized(String(fd.g[4], DECIMALS_SG));
+    doc["g6"] = serialized(String(fd.g[5], DECIMALS_SG));
+    doc["g7"] = serialized(String(fd.g[6], DECIMALS_SG));
+    doc["g8"] = serialized(String(fd.g[7], DECIMALS_SG));
+    doc["g9"] = serialized(String(fd.g[8], DECIMALS_SG));
+    doc["g10"] = serialized(String(fd.g[9], DECIMALS_SG));
   }
 
 #if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
@@ -762,7 +830,7 @@ void WebServerHandler::webHandleFormulaRead() {
 #endif
 
   String out;
-  out.reserve(500);
+  out.reserve(100);
   serializeJson(doc, out);
   doc.clear();
   _server->send(200, "application/json", out.c_str());
@@ -1065,6 +1133,43 @@ void WebServerHandler::webHandleFormulaWrite() {
   LOG_PERF_STOP("webserver-api-formula-write");
 }
 
+void WebServerHandler::webHandleMigrate() {
+  LOG_PERF_START("webserver-api-migrate");
+  Log.notice(F("WEB : webServer callback for /api/migrate." CR));
+
+#if defined(ESP8266)
+  DynamicJsonDocument doc(500);
+  DeserializationError err = deserializeJson(doc, _server->arg("plain"));
+
+  if (err) {
+    writeErrorLog("CFG : Failed to parse migration data (json)");
+    _server->send(400, "text/plain", F("Unable to parse data"));
+    LOG_PERF_STOP("webserver-api-migrate");
+    return;
+  }
+
+  myConfig.setGravityFormula(doc[PARAM_GRAVITY_FORMULA]);
+
+  RawGyroData gyro = {0, 0, 0, 0, 0, 0};
+  gyro.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];
+  gyro.ay = doc[PARAM_GYRO_CALIBRATION]["ay"];
+  gyro.az = doc[PARAM_GYRO_CALIBRATION]["az"];
+  gyro.gx = doc[PARAM_GYRO_CALIBRATION]["gx"];
+  gyro.gy = doc[PARAM_GYRO_CALIBRATION]["gy"];
+  gyro.gz = doc[PARAM_GYRO_CALIBRATION]["gz"];
+
+  myConfig.setGyroCalibration(gyro);
+  myConfig.saveFile();
+
+  LittleFS.rename("/config.json", "/ispindel.json");
+  _server->send(200, "text/plain", F("Data migrated"));
+#else
+  _server->send(404, "text/plain", F("Not implemented"));
+#endif
+
+  LOG_PERF_STOP("webserver-api-migrate");
+}
+
 void WebServerHandler::webHandlePageNotFound() {
   Log.error(F("WEB : URL not found %s received." CR), _server->uri().c_str());
   _server->send(404, "text/plain", F("URL not found"));
@@ -1129,6 +1234,7 @@ bool WebServerHandler::setupWebServer() {
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
   _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
+  _server->serveStatic("/migrate", LittleFS, "/config.json");
 
   // Dynamic content
   _server->on("/api/clearlog", HTTP_GET,
@@ -1147,6 +1253,10 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webHandleStatus, this));
   _server->on("/api/clearwifi", HTTP_GET,
               std::bind(&WebServerHandler::webHandleClearWIFI, this));
+  _server->on("/api/restart", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleRestart, this));
+  _server->on("/api/migrate", HTTP_POST,
+              std::bind(&WebServerHandler::webHandleMigrate, this));
 
   _server->on("/api/upload", HTTP_POST,
               std::bind(&WebServerHandler::webReturnOK, this),
@@ -1179,6 +1289,9 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/config/advanced", HTTP_POST,
               std::bind(&WebServerHandler::webHandleConfigAdvancedWrite,
                         this));  // Change advanced params
+  _server->on("/api/config/wifi", HTTP_POST,
+              std::bind(&WebServerHandler::webHandleConfigWifi,
+                        this));  // Change wiif settings
   _server->on("/api/test/push", HTTP_GET,
               std::bind(&WebServerHandler::webHandleTestPush,
                         this));  //

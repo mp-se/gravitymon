@@ -4,3 +4,8 @@
 src_docs/_build/*
 .env/*
 *.pyc
+*.json
+*.txt
+gcov/*.gcno
+gcov/*.gcov
+gcov/*.gcda
