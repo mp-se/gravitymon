@@ -9,8 +9,12 @@ v1.4.0 (beta)
 * Changed wifi manager to modified version since the source project is no longer supported by author
 * Added possibility to set wifi settings in config (need manual reboot to apply)
 * Updated dependencies to latest versions as of Aug -23
-* Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don't do a full erase)
+* Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don't do a full erase before flashing)
 * Updated code so it now works with newer versions of ArduniJSON
+* Added option to check for unit test code coverage with WOKWI
+* Added unit tests to improve coverage
+* Fixed issue with ESP32 were reboot didnt work sometimes
+* Published code coverage for unit tests
 
 v1.3.1
 ======

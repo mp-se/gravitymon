@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,12 @@ SOFTWARE.
 #include <tempsensor.hpp>
 #include <webserver.hpp>
 #include <wifi.hpp>
+
+#if defined(ACTIVATE_GCOV)
+extern "C" {
+#include <gcov_public.h>
+}
+#endif
 
 WebServerHandler myWebServerHandler;  // My wrapper class fr webserver functions
 extern bool sleepModeActive;
@@ -231,6 +237,9 @@ void WebServerHandler::webHandleLogClear() {
   } else {
     _server->send(400, "text/plain", "Unknown ID.");
   }
+#if defined(ACTIVATE_GCOV)
+  __gcov_exit();
+#endif
 }
 
 void WebServerHandler::webHandleStatus() {
