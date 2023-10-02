@@ -360,9 +360,14 @@ This option allows you to set the correction temperature used in the automatic t
 
 * **DS18B20 Resolution:**
 
-Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C, 12 bits will give an accuracy of 0.0625C but will also 
-take longer time to measure..
-   
+Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C and and provide longest batterylife. See data below from the datasheet.
+
+- 9 bits = 0.5°C, up to 93 ms reading
+- 10 bits =0.25°C, up to 187 ms reading
+- 11 bits = 0.125°C, up to 375 ms reading
+- 12 bits = 0.0625°C, up to 850 ms reading
+
+
 * **Wifi connect timeout:**
 
 This is the amount of time allowed for a wifi connect. 
