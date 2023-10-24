@@ -169,33 +169,34 @@
 
           <div class="row mb-3">
             <div class="col-md-4 bg-light">Gravity:</div>
-            <div class="col-md-4 bg-light" id="gravity">Loading...</div>
+            <div class="col-md-5 bg-light" id="gravity">Loading...</div>
           </div>
           <div class="row mb-3">
             <div class="col-md-4 bg-light">Temperature:</div>
-            <div class="col-md-4 bg-light" id="temp">Loading...</div>
+            <div class="col-md-5 bg-light" id="temp">Loading...</div>
           </div>
           <div class="row mb-3">
             <div class="col-md-4 bg-light">Angle/Tilt:</div>
-            <div class="col-md-4 bg-light" id="angle">Loading...</div>
+            <div class="col-md-2 bg-light" id="angle">Loading...</div>
+            <div class="col-md-2 bg-light" id="angle-average"></div>
+            <div class="col-md-1 bg-light"><button type="button" class="btn btn-secondary btn-sm" onclick="clearAverageAngle()">Clear ave</button></div>
           </div>
           <div class="row mb-3">
             <div class="col-md-4 bg-light">Battery:</div>
-            <div class="col-md-4 bg-light" id="battery">Loading...</div>
+            <div class="col-md-5 bg-light" id="battery">Loading...</div>
           </div>
-      
+
           <div class="row mb-3">
             <div class="col-md-4 bg-light">Average runtime:</div>
-            <div class="col-md-4 bg-light" id="runtime">Loading...</div>
+            <div class="col-md-5 bg-light" id="runtime">Loading...</div>
           </div>
-      
+
           <div class="row mb-3">
             <div class="col-md-8 bg-light custom-control custom-checkbox">
               <input type="checkbox" class="custom-control-input" name="sleep-mode" id="sleep-mode" disabled>
               <label class="custom-control-label" for="sleep-mode">Do not enter sleep mode when floating (check this if you are collecting angles/tilt for calibration).</label>
-            </div>        
-          </div>      
-      
+            </div>
+          </div>
         </div>
       </div>
 
@@ -209,27 +210,27 @@
           <div class="accordion-body">
             <div class="row mb-3">
               <div class="col-md-4 bg-light">Current version:</div>
-              <div class="col-md-4 bg-light" id="app-ver">Loading...</div>
+              <div class="col-md-5 bg-light" id="app-ver">Loading...</div>
             </div>
             <div class="row mb-3" id="h-app-ver-new" hidden>
               <div class="col-md-4 bg-light">New version:</div>
-              <div class="col-md-4 bg-light" id="app-ver-new">Loading...</div>
+              <div class="col-md-5 bg-light" id="app-ver-new">Loading...</div>
             </div>
             <div class="row mb-3">
               <div class="col-md-4 bg-light">Host name:</div>
-              <div class="col-md-4 bg-light" id="mdns">Loading...</div>
+              <div class="col-md-5 bg-light" id="mdns">Loading...</div>
             </div>
             <div class="row mb-3">
               <div class="col-md-4 bg-light">Device ID:</div>
-              <div class="col-md-4 bg-light" id="id">Loading...</div>
+              <div class="col-md-5 bg-light" id="id">Loading...</div>
             </div>
             <div class="row mb-3">
               <div class="col-md-4 bg-light">Platform:</div>
-              <div class="col-md-4 bg-light" id="platform">Loading...</div>
+              <div class="col-md-5 bg-light" id="platform">Loading...</div>
             </div>
             <div class="row mb-3">
               <div class="col-md-4 bg-light">SSID:</div>
-              <div class="col-md-4 bg-light" id="wifi-ssid">Loading...</div>
+              <div class="col-md-5 bg-light" id="wifi-ssid">Loading...</div>
             </div>
 
             <script>
@@ -267,7 +268,7 @@
                 });
               };
             </script>
-          
+
             <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLog" aria-expanded="false" aria-controls="collapseLog" data-bs-toggle="tooltip" title="Load and show the last 10 errors that has occured on the device">
               View error log
             </button>
@@ -301,6 +302,17 @@
 
   <script type="text/javascript">
     var debug = {};
+    var averageAngle = [];
+
+    function clearAverageAngle() {
+      averageAngle = [];
+    }
+
+    function createAverageAngle(val) {
+      averageAngle.push(val);
+      ave = averageAngle.reduce((a, b) => a + b, 0) / averageAngle.length;
+      return ave;
+    }
 
     window.onload = start;
 
@@ -389,7 +401,7 @@
       var newVersion = false;
 
       var url = "/api/status";
-      // var url = "/test/status.json";
+      //var url = "/test/status.json";
 
       $.getJSON(url, function (cfg) {
         console.log( cfg );
@@ -456,7 +468,10 @@
           $("#gravity").text("Gyro moving");
         } else {
           $("#angle").text(cfg["angle"]);
-        
+
+          ave = createAverageAngle(cfg["angle"]);
+          $("#angle-average").text("Ave: "+ave.toFixed(2)+" ("+averageAngle.length+")");
+
           if( cfg["gravity-format"] == "G")
             $("#gravity").text(cfg["gravity"] + " SG");
           else

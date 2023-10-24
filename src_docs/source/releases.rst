@@ -10,6 +10,7 @@ Features
 ++++++++
 * Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don't do a full erase before flashing)
 * Added possibility to set wifi settings in config (need manual reboot to apply)
++ Added option that shows the average value from the gyro reads + a button to reset that on the web ui. Might make it easier to do calibration of the value jumps around.
 
 Maintenance
 +++++++++++
