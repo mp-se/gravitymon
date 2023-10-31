@@ -96,6 +96,23 @@ extern RunMode runMode;
 #define PIN_DS A8
 #define PIN_VOLT A2
 #define PIN_LED LED_BUILTIN
+#elif defined(ESP32S3)
+// Hardware config for ESP32-s3-mini, iSpindel hardware
+// ------------------------------------------------------
+#include <FS.h>
+#include <LittleFS.h>
+
+#include "esp32s3/rom/rtc.h"
+#define ESPhttpUpdate httpUpdate
+#define ESP_RESET forcedReset
+#define ESP8266WebServer WebServer
+#define PIN_SDA A17
+#define PIN_SCL A15
+#define PIN_CFG1 A11
+#define PIN_CFG2 A10
+#define PIN_DS A8
+#define PIN_VOLT A2
+#define PIN_LED LED_BUILTIN
 #elif defined(ESP32LITE)
 // Hardware config for ESP32-lite, Floaty hardware
 // ------------------------------------------------------
