@@ -917,6 +917,10 @@
         var pwrActive = 280; // mA per hour (260-300 mA)
       } else if(platform == "esp32s2" && !wifi) {
         var pwrActive = 160; 
+      } else if(platform == "esp32s3" && wifi) {
+        var pwrActive = 300; // mA per hour (285-355 mA)
+      } else if(platform == "esp32s3" && !wifi) {
+        var pwrActive = 180; 
       } else if(platform == "esp32lite" && wifi) {
         var pwrActive = 330; // mA per hour (260-379 mA)
       } else if(platform == "esp32lite" && !wifi) {

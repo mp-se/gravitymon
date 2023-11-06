@@ -335,7 +335,7 @@ bool ESP_WiFiManager::startConfigPortal(char const* apName,
     dnsServer->processNextRequest();
     server->handleClient();
 
-#if defined(ESP32S2) || defined(ESP32C3)
+#if defined(ESP32S2) || defined(ESP32C3) || defined(ESP32S3)
     delay(1);
 #endif
 

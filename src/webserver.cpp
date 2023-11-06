@@ -100,6 +100,8 @@ void WebServerHandler::webHandleConfig() {
   doc[PARAM_PLATFORM] = "esp32c3";
 #elif defined(ESP32S2)
   doc[PARAM_PLATFORM] = "esp32s2";
+#elif defined(ESP32S3)
+  doc[PARAM_PLATFORM] = "esp32s3";
 #elif defined(ESP32LITE)
   doc[PARAM_PLATFORM] = "esp32lite";
 #else  // esp32 mini
@@ -306,6 +308,8 @@ void WebServerHandler::webHandleStatus() {
   doc[PARAM_PLATFORM] = "esp32c3";
 #elif defined(ESP32S2)
   doc[PARAM_PLATFORM] = "esp32s2";
+#elif defined(ESP32S3)
+  doc[PARAM_PLATFORM] = "esp32s3";
 #elif defined(ESP32LITE)
   doc[PARAM_PLATFORM] = "esp32lite";
 #else  // esp32 mini
@@ -1180,6 +1184,7 @@ bool WebServerHandler::setupWebServer() {
   _server = new ESP8266WebServer();
   MDNS.begin(myConfig.getMDNS());
   MDNS.addService("http", "tcp", 80);
+  MDNS.addService("gravitymon", "tcp", 80);
 
   // Show files in the filessytem at startup
 #if defined(ESP8266)
