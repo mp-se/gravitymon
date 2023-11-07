@@ -1058,7 +1058,7 @@
       $.getJSON(url, function (cfg) {
         console.log( cfg );
 
-        if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3" || cfg["platform"]=="esp32lite") {
+        if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3" || cfg["platform"]=="esp32s3" || cfg["platform"]=="esp32lite") {
           $('#ble').prop('disabled', false);
           $("#ble").val(cfg["ble"]);
         }
