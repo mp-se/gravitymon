@@ -108,10 +108,10 @@ extern RunMode runMode;
 #define ESP8266WebServer WebServer
 #define PIN_SDA A17
 #define PIN_SCL A15
-#define PIN_CFG1 A11
-#define PIN_CFG2 A10
-#define PIN_DS A8
-#define PIN_VOLT A2
+#define PIN_CFG1 A10
+#define PIN_CFG2 A9
+#define PIN_DS A12
+#define PIN_VOLT A1
 #define PIN_LED LED_BUILTIN
 #elif defined(ESP32LITE)
 // Hardware config for ESP32-lite, Floaty hardware
