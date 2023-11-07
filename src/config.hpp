@@ -157,6 +157,8 @@ class Config {
   float _voltageFactor = 1.3;
 #elif defined(ESP32S2)
   float _voltageFactor = 0.59;
+#elif defined(ESP32S3)
+  float _voltageFactor = 0.59;
 #elif defined(ESP32LITE)
   float _voltageFactor = 1.59;
 #else  // ESP32

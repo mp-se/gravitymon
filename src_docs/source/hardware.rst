@@ -37,6 +37,7 @@ Gravitymon supports a number of ESP32 boards that offers bluetooth support.
 * esp32d1 mini, this was the first board i tried which is a smaller form factor of the first generetion esp32 with 2 cores. Slow on connecting to wifi is the main downside. 
 * esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support. Don't buy v1.0 since that has a faulty wifi antenna.
 * esp32s2 mini, similar to the c3 board but without bluetooth support. 
+* esp32s3 mini, similar to the s2 board but with bluetooth support. 
 
 It's possible to use this PCB and mount an ESP32 mini on top of that (c3 or s2 are prefered). The esp32 d1 mini is a larger formfactor and can be hard to fit into the tube.
 
@@ -64,6 +65,11 @@ ESP32s2 mini
 ++++++++++++
 
 This is model is fully supported by gravitymon. Same setup as for ESP32C3 mini.
+
+ESP32s3 mini
+++++++++++++
+
+This is model is fully supported by gravitymon. Same setup as for ESP32S2 mini.
 
 ESP32 d1 mini
 +++++++++++++

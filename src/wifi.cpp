@@ -339,6 +339,8 @@ bool WifiConnection::updateFirmware() {
   serverPath += "firmware32c3v1.bin";
 #elif defined(ESP32S2)
   serverPath += "firmware32s2.bin";
+#elif defined(ESP32S3)
+  serverPath += "firmware32s3.bin";
 #elif defined(ESP32LITE)
   serverPath += "firmware32lite.bin";
 #else  // defined (ESP32)
