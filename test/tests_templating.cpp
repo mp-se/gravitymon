@@ -25,7 +25,7 @@ SOFTWARE.
 
 #include <config.hpp>
 #include <templating.hpp>
-#include <WiFi.h>
+#include <ESP8266WiFi.h>
 
 test(template_applyTemplate1) {
   TemplatingEngine e;
