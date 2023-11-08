@@ -30,6 +30,8 @@ SOFTWARE.
 #include <NimBLEBeacon.h>
 #include <NimBLEDevice.h>
 
+#include <helper.hpp>
+
 class BleSender {
  private:
   BLEAdvertising* _advertising;

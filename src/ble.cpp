@@ -24,7 +24,6 @@ SOFTWARE.
 #if defined(ESP32) && !defined(ESP32S2)
 
 #include <ble.hpp>
-#include <helper.hpp>
 #include <string>
 
 // Tilt UUID variants and data format, based on tilt-sim
@@ -100,7 +99,7 @@ void BleSender::sendData(float tempF, float gravSG) {
   _advertising->setScanResponseData(oScanResponseData);
   _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
 
-  if(!_advertising->start())
+  if (!_advertising->start())
     Log.error(F("BLE : Unable to start advertising beacon" CR));
 
   delay(100);
