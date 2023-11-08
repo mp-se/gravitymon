@@ -39,8 +39,8 @@ class PushTarget {
   WiFiClientSecure _wifiSecure;
   HTTPClient _http;
   HTTPClient _httpSecure;
-  int _lastCode;
-  bool _lastSuccess;
+  int _lastCode = 0;
+  bool _lastSuccess = false;
 
   void sendHttpPost(TemplatingEngine& engine, bool isSecure, int index);
   void sendHttpGet(TemplatingEngine& engine, bool isSecure);

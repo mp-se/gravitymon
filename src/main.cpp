@@ -293,7 +293,8 @@ bool loopReadGravity() {
     stableGyroMillis = millis();  // Reset timer
 
     LOG_PERF_START("loop-temp-read");
-    float tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
+    myTempSensor.readSensor(myConfig.isGyroTemp());
+    float tempC = myTempSensor.getTempC();
     LOG_PERF_STOP("loop-temp-read");
 
     float gravitySG = calculateGravity(angle, tempC);

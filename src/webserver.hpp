@@ -25,14 +25,16 @@ SOFTWARE.
 #define SRC_WEBSERVER_HPP_
 
 #if defined(ESP8266)
-#include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 #define MAX_SKETCH_SPACE 1044464
 #else
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 #include <ESPmDNS.h>
 #include <Update.h>
-#include <WebServer.h>
 #include <WiFi.h>
 #define MAX_SKETCH_SPACE 1835008
 #endif
@@ -71,108 +73,120 @@ extern const uint8_t backupHtmEnd[] asm("_binary_html_backup_min_htm_end");
 
 class WebServerHandler {
  private:
-  ESP8266WebServer* _server = 0;
+  AsyncWebServer *_server = 0;
   File _uploadFile;
+  int _uploadedSize = 0;
   int _lastFormulaCreateError = 0;
   int _uploadReturn = 200;
+  uint32_t _rebootTimer = 0;
+  bool _rebootTask = false;
+  bool _sensorCalibrationTask = false;
+  bool _pushTestTask = false;
+  String _pushTestData;
 
-  void webHandleConfig();
-  void webHandleFormulaWrite();
-  void webHandleFormulaRead();
-  void webHandleConfigAdvancedRead();
-  void webHandleConfigAdvancedWrite();
-  void webHandleConfigHardware();
-  void webHandleConfigGravity();
-  void webHandleConfigPush();
-  void webHandleConfigDevice();
-  void webHandleConfigFormatRead();
-  void webHandleConfigFormatWrite();
-  void webHandleConfigWifi();
-  void webHandleTestPush();
-  void webHandleStatusSleepmode();
-  void webHandleClearWIFI();
-  void webHandleStatus();
-  void webHandleFactoryDefaults();
-  void webHandleCalibrate();
-  void webHandleUploadFile();
-  void webHandleLogClear();
-  void webHandlePageNotFound();
-  void webHandleRestart();
-  void webHandleMigrate();
+  void webHandleConfig(AsyncWebServerRequest *request);
+  void webHandleFormulaWrite(AsyncWebServerRequest *request);
+  void webHandleFormulaRead(AsyncWebServerRequest *request);
+  void webHandleConfigAdvancedRead(AsyncWebServerRequest *request);
+  void webHandleConfigAdvancedWrite(AsyncWebServerRequest *request);
+  void webHandleConfigHardware(AsyncWebServerRequest *request);
+  void webHandleConfigGravity(AsyncWebServerRequest *request);
+  void webHandleConfigPush(AsyncWebServerRequest *request);
+  void webHandleConfigDevice(AsyncWebServerRequest *request);
+  void webHandleConfigFormatRead(AsyncWebServerRequest *request);
+  void webHandleConfigFormatWrite(AsyncWebServerRequest *request);
+  void webHandleConfigWifi(AsyncWebServerRequest *request);
+  void webHandleTestPush(AsyncWebServerRequest *request);
+  void webHandleTestPushStatus(AsyncWebServerRequest *request);
+  void webHandleStatusSleepmode(AsyncWebServerRequest *request);
+  void webHandleClearWIFI(AsyncWebServerRequest *request);
+  void webHandleStatus(AsyncWebServerRequest *request);
+  void webHandleFactoryDefaults(AsyncWebServerRequest *request);
+  void webHandleCalibrate(AsyncWebServerRequest *request);
+  void webHandleCalibrateStatus(AsyncWebServerRequest *request);
+  void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
+                           size_t index, uint8_t *data, size_t len, bool final);
+  void webHandleLogClear(AsyncWebServerRequest *request);
+  void webHandlePageNotFound(AsyncWebServerRequest *request);
+  void webHandleRestart(AsyncWebServerRequest *request);
+  void webHandleMigrate(AsyncWebServerRequest *request);
 
   String readFile(String fname);
   bool writeFile(String fname, String data);
 
-  String getRequestArguments();
+  String getRequestArguments(AsyncWebServerRequest *request);
 
   // Inline functions.
-  void webReturnOK() { _server->send(_uploadReturn); }
+  void webReturnOK(AsyncWebServerRequest *request) {
+    request->send(_uploadReturn);
+  }
 #if defined(ESP8266)
-  void webReturnIndexHtm() {
-    _server->send_P(200, "text/html", (const char*)gIndexHtmData,
+  void webReturnIndexHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)gIndexHtmData,
                     gIndexHtmSize);
   }
-  void webReturnConfigHtm() {
-    _server->send_P(200, "text/html", (const char*)gConfigHtmData,
+  void webReturnConfigHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)gConfigHtmData,
                     gConfigHtmSize);
   }
-  void webReturnCalibrationHtm() {
-    _server->send_P(200, "text/html", (const char*)gCalibrationHtmData,
+  void webReturnCalibrationHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)gCalibrationHtmData,
                     gCalibrationHtmSize);
   }
-  void webReturnFormatHtm() {
-    _server->send_P(200, "text/html", (const char*)gFormatHtmData,
+  void webReturnFormatHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)gFormatHtmData,
                     gFormatHtmSize);
   }
-  void webReturnAboutHtm() {
-    _server->send_P(200, "text/html", (const char*)gAboutHtmData,
+  void webReturnAboutHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)gAboutHtmData,
                     gAboutHtmSize);
   }
-  void webReturnTestHtm() {
-    _server->send_P(200, "text/html", (const char*)gTestHtmData, gTestHtmSize);
+  void webReturnTestHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)gTestHtmData,
+                    gTestHtmSize);
   }
-  void webReturnFirmwareHtm() {
-    _server->send_P(200, "text/html", (const char*)gFirmwareHtmData,
+  void webReturnFirmwareHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)gFirmwareHtmData,
                     gFirmwareHtmSize);
   }
-  void webReturnBackupHtm() {
-    _server->send_P(200, "text/html", (const char*)gBackupHtmData,
+  void webReturnBackupHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)gBackupHtmData,
                     gBackupHtmSize);
   }
 #else  // ESP32
-  void webReturnIndexHtm() {
-    _server->send_P(200, "text/html", (const char*)indexHtmStart,
-                    strlen(reinterpret_cast<const char*>(&indexHtmStart[0])));
+  void webReturnIndexHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)indexHtmStart,
+                    strlen(reinterpret_cast<const char *>(&indexHtmStart[0])));
   }
-  void webReturnConfigHtm() {
-    _server->send_P(200, "text/html", (const char*)configHtmStart,
-                    strlen(reinterpret_cast<const char*>(&configHtmStart[0])));
+  void webReturnConfigHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)configHtmStart,
+                    strlen(reinterpret_cast<const char *>(&configHtmStart[0])));
   }
-  void webReturnCalibrationHtm() {
-    _server->send_P(
-        200, "text/html", (const char*)calibrationHtmStart,
-        strlen(reinterpret_cast<const char*>(&calibrationHtmStart[0])));
+  void webReturnCalibrationHtm(AsyncWebServerRequest *request) {
+    request->send_P(
+        200, "text/html", (const uint8_t *)calibrationHtmStart,
+        strlen(reinterpret_cast<const char *>(&calibrationHtmStart[0])));
   }
-  void webReturnFormatHtm() {
-    _server->send_P(200, "text/html", (const char*)formatHtmStart,
-                    strlen(reinterpret_cast<const char*>(&formatHtmStart[0])));
+  void webReturnFormatHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)formatHtmStart,
+                    strlen(reinterpret_cast<const char *>(&formatHtmStart[0])));
   }
-  void webReturnAboutHtm() {
-    _server->send_P(200, "text/html", (const char*)aboutHtmStart,
-                    strlen(reinterpret_cast<const char*>(&aboutHtmStart[0])));
+  void webReturnAboutHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)aboutHtmStart,
+                    strlen(reinterpret_cast<const char *>(&aboutHtmStart[0])));
   }
-  void webReturnTestHtm() {
-    _server->send_P(200, "text/html", (const char*)testHtmStart,
-                    strlen(reinterpret_cast<const char*>(&testHtmStart[0])));
+  void webReturnTestHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)testHtmStart,
+                    strlen(reinterpret_cast<const char *>(&testHtmStart[0])));
   }
-  void webReturnFirmwareHtm() {
-    _server->send_P(
-        200, "text/html", (const char*)firmwareHtmStart,
-        strlen(reinterpret_cast<const char*>(&firmwareHtmStart[0])));
+  void webReturnFirmwareHtm(AsyncWebServerRequest *request) {
+    request->send_P(
+        200, "text/html", (const uint8_t *)firmwareHtmStart,
+        strlen(reinterpret_cast<const char *>(&firmwareHtmStart[0])));
   }
-  void webReturnBackupHtm() {
-    _server->send_P(200, "text/html", (const char*)backupHtmStart,
-                    strlen(reinterpret_cast<const char*>(&backupHtmStart[0])));
+  void webReturnBackupHtm(AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", (const uint8_t *)backupHtmStart,
+                    strlen(reinterpret_cast<const char *>(&backupHtmStart[0])));
   }
 #endif
 

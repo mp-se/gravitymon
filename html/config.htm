@@ -852,14 +852,43 @@
       $("#gravity-formula").val("0.00162535*tilt+0.96347412");
     });
 
+
+    function checkCalibration() {
+      setButtonDisabled(true);
+      $.ajax( { 
+        type: "GET",  
+        url: "/api/calibrate/status", 
+        data: { }, 
+        success: function(result) { 
+          if( result["status"] == true) {
+            console.log("Calibration not yet ready");
+            setTimeout(checkCalibration, 2000);
+          } else {
+            showSuccess('Calibration of device was completed successfully.'); 
+            getConfig(); 
+            setButtonDisabled(false);
+          }
+        },
+        error: function(result) { 
+          showError('Unable to calibrate device.'); 
+          setButtonDisabled(false);
+        }
+      });
+    };
+
     $("#calibrate-btn").click(function(e){
       console.log( "Calibrating..." );
       $.ajax( { 
         type: "POST",  
         url: "/api/calibrate", 
         data: { id: $("#id1").val() }, 
-        success: function(result) { showSuccess('Calibration of device was completed successfully.'); getConfig(); },
-        error: function(result) { showError('Unable to calibrate device.'); }
+        success: function(result) { 
+          console.log("In success, scheduling status check");
+          setTimeout(checkCalibration, 2000);
+        },
+        error: function(result) { 
+          showError('Unable to calibrate device.'); 
+        }
       } );
     });
 

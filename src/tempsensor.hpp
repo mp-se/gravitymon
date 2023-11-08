@@ -28,14 +28,13 @@ class TempSensor {
  private:
   bool _hasSensor = false;
   float _tempSensorAdjC = 0;
-  float getValue(bool useGyro);
+  float _temperatureC = 0;
 
  public:
   void setup();
+  void readSensor(bool useGyro = false);
   bool isSensorAttached() { return _hasSensor; }
-  float getTempC(bool useGyro = false) {
-    return getValue(useGyro) + _tempSensorAdjC;
-  }
+  float getTempC() { return _temperatureC + _tempSensorAdjC; }
 };
 
 extern TempSensor myTempSensor;

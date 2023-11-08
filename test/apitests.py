@@ -1,4 +1,4 @@
-import unittest, requests, json, time
+import unittest, requests, json, time, urllib3
 
 ver  = "1.4.0"
 
@@ -7,9 +7,10 @@ ver  = "1.4.0"
 #id = "000110"
 
 # Physical device
-host = "192.168.1.167"
-id = "f47448"
-skipFactory = True # enable when coverate is collected
+host = "192.168.1.195"
+id = "6ac6f6"
+skipFactory = False # enable when coverate is collected
+debugResult = False
 
 # python3 -m unittest -v apitests
 # python3 -m unittest -v apitests.API.test_config_1
@@ -23,24 +24,35 @@ def call_api_get( path ):
     url = "http://" + host + path
     return requests.get( url )
 
+def do_factory_reset():
+    try:
+        r = call_api_get( "/api/factory?id=" + id)
+    except urllib3.exceptions.ProtocolError:
+        pass # Normal when device resets with async server
+    except requests.exceptions.ConnectionError:
+        pass # Normal when device resets with async server
+
+
 class API(unittest.TestCase):
 
     # Do factory reset for testing
     def test_01_factory(self):
         r = call_api_get( "/api/status" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
         if not skipFactory: 
-            r = call_api_get( "/api/factory?id=" + j["id"])
+            do_factory_reset()
             time.sleep(4)
 
     # Check that all parameters exist
     def test_02_status(self):
         if not skipFactory: 
-            call_api_get( "/api/factory?id=" + id)
+            do_factory_reset()
             time.sleep(4)
         r = call_api_get( "/api/status" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
@@ -75,6 +87,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["http-push-h1"], "header1")
@@ -101,6 +114,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
@@ -146,6 +160,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
@@ -159,6 +174,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
@@ -174,6 +190,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
@@ -189,6 +206,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gravity-format"], "P")
@@ -201,6 +219,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gravity-temp-adjustment"], True)
@@ -210,6 +229,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gravity-temp-adjustment"], False)
@@ -220,6 +240,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gyro-temp"], True)
@@ -229,6 +250,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gyro-temp"], False)
@@ -253,6 +275,7 @@ class API(unittest.TestCase):
 
         # Checks that values from last call was stored
         r = call_api_get( "/api/formula" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gravity-formula"], "")
@@ -265,6 +288,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200) 
 
         r = call_api_get( "/api/formula" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gravity-formula"], "0.00000909*tilt^2+0.00124545*tilt+0.96445455")
@@ -284,6 +308,7 @@ class API(unittest.TestCase):
 
         # Checks that values from last call was stored
         r = call_api_get( "/api/formula" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
@@ -318,6 +343,7 @@ class API(unittest.TestCase):
 
         # Checks that values from last call was stored
         r = call_api_get( "/api/formula" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["error"], "Not enough values to create formula, need at least 3 angles.")
@@ -334,6 +360,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200) 
 
         r = call_api_get( "/api/formula" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         #self.assertEqual(j["gravity-formula"], "0.00000001*tilt^2+0.00007752*tilt+1.00193428")  # 1.6 max deviation
@@ -349,40 +376,70 @@ class API(unittest.TestCase):
 
     def test_21_pushtest_2(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=http-1" )
-        j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], False)
         self.assertEqual(j["enabled"], True)
         self.assertEqual(j["code"], -1)
 
     def test_22_pushtest_3(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=http-2" )
-        j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], False)
         self.assertEqual(j["enabled"], True)
         self.assertEqual(j["code"], -1)
 
     def test_23_pushtest_4(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=http-3" )
-        j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], False)
         self.assertEqual(j["enabled"], True)
         self.assertEqual(j["code"], -1)
 
     def test_24_pushtest_5(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=influxdb" )
-        j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], False)
         self.assertEqual(j["enabled"], True)
         self.assertEqual(j["code"], -1)
 
     def test_25_pushtest_6(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=mqtt" )
-        j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], False)
         self.assertEqual(j["enabled"], True)
         self.assertEqual(j["code"], -3)
@@ -390,7 +447,7 @@ class API(unittest.TestCase):
     # Check format api
     def test_26_push_1(self):
         if not skipFactory: 
-            r = call_api_get( "/api/factory?id=" + id)
+            do_factory_reset()
             time.sleep(4)
 
         # Note: The endpoint test.php does not validate the payload, it only accepts the request and return 200.
@@ -400,27 +457,50 @@ class API(unittest.TestCase):
 
     def test_27_push_2(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=http-1" )
-        j = json.loads(r.text)
-        print(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], True)
 
     def test_28_push_3(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=http-2" )
-        j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], True)
 
     def test_29_push_4(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=http-3" )
-        j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], True)
 
     def test_30_push_5(self):
         r = call_api_get( "/api/test/push?id=" + id + "&format=mqtt" )
-        j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
+        while True:
+            time.sleep(4)
+            r = call_api_get( "/api/test/push/status" )
+            if debugResult: print(r.text)
+            j = json.loads(r.text)
+            if j["status"] == False:
+                break
         self.assertEqual(j["success"], True)
 
     def test_31_push_6(self):
@@ -455,6 +535,7 @@ class API(unittest.TestCase):
 
     def test_37_format_6(self):
         r = call_api_get( "/api/config/format" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
@@ -491,6 +572,7 @@ class API(unittest.TestCase):
 
     def test_43_format_C(self):
         r = call_api_get( "/api/config/format" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         #print(j["http-1"])
@@ -507,20 +589,22 @@ class API(unittest.TestCase):
     # Toggle sleep mode
     def test_44_toggle_sleepmode_1(self):
         j = { "id": id, "sleep-mode": "on" }
-        r = call_api_post( "/api/status/sleepmode" )
+        r = call_api_post( "/api/status/sleepmode", j)
         self.assertEqual(r.status_code, 200)
-
+        time.sleep(1)
         r = call_api_get( "/api/status" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["sleep-mode"], True)
 
     def test_45_toggle_sleepmode_2(self):
         j = { "id": id, "sleep-mode": "off" }
-        r = call_api_post( "/api/status/sleepmode" )
+        r = call_api_post( "/api/status/sleepmode", j)
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/status" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["sleep-mode"], False)
@@ -550,16 +634,17 @@ class API(unittest.TestCase):
     # Check advanced
     def test_50_test_advanced_config_1(self):
         r = call_api_get( "/api/status" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
         if not skipFactory: 
-            r = call_api_get( "/api/factory?id=" + j["id"])
+            do_factory_reset()
             time.sleep(4)
 
         r = call_api_get( "/api/config/advanced" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
-        #print(j)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gyro-read-count"], 50)
         self.assertEqual(j["tempsensor-resolution"], 9)
@@ -584,6 +669,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
     
         r = call_api_get( "/api/config/advanced" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["gyro-read-count"], 51)
@@ -607,6 +693,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
     
         r = call_api_get( "/api/config/advanced" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["ignore-low-angles"], True)
@@ -616,6 +703,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
     
         r = call_api_get( "/api/config/advanced" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["ignore-low-angles"], False)
@@ -627,6 +715,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         r = call_api_get( "/api/config/format" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["mqtt"], format)
@@ -641,6 +730,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200) 
 
         r = call_api_get( "/api/formula" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["error"], 'Unable to find an accurate formula based on input, check error log and graph below.')
@@ -654,6 +744,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200) 
 
         r = call_api_get( "/api/formula" )
+        if debugResult: print(r.text)
         j = json.loads(r.text)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["error"], '')
@@ -666,7 +757,7 @@ class API(unittest.TestCase):
 
     def test_99_clearlog(self):
         # if build has coverage enagled this will dump the data to the serial console.
-        r = call_api_get( "/api/clearlog" )
+        r = call_api_get( "/api/clearlog?id=" + id)
         self.assertEqual(r.status_code, 200)
 
 if __name__ == '__main__':
