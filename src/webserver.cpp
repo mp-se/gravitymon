@@ -121,6 +121,17 @@ void WebServerHandler::webHandleConfig(AsyncWebServerRequest *request) {
   LOG_PERF_STOP("webserver-api-config");
 }
 
+void WebServerHandler::webReturnOK(AsyncWebServerRequest *request) {
+  _rebootTask = !Update.hasError();
+  Log.notice(
+      F("WEB : Upload completed closing session, return=%d, success=%s." CR),
+      _uploadReturn, _rebootTask ? "Yes" : "No");
+  AsyncWebServerResponse *response = request->beginResponse(
+      _uploadReturn, "text/plain", _rebootTask ? "SUCCESS" : "ERROR");
+  response->addHeader("Connection", "close");
+  request->send(response);
+}
+
 void WebServerHandler::webHandleUploadFile(AsyncWebServerRequest *request,
                                            String filename, size_t index,
                                            uint8_t *data, size_t len,
@@ -165,9 +176,6 @@ void WebServerHandler::webHandleUploadFile(AsyncWebServerRequest *request,
     if (Update.end(true)) {
       // Calling reset here will not wait for all the data to be sent, lets wait
       // a second before rebooting in loop.
-      Log.notice(F("WEB : Scheduling reboot." CR));
-      _rebootTimer = millis();
-      _rebootTask = true;
     } else {
       Log.error(F("WEB : Failed to finish firmware flashing, error %d" CR),
                 Update.getError());
@@ -263,6 +271,14 @@ void WebServerHandler::webHandleLogClear(AsyncWebServerRequest *request) {
 void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   LOG_PERF_START("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
+
+  // This is a fallback since sometimes the loop() doesent run after firmware
+  // update...
+  if (_rebootTask) {
+    Log.notice(F("WEB : Rebooting using fallback..." CR));
+    delay(500);
+    ESP_RESET();
+  }
 
   DynamicJsonDocument doc(500);
 
@@ -1361,11 +1377,9 @@ void WebServerHandler::loop() {
 #endif
 
   if (_rebootTask) {
-    if (abs((int32_t)(millis() - _rebootTimer)) > 1000) {
-      Log.notice(F("WEB : Rebooting..." CR));
-      delay(500);
-      ESP_RESET();
-    }
+    Log.notice(F("WEB : Rebooting..." CR));
+    delay(500);
+    ESP_RESET();
   }
 
   if (_sensorCalibrationTask) {

@@ -78,10 +78,9 @@ class WebServerHandler {
   int _uploadedSize = 0;
   int _lastFormulaCreateError = 0;
   int _uploadReturn = 200;
-  uint32_t _rebootTimer = 0;
-  bool _rebootTask = false;
-  bool _sensorCalibrationTask = false;
-  bool _pushTestTask = false;
+  volatile bool _rebootTask = false;
+  volatile bool _sensorCalibrationTask = false;
+  volatile bool _pushTestTask = false;
   String _pushTestData;
 
   void webHandleConfig(AsyncWebServerRequest *request);
@@ -115,11 +114,8 @@ class WebServerHandler {
   bool writeFile(String fname, String data);
 
   String getRequestArguments(AsyncWebServerRequest *request);
+  void webReturnOK(AsyncWebServerRequest *request);
 
-  // Inline functions.
-  void webReturnOK(AsyncWebServerRequest *request) {
-    request->send(_uploadReturn);
-  }
 #if defined(ESP8266)
   void webReturnIndexHtm(AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", (const uint8_t *)gIndexHtmData,
