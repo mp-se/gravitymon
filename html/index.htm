@@ -179,7 +179,7 @@
             <div class="col-md-4 bg-light">Angle/Tilt:</div>
             <div class="col-md-2 bg-light" id="angle">Loading...</div>
             <div class="col-md-2 bg-light" id="angle-average"></div>
-            <div class="col-md-1 bg-light"><button type="button" class="btn btn-secondary btn-sm" onclick="clearAverageAngle()">Clear ave</button></div>
+            <div class="col-md-1 bg-light"><button type="button" id="clear-btn" class="btn btn-secondary btn-sm" onclick="clearAverageAngle()">Clear ave</button></div>
           </div>
           <div class="row mb-3">
             <div class="col-md-4 bg-light">Battery:</div>
@@ -269,15 +269,15 @@
               };
             </script>
 
-            <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLog" aria-expanded="false" aria-controls="collapseLog" data-bs-toggle="tooltip" title="Load and show the last 10 errors that has occured on the device">
+            <button class="btn btn-primary btn-sm" id="log-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLog" aria-expanded="false" aria-controls="collapseLog" data-bs-toggle="tooltip" title="Load and show the last 10 errors that has occured on the device">
               View error log
             </button>
 
-            <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="tooltip" name="github-btn" id="github-btn" title="Go to github and place a issue">
+            <button class="btn btn-secondary btn-sm" id="issue-btn" type="button" data-bs-toggle="tooltip" name="github-btn" id="github-btn" title="Go to github and place a issue">
               Submit a issue on github
             </button>
 
-            <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupport" aria-expanded="false" aria-controls="collapseSupport" data-bs-toggle="tooltip" name="support-btn" id="support-btn" title="Collect data relevant for a support case">
+            <button class="btn btn-secondary btn-sm" id="support-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupport" aria-expanded="false" aria-controls="collapseSupport" data-bs-toggle="tooltip" name="support-btn" id="support-btn" title="Collect data relevant for a support case">
               Gather support information
             </button>
 

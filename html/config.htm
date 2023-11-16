@@ -111,15 +111,15 @@
           Do you really want to restore to factory defaults?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="factory-btn" data-bs-dismiss="modal">Confirm</button>
+          <button type="button" class="btn btn-secondary" id="factory-close-btn" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="factory-save-btn" data-bs-dismiss="modal">Confirm</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    $("#factory-btn").click(function(e){
+    $("#factory-save-btn").click(function(e){
       console.log( "Restore factory defaults..." );
       $.ajax( { 
         type: "GET",  
@@ -168,10 +168,10 @@
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" id="wifi-close-btn" data-bs-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-primary" id="wifi-save-btn">Save</button>
             </div>
-    
+
           </form>
         </div>
       </div>
@@ -182,7 +182,7 @@
   <div class="accordion" id="accordion">
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingDevice">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
+        <button class="accordion-button" id="headingDevice-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
           <b>Device settings</b>
         </button>
       </h2>
@@ -230,8 +230,8 @@
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="device-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#yesNoModal" data-bs-toggle="tooltip" title="Restore factory defaults">Factory defaults</button>
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#wifiModal" data-bs-toggle="tooltip" title="Update wifi settings">Wifi settings</button>
+                <button type="button" class="btn btn-secondary" id="factory-btn" data-bs-toggle="modal" data-bs-target="#yesNoModal" data-bs-toggle="tooltip" title="Restore factory defaults">Factory defaults</button>
+                <button type="button" class="btn btn-secondary" id="wifi-btn" data-bs-toggle="modal" data-bs-target="#wifiModal" data-bs-toggle="tooltip" title="Update wifi settings">Wifi settings</button>
                 <button type="button" class="btn btn-secondary" id="restart-btn" data-bs-toggle="tooltip" title="Restart device">Restart</button>
               </div>
             </div>
@@ -281,7 +281,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingPush">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush" aria-expanded="false" aria-controls="collapsePush">
+        <button class="accordion-button collapsed" id="headingPush-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush" aria-expanded="false" aria-controls="collapsePush">
           <b>Push settings</b>
         </button>
       </h2>
@@ -301,7 +301,7 @@
                 <input type="url" maxlength="120" class="form-control" name="http-push" id="http-push" placeholder="http://www.internet.com/path" data-bs-toggle="tooltip" title="URL to push target, use format http://servername.com/resource (Supports http and https)">
               </div>
               <div class="col-sm-2">
-                <button type="button" class="btn btn-secondary" data-field1="#http-push-h1" data-field2="#http-push-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
+                <button type="button" class="btn btn-secondary" id="header1-btn" data-field1="#http-push-h1" data-field2="#http-push-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
               </div>
             </div>
 
@@ -311,7 +311,7 @@
                 <input type="url" maxlength="120" class="form-control" name="http-push2" id="http-push2" placeholder="http://www.internet.com/path" data-bs-toggle="tooltip" title="URL to push target, use format http://servername.com/resource (Supports http and https)">
               </div>
               <div class="col-sm-2">
-                <button type="button" class="btn btn-secondary" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
+                <button type="button" class="btn btn-secondary" id="header2-btn" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
               </div>
             </div>
 
@@ -350,7 +350,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingPush2">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush2" aria-expanded="false" aria-controls="collapsePush2">
+        <button class="accordion-button collapsed" id="headingPush2-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush2" aria-expanded="false" aria-controls="collapsePush2">
           <b>Push settings (2)</b>
         </button>
       </h2>
@@ -434,7 +434,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingGravity">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGravity" aria-expanded="false" aria-controls="collapseGravity">
+        <button class="accordion-button collapsed" id="headingGravity-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGravity" aria-expanded="false" aria-controls="collapseGravity">
           <b>Gravity Settings</b>
         </button>
       </h2>
@@ -459,7 +459,7 @@
                 </div>
               </fieldset>
             </div>
-            
+
             <div class="row mb-3">
               <label for="gravity-formula" class="col-sm-2 col-form-label">Formula</label>
               <div class="col-sm-10">
@@ -489,7 +489,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingHardware">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHardware" aria-expanded="false" aria-controls="collapseHardware">
+        <button class="accordion-button collapsed" id="headingHardware-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHardware" aria-expanded="false" aria-controls="collapseHardware">
           <b>Hardware Settings</b>
         </button>
       </h2>
@@ -627,7 +627,7 @@
     </div>  
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingAdvanced">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
+        <button class="accordion-button collapsed" id="headingAdvanced-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
           <b>Advanced Software Settings (use with caution)</b>
         </button>
       </h2>
@@ -797,7 +797,7 @@
           <input type="text" id="field2" hidden>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  data-bs-toggle="tooltip" title="Close dialog, press the save button in the section to save data">Close</button>
+          <button type="button" class="btn btn-primary" id="header-close-btn" data-bs-dismiss="modal"  data-bs-toggle="tooltip" title="Close dialog, press the save button in the section to save data">Close</button>
         </div>
       </div>
     </div>
@@ -877,6 +877,7 @@
     };
 
     $("#calibrate-btn").click(function(e){
+      setButtonDisabled(true);
       console.log( "Calibrating..." );
       $.ajax( { 
         type: "POST",  
@@ -888,6 +889,7 @@
         },
         error: function(result) { 
           showError('Unable to calibrate device.'); 
+          setButtonDisabled(false);
         }
       } );
     });
@@ -1010,6 +1012,9 @@
       $("#format-btn2").prop("disabled", b);
       $("#test-btn2").prop("disabled", b);
       $("#advanced-btn").prop("disabled", b);
+      $("#factory-btn").prop("disabled", b);
+      $("#restart-btn").prop("disabled", b);
+      $("#wifi-btn").prop("disabled", b);
 
       checkAdvancedSection();
     }
