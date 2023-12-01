@@ -190,6 +190,10 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
       _baseTemplate = String(mqttFormat);
       fname = TPL_FNAME_MQTT;
       break;
+    case TEMPLATE_BLE:
+      _baseTemplate = String(iSpindleFormat);
+      fname = "dummy"; // this file should not exist, use standard template only
+      break;
   }
 
   if (!useDefaultTemplate) {

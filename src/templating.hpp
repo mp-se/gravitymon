@@ -190,7 +190,8 @@ class TemplatingEngine {
     TEMPLATE_HTTP2 = 1,
     TEMPLATE_HTTP3 = 2,
     TEMPLATE_INFLUX = 3,
-    TEMPLATE_MQTT = 4
+    TEMPLATE_MQTT = 4,
+    TEMPLATE_BLE = 5
   };
 
   TemplatingEngine() {}

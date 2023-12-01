@@ -173,6 +173,7 @@ class Config {
   bool _gyroTemp = false;
 #endif
   bool _storageSleep = false;
+  bool _gravitymonBLE = false;
 
   // Wifi Config
   String _wifiSSID[2] = {"", ""};
@@ -238,6 +239,12 @@ class Config {
   const bool isStorageSleep() { return _storageSleep; }
   void setStorageSleep(bool b) {
     _storageSleep = b;
+    _saveNeeded = true;
+  }
+
+  const bool isGravitymonBLE() { return _gravitymonBLE; }
+  void setGravitymonBLE(bool b) {
+    _gravitymonBLE = b;
     _saveNeeded = true;
   }
 
@@ -456,7 +463,7 @@ class Config {
     _colorBLE = c;
     _saveNeeded = true;
   }
-  bool isBLEActive() { return _colorBLE.length() ? true : false; }
+  bool isBLEActive() { return (_colorBLE.length()>0 || isGravitymonBLE()) ? true : false; }
   bool isWifiPushActive() {
     return (isHttpActive() || isHttp2Active() || isHttp3Active() ||
             isInfluxDb2Active() || isMqttActive())

@@ -34,13 +34,18 @@ SOFTWARE.
 
 class BleSender {
  private:
-  BLEAdvertising* _advertising;
-  String _color;
+  BLEAdvertising* _advertising = NULL;
+  BLEService* _service = NULL;
+  BLECharacteristic* _characteristic = NULL;
   BLEUUID _uuid;
 
  public:
-  explicit BleSender(const char* color);
-  void sendData(float tempF, float gravSG);
+  explicit BleSender();
+
+  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
+
+  void sendGravitymonData(String& payload);
+  bool isGravitymonDataSent();
 };
 
 #endif  // ESP32 && !ESP32S2

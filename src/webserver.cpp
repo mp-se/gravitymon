@@ -608,7 +608,7 @@ void WebServerHandler::webHandleConfigHardware(AsyncWebServerRequest *request) {
     if (myConfig.isTempC()) {
       myConfig.setTempSensorAdjC(request->arg(PARAM_TEMP_ADJ));
     } else {
-      // Data is delta so we add 32 in order to conver to C.
+      // Data is delta so we add 32 in order to convert to C.
       myConfig.setTempSensorAdjF(request->arg(PARAM_TEMP_ADJ), 32);
     }
   }
@@ -627,6 +627,14 @@ void WebServerHandler::webHandleConfigHardware(AsyncWebServerRequest *request) {
                                                                  : false);
   else
     myConfig.setStorageSleep(false);
+
+  if (request->hasArg(PARAM_GRAVITYMON_BLE))
+    myConfig.setGravitymonBLE(
+        request->arg(PARAM_GRAVITYMON_BLE).equalsIgnoreCase("on") ? true
+                                                                 : false);
+  else
+    myConfig.setGravitymonBLE(false);
+
   myConfig.saveFile();
 
   AsyncWebServerResponse *response =

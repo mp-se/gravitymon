@@ -8,6 +8,8 @@ v1.4.0 (beta)
 
 Features
 ++++++++
+* *BUG* Reduced WIFI TX Power for C3 chip to improve connnections
+* *NEW* Added experimental support for extended BLE data transmission (will require specialized server software)
 * *NEW* Added support for ESP32S3 mini board
 * *NEW* Moved to async webserver to speed up performance in configuration mode
 * Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don't do a full erase before flashing)

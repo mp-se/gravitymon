@@ -62,6 +62,7 @@ constexpr auto PARAM_TEMP_ADJ = "temp-adjustment-value";
 constexpr auto PARAM_GYRO_CALIBRATION = "gyro-calibration-data";
 constexpr auto PARAM_GYRO_TEMP = "gyro-temp";
 constexpr auto PARAM_STORAGE_SLEEP = "storage-sleep";
+constexpr auto PARAM_GRAVITYMON_BLE = "gravitymon-ble";
 constexpr auto PARAM_FORMULA_DATA = "formula-calculation-data";
 constexpr auto PARAM_FILES = "files";
 constexpr auto PARAM_FILE_NAME = "file-name";

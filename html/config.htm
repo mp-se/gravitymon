@@ -274,7 +274,7 @@
               <button type="button" class="btn btn-warning" id="calibrate-btn" data-bs-toggle="tooltip" title="Perform a calibration. The device should be flat on a surface (90 degrees) with the battery down">Calibrate device</button>
             </div>
           </div>
-     
+
         </div>
       </div>
     </div>
@@ -564,6 +564,24 @@
               </div>
             </div>
 
+            <div class="row mb-3">
+              <div class="col-sm-4 offset-sm-2">
+                <div class="form-check">
+                  <input class="form-check-input" disabled type="checkbox" name="gravitymon-ble" id="gravitymon-ble" data-bs-toggle="tooltip" title="Use the gravitymon extended BLE format">
+                  <label class="form-check-label" for="gravitymon-ble">Use gravitymon BLE format</label>
+                </div>
+              </div>
+            </div>
+
+            <script>
+              var gravitymonUrl = "https://www.gravitymon.com/firmware/";
+
+              $("#gravitymon-ble").click(function(e){
+                var b = $("#gravitymon-ble").is(":checked");
+                $('#ble').prop('disabled', b);
+              });
+            </script>
+
             <div class="row mb-3" id="ota-hide">
               <label for="ota-url" class="col-sm-2 col-form-label">OTA base URL</label>
               <div class="col-sm-8">
@@ -593,7 +611,7 @@
                 var vf = mv / f;
                 $("#voltage-factor").val( parseFloat(vf).toFixed(2) );
               });
-            </script> 
+            </script>
 
             <script>
               var gravitymonUrl = "https://www.gravitymon.com/firmware/";
@@ -608,7 +626,7 @@
                   $('#ota-hide').show();
                 }
               });
-            </script> 
+            </script>
 
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
@@ -624,7 +642,7 @@
           </div>
         </div>
       </div>
-    </div>  
+    </div>
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingAdvanced">
         <button class="accordion-button collapsed" id="headingAdvanced-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
@@ -834,7 +852,7 @@
   }
   </script>
 
-  <script type="text/javascript">
+  <script>
     window.onload = getConfig;
 
     setButtonDisabled( true );
@@ -1095,6 +1113,7 @@
         if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3" || cfg["platform"]=="esp32s3" || cfg["platform"]=="esp32lite") {
           $('#ble').prop('disabled', false);
           $("#ble").val(cfg["ble"]);
+          $('#gravitymon-ble').prop('disabled', false);
         }
 
         if(cfg["platform"]=="esp32lite") {
@@ -1148,6 +1167,10 @@
         $("#gravity-temp-adjustment").prop( "checked", cfg["gravity-temp-adjustment"] );
         $("#gyro-temp").prop( "checked", cfg["gyro-temp"] );
         $("#storage-sleep").prop( "checked", cfg["storage-sleep"] );
+        $("#gravitymon-ble").prop( "checked", cfg["gravitymon-ble"] );
+
+        if(cfg["gravitymon-ble"]) $('#ble').prop('disabled', true);
+
         $("#gyro-calibration-data").text( cfg["gyro-calibration-data"]["ax"] + "," + cfg["gyro-calibration-data"]["ay"] + "," + cfg["gyro-calibration-data"]["az"] + "," + cfg["gyro-calibration-data"]["gx"] + "," + cfg["gyro-calibration-data"]["gy"] + "," + cfg["gyro-calibration-data"]["gz"] );
         $("#battery").text(cfg["battery"] + " V");
         $("#angle").text(cfg["angle"]);
