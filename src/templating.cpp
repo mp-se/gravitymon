@@ -48,6 +48,21 @@ const char iSpindleFormat[] PROGMEM =
     "\"run-time\": ${run-time} "
     "}";
 
+const char bleFormat[] PROGMEM =
+    "{"
+    "\"name\":\"${mdns}\","
+    "\"ID\":\"${id}\","
+    "\"token\":\"${token}\","
+    "\"interval\":${sleep-interval},"
+    "\"temperature\":${temp},"
+    "\"temp_units\":\"${temp-unit}\","
+    "\"gravity\":${gravity},"
+    "\"angle\":${angle},"
+    "\"battery\":${battery},"
+    "\"RSSI\":${rssi},"
+    "\"run-time\":${run-time}"
+    "}";
+
 // Format for an HTTP GET
 const char iHttpGetFormat[] PROGMEM =
     "?name=${mdns}"
@@ -191,7 +206,7 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
       fname = TPL_FNAME_MQTT;
       break;
     case TEMPLATE_BLE:
-      _baseTemplate = String(iSpindleFormat);
+      _baseTemplate = String(bleFormat);
       fname = "dummy"; // this file should not exist, use standard template only
       break;
   }

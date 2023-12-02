@@ -121,7 +121,7 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG, bool tilt
   _advertising->stop();
 }
 
-void BleSender::sendGravitymonData(String& payload) {
+void BleSender::sendGravitymonData(String payload) {
 
   if (!bleServer) { // Initialize server if not already done
     Log.info(F("BLE : Creating BLE server for gravitymon data transmission" CR));
@@ -141,6 +141,12 @@ void BleSender::sendGravitymonData(String& payload) {
 
   Log.info(F("BLE : Updating data for gravitymon data transmission" CR));
   myCharCallbacks.clearReadFlag();
+
+  if(payload.length()>510) {
+    writeErrorLog("BLE : Payload is to long for sending over BLE");
+    payload = "{\"error\":\"payload to long\"}";
+  }
+
   _characteristic->setValue(payload);
 }
 

@@ -167,7 +167,7 @@
           $("#angle").text(cfg["angle"]);
 
           ave = createAverageAngle(cfg["angle"]);
-          $("#angle-average").text("Ave: "+ave.toFixed(2)+" ("+averageAngle.length+")");
+          $("#angle-average").text("Ave: "+ave.toFixed(3)+" ("+averageAngle.length+")");
 
           if( cfg["gravity-format"] == "G")
             $("#gravity").text(cfg["gravity"] + " SG");
