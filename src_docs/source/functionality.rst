@@ -60,6 +60,10 @@ The main features
   of RAM will cause the device to crash. So enable SSL with caution and only when you really need it. GravityMon will try
   to minimize the needed RAM but the remote service might not support that feature.
 
+* **Enhanced BLE data transmission**
+
+  Offers an option to send JSON payload over BLE (up to 512 chars) to include more data than standard TILT.
+
 * **Create gravity formulas on the device**
 
   Another big difference is that this software can create the gravity formula in the device, just enter the 

@@ -96,6 +96,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
   doc[PARAM_GYRO_TEMP] = isGyroTemp();
   doc[PARAM_STORAGE_SLEEP] = isStorageSleep();
+  doc[PARAM_GRAVITYMON_BLE] = isGravitymonBLE();
 
   JsonObject cal = doc.createNestedObject(PARAM_GYRO_CALIBRATION);
   cal["ax"] = _gyroCalibration.ax;
@@ -265,6 +266,8 @@ bool Config::loadFile() {
     setGyroTemp(doc[PARAM_GYRO_TEMP].as<bool>());
   if (!doc[PARAM_STORAGE_SLEEP].isNull())
     setStorageSleep(doc[PARAM_STORAGE_SLEEP].as<bool>());
+  if (!doc[PARAM_GRAVITYMON_BLE].isNull())
+    setGravitymonBLE(doc[PARAM_GRAVITYMON_BLE].as<bool>());
   if (!doc[PARAM_GRAVITY_FORMAT].isNull()) {
     String s = doc[PARAM_GRAVITY_FORMAT];
     setGravityFormat(s.charAt(0));

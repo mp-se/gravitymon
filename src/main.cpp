@@ -293,7 +293,8 @@ bool loopReadGravity() {
     stableGyroMillis = millis();  // Reset timer
 
     LOG_PERF_START("loop-temp-read");
-    float tempC = myTempSensor.getTempC(myConfig.isGyroTemp());
+    myTempSensor.readSensor(myConfig.isGyroTemp());
+    float tempC = myTempSensor.getTempC();
     LOG_PERF_STOP("loop-temp-read");
 
     float gravitySG = calculateGravity(angle, tempC);
@@ -326,10 +327,22 @@ bool loopReadGravity() {
       LOG_PERF_START("loop-push");
 
 #if defined(ESP32) && !defined(ESP32S2)
+      BleSender ble;
       if (myConfig.isBLEActive()) {
-        BleSender ble(myConfig.getColorBLE());
-        ble.sendData(convertCtoF(tempC), gravitySG);
-        Log.notice(F("MAIN: Broadcast data over bluetooth." CR));
+        String color = myConfig.getColorBLE();
+        if (myConfig.isGravitymonBLE()) {
+          TemplatingEngine engine;
+          engine.initialize(angle, gravitySG, corrGravitySG, tempC,
+                            (millis() - runtimeMillis) / 1000,
+                            myBatteryVoltage.getVoltage());
+          String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
+
+          ble.sendGravitymonData(payload);
+          Log.notice(F("MAIN: Broadcast gravitymon data over bluetooth." CR));
+        } else {
+          ble.sendTiltData(color, convertCtoF(tempC), gravitySG, false);
+          Log.notice(F("MAIN: Broadcast tilt data over bluetooth." CR));
+        }
       }
 #endif  // ESP32 && !ESP32S2
 
@@ -339,6 +352,14 @@ bool loopReadGravity() {
         push.sendAll(angle, gravitySG, corrGravitySG, tempC,
                      (millis() - runtimeMillis) / 1000);
       }
+
+#if defined(ESP32) && !defined(ESP32S2)
+      if (myConfig.isBLEActive()) {
+        if (myConfig.isGravitymonBLE()) {
+          if (!ble.isGravitymonDataSent()) delay(1000);
+        }
+      }
+#endif  // ESP32 && !ESP32S2
 
       LOG_PERF_STOP("loop-push");
 

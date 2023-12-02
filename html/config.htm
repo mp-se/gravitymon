@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -9,7 +9,7 @@
   <style>
     .row-margin-10 { margin-top: 1.0em; }
   </style>
-</head> 
+</head>
 <body class="py-4">
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
@@ -45,7 +45,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/about.htm">About</a>
-          </li> 
+          </li>
         </ul>
       </div>
       <div class="spinner-border text-light" id="spinner" role="status"></div>
@@ -71,7 +71,7 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <script type="text/javascript">
+    <script>
       function showError( msg ) {
         $('#alert').removeClass('alert-success').addClass('alert-danger').removeClass('hide').addClass('show').removeClass('d-none');
         $('#alert-msg').text( msg );
@@ -111,15 +111,15 @@
           Do you really want to restore to factory defaults?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="factory-btn" data-bs-dismiss="modal">Confirm</button>
+          <button type="button" class="btn btn-secondary" id="factory-close-btn" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="factory-save-btn" data-bs-dismiss="modal">Confirm</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    $("#factory-btn").click(function(e){
+    $("#factory-save-btn").click(function(e){
       console.log( "Restore factory defaults..." );
       $.ajax( { 
         type: "GET",  
@@ -168,10 +168,10 @@
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" id="wifi-close-btn" data-bs-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-primary" id="wifi-save-btn">Save</button>
             </div>
-    
+
           </form>
         </div>
       </div>
@@ -182,7 +182,7 @@
   <div class="accordion" id="accordion">
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingDevice">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
+        <button class="accordion-button" id="headingDevice-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDevice" aria-expanded="true" aria-controls="collapseDevice">
           <b>Device settings</b>
         </button>
       </h2>
@@ -230,8 +230,8 @@
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
                 <button type="submit" class="btn btn-primary" id="device-btn" data-bs-toggle="tooltip" title="Save changes in this section">Save</button>
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#yesNoModal" data-bs-toggle="tooltip" title="Restore factory defaults">Factory defaults</button>
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#wifiModal" data-bs-toggle="tooltip" title="Update wifi settings">Wifi settings</button>
+                <button type="button" class="btn btn-secondary" id="factory-btn" data-bs-toggle="modal" data-bs-target="#yesNoModal" data-bs-toggle="tooltip" title="Restore factory defaults">Factory defaults</button>
+                <button type="button" class="btn btn-secondary" id="wifi-btn" data-bs-toggle="modal" data-bs-target="#wifiModal" data-bs-toggle="tooltip" title="Update wifi settings">Wifi settings</button>
                 <button type="button" class="btn btn-secondary" id="restart-btn" data-bs-toggle="tooltip" title="Restart device">Restart</button>
               </div>
             </div>
@@ -274,14 +274,14 @@
               <button type="button" class="btn btn-warning" id="calibrate-btn" data-bs-toggle="tooltip" title="Perform a calibration. The device should be flat on a surface (90 degrees) with the battery down">Calibrate device</button>
             </div>
           </div>
-     
+
         </div>
       </div>
     </div>
 
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingPush">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush" aria-expanded="false" aria-controls="collapsePush">
+        <button class="accordion-button collapsed" id="headingPush-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush" aria-expanded="false" aria-controls="collapsePush">
           <b>Push settings</b>
         </button>
       </h2>
@@ -301,7 +301,7 @@
                 <input type="url" maxlength="120" class="form-control" name="http-push" id="http-push" placeholder="http://www.internet.com/path" data-bs-toggle="tooltip" title="URL to push target, use format http://servername.com/resource (Supports http and https)">
               </div>
               <div class="col-sm-2">
-                <button type="button" class="btn btn-secondary" data-field1="#http-push-h1" data-field2="#http-push-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
+                <button type="button" class="btn btn-secondary" id="header1-btn" data-field1="#http-push-h1" data-field2="#http-push-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
               </div>
             </div>
 
@@ -311,7 +311,7 @@
                 <input type="url" maxlength="120" class="form-control" name="http-push2" id="http-push2" placeholder="http://www.internet.com/path" data-bs-toggle="tooltip" title="URL to push target, use format http://servername.com/resource (Supports http and https)">
               </div>
               <div class="col-sm-2">
-                <button type="button" class="btn btn-secondary" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
+                <button type="button" class="btn btn-secondary" id="header2-btn" data-field1="#http-push2-h1" data-field2="#http-push2-h2" data-bs-toggle="modal" data-bs-target="#modal-http" data-bs-toggle="tooltip" title="Edit the http headers for data format and authentication">Headers</button>
               </div>
             </div>
 
@@ -350,7 +350,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingPush2">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush2" aria-expanded="false" aria-controls="collapsePush2">
+        <button class="accordion-button collapsed" id="headingPush2-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePush2" aria-expanded="false" aria-controls="collapsePush2">
           <b>Push settings (2)</b>
         </button>
       </h2>
@@ -434,7 +434,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingGravity">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGravity" aria-expanded="false" aria-controls="collapseGravity">
+        <button class="accordion-button collapsed" id="headingGravity-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGravity" aria-expanded="false" aria-controls="collapseGravity">
           <b>Gravity Settings</b>
         </button>
       </h2>
@@ -459,7 +459,7 @@
                 </div>
               </fieldset>
             </div>
-            
+
             <div class="row mb-3">
               <label for="gravity-formula" class="col-sm-2 col-form-label">Formula</label>
               <div class="col-sm-10">
@@ -489,7 +489,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingHardware">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHardware" aria-expanded="false" aria-controls="collapseHardware">
+        <button class="accordion-button collapsed" id="headingHardware-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHardware" aria-expanded="false" aria-controls="collapseHardware">
           <b>Hardware Settings</b>
         </button>
       </h2>
@@ -564,6 +564,24 @@
               </div>
             </div>
 
+            <div class="row mb-3">
+              <div class="col-sm-4 offset-sm-2">
+                <div class="form-check">
+                  <input class="form-check-input" disabled type="checkbox" name="gravitymon-ble" id="gravitymon-ble" data-bs-toggle="tooltip" title="Use the gravitymon extended BLE format">
+                  <label class="form-check-label" for="gravitymon-ble">Use gravitymon BLE format</label>
+                </div>
+              </div>
+            </div>
+
+            <script>
+              var gravitymonUrl = "https://www.gravitymon.com/firmware/";
+
+              $("#gravitymon-ble").click(function(e){
+                var b = $("#gravitymon-ble").is(":checked");
+                $('#ble').prop('disabled', b);
+              });
+            </script>
+
             <div class="row mb-3" id="ota-hide">
               <label for="ota-url" class="col-sm-2 col-form-label">OTA base URL</label>
               <div class="col-sm-8">
@@ -593,7 +611,7 @@
                 var vf = mv / f;
                 $("#voltage-factor").val( parseFloat(vf).toFixed(2) );
               });
-            </script> 
+            </script>
 
             <script>
               var gravitymonUrl = "https://www.gravitymon.com/firmware/";
@@ -608,7 +626,7 @@
                   $('#ota-hide').show();
                 }
               });
-            </script> 
+            </script>
 
             <div class="row mb-3">
               <div class="col-sm-8 offset-sm-2">
@@ -624,10 +642,10 @@
           </div>
         </div>
       </div>
-    </div>  
+    </div>
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingAdvanced">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
+        <button class="accordion-button collapsed" id="headingAdvanced-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
           <b>Advanced Software Settings (use with caution)</b>
         </button>
       </h2>
@@ -797,7 +815,7 @@
           <input type="text" id="field2" hidden>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"  data-bs-toggle="tooltip" title="Close dialog, press the save button in the section to save data">Close</button>
+          <button type="button" class="btn btn-primary" id="header-close-btn" data-bs-dismiss="modal"  data-bs-toggle="tooltip" title="Close dialog, press the save button in the section to save data">Close</button>
         </div>
       </div>
     </div>
@@ -834,7 +852,7 @@
   }
   </script>
 
-  <script type="text/javascript">
+  <script>
     window.onload = getConfig;
 
     setButtonDisabled( true );
@@ -852,14 +870,45 @@
       $("#gravity-formula").val("0.00162535*tilt+0.96347412");
     });
 
+
+    function checkCalibration() {
+      setButtonDisabled(true);
+      $.ajax( { 
+        type: "GET",  
+        url: "/api/calibrate/status", 
+        data: { }, 
+        success: function(result) { 
+          if( result["status"] == true) {
+            console.log("Calibration not yet ready");
+            setTimeout(checkCalibration, 2000);
+          } else {
+            showSuccess('Calibration of device was completed successfully.'); 
+            getConfig(); 
+            setButtonDisabled(false);
+          }
+        },
+        error: function(result) { 
+          showError('Unable to calibrate device.'); 
+          setButtonDisabled(false);
+        }
+      });
+    };
+
     $("#calibrate-btn").click(function(e){
+      setButtonDisabled(true);
       console.log( "Calibrating..." );
       $.ajax( { 
         type: "POST",  
         url: "/api/calibrate", 
         data: { id: $("#id1").val() }, 
-        success: function(result) { showSuccess('Calibration of device was completed successfully.'); getConfig(); },
-        error: function(result) { showError('Unable to calibrate device.'); }
+        success: function(result) { 
+          console.log("In success, scheduling status check");
+          setTimeout(checkCalibration, 2000);
+        },
+        error: function(result) { 
+          showError('Unable to calibrate device.'); 
+          setButtonDisabled(false);
+        }
       } );
     });
 
@@ -917,6 +966,10 @@
         var pwrActive = 280; // mA per hour (260-300 mA)
       } else if(platform == "esp32s2" && !wifi) {
         var pwrActive = 160; 
+      } else if(platform == "esp32s3" && wifi) {
+        var pwrActive = 300; // mA per hour (285-355 mA)
+      } else if(platform == "esp32s3" && !wifi) {
+        var pwrActive = 180; 
       } else if(platform == "esp32lite" && wifi) {
         var pwrActive = 330; // mA per hour (260-379 mA)
       } else if(platform == "esp32lite" && !wifi) {
@@ -977,6 +1030,9 @@
       $("#format-btn2").prop("disabled", b);
       $("#test-btn2").prop("disabled", b);
       $("#advanced-btn").prop("disabled", b);
+      $("#factory-btn").prop("disabled", b);
+      $("#restart-btn").prop("disabled", b);
+      $("#wifi-btn").prop("disabled", b);
 
       checkAdvancedSection();
     }
@@ -1054,9 +1110,10 @@
       $.getJSON(url, function (cfg) {
         console.log( cfg );
 
-        if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3" || cfg["platform"]=="esp32lite") {
+        if(cfg["platform"]=="esp32" || cfg["platform"]=="esp32c3" || cfg["platform"]=="esp32s3" || cfg["platform"]=="esp32lite") {
           $('#ble').prop('disabled', false);
           $("#ble").val(cfg["ble"]);
+          $('#gravitymon-ble').prop('disabled', false);
         }
 
         if(cfg["platform"]=="esp32lite") {
@@ -1110,6 +1167,10 @@
         $("#gravity-temp-adjustment").prop( "checked", cfg["gravity-temp-adjustment"] );
         $("#gyro-temp").prop( "checked", cfg["gyro-temp"] );
         $("#storage-sleep").prop( "checked", cfg["storage-sleep"] );
+        $("#gravitymon-ble").prop( "checked", cfg["gravitymon-ble"] );
+
+        if(cfg["gravitymon-ble"]) $('#ble').prop('disabled', true);
+
         $("#gyro-calibration-data").text( cfg["gyro-calibration-data"]["ax"] + "," + cfg["gyro-calibration-data"]["ay"] + "," + cfg["gyro-calibration-data"]["az"] + "," + cfg["gyro-calibration-data"]["gx"] + "," + cfg["gyro-calibration-data"]["gy"] + "," + cfg["gyro-calibration-data"]["gz"] );
         $("#battery").text(cfg["battery"] + " V");
         $("#angle").text(cfg["angle"]);

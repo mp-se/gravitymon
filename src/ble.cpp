@@ -33,11 +33,27 @@ SOFTWARE.
 // Tilt data format is described here. Only SG and Temp is transmitted over BLE.
 // https://kvurd.com/blog/tilt-hydrometer-ibeacon-data-format/
 
-//
-// Create ble sender
-//
-BleSender::BleSender(const char* color) {
-  BLEDevice::init("");
+BLEServer* bleServer = NULL;
+
+class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
+ private:
+  volatile bool _isRead = false;
+
+ public:
+  void clearReadFlag() { _isRead = false; }
+  bool isRead() { return _isRead; }
+
+  void onRead(NimBLECharacteristic* pCharacteristic) {
+    Log.info(F("BLE : Remote reading data" CR));
+    _isRead = true;
+  }
+};
+
+static CharacteristicCallbacks myCharCallbacks;
+
+BleSender::BleSender() {
+  BLEDevice::init("gravitymon");
+  _advertising = BLEDevice::getAdvertising();
 
   // boost power to maximum, these might be changed once battery life using BLE
   // has been tested.
@@ -50,34 +66,37 @@ BleSender::BleSender(const char* color) {
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P9);
 #endif
+}
 
-  _advertising = BLEDevice::getAdvertising();
-  _color = color;
+void BleSender::sendTiltData(String& color, float tempF, float gravSG,
+                             bool tiltPro) {
+  Log.info(F("BLE : Starting tilt data transmission" CR));
 
-  if (!_color.compareTo("red"))
+  if (!color.compareTo("red"))
     _uuid = BLEUUID::fromString("A495BB10-C5B1-4B44-B512-1370F02D74DE");
-  else if (!_color.compareTo("green"))
+  else if (!color.compareTo("green"))
     _uuid = BLEUUID::fromString("A495BB20-C5B1-4B44-B512-1370F02D74DE");
-  else if (!_color.compareTo("black"))
+  else if (!color.compareTo("black"))
     _uuid = BLEUUID::fromString("A495BB30-C5B1-4B44-B512-1370F02D74DE");
-  else if (!_color.compareTo("purple"))
+  else if (!color.compareTo("purple"))
     _uuid = BLEUUID::fromString("A495BB40-C5B1-4B44-B512-1370F02D74DE");
-  else if (!_color.compareTo("orange"))
+  else if (!color.compareTo("orange"))
     _uuid = BLEUUID::fromString("A495BB50-C5B1-4B44-B512-1370F02D74DE");
-  else if (!_color.compareTo("blue"))
+  else if (!color.compareTo("blue"))
     _uuid = BLEUUID::fromString("A495BB60-C5B1-4B44-B512-1370F02D74DE");
-  else if (!_color.compareTo("yellow"))
+  else if (!color.compareTo("yellow"))
     _uuid = BLEUUID::fromString("A495BB70-C5B1-4B44-B512-1370F02D74DE");
   else  // if (_color.compareTo("pink"))
     _uuid = BLEUUID::fromString("A495BB80-C5B1-4B44-B512-1370F02D74DE");
-}
 
-//
-// Send temp and gravity via BLE
-//
-void BleSender::sendData(float tempF, float gravSG) {
   uint16_t gravity = gravSG * 1000;  // SG * 1000 or SG * 10000 for Tilt Pro/HD
   uint16_t temperature = tempF;      // Deg F _or_ Deg F * 10 for Tilt Pro/HD
+
+  if (tiltPro) {  // Note! Experimental, have not figured out how the receiver
+                  // recognise between standard and Pro/HD
+    gravity = gravSG * 10000;
+    temperature = tempF * 10;
+  }
 
   BLEBeacon oBeacon = BLEBeacon();
   oBeacon.setManufacturerId(
@@ -100,9 +119,41 @@ void BleSender::sendData(float tempF, float gravSG) {
   _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
 
   _advertising->start();
-  delay(100);
+  delay(200);
   _advertising->stop();
-  delay(100);
 }
+
+void BleSender::sendGravitymonData(String payload) {
+  if (!bleServer) {  // Initialize server if not already done
+    Log.info(
+        F("BLE : Creating BLE server for gravitymon data transmission" CR));
+
+    _uuid = BLEUUID::fromString("0000180a-0000-0000-0000-94b47730ed7a");
+    bleServer = BLEDevice::createServer();
+    _service = bleServer->createService(_uuid);
+    _characteristic = _service->createCharacteristic(
+        BLEUUID::fromString("00002903-0000-0000-0000-94b47730ed7a"),
+        NIMBLE_PROPERTY::READ);
+    _characteristic->setCallbacks(&myCharCallbacks);
+    _service->start();
+    _advertising->addServiceUUID(_uuid);
+    _advertising->setScanResponse(true);
+    _advertising->setMinPreferred(0x06);
+    _advertising->setMinPreferred(0x12);
+    BLEDevice::startAdvertising();
+  }
+
+  Log.info(F("BLE : Updating data for gravitymon data transmission" CR));
+  myCharCallbacks.clearReadFlag();
+
+  if (payload.length() > 510) {
+    writeErrorLog("BLE : Payload is to long for sending over BLE");
+    payload = "{\"error\":\"payload to long\"}";
+  }
+
+  _characteristic->setValue(payload);
+}
+
+bool BleSender::isGravitymonDataSent() { return myCharCallbacks.isRead(); }
 
 #endif  // ESP32 && !ESP32S2

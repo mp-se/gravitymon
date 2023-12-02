@@ -159,10 +159,12 @@ void detectChipRevision() {
     case CHIP_ESP32S2:
       chipModel = "ESP32S2";
       break;
+    case CHIP_ESP32S3:
+      chipModel = "ESP32S3";
+      break;
     case CHIP_ESP32C3:
       chipModel = "ESP32C3";
       break;
-    case CHIP_ESP32S3:
     case CHIP_ESP32H2:
     default:
       chipModel = "Unsupported";
@@ -384,6 +386,10 @@ SerialDebug::SerialDebug(const uint32_t serialSpeed) {
 #elif defined(USE_SERIAL_PINS) && defined(ESP32S2)
   EspSerial.begin(115200L, SERIAL_8N1, 37, 39);
 #elif defined(ESP32S2)
+  EspSerial.begin(115200L);
+#elif defined(USE_SERIAL_PINS) && defined(ESP32S3)
+  EspSerial.begin(115200L, SERIAL_8N1, 37, 39);
+#elif defined(ESP32S3)
   EspSerial.begin(115200L);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32LITE)
   EspSerial.begin(serialSpeed, SERIAL_8N1, 16, 17);

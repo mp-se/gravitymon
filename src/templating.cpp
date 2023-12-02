@@ -33,9 +33,9 @@ SOFTWARE.
 // Use iSpindle format for compatibility, HTTP POST
 const char iSpindleFormat[] PROGMEM =
     "{"
-    "\"name\" : \"${mdns}\", "
+    "\"name\": \"${mdns}\", "
     "\"ID\": \"${id}\", "
-    "\"token\" : \"${token}\", "
+    "\"token\": \"${token}\", "
     "\"interval\": ${sleep-interval}, "
     "\"temperature\": ${temp}, "
     "\"temp_units\": \"${temp-unit}\", "
@@ -46,6 +46,23 @@ const char iSpindleFormat[] PROGMEM =
     "\"corr-gravity\": ${corr-gravity}, "
     "\"gravity-unit\": \"${gravity-unit}\", "
     "\"run-time\": ${run-time} "
+    "}";
+
+const char bleFormat[] PROGMEM =
+    "{"
+    "\"name\":\"${mdns}\","
+    "\"ID\":\"${id}\","
+    "\"token\":\"${token}\","
+    "\"interval\":${sleep-interval},"
+    "\"temperature\":${temp},"
+    "\"temp_units\":\"${temp-unit}\","
+    "\"gravity\":${gravity},"
+    "\"angle\":${angle},"
+    "\"battery\":${battery},"
+    "\"RSSI\":${rssi},"
+    "\"corr-gravity\":${corr-gravity},"
+    "\"gravity-unit\":\"${gravity-unit}\","
+    "\"run-time\":${run-time}"
     "}";
 
 // Format for an HTTP GET
@@ -189,6 +206,11 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
     case TEMPLATE_MQTT:
       _baseTemplate = String(mqttFormat);
       fname = TPL_FNAME_MQTT;
+      break;
+    case TEMPLATE_BLE:
+      _baseTemplate = String(bleFormat);
+      fname =
+          "dummy";  // this file should not exist, use standard template only
       break;
   }
 

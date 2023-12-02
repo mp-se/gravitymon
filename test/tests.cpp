@@ -35,11 +35,11 @@ using aunit::Printer;
 using aunit::TestRunner;
 using aunit::Verbosity;
 
-extern "C" {
+/*extern "C" {
   void write_bytes(int fd, char* buf, int n) {
     Serial.print(*buf);
   } 
-}
+}*/
 
 /*
   // Boolean
