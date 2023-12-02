@@ -35,18 +35,18 @@ SOFTWARE.
 
 BLEServer* bleServer = NULL;
 
-class CharacteristicCallbacks: public NimBLECharacteristicCallbacks {
+class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
  private:
   volatile bool _isRead = false;
 
  public:
-    void clearReadFlag() { _isRead = false; }
-    bool isRead() { return _isRead; }
+  void clearReadFlag() { _isRead = false; }
+  bool isRead() { return _isRead; }
 
-    void onRead(NimBLECharacteristic* pCharacteristic){
-      Log.info(F("BLE : Remote reading data" CR));
-      _isRead = true;
-    }
+  void onRead(NimBLECharacteristic* pCharacteristic) {
+    Log.info(F("BLE : Remote reading data" CR));
+    _isRead = true;
+  }
 };
 
 static CharacteristicCallbacks myCharCallbacks;
@@ -68,7 +68,8 @@ BleSender::BleSender() {
 #endif
 }
 
-void BleSender::sendTiltData(String& color, float tempF, float gravSG, bool tiltPro) {
+void BleSender::sendTiltData(String& color, float tempF, float gravSG,
+                             bool tiltPro) {
   Log.info(F("BLE : Starting tilt data transmission" CR));
 
   if (!color.compareTo("red"))
@@ -91,11 +92,12 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG, bool tilt
   uint16_t gravity = gravSG * 1000;  // SG * 1000 or SG * 10000 for Tilt Pro/HD
   uint16_t temperature = tempF;      // Deg F _or_ Deg F * 10 for Tilt Pro/HD
 
-  if (tiltPro) { // Note! Experimental, have not figured out how the receiver recognise between standard and Pro/HD
+  if (tiltPro) {  // Note! Experimental, have not figured out how the receiver
+                  // recognise between standard and Pro/HD
     gravity = gravSG * 10000;
     temperature = tempF * 10;
   }
-  
+
   BLEBeacon oBeacon = BLEBeacon();
   oBeacon.setManufacturerId(
       0x4C00);  // fake Apple 0x004C LSB (ENDIAN_CHANGE_U16!)
@@ -103,8 +105,8 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG, bool tilt
   oBeacon.setMajor(temperature);
   oBeacon.setMinor(gravity);
   std::string strServiceData = "";
-  strServiceData += static_cast<char>(26);   // Len
-  strServiceData += static_cast<char>(0xFF); // Type
+  strServiceData += static_cast<char>(26);    // Len
+  strServiceData += static_cast<char>(0xFF);  // Type
   strServiceData += oBeacon.getData();
 
   BLEAdvertisementData oAdvertisementData = BLEAdvertisementData();
@@ -122,19 +124,21 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG, bool tilt
 }
 
 void BleSender::sendGravitymonData(String payload) {
-
-  if (!bleServer) { // Initialize server if not already done
-    Log.info(F("BLE : Creating BLE server for gravitymon data transmission" CR));
+  if (!bleServer) {  // Initialize server if not already done
+    Log.info(
+        F("BLE : Creating BLE server for gravitymon data transmission" CR));
 
     _uuid = BLEUUID::fromString("0000180a-0000-0000-0000-94b47730ed7a");
     bleServer = BLEDevice::createServer();
     _service = bleServer->createService(_uuid);
-    _characteristic = _service->createCharacteristic(BLEUUID::fromString("00002903-0000-0000-0000-94b47730ed7a"), NIMBLE_PROPERTY::READ);
+    _characteristic = _service->createCharacteristic(
+        BLEUUID::fromString("00002903-0000-0000-0000-94b47730ed7a"),
+        NIMBLE_PROPERTY::READ);
     _characteristic->setCallbacks(&myCharCallbacks);
     _service->start();
     _advertising->addServiceUUID(_uuid);
     _advertising->setScanResponse(true);
-    _advertising->setMinPreferred(0x06); 
+    _advertising->setMinPreferred(0x06);
     _advertising->setMinPreferred(0x12);
     BLEDevice::startAdvertising();
   }
@@ -142,7 +146,7 @@ void BleSender::sendGravitymonData(String payload) {
   Log.info(F("BLE : Updating data for gravitymon data transmission" CR));
   myCharCallbacks.clearReadFlag();
 
-  if(payload.length()>510) {
+  if (payload.length() > 510) {
     writeErrorLog("BLE : Payload is to long for sending over BLE");
     payload = "{\"error\":\"payload to long\"}";
   }
@@ -150,8 +154,6 @@ void BleSender::sendGravitymonData(String payload) {
   _characteristic->setValue(payload);
 }
 
-bool BleSender::isGravitymonDataSent() {
-  return myCharCallbacks.isRead();
-}
+bool BleSender::isGravitymonDataSent() { return myCharCallbacks.isRead(); }
 
 #endif  // ESP32 && !ESP32S2

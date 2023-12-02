@@ -463,7 +463,9 @@ class Config {
     _colorBLE = c;
     _saveNeeded = true;
   }
-  bool isBLEActive() { return (_colorBLE.length()>0 || isGravitymonBLE()) ? true : false; }
+  bool isBLEActive() {
+    return (_colorBLE.length() > 0 || isGravitymonBLE()) ? true : false;
+  }
   bool isWifiPushActive() {
     return (isHttpActive() || isHttp2Active() || isHttp3Active() ||
             isInfluxDb2Active() || isMqttActive())

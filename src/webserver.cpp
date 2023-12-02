@@ -631,7 +631,7 @@ void WebServerHandler::webHandleConfigHardware(AsyncWebServerRequest *request) {
   if (request->hasArg(PARAM_GRAVITYMON_BLE))
     myConfig.setGravitymonBLE(
         request->arg(PARAM_GRAVITYMON_BLE).equalsIgnoreCase("on") ? true
-                                                                 : false);
+                                                                  : false);
   else
     myConfig.setGravitymonBLE(false);
 

@@ -40,7 +40,7 @@ class BleSender {
   BLEUUID _uuid;
 
  public:
-  explicit BleSender();
+  BleSender();
 
   void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
 

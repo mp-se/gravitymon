@@ -330,9 +330,11 @@ bool loopReadGravity() {
       BleSender ble;
       if (myConfig.isBLEActive()) {
         String color = myConfig.getColorBLE();
-        if(myConfig.isGravitymonBLE()) {
+        if (myConfig.isGravitymonBLE()) {
           TemplatingEngine engine;
-          engine.initialize(angle, gravitySG, corrGravitySG, tempC, (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
+          engine.initialize(angle, gravitySG, corrGravitySG, tempC,
+                            (millis() - runtimeMillis) / 1000,
+                            myBatteryVoltage.getVoltage());
           String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
 
           ble.sendGravitymonData(payload);
@@ -353,9 +355,8 @@ bool loopReadGravity() {
 
 #if defined(ESP32) && !defined(ESP32S2)
       if (myConfig.isBLEActive()) {
-        if(myConfig.isGravitymonBLE()) {
-          if(!ble.isGravitymonDataSent())
-            delay(1000);
+        if (myConfig.isGravitymonBLE()) {
+          if (!ble.isGravitymonDataSent()) delay(1000);
         }
       }
 #endif  // ESP32 && !ESP32S2

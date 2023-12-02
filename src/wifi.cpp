@@ -196,7 +196,7 @@ void WifiConnection::connectAsync(int wifiIndex) {
   Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
   WiFi.setTxPower(WIFI_POWER_8_5dBm);  // Required for ESP32C3 Mini
 #elif defined(ESP32C3)
-    WiFi.setTxPower(WIFI_POWER_15dBm);
+  WiFi.setTxPower(WIFI_POWER_15dBm);
 #endif
 
   if (strlen(userSSID)) {
