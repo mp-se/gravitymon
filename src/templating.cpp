@@ -33,9 +33,9 @@ SOFTWARE.
 // Use iSpindle format for compatibility, HTTP POST
 const char iSpindleFormat[] PROGMEM =
     "{"
-    "\"name\" : \"${mdns}\", "
+    "\"name\": \"${mdns}\", "
     "\"ID\": \"${id}\", "
-    "\"token\" : \"${token}\", "
+    "\"token\": \"${token}\", "
     "\"interval\": ${sleep-interval}, "
     "\"temperature\": ${temp}, "
     "\"temp_units\": \"${temp-unit}\", "
@@ -60,6 +60,8 @@ const char bleFormat[] PROGMEM =
     "\"angle\":${angle},"
     "\"battery\":${battery},"
     "\"RSSI\":${rssi},"
+    "\"corr-gravity\":${corr-gravity},"
+    "\"gravity-unit\":\"${gravity-unit}\","
     "\"run-time\":${run-time}"
     "}";
 
