@@ -294,6 +294,10 @@ long encapsulated in a small glass tube. See hardware section for more informati
 
 If the build is using an ESP32 then you can send data over BLE, simulating a Tilt device. Choose the color that you want the device to simulate.
 
+* **Gravitymon BLE format: (Only ESP32)**
+
+Activates a gravitymon specific format that allows sending iSpindel JSON data over BLE. Will require specialized software to read this data. 
+
 * **OTA URL:**
 
 Should point to a URL where the firmware.bin file + version.json file are located. For an ESP32 target the firmware should be named firmware32.bin.
