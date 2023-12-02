@@ -444,6 +444,10 @@ long encapsulated in a small glass tube. See hardware section for more informati
 </ul>
 <p>If the build is using an ESP32 then you can send data over BLE, simulating a Tilt device. Choose the color that you want the device to simulate.</p>
 <ul class="simple">
+<li><p><strong>Gravitymon BLE format: (Only ESP32)</strong></p></li>
+</ul>
+<p>Activates a gravitymon specific format that allows sending iSpindel JSON data over BLE. Will require specialized software to read this data.</p>
+<ul class="simple">
 <li><p><strong>OTA URL:</strong></p></li>
 </ul>
 <p>Should point to a URL where the firmware.bin file + version.json file are located. For an ESP32 target the firmware should be named firmware32.bin.</p>
@@ -497,8 +501,13 @@ data and of the deviation on any point is bigger the formula will be rejected.</
 <ul class="simple">
 <li><p><strong>DS18B20 Resolution:</strong></p></li>
 </ul>
-<p>Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C, 12 bits will give an accuracy of 0.0625C but will also
-take longer time to measure..</p>
+<p>Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C and and provide longest batterylife. See data below from the datasheet.</p>
+<ul class="simple">
+<li><p>9 bits = 0.5°C, up to 93 ms reading</p></li>
+<li><p>10 bits =0.25°C, up to 187 ms reading</p></li>
+<li><p>11 bits = 0.125°C, up to 375 ms reading</p></li>
+<li><p>12 bits = 0.0625°C, up to 850 ms reading</p></li>
+</ul>
 <ul class="simple">
 <li><p><strong>Wifi connect timeout:</strong></p></li>
 </ul>
