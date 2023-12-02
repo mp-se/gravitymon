@@ -8,7 +8,7 @@ v1.4.0 (beta)
 
 Features
 ++++++++
-* *BUG* Reduced WIFI TX Power for C3 chip to improve connnections
+* *BUG* Reduced WIFI TX Power for C3 chip to improve WIFI connnection stability
 * *NEW* Added experimental support for extended BLE data transmission (will require specialized server software)
 * *NEW* Added support for ESP32S3 mini board
 * *NEW* Moved to async webserver to speed up performance in configuration mode
@@ -20,7 +20,8 @@ Maintenance
 +++++++++++
 * Changed wifi manager to modified version since the source project is no longer supported by author
 * Updated dependencies to latest versions as of Aug -23
-* Added unit tests to improve coverage
+* Added UI tests to improve test coverage
+* Added unit tests to improve test coverage
 * Added option to run unit test code coverage with WOKWI
 * Added scripts to check for code coverage on the esp32 (work in progess, not yet covering all parts of the code)
 * Created script that checks for updates to dependant projects (test/converage.py)
@@ -32,7 +33,7 @@ Documentation
 Issues adressed
 ++++++++++++++++
 * Updated code so it now works with newer versions of ArduniJSON
-* Fixed issue with ESP32 were reboot didnt work sometimes
+* Fixed issue with ESP32 were reboot didn't work sometimes
 
 v1.3.1
 ======

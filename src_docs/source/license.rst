@@ -5,7 +5,7 @@ Licence
 
 MIT License
 
-Copyright (c) 2021-22 Magnus
+Copyright (c) 2021-23 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
