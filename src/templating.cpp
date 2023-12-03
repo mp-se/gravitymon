@@ -210,7 +210,7 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
     case TEMPLATE_BLE:
       _baseTemplate = String(bleFormat);
       fname =
-          "dummy";  // this file should not exist, use standard template only
+          "/dummy";  // this file should not exist, use standard template only
       break;
   }
 
