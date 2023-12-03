@@ -34,13 +34,17 @@ SOFTWARE.
 
 class BleSender {
  private:
+  BLEServer* _server = NULL;
   BLEAdvertising* _advertising = NULL;
   BLEService* _service = NULL;
   BLECharacteristic* _characteristic = NULL;
   BLEUUID _uuid;
+  bool _initFlag = false;
 
  public:
-  BleSender();
+  BleSender() {};
+
+  void init();
 
   void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
 

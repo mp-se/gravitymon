@@ -33,8 +33,6 @@ SOFTWARE.
 // Tilt data format is described here. Only SG and Temp is transmitted over BLE.
 // https://kvurd.com/blog/tilt-hydrometer-ibeacon-data-format/
 
-BLEServer* bleServer = NULL;
-
 class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
  private:
   volatile bool _isRead = false;
@@ -51,7 +49,10 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
 
 static CharacteristicCallbacks myCharCallbacks;
 
-BleSender::BleSender() {
+void BleSender::init() {
+  if(_initFlag)
+    return;
+
   BLEDevice::init("gravitymon");
   _advertising = BLEDevice::getAdvertising();
 
@@ -66,6 +67,8 @@ BleSender::BleSender() {
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P9);
 #endif
+
+  _initFlag = true;
 }
 
 void BleSender::sendTiltData(String& color, float tempF, float gravSG,
@@ -124,13 +127,15 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
 }
 
 void BleSender::sendGravitymonData(String payload) {
-  if (!bleServer) {  // Initialize server if not already done
+  Log.info(F("BLE : Updating data for gravitymon data transmission" CR));
+
+  if (!_server) {
     Log.info(
         F("BLE : Creating BLE server for gravitymon data transmission" CR));
 
     _uuid = BLEUUID::fromString("0000180a-0000-0000-0000-94b47730ed7a");
-    bleServer = BLEDevice::createServer();
-    _service = bleServer->createService(_uuid);
+    _server = BLEDevice::createServer();
+    _service = _server->createService(_uuid);
     _characteristic = _service->createCharacteristic(
         BLEUUID::fromString("00002903-0000-0000-0000-94b47730ed7a"),
         NIMBLE_PROPERTY::READ);
@@ -140,10 +145,9 @@ void BleSender::sendGravitymonData(String payload) {
     _advertising->setScanResponse(true);
     _advertising->setMinPreferred(0x06);
     _advertising->setMinPreferred(0x12);
-    BLEDevice::startAdvertising();
-  }
+    _advertising->start();
+  } 
 
-  Log.info(F("BLE : Updating data for gravitymon data transmission" CR));
   myCharCallbacks.clearReadFlag();
 
   if (payload.length() > 510) {
