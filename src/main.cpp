@@ -30,6 +30,7 @@ SOFTWARE.
 #include <helper.hpp>
 #include <main.hpp>
 #include <pushtarget.hpp>
+#include <serialws.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
 #include <wifi.hpp>
@@ -43,6 +44,10 @@ extern "C" {
 // #define FORCE_GRAVITY_MODE
 SerialDebug mySerial;
 BatteryVoltage myBatteryVoltage;
+SerialWebSocket mySerialWebSocket;
+#if defined(ESP32) && !defined(ESP32S2)
+BleSender myBleSender;
+#endif
 
 // Define constats for this program
 #ifdef DEACTIVATE_SLEEPMODE
@@ -259,6 +264,8 @@ void setup() {
 #endif
         myWebServerHandler
             .setupWebServer();  // Takes less than 4ms, so skip this measurement
+        mySerialWebSocket.begin(myWebServerHandler.getWebServer(), &Serial);
+        mySerial.begin(&mySerialWebSocket);
       }
 
       interval = 1000;  // Change interval from 200ms to 1s
@@ -327,8 +334,9 @@ bool loopReadGravity() {
       LOG_PERF_START("loop-push");
 
 #if defined(ESP32) && !defined(ESP32S2)
-      BleSender ble;
       if (myConfig.isBLEActive()) {
+        myBleSender.init();
+
         String color = myConfig.getColorBLE();
         if (myConfig.isGravitymonBLE()) {
           TemplatingEngine engine;
@@ -337,10 +345,10 @@ bool loopReadGravity() {
                             myBatteryVoltage.getVoltage());
           String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
 
-          ble.sendGravitymonData(payload);
+          myBleSender.sendGravitymonData(payload);
           Log.notice(F("MAIN: Broadcast gravitymon data over bluetooth." CR));
         } else {
-          ble.sendTiltData(color, convertCtoF(tempC), gravitySG, false);
+          myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG, false);
           Log.notice(F("MAIN: Broadcast tilt data over bluetooth." CR));
         }
       }
@@ -356,7 +364,7 @@ bool loopReadGravity() {
 #if defined(ESP32) && !defined(ESP32S2)
       if (myConfig.isBLEActive()) {
         if (myConfig.isGravitymonBLE()) {
-          if (!ble.isGravitymonDataSent()) delay(1000);
+          if (!myBleSender.isGravitymonDataSent()) delay(1000);
         }
       }
 #endif  // ESP32 && !ESP32S2

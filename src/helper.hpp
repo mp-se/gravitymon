@@ -77,6 +77,7 @@ void printHeap(String prefix = "HELP");
 class SerialDebug {
  public:
   explicit SerialDebug(const uint32_t serialSpeed = 115200L);
+  void begin(Print* p) { getLog()->begin(LOG_LEVEL, p, true); }
   static Logging* getLog() { return &Log; }
 };
 
