@@ -346,10 +346,10 @@ bool loopReadGravity() {
           String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
 
           myBleSender.sendGravitymonData(payload);
-          Log.notice(F("MAIN: Broadcast gravitymon data over bluetooth." CR));
+          Log.notice(F("Main: Broadcast gravitymon data over bluetooth." CR));
         } else {
           myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG, false);
-          Log.notice(F("MAIN: Broadcast tilt data over bluetooth." CR));
+          Log.notice(F("Main: Broadcast tilt data over bluetooth." CR));
         }
       }
 #endif  // ESP32 && !ESP32S2
@@ -362,10 +362,17 @@ bool loopReadGravity() {
       }
 
 #if defined(ESP32) && !defined(ESP32S2)
-      if (myConfig.isBLEActive()) {
-        if (myConfig.isGravitymonBLE()) {
-          if (!myBleSender.isGravitymonDataSent()) delay(1000);
+      if (myConfig.isBLEActive() && myConfig.isGravitymonBLE()) {
+        Log.notice(F("Main: Waiting for ble read." CR));
+        int i = 0;
+        while (!myBleSender.isGravitymonDataSent() && i < 10) {
+          delay(500);
+          EspSerial.print(".");
+          i++;
         }
+        EspSerial.print(CR);
+        if (myBleSender.isGravitymonDataSent())
+          Log.notice(F("Main: Ble was read by remote." CR));
       }
 #endif  // ESP32 && !ESP32S2
 

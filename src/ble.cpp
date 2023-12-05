@@ -42,7 +42,7 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
   bool isRead() { return _isRead; }
 
   void onRead(NimBLECharacteristic* pCharacteristic) {
-    Log.info(F("BLE : Remote reading data" CR));
+    // Log.info(F("BLE : Remote reading data" CR));
     _isRead = true;
   }
 };
@@ -50,8 +50,7 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
 static CharacteristicCallbacks myCharCallbacks;
 
 void BleSender::init() {
-  if(_initFlag)
-    return;
+  if (_initFlag) return;
 
   BLEDevice::init("gravitymon");
   _advertising = BLEDevice::getAdvertising();
@@ -146,7 +145,7 @@ void BleSender::sendGravitymonData(String payload) {
     _advertising->setMinPreferred(0x06);
     _advertising->setMinPreferred(0x12);
     _advertising->start();
-  } 
+  }
 
   myCharCallbacks.clearReadFlag();
 

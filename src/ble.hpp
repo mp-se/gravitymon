@@ -42,7 +42,7 @@ class BleSender {
   bool _initFlag = false;
 
  public:
-  BleSender() {};
+  BleSender() {}
 
   void init();
 
