@@ -34,7 +34,6 @@ INCBIN(TestHtm, "html/test.min.htm");
 INCBIN(AboutHtm, "html/about.min.htm");
 INCBIN(FirmwareHtm, "html/firmware.min.htm");
 INCBIN(BackupHtm, "html/backup.min.htm");
-INCBIN(WebSocketHtm, "html/ws.min.htm");
 #endif
 
 // EOF
