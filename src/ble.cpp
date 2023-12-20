@@ -55,8 +55,6 @@ void BleSender::init() {
   BLEDevice::init("gravitymon");
   _advertising = BLEDevice::getAdvertising();
 
-  // boost power to maximum, these might be changed once battery life using BLE
-  // has been tested.
 #if defined(ESP32C3_REV1)
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P6);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P6);
@@ -68,6 +66,53 @@ void BleSender::init() {
 #endif
 
   _initFlag = true;
+}
+
+void BleSender::sendEddystone(float battery, float tempC, float gravity,
+                              float angle) {
+  Log.info(F("Starting eddystone data transmission" CR));
+
+  char beacon_data[25];
+
+  uint16_t g = gravity * 10000;
+  uint16_t t = tempC * 1000;
+  uint16_t b = battery * 1000;
+  uint16_t a = angle * 100;
+  uint32_t chipId = 0;
+
+  for (int i = 0; i < 17; i = i + 8) {
+    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+  }
+
+  beacon_data[0] = 0x20;  // Eddystone Frame Type (Unencrypted Eddystone-TLM)
+  beacon_data[1] = 0x00;  // TLM version
+  beacon_data[2] = (b >> 8);
+  beacon_data[3] = (b & 0xFF);
+  beacon_data[4] = (t >> 8);
+  beacon_data[5] = (t & 0xFF);
+  beacon_data[6] = (g >> 8);
+  beacon_data[7] = (g & 0xFF);
+  beacon_data[8] = (a >> 8);
+  beacon_data[9] = (a & 0xFF);
+  beacon_data[10] = ((chipId & 0xFF000000) >> 24);
+  beacon_data[11] = ((chipId & 0xFF0000) >> 16);
+  beacon_data[12] = ((chipId & 0xFF00) >> 8);
+  beacon_data[13] = (chipId & 0xFF);
+
+  BLEAdvertisementData advData = BLEAdvertisementData();
+  BLEAdvertisementData respData = BLEAdvertisementData();
+
+  respData.setFlags(0x06);
+  respData.setCompleteServices(BLEUUID("feaa"));
+  respData.setServiceData(BLEUUID("feaa"), std::string(beacon_data, 14));
+
+  advData.setName("gravitymon");
+  _advertising->setAdvertisementData(advData);
+  _advertising->setScanResponseData(respData);
+
+  _advertising->start();
+  delay(_beaconTime);
+  _advertising->stop();
 }
 
 void BleSender::sendTiltData(String& color, float tempF, float gravSG,
@@ -94,57 +139,50 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   uint16_t gravity = gravSG * 1000;  // SG * 1000 or SG * 10000 for Tilt Pro/HD
   uint16_t temperature = tempF;      // Deg F _or_ Deg F * 10 for Tilt Pro/HD
 
-  if (tiltPro) {  // Note! Experimental, have not figured out how the receiver
-                  // recognise between standard and Pro/HD
+  if (tiltPro) {
     gravity = gravSG * 10000;
     temperature = tempF * 10;
   }
 
-  BLEBeacon oBeacon = BLEBeacon();
-  oBeacon.setManufacturerId(
-      0x4C00);  // fake Apple 0x004C LSB (ENDIAN_CHANGE_U16!)
-  oBeacon.setProximityUUID(_uuid);
-  oBeacon.setMajor(temperature);
-  oBeacon.setMinor(gravity);
-  std::string strServiceData = "";
-  strServiceData += static_cast<char>(26);    // Len
-  strServiceData += static_cast<char>(0xFF);  // Type
-  strServiceData += oBeacon.getData();
+  BLEBeacon beacon = BLEBeacon();
+  beacon.setManufacturerId(0x4C00);
+  beacon.setProximityUUID(_uuid);
+  beacon.setMajor(temperature);
+  beacon.setMinor(gravity);
 
-  BLEAdvertisementData oAdvertisementData = BLEAdvertisementData();
-  oAdvertisementData.setFlags(0x04);  // BR_EDR_NOT_SUPPORTED 0x04
-  oAdvertisementData.addData(strServiceData);
+  BLEAdvertisementData advData = BLEAdvertisementData();
+  advData.setFlags(0x04);
+  advData.setManufacturerData(beacon.getData());
 
-  BLEAdvertisementData oScanResponseData = BLEAdvertisementData();
-  _advertising->setAdvertisementData(oAdvertisementData);
-  _advertising->setScanResponseData(oScanResponseData);
+  _advertising->setAdvertisementData(advData);
   _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
 
   _advertising->start();
-  delay(200);
+  delay(_beaconTime);
   _advertising->stop();
 }
 
 void BleSender::sendGravitymonData(String payload) {
   Log.info(F("BLE : Updating data for gravitymon data transmission" CR));
 
+  _advertising->stop();
+
   if (!_server) {
     Log.info(
         F("BLE : Creating BLE server for gravitymon data transmission" CR));
 
-    _uuid = BLEUUID::fromString("0000180a-0000-0000-0000-94b47730ed7a");
+    _uuid = BLEUUID::fromString("180a");
     _server = BLEDevice::createServer();
     _service = _server->createService(_uuid);
     _characteristic = _service->createCharacteristic(
-        BLEUUID::fromString("00002903-0000-0000-0000-94b47730ed7a"),
-        NIMBLE_PROPERTY::READ);
+        BLEUUID::fromString("2ac4"),
+        NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::BROADCAST);
     _characteristic->setCallbacks(&myCharCallbacks);
     _service->start();
     _advertising->addServiceUUID(_uuid);
     _advertising->setScanResponse(true);
     _advertising->setMinPreferred(0x06);
-    _advertising->setMinPreferred(0x12);
-    _advertising->start();
+    _advertising->setMaxPreferred(0x12);
   }
 
   myCharCallbacks.clearReadFlag();
@@ -155,6 +193,7 @@ void BleSender::sendGravitymonData(String payload) {
   }
 
   _characteristic->setValue(payload);
+  _advertising->start();
 }
 
 bool BleSender::isGravitymonDataSent() { return myCharCallbacks.isRead(); }

@@ -362,7 +362,7 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   self[PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
   self[PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
   self[PARAM_SELF_PUSH_TARGET] =
-      myConfig.isBLEActive() || myConfig.isHttpActive() ||
+      myConfig.isBleActive() || myConfig.isHttpActive() ||
               myConfig.isHttp2Active() || myConfig.isHttp3Active() ||
               myConfig.isMqttActive() || myConfig.isInfluxDb2Active()
           ? true
@@ -613,7 +613,9 @@ void WebServerHandler::webHandleConfigHardware(AsyncWebServerRequest *request) {
     }
   }
   if (request->hasArg(PARAM_BLE))
-    myConfig.setColorBLE(request->arg(PARAM_BLE).c_str());
+    myConfig.setBleColor(request->arg(PARAM_BLE).c_str());
+  if (request->hasArg(PARAM_BLE_FORMAT))
+    myConfig.setBleFormat(request->arg(PARAM_BLE_FORMAT).toInt());
   if (request->hasArg(PARAM_OTA))
     myConfig.setOtaURL(request->arg(PARAM_OTA).c_str());
   if (request->hasArg(PARAM_GYRO_TEMP))
@@ -627,13 +629,6 @@ void WebServerHandler::webHandleConfigHardware(AsyncWebServerRequest *request) {
                                                                  : false);
   else
     myConfig.setStorageSleep(false);
-
-  if (request->hasArg(PARAM_GRAVITYMON_BLE))
-    myConfig.setGravitymonBLE(
-        request->arg(PARAM_GRAVITYMON_BLE).equalsIgnoreCase("on") ? true
-                                                                  : false);
-  else
-    myConfig.setGravitymonBLE(false);
 
   myConfig.saveFile();
 

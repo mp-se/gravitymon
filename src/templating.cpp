@@ -59,7 +59,7 @@ const char bleFormat[] PROGMEM =
     "\"gravity\":${gravity},"
     "\"angle\":${angle},"
     "\"battery\":${battery},"
-    "\"RSSI\":${rssi},"
+    "\"RSSI\":0,"
     "\"corr-gravity\":${corr-gravity},"
     "\"gravity-unit\":\"${gravity-unit}\","
     "\"run-time\":${run-time}"

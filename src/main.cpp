@@ -334,22 +334,32 @@ bool loopReadGravity() {
       LOG_PERF_START("loop-push");
 
 #if defined(ESP32) && !defined(ESP32S2)
-      if (myConfig.isBLEActive()) {
+      if (myConfig.isBleActive()) {
         myBleSender.init();
 
-        String color = myConfig.getColorBLE();
-        if (myConfig.isGravitymonBLE()) {
-          TemplatingEngine engine;
-          engine.initialize(angle, gravitySG, corrGravitySG, tempC,
-                            (millis() - runtimeMillis) / 1000,
-                            myBatteryVoltage.getVoltage());
-          String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
-
-          myBleSender.sendGravitymonData(payload);
-          Log.notice(F("Main: Broadcast gravitymon data over bluetooth." CR));
-        } else {
-          myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG, false);
-          Log.notice(F("Main: Broadcast tilt data over bluetooth." CR));
+        switch (myConfig.getBleFormat()) {
+          case BleFormat::BLE_TILT: {
+            String color = myConfig.getBleColor();
+            myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
+                                     false);
+          } break;
+          case BleFormat::BLE_TILT_PRO: {
+            String color = myConfig.getBleColor();
+            myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
+                                     true);
+          } break;
+          case BleFormat::BLE_GRAVITYMON_EDDYSTONE: {
+            myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
+                                      gravitySG, angle);
+          } break;
+          case BleFormat::BLE_GRAVITYMON_SERVICE: {
+            TemplatingEngine engine;
+            engine.initialize(angle, gravitySG, corrGravitySG, tempC,
+                              (millis() - runtimeMillis) / 1000,
+                              myBatteryVoltage.getVoltage());
+            String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
+            myBleSender.sendGravitymonData(payload);
+          } break;
         }
       }
 #endif  // ESP32 && !ESP32S2
@@ -362,8 +372,8 @@ bool loopReadGravity() {
       }
 
 #if defined(ESP32) && !defined(ESP32S2)
-      if (myConfig.isBLEActive() && myConfig.isGravitymonBLE()) {
-        Log.notice(F("Main: Waiting for ble read." CR));
+      if (myConfig.getBleFormat() == BleFormat::BLE_GRAVITYMON_SERVICE) {
+        Log.notice(F("Main: Waiting for ble service to be read." CR));
         int i = 0;
         while (!myBleSender.isGravitymonDataSent() && i < 10) {
           delay(500);
@@ -372,7 +382,7 @@ bool loopReadGravity() {
         }
         EspSerial.print(CR);
         if (myBleSender.isGravitymonDataSent())
-          Log.notice(F("Main: Ble was read by remote." CR));
+          Log.notice(F("Main: Ble service was read by client." CR));
       }
 #endif  // ESP32 && !ESP32S2
 

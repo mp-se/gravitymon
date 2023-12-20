@@ -34,20 +34,24 @@ SOFTWARE.
 
 class BleSender {
  private:
-  BLEServer* _server = NULL;
-  BLEAdvertising* _advertising = NULL;
-  BLEService* _service = NULL;
-  BLECharacteristic* _characteristic = NULL;
+  BLEServer* _server = nullptr;
+  BLEAdvertising* _advertising = nullptr;
+  BLEService* _service = nullptr;
+  BLECharacteristic* _characteristic = nullptr;
   BLEUUID _uuid;
   bool _initFlag = false;
+  int _beaconTime = 1000;
 
  public:
   BleSender() {}
 
   void init();
 
+  // Beacons
   void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
+  void sendEddystone(float battery, float tempC, float gravity, float angle);
 
+  // Use GATT
   void sendGravitymonData(String payload);
   bool isGravitymonDataSent();
 };
