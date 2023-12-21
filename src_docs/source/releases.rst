@@ -8,8 +8,9 @@ v1.4.0 (beta)
 
 Features
 ++++++++
+* *NEW* Added led indicator: Blue / Slow Blinking = Config Mode, White/Solid = WiFi setup  
 * *BUG* Reduced WIFI TX Power for C3 chip to improve WIFI connnection stability
-* *NEW* Added 4 options to ble data transmission (TILT, TILT PRO, GRAVITYMON GATT, GRAVITYMON EDDYSTONE)
+* *NEW* Added 4 options to ble data transmission (TILT, TILT PRO, GRAVITYMON SERVICE, GRAVITYMON EDDYSTONE)
 * *NEW* Added support for ESP32S3 mini board
 * *NEW* Moved to async webserver to speed up performance in configuration mode
 * Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don't do a full erase before flashing)

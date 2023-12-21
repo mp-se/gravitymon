@@ -290,13 +290,18 @@ up you need to do a reset. One option is to attach a magnetic reed switch (defau
 magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm 
 long encapsulated in a small glass tube. See hardware section for more information, :ref:`hardware`.
 
-* **Bluetooth: (Only ESP32)**
+* **Bluetooth format: (Only ESP32)**
 
-If the build is using an ESP32 then you can send data over BLE, simulating a Tilt device. Choose the color that you want the device to simulate.
+Choose the bluetooth transmission to use.
 
-* **Gravitymon BLE format: (Only ESP32)**
+- **TILT**: Standard tilt data transmission. Data: Gravity and Temperature   
+- **TILT PRO**: Higher accuracy tilt data transmission. Data: Gravity and Temperature   
+- **GM SERVICE**: Client can read standard iSpindle JSON payload, require connection with device.
+- **GM EDDYSTONE**: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle 
 
-Activates a gravitymon specific format that allows sending iSpindel JSON data over BLE. Will require specialized software to read this data. 
+* **TILT Bluetooth color: (Only ESP32)**
+
+Select the TILT color that will be used to transmit data. Only valid if TILT format is chosen above.
 
 * **OTA URL:**
 
