@@ -144,7 +144,7 @@ void WebServerHandler::webHandleUploadFile(AsyncWebServerRequest *request,
 #if defined(ESP8266)
     Update.runAsync(true);
 #endif
-    if (!Update.begin(request->contentLength(), U_FLASH, PIN_LED)) {
+    if (!Update.begin(request->contentLength(), U_FLASH)) {
       _uploadReturn = 500;
       Log.error(F("WEB : Not enough space to store for this firmware." CR));
     } else {

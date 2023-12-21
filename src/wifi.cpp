@@ -129,8 +129,7 @@ void WifiConnection::startPortal() {
   Log.notice(F("WIFI: Starting Wifi config portal." CR));
 
   stopDoubleReset();
-  pinMode(PIN_LED, OUTPUT);
-  digitalWrite(PIN_LED, LOW);
+  ledOn(LedColor::WHITE);  // White or Led ON
 
   if (myWifiManager == 0) myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
 
@@ -175,6 +174,7 @@ void WifiConnection::startPortal() {
   }
 
   Log.notice(F("WIFI: Exited wifi config portal. Rebooting..." CR));
+  ledOff();
   delay(500);
   ESP_RESET();
 }

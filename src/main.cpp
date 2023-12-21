@@ -156,8 +156,7 @@ void setup() {
   }
   snprintf(&buf[0], sizeof(buf), "%6x", chipId);
   Log.notice(F("Main: Started setup for %s." CR), &buf[0]);
-  pinMode(PIN_LED, OUTPUT);
-  digitalWrite(PIN_LED, HIGH);
+  ledOff();
 #endif
   printBuildOptions();
   detectChipRevision();
@@ -257,6 +256,8 @@ void setup() {
     case RunMode::configurationMode:
       if (myWifi.isConnected()) {
         Log.notice(F("Main: Activating web server." CR));
+        ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
+
 #if defined(ACTIVATE_OTA)
         LOG_PERF_START("main-wifi-ota");
         if (myWifi.checkFirmwareVersion()) myWifi.updateFirmware();

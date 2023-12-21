@@ -34,6 +34,9 @@ SOFTWARE.
 #include <esp_task_wdt.h>
 #endif
 
+#include <Adafruit_NeoPixel.h>
+#include <Ticker.h>
+
 #include <config.hpp>
 #include <gyro.hpp>
 #include <helper.hpp>
@@ -76,7 +79,6 @@ void runGpioHardwareTests() {
   pinMode(PIN_CFG2, OUTPUT);
   pinMode(PIN_DS, OUTPUT);
   pinMode(PIN_VOLT, OUTPUT);
-  pinMode(PIN_LED, OUTPUT);
   delay(100);
   digitalWrite(PIN_SDA, LOW);
   digitalWrite(PIN_SCL, LOW);
@@ -84,7 +86,6 @@ void runGpioHardwareTests() {
   digitalWrite(PIN_CFG2, LOW);
   digitalWrite(PIN_DS, LOW);
   digitalWrite(PIN_VOLT, LOW);
-  digitalWrite(PIN_LED, LOW);
   delay(100);
 
   int sleep = 700;
@@ -455,6 +456,44 @@ void BatteryVoltage::read() {
       factor, v, _batteryLevel);
 #endif
 }
+
+#if defined(ESP32C3) || defined(ESP32S3)
+Adafruit_NeoPixel* rgbLed = nullptr;
+
+void ledOn(LedColor l) {
+  if (rgbLed == nullptr) {
+    rgbLed = new Adafruit_NeoPixel(1, LED_BUILTIN, NEO_GRB + NEO_KHZ800);
+    rgbLed->begin();
+    rgbLed->setBrightness(20);
+  }
+
+  rgbLed->fill(l);
+  rgbLed->show();
+}
+#else
+bool ledInit = false;
+Ticker ledTicker;
+
+void ledToggle() { digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); }
+
+void ledOn(LedColor l) {
+  if (!ledInit) {
+    pinMode(LED_BUILTIN, OUTPUT);
+    ledInit = true;
+  }
+
+  if (l == LedColor::BLUE) {
+    ledTicker.attach(1, ledToggle);
+  } else if (l == LedColor::RED) {
+    ledTicker.attach(0.2, ledToggle);
+  } else {
+    ledTicker.detach();
+    digitalWrite(LED_BUILTIN, l);
+  }
+}
+#endif
+
+void ledOff() { ledOn(LedColor::OFF); }
 
 #if defined(COLLECT_PERFDATA)
 

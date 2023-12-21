@@ -171,16 +171,15 @@ void BleSender::sendGravitymonData(String payload) {
     Log.info(
         F("BLE : Creating BLE server for gravitymon data transmission" CR));
 
-    _uuid = BLEUUID::fromString("180a");
     _server = BLEDevice::createServer();
-    _service = _server->createService(_uuid);
+    _service = _server->createService(BLEUUID("180a"));
     _characteristic = _service->createCharacteristic(
-        BLEUUID::fromString("2ac4"),
-        NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::BROADCAST);
+        BLEUUID("2ac4"), NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::BROADCAST);
     _characteristic->setCallbacks(&myCharCallbacks);
     _service->start();
-    _advertising->addServiceUUID(_uuid);
-    _advertising->setScanResponse(true);
+    _advertising->addServiceUUID(BLEUUID("180a"));
+    _advertising->setName("gravitymon");
+    _advertising->setScanResponse(false);
     _advertising->setMinPreferred(0x06);
     _advertising->setMaxPreferred(0x12);
   }

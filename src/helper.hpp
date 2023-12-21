@@ -105,6 +105,43 @@ class BatteryVoltage {
   float getVoltage() { return _batteryLevel; }
 };
 
+enum LedColor {
+#if defined(ESP32C3)
+  OFF = 0x000000,
+  BLACK = 0x000000,
+  RED = 0xff0000,
+  GREEN = 0x00ff00,
+  BLUE = 0x0000ff,
+  CYAN = 0x00ffff,
+  PURPLE = 0xff00ff,
+  YELLOW = 0xffff00,
+  WHITE = 0xffffff
+#elif defined(ESP32S3)
+  OFF = 0x000000,
+  BLACK = 0x000000,
+  RED = 0x00ff00,
+  GREEN = 0xff0000,
+  BLUE = 0x0000ff,
+  PURPLE = 0x00ffff,
+  CYAN = 0xff00ff,
+  YELLOW = 0xffff00,
+  WHITE = 0xffffff
+#else
+  OFF = HIGH,
+  BLACK = HIGH,
+  RED = 3,  // TIcker at fast pace
+  GREEN = LOW,
+  BLUE = 2,  // Ticker at slow pace
+  PURPLE = LOW,
+  CYAN = LOW,
+  YELLOW = LOW,
+  WHITE = LOW
+#endif
+};
+
+void ledOn(LedColor l = LedColor::WHITE);
+void ledOff();
+
 #if defined(COLLECT_PERFDATA)
 
 class PerfLogging {

@@ -47,7 +47,6 @@ extern RunMode runMode;
 #define PIN_CFG1 D8
 #define PIN_CFG2 D7
 #define PIN_DS D6
-#define PIN_LED 2
 #define PIN_VOLT PIN_A0
 #elif defined(ESP32C3)
 // Hardware config for ESP32-c3-mini, iSpindel hardware
@@ -76,9 +75,6 @@ extern RunMode runMode;
 #define PIN_DS A0
 #define PIN_VOLT A3
 #endif
-// This should be the LED_BUILTIN, but that is also connected SDA (Gyro) so we
-// cannot use both. So we point LED to pin 8 which is not used.
-#define PIN_LED 8
 #elif defined(ESP32S2)
 // Hardware config for ESP32-s2-mini, iSpindel hardware
 // ------------------------------------------------------
@@ -95,7 +91,6 @@ extern RunMode runMode;
 #define PIN_CFG2 A10
 #define PIN_DS A8
 #define PIN_VOLT A2
-#define PIN_LED LED_BUILTIN
 #elif defined(ESP32S3)
 // Hardware config for ESP32-s3-mini, iSpindel hardware
 // ------------------------------------------------------
@@ -112,7 +107,6 @@ extern RunMode runMode;
 #define PIN_CFG2 A9
 #define PIN_DS A12
 #define PIN_VOLT A1
-#define PIN_LED LED_BUILTIN
 #elif defined(ESP32LITE)
 // Hardware config for ESP32-lite, Floaty hardware
 // ------------------------------------------------------
@@ -131,7 +125,6 @@ extern RunMode runMode;
 #define PIN_CFG2 A13
 #define PIN_VCC A5
 #define PIN_GND A18
-#define PIN_LED LED_BUILTIN
 #else  // defined (ESP32)
 // Hardware config for ESP32-d1-min, iSpindel hardware
 // ------------------------------------------------------
@@ -147,7 +140,6 @@ extern RunMode runMode;
 #define PIN_DS D6
 #define PIN_CFG1 D8
 #define PIN_CFG2 D7
-#define PIN_LED LED_BUILTIN
 #define PIN_VOLT PIN_A0
 #endif
 
