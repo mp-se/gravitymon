@@ -17,6 +17,11 @@ Features
 * Added possibility to set wifi settings in config (need manual reboot to apply)
 * Added option that shows the average value from the gyro reads + a button to reset that on the web ui. Might make it easier to do calibration of the value jumps around.
 
+Known issues
+++++++++++++
+* On ESP32c3 mini the rgb led does not turn blue when in config mode
+* On ESP32s3 mini the rgb led does not work due to issue in arduino/esp32
+
 Maintenance
 +++++++++++
 * Changed wifi manager to modified version since the source project is no longer supported by author

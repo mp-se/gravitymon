@@ -157,6 +157,7 @@ void setup() {
   snprintf(&buf[0], sizeof(buf), "%6x", chipId);
   Log.notice(F("Main: Started setup for %s." CR), &buf[0]);
   ledOff();
+
 #endif
   printBuildOptions();
   detectChipRevision();
@@ -267,6 +268,9 @@ void setup() {
             .setupWebServer();  // Takes less than 4ms, so skip this measurement
         mySerialWebSocket.begin(myWebServerHandler.getWebServer(), &Serial);
         mySerial.begin(&mySerialWebSocket);
+      } else {
+        ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
+                               // error
       }
 
       interval = 1000;  // Change interval from 200ms to 1s

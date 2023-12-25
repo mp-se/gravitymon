@@ -21,28 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(ESP8266)
-#include <ESP8266HTTPClient.h>
-#include <ESP8266WiFi.h>
-#else  // defined (ESP32)
-#include <HTTPClient.h>
-#include <WiFi.h>
-#endif
-
 #if !defined(ESP8266)
 #include <esp_int_wdt.h>
 #include <esp_task_wdt.h>
+#else
+#include <user_interface.h>
 #endif
 
-#include <Adafruit_NeoPixel.h>
 #include <Ticker.h>
 
-#include <config.hpp>
-#include <gyro.hpp>
 #include <helper.hpp>
-#include <main.hpp>
-#include <tempsensor.hpp>
-#include <wifi.hpp>
 
 // tcp cleanup, to avoid memory crash.
 struct tcp_pcb;
@@ -298,41 +286,6 @@ float convertCtoF(float c) { return (c * 1.8) + 32.0; }
 
 float convertFtoC(float f) { return (f - 32.0) / 1.8; }
 
-FloatHistoryLog::FloatHistoryLog(String fName) {
-  _fName = fName;
-
-  File runFile = LittleFS.open(_fName, "r");
-  if (runFile) {
-    for (int i = 0; i < 10; i++) {
-      _runTime[i] = runFile.readStringUntil('\n').toFloat();
-      if (_runTime[i]) {
-        _average += _runTime[i];
-        _count++;
-      }
-    }
-    runFile.close();
-    _average = _average / _count;
-  }
-}
-
-void FloatHistoryLog::addEntry(float time) {
-  for (int i = (10 - 1); i > 0; i--) {
-    _runTime[i] = _runTime[i - 1];
-  }
-  _runTime[0] = time;
-  save();
-}
-
-void FloatHistoryLog::save() {
-  File runFile = LittleFS.open(_fName, "w");
-  if (runFile) {
-    for (int i = 0; i < 10; i++) {
-      runFile.println(_runTime[i], 2);
-    }
-    runFile.close();
-  }
-}
-
 void printHeap(String prefix) {
 #if defined(ESP8266)
   Log.notice(
@@ -373,46 +326,6 @@ void printBuildOptions() {
              CFG_APPVER, CFG_GITREV, LOG_LEVEL);
 }
 
-SerialDebug::SerialDebug(const uint32_t serialSpeed) {
-  // Start serial with auto-detected rate (default to defined BAUD)
-#if defined(USE_SERIAL_PINS) && defined(ESP8266)
-  uint8_t txPin = 3;
-  EspSerial.begin(serialSpeed, SERIAL_8N1, SERIAL_TX_ONLY, txPin);
-#elif defined(ESP8266)
-  EspSerial.begin(serialSpeed);
-#elif defined(USE_SERIAL_PINS) && defined(ESP32C3)
-  EspSerial.begin(115200L, SERIAL_8N1, 20, 21);
-#elif defined(ESP32C3)
-  EspSerial.begin(115200L);
-#elif defined(USE_SERIAL_PINS) && defined(ESP32S2)
-  EspSerial.begin(115200L, SERIAL_8N1, 37, 39);
-#elif defined(ESP32S2)
-  EspSerial.begin(115200L);
-#elif defined(USE_SERIAL_PINS) && defined(ESP32S3)
-  EspSerial.begin(115200L, SERIAL_8N1, 37, 39);
-#elif defined(ESP32S3)
-  EspSerial.begin(115200L);
-#elif defined(USE_SERIAL_PINS) && defined(ESP32LITE)
-  EspSerial.begin(serialSpeed, SERIAL_8N1, 16, 17);
-#elif defined(USE_SERIAL_PINS) && defined(ESP32)
-  EspSerial.begin(serialSpeed, SERIAL_8N1, 1, 3);
-#elif defined(ESP32)
-  EspSerial.begin(115200L);
-#endif
-
-  EspSerial.println("Serial connection established");
-  EspSerial.setDebugOutput(true);
-  getLog()->begin(LOG_LEVEL, &EspSerial, true);
-  getLog()->setPrefix(printTimestamp);
-  getLog()->notice(F("SDBG: Serial logging started at %u." CR), serialSpeed);
-}
-
-void printTimestamp(Print* _logOutput, int _logLevel) {
-  char c[12];
-  snprintf(c, sizeof(c), "%10lu ", millis());
-  _logOutput->print(c);
-}
-
 bool checkPinConnected() {
 #if defined(ESP8266)
   pinMode(PIN_CFG1, INPUT);
@@ -427,220 +340,6 @@ bool checkPinConnected() {
   digitalWrite(PIN_CFG2, 0);
   return i == LOW ? false : true;
 }
-
-BatteryVoltage::BatteryVoltage() {
-#if defined(ESP8266)
-  pinMode(PIN_VOLT, INPUT);
-#else
-  pinMode(PIN_VOLT, INPUT_PULLDOWN);
-#endif
-}
-
-void BatteryVoltage::read() {
-  // The analog pin can only handle 3.3V maximum voltage so we need to reduce
-  // the voltage (from max 5V)
-  float factor = myConfig.getVoltageFactor();  // Default value is 1.63
-  int v = analogRead(PIN_VOLT);
-
-  // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
-  // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
-
-#if defined(ESP8266)
-  _batteryLevel = ((3.3 / 1023) * v) * factor;
-#else  // defined (ESP32)
-  _batteryLevel = ((3.3 / 4095) * v) * factor;
-#endif
-#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
-  Log.verbose(
-      F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
-      factor, v, _batteryLevel);
-#endif
-}
-
-#if defined(ESP32C3) || defined(ESP32S3)
-Adafruit_NeoPixel* rgbLed = nullptr;
-
-void ledOn(LedColor l) {
-  if (rgbLed == nullptr) {
-    rgbLed = new Adafruit_NeoPixel(1, LED_BUILTIN, NEO_GRB + NEO_KHZ800);
-    rgbLed->begin();
-    rgbLed->setBrightness(20);
-  }
-
-  rgbLed->fill(l);
-  rgbLed->show();
-}
-#else
-bool ledInit = false;
-Ticker ledTicker;
-
-void ledToggle() { digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); }
-
-void ledOn(LedColor l) {
-  if (!ledInit) {
-    pinMode(LED_BUILTIN, OUTPUT);
-    ledInit = true;
-  }
-
-  if (l == LedColor::BLUE) {
-    ledTicker.attach(1, ledToggle);
-  } else if (l == LedColor::RED) {
-    ledTicker.attach(0.2, ledToggle);
-  } else {
-    ledTicker.detach();
-    digitalWrite(LED_BUILTIN, l);
-  }
-}
-#endif
-
-void ledOff() { ledOn(LedColor::OFF); }
-
-#if defined(COLLECT_PERFDATA)
-
-PerfLogging myPerfLogging;
-
-void PerfLogging::clear() {
-  // Clear the measurements
-  if (first == 0) return;
-
-  PerfEntry* pe = first;
-
-  do {
-    pe->max = 0;
-    pe->start = 0;
-    pe->end = 0;
-    pe->mA = 0;
-    pe->V = 0;
-    pe = pe->next;
-  } while (pe != 0);
-}
-
-void PerfLogging::start(const char* key) {
-  PerfEntry* pe = add(key);
-  pe->start = millis();
-}
-
-void PerfLogging::stop(const char* key) {
-  PerfEntry* pe = find(key);
-
-  if (pe != 0) {
-    pe->end = millis();
-
-    uint32_t t = pe->end - pe->start;
-
-    if (t > pe->max) pe->max = t;
-  }
-}
-
-void PerfLogging::print() {
-  PerfEntry* pe = first;
-
-  while (pe != 0) {
-    Log.notice(F("PERF: %s %ums" CR), pe->key, pe->max);
-    pe = pe->next;
-  }
-}
-
-void PerfLogging::pushInflux() {
-  if (!myConfig.isInfluxDb2Active()) return;
-
-  if (myConfig.isInfluxSSL()) {
-    Log.warning(
-        F("PERF: InfluxDB2 with SSL is not supported when pushing performance "
-          "data, skipping" CR));
-    return;
-  }
-
-  WiFiClient wifi;
-  HTTPClient http;
-  String serverPath =
-      String(myConfig.getInfluxDb2PushUrl()) +
-      "/api/v2/write?org=" + String(myConfig.getInfluxDb2PushOrg()) +
-      "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
-
-  http.begin(wifi, serverPath);
-
-  // Create body for influxdb2, format used
-  // key,host=mdns value=0.0
-  String body;
-  body.reserve(500);
-
-  // Create the payload with performance data.
-  // ------------------------------------------------------------------------------------------
-  PerfEntry* pe = first;
-  char buf[150];
-  snprintf(&buf[0], sizeof(buf), "perf,host=%s,device=%s ", myConfig.getMDNS(),
-           myConfig.getID());
-  body += &buf[0];
-
-  while (pe != 0) {
-    if (pe->max) {
-      if (pe->next)
-        snprintf(&buf[0], sizeof(buf), "%s=%u,", pe->key, pe->max);
-      else
-        snprintf(&buf[0], sizeof(buf), "%s=%u", pe->key, pe->max);
-
-      body += &buf[0];
-    }
-    pe = pe->next;
-  }
-
-  // Create the payload with debug data for validating sensor stability
-  // ------------------------------------------------------------------------------------------
-  snprintf(&buf[0], sizeof(buf), "\ndebug,host=%s,device=%s ",
-           myConfig.getMDNS(), myConfig.getID());
-  body += &buf[0];
-#if defined(ESP8266)
-  snprintf(&buf[0], sizeof(buf),
-           "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp="
-           "%.2f,heap=%d,heap-frag=%d,heap-max=%d,stack=%d",
-           myGyro.getAngle(), myGyro.getLastGyroData().ax,
-           myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
-           myGyro.getSensorTempC(),
-           myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(),
-           ESP.getHeapFragmentation(), ESP.getMaxFreeBlockSize(),
-           ESP.getFreeContStack());
-#else  // defined (ESP32)
-  snprintf(&buf[0], sizeof(buf),
-           "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp="
-           "%.2f,heap=%d,heap-frag=%d,heap-max=%d",
-           myGyro.getAngle(), myGyro.getLastGyroData().ax,
-           myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
-           myGyro.getSensorTempC(),
-           myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(), 0,
-           ESP.getMaxAllocHeap());
-#endif
-
-  body += &buf[0];
-
-#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
-  Log.verbose(F("PERF: url %s." CR), serverPath.c_str());
-  Log.verbose(F("PERF: data %s." CR), body.c_str());
-#endif
-
-  // Send HTTP POST request
-  String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
-  http.addHeader(F("Authorization"), auth.c_str());
-  http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
-  int httpResponseCode = http.POST(body);
-
-  if (httpResponseCode == 204) {
-#if !defined(HELPER_DISABLE_LOGGING)
-    Log.notice(
-        F("PERF: InfluxDB2 push performance data successful, response=%d" CR),
-        httpResponseCode);
-#endif
-  } else {
-    Log.error(F("PERF: InfluxDB2 push performance data failed, response=%d" CR),
-              httpResponseCode);
-  }
-
-  http.end();
-  wifi.stop();
-  tcp_cleanup();
-}
-
-#endif  // COLLECT_PERFDATA
 
 char* convertFloatToString(float f, char* buffer, int dec) {
   dtostrf(f, 6, dec, buffer);

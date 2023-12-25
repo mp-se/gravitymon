@@ -7,14 +7,16 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.4.0 beta**. Last updated 2023-12-02
+  This documentation reflects **v1.4.0 beta**. Last updated 2023-12-21
 
 What is GravityMon?
 --------------------
 
-GravityMon is a electronic hydrometer software that can be used to measure gravity and temperature during fermentation of beer and report the progress to a number of external 
-services. Is uses a gyro to measure the gravity since there is a correlation between gravity an the density of the fluid. Based on the density the hydrometer will float at a different angle. 
-The graph below is an example on how the fermentation process can be tracked. The graph has been rendered using Fermentrack. 
+GravityMon is a electronic hydrometer software that can be used to measure gravity and temperature during 
+fermentation of beer and report the progress to a number of external services. Is uses a gyro to measure the 
+gravity since there is a correlation between gravity an the density of the fluid. Based on the density the 
+hydrometer will float at a different angle. The graph below is an example on how the fermentation process 
+can be tracked. The graph has been rendered using Fermentrack. 
 
 .. image:: images/fermentation.png
   :width: 500
@@ -25,8 +27,8 @@ implements a lot of the features that has been requested in the original iSpindl
 various reasons. 
 
 The firmware also supports a iSpindle built using an ESP32 which is pin compatible with esp8266, currently there are 3 options that are 
-supported ESP32-D1 mini, ESP32-C3 mini, ESP32-S2 mini, ESP32 lite (floaty). See :ref:`hardware`. The more modern hardware will allow better support for SSL and 
-other memory intensive functions.
+supported ESP32-D1 mini, ESP32-C3 mini, ESP32-S2 mini, ESP32-S3 mini, ESP32 lite (floaty). See :ref:`hardware`. The more modern hardware 
+will allow better support for SSL and other memory intensive functions.
 
 I started GravityMon because I like to create software and wanted to do some microcontroller programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural. 

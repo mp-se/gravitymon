@@ -65,25 +65,10 @@ The main features
   TILT has been support since the ESP32c3 board was supported but in this release there are a few new options that allows for 
   more data to be transmitted.
 
-.. list-table:: Bluetooth Options
-   :widths: 33 33 33
-   :header-rows: 1
-
-   * - option
-     - data
-     - comment
-   * - Tilt
-     - Gravity,Temp
-     - Passive or Active scans
-   * - Tilt PRO
-     - Gravity,Temp
-     - Passive or Active scans
-   * - Gravmon Eddystone
-     - Gravity,Temp,Angle,Battery,ChipID
-     - Active scans, Custom format
-   * - Gravmon Services
-     - Full iSpindle JSON payload
-     - Active scans, Connect with device
+  - Tilt. Data: Gravity,Temp. Works with passive or active scanning by the client.
+  - Tilt PRO. Same as above with higher accuracy.
+  - Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.
+  - Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.
 
 * **Create gravity formulas on the device**
 
