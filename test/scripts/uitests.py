@@ -1,21 +1,32 @@
-import unittest, time
+import unittest, time, logging
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.remote.remote_connection import LOGGER
 #
 # Note! UI tests might fail on a smaller monitor since all 
 # elements needs to be visible for the automations to work.
 #
 
+# pytesy uitests.py -k test_02_index
+
 url = "http://192.168.1.160"
 
-class TestBase(unittest.TestCase):
+LOGGER.setLevel(logging.FATAL)
+
+class GM(unittest.TestCase):
+
     def setUp(self):
         self.baseUrl = url
-        self.driver = webdriver.Edge()
+
+        options = webdriver.EdgeOptions()
+        #options.add_argument("--headless=new")
+        options.add_argument('log-level=3')
+        service = webdriver.EdgeService(service_args=['--log-level=OFF'], log_output="./log")
+
+        self.driver = webdriver.Edge(options=options, service=service)
         self.wait = WebDriverWait(self.driver, timeout=20)
         self.driver.maximize_window()
 
@@ -47,9 +58,6 @@ class TestBase(unittest.TestCase):
     def print(self, field):
         e = self.find_element(field)
         print(f"Displayed={e.is_displayed()}, Enabled={e.is_enabled()}" )
-
-
-class GravitymonTest(TestBase):
 
     def test_01_factory(self):
         print("test_01_factory()")
@@ -213,7 +221,8 @@ class GravitymonTest(TestBase):
         self.set_textfield("temp-adjustment-value", "-1,1")
         self.find_element("gyro-temp").click()
         self.find_element("storage-sleep").click()
-        self.set_selectfield("ble", ["","red","green","black","purple","orange","blue","yellow","pink"])
+        self.set_selectfield("ble-format", ["0","1","2","3","4"])
+        self.set_selectfield("ble", ["red","green","black","purple","orange","blue","yellow","pink"])
         self.set_textfield("ota-url", "http://ota.com")
         self.find_element("hardware-btn").click()
         self.wait.until(lambda d : self.find_element("hardware-btn").is_enabled() == True )
@@ -300,16 +309,20 @@ class GravitymonTest(TestBase):
         time.sleep(1)
 
         self.find_element("header1-btn").click()
+        self.wait.until(lambda d : self.find_element("header-close-btn").is_displayed() == True )
         self.wait.until(lambda d : self.find_element("header-close-btn").is_enabled() == True )
         self.find_element("header-close-btn").click()
 
-    def test_16_headers2(self):
-        print("test_16_headers2()")
+        #self.driver.implicitly_wait(10)
+
+    def test_16b_headers(self):
+        print("test_16b_headers()")
         self.driver.get(self.baseUrl + "/config.htm#collapsePush")     
         assert self.driver.current_url == self.baseUrl + "/config.htm#collapsePush"
         time.sleep(1)
 
         self.find_element("header2-btn").click()
+        self.wait.until(lambda d : self.find_element("header-close-btn").is_displayed() == True )
         self.wait.until(lambda d : self.find_element("header-close-btn").is_enabled() == True )
         self.find_element("header-close-btn").click()
 
@@ -329,6 +342,7 @@ class GravitymonTest(TestBase):
         self.driver.get(self.baseUrl + "/config.htm")     
         assert self.driver.current_url == self.baseUrl + "/config.htm"
         time.sleep(1)
+        self.wait.until(lambda d : self.find_element("calibrate-btn").is_enabled() == True )
         self.find_element("calibrate-btn").click()
         self.wait_for_alert_success()
 
