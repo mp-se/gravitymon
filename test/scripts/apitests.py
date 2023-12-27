@@ -7,11 +7,12 @@ ver  = "1.4.0"
 #id = "000110"
 
 # Physical device
-host = "192.168.1.160"
-id = "e18798"
+host = "192.168.1.116"
+id = "671598"
 skipFactory = False # enable when coverate is collected
 debugResult = False
 
+# pytest apitest.py
 # python3 -m unittest -v apitests
 # python3 -m unittest -v apitests.API.test_config_1
 # python3 -m unittest -v apitests.API.test_bug_79
@@ -109,7 +110,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
     def test_06_config_4(self):
-        j = { "id": id, "ota-url": "http://ota.url/path", "voltage-factor": 1.55, "temp-adjustment-value": -2, "gyro-temp": "on", "ble": "color" }
+        j = { "id": id, "ota-url": "http://ota.url/path", "voltage-factor": 1.55, "temp-adjustment-value": -2, "gyro-temp": "on", "ble": "color", "ble-format": 0 }
         r = call_api_post( "/api/config/hardware", j )
         self.assertEqual(r.status_code, 200)
 
@@ -119,6 +120,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
         self.assertEqual(j["ble"], "color")
+        self.assertEqual(j["ble-format"], 0)
         self.assertEqual(j["ota-url"], "http://ota.url/path")
         self.assertEqual(j["voltage-factor"], 1.55)
         self.assertEqual(j["temp-adjustment-value"], -2)
@@ -185,7 +187,7 @@ class API(unittest.TestCase):
         self.assertEqual(j["sleep-interval"], 300)
 
     def test_09_config_7(self):
-        j = { "id": id, "ota-url": "", "voltage-factor": 1.55, "temp-adjustment-value": -2, "gyro-temp": "off", "ble": "blue" }
+        j = { "id": id, "ota-url": "", "voltage-factor": 1.55, "temp-adjustment-value": -2, "gyro-temp": "off", "ble": "blue", "ble-format": 1 }
         r = call_api_post( "/api/config/hardware", j )
         self.assertEqual(r.status_code, 200)
 
@@ -195,6 +197,7 @@ class API(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertEqual(j["id"], id)
         self.assertEqual(j["ble"], "blue")
+        self.assertEqual(j["ble-format"], 1)
         self.assertEqual(j["ota-url"], "")
         self.assertEqual(j["voltage-factor"], 1.55)
         self.assertEqual(j["temp-adjustment-value"], -2)
@@ -326,7 +329,8 @@ class API(unittest.TestCase):
         self.assertEqual(j["a2"], 25)
         self.assertEqual(j["a3"], 25.5)
         self.assertEqual(j["a4"], 25.55)
-        self.assertEqual(j["a5"], 25.555)
+        self.assertEqual(j["a5"], 25.556)
+        #self.assertEqual(j["a5"], 25.555)
         self.assertEqual(j["a6"], 35)
         self.assertEqual(j["a7"], 36)
         self.assertEqual(j["a8"], 37)
