@@ -7,8 +7,8 @@ ver  = "1.4.0"
 #id = "000110"
 
 # Physical device
-host = "192.168.1.103"
-id = "1dbe64"
+host = "192.168.1.160"
+id = "e18798"
 skipFactory = False # enable when coverate is collected
 debugResult = False
 
