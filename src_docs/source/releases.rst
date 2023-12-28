@@ -20,7 +20,7 @@ Features
 Known issues
 ++++++++++++
 * On ESP32c3 mini the rgb led does not turn blue when in config mode
-* On ESP32s3 mini the rgb led does not work due to issue in arduino/esp32
+* On ESP32s3 mini the rgb led does not work due to issue in arduino/esp32 unless manual patching of the arduino framework `#define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT`
 
 Maintenance
 +++++++++++
@@ -35,6 +35,7 @@ Maintenance
 Documentation
 +++++++++++++
 * Published code coverage for unit tests and apitest.py (gcov/README.md)
+* Added BierBot Bricks configuration as external service target. 
 
 Issues adressed
 ++++++++++++++++

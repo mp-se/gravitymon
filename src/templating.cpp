@@ -227,18 +227,19 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
   }
 
 #if LOG_LEVEL == 6
-  // Log.verbose(F("TPL : Base '%s'." CR), baseTemplate.c_str());
+  Log.verbose(F("TPL : Base '%s'." CR), _baseTemplate.c_str());
 #endif
 
   // Insert data into template.
   transform();
   _baseTemplate.clear();
 
+  if (_output) {
 #if LOG_LEVEL == 6
-  // Log.verbose(F("TPL : Transformed '%s'." CR), baseTemplate.c_str());
+    Log.verbose(F("TPL : Transformed '%s'." CR), _output);
 #endif
-
-  if (_output) return _output;
+    return _output;
+  } 
 
   return "";
 }
