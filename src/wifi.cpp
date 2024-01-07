@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -135,8 +135,7 @@ void WifiConnection::startPortal() {
 
   myWifiManager->setMinimumSignalQuality(-1);
   myWifiManager->setConfigPortalChannel(0);
-  myWifiManager->setConfigPortalTimeout(
-      myAdvancedConfig.getWifiPortalTimeout());
+  myWifiManager->setConfigPortalTimeout(myConfig.getWifiPortalTimeout());
 
   String mdns("<p>Default mDNS name is: http://");
   mdns += myConfig.getMDNS();
@@ -348,12 +347,12 @@ bool WifiConnection::connect() {
   }
 
   connectAsync(i);
-  return waitForConnection(myAdvancedConfig.getWifiConnectTimeout());
+  return waitForConnection(myConfig.getWifiConnectTimeout());
   */
 
   // Alternative code for using seconday wifi settings as fallback.
   // If success to seconday is successful this is used as standard
-  int timeout = myAdvancedConfig.getWifiConnectTimeout();
+  int timeout = myConfig.getWifiConnectTimeout();
 
   connectAsync(0);
   if (!waitForConnection(timeout)) {
@@ -478,7 +477,7 @@ bool WifiConnection::checkFirmwareVersion() {
   }
 
   // Send HTTP GET request
-  DynamicJsonDocument ver(300);
+  DynamicJsonDocument ver(JSON_BUFFER_SIZE_SMALL);
   int httpResponseCode = http.GET();
 
   if (httpResponseCode == 200) {

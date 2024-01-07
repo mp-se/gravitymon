@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -225,7 +225,7 @@ bool GyroSensor::isSensorMoving(RawGyroData &raw) {
 #endif
 
   int x = abs(raw.gx), y = abs(raw.gy), z = abs(raw.gz);
-  int threashold = myAdvancedConfig.getGyroSensorMovingThreashold();
+  int threashold = myConfig.getGyroSensorMovingThreashold();
 
   if (x > threashold || y > threashold || z > threashold) {
     Log.notice(F("GYRO: Movement detected (%d)\t%d\t%d\t%d." CR), threashold, x,
@@ -243,10 +243,9 @@ bool GyroSensor::read() {
 
   if (!_sensorConnected) return false;
 
-  readSensor(
-      _lastGyroData, myAdvancedConfig.getGyroReadCount(),
-      myAdvancedConfig.getGyroReadDelay());  // Last param is unused if
-                                             // GYRO_USE_INTERRUPT is defined.
+  readSensor(_lastGyroData, myConfig.getGyroReadCount(),
+             myConfig.getGyroReadDelay());  // Last param is unused if
+                                            // GYRO_USE_INTERRUPT is defined.
 
   // If the sensor is unstable we return false to signal we dont have valid
   // value

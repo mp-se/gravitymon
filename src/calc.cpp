@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -93,7 +93,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
         double dev = (g - fd.g[i]) < 0 ? (fd.g[i] - g) : (g - fd.g[i]);
 
         // If the deviation is more than 2 degress we mark it as failed.
-        if (dev * 1000 > myAdvancedConfig.getMaxFormulaCreationDeviation()) {
+        if (dev * 1000 > myConfig.getMaxFormulaCreationDeviation()) {
           writeErrorLog(
               "CALC: Validation failed on angle %.2f, deviation too large %.4f "
               "SG, formula order %d",

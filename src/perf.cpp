@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -162,7 +162,7 @@ void PerfLogging::pushInflux() {
   // Send HTTP POST request
   String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
   http.addHeader(F("Authorization"), auth.c_str());
-  http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+  http.setTimeout(myConfig.getPushTimeout() * 1000);
   int httpResponseCode = http.POST(body);
 
   if (httpResponseCode == 204) {

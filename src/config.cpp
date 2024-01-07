@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,13 +26,8 @@ SOFTWARE.
 #include <wifi.hpp>
 
 Config myConfig;
-AdvancedConfig myAdvancedConfig;
 
-//
-// Create the config class with default settings.
-//
 Config::Config() {
-  // Assiging default values
   char buf[30];
 #if defined(ESP8266)
   snprintf(&buf[0], sizeof(buf), "%06x", (unsigned int)ESP.getChipId());
@@ -53,13 +48,8 @@ Config::Config() {
 #endif
 }
 
-//
-// Populate the json document with all configuration parameters (used in both
-// web and saving to file)
-//
 void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_MDNS] = getMDNS();
-  // doc[PARAM_CONFIG_VER] = getConfigVersion();
   doc[PARAM_ID] = getID();
   doc[PARAM_OTA] = getOtaURL();
   doc[PARAM_SSID] = getWifiSSID(0);
@@ -106,108 +96,36 @@ void Config::createJson(DynamicJsonDocument& doc) {
   cal["gy"] = _gyroCalibration.gy;
   cal["gz"] = _gyroCalibration.gz;
 
-  JsonObject cal2 = doc.createNestedObject(PARAM_FORMULA_DATA);
-  cal2["a1"] = serialized(String(_formulaData.a[0], DECIMALS_TILT));
-  cal2["a2"] = serialized(String(_formulaData.a[1], DECIMALS_TILT));
-  cal2["a3"] = serialized(String(_formulaData.a[2], DECIMALS_TILT));
-  cal2["a4"] = serialized(String(_formulaData.a[3], DECIMALS_TILT));
-  cal2["a5"] = serialized(String(_formulaData.a[4], DECIMALS_TILT));
-  cal2["a6"] = serialized(String(_formulaData.a[5], DECIMALS_TILT));
-  cal2["a7"] = serialized(String(_formulaData.a[6], DECIMALS_TILT));
-  cal2["a8"] = serialized(String(_formulaData.a[7], DECIMALS_TILT));
-  cal2["a9"] = serialized(String(_formulaData.a[8], DECIMALS_TILT));
-  cal2["a10"] = serialized(String(_formulaData.a[9], DECIMALS_TILT));
+  JsonArray fdArray = doc.createNestedArray(PARAM_FORMULA_DATA);
+  for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
+    JsonObject fd = fdArray.createNestedObject();
+    fd["a"] = serialized(String(_formulaData.a[i], DECIMALS_TILT));
+    fd["g"] = serialized(String(_formulaData.g[i], DECIMALS_SG));
+  }
 
-  cal2["g1"] = serialized(String(_formulaData.g[0], DECIMALS_SG));
-  cal2["g2"] = serialized(String(_formulaData.g[1], DECIMALS_SG));
-  cal2["g3"] = serialized(String(_formulaData.g[2], DECIMALS_SG));
-  cal2["g4"] = serialized(String(_formulaData.g[3], DECIMALS_SG));
-  cal2["g5"] = serialized(String(_formulaData.g[4], DECIMALS_SG));
-  cal2["g6"] = serialized(String(_formulaData.g[5], DECIMALS_SG));
-  cal2["g7"] = serialized(String(_formulaData.g[6], DECIMALS_SG));
-  cal2["g8"] = serialized(String(_formulaData.g[7], DECIMALS_SG));
-  cal2["g9"] = serialized(String(_formulaData.g[8], DECIMALS_SG));
-  cal2["g10"] = serialized(String(_formulaData.g[9], DECIMALS_SG));
+  doc[PARAM_GYRO_READ_COUNT] = this->getGyroReadCount();
+  // doc[PARAM_GYRO_READ_DELAY] = this->getGyroReadDelay();
+  doc[PARAM_GYRO_MOVING_THREASHOLD] = this->getGyroSensorMovingThreashold();
+  doc[PARAM_FORMULA_DEVIATION] = this->getMaxFormulaCreationDeviation();
+  doc[PARAM_WIFI_PORTAL_TIMEOUT] = this->getWifiPortalTimeout();
+  doc[PARAM_WIFI_CONNECT_TIMEOUT] = this->getWifiConnectTimeout();
+  doc[PARAM_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
+  doc[PARAM_PUSH_INTERVAL_HTTP1] = this->getPushIntervalHttp1();
+  doc[PARAM_PUSH_INTERVAL_HTTP2] = this->getPushIntervalHttp2();
+  doc[PARAM_PUSH_INTERVAL_HTTP3] = this->getPushIntervalHttp3();
+  doc[PARAM_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
+  doc[PARAM_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
+  doc[PARAM_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
+  doc[PARAM_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
+  doc[PARAM_BATTERY_SAVING] = this->isBatterySaving();
 }
 
-//
-// Save json document to file
-//
-bool Config::saveFile() {
-  if (!_saveNeeded) {
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-    Log.verbose(F("CFG : Skipping save, not needed." CR));
-#endif
-    return true;
-  }
+void Config::parseJson(DynamicJsonDocument& doc) {
+  /* for iterating over the array, needed when we need to migrate from the old
+  format. for (JsonPair kv : doc.as<JsonObject>()) {
+    Serial.println(kv.key().c_str());
+  }*/
 
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Saving configuration to file." CR));
-#endif
-
-  File configFile = LittleFS.open(CFG_FILENAME, "w");
-
-  if (!configFile) {
-    writeErrorLog("CFG : Failed to save configuration.");
-    return false;
-  }
-
-  DynamicJsonDocument doc(3000);
-  createJson(doc);
-
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
-
-  serializeJson(doc, configFile);
-  configFile.flush();
-  configFile.close();
-
-  _saveNeeded = false;
-  Log.notice(F("CFG : Configuration saved to " CFG_FILENAME "." CR));
-  return true;
-}
-
-//
-// Load config file from disk
-//
-bool Config::loadFile() {
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Loading configuration from file." CR));
-#endif
-
-  if (!LittleFS.exists(CFG_FILENAME)) {
-    writeErrorLog("CFG : Configuration file does not exist.");
-    return false;
-  }
-
-  File configFile = LittleFS.open(CFG_FILENAME, "r");
-
-  if (!configFile) {
-    writeErrorLog("CFG : Failed to load configuration.");
-    return false;
-  }
-
-  Log.notice(F("CFG : Size of configuration file=%d bytes." CR),
-             configFile.size());
-
-  DynamicJsonDocument doc(3000);
-  DeserializationError err = deserializeJson(doc, configFile);
-#if LOG_LEVEL == 6
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
-  configFile.close();
-
-  if (err) {
-    writeErrorLog("CFG : Failed to parse configuration (json)");
-    return false;
-  }
-
-#if LOG_LEVEL == 6
-  Log.verbose(F("CFG : Parsed configuration file." CR));
-#endif
   if (!doc[PARAM_OTA].isNull()) setOtaURL(doc[PARAM_OTA]);
   if (!doc[PARAM_MDNS].isNull()) setMDNS(doc[PARAM_MDNS]);
   if (!doc[PARAM_SSID].isNull()) setWifiSSID(doc[PARAM_SSID], 0);
@@ -288,72 +206,143 @@ bool Config::loadFile() {
   if (!doc[PARAM_GYRO_CALIBRATION]["gz"].isNull())
     _gyroCalibration.gz = doc[PARAM_GYRO_CALIBRATION]["gz"];
 
-  if (!doc[PARAM_FORMULA_DATA]["a1"].isNull())
-    _formulaData.a[0] = doc[PARAM_FORMULA_DATA]["a1"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a2"].isNull())
-    _formulaData.a[1] = doc[PARAM_FORMULA_DATA]["a2"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a3"].isNull())
-    _formulaData.a[2] = doc[PARAM_FORMULA_DATA]["a3"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a4"].isNull())
-    _formulaData.a[3] = doc[PARAM_FORMULA_DATA]["a4"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a5"].isNull())
-    _formulaData.a[4] = doc[PARAM_FORMULA_DATA]["a5"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a6"].isNull())
-    _formulaData.a[5] = doc[PARAM_FORMULA_DATA]["a6"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a7"].isNull())
-    _formulaData.a[6] = doc[PARAM_FORMULA_DATA]["a7"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a8"].isNull())
-    _formulaData.a[7] = doc[PARAM_FORMULA_DATA]["a8"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a9"].isNull())
-    _formulaData.a[8] = doc[PARAM_FORMULA_DATA]["a9"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["a10"].isNull())
-    _formulaData.a[9] = doc[PARAM_FORMULA_DATA]["a10"].as<double>();
+  if (!doc[PARAM_FORMULA_DATA].isNull()) {
+    JsonArray array = doc[PARAM_FORMULA_DATA].as<JsonArray>();
+    int i = 0;
 
-  if (!doc[PARAM_FORMULA_DATA]["g1"].isNull())
-    _formulaData.g[0] = doc[PARAM_FORMULA_DATA]["g1"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g2"].isNull())
-    _formulaData.g[1] = doc[PARAM_FORMULA_DATA]["g2"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g3"].isNull())
-    _formulaData.g[2] = doc[PARAM_FORMULA_DATA]["g3"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g4"].isNull())
-    _formulaData.g[3] = doc[PARAM_FORMULA_DATA]["g4"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g5"].isNull())
-    _formulaData.g[4] = doc[PARAM_FORMULA_DATA]["g5"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g6"].isNull())
-    _formulaData.g[5] = doc[PARAM_FORMULA_DATA]["g6"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g7"].isNull())
-    _formulaData.g[6] = doc[PARAM_FORMULA_DATA]["g7"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g8"].isNull())
-    _formulaData.g[7] = doc[PARAM_FORMULA_DATA]["g8"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g9"].isNull())
-    _formulaData.g[8] = doc[PARAM_FORMULA_DATA]["g9"].as<double>();
-  if (!doc[PARAM_FORMULA_DATA]["g10"].isNull())
-    _formulaData.g[9] = doc[PARAM_FORMULA_DATA]["g10"].as<double>();
+    for (JsonVariant v : array) {
+      _formulaData.a[i] = v["a"].as<double>();
+      _formulaData.g[i] = v["g"].as<double>();
+      i++;
+    }
 
-  /*if( doc[PARAM_CONFIG_VER].isNull() ) {
-    // If this parameter is missing we need to reset the gyrocalibaration due to
-  bug #29 _gyroCalibration.ax = _gyroCalibration.ay = _gyroCalibration.az = 0;
-    _gyroCalibration.gx = _gyroCalibration.gy = _gyroCalibration.gz = 0;
-    Log.warning(F("CFG : Old configuration format, clearing gyro calibration."
-  CR));
-  }*/
+    if (i != FORMULA_DATA_SIZE) {
+      Log.warning(F("Size of formula array is not as expected (%d)" CR), i);
+    }
+  }
+
+  if (!doc[PARAM_GYRO_READ_COUNT].isNull())
+    this->setGyroReadCount(doc[PARAM_GYRO_READ_COUNT].as<int>());
+  // if (!doc[PARAM_GYRO_READ_DELAY].isNull())
+  //  this->setGyroReadDelay(doc[PARAM_GYRO_READ_DELAY].as<int>());
+  if (!doc[PARAM_GYRO_MOVING_THREASHOLD].isNull())
+    this->setGyroSensorMovingThreashold(
+        doc[PARAM_GYRO_MOVING_THREASHOLD].as<int>());
+  if (!doc[PARAM_FORMULA_DEVIATION].isNull())
+    this->setMaxFormulaCreationDeviation(
+        doc[PARAM_FORMULA_DEVIATION].as<float>());
+  if (!doc[PARAM_FORMULA_CALIBRATION_TEMP].isNull())
+    this->SetDefaultCalibrationTemp(
+        doc[PARAM_FORMULA_CALIBRATION_TEMP].as<float>());
+  if (!doc[PARAM_WIFI_PORTAL_TIMEOUT].isNull())
+    this->setWifiPortalTimeout(doc[PARAM_WIFI_PORTAL_TIMEOUT].as<int>());
+  if (!doc[PARAM_WIFI_CONNECT_TIMEOUT].isNull())
+    this->setWifiConnectTimeout(doc[PARAM_WIFI_CONNECT_TIMEOUT].as<int>());
+  if (!doc[PARAM_PUSH_TIMEOUT].isNull())
+    this->setPushTimeout(doc[PARAM_PUSH_TIMEOUT].as<int>());
+  if (!doc[PARAM_PUSH_INTERVAL_HTTP1].isNull())
+    this->setPushIntervalHttp1(doc[PARAM_PUSH_INTERVAL_HTTP1].as<int>());
+  if (!doc[PARAM_PUSH_INTERVAL_HTTP2].isNull())
+    this->setPushIntervalHttp2(doc[PARAM_PUSH_INTERVAL_HTTP2].as<int>());
+  if (!doc[PARAM_PUSH_INTERVAL_HTTP3].isNull())
+    this->setPushIntervalHttp3(doc[PARAM_PUSH_INTERVAL_HTTP3].as<int>());
+  if (!doc[PARAM_PUSH_INTERVAL_INFLUX].isNull())
+    this->setPushIntervalInflux(doc[PARAM_PUSH_INTERVAL_INFLUX].as<int>());
+  if (!doc[PARAM_PUSH_INTERVAL_MQTT].isNull())
+    this->setPushIntervalMqtt(doc[PARAM_PUSH_INTERVAL_MQTT].as<int>());
+  if (!doc[PARAM_TEMPSENSOR_RESOLUTION].isNull())
+    this->setTempSensorResolution(doc[PARAM_TEMPSENSOR_RESOLUTION].as<int>());
+  if (!doc[PARAM_IGNORE_LOW_ANGLES].isNull())
+    setIgnoreLowAnges(doc[PARAM_IGNORE_LOW_ANGLES].as<bool>());
+  if (!doc[PARAM_BATTERY_SAVING].isNull())
+    setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
+}
+
+bool Config::saveFile() {
+  if (!_saveNeeded) {
+#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
+    Log.verbose(F("CFG : Skipping save, not needed." CR));
+#endif
+    return true;
+  }
+
+#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
+  Log.verbose(F("CFG : Saving configuration to file." CR));
+#endif
+
+  File configFile = LittleFS.open(CFG_FILENAME, "w");
+
+  if (!configFile) {
+    writeErrorLog("CFG : Failed to save configuration.");
+    return false;
+  }
+
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
+  createJson(doc);
+
+#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
+#endif
+
+  serializeJson(doc, configFile);
+  configFile.flush();
+  configFile.close();
+
+  _saveNeeded = false;
+  Log.notice(F("CFG : Configuration saved to " CFG_FILENAME "." CR));
+  return true;
+}
+
+bool Config::loadFile() {
+#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
+  Log.verbose(F("CFG : Loading configuration from file." CR));
+#endif
+
+  if (!LittleFS.exists(CFG_FILENAME)) {
+    writeErrorLog("CFG : Configuration file does not exist.");
+    return false;
+  }
+
+  File configFile = LittleFS.open(CFG_FILENAME, "r");
+
+  if (!configFile) {
+    writeErrorLog("CFG : Failed to load configuration.");
+    return false;
+  }
+
+  Log.notice(F("CFG : Size of configuration file=%d bytes." CR),
+             configFile.size());
+
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
+  DeserializationError err = deserializeJson(doc, configFile);
+#if LOG_LEVEL == 6
+  serializeJson(doc, EspSerial);
+  EspSerial.print(CR);
+#endif
+  configFile.close();
+
+  if (err) {
+    writeErrorLog("CFG : Failed to parse configuration (json)");
+    return false;
+  }
+
+#if LOG_LEVEL == 6
+  Log.verbose(F("CFG : Parsed configuration file." CR));
+#endif
+
+  parseJson(doc);
 
   _saveNeeded = false;  // Reset save flag
   Log.notice(F("CFG : Configuration file " CFG_FILENAME " loaded." CR));
   return true;
 }
 
-//
-// Check if file system can be mounted, if not we format it.
-//
 void Config::formatFileSystem() {
   Log.notice(F("CFG : Formating filesystem." CR));
   LittleFS.format();
 }
 
-//
-// Check if file system can be mounted, if not we format it.
-//
 void Config::checkFileSystem() {
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   Log.verbose(F("CFG : Checking if filesystem is valid." CR));
@@ -373,128 +362,6 @@ void Config::checkFileSystem() {
     Log.error(F("CFG : Unable to mount file system..." CR));
   }
 #endif
-}
-
-bool AdvancedConfig::saveFile() {
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Saving hardware configuration to file." CR));
-#endif
-
-  File configFile = LittleFS.open(CFG_HW_FILENAME, "w");
-
-  if (!configFile) {
-    writeErrorLog("CFG : Failed to write hardware configuration ");
-    return false;
-  }
-
-  DynamicJsonDocument doc(700);
-
-  doc[PARAM_HW_GYRO_READ_COUNT] = this->getGyroReadCount();
-  // doc[PARAM_HW_GYRO_READ_DELAY] = this->getGyroReadDelay();
-  doc[PARAM_HW_GYRO_MOVING_THREASHOLD] = this->getGyroSensorMovingThreashold();
-  doc[PARAM_HW_FORMULA_DEVIATION] = this->getMaxFormulaCreationDeviation();
-  doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = this->getWifiPortalTimeout();
-  doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = this->getWifiConnectTimeout();
-  doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
-  doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = this->getPushIntervalHttp1();
-  doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = this->getPushIntervalHttp2();
-  doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = this->getPushIntervalHttp3();
-  doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
-  doc[PARAM_HW_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
-  doc[PARAM_HW_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
-  doc[PARAM_HW_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
-  doc[PARAM_HW_BATTERY_SAVING] = this->isBatterySaving();
-
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
-
-  serializeJson(doc, configFile);
-  configFile.flush();
-  configFile.close();
-
-  Log.notice(F("CFG : Configuration saved to " CFG_HW_FILENAME "." CR));
-  return true;
-}
-
-bool AdvancedConfig::loadFile() {
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Loading hardware configuration from file." CR));
-#endif
-
-  if (!LittleFS.exists(CFG_HW_FILENAME)) {
-    Log.warning(
-        F("CFG : Configuration file does not exist " CFG_HW_FILENAME "." CR));
-    return false;
-  }
-
-  File configFile = LittleFS.open(CFG_HW_FILENAME, "r");
-
-  if (!configFile) {
-    writeErrorLog("CFG : Failed to read hardware configuration");
-    return false;
-  }
-
-  Log.notice(F("CFG : Size of configuration file=%d bytes." CR),
-             configFile.size());
-
-  DynamicJsonDocument doc(512);
-  DeserializationError err = deserializeJson(doc, configFile);
-#if LOG_LEVEL == 6
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
-  configFile.close();
-
-  if (err) {
-    writeErrorLog("CFG : Failed to parse hardware configuration (json)");
-    return false;
-  }
-
-#if LOG_LEVEL == 6
-  Log.verbose(F("CFG : Parsed hardware configuration file." CR));
-#endif
-
-  if (!doc[PARAM_HW_GYRO_READ_COUNT].isNull())
-    this->setGyroReadCount(doc[PARAM_HW_GYRO_READ_COUNT].as<int>());
-  // if (!doc[PARAM_HW_GYRO_READ_DELAY].isNull())
-  //  this->setGyroReadDelay(doc[PARAM_HW_GYRO_READ_DELAY].as<int>());
-  if (!doc[PARAM_HW_GYRO_MOVING_THREASHOLD].isNull())
-    this->setGyroSensorMovingThreashold(
-        doc[PARAM_HW_GYRO_MOVING_THREASHOLD].as<int>());
-  if (!doc[PARAM_HW_FORMULA_DEVIATION].isNull())
-    this->setMaxFormulaCreationDeviation(
-        doc[PARAM_HW_FORMULA_DEVIATION].as<float>());
-  if (!doc[PARAM_HW_FORMULA_CALIBRATION_TEMP].isNull())
-    this->SetDefaultCalibrationTemp(
-        doc[PARAM_HW_FORMULA_CALIBRATION_TEMP].as<float>());
-  if (!doc[PARAM_HW_WIFI_PORTAL_TIMEOUT].isNull())
-    this->setWifiPortalTimeout(doc[PARAM_HW_WIFI_PORTAL_TIMEOUT].as<int>());
-  if (!doc[PARAM_HW_WIFI_CONNECT_TIMEOUT].isNull())
-    this->setWifiConnectTimeout(doc[PARAM_HW_WIFI_CONNECT_TIMEOUT].as<int>());
-  if (!doc[PARAM_HW_PUSH_TIMEOUT].isNull())
-    this->setPushTimeout(doc[PARAM_HW_PUSH_TIMEOUT].as<int>());
-  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP1].isNull())
-    this->setPushIntervalHttp1(doc[PARAM_HW_PUSH_INTERVAL_HTTP1].as<int>());
-  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP2].isNull())
-    this->setPushIntervalHttp2(doc[PARAM_HW_PUSH_INTERVAL_HTTP2].as<int>());
-  if (!doc[PARAM_HW_PUSH_INTERVAL_HTTP3].isNull())
-    this->setPushIntervalHttp3(doc[PARAM_HW_PUSH_INTERVAL_HTTP3].as<int>());
-  if (!doc[PARAM_HW_PUSH_INTERVAL_INFLUX].isNull())
-    this->setPushIntervalInflux(doc[PARAM_HW_PUSH_INTERVAL_INFLUX].as<int>());
-  if (!doc[PARAM_HW_PUSH_INTERVAL_MQTT].isNull())
-    this->setPushIntervalMqtt(doc[PARAM_HW_PUSH_INTERVAL_MQTT].as<int>());
-  if (!doc[PARAM_HW_TEMPSENSOR_RESOLUTION].isNull())
-    this->setTempSensorResolution(
-        doc[PARAM_HW_TEMPSENSOR_RESOLUTION].as<int>());
-  if (!doc[PARAM_HW_IGNORE_LOW_ANGLES].isNull())
-    setIgnoreLowAnges(doc[PARAM_HW_IGNORE_LOW_ANGLES].as<bool>());
-  if (!doc[PARAM_HW_BATTERY_SAVING].isNull())
-    setBatterySaving(doc[PARAM_HW_BATTERY_SAVING].as<bool>());
-
-  Log.notice(F("CFG : Configuration file " CFG_HW_FILENAME " loaded." CR));
-  return true;
 }
 
 // EOF

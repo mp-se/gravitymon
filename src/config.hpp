@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,13 @@ SOFTWARE.
 #include <helper.hpp>
 #include <resources.hpp>
 
-#define CFG_APPNAME "GravityMon"          // Name of firmware
-#define CFG_FILENAME "/gravitymon.json"   // Name of config file
-#define CFG_HW_FILENAME "/hardware.json"  // Name of config file for hw
+#define CFG_APPNAME "GravityMon"
+#define CFG_FILENAME "/gravitymon2.json"
+
+#define CFG_FILENAME_OLD \
+  "/gravitymon.json"  // TODO: Keep these for migration routine.
+#define CFG_HW_FILENAME_OLD \
+  "/hardware.json"  // TODO: Keep these for migration routine.
 
 enum BleFormat {
   BLE_DISABLED = 0,
@@ -58,95 +62,6 @@ struct RawGyroData {
 struct RawFormulaData {
   double a[FORMULA_DATA_SIZE];
   double g[FORMULA_DATA_SIZE];
-};
-
-class AdvancedConfig {
- private:
-  int _wifiPortalTimeout = 120;            // seconds
-  int _wifiConnectTimeout = 20;            // seconds
-  float _maxFormulaCreationDeviation = 3;  // SG
-  float _defaultCalibrationTemp = 20.0;    // C
-  int _gyroSensorMovingThreashold = 500;
-  int _tempSensorResolution = 9;  // bits
-  int _gyroReadCount = 50;
-  int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
-  int _pushTimeout = 10;      // seconds
-  int _pushIntervalHttp1 = 0;
-  int _pushIntervalHttp2 = 0;
-  int _pushIntervalHttp3 = 0;
-  int _pushIntervalInflux = 0;
-  int _pushIntervalMqtt = 0;
-  bool _ignoreLowAnges = false;
-#if defined(ESP32LITE)
-  bool _batterySaving = false;
-#else
-  bool _batterySaving = true;
-#endif
-
- public:
-  int getWifiPortalTimeout() { return _wifiPortalTimeout; }
-  void setWifiPortalTimeout(int t) { _wifiPortalTimeout = t; }
-
-  int getWifiConnectTimeout() { return _wifiConnectTimeout; }
-  void setWifiConnectTimeout(int t) { _wifiConnectTimeout = t; }
-
-  float getMaxFormulaCreationDeviation() {
-    return _maxFormulaCreationDeviation;
-  }
-  void setMaxFormulaCreationDeviation(float f) {
-    _maxFormulaCreationDeviation = f;
-  }
-
-  int getTempSensorResolution() { return _tempSensorResolution; }
-  void setTempSensorResolution(int t) {
-    if (t >= 9 && t <= 12) _tempSensorResolution = t;
-  }
-
-  float getDefaultCalibrationTemp() { return _defaultCalibrationTemp; }
-  void SetDefaultCalibrationTemp(float t) { _defaultCalibrationTemp = t; }
-
-  int getGyroSensorMovingThreashold() { return _gyroSensorMovingThreashold; }
-  void setGyroSensorMovingThreashold(int t) { _gyroSensorMovingThreashold = t; }
-
-  int getGyroReadCount() { return _gyroReadCount; }
-  void setGyroReadCount(int c) { _gyroReadCount = c; }
-
-  int getGyroReadDelay() { return _gyroReadDelay; }
-  void setGyroReadDelay(int d) { _gyroReadDelay = d; }
-
-  int getPushTimeout() { return _pushTimeout; }
-  void setPushTimeout(int t) { _pushTimeout = t; }
-
-  int getPushIntervalHttp1() { return _pushIntervalHttp1; }
-  void setPushIntervalHttp1(int t) { _pushIntervalHttp1 = t; }
-
-  int getPushIntervalHttp2() { return _pushIntervalHttp2; }
-  void setPushIntervalHttp2(int t) { _pushIntervalHttp2 = t; }
-
-  int getPushIntervalHttp3() { return _pushIntervalHttp3; }
-  void setPushIntervalHttp3(int t) { _pushIntervalHttp3 = t; }
-
-  int getPushIntervalInflux() { return _pushIntervalInflux; }
-  void setPushIntervalInflux(int t) { _pushIntervalInflux = t; }
-
-  int getPushIntervalMqtt() { return _pushIntervalMqtt; }
-  void setPushIntervalMqtt(int t) { _pushIntervalMqtt = t; }
-
-  bool isPushIntervalActive() {
-    return (_pushIntervalHttp1 + _pushIntervalHttp2 + _pushIntervalHttp3 +
-            _pushIntervalInflux + _pushIntervalMqtt) == 0
-               ? false
-               : true;
-  }
-
-  const bool isIgnoreLowAnges() { return _ignoreLowAnges; }
-  void setIgnoreLowAnges(bool b) { _ignoreLowAnges = b; }
-
-  const bool isBatterySaving() { return _batterySaving; }
-  void setBatterySaving(bool b) { _batterySaving = b; }
-
-  bool saveFile();
-  bool loadFile();
 };
 
 class Config {
@@ -219,6 +134,27 @@ class Config {
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
   RawFormulaData _formulaData = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+
+  int _wifiPortalTimeout = 120;            // seconds
+  int _wifiConnectTimeout = 20;            // seconds
+  float _maxFormulaCreationDeviation = 3;  // SG
+  float _defaultCalibrationTemp = 20.0;    // C
+  int _gyroSensorMovingThreashold = 500;
+  int _tempSensorResolution = 9;  // bits
+  int _gyroReadCount = 50;
+  int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
+  int _pushTimeout = 10;      // seconds
+  int _pushIntervalHttp1 = 0;
+  int _pushIntervalHttp2 = 0;
+  int _pushIntervalHttp3 = 0;
+  int _pushIntervalInflux = 0;
+  int _pushIntervalMqtt = 0;
+  bool _ignoreLowAnges = false;
+#if defined(ESP32LITE)
+  bool _batterySaving = false;
+#else
+  bool _batterySaving = true;
+#endif
 
   void formatFileSystem();
 
@@ -503,8 +439,70 @@ class Config {
     _saveNeeded = true;
   }
 
+  int getWifiPortalTimeout() { return _wifiPortalTimeout; }
+  void setWifiPortalTimeout(int t) { _wifiPortalTimeout = t; }
+
+  int getWifiConnectTimeout() { return _wifiConnectTimeout; }
+  void setWifiConnectTimeout(int t) { _wifiConnectTimeout = t; }
+
+  float getMaxFormulaCreationDeviation() {
+    return _maxFormulaCreationDeviation;
+  }
+  void setMaxFormulaCreationDeviation(float f) {
+    _maxFormulaCreationDeviation = f;
+  }
+
+  int getTempSensorResolution() { return _tempSensorResolution; }
+  void setTempSensorResolution(int t) {
+    if (t >= 9 && t <= 12) _tempSensorResolution = t;
+  }
+
+  float getDefaultCalibrationTemp() { return _defaultCalibrationTemp; }
+  void SetDefaultCalibrationTemp(float t) { _defaultCalibrationTemp = t; }
+
+  int getGyroSensorMovingThreashold() { return _gyroSensorMovingThreashold; }
+  void setGyroSensorMovingThreashold(int t) { _gyroSensorMovingThreashold = t; }
+
+  int getGyroReadCount() { return _gyroReadCount; }
+  void setGyroReadCount(int c) { _gyroReadCount = c; }
+
+  int getGyroReadDelay() { return _gyroReadDelay; }
+  void setGyroReadDelay(int d) { _gyroReadDelay = d; }
+
+  int getPushTimeout() { return _pushTimeout; }
+  void setPushTimeout(int t) { _pushTimeout = t; }
+
+  int getPushIntervalHttp1() { return _pushIntervalHttp1; }
+  void setPushIntervalHttp1(int t) { _pushIntervalHttp1 = t; }
+
+  int getPushIntervalHttp2() { return _pushIntervalHttp2; }
+  void setPushIntervalHttp2(int t) { _pushIntervalHttp2 = t; }
+
+  int getPushIntervalHttp3() { return _pushIntervalHttp3; }
+  void setPushIntervalHttp3(int t) { _pushIntervalHttp3 = t; }
+
+  int getPushIntervalInflux() { return _pushIntervalInflux; }
+  void setPushIntervalInflux(int t) { _pushIntervalInflux = t; }
+
+  int getPushIntervalMqtt() { return _pushIntervalMqtt; }
+  void setPushIntervalMqtt(int t) { _pushIntervalMqtt = t; }
+
+  bool isPushIntervalActive() {
+    return (_pushIntervalHttp1 + _pushIntervalHttp2 + _pushIntervalHttp3 +
+            _pushIntervalInflux + _pushIntervalMqtt) == 0
+               ? false
+               : true;
+  }
+
+  const bool isIgnoreLowAnges() { return _ignoreLowAnges; }
+  void setIgnoreLowAnges(bool b) { _ignoreLowAnges = b; }
+
+  const bool isBatterySaving() { return _batterySaving; }
+  void setBatterySaving(bool b) { _batterySaving = b; }
+
   // IO functions
   void createJson(DynamicJsonDocument& doc);
+  void parseJson(DynamicJsonDocument& doc);
   bool saveFile();
   bool loadFile();
   void checkFileSystem();
@@ -513,7 +511,6 @@ class Config {
 };
 
 extern Config myConfig;
-extern AdvancedConfig myAdvancedConfig;
 
 #endif  // SRC_CONFIG_HPP_
 

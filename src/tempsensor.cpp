@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -43,8 +43,7 @@ void TempSensor::setup() {
 
   if (mySensors.getDS18Count()) {
     Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d bit" CR),
-               mySensors.getDS18Count(),
-               myAdvancedConfig.getTempSensorResolution());
+               mySensors.getDS18Count(), myConfig.getTempSensorResolution());
   } else {
     Log.warning(F("TSEN: No temp sensors found" CR));
   }
@@ -81,7 +80,7 @@ void TempSensor::readSensor(bool useGyro) {
   }
 
   // Read the sensors
-  mySensors.setResolution(myAdvancedConfig.getTempSensorResolution());
+  mySensors.setResolution(myConfig.getTempSensorResolution());
   mySensors.requestTemperatures();
 
   if (mySensors.getDS18Count() >= 1) {

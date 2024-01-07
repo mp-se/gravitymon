@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -70,14 +70,14 @@ void PushIntervalTracker::load() {
 // Update and save counters
 //
 void PushIntervalTracker::save() {
-  update(0, myAdvancedConfig.getPushIntervalHttp1());
-  update(1, myAdvancedConfig.getPushIntervalHttp2());
-  update(2, myAdvancedConfig.getPushIntervalHttp3());
-  update(3, myAdvancedConfig.getPushIntervalInflux());
-  update(4, myAdvancedConfig.getPushIntervalMqtt());
+  update(0, myConfig.getPushIntervalHttp1());
+  update(1, myConfig.getPushIntervalHttp2());
+  update(2, myConfig.getPushIntervalHttp3());
+  update(3, myConfig.getPushIntervalInflux());
+  update(4, myConfig.getPushIntervalMqtt());
 
   // If this feature is disabled we skip saving the file
-  if (!myAdvancedConfig.isPushIntervalActive()) {
+  if (!myConfig.isPushIntervalActive()) {
 #if !defined(PUSH_DISABLE_LOGGING)
     Log.notice(F("PUSH: Variabled push interval disabled." CR));
 #endif
@@ -213,12 +213,12 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
     Log.notice(F("PUSH: InfluxDB, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
     probeMaxFragement(serverPath);
-    _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _httpSecure.setTimeout(myConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
     _httpSecure.addHeader(F("Authorization"), auth.c_str());
     _lastCode = _httpSecure.POST(doc);
   } else {
-    _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _http.setTimeout(myConfig.getPushTimeout() * 1000);
     _http.begin(_wifi, serverPath);
     _http.addHeader(F("Authorization"), auth.c_str());
     _lastCode = _http.POST(doc);
@@ -302,7 +302,7 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
     probeMaxFragement(serverPath);
-    _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _httpSecure.setTimeout(myConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
 
     if (index == 0) {
@@ -315,7 +315,7 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
 
     _lastCode = _httpSecure.POST(doc);
   } else {
-    _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _http.setTimeout(myConfig.getPushTimeout() * 1000);
     _http.begin(_wifi, serverPath);
 
     if (index == 0) {
@@ -380,11 +380,11 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
     Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
     _wifiSecure.setInsecure();
     probeMaxFragement(serverPath);
-    _httpSecure.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _httpSecure.setTimeout(myConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
     _lastCode = _httpSecure.GET();
   } else {
-    _http.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    _http.setTimeout(myConfig.getPushTimeout() * 1000);
     _http.begin(_wifi, serverPath);
     _lastCode = _http.GET();
   }
@@ -444,10 +444,10 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
     }
 #endif
 
-    mqtt.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    mqtt.setTimeout(myConfig.getPushTimeout() * 1000);
     mqtt.begin(host.c_str(), port, _wifiSecure);
   } else {
-    mqtt.setTimeout(myAdvancedConfig.getPushTimeout() * 1000);
+    mqtt.setTimeout(myConfig.getPushTimeout() * 1000);
     mqtt.begin(host.c_str(), port, _wifi);
   }
 
