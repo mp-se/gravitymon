@@ -175,7 +175,6 @@ void setup() {
   myWifi.init();  // double reset check
   checkResetReason();
   myConfig.loadFile();
-  myAdvancedConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
 
   // For restoring ispindel backup to test migration
@@ -311,7 +310,7 @@ bool loopReadGravity() {
 
     float gravitySG = calculateGravity(angle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
-        gravitySG, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
+        gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
 
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
@@ -326,7 +325,7 @@ bool loopReadGravity() {
     bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
                         (myConfig.getSleepInterval() * 1000));
 
-    if (myAdvancedConfig.isIgnoreLowAnges() &&
+    if (myConfig.isIgnoreLowAnges() &&
         (angle < myConfig.getFormulaData().a[0])) {
       Log.warning(
           F("Main: Angle is lower than water, so we regard this as faulty and "
@@ -441,7 +440,7 @@ void goToSleep(int sleepInterval) {
   LOG_PERF_STOP("run-time");
   LOG_PERF_PUSH();
 
-  if (myAdvancedConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
+  if (myConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
     sleepInterval = 3600;
   }
 

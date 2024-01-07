@@ -29,6 +29,9 @@ SOFTWARE.
 #include <ArduinoLog.h>
 #include <stdlib.h>
 
+const size_t JSON_BUFFER_SIZE_LARGE = 3000;
+const size_t JSON_BUFFER_SIZE_SMALL = 500;
+
 enum RunMode {
   gravityMode = 0,
   configurationMode = 1,
