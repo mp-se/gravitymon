@@ -315,7 +315,6 @@ bool loopReadGravity() {
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
     }
-
 #if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
                   "corr_gravity=%F." CR),

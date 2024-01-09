@@ -48,7 +48,7 @@ Config::Config() {
 #endif
 }
 
-void Config::createJson(DynamicJsonDocument& doc) {
+void Config::createJson(JsonObject& doc) {
   doc[PARAM_MDNS] = getMDNS();
   doc[PARAM_ID] = getID();
   doc[PARAM_OTA] = getOtaURL();
@@ -120,7 +120,7 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_BATTERY_SAVING] = this->isBatterySaving();
 }
 
-void Config::parseJson(DynamicJsonDocument& doc) {
+void Config::parseJson(JsonObject& doc) {
   /* for iterating over the array, needed when we need to migrate from the old
   format. for (JsonPair kv : doc.as<JsonObject>()) {
     Serial.println(kv.key().c_str());
@@ -258,6 +258,15 @@ void Config::parseJson(DynamicJsonDocument& doc) {
     setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
 }
 
+void Config::migrateJson(JsonObject & doc) {
+
+  // Migration from older format to 1.5 format
+
+  // * All tags must be migrated from using '-' to '_' to better support client javascripy
+  // * PARAM_FORMULA_DATA changed from static to LIST with { a: 0, g: 0 }
+  // * 
+}
+
 bool Config::saveFile() {
   if (!_saveNeeded) {
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
@@ -278,7 +287,8 @@ bool Config::saveFile() {
   }
 
   DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
-  createJson(doc);
+  JsonObject obj = doc.as<JsonObject>();
+  createJson(obj);
 
 #if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   serializeJson(doc, EspSerial);
@@ -331,7 +341,8 @@ bool Config::loadFile() {
   Log.verbose(F("CFG : Parsed configuration file." CR));
 #endif
 
-  parseJson(doc);
+  JsonObject obj = doc.as<JsonObject>();
+  parseJson(obj);
 
   _saveNeeded = false;  // Reset save flag
   Log.notice(F("CFG : Configuration file " CFG_FILENAME " loaded." CR));

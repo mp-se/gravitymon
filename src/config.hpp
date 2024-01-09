@@ -501,8 +501,9 @@ class Config {
   void setBatterySaving(bool b) { _batterySaving = b; }
 
   // IO functions
-  void createJson(DynamicJsonDocument& doc);
-  void parseJson(DynamicJsonDocument& doc);
+  void createJson(JsonObject& doc);
+  void parseJson(JsonObject& doc);
+  void migrateJson(JsonObject& doc);
   bool saveFile();
   bool loadFile();
   void checkFileSystem();
