@@ -258,13 +258,17 @@ void Config::parseJson(JsonObject& doc) {
     setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
 }
 
-void Config::migrateJson(JsonObject & doc) {
-
+void Config::migrateJson(JsonObject& doc) {
   // Migration from older format to 1.5 format
 
-  // * All tags must be migrated from using '-' to '_' to better support client javascripy
+  // * All tags changed from using '-' to '_' to support javascript
   // * PARAM_FORMULA_DATA changed from static to LIST with { a: 0, g: 0 }
-  // * 
+  // * INT_HTTP1 -> HTTP_INT
+  // * INT_HTTP2 -> HTTP_INT2
+  // * INT_HTTP3 -> HTTP_INT3
+  // * INT_INFLUX -> INFLUXDB2_INT
+  // * INT_MQTT -> MQTT_INT
+  // * BLE -> BLE_TILT_COLOR
 }
 
 bool Config::saveFile() {
