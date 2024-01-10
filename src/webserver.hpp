@@ -38,6 +38,8 @@ SOFTWARE.
 #include <WiFi.h>
 #define MAX_SKETCH_SPACE 1835008
 #endif
+#include <ArduinoJson.h>
+#include <AsyncJson.h>
 
 #if defined(ESP8266)
 #include <incbin.h>
@@ -76,44 +78,51 @@ class WebServerHandler {
   AsyncWebServer *_server = 0;
   File _uploadFile;
   int _uploadedSize = 0;
-  int _lastFormulaCreateError = 0;
+  // int _lastFormulaCreateError = 0;
   int _uploadReturn = 200;
   volatile bool _rebootTask = false;
   volatile bool _sensorCalibrationTask = false;
   volatile bool _pushTestTask = false;
   String _pushTestData;
 
-  void webHandleConfig(AsyncWebServerRequest *request);
-  void webHandleFormulaWrite(AsyncWebServerRequest *request);
-  void webHandleFormulaRead(AsyncWebServerRequest *request);
-  void webHandleConfigAdvancedRead(AsyncWebServerRequest *request);
-  void webHandleConfigAdvancedWrite(AsyncWebServerRequest *request);
-  void webHandleConfigHardware(AsyncWebServerRequest *request);
-  void webHandleConfigGravity(AsyncWebServerRequest *request);
-  void webHandleConfigPush(AsyncWebServerRequest *request);
-  void webHandleConfigDevice(AsyncWebServerRequest *request);
-  void webHandleConfigFormatRead(AsyncWebServerRequest *request);
-  void webHandleConfigFormatWrite(AsyncWebServerRequest *request);
-  void webHandleConfigWifi(AsyncWebServerRequest *request);
-  void webHandleTestPush(AsyncWebServerRequest *request);
-  void webHandleTestPushStatus(AsyncWebServerRequest *request);
-  void webHandleStatusSleepmode(AsyncWebServerRequest *request);
-  void webHandleClearWIFI(AsyncWebServerRequest *request);
+  bool isAuthenticated(AsyncWebServerRequest *request);
+
   void webHandleStatus(AsyncWebServerRequest *request);
-  void webHandleFactoryDefaults(AsyncWebServerRequest *request);
+
+  void webHandleConfigRead(AsyncWebServerRequest *request);
+  void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
+  void webHandleConfigFormatRead(AsyncWebServerRequest *request);
+  void webHandleConfigFormatWrite(AsyncWebServerRequest *request,
+                                  JsonVariant &json);
+  void webHandleConfigWifi(AsyncWebServerRequest *request, JsonVariant &json);
+
+  void webHandleSleepmode(AsyncWebServerRequest *request, JsonVariant &json);
+
+  // **REMOVE** void webHandleFormulaWrite(AsyncWebServerRequest *request);
+  // **REMOVE** void webHandleFormulaRead(AsyncWebServerRequest *request);
+  void webHandleFormulaCreate(AsyncWebServerRequest *request);
+
+  void webHandleTestPush(AsyncWebServerRequest *request, JsonVariant &json);
+  void webHandleTestPushStatus(AsyncWebServerRequest *request);
+
   void webHandleCalibrate(AsyncWebServerRequest *request);
   void webHandleCalibrateStatus(AsyncWebServerRequest *request);
+
   void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
                            size_t index, uint8_t *data, size_t len, bool final);
+
   void webHandleLogClear(AsyncWebServerRequest *request);
-  void webHandlePageNotFound(AsyncWebServerRequest *request);
   void webHandleRestart(AsyncWebServerRequest *request);
+  void webHandleClearWifi(AsyncWebServerRequest *request);
+  void webHandleFactoryDefaults(AsyncWebServerRequest *request);
   void webHandleMigrate(AsyncWebServerRequest *request);
+
+  void webHandlePageNotFound(AsyncWebServerRequest *request);
 
   String readFile(String fname);
   bool writeFile(String fname, String data);
 
-  String getRequestArguments(AsyncWebServerRequest *request);
+  // String getRequestArguments(AsyncWebServerRequest *request);
   void webReturnOK(AsyncWebServerRequest *request);
 
 #if defined(ESP8266)

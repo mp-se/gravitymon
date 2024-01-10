@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -43,82 +43,68 @@ WebServerHandler myWebServerHandler;  // My wrapper class fr webserver functions
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
-void WebServerHandler::webHandleConfig(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config");
-  Log.notice(F("WEB : webServer callback for /api/config(get)." CR));
+bool WebServerHandler::isAuthenticated(AsyncWebServerRequest *request) {
+  if (request->hasHeader("Authorization")) {
+    String token("Bearer ");
+    token += myConfig.getID();
 
-  DynamicJsonDocument doc(2000);
-  myConfig.createJson(doc);
-
-  doc[PARAM_PASS] = "";  // dont show the wifi password
-  doc[PARAM_PASS2] = "";
-
-  doc[PARAM_APP_VER] = String(CFG_APPVER);
-  doc[PARAM_APP_BUILD] = String(CFG_GITREV);
-
-  double angle = 0;
-
-  if (myGyro.hasValue()) angle = myGyro.getAngle();
-
-  double tempC = myTempSensor.getTempC();
-  double gravity = calculateGravity(angle, tempC);
-
-  doc[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
-  doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
-
-  // Format the adjustment so we get rid of rounding errors
-  if (myConfig.isTempF())
-    // We want the delta value (32F = 0C).
-    doc[PARAM_TEMP_ADJ] = serialized(
-        String(convertCtoF(myConfig.getTempSensorAdjC()) - 32, DECIMALS_TEMP));
-  else
-    doc[PARAM_TEMP_ADJ] =
-        serialized(String(myConfig.getTempSensorAdjC(), DECIMALS_TEMP));
-
-  if (myConfig.isGravityTempAdj()) {
-    gravity = gravityTemperatureCorrectionC(
-        gravity, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
+    if (request->getHeader("Authorization")->value() == token) {
+      Log.info(F("WEB : Auth token is valid." CR));
+      return true;
+    }
   }
 
-  if (myConfig.isGravityPlato()) {
-    doc[PARAM_GRAVITY] =
-        serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
-  } else {
-    doc[PARAM_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
+  Log.info(
+      F("WEB : No valid authorization header found, returning error 401." CR));
+  AsyncWebServerResponse *response = request->beginResponse(401);
+  request->send(response);
+  return false;
+}
+
+void WebServerHandler::webHandleConfigRead(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
   }
 
-  doc[PARAM_BATTERY] =
-      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
+  LOG_PERF_START("webserver-api-config-read");
+  Log.notice(F("WEB : webServer callback for /api/config(read)." CR));
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_LARGE);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  myConfig.createJson(obj);
+  obj.remove(PARAM_PASS);  // dont show the wifi password
+  obj.remove(PARAM_PASS2);
+  response->setLength();
+  request->send(response);
+  LOG_PERF_STOP("webserver-api-config-read");
+}
 
-  FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = serialized(String(
-      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME));
+void WebServerHandler::webHandleConfigWrite(AsyncWebServerRequest *request,
+                                            JsonVariant &json) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
 
-#if defined(ESP8266)
-  doc[PARAM_PLATFORM] = "esp8266";
-#elif defined(ESP32C3)
-  doc[PARAM_PLATFORM] = "esp32c3";
-#elif defined(ESP32S2)
-  doc[PARAM_PLATFORM] = "esp32s2";
-#elif defined(ESP32S3)
-  doc[PARAM_PLATFORM] = "esp32s3";
-#elif defined(ESP32LITE)
-  doc[PARAM_PLATFORM] = "esp32lite";
-#else  // esp32 mini
-  doc[PARAM_PLATFORM] = "esp32";
-#endif
+  LOG_PERF_START("webserver-api-config-write");
+  Log.notice(F("WEB : webServer callback for /api/config(write)." CR));
+  JsonObject obj = json.as<JsonObject>();
+  obj.remove(PARAM_SSID);  // wifi credentials are managed in separate api
+  obj.remove(PARAM_SSID2);
+  obj.remove(PARAM_PASS);
+  obj.remove(PARAM_PASS2);
+  myConfig.parseJson(obj);
+  obj.clear();
+  myConfig.saveFile();
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
-
-  String out;
-  out.reserve(2000);
-  serializeJson(doc, out);
-  doc.clear();
-  request->send(200, "application/json", out.c_str());
-  LOG_PERF_STOP("webserver-api-config");
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_LARGE);
+  obj = response->getRoot().as<JsonObject>();
+  myConfig.createJson(obj);
+  obj.remove(PARAM_PASS);  // dont show the wifi password
+  obj.remove(PARAM_PASS2);
+  response->setLength();
+  request->send(response);
+  LOG_PERF_STOP("webserver-api-config-write");
 }
 
 void WebServerHandler::webReturnOK(AsyncWebServerRequest *request) {
@@ -185,84 +171,85 @@ void WebServerHandler::webHandleUploadFile(AsyncWebServerRequest *request,
 }
 
 void WebServerHandler::webHandleCalibrate(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-calibrate");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/calibrate." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-calibrate");
+  if (!isAuthenticated(request)) {
     return;
   }
 
+  LOG_PERF_START("webserver-api-calibrate");
+  Log.notice(F("WEB : webServer callback for /api/calibrate." CR));
   _sensorCalibrationTask = true;
-  request->send(200, "text/plain", "Device calibration scheduled");
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  obj[PARAM_MESSAGE] = "Scheduled device calibration";
+  response->setLength();
+  request->send(response);
   LOG_PERF_STOP("webserver-api-calibrate");
 }
 
 void WebServerHandler::webHandleCalibrateStatus(
     AsyncWebServerRequest *request) {
   LOG_PERF_START("webserver-api-calibrate-status");
-  Log.notice(F("WEB : webServer callback for /api/calibrate." CR));
-
-  DynamicJsonDocument doc(100);
-
-  doc[PARAM_STATUS] = _sensorCalibrationTask;
-
-#if LOG_LEVEL == 6
-  serializeJson(doc, Serial);
-  EspSerial.print(CR);
-#endif
-
-  String out;
-  out.reserve(100);
-  serializeJson(doc, out);
-  doc.clear();
-
-  request->send(200, "application/json", out.c_str());
+  Log.notice(F("WEB : webServer callback for /api/calibrate/status." CR));
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = static_cast<bool>(_sensorCalibrationTask);
+  obj[PARAM_MESSAGE] = "";
+  response->setLength();
+  request->send(response);
   LOG_PERF_STOP("webserver-api-calibrate-status");
 }
 
 void WebServerHandler::webHandleFactoryDefaults(
     AsyncWebServerRequest *request) {
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/factory." CR));
-
-  if (!id.compareTo(myConfig.getID())) {
-    request->send(200, "text/plain",
-                  "Removing configuration and restarting...");
-    LittleFS.remove(CFG_FILENAME);
-    LittleFS.remove(CFG_HW_FILENAME);
-    LittleFS.remove(ERR_FILENAME);
-    LittleFS.remove(RUNTIME_FILENAME);
-    LittleFS.remove(TPL_FNAME_HTTP1);
-    LittleFS.remove(TPL_FNAME_HTTP2);
-    LittleFS.remove(TPL_FNAME_INFLUXDB);
-    LittleFS.remove(TPL_FNAME_MQTT);
-    LittleFS.end();
-    Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
-    request->send(200, "text/plain", "Resetting device.");
-    delay(500);
-    ESP_RESET();
-  } else {
-    request->send(400, "text/plain", "Unknown ID.");
+  if (!isAuthenticated(request)) {
+    return;
   }
+
+  Log.notice(F("WEB : webServer callback for /api/factory." CR));
+  LittleFS.remove(CFG_FILENAME);
+  LittleFS.remove(CFG_FILENAME);
+  LittleFS.remove(ERR_FILENAME);
+  LittleFS.remove(RUNTIME_FILENAME);
+  LittleFS.remove(TPL_FNAME_HTTP1);
+  LittleFS.remove(TPL_FNAME_HTTP2);
+  LittleFS.remove(TPL_FNAME_INFLUXDB);
+  LittleFS.remove(TPL_FNAME_MQTT);
+  LittleFS.end();
+  Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
+
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  obj[PARAM_MESSAGE] = "Factory reset completed, rebooting";
+  response->setLength();
+  request->send(response);
+  delay(500);
+  ESP_RESET();
 }
 
 void WebServerHandler::webHandleLogClear(AsyncWebServerRequest *request) {
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/clearlog." CR));
-
-  if (!id.compareTo(myConfig.getID())) {
-    request->send(200, "text/plain", "Removing logfiles...");
-    LittleFS.remove(ERR_FILENAME);
-    LittleFS.remove(ERR_FILENAME2);
-    request->send(200, "text/plain", "Logfiles cleared.");
-  } else {
-    request->send(400, "text/plain", "Unknown ID.");
+  if (!isAuthenticated(request)) {
+    return;
   }
+
+  LOG_PERF_START("webserver-api-log-clear");
+  Log.notice(F("WEB : webServer callback for /api/log/clear." CR));
+  LittleFS.remove(ERR_FILENAME);
+  LittleFS.remove(ERR_FILENAME2);
+
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  obj[PARAM_MESSAGE] = "Logfiles removed";
+  response->setLength();
+  request->send(response);
+  LOG_PERF_STOP("webserver-api-log-clear");
+
 #if defined(ACTIVATE_GCOV)
   __gcov_exit();
 #endif
@@ -272,7 +259,7 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   LOG_PERF_START("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
 
-  // This is a fallback since sometimes the loop() doesent run after firmware
+  // Fallback since sometimes the loop() does not always run after firmware
   // update...
   if (_rebootTask) {
     Log.notice(F("WEB : Rebooting using fallback..." CR));
@@ -280,7 +267,9 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
     ESP_RESET();
   }
 
-  DynamicJsonDocument doc(500);
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
 
   double angle = 0;  // Indicate we have no valid gyro value
 
@@ -289,69 +278,76 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   double tempC = myTempSensor.getTempC();
   double gravity = calculateGravity(angle, tempC);
 
-  doc[PARAM_ID] = myConfig.getID();
+  obj[PARAM_ID] = myConfig.getID();
+  obj[PARAM_TEMPFORMAT] = String(myConfig.getTempFormat());
+  obj[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
+  obj[PARAM_APP_VER] = CFG_APPVER;
+  obj[PARAM_APP_BUILD] = CFG_GITREV;
+  obj[PARAM_MDNS] = myConfig.getMDNS();
+#if defined(ESP8266)
+  obj[PARAM_PLATFORM] = "esp8266";
+  obj[PARAM_HARDWARE] = "ispindel";
+#elif defined(ESP32C3)
+  obj[PARAM_PLATFORM] = "esp32c3";
+  obj[PARAM_HARDWARE] = "ispindel";
+#elif defined(ESP32S2)
+  obj[PARAM_PLATFORM] = "esp32s2";
+  obj[PARAM_HARDWARE] = "ispindel";
+#elif defined(ESP32S3)
+  obj[PARAM_PLATFORM] = "esp32s3";
+  obj[PARAM_HARDWARE] = "ispindel";
+#elif defined(ESP32LITE)
+  obj[PARAM_PLATFORM] = "esp32lite";
+  obj[PARAM_HARDWARE] = "floaty";
+#else  // esp32 mini
+  obj[PARAM_PLATFORM] = "esp32";
+  obj[PARAM_HARDWARE] = "ispindel";
+#endif
 
   if (myGyro.isConnected()) {
-    doc[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+    obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
   } else {
-    doc[PARAM_ANGLE] = -1;  // Indicate that there is no connection to gyro
+    obj[PARAM_ANGLE] = -1;  // Indicate that there is no connection to gyro
   }
 
   if (myConfig.isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
-        gravity, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
+        gravity, tempC, myConfig.getDefaultCalibrationTemp());
   }
   if (myConfig.isGravityPlato()) {
-    doc[PARAM_GRAVITY] =
+    obj[PARAM_GRAVITY] =
         serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
   } else {
-    doc[PARAM_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
+    obj[PARAM_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
   }
-  doc[PARAM_TEMP_C] = serialized(String(tempC, DECIMALS_TEMP));
-  doc[PARAM_TEMP_F] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
-  doc[PARAM_BATTERY] =
-      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
-  doc[PARAM_TEMPFORMAT] = String(myConfig.getTempFormat());
-  doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
-  doc[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
-  doc[PARAM_RSSI] = WiFi.RSSI();
-  doc[PARAM_SLEEP_INTERVAL] = myConfig.getSleepInterval();
-  doc[PARAM_TOKEN] = myConfig.getToken();
-  doc[PARAM_TOKEN2] = myConfig.getToken2();
 
-  doc[PARAM_APP_VER] = CFG_APPVER;
-  doc[PARAM_APP_BUILD] = CFG_GITREV;
-  doc[PARAM_MDNS] = myConfig.getMDNS();
-  doc[PARAM_SSID] = WiFi.SSID();
+  if (myConfig.isTempC()) {
+    obj[PARAM_TEMP] = serialized(String(tempC, DECIMALS_TEMP));
+  } else {
+    obj[PARAM_TEMP] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
+  }
+
+  obj[PARAM_BATTERY] =
+      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
+  obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
+  obj[PARAM_RSSI] = WiFi.RSSI();
+  obj[PARAM_SSID] = WiFi.SSID();
 
 #if defined(ESP8266)
-  doc[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
+  obj[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
 #else
-  doc[PARAM_ISPINDEL_CONFIG] = false;
+  obj[PARAM_ISPINDEL_CONFIG] = false;
 #endif
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
-  doc[PARAM_RUNTIME_AVERAGE] = serialized(String(
+  obj[PARAM_RUNTIME_AVERAGE] = serialized(String(
       runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME));
 
-#if defined(ESP8266)
-  doc[PARAM_PLATFORM] = "esp8266";
-#elif defined(ESP32C3)
-  doc[PARAM_PLATFORM] = "esp32c3";
-#elif defined(ESP32S2)
-  doc[PARAM_PLATFORM] = "esp32s2";
-#elif defined(ESP32S3)
-  doc[PARAM_PLATFORM] = "esp32s3";
-#elif defined(ESP32LITE)
-  doc[PARAM_PLATFORM] = "esp32lite";
-#else  // esp32 mini
-  doc[PARAM_PLATFORM] = "esp32";
-#endif
-
-  JsonObject self = doc.createNestedObject(PARAM_SELF);
+  JsonObject self = obj.createNestedObject(PARAM_SELF);
   float v = myBatteryVoltage.getVoltage();
+
 #if defined(ESP32LITE)
-  self[PARAM_SELF_BATTERY_LEVEL] = true;
+  self[PARAM_SELF_BATTERY_LEVEL] = true;  // No hardware support for these
   self[PARAM_SELF_TEMP_CONNECTED] = true;
 #else
   self[PARAM_SELF_BATTERY_LEVEL] = v < 3.0 || v > 4.4 ? false : true;
@@ -368,628 +364,244 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
           ? true
           : false;
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
-
-  String out;
-  out.reserve(500);
-  serializeJson(doc, out);
-  doc.clear();
-  request->send(200, "application/json", out.c_str());
+  response->setLength();
+  request->send(response);
   LOG_PERF_STOP("webserver-api-status");
 }
 
-void WebServerHandler::webHandleClearWIFI(AsyncWebServerRequest *request) {
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/clearwifi." CR));
-
-  if (!id.compareTo(myConfig.getID())) {
-    request->send(200, "text/plain",
-                  "Clearing WIFI credentials and doing reset...");
-    myConfig.setWifiPass("", 0);
-    myConfig.setWifiSSID("", 0);
-    myConfig.setWifiPass("", 1);
-    myConfig.setWifiSSID("", 1);
-    myConfig.saveFile();
-    delay(1000);
-    WiFi.disconnect();  // Clear credentials
-    ESP_RESET();
-  } else {
-    request->send(400, "text/plain", "Unknown ID.");
+void WebServerHandler::webHandleClearWifi(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
   }
+
+  Log.notice(F("WEB : webServer callback for /api/wifi/clear." CR));
+
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  obj[PARAM_MESSAGE] = "Clearing WIFI credentials and doing reset";
+  response->setLength();
+  request->send(response);
+  myConfig.setWifiPass("", 0);
+  myConfig.setWifiSSID("", 0);
+  myConfig.setWifiPass("", 1);
+  myConfig.setWifiSSID("", 1);
+  myConfig.saveFile();
+  delay(1000);
+  WiFi.disconnect();  // Clear credentials
+  ESP_RESET();
 }
 
 void WebServerHandler::webHandleRestart(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
   Log.notice(F("WEB : webServer callback for /api/restart." CR));
-  request->send(200, "text/plain", "Restarting...");
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  obj[PARAM_MESSAGE] = "Restarting...";
+  response->setLength();
+  request->send(response);
+
   delay(1000);
   ESP_RESET();
 }
 
-void WebServerHandler::webHandleStatusSleepmode(
-    AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-sleepmode");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/status/sleepmode(post)." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-sleepmode");
+void WebServerHandler::webHandleSleepmode(AsyncWebServerRequest *request,
+                                          JsonVariant &json) {
+  if (!isAuthenticated(request)) {
     return;
   }
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
+  LOG_PERF_START("webserver-api-config-sleepmode");
+  Log.notice(F("WEB : webServer callback for /api/config/sleepmode." CR));
+  JsonObject obj = json.as<JsonObject>();
+  sleepModeAlwaysSkip = obj[PARAM_SLEEP_MODE].as<bool>();
 
-  if (request->arg(PARAM_SLEEP_MODE).equalsIgnoreCase("true") ||
-      request->arg(PARAM_SLEEP_MODE).equalsIgnoreCase("on"))
-    sleepModeAlwaysSkip = true;
-  else
-    sleepModeAlwaysSkip = false;
-  request->send(200, "text/plain", "Sleep mode updated");
-  LOG_PERF_STOP("webserver-api-sleepmode");
-}
-
-void WebServerHandler::webHandleConfigDevice(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config-device");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/device(post)." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-config-device");
-    return;
-  }
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
-
-  if (request->hasArg(PARAM_MDNS))
-    myConfig.setMDNS(request->arg(PARAM_MDNS).c_str());
-  if (request->hasArg(PARAM_TEMPFORMAT))
-    myConfig.setTempFormat(request->arg(PARAM_TEMPFORMAT).charAt(0));
-  if (request->hasArg(PARAM_SLEEP_INTERVAL))
-    myConfig.setSleepInterval(request->arg(PARAM_SLEEP_INTERVAL).c_str());
-  myConfig.saveFile();
-
-  AsyncWebServerResponse *response =
-      request->beginResponse(302, "text/plain", "Device config updated");
-  response->addHeader("Location", "/config.htm#collapseDevice");
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
+  response->setLength();
   request->send(response);
-  LOG_PERF_STOP("webserver-api-config-device");
+  LOG_PERF_STOP("webserver-api-config-sleepmode");
 }
 
-void WebServerHandler::webHandleConfigPush(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config-push");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/push(post)." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-config-push");
-    return;
-  }
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
-
-  if (request->hasArg(PARAM_TOKEN))
-    myConfig.setToken(request->arg(PARAM_TOKEN).c_str());
-  if (request->hasArg(PARAM_TOKEN2))
-    myConfig.setToken2(request->arg(PARAM_TOKEN2).c_str());
-  if (request->hasArg(PARAM_PUSH_HTTP))
-    myConfig.setHttpUrl(request->arg(PARAM_PUSH_HTTP).c_str());
-  if (request->hasArg(PARAM_PUSH_HTTP_H1))
-    myConfig.setHttpHeader(request->arg(PARAM_PUSH_HTTP_H1).c_str(), 0);
-  if (request->hasArg(PARAM_PUSH_HTTP_H2))
-    myConfig.setHttpHeader(request->arg(PARAM_PUSH_HTTP_H2).c_str(), 1);
-  if (request->hasArg(PARAM_PUSH_HTTP2))
-    myConfig.setHttp2Url(request->arg(PARAM_PUSH_HTTP2).c_str());
-  if (request->hasArg(PARAM_PUSH_HTTP2_H1))
-    myConfig.setHttp2Header(request->arg(PARAM_PUSH_HTTP2_H1).c_str(), 0);
-  if (request->hasArg(PARAM_PUSH_HTTP2_H2))
-    myConfig.setHttp2Header(request->arg(PARAM_PUSH_HTTP2_H2).c_str(), 1);
-  if (request->hasArg(PARAM_PUSH_HTTP3))
-    myConfig.setHttp3Url(request->arg(PARAM_PUSH_HTTP3).c_str());
-  if (request->hasArg(PARAM_PUSH_INFLUXDB2))
-    myConfig.setInfluxDb2PushUrl(request->arg(PARAM_PUSH_INFLUXDB2).c_str());
-  if (request->hasArg(PARAM_PUSH_INFLUXDB2_ORG))
-    myConfig.setInfluxDb2PushOrg(
-        request->arg(PARAM_PUSH_INFLUXDB2_ORG).c_str());
-  if (request->hasArg(PARAM_PUSH_INFLUXDB2_BUCKET))
-    myConfig.setInfluxDb2PushBucket(
-        request->arg(PARAM_PUSH_INFLUXDB2_BUCKET).c_str());
-  if (request->hasArg(PARAM_PUSH_INFLUXDB2_AUTH))
-    myConfig.setInfluxDb2PushToken(
-        request->arg(PARAM_PUSH_INFLUXDB2_AUTH).c_str());
-  if (request->hasArg(PARAM_PUSH_MQTT))
-    myConfig.setMqttUrl(request->arg(PARAM_PUSH_MQTT).c_str());
-  if (request->hasArg(PARAM_PUSH_MQTT_PORT))
-    myConfig.setMqttPort(request->arg(PARAM_PUSH_MQTT_PORT).c_str());
-  if (request->hasArg(PARAM_PUSH_MQTT_USER))
-    myConfig.setMqttUser(request->arg(PARAM_PUSH_MQTT_USER).c_str());
-  if (request->hasArg(PARAM_PUSH_MQTT_PASS))
-    myConfig.setMqttPass(request->arg(PARAM_PUSH_MQTT_PASS).c_str());
-  myConfig.saveFile();
-  String section("/config.htm#");
-  section += request->arg("section");
-
-  AsyncWebServerResponse *response =
-      request->beginResponse(302, "text/plain", "Push config updated");
-  response->addHeader("Location", section.c_str());
-  request->send(response);
-  LOG_PERF_STOP("webserver-api-config-push");
-}
-
-String WebServerHandler::getRequestArguments(AsyncWebServerRequest *request) {
-  String debug;
-
-  for (int i = 0; i < request->args(); i++) {
-    if (!request->argName(i).equals(
-            "plain")) {  // this contains all the arguments, we dont need that.
-      if (debug.length()) debug += ", ";
-
-      debug += request->argName(i);
-      debug += "=";
-      debug += request->arg(i);
-    }
-  }
-  return debug;
-}
-
-void WebServerHandler::webHandleConfigGravity(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config-gravity");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/gravity(post)." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-config-gravity");
+void WebServerHandler::webHandleConfigWifi(AsyncWebServerRequest *request,
+                                           JsonVariant &json) {
+  if (!isAuthenticated(request)) {
     return;
   }
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
-
-  if (request->hasArg(PARAM_GRAVITY_FORMAT))
-    myConfig.setGravityFormat(request->arg(PARAM_GRAVITY_FORMAT).charAt(0));
-  if (request->hasArg(PARAM_GRAVITY_FORMULA))
-    myConfig.setGravityFormula(request->arg(PARAM_GRAVITY_FORMULA).c_str());
-  if (request->hasArg(PARAM_GRAVITY_TEMP_ADJ))
-    myConfig.setGravityTempAdj(
-        request->arg(PARAM_GRAVITY_TEMP_ADJ).equalsIgnoreCase("on") ? true
-                                                                    : false);
-  else
-    myConfig.setGravityTempAdj(false);
-  myConfig.saveFile();
-
-  AsyncWebServerResponse *response =
-      request->beginResponse(302, "text/plain", "Gravity config updated");
-  response->addHeader("Location", "/config.htm#collapseGravity");
-  request->send(response);
-  LOG_PERF_STOP("webserver-api-config-gravity");
-}
-
-void WebServerHandler::webHandleConfigHardware(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config-hardware");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/hardware(post)." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-config-hardware");
-    return;
-  }
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
-
-  if (request->hasArg(PARAM_VOLTAGE_FACTOR))
-    myConfig.setVoltageFactor(request->arg(PARAM_VOLTAGE_FACTOR).toFloat());
-  if (request->hasArg(PARAM_VOLTAGE_CONFIG))
-    myConfig.setVoltageConfig(request->arg(PARAM_VOLTAGE_CONFIG).toFloat());
-  if (request->hasArg(PARAM_TEMP_ADJ)) {
-    if (myConfig.isTempC()) {
-      myConfig.setTempSensorAdjC(request->arg(PARAM_TEMP_ADJ));
-    } else {
-      // Data is delta so we add 32 in order to convert to C.
-      myConfig.setTempSensorAdjF(request->arg(PARAM_TEMP_ADJ), 32);
-    }
-  }
-  if (request->hasArg(PARAM_BLE))
-    myConfig.setBleColor(request->arg(PARAM_BLE).c_str());
-  if (request->hasArg(PARAM_BLE_FORMAT))
-    myConfig.setBleFormat(request->arg(PARAM_BLE_FORMAT).toInt());
-  if (request->hasArg(PARAM_OTA))
-    myConfig.setOtaURL(request->arg(PARAM_OTA).c_str());
-  if (request->hasArg(PARAM_GYRO_TEMP))
-    myConfig.setGyroTemp(
-        request->arg(PARAM_GYRO_TEMP).equalsIgnoreCase("on") ? true : false);
-  else
-    myConfig.setGyroTemp(false);
-  if (request->hasArg(PARAM_STORAGE_SLEEP))
-    myConfig.setStorageSleep(
-        request->arg(PARAM_STORAGE_SLEEP).equalsIgnoreCase("on") ? true
-                                                                 : false);
-  else
-    myConfig.setStorageSleep(false);
-
-  myConfig.saveFile();
-
-  AsyncWebServerResponse *response =
-      request->beginResponse(302, "text/plain", "Hardware config updated");
-  response->addHeader("Location", "/config.htm#collapseHardware");
-  request->send(response);
-  LOG_PERF_STOP("webserver-api-config-hardware");
-}
-
-void WebServerHandler::webHandleConfigWifi(AsyncWebServerRequest *request) {
   LOG_PERF_START("webserver-api-config-wifi");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/wifi(post)." CR));
+  Log.notice(F("WEB : webServer callback for /api/config/wifi." CR));
+  JsonObject obj = json.as<JsonObject>();
 
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-config-wifi");
-    return;
-  }
+  if (!obj[PARAM_SSID].isNull()) myConfig.setWifiSSID(obj[PARAM_SSID], 0);
+  if (!obj[PARAM_SSID2].isNull()) myConfig.setWifiSSID(obj[PARAM_SSID2], 1);
+  if (!obj[PARAM_PASS].isNull()) myConfig.setWifiPass(obj[PARAM_PASS], 0);
+  if (!obj[PARAM_PASS2].isNull()) myConfig.setWifiPass(obj[PARAM_PASS2], 1);
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
-
-  if (request->hasArg(PARAM_SSID))
-    myConfig.setWifiSSID(request->arg(PARAM_SSID), 0);
-  if (request->hasArg(PARAM_SSID2))
-    myConfig.setWifiSSID(request->arg(PARAM_SSID2), 1);
-  if (request->hasArg(PARAM_PASS))
-    myConfig.setWifiPass(request->arg(PARAM_PASS), 0);
-  if (request->hasArg(PARAM_PASS2))
-    myConfig.setWifiPass(request->arg(PARAM_PASS2), 1);
-
-  Serial.println(myConfig.getWifiSSID(0));
-  Serial.println(myConfig.getWifiSSID(1));
-  Serial.println(myConfig.getWifiPass(0));
-  Serial.println(myConfig.getWifiPass(1));
-  myConfig.saveFile();
-
-  AsyncWebServerResponse *response =
-      request->beginResponse(302, "text/plain", "Device config updated");
-  response->addHeader("Location", "/config.htm#collapseDevice");
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  obj[PARAM_MESSAGE] = "Wifi settings updated.";
+  response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-config-wifi");
 }
 
-void WebServerHandler::webHandleConfigAdvancedWrite(
-    AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config-advanced");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/advaced(post)." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-config-advanced");
+void WebServerHandler::webHandleFormulaCreate(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
     return;
   }
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
+  LOG_PERF_START("webserver-api-formula-create");
+  Log.notice(F("WEB : webServer callback for /api/formula." CR));
 
-  if (request->hasArg(PARAM_HW_GYRO_READ_COUNT))
-    myAdvancedConfig.setGyroReadCount(
-        request->arg(PARAM_HW_GYRO_READ_COUNT).toInt());
-  // if (request->hasArg(PARAM_HW_GYRO_READ_DELAY))
-  //  myAdvancedConfig.setGyroReadDelay(
-  //      request->arg(PARAM_HW_GYRO_READ_DELAY).toInt());
-  if (request->hasArg(PARAM_HW_GYRO_MOVING_THREASHOLD))
-    myAdvancedConfig.setGyroSensorMovingThreashold(
-        request->arg(PARAM_HW_GYRO_MOVING_THREASHOLD).toInt());
-  if (request->hasArg(PARAM_HW_FORMULA_DEVIATION))
-    myAdvancedConfig.setMaxFormulaCreationDeviation(
-        request->arg(PARAM_HW_FORMULA_DEVIATION).toFloat());
-  if (request->hasArg(PARAM_HW_FORMULA_CALIBRATION_TEMP)) {
-    float t = request->arg(PARAM_HW_FORMULA_CALIBRATION_TEMP).toFloat();
-    if (myConfig.isTempF()) t = convertFtoC(t);
-    myAdvancedConfig.SetDefaultCalibrationTemp(t);
+  int e, createErr;
+  char buf[100];
+  RawFormulaData fd = myConfig.getFormulaData();
+
+  e = createFormula(fd, &buf[0], sizeof(buf), 2);
+
+  if (e) {
+    // If we fail with order=2 try with 3
+    Log.warning(F("WEB : Failed to find formula with order 3." CR), e);
+    e = createFormula(fd, &buf[0], sizeof(buf), 3);
   }
-  if (request->hasArg(PARAM_HW_WIFI_PORTAL_TIMEOUT))
-    myAdvancedConfig.setWifiPortalTimeout(
-        request->arg(PARAM_HW_WIFI_PORTAL_TIMEOUT).toInt());
-  if (request->hasArg(PARAM_HW_WIFI_CONNECT_TIMEOUT))
-    myAdvancedConfig.setWifiConnectTimeout(
-        request->arg(PARAM_HW_WIFI_CONNECT_TIMEOUT).toInt());
-  if (request->hasArg(PARAM_HW_PUSH_TIMEOUT))
-    myAdvancedConfig.setPushTimeout(
-        request->arg(PARAM_HW_PUSH_TIMEOUT).toInt());
-  if (request->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP1))
-    myAdvancedConfig.setPushIntervalHttp1(
-        request->arg(PARAM_HW_PUSH_INTERVAL_HTTP1).toInt());
-  if (request->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP2))
-    myAdvancedConfig.setPushIntervalHttp2(
-        request->arg(PARAM_HW_PUSH_INTERVAL_HTTP2).toInt());
-  if (request->hasArg(PARAM_HW_PUSH_INTERVAL_HTTP3))
-    myAdvancedConfig.setPushIntervalHttp3(
-        request->arg(PARAM_HW_PUSH_INTERVAL_HTTP3).toInt());
-  if (request->hasArg(PARAM_HW_PUSH_INTERVAL_INFLUX))
-    myAdvancedConfig.setPushIntervalInflux(
-        request->arg(PARAM_HW_PUSH_INTERVAL_INFLUX).toInt());
-  if (request->hasArg(PARAM_HW_PUSH_INTERVAL_MQTT))
-    myAdvancedConfig.setPushIntervalMqtt(
-        request->arg(PARAM_HW_PUSH_INTERVAL_MQTT).toInt());
-  if (request->hasArg(PARAM_HW_TEMPSENSOR_RESOLUTION))
-    myAdvancedConfig.setTempSensorResolution(
-        request->arg(PARAM_HW_TEMPSENSOR_RESOLUTION).toInt());
-  if (request->hasArg(PARAM_HW_IGNORE_LOW_ANGLES))
-    myAdvancedConfig.setIgnoreLowAnges(
-        request->arg(PARAM_HW_IGNORE_LOW_ANGLES).equalsIgnoreCase("on")
-            ? true
-            : false);
-  else
-    myAdvancedConfig.setIgnoreLowAnges(false);
-  if (request->hasArg(PARAM_HW_BATTERY_SAVING))
-    myAdvancedConfig.setBatterySaving(
-        request->arg(PARAM_HW_BATTERY_SAVING).equalsIgnoreCase("on") ? true
-                                                                     : false);
-  else
-    myAdvancedConfig.setBatterySaving(false);
-  myAdvancedConfig.saveFile();
 
-  AsyncWebServerResponse *response =
-      request->beginResponse(302, "text/plain", "Advanced config updated");
-  response->addHeader("Location", "/config.htm#collapseAdvanced");
-  request->send(response);
-  LOG_PERF_STOP("webserver-api-config-advanced");
-}
+  if (e) {
+    // If we fail with order=3 try with 4
+    Log.warning(F("WEB : Failed to find formula with order 4." CR), e);
+    e = createFormula(fd, &buf[0], sizeof(buf), 4);
+  }
 
-void WebServerHandler::webHandleConfigAdvancedRead(
-    AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config-advanced");
-  Log.notice(F("WEB : webServer callback for /api/config/advanced(get)." CR));
-
-  DynamicJsonDocument doc(500);
-
-  doc[PARAM_HW_GYRO_READ_COUNT] = myAdvancedConfig.getGyroReadCount();
-  // doc[PARAM_HW_GYRO_READ_DELAY] = myAdvancedConfig.getGyroReadDelay();
-  doc[PARAM_HW_GYRO_MOVING_THREASHOLD] =
-      myAdvancedConfig.getGyroSensorMovingThreashold();
-  doc[PARAM_HW_FORMULA_DEVIATION] = serialized(
-      String(myAdvancedConfig.getMaxFormulaCreationDeviation(), DECIMALS_SG));
-  doc[PARAM_HW_WIFI_PORTAL_TIMEOUT] = myAdvancedConfig.getWifiPortalTimeout();
-  doc[PARAM_HW_WIFI_CONNECT_TIMEOUT] = myAdvancedConfig.getWifiConnectTimeout();
-  doc[PARAM_HW_PUSH_TIMEOUT] = myAdvancedConfig.getPushTimeout();
-  float t = myAdvancedConfig.getDefaultCalibrationTemp();
-
-  if (myConfig.isTempC()) {
-    doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
-        serialized(String(t, DECIMALS_TEMP));
+  if (e) {
+    // If we fail with order=4 then we mark it as failed
+    Log.error(
+        F("WEB : Unable to find formula based on provided values err=%d." CR),
+        e);
+    createErr = e;
   } else {
-    doc[PARAM_HW_FORMULA_CALIBRATION_TEMP] =
-        serialized(String(convertCtoF(t), DECIMALS_TEMP));
+    // Save the formula as succesful
+    Log.info(F("WEB : Found valid formula: '%s'" CR), &buf[0]);
+    myConfig.setGravityFormula(buf);
+    myConfig.saveFile();
+    createErr = 0;
   }
 
-  doc[PARAM_HW_PUSH_INTERVAL_HTTP1] = myAdvancedConfig.getPushIntervalHttp1();
-  doc[PARAM_HW_PUSH_INTERVAL_HTTP2] = myAdvancedConfig.getPushIntervalHttp2();
-  doc[PARAM_HW_PUSH_INTERVAL_HTTP3] = myAdvancedConfig.getPushIntervalHttp3();
-  doc[PARAM_HW_PUSH_INTERVAL_INFLUX] = myAdvancedConfig.getPushIntervalInflux();
-  doc[PARAM_HW_PUSH_INTERVAL_MQTT] = myAdvancedConfig.getPushIntervalMqtt();
-  doc[PARAM_HW_TEMPSENSOR_RESOLUTION] =
-      myAdvancedConfig.getTempSensorResolution();
-  doc[PARAM_HW_IGNORE_LOW_ANGLES] = myAdvancedConfig.isIgnoreLowAnges();
-  doc[PARAM_HW_BATTERY_SAVING] = myAdvancedConfig.isBatterySaving();
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
+  obj[PARAM_STATUS] = createErr ? false : true;
+  obj[PARAM_ANGLE] = serialized(String(myGyro.getAngle(), DECIMALS_TILT));
+  obj[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
+  obj[PARAM_GRAVITY_FORMULA] = "";
 
-  String out;
-  out.reserve(500);
-  serializeJson(doc, out);
-  doc.clear();
-  request->send(200, "application/json", out.c_str());
-  LOG_PERF_STOP("webserver-api-config-advanced");
-}
-
-void WebServerHandler::webHandleFormulaRead(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-formula-read");
-  Log.notice(F("WEB : webServer callback for /api/formula(get)." CR));
-
-  DynamicJsonDocument doc(1000);
-  const RawFormulaData &fd = myConfig.getFormulaData();
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
-
-  doc[PARAM_ID] = myConfig.getID();
-  doc[PARAM_ANGLE] = serialized(String(myGyro.getAngle(), DECIMALS_TILT));
-  doc[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
-  doc[PARAM_GRAVITY_FORMULA] = "";
-  doc[PARAM_ERROR] = "";
-
-  switch (_lastFormulaCreateError) {
+  switch (createErr) {
     case ERR_FORMULA_INTERNAL:
-      doc[PARAM_ERROR] = "Internal error creating formula.";
+      obj[PARAM_MESSAGE] = "Internal error creating formula.";
       break;
     case ERR_FORMULA_NOTENOUGHVALUES:
-      doc[PARAM_ERROR] =
+      obj[PARAM_MESSAGE] =
           "Not enough values to create formula, need at least 3 angles.";
       break;
     case ERR_FORMULA_UNABLETOFFIND:
-      doc[PARAM_ERROR] =
+      obj[PARAM_MESSAGE] =
           "Unable to find an accurate formula based on input, check error log "
           "and graph below.";
       break;
     default:
-      doc[PARAM_GRAVITY_FORMULA] = myConfig.getGravityFormula();
+      obj[PARAM_GRAVITY_FORMULA] = myConfig.getGravityFormula();
       break;
   }
 
-  doc["a1"] = serialized(String(fd.a[0], DECIMALS_TILT));
-  doc["a2"] = serialized(String(fd.a[1], DECIMALS_TILT));
-  doc["a3"] = serialized(String(fd.a[2], DECIMALS_TILT));
-  doc["a4"] = serialized(String(fd.a[3], DECIMALS_TILT));
-  doc["a5"] = serialized(String(fd.a[4], DECIMALS_TILT));
-  doc["a6"] = serialized(String(fd.a[5], DECIMALS_TILT));
-  doc["a7"] = serialized(String(fd.a[6], DECIMALS_TILT));
-  doc["a8"] = serialized(String(fd.a[7], DECIMALS_TILT));
-  doc["a9"] = serialized(String(fd.a[8], DECIMALS_TILT));
-  doc["a10"] = serialized(String(fd.a[9], DECIMALS_TILT));
-
-  if (myConfig.isGravityPlato()) {
-    doc["g1"] = serialized(String(convertToPlato(fd.g[0]), DECIMALS_PLATO));
-    doc["g2"] = serialized(String(convertToPlato(fd.g[1]), DECIMALS_PLATO));
-    doc["g3"] = serialized(String(convertToPlato(fd.g[2]), DECIMALS_PLATO));
-    doc["g4"] = serialized(String(convertToPlato(fd.g[3]), DECIMALS_PLATO));
-    doc["g5"] = serialized(String(convertToPlato(fd.g[4]), DECIMALS_PLATO));
-    doc["g6"] = serialized(String(convertToPlato(fd.g[5]), DECIMALS_PLATO));
-    doc["g7"] = serialized(String(convertToPlato(fd.g[6]), DECIMALS_PLATO));
-    doc["g8"] = serialized(String(convertToPlato(fd.g[7]), DECIMALS_PLATO));
-    doc["g9"] = serialized(String(convertToPlato(fd.g[8]), DECIMALS_PLATO));
-    doc["g10"] = serialized(String(convertToPlato(fd.g[9]), DECIMALS_PLATO));
-  } else {
-    doc["g1"] = serialized(String(fd.g[0], DECIMALS_SG));
-    doc["g2"] = serialized(String(fd.g[1], DECIMALS_SG));
-    doc["g3"] = serialized(String(fd.g[2], DECIMALS_SG));
-    doc["g4"] = serialized(String(fd.g[3], DECIMALS_SG));
-    doc["g5"] = serialized(String(fd.g[4], DECIMALS_SG));
-    doc["g6"] = serialized(String(fd.g[5], DECIMALS_SG));
-    doc["g7"] = serialized(String(fd.g[6], DECIMALS_SG));
-    doc["g8"] = serialized(String(fd.g[7], DECIMALS_SG));
-    doc["g9"] = serialized(String(fd.g[8], DECIMALS_SG));
-    doc["g10"] = serialized(String(fd.g[9], DECIMALS_SG));
-  }
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
-
-  String out;
-  out.reserve(100);
-  serializeJson(doc, out);
-  doc.clear();
-  request->send(200, "application/json", out.c_str());
-  LOG_PERF_STOP("webserver-api-formula-read");
+  response->setLength();
+  request->send(response);
+  LOG_PERF_STOP("webserver-api-formula-create");
 }
 
 void WebServerHandler::webHandleConfigFormatWrite(
-    AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config-format-write");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/config/format(post)." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-config-format-write");
+    AsyncWebServerRequest *request, JsonVariant &json) {
+  if (!isAuthenticated(request)) {
     return;
   }
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
-  bool success = false;
+  LOG_PERF_START("webserver-api-config-format-write");
+  Log.notice(F("WEB : webServer callback for /api/config/format(post)." CR));
 
-  // Only one option is posted so we done need to check them all.
-  if (request->hasArg(PARAM_FORMAT_HTTP1)) {
-    success = writeFile(TPL_FNAME_HTTP1, request->arg(PARAM_FORMAT_HTTP1));
-  } else if (request->hasArg(PARAM_FORMAT_HTTP2)) {
-    success = writeFile(TPL_FNAME_HTTP2, request->arg(PARAM_FORMAT_HTTP2));
-  } else if (request->hasArg(PARAM_FORMAT_HTTP3)) {
-    success = writeFile(TPL_FNAME_HTTP3, request->arg(PARAM_FORMAT_HTTP3));
-  } else if (request->hasArg(PARAM_FORMAT_INFLUXDB)) {
-    success =
-        writeFile(TPL_FNAME_INFLUXDB, request->arg(PARAM_FORMAT_INFLUXDB));
-  } else if (request->hasArg(PARAM_FORMAT_MQTT)) {
-    success = writeFile(TPL_FNAME_MQTT, request->arg(PARAM_FORMAT_MQTT));
+  JsonObject obj = json.as<JsonObject>();
+  int success = 0;
+
+  if (!obj[PARAM_FORMAT_HTTP1].isNull()) {
+    success += writeFile(TPL_FNAME_HTTP1, obj[PARAM_FORMAT_HTTP1]) ? 1 : 0;
+  }
+  if (!obj[PARAM_FORMAT_HTTP2].isNull()) {
+    success += writeFile(TPL_FNAME_HTTP2, obj[PARAM_FORMAT_HTTP2]) ? 1 : 0;
+  }
+  if (!obj[PARAM_FORMAT_HTTP3].isNull()) {
+    success += writeFile(TPL_FNAME_HTTP3, obj[PARAM_FORMAT_HTTP3]) ? 1 : 0;
+  }
+  if (!obj[PARAM_FORMAT_INFLUXDB].isNull()) {
+    success +=
+        writeFile(TPL_FNAME_INFLUXDB, obj[PARAM_FORMAT_INFLUXDB]) ? 1 : 0;
+  }
+  if (!obj[PARAM_FORMAT_MQTT].isNull()) {
+    success += writeFile(TPL_FNAME_MQTT, obj[PARAM_FORMAT_MQTT]) ? 1 : 0;
   }
 
-  if (success) {
-    AsyncWebServerResponse *response =
-        request->beginResponse(302, "text/plain", "Format updated");
-    response->addHeader("Location", "/format.htm");
-    request->send(response);
-  } else {
-    writeErrorLog("WEB : Unable to store format file");
-    request->send(400, "text/plain", "Unable to store format in file.");
-  }
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = success > 0 ? true : false;
+  obj[PARAM_MESSAGE] = success > 0 ? "Format template stored"
+                                   : "Failed to store format template";
+  response->setLength();
+  request->send(response);
 
   LOG_PERF_STOP("webserver-api-config-format-write");
 }
 
-void WebServerHandler::webHandleTestPush(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-test-push");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/test/push." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-test-push");
+void WebServerHandler::webHandleTestPush(AsyncWebServerRequest *request,
+                                         JsonVariant &json) {
+  if (!isAuthenticated(request)) {
     return;
   }
 
-  _pushTestData = request->arg(PARAM_PUSH_FORMAT);
-  _pushTestTask = true;
-  Log.notice(F("WEB : Scheduling push test for %s" CR), _pushTestData.c_str());
+  LOG_PERF_START("webserver-api-test-push");
+  Log.notice(F("WEB : webServer callback for /api/test/push." CR));
+  JsonObject obj = json.as<JsonObject>();
 
-  request->send(200, "application/json", "{}");
+  _pushTestData = obj[PARAM_PUSH_FORMAT].as<String>();
+  _pushTestTask = true;
+
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  obj[PARAM_MESSAGE] = "Scheduled test for " + _pushTestData;
+  response->setLength();
+  request->send(response);
   LOG_PERF_STOP("webserver-api-test-push");
 }
 
 void WebServerHandler::webHandleTestPushStatus(AsyncWebServerRequest *request) {
   LOG_PERF_START("webserver-api-test-push-status");
   Log.notice(F("WEB : webServer callback for /api/test/push/status." CR));
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
-
-  if (!_pushTestTask) {
-    request->send(200, "application/json", _pushTestData.c_str());
-    _pushTestData.clear();
-  } else {
-    DynamicJsonDocument doc(100);
-
-    doc[PARAM_STATUS] = _pushTestTask;
-
-#if LOG_LEVEL == 6
-    serializeJson(doc, Serial);
-    EspSerial.print(CR);
-#endif
-
-    String out;
-    out.reserve(100);
-    serializeJson(doc, out);
-    doc.clear();
-
-    request->send(200, "application/json", out.c_str());
-  }
-
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = static_cast<bool>(_pushTestTask);
+  obj[PARAM_MESSAGE] = "";
+  response->setLength();
+  request->send(response);
   LOG_PERF_STOP("webserver-api-test-push-status");
 }
 
@@ -1033,188 +645,58 @@ String WebServerHandler::readFile(String fname) {
 
 void WebServerHandler::webHandleConfigFormatRead(
     AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-config-format-read");
-  Log.notice(F("WEB : webServer callback for /api/config/formula(get)." CR));
-
-  String out;
-  out.reserve(7000);
-  out += "{\"id\":\"" + String(myConfig.getID()) + "\",";
-
-  String s = readFile(TPL_FNAME_HTTP1);
-  out += "\"" + String(PARAM_FORMAT_HTTP1) + "\":\"";
-  if (s.length())
-    out += urlencode(s);
-  else
-    out += urlencode(String(&iSpindleFormat[0]));
-
-  s = readFile(TPL_FNAME_HTTP2);
-  out += "\",\"" + String(PARAM_FORMAT_HTTP2) + "\":\"";
-  if (s.length())
-    out += urlencode(s);
-  else
-    out += urlencode(String(&iSpindleFormat[0]));
-
-  s = readFile(TPL_FNAME_HTTP3);
-  out += "\",\"" + String(PARAM_FORMAT_HTTP3) + "\":\"";
-  if (s.length())
-    out += urlencode(s);
-  else
-    out += urlencode(String(&iHttpGetFormat[0]));
-
-  s = readFile(TPL_FNAME_INFLUXDB);
-  out += "\",\"" + String(PARAM_FORMAT_INFLUXDB) + "\":\"";
-  if (s.length())
-    out += urlencode(s);
-  else
-    out += urlencode(String(&influxDbFormat[0]));
-
-  s = readFile(TPL_FNAME_MQTT);
-  out += "\",\"" + String(PARAM_FORMAT_MQTT) + "\":\"";
-  if (s.length())
-    out += urlencode(s);
-  else
-    out += urlencode(String(&mqttFormat[0]));
-
-  out += "\"}";
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  EspSerial.print(out.c_str());
-  EspSerial.print(CR);
-#endif
-
-  request->send(200, "application/json", out.c_str());
-  LOG_PERF_STOP("webserver-api-config-format-read");
-}
-
-void WebServerHandler::webHandleFormulaWrite(AsyncWebServerRequest *request) {
-  LOG_PERF_START("webserver-api-formula-write");
-  String id = request->arg(PARAM_ID);
-  Log.notice(F("WEB : webServer callback for /api/formula(post)." CR));
-
-  if (!id.equalsIgnoreCase(myConfig.getID())) {
-    Log.error(F("WEB : Wrong ID received %s, expected %s" CR), id.c_str(),
-              myConfig.getID());
-    request->send(400, "text/plain", "Invalid ID.");
-    LOG_PERF_STOP("webserver-api-formula-write");
+  if (!isAuthenticated(request)) {
     return;
   }
 
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-  Log.verbose(F("WEB : %s." CR), getRequestArguments().c_str());
-#endif
+  LOG_PERF_START("webserver-api-config-format-read");
+  Log.notice(F("WEB : webServer callback for /api/config/format(read)." CR));
 
-  RawFormulaData fd;
-  fd.a[0] = request->arg("a1").toDouble();
-  fd.a[1] = request->arg("a2").toDouble();
-  fd.a[2] = request->arg("a3").toDouble();
-  fd.a[3] = request->arg("a4").toDouble();
-  fd.a[4] = request->arg("a5").toDouble();
-  fd.a[5] = request->arg("a6").toDouble();
-  fd.a[6] = request->arg("a7").toDouble();
-  fd.a[7] = request->arg("a8").toDouble();
-  fd.a[8] = request->arg("a9").toDouble();
-  fd.a[9] = request->arg("a10").toDouble();
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_XL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  String s;
 
-  if (myConfig.isGravityPlato()) {
-    fd.g[0] = convertToSG(request->arg("g1").toDouble());
-    fd.g[1] = convertToSG(request->arg("g2").toDouble());
-    fd.g[2] = convertToSG(request->arg("g3").toDouble());
-    fd.g[3] = convertToSG(request->arg("g4").toDouble());
-    fd.g[4] = convertToSG(request->arg("g5").toDouble());
-    fd.g[5] = convertToSG(request->arg("g6").toDouble());
-    fd.g[6] = convertToSG(request->arg("g7").toDouble());
-    fd.g[7] = convertToSG(request->arg("g8").toDouble());
-    fd.g[8] = convertToSG(request->arg("g9").toDouble());
-    fd.g[9] = convertToSG(request->arg("g10").toDouble());
-  } else {
-    fd.g[0] = request->arg("g1").toDouble();
-    fd.g[1] = request->arg("g2").toDouble();
-    fd.g[2] = request->arg("g3").toDouble();
-    fd.g[3] = request->arg("g4").toDouble();
-    fd.g[4] = request->arg("g5").toDouble();
-    fd.g[5] = request->arg("g6").toDouble();
-    fd.g[6] = request->arg("g7").toDouble();
-    fd.g[7] = request->arg("g8").toDouble();
-    fd.g[8] = request->arg("g9").toDouble();
-    fd.g[9] = request->arg("g10").toDouble();
-  }
+  s = readFile(TPL_FNAME_HTTP1);
+  obj[PARAM_FORMAT_HTTP1] =
+      s.length() ? urlencode(s) : urlencode(String(&iSpindleFormat[0]));
+  s = readFile(TPL_FNAME_HTTP2);
+  obj[PARAM_FORMAT_HTTP2] =
+      s.length() ? urlencode(s) : urlencode(String(&iSpindleFormat[0]));
+  s = readFile(TPL_FNAME_HTTP3);
+  obj[PARAM_FORMAT_HTTP3] =
+      s.length() ? urlencode(s) : urlencode(String(&iHttpGetFormat[0]));
+  s = readFile(TPL_FNAME_INFLUXDB);
+  obj[PARAM_FORMAT_INFLUXDB] =
+      s.length() ? urlencode(s) : urlencode(String(&influxDbFormat[0]));
+  s = readFile(TPL_FNAME_MQTT);
+  obj[PARAM_FORMAT_MQTT] =
+      s.length() ? urlencode(s) : urlencode(String(&mqttFormat[0]));
 
-  fd.g[0] = 1;  // force first point to SG gravity of water
-  myConfig.setFormulaData(fd);
-
-  int e;
-  char buf[100];
-
-  e = createFormula(fd, &buf[0], sizeof(buf), 2);
-
-  if (e) {
-    // If we fail with order=2 try with 3
-    Log.warning(F("WEB : Failed to find formula with order 3." CR), e);
-    e = createFormula(fd, &buf[0], sizeof(buf), 3);
-  }
-
-  if (e) {
-    // If we fail with order=3 try with 4
-    Log.warning(F("WEB : Failed to find formula with order 4." CR), e);
-    e = createFormula(fd, &buf[0], sizeof(buf), 4);
-  }
-
-  if (e) {
-    // If we fail with order=4 then we mark it as failed
-    Log.error(
-        F("WEB : Unable to find formula based on provided values err=%d." CR),
-        e);
-    _lastFormulaCreateError = e;
-  } else {
-    // Save the formula as succesful
-    Log.info(F("WEB : Found valid formula: '%s'" CR), &buf[0]);
-    myConfig.setGravityFormula(buf);
-    _lastFormulaCreateError = 0;
-  }
-
-  myConfig.saveFile();
-
-  AsyncWebServerResponse *response =
-      request->beginResponse(302, "text/plain", "Formula updated");
-  response->addHeader("Location", "/calibration.htm");
+  response->setLength();
   request->send(response);
-  LOG_PERF_STOP("webserver-api-formula-write");
+  LOG_PERF_STOP("webserver-api-config-format-read");
 }
 
 void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
   LOG_PERF_START("webserver-api-migrate");
   Log.notice(F("WEB : webServer callback for /api/migrate." CR));
 
 #if defined(ESP8266)
-  DynamicJsonDocument doc(500);
-  DeserializationError err = deserializeJson(doc, request->arg("plain"));
-
-  if (err) {
-    writeErrorLog("CFG : Failed to parse migration data (json)");
-    request->send(400, "text/plain", F("Unable to parse data"));
-    LOG_PERF_STOP("webserver-api-migrate");
-    return;
-  }
-
-  myConfig.setGravityFormula(doc[PARAM_GRAVITY_FORMULA]);
-
-  RawGyroData gyro = {0, 0, 0, 0, 0, 0};
-  gyro.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];
-  gyro.ay = doc[PARAM_GYRO_CALIBRATION]["ay"];
-  gyro.az = doc[PARAM_GYRO_CALIBRATION]["az"];
-  gyro.gx = doc[PARAM_GYRO_CALIBRATION]["gx"];
-  gyro.gy = doc[PARAM_GYRO_CALIBRATION]["gy"];
-  gyro.gz = doc[PARAM_GYRO_CALIBRATION]["gz"];
-
-  myConfig.setGyroCalibration(gyro);
-  myConfig.saveFile();
-
   LittleFS.rename("/config.json", "/ispindel.json");
-  request->send(200, "text/plain", F("Data migrated"));
-#else
-  request->send(404, "text/plain", F("Not implemented"));
 #endif
 
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  obj[PARAM_MESSAGE] = "";
+  response->setLength();
+  request->send(response);
   LOG_PERF_STOP("webserver-api-migrate");
 }
 
@@ -1264,6 +746,7 @@ bool WebServerHandler::setupWebServer() {
 #endif
   // Static content
   Log.notice(F("WEB : Setting up handlers for web server." CR));
+  /* TODO: REPLACE THSE WITH NEW VUEJS URLs
   _server->on("/", std::bind(&WebServerHandler::webReturnIndexHtm, this,
                              std::placeholders::_1));
   _server->on("/index.htm", std::bind(&WebServerHandler::webReturnIndexHtm,
@@ -1283,69 +766,69 @@ bool WebServerHandler::setupWebServer() {
               std::bind(&WebServerHandler::webReturnFirmwareHtm, this,
                         std::placeholders::_1));
   _server->on("/backup.htm", std::bind(&WebServerHandler::webReturnBackupHtm,
-                                       this, std::placeholders::_1));
+                                       this, std::placeholders::_1));*/
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
   _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
   _server->serveStatic("/migrate", LittleFS, "/config.json");
 
+  _server->serveStatic("/debug1", LittleFS, "/gravitymon.json");
+  _server->serveStatic("/debug2", LittleFS, "/gravitymon2.json");
+
+  AsyncCallbackJsonWebHandler *handler;
+
   // Dynamic content
   _server->on("/api/clearlog", HTTP_GET,
               std::bind(&WebServerHandler::webHandleLogClear, this,
                         std::placeholders::_1));
-  _server->on("/api/config/device", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleConfigDevice, this,
-                        std::placeholders::_1));  // Change device settings
-  _server->on("/api/config/push", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleConfigPush, this,
-                        std::placeholders::_1));  // Change push settings
-  _server->on("/api/config/gravity", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleConfigGravity, this,
-                        std::placeholders::_1));  // Change gravity settings
-  _server->on("/api/config/hardware", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleConfigHardware, this,
-                        std::placeholders::_1));  // Change hardware settings
   _server->on("/api/config/format", HTTP_GET,
               std::bind(&WebServerHandler::webHandleConfigFormatRead, this,
-                        std::placeholders::_1));  // Change template formats
-  _server->on("/api/config/format", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleConfigFormatWrite, this,
-                        std::placeholders::_1));  // Change template formats
-  _server->on("/api/config/advanced", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleConfigAdvancedRead, this,
-                        std::placeholders::_1));  // Read advanced settings
-  _server->on("/api/config/advanced", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleConfigAdvancedWrite, this,
-                        std::placeholders::_1));  // Change advanced params
-  _server->on("/api/config/wifi", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleConfigWifi, this,
-                        std::placeholders::_1));  // Change wiif settings
+                        std::placeholders::_1));
+  handler = new AsyncCallbackJsonWebHandler(
+      "/api/config/format",
+      std::bind(&WebServerHandler::webHandleConfigFormatWrite, this,
+                std::placeholders::_1, std::placeholders::_2),
+      JSON_BUFFER_SIZE_LARGE);
+  _server->addHandler(handler);
+  handler = new AsyncCallbackJsonWebHandler(
+      "/api/config/wifi",
+      std::bind(&WebServerHandler::webHandleConfigWifi, this,
+                std::placeholders::_1, std::placeholders::_2),
+      JSON_BUFFER_SIZE_SMALL);
+  _server->addHandler(handler);
+
+  handler = new AsyncCallbackJsonWebHandler(
+      "/api/config/sleepmode",
+      std::bind(&WebServerHandler::webHandleSleepmode, this,
+                std::placeholders::_1, std::placeholders::_2),
+      JSON_BUFFER_SIZE_SMALL);
+  _server->addHandler(handler);
+  handler = new AsyncCallbackJsonWebHandler(
+      "/api/config",
+      std::bind(&WebServerHandler::webHandleConfigWrite, this,
+                std::placeholders::_1, std::placeholders::_2),
+      JSON_BUFFER_SIZE_LARGE);
+  _server->addHandler(handler);
   _server->on("/api/config", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleConfig, this,
+              std::bind(&WebServerHandler::webHandleConfigRead, this,
                         std::placeholders::_1));
   _server->on("/api/formula", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleFormulaRead, this,
-                        std::placeholders::_1));
-  _server->on("/api/formula", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleFormulaWrite, this,
+              std::bind(&WebServerHandler::webHandleFormulaCreate, this,
                         std::placeholders::_1));
   _server->on("/api/calibrate/status", HTTP_GET,
               std::bind(&WebServerHandler::webHandleCalibrateStatus, this,
                         std::placeholders::_1));
-  _server->on("/api/calibrate", HTTP_POST,
+  _server->on("/api/calibrate", HTTP_GET,
               std::bind(&WebServerHandler::webHandleCalibrate, this,
                         std::placeholders::_1));
   _server->on("/api/factory", HTTP_GET,
               std::bind(&WebServerHandler::webHandleFactoryDefaults, this,
                         std::placeholders::_1));
-  _server->on("/api/status/sleepmode", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleStatusSleepmode, this,
-                        std::placeholders::_1));  // Change sleep mode
   _server->on("/api/status", HTTP_GET,
               std::bind(&WebServerHandler::webHandleStatus, this,
                         std::placeholders::_1));
   _server->on("/api/clearwifi", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleClearWIFI, this,
+              std::bind(&WebServerHandler::webHandleClearWifi, this,
                         std::placeholders::_1));
   _server->on("/api/restart", HTTP_GET,
               std::bind(&WebServerHandler::webHandleRestart, this,
@@ -1356,19 +839,24 @@ bool WebServerHandler::setupWebServer() {
   _server->on(
       "/api/upload", HTTP_POST,
       std::bind(&WebServerHandler::webReturnOK, this, std::placeholders::_1),
-      std::bind(
-          &WebServerHandler::webHandleUploadFile, this, std::placeholders::_1,
-          std::placeholders::_2, std::placeholders::_3, std::placeholders::_4,
-          std::placeholders::_5, std::placeholders::_6));  // File upload data
+      std::bind(&WebServerHandler::webHandleUploadFile, this,
+                std::placeholders::_1, std::placeholders::_2,
+                std::placeholders::_3, std::placeholders::_4,
+                std::placeholders::_5, std::placeholders::_6));
   _server->on("/api/test/push/status", HTTP_GET,
               std::bind(&WebServerHandler::webHandleTestPushStatus, this,
-                        std::placeholders::_1));  //
-  _server->on("/api/test/push", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleTestPush, this,
-                        std::placeholders::_1));  //
-
+                        std::placeholders::_1));
+  handler = new AsyncCallbackJsonWebHandler(
+      "/api/test/push",
+      std::bind(&WebServerHandler::webHandleTestPush, this,
+                std::placeholders::_1, std::placeholders::_2),
+      JSON_BUFFER_SIZE_SMALL);
+  _server->addHandler(handler);
   _server->onNotFound(std::bind(&WebServerHandler::webHandlePageNotFound, this,
                                 std::placeholders::_1));
+
+  // TODO: Enable this when developing/testing vuejs UI
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   _server->begin();
   Log.notice(F("WEB : Web server started." CR));
   return true;
@@ -1400,7 +888,7 @@ void WebServerHandler::loop() {
     float tempC = myTempSensor.getTempC();
     float gravitySG = calculateGravity(angle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
-        gravitySG, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
+        gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
 
     TemplatingEngine engine;
     engine.initialize(angle, gravitySG, corrGravitySG, tempC, 1.0,
@@ -1432,7 +920,7 @@ void WebServerHandler::loop() {
     }
 
     engine.freeMemory();
-    DynamicJsonDocument doc(100);
+    DynamicJsonDocument doc(JSON_BUFFER_SIZE_SMALL);
     doc[PARAM_STATUS] = false;
     doc[PARAM_PUSH_ENABLED] = enabled;
     doc[PARAM_PUSH_SUCCESS] = push.getLastSuccess();
