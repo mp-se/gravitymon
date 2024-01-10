@@ -185,17 +185,18 @@ void WifiConnection::loop() {
     writeReset();
   }
 
-  if(!WiFi.isConnected()) {
-    if(_reconnectCounter>5) {
+  if (!WiFi.isConnected()) {
+    if (_reconnectCounter > 5) {
       Log.notice(F("WIFI: Failed to reconnect with wifi, rebooting..." CR));
       delay(500);
       ESP_RESET();
     }
-    
-    Log.notice(F("WIFI: Not connected, trying to reconnect %d..." CR), _reconnectCounter);
+
+    Log.notice(F("WIFI: Not connected, trying to reconnect %d..." CR),
+               _reconnectCounter);
     _reconnectCounter++;
     WiFi.reconnect();
-    delay(500);  
+    delay(500);
   } else {
     _reconnectCounter = 0;
   }
