@@ -41,6 +41,7 @@ class WifiConnection {
   uint32_t _timer = 0;
   uint32_t _timeout = 3000;  // 3 seconds
   uint8_t _resetCounter = 0;
+  uint8_t _reconnectCounter = 0;
   const uint8_t _minResetCount = 2;
 
   // OTA
