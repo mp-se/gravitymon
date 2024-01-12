@@ -35,21 +35,21 @@ test(config_defaultValues) {
 }
 
 test(config_advDefaultValues) {
-  assertEqual(myAdvancedConfig.getDefaultCalibrationTemp(), 20.0);
-  assertEqual(myAdvancedConfig.getGyroReadCount(), 50);
-  assertEqual(myAdvancedConfig.getGyroReadDelay(), 3150);
-  assertEqual(myAdvancedConfig.getGyroSensorMovingThreashold(), 500);
-  assertEqual(myAdvancedConfig.getMaxFormulaCreationDeviation(), 3.0);
-  assertEqual(myAdvancedConfig.getPushIntervalHttp1(), 0);
-  assertEqual(myAdvancedConfig.getPushIntervalHttp2(), 0);
-  assertEqual(myAdvancedConfig.getPushIntervalHttp3(), 0);
-  assertEqual(myAdvancedConfig.getPushIntervalMqtt(), 0);
-  assertEqual(myAdvancedConfig.getPushIntervalInflux(), 0);
-  assertEqual(myAdvancedConfig.getPushTimeout(), 10);
-  assertEqual(myAdvancedConfig.getTempSensorResolution(), 9);
-  assertEqual(myAdvancedConfig.getWifiConnectTimeout(), 20);
-  assertEqual(myAdvancedConfig.getWifiPortalTimeout(), 120);
-  assertEqual(myAdvancedConfig.isIgnoreLowAnges(), false);
+  assertEqual(myConfig.getDefaultCalibrationTemp(), 20.0);
+  assertEqual(myConfig.getGyroReadCount(), 50);
+  assertEqual(myConfig.getGyroReadDelay(), 3150);
+  assertEqual(myConfig.getGyroSensorMovingThreashold(), 500);
+  assertEqual(myConfig.getMaxFormulaCreationDeviation(), 3.0);
+  assertEqual(myConfig.getPushIntervalHttp1(), 0);
+  assertEqual(myConfig.getPushIntervalHttp2(), 0);
+  assertEqual(myConfig.getPushIntervalHttp3(), 0);
+  assertEqual(myConfig.getPushIntervalMqtt(), 0);
+  assertEqual(myConfig.getPushIntervalInflux(), 0);
+  assertEqual(myConfig.getPushTimeout(), 10);
+  assertEqual(myConfig.getTempSensorResolution(), 9);
+  assertEqual(myConfig.getWifiConnectTimeout(), 20);
+  assertEqual(myConfig.getWifiPortalTimeout(), 120);
+  assertEqual(myConfig.isIgnoreLowAnges(), false);
 }
 
 test(config_tempFormat) {

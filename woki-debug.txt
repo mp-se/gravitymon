@@ -1,0 +1,22 @@
+// AUTOMATICALLY GENERATED FILE. PLEASE DO NOT MODIFY IT MANUALLY
+//
+// PIO Unified Debugger
+//
+// Documentation: https://docs.platformio.org/page/plus/debugging.html
+// Configuration: https://docs.platformio.org/page/projectconf/section_env_debug.html
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Wokwi GDB",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/.pio/build/gravity32-wokwi/firmware.elf",
+            "cwd": "${workspaceFolder}",
+            "MIMode": "gdb",
+            "miDebuggerPath": "${userHome}/.platformio/packages/toolchain-xtensa-esp32s2/bin/xtensa-esp32s2-elf-gdb.exe",
+            "miDebuggerServerAddress": "localhost:3333"
+        }
+    ]
+}

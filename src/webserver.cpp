@@ -339,6 +339,10 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_ISPINDEL_CONFIG] = false;
 #endif
 
+  obj[PARAM_TOTAL_HEAP] = ESP.getHeapSize();
+  obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
+  obj[PARAM_IP] = WiFi.localIP().toString();
+
   FloatHistoryLog runLog(RUNTIME_FILENAME);
   obj[PARAM_RUNTIME_AVERAGE] = serialized(String(
       runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME));
@@ -701,8 +705,30 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
 }
 
 void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
-  Log.error(F("WEB : URL not found %s received." CR), request->url().c_str());
-  request->send(404, "text/plain", F("URL not found"));
+  if (request->method() == HTTP_OPTIONS) {
+    Log.notice(F("WEB : Got OPTIONS request for %s." CR), request->url().c_str());
+#if defined(ENABLE_REMOTE_UI_DEVELOPMENT)
+    AsyncWebServerResponse *resp = request->beginResponse(200);
+    resp->addHeader("Access-Control-Allow-Credentials", "true");
+    resp->addHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    resp->addHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
+    request->send(resp);
+    return;
+#endif    
+  }
+
+  if (request->method() == HTTP_GET)
+    Log.error(F("WEB : GET on %s not recognized." CR), request->url().c_str());
+  else if (request->method() == HTTP_POST)
+    Log.error(F("WEB : POST on %s not recognized." CR), request->url().c_str());
+  else if (request->method() == HTTP_PUT)
+    Log.error(F("WEB : PUT on %s not recognized." CR), request->url().c_str());
+  else if (request->method() == HTTP_DELETE)
+    Log.error(F("WEB : DELETE on %s not recognized." CR), request->url().c_str());
+  else 
+    Log.error(F("WEB : Unknown on %s not recognized." CR), request->url().c_str());
+
+  request->send(404, "application/json", "{\"message\":\"Not found\"}");
 }
 
 bool WebServerHandler::setupWebServer() {
@@ -855,8 +881,9 @@ bool WebServerHandler::setupWebServer() {
   _server->onNotFound(std::bind(&WebServerHandler::webHandlePageNotFound, this,
                                 std::placeholders::_1));
 
-  // TODO: Enable this when developing/testing vuejs UI
+#if defined(ENABLE_REMOTE_UI_DEVELOPMENT)
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+#endif
   _server->begin();
   Log.notice(F("WEB : Web server started." CR));
   return true;

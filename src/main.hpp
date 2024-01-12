@@ -33,6 +33,8 @@ const size_t JSON_BUFFER_SIZE_XL = 5000;
 const size_t JSON_BUFFER_SIZE_LARGE = 3000;
 const size_t JSON_BUFFER_SIZE_SMALL = 500;
 
+#define ENABLE_REMOTE_UI_DEVELOPMENT // Enable cors
+
 enum RunMode {
   gravityMode = 0,
   configurationMode = 1,

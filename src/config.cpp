@@ -56,7 +56,7 @@ void Config::createJson(JsonObject& doc) {
   doc[PARAM_PASS] = getWifiPass(0);
   doc[PARAM_SSID2] = getWifiSSID(1);
   doc[PARAM_PASS2] = getWifiPass(1);
-  doc[PARAM_BLE] = getBleColor();
+  doc[PARAM_BLE_TILT_COLOR] = getBleTiltColor();
   doc[PARAM_BLE_FORMAT] = getBleFormat();
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
   doc[PARAM_TOKEN] = getToken();
@@ -132,7 +132,7 @@ void Config::parseJson(JsonObject& doc) {
   if (!doc[PARAM_PASS].isNull()) setWifiPass(doc[PARAM_PASS], 0);
   if (!doc[PARAM_SSID2].isNull()) setWifiSSID(doc[PARAM_SSID2], 1);
   if (!doc[PARAM_PASS2].isNull()) setWifiPass(doc[PARAM_PASS2], 1);
-  if (!doc[PARAM_BLE].isNull()) setBleColor(doc[PARAM_BLE]);
+  if (!doc[PARAM_BLE_TILT_COLOR].isNull()) setBleTiltColor(doc[PARAM_BLE_TILT_COLOR]);
   if (!doc[PARAM_BLE_FORMAT].isNull())
     setBleFormat(doc[PARAM_BLE_FORMAT].as<int>());
 

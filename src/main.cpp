@@ -342,12 +342,12 @@ bool loopReadGravity() {
 
         switch (myConfig.getBleFormat()) {
           case BleFormat::BLE_TILT: {
-            String color = myConfig.getBleColor();
+            String color = myConfig.getBleTiltColor();
             myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
                                      false);
           } break;
           case BleFormat::BLE_TILT_PRO: {
-            String color = myConfig.getBleColor();
+            String color = myConfig.getBleTiltColor();
             myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
                                      true);
           } break;

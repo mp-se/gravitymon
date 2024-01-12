@@ -127,7 +127,7 @@ class Config {
   char _gravityFormat = 'G';
 
   // BLE (ESP32 only)
-  String _bleColor;
+  String _bleTiltColor;
   BleFormat _bleFormat = BleFormat::BLE_DISABLED;
 
   // Gyro calibration and formula calculation data
@@ -396,9 +396,9 @@ class Config {
   bool isGravitySG() { return _gravityFormat == 'G'; }
   bool isGravityPlato() { return _gravityFormat == 'P'; }
 
-  const char* getBleColor() { return _bleColor.c_str(); }
-  void setBleColor(String c) {
-    _bleColor = c;
+  const char* getBleTiltColor() { return _bleTiltColor.c_str(); }
+  void setBleTiltColor(String c) {
+    _bleTiltColor = c;
     _saveNeeded = true;
   }
   bool isBleActive() { return (_bleFormat != BleFormat::BLE_DISABLED); }
