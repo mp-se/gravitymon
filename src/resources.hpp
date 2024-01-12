@@ -78,7 +78,7 @@ constexpr auto PARAM_BATTERY = "battery";
 constexpr auto PARAM_SLEEP_MODE = "sleep_mode";
 constexpr auto PARAM_RSSI = "rssi";
 constexpr auto PARAM_PLATFORM = "platform";
-constexpr auto PARAM_BLE = "ble_tilt_color";
+constexpr auto PARAM_BLE_TILT_COLOR = "ble_tilt_color";
 constexpr auto PARAM_BLE_FORMAT = "ble_format";
 constexpr auto PARAM_ISPINDEL_CONFIG = "ispindel_config";
 constexpr auto PARAM_GYRO_READ_COUNT = "gyro_read_count";
@@ -115,5 +115,8 @@ constexpr auto PARAM_SELF_BATTERY_LEVEL = "battery_level";
 constexpr auto PARAM_SELF_PUSH_TARGET = "push_targets";
 constexpr auto PARAM_STATUS = "status";
 constexpr auto PARAM_MESSAGE = "message";
+constexpr auto PARAM_TOTAL_HEAP = "total_heap";
+constexpr auto PARAM_FREE_HEAP = "free_heap";
+constexpr auto PARAM_IP = "ip";
 
 #endif  // SRC_RESOURCES_HPP_
