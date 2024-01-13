@@ -116,19 +116,18 @@ class WebServerHandler {
 #else  // ESP32
   void webReturnIndexHtm(AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", (const uint8_t *)indexHtmlStart,
-                    &indexHtmlEnd[0] - &indexHtmlStart[0]);
+                    SIZE_INDEX_HTML);
   }
   void webReturnAppJs(AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response = request->beginResponse_P(
-        200, "application/javascript", (const uint8_t *)appJsStart,
-        &appJsEnd[0] - &appJsStart[0]);
+    AsyncWebServerResponse *response =
+        request->beginResponse_P(200, "application/javascript",
+                                 (const uint8_t *)appJsStart, SIZE_APP_JS_GZ);
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
   }
   void webReturnAppCss(AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response =
-        request->beginResponse_P(200, "text/css", (const uint8_t *)appCssStart,
-                                 &appCssEnd[0] - &appCssStart[0]);
+    AsyncWebServerResponse *response = request->beginResponse_P(
+        200, "text/css", (const uint8_t *)appCssStart, SIZE_APP_CSS_GZ);
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
   }
