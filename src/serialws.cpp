@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2023 Magnus
+Copyright (c) 2023-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,11 @@ SOFTWARE.
 #include <helper.hpp>
 #include <serialws.hpp>
 
-#if defined(ESP8266)
-#include <incbin.h>
-INCBIN(WebSocketHtm, "html/ws.min.htm");
-#endif
-
 void SerialWebSocket::begin(AsyncWebServer *server, Print *secondary) {
   Log.notice(F("WS  : Starting serial websocket" CR));
 
   _server = server;
   _secondayLog = secondary;
-  _server->on("/serial", HTTP_GET,
-              std::bind(&SerialWebSocket::webReturnWebSocketHtm, this,
-                        std::placeholders::_1));
-
   _webSocket = new AsyncWebSocket("/serialws");
   _server->addHandler(_webSocket);
 }

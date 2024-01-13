@@ -49,7 +49,7 @@ bool WebServerHandler::isAuthenticated(AsyncWebServerRequest *request) {
     token += myConfig.getID();
 
     if (request->getHeader("Authorization")->value() == token) {
-      Log.info(F("WEB : Auth token is valid." CR));
+      // Log.info(F("WEB : Auth token is valid." CR));
       return true;
     }
   }
@@ -335,13 +335,15 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
 
 #if defined(ESP8266)
   obj[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
+  obj[PARAM_TOTAL_HEAP] = 81920;
+  obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
+  obj[PARAM_IP] = WiFi.localIP().toString();
 #else
   obj[PARAM_ISPINDEL_CONFIG] = false;
-#endif
-
   obj[PARAM_TOTAL_HEAP] = ESP.getHeapSize();
   obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
   obj[PARAM_IP] = WiFi.localIP().toString();
+#endif
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
   obj[PARAM_RUNTIME_AVERAGE] = serialized(String(
@@ -706,15 +708,21 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
 
 void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
   if (request->method() == HTTP_OPTIONS) {
-    Log.notice(F("WEB : Got OPTIONS request for %s." CR), request->url().c_str());
+    Log.notice(F("WEB : Got OPTIONS request for %s." CR),
+               request->url().c_str());
 #if defined(ENABLE_REMOTE_UI_DEVELOPMENT)
     AsyncWebServerResponse *resp = request->beginResponse(200);
     resp->addHeader("Access-Control-Allow-Credentials", "true");
-    resp->addHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    resp->addHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
+    resp->addHeader("Access-Control-Allow-Methods",
+                    "GET,HEAD,OPTIONS,POST,PUT");
+    resp->addHeader(
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, "
+        "Content-Type, Access-Control-Request-Method, "
+        "Access-Control-Request-Headers, Authorization");
     request->send(resp);
     return;
-#endif    
+#endif
   }
 
   if (request->method() == HTTP_GET)
@@ -724,9 +732,11 @@ void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
   else if (request->method() == HTTP_PUT)
     Log.error(F("WEB : PUT on %s not recognized." CR), request->url().c_str());
   else if (request->method() == HTTP_DELETE)
-    Log.error(F("WEB : DELETE on %s not recognized." CR), request->url().c_str());
-  else 
-    Log.error(F("WEB : Unknown on %s not recognized." CR), request->url().c_str());
+    Log.error(F("WEB : DELETE on %s not recognized." CR),
+              request->url().c_str());
+  else
+    Log.error(F("WEB : Unknown on %s not recognized." CR),
+              request->url().c_str());
 
   request->send(404, "application/json", "{\"message\":\"Not found\"}");
 }
@@ -772,34 +782,24 @@ bool WebServerHandler::setupWebServer() {
 #endif
   // Static content
   Log.notice(F("WEB : Setting up handlers for web server." CR));
-  /* TODO: REPLACE THSE WITH NEW VUEJS URLs
   _server->on("/", std::bind(&WebServerHandler::webReturnIndexHtm, this,
                              std::placeholders::_1));
-  _server->on("/index.htm", std::bind(&WebServerHandler::webReturnIndexHtm,
-                                      this, std::placeholders::_1));
-  _server->on("/config.htm", std::bind(&WebServerHandler::webReturnConfigHtm,
+  _server->on("/index.html", std::bind(&WebServerHandler::webReturnIndexHtm,
                                        this, std::placeholders::_1));
-  _server->on("/calibration.htm",
-              std::bind(&WebServerHandler::webReturnCalibrationHtm, this,
-                        std::placeholders::_1));
-  _server->on("/format.htm", std::bind(&WebServerHandler::webReturnFormatHtm,
-                                       this, std::placeholders::_1));
-  _server->on("/about.htm", std::bind(&WebServerHandler::webReturnAboutHtm,
-                                      this, std::placeholders::_1));
-  _server->on("/test.htm", std::bind(&WebServerHandler::webReturnTestHtm, this,
-                                     std::placeholders::_1));
-  _server->on("/firmware.htm",
-              std::bind(&WebServerHandler::webReturnFirmwareHtm, this,
-                        std::placeholders::_1));
-  _server->on("/backup.htm", std::bind(&WebServerHandler::webReturnBackupHtm,
-                                       this, std::placeholders::_1));*/
+  _server->on("/js/app.js", std::bind(&WebServerHandler::webReturnAppJs, this,
+                                      std::placeholders::_1));
+  _server->on("/css/app.css", std::bind(&WebServerHandler::webReturnAppCss,
+                                        this, std::placeholders::_1));
+
   _server->serveStatic("/log", LittleFS, ERR_FILENAME);
   _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
   _server->serveStatic("/migrate", LittleFS, "/config.json");
 
-  _server->serveStatic("/debug1", LittleFS, "/gravitymon.json");
-  _server->serveStatic("/debug2", LittleFS, "/gravitymon2.json");
+  _server->serveStatic("/debug1", LittleFS,
+                       "/gravitymon.json");  // TODO: Remove this when done
+  _server->serveStatic("/debug2", LittleFS,
+                       "/gravitymon2.json");  // TODO: Remove this when done
 
   AsyncCallbackJsonWebHandler *handler;
 

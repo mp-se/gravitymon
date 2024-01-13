@@ -43,34 +43,16 @@ SOFTWARE.
 
 #if defined(ESP8266)
 #include <incbin.h>
-INCBIN_EXTERN(IndexHtm);
-INCBIN_EXTERN(ConfigHtm);
-INCBIN_EXTERN(CalibrationHtm);
-INCBIN_EXTERN(FormatHtm);
-INCBIN_EXTERN(TestHtm);
-INCBIN_EXTERN(AboutHtm);
-INCBIN_EXTERN(FirmwareHtm);
-INCBIN_EXTERN(BackupHtm);
+INCBIN_EXTERN(IndexHtml);
+INCBIN_EXTERN(AppJs);
+INCBIN_EXTERN(AppCss);
 #else  // ESP32
-extern const uint8_t indexHtmStart[] asm("_binary_html_index_min_htm_start");
-extern const uint8_t indexHtmEnd[] asm("_binary_html_index_min_htm_end");
-extern const uint8_t configHtmStart[] asm("_binary_html_config_min_htm_start");
-extern const uint8_t configHtmEnd[] asm("_binary_html_config_min_htm_end");
-extern const uint8_t calibrationHtmStart[] asm(
-    "_binary_html_calibration_min_htm_start");
-extern const uint8_t calibrationHtmEnd[] asm(
-    "_binary_html_calibration_min_htm_end");
-extern const uint8_t formatHtmStart[] asm("_binary_html_format_min_htm_start");
-extern const uint8_t formatHtmEnd[] asm("_binary_html_format_min_htm_end");
-extern const uint8_t testHtmStart[] asm("_binary_html_test_min_htm_start");
-extern const uint8_t testHtmEnd[] asm("_binary_html_test_min_htm_end");
-extern const uint8_t aboutHtmStart[] asm("_binary_html_about_min_htm_start");
-extern const uint8_t aboutHtmEnd[] asm("_binary_html_about_min_htm_end");
-extern const uint8_t firmwareHtmStart[] asm(
-    "_binary_html_firmware_min_htm_start");
-extern const uint8_t firmwareHtmEnd[] asm("_binary_html_firmware_min_htm_end");
-extern const uint8_t backupHtmStart[] asm("_binary_html_backup_min_htm_start");
-extern const uint8_t backupHtmEnd[] asm("_binary_html_backup_min_htm_end");
+extern const uint8_t indexHtmlStart[] asm("_binary_html_index_html_start");
+extern const uint8_t indexHtmlEnd[] asm("_binary_html_index_html_end");
+extern const uint8_t appJsStart[] asm("_binary_html_app_js_gz_start");
+extern const uint8_t appJsEnd[] asm("_binary_html_app_js_gz_end");
+extern const uint8_t appCssStart[] asm("_binary_html_app_css_gz_start");
+extern const uint8_t appCssEnd[] asm("_binary_html_app_css_gz_end");
 #endif
 
 class WebServerHandler {
@@ -88,110 +70,67 @@ class WebServerHandler {
   bool isAuthenticated(AsyncWebServerRequest *request);
 
   void webHandleStatus(AsyncWebServerRequest *request);
-
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleConfigFormatRead(AsyncWebServerRequest *request);
   void webHandleConfigFormatWrite(AsyncWebServerRequest *request,
                                   JsonVariant &json);
   void webHandleConfigWifi(AsyncWebServerRequest *request, JsonVariant &json);
-
   void webHandleSleepmode(AsyncWebServerRequest *request, JsonVariant &json);
-
-  // **REMOVE** void webHandleFormulaWrite(AsyncWebServerRequest *request);
-  // **REMOVE** void webHandleFormulaRead(AsyncWebServerRequest *request);
   void webHandleFormulaCreate(AsyncWebServerRequest *request);
-
   void webHandleTestPush(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPushStatus(AsyncWebServerRequest *request);
-
   void webHandleCalibrate(AsyncWebServerRequest *request);
   void webHandleCalibrateStatus(AsyncWebServerRequest *request);
-
   void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
                            size_t index, uint8_t *data, size_t len, bool final);
-
   void webHandleLogClear(AsyncWebServerRequest *request);
   void webHandleRestart(AsyncWebServerRequest *request);
   void webHandleClearWifi(AsyncWebServerRequest *request);
   void webHandleFactoryDefaults(AsyncWebServerRequest *request);
   void webHandleMigrate(AsyncWebServerRequest *request);
-
   void webHandlePageNotFound(AsyncWebServerRequest *request);
 
   String readFile(String fname);
   bool writeFile(String fname, String data);
 
-  // String getRequestArguments(AsyncWebServerRequest *request);
   void webReturnOK(AsyncWebServerRequest *request);
 
 #if defined(ESP8266)
   void webReturnIndexHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gIndexHtmData,
-                    gIndexHtmSize);
+    request->send_P(200, "text/html", (const uint8_t *)gIndexHtmlData,
+                    gIndexHtmlSize);
   }
-  void webReturnConfigHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gConfigHtmData,
-                    gConfigHtmSize);
+  void webReturnAppJs(AsyncWebServerRequest *request) {
+    AsyncWebServerResponse *response = request->beginResponse_P(
+        200, "application/javascript", (const uint8_t *)gAppJsData, gAppJsSize);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
   }
-  void webReturnCalibrationHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gCalibrationHtmData,
-                    gCalibrationHtmSize);
-  }
-  void webReturnFormatHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gFormatHtmData,
-                    gFormatHtmSize);
-  }
-  void webReturnAboutHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gAboutHtmData,
-                    gAboutHtmSize);
-  }
-  void webReturnTestHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gTestHtmData,
-                    gTestHtmSize);
-  }
-  void webReturnFirmwareHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gFirmwareHtmData,
-                    gFirmwareHtmSize);
-  }
-  void webReturnBackupHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gBackupHtmData,
-                    gBackupHtmSize);
+  void webReturnAppCss(AsyncWebServerRequest *request) {
+    AsyncWebServerResponse *response = request->beginResponse_P(
+        200, "text/css", (const uint8_t *)gAppCssData, gAppCssSize);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
   }
 #else  // ESP32
   void webReturnIndexHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)indexHtmStart,
-                    strlen(reinterpret_cast<const char *>(&indexHtmStart[0])));
+    request->send_P(200, "text/html", (const uint8_t *)indexHtmlStart,
+                    &indexHtmlEnd[0] - &indexHtmlStart[0]);
   }
-  void webReturnConfigHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)configHtmStart,
-                    strlen(reinterpret_cast<const char *>(&configHtmStart[0])));
+  void webReturnAppJs(AsyncWebServerRequest *request) {
+    AsyncWebServerResponse *response = request->beginResponse_P(
+        200, "application/javascript", (const uint8_t *)appJsStart,
+        &appJsEnd[0] - &appJsStart[0]);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
   }
-  void webReturnCalibrationHtm(AsyncWebServerRequest *request) {
-    request->send_P(
-        200, "text/html", (const uint8_t *)calibrationHtmStart,
-        strlen(reinterpret_cast<const char *>(&calibrationHtmStart[0])));
-  }
-  void webReturnFormatHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)formatHtmStart,
-                    strlen(reinterpret_cast<const char *>(&formatHtmStart[0])));
-  }
-  void webReturnAboutHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)aboutHtmStart,
-                    strlen(reinterpret_cast<const char *>(&aboutHtmStart[0])));
-  }
-  void webReturnTestHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)testHtmStart,
-                    strlen(reinterpret_cast<const char *>(&testHtmStart[0])));
-  }
-  void webReturnFirmwareHtm(AsyncWebServerRequest *request) {
-    request->send_P(
-        200, "text/html", (const uint8_t *)firmwareHtmStart,
-        strlen(reinterpret_cast<const char *>(&firmwareHtmStart[0])));
-  }
-  void webReturnBackupHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)backupHtmStart,
-                    strlen(reinterpret_cast<const char *>(&backupHtmStart[0])));
+  void webReturnAppCss(AsyncWebServerRequest *request) {
+    AsyncWebServerResponse *response =
+        request->beginResponse_P(200, "text/css", (const uint8_t *)appCssStart,
+                                 &appCssEnd[0] - &appCssStart[0]);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
   }
 #endif
 

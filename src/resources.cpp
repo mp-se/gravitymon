@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,14 +26,9 @@ SOFTWARE.
 #include <incbin.h>
 
 #include <resources.hpp>
-INCBIN(IndexHtm, "html/index.min.htm");
-INCBIN(ConfigHtm, "html/config.min.htm");
-INCBIN(CalibrationHtm, "html/calibration.min.htm");
-INCBIN(FormatHtm, "html/format.min.htm");
-INCBIN(TestHtm, "html/test.min.htm");
-INCBIN(AboutHtm, "html/about.min.htm");
-INCBIN(FirmwareHtm, "html/firmware.min.htm");
-INCBIN(BackupHtm, "html/backup.min.htm");
+INCBIN(IndexHtml, "html/index.html");
+INCBIN(AppJs, "html/app.js.gz");
+INCBIN(AppCss, "html/app.css.gz");
 #endif
 
 // EOF

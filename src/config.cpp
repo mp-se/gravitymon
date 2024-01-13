@@ -132,7 +132,8 @@ void Config::parseJson(JsonObject& doc) {
   if (!doc[PARAM_PASS].isNull()) setWifiPass(doc[PARAM_PASS], 0);
   if (!doc[PARAM_SSID2].isNull()) setWifiSSID(doc[PARAM_SSID2], 1);
   if (!doc[PARAM_PASS2].isNull()) setWifiPass(doc[PARAM_PASS2], 1);
-  if (!doc[PARAM_BLE_TILT_COLOR].isNull()) setBleTiltColor(doc[PARAM_BLE_TILT_COLOR]);
+  if (!doc[PARAM_BLE_TILT_COLOR].isNull())
+    setBleTiltColor(doc[PARAM_BLE_TILT_COLOR]);
   if (!doc[PARAM_BLE_FORMAT].isNull())
     setBleFormat(doc[PARAM_BLE_FORMAT].as<int>());
 
