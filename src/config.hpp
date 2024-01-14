@@ -96,6 +96,11 @@ class Config {
   bool _gyroTemp = false;
 #endif
   bool _storageSleep = false;
+#if defined(ESP8266)
+  bool _skipSslOnTest = true;
+#else
+  bool _skipSslOnTest = false;
+#endif
 
   // Wifi Config
   String _wifiSSID[2] = {"", ""};
@@ -493,6 +498,9 @@ class Config {
                ? false
                : true;
   }
+
+  int isSkipSslOnTest() { return _skipSslOnTest; }
+  void setSkipSslOnTest(int b) { _skipSslOnTest = b; }
 
   const bool isIgnoreLowAnges() { return _ignoreLowAnges; }
   void setIgnoreLowAnges(bool b) { _ignoreLowAnges = b; }

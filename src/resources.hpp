@@ -118,5 +118,6 @@ constexpr auto PARAM_MESSAGE = "message";
 constexpr auto PARAM_TOTAL_HEAP = "total_heap";
 constexpr auto PARAM_FREE_HEAP = "free_heap";
 constexpr auto PARAM_IP = "ip";
+constexpr auto PARAM_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
 
 #endif  // SRC_RESOURCES_HPP_

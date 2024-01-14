@@ -87,6 +87,7 @@ void Config::createJson(JsonObject& doc) {
   doc[PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
   doc[PARAM_GYRO_TEMP] = isGyroTemp();
   doc[PARAM_STORAGE_SLEEP] = isStorageSleep();
+  doc[PARAM_SKIP_SSL_ON_TEST] = isSkipSslOnTest();
 
   JsonObject cal = doc.createNestedObject(PARAM_GYRO_CALIBRATION);
   cal["ax"] = _gyroCalibration.ax;
@@ -193,6 +194,8 @@ void Config::parseJson(JsonObject& doc) {
   }
   if (!doc[PARAM_TEMP_ADJ].isNull())
     setTempSensorAdjC(doc[PARAM_TEMP_ADJ].as<float>());
+  if (!doc[PARAM_SKIP_SSL_ON_TEST].isNull())
+    setSkipSslOnTest(doc[PARAM_SKIP_SSL_ON_TEST].as<bool());
 
   if (!doc[PARAM_GYRO_CALIBRATION]["ax"].isNull())
     _gyroCalibration.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];

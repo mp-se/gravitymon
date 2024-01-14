@@ -201,7 +201,7 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
 
   if (isSecure) {
 #if defined(ESP8266)
-    if (runMode == RunMode::configurationMode) {
+    if (runMode == RunMode::configurationMode && myConfig.isSkipSslOnTest()) {
       Log.notice(
           F("PUSH: Skipping InfluxDB since SSL is enabled and we are in config "
             "mode." CR));
@@ -290,7 +290,7 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
 
   if (isSecure) {
 #if defined(ESP8266)
-    if (runMode == RunMode::configurationMode) {
+    if (runMode == RunMode::configurationMode && myConfig.isSkipSslOnTest()) {
       Log.notice(
           F("PUSH: Skipping HTTP since SSL is enabled and we are in config "
             "mode." CR));
@@ -368,7 +368,7 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 
   if (isSecure) {
 #if defined(ESP8266)
-    if (runMode == RunMode::configurationMode) {
+    if (runMode == RunMode::configurationMode && myConfig.isSkipSslOnTest()) {
       Log.notice(
           F("PUSH: Skipping HTTP since SSL is enabled and we are in config "
             "mode." CR));
@@ -425,7 +425,7 @@ void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
 
   if (myConfig.isMqttSSL()) {
 #if defined(ESP8266)
-    if (runMode == RunMode::configurationMode) {
+    if (runMode == RunMode::configurationMode && myConfig.isSkipSslOnTest()) {
       Log.notice(
           F("PUSH: Skipping MQTT since SSL is enabled and we are in config "
             "mode." CR));
