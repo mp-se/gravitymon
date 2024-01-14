@@ -195,7 +195,7 @@ void Config::parseJson(JsonObject& doc) {
   if (!doc[PARAM_TEMP_ADJ].isNull())
     setTempSensorAdjC(doc[PARAM_TEMP_ADJ].as<float>());
   if (!doc[PARAM_SKIP_SSL_ON_TEST].isNull())
-    setSkipSslOnTest(doc[PARAM_SKIP_SSL_ON_TEST].as<bool());
+    setSkipSslOnTest(doc[PARAM_SKIP_SSL_ON_TEST].as<bool>());
 
   if (!doc[PARAM_GYRO_CALIBRATION]["ax"].isNull())
     _gyroCalibration.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];
