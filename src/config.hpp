@@ -499,8 +499,8 @@ class Config {
                : true;
   }
 
-  int isSkipSslOnTest() { return _skipSslOnTest; }
-  void setSkipSslOnTest(int b) { _skipSslOnTest = b; }
+  bool isSkipSslOnTest() { return _skipSslOnTest; }
+  void setSkipSslOnTest(bool b) { _skipSslOnTest = b; }
 
   const bool isIgnoreLowAnges() { return _ignoreLowAnges; }
   void setIgnoreLowAnges(bool b) { _ignoreLowAnges = b; }
