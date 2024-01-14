@@ -122,6 +122,10 @@ void WebServerHandler::webHandleUploadFile(AsyncWebServerRequest *request,
                                            String filename, size_t index,
                                            uint8_t *data, size_t len,
                                            bool final) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
   uint32_t maxSketchSpace = MAX_SKETCH_SPACE;
   Log.verbose(F("WEB : BaseWebHandler callback for /api/upload(post)." CR));
 
