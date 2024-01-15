@@ -60,12 +60,13 @@ class WebServerHandler {
   AsyncWebServer *_server = 0;
   File _uploadFile;
   int _uploadedSize = 0;
-  // int _lastFormulaCreateError = 0;
   int _uploadReturn = 200;
   volatile bool _rebootTask = false;
   volatile bool _sensorCalibrationTask = false;
   volatile bool _pushTestTask = false;
   String _pushTestData;
+  int _pushTestLastCode;
+  bool _pushTestLastSuccess, _pushTestEnabled;
 
   bool isAuthenticated(AsyncWebServerRequest *request);
 

@@ -588,10 +588,11 @@ void WebServerHandler::webHandleTestPush(AsyncWebServerRequest *request,
   LOG_PERF_START("webserver-api-test-push");
   Log.notice(F("WEB : webServer callback for /api/test/push." CR));
   JsonObject obj = json.as<JsonObject>();
-
   _pushTestData = obj[PARAM_PUSH_FORMAT].as<String>();
   _pushTestTask = true;
-
+  _pushTestEnabled = false;
+  _pushTestLastSuccess = false;
+  _pushTestLastCode = 0;
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   obj = response->getRoot().as<JsonObject>();
@@ -608,8 +609,20 @@ void WebServerHandler::webHandleTestPushStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   JsonObject obj = response->getRoot().as<JsonObject>();
+  String s;
+
+  if(_pushTestTask)
+    s = "Running push tests for " + _pushTestData;
+  else if(!_pushTestTask && _pushTestLastSuccess==0)
+    s = "No push test has been started";
+  else
+    s = "Push test for " + _pushTestData + " is complete";
+
   obj[PARAM_STATUS] = static_cast<bool>(_pushTestTask);
-  obj[PARAM_MESSAGE] = "";
+  obj[PARAM_MESSAGE] = s;
+  obj[PARAM_PUSH_ENABLED] = _pushTestEnabled;
+  obj[PARAM_PUSH_SUCCESS] = _pushTestLastSuccess;
+  obj[PARAM_PUSH_CODE] = _pushTestLastCode;
   response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-test-push-status");
@@ -801,9 +814,9 @@ bool WebServerHandler::setupWebServer() {
   _server->serveStatic("/migrate", LittleFS, "/config.json");
 
   _server->serveStatic("/debug1", LittleFS,
-                       "/gravitymon.json");  // TODO: Remove this when done
+                       CFG_FILENAME_OLD);  // TODO: Remove this when done
   _server->serveStatic("/debug2", LittleFS,
-                       "/gravitymon2.json");  // TODO: Remove this when done
+                       CFG_FILENAME);  // TODO: Remove this when done
 
   AsyncCallbackJsonWebHandler *handler;
 
@@ -921,53 +934,43 @@ void WebServerHandler::loop() {
     float corrGravitySG = gravityTemperatureCorrectionC(
         gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
 
+    Log.notice(F("WEB : Running scheduled push test for %s" CR), _pushTestData.c_str());
+
     TemplatingEngine engine;
     engine.initialize(angle, gravitySG, corrGravitySG, tempC, 1.0,
                       myBatteryVoltage.getVoltage());
 
     PushTarget push;
-    bool enabled = false;
 
     if (!_pushTestData.compareTo(PARAM_FORMAT_HTTP1) &&
         myConfig.isHttpActive()) {
       push.sendHttp1(engine, myConfig.isHttpSSL());
-      enabled = true;
+      _pushTestEnabled = true;
     } else if (!_pushTestData.compareTo(PARAM_FORMAT_HTTP2) &&
                myConfig.isHttp2Active()) {
       push.sendHttp2(engine, myConfig.isHttp2SSL());
-      enabled = true;
+      _pushTestEnabled = true;
     } else if (!_pushTestData.compareTo(PARAM_FORMAT_HTTP3) &&
                myConfig.isHttp3Active()) {
       push.sendHttp3(engine, myConfig.isHttp3SSL());
-      enabled = true;
+      _pushTestEnabled = true;
     } else if (!_pushTestData.compareTo(PARAM_FORMAT_INFLUXDB) &&
                myConfig.isInfluxDb2Active()) {
       push.sendInfluxDb2(engine, myConfig.isInfluxSSL());
-      enabled = true;
+      _pushTestEnabled = true;
     } else if (!_pushTestData.compareTo(PARAM_FORMAT_MQTT) &&
                myConfig.isMqttActive()) {
       push.sendMqtt(engine, myConfig.isMqttSSL(), false);
-      enabled = true;
+      _pushTestEnabled = true;
     }
 
     engine.freeMemory();
-    DynamicJsonDocument doc(JSON_BUFFER_SIZE_SMALL);
-    doc[PARAM_STATUS] = false;
-    doc[PARAM_PUSH_ENABLED] = enabled;
-    doc[PARAM_PUSH_SUCCESS] = push.getLastSuccess();
-    doc[PARAM_PUSH_CODE] = push.getLastCode();
-
-    _pushTestData.clear();
-    serializeJson(doc, _pushTestData);
-    doc.clear();
-
-#if LOG_LEVEL == 6 && !defined(WEB_DISABLE_LOGGING)
-    serializeJson(_pushTestData, EspSerial);
-    EspSerial.print(CR);
-#endif
-
-    Log.notice(F("WEB : Scheduled push test result %s" CR),
-               _pushTestData.c_str());
+    _pushTestLastSuccess = push.getLastSuccess();
+    _pushTestLastCode = push.getLastCode();
+    if(_pushTestEnabled)
+      Log.notice(F("WEB : Scheduled push test %s completed, success=%d, code=%d" CR), _pushTestData.c_str(), _pushTestLastSuccess, _pushTestLastCode);
+    else
+      Log.notice(F("WEB : Scheduled push test %s failed, not enabled" CR), _pushTestData.c_str());
     _pushTestTask = false;
   }
 }
