@@ -294,16 +294,16 @@ bool Config::saveFile() {
     return false;
   }
 
-  DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
-  JsonObject obj = doc.as<JsonObject>();
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE_XL);
+  JsonObject obj = doc.createNestedObject(); // doc.as<JsonObject>();
   createJson(obj);
 
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  serializeJson(doc, EspSerial);
+//#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
+  serializeJson(obj, EspSerial);
   EspSerial.print(CR);
-#endif
+//#endif
 
-  serializeJson(doc, configFile);
+  serializeJson(obj, configFile);
   configFile.flush();
   configFile.close();
 
