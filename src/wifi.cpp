@@ -330,25 +330,6 @@ String WifiConnection::getEncryptionType(wifi_auth_mode_t encryptionType) {
 }
 #endif
 
-void WifiConnection::scanWifiNetworks() {
-  Log.notice(F("WIFI: Scanning for wifi." CR));
-  int noNetwork = WiFi.scanNetworks(false, false);
-
-  for (int i = 0; i < noNetwork; i++) {
-    int rssi = WiFi.RSSI(i);
-    String ssid = WiFi.SSID(i);
-    int channel = WiFi.channel(i);
-#if defined(ESP8266)
-    uint8_t encryptionType = WiFi.encryptionType(i);
-#else
-    wifi_auth_mode_t encryptionType = WiFi.encryptionType(i);
-#endif
-
-    Log.notice(F("WIFI: Found ssid=%s dBm=%d ch=%d %s." CR), ssid.c_str(), rssi,
-               channel, getEncryptionType(encryptionType).c_str());
-  }
-}
-
 bool WifiConnection::connect() {
   // scanWifiNetworks();
 
