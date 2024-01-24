@@ -55,6 +55,19 @@ extern const uint8_t appCssStart[] asm("_binary_html_app_css_gz_start");
 extern const uint8_t appCssEnd[] asm("_binary_html_app_css_gz_end");
 #endif
 
+// These are set in a pre:script since the embedding function for esp32 does not
+// specify length of file and subtracting pointers to different objects are not
+// allowed
+#if !defined(SIZE_INDEX_HTML)
+#define SIZE_INDEX_HTML 0
+#endif
+#if !defined(SIZE_APP_JS_GZ)
+#define SIZE_APP_JS_GZ 0
+#endif
+#if !defined(SIZE_APP_CSS_GZ)
+#define SIZE_APP_CSS_GZ 0
+#endif
+
 class WebServerHandler {
  private:
   AsyncWebServer *_server = 0;
@@ -64,7 +77,9 @@ class WebServerHandler {
   volatile bool _rebootTask = false;
   volatile bool _sensorCalibrationTask = false;
   volatile bool _pushTestTask = false;
-  String _pushTestData;
+  volatile bool _wifiScanTask = false;
+  String _wifiScanData;
+  String _pushTestTarget;
   int _pushTestLastCode;
   bool _pushTestLastSuccess, _pushTestEnabled;
 
@@ -83,11 +98,13 @@ class WebServerHandler {
   void webHandleTestPushStatus(AsyncWebServerRequest *request);
   void webHandleCalibrate(AsyncWebServerRequest *request);
   void webHandleCalibrateStatus(AsyncWebServerRequest *request);
+  void webHandleWifiScan(AsyncWebServerRequest *request);
+  void webHandleWifiScanStatus(AsyncWebServerRequest *request);
+  void webHandleWifiClear(AsyncWebServerRequest *request);
   void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
                            size_t index, uint8_t *data, size_t len, bool final);
   void webHandleLogClear(AsyncWebServerRequest *request);
   void webHandleRestart(AsyncWebServerRequest *request);
-  void webHandleClearWifi(AsyncWebServerRequest *request);
   void webHandleFactoryDefaults(AsyncWebServerRequest *request);
   void webHandleMigrate(AsyncWebServerRequest *request);
   void webHandlePageNotFound(AsyncWebServerRequest *request);

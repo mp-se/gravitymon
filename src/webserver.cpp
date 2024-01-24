@@ -97,11 +97,10 @@ void WebServerHandler::webHandleConfigWrite(AsyncWebServerRequest *request,
   myConfig.saveFile();
 
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_LARGE);
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   obj = response->getRoot().as<JsonObject>();
-  myConfig.createJson(obj);
-  obj.remove(PARAM_PASS);  // dont show the wifi password
-  obj.remove(PARAM_PASS2);
+  obj[PARAM_SUCCESS] = true;
+  obj[PARAM_MESSAGE] = "Configuration updated";
   response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-config-write");
@@ -185,7 +184,7 @@ void WebServerHandler::webHandleCalibrate(AsyncWebServerRequest *request) {
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   JsonObject obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_STATUS] = true;
+  obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Scheduled device calibration";
   response->setLength();
   request->send(response);
@@ -194,16 +193,74 @@ void WebServerHandler::webHandleCalibrate(AsyncWebServerRequest *request) {
 
 void WebServerHandler::webHandleCalibrateStatus(
     AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
   LOG_PERF_START("webserver-api-calibrate-status");
   Log.notice(F("WEB : webServer callback for /api/calibrate/status." CR));
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   JsonObject obj = response->getRoot().as<JsonObject>();
   obj[PARAM_STATUS] = static_cast<bool>(_sensorCalibrationTask);
-  obj[PARAM_MESSAGE] = "";
+  obj[PARAM_SUCCESS] = false;
+  obj[PARAM_MESSAGE] = "Calibration running";
+
+  if(!_sensorCalibrationTask) {
+    if(myGyro.isConnected()) {
+      obj[PARAM_SUCCESS] = true;
+      obj[PARAM_MESSAGE] = "Calibration completed";
+    } else {
+      obj[PARAM_SUCCESS] = false;
+      obj[PARAM_MESSAGE] = "Calibration failed, no gyro connected";
+    }
+  }
+
   response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-calibrate-status");
+}
+
+void WebServerHandler::webHandleWifiScan(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
+  LOG_PERF_START("webserver-api-wifi-scan");
+  Log.notice(F("WEB : webServer callback for /api/wifi/scan." CR));
+  _wifiScanTask = true;
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_SUCCESS] = true;
+  obj[PARAM_MESSAGE] = "Scheduled wifi scanning";
+  response->setLength();
+  request->send(response);
+  LOG_PERF_STOP("webserver-api-wifi-scan");
+}
+
+void WebServerHandler::webHandleWifiScanStatus(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
+  LOG_PERF_START("webserver-api-wifi-scan-status");
+  Log.notice(F("WEB : webServer callback for /api/wifi/scan." CR));
+
+  if(_wifiScanTask) {
+    AsyncJsonResponse *response =
+        new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+    JsonObject obj = response->getRoot().as<JsonObject>();
+    obj[PARAM_STATUS] = false;
+    obj[PARAM_SUCCESS] = false;
+    obj[PARAM_MESSAGE] = "Wifi scanning running";
+    response->setLength();
+    request->send(response);
+  } else {
+    request->send(200, "application/json", _wifiScanData);
+  }
+
+  LOG_PERF_STOP("webserver-api-wifi-scan-status");
 }
 
 void WebServerHandler::webHandleFactoryDefaults(
@@ -227,7 +284,7 @@ void WebServerHandler::webHandleFactoryDefaults(
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   JsonObject obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_STATUS] = true;
+  obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Factory reset completed, rebooting";
   response->setLength();
   request->send(response);
@@ -248,7 +305,7 @@ void WebServerHandler::webHandleLogClear(AsyncWebServerRequest *request) {
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   JsonObject obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_STATUS] = true;
+  obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Logfiles removed";
   response->setLength();
   request->send(response);
@@ -379,7 +436,7 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   LOG_PERF_STOP("webserver-api-status");
 }
 
-void WebServerHandler::webHandleClearWifi(AsyncWebServerRequest *request) {
+void WebServerHandler::webHandleWifiClear(AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
   }
@@ -510,10 +567,11 @@ void WebServerHandler::webHandleFormulaCreate(AsyncWebServerRequest *request) {
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   JsonObject obj = response->getRoot().as<JsonObject>();
 
-  obj[PARAM_STATUS] = createErr ? false : true;
-  obj[PARAM_ANGLE] = serialized(String(myGyro.getAngle(), DECIMALS_TILT));
-  obj[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
+  obj[PARAM_SUCCESS] = createErr ? false : true;
+  // obj[PARAM_ANGLE] = serialized(String(myGyro.getAngle(), DECIMALS_TILT));
+  // obj[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   obj[PARAM_GRAVITY_FORMULA] = "";
+  obj[PARAM_MESSAGE] = "";
 
   switch (createErr) {
     case ERR_FORMULA_INTERNAL:
@@ -530,6 +588,8 @@ void WebServerHandler::webHandleFormulaCreate(AsyncWebServerRequest *request) {
       break;
     default:
       obj[PARAM_GRAVITY_FORMULA] = myConfig.getGravityFormula();
+      obj[PARAM_MESSAGE] =
+          "New formula created based on the entered values.";
       break;
   }
 
@@ -570,12 +630,11 @@ void WebServerHandler::webHandleConfigFormatWrite(
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_STATUS] = success > 0 ? true : false;
+  obj[PARAM_SUCCESS] = success > 0 ? true : false;
   obj[PARAM_MESSAGE] = success > 0 ? "Format template stored"
                                    : "Failed to store format template";
   response->setLength();
   request->send(response);
-
   LOG_PERF_STOP("webserver-api-config-format-write");
 }
 
@@ -588,7 +647,7 @@ void WebServerHandler::webHandleTestPush(AsyncWebServerRequest *request,
   LOG_PERF_START("webserver-api-test-push");
   Log.notice(F("WEB : webServer callback for /api/test/push." CR));
   JsonObject obj = json.as<JsonObject>();
-  _pushTestData = obj[PARAM_PUSH_FORMAT].as<String>();
+  _pushTestTarget = obj[PARAM_PUSH_FORMAT].as<String>();
   _pushTestTask = true;
   _pushTestEnabled = false;
   _pushTestLastSuccess = false;
@@ -596,8 +655,8 @@ void WebServerHandler::webHandleTestPush(AsyncWebServerRequest *request,
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_STATUS] = true;
-  obj[PARAM_MESSAGE] = "Scheduled test for " + _pushTestData;
+  obj[PARAM_SUCCESS] = true;
+  obj[PARAM_MESSAGE] = "Scheduled test for " + _pushTestTarget;
   response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-test-push");
@@ -611,18 +670,18 @@ void WebServerHandler::webHandleTestPushStatus(AsyncWebServerRequest *request) {
   JsonObject obj = response->getRoot().as<JsonObject>();
   String s;
 
-  if(_pushTestTask)
-    s = "Running push tests for " + _pushTestData;
-  else if(!_pushTestTask && _pushTestLastSuccess==0)
+  if (_pushTestTask)
+    s = "Running push tests for " + _pushTestTarget;
+  else if (!_pushTestTask && _pushTestLastSuccess == 0)
     s = "No push test has been started";
   else
-    s = "Push test for " + _pushTestData + " is complete";
+    s = "Push test for " + _pushTestTarget + " is complete";
 
   obj[PARAM_STATUS] = static_cast<bool>(_pushTestTask);
+  obj[PARAM_SUCCESS] = _pushTestLastSuccess;
   obj[PARAM_MESSAGE] = s;
   obj[PARAM_PUSH_ENABLED] = _pushTestEnabled;
-  obj[PARAM_PUSH_SUCCESS] = _pushTestLastSuccess;
-  obj[PARAM_PUSH_CODE] = _pushTestLastCode;
+  obj[PARAM_PUSH_RETURN_CODE] = _pushTestLastCode;
   response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-test-push-status");
@@ -716,8 +775,8 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   JsonObject obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_STATUS] = true;
-  obj[PARAM_MESSAGE] = "";
+  obj[PARAM_SUCCESS] = true;
+  obj[PARAM_MESSAGE] = "iSpindel config file is renamed.";
   response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-migrate");
@@ -755,7 +814,7 @@ void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
     Log.error(F("WEB : Unknown on %s not recognized." CR),
               request->url().c_str());
 
-  request->send(404, "application/json", "{\"message\":\"Not found\"}");
+  request->send(404, "application/json", "{\"message\":\"URL not found\"}");
 }
 
 bool WebServerHandler::setupWebServer() {
@@ -864,14 +923,20 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/calibrate", HTTP_GET,
               std::bind(&WebServerHandler::webHandleCalibrate, this,
                         std::placeholders::_1));
+  _server->on("/api/wifi/scan/status", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleWifiScanStatus, this,
+                        std::placeholders::_1));
+  _server->on("/api/wifi/scan", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleWifiScan, this,
+                        std::placeholders::_1));
   _server->on("/api/factory", HTTP_GET,
               std::bind(&WebServerHandler::webHandleFactoryDefaults, this,
                         std::placeholders::_1));
   _server->on("/api/status", HTTP_GET,
               std::bind(&WebServerHandler::webHandleStatus, this,
                         std::placeholders::_1));
-  _server->on("/api/clearwifi", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleClearWifi, this,
+  _server->on("/api/wifi/clear", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleWifiClear, this,
                         std::placeholders::_1));
   _server->on("/api/restart", HTTP_GET,
               std::bind(&WebServerHandler::webHandleRestart, this,
@@ -927,6 +992,34 @@ void WebServerHandler::loop() {
     _sensorCalibrationTask = false;
   }
 
+  if(_wifiScanTask) {
+    DynamicJsonDocument doc(JSON_BUFFER_SIZE_SMALL);
+    JsonObject obj = doc.createNestedObject();
+    obj[PARAM_STATUS] = false;
+    obj[PARAM_SUCCESS] = true;
+    obj[PARAM_MESSAGE] = "";
+    JsonArray networks = obj.createNestedArray(PARAM_NETWORKS);
+
+    Log.notice(F("WEB : Scanning for wifi networks." CR));
+    int noNetwork = WiFi.scanNetworks(false, false);
+
+    for (int i = 0; i < noNetwork; i++) {
+      JsonObject n = networks.createNestedObject();
+      n[PARAM_SSID] = WiFi.SSID(i);
+      n[PARAM_RSSI] = WiFi.RSSI(i);
+      n[PARAM_CHANNEL] = WiFi.channel(i);
+#if defined(ESP8266)
+      n[PARAM_ENCRYPTION = WiFi.encryptionType(i);
+#else
+      n[PARAM_ENCRYPTION] = WiFi.encryptionType(i);
+#endif
+    }
+    
+    serializeJson(doc, _wifiScanData);
+    Log.notice(F("WEB : Scan complete %s." CR), _wifiScanData.c_str());
+    _wifiScanTask = false;
+  }
+
   if (_pushTestTask) {
     float angle = myGyro.getAngle();
     float tempC = myTempSensor.getTempC();
@@ -934,7 +1027,8 @@ void WebServerHandler::loop() {
     float corrGravitySG = gravityTemperatureCorrectionC(
         gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
 
-    Log.notice(F("WEB : Running scheduled push test for %s" CR), _pushTestData.c_str());
+    Log.notice(F("WEB : Running scheduled push test for %s" CR),
+               _pushTestTarget.c_str());
 
     TemplatingEngine engine;
     engine.initialize(angle, gravitySG, corrGravitySG, tempC, 1.0,
@@ -942,23 +1036,23 @@ void WebServerHandler::loop() {
 
     PushTarget push;
 
-    if (!_pushTestData.compareTo(PARAM_FORMAT_HTTP1) &&
+    if (!_pushTestTarget.compareTo(PARAM_FORMAT_HTTP1) &&
         myConfig.isHttpActive()) {
       push.sendHttp1(engine, myConfig.isHttpSSL());
       _pushTestEnabled = true;
-    } else if (!_pushTestData.compareTo(PARAM_FORMAT_HTTP2) &&
+    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_HTTP2) &&
                myConfig.isHttp2Active()) {
       push.sendHttp2(engine, myConfig.isHttp2SSL());
       _pushTestEnabled = true;
-    } else if (!_pushTestData.compareTo(PARAM_FORMAT_HTTP3) &&
+    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_HTTP3) &&
                myConfig.isHttp3Active()) {
       push.sendHttp3(engine, myConfig.isHttp3SSL());
       _pushTestEnabled = true;
-    } else if (!_pushTestData.compareTo(PARAM_FORMAT_INFLUXDB) &&
+    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_INFLUXDB) &&
                myConfig.isInfluxDb2Active()) {
       push.sendInfluxDb2(engine, myConfig.isInfluxSSL());
       _pushTestEnabled = true;
-    } else if (!_pushTestData.compareTo(PARAM_FORMAT_MQTT) &&
+    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_MQTT) &&
                myConfig.isMqttActive()) {
       push.sendMqtt(engine, myConfig.isMqttSSL(), false);
       _pushTestEnabled = true;
@@ -967,10 +1061,13 @@ void WebServerHandler::loop() {
     engine.freeMemory();
     _pushTestLastSuccess = push.getLastSuccess();
     _pushTestLastCode = push.getLastCode();
-    if(_pushTestEnabled)
-      Log.notice(F("WEB : Scheduled push test %s completed, success=%d, code=%d" CR), _pushTestData.c_str(), _pushTestLastSuccess, _pushTestLastCode);
+    if (_pushTestEnabled)
+      Log.notice(
+          F("WEB : Scheduled push test %s completed, success=%d, code=%d" CR),
+          _pushTestTarget.c_str(), _pushTestLastSuccess, _pushTestLastCode);
     else
-      Log.notice(F("WEB : Scheduled push test %s failed, not enabled" CR), _pushTestData.c_str());
+      Log.notice(F("WEB : Scheduled push test %s failed, not enabled" CR),
+                 _pushTestTarget.c_str());
     _pushTestTask = false;
   }
 }
