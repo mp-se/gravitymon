@@ -160,6 +160,7 @@ class Config {
 #else
   bool _batterySaving = true;
 #endif
+  bool _darkMode = false;
 
   void formatFileSystem();
 
@@ -507,6 +508,9 @@ class Config {
 
   const bool isBatterySaving() { return _batterySaving; }
   void setBatterySaving(bool b) { _batterySaving = b; }
+
+  const bool isDarkMode() { return _darkMode; }
+  void setDarkMode(bool b) { _darkMode = b; }
 
   // IO functions
   void createJson(JsonObject& doc);

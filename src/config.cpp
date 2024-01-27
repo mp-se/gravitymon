@@ -59,6 +59,7 @@ void Config::createJson(JsonObject& doc) {
   doc[PARAM_BLE_TILT_COLOR] = getBleTiltColor();
   doc[PARAM_BLE_FORMAT] = getBleFormat();
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
+  doc[PARAM_DARK_MODE] = isDarkMode();
   doc[PARAM_TOKEN] = getToken();
   doc[PARAM_TOKEN2] = getToken2();
   doc[PARAM_PUSH_HTTP] = getHttpUrl();
@@ -122,7 +123,7 @@ void Config::createJson(JsonObject& doc) {
 }
 
 void Config::parseJson(JsonObject& doc) {
-  /* for iterating over the array, needed when we need to migrate from the old
+  /* TODO: for iterating over the array, needed when we need to migrate from the old
   format. for (JsonPair kv : doc.as<JsonObject>()) {
     Serial.println(kv.key().c_str());
   }*/
@@ -260,10 +261,13 @@ void Config::parseJson(JsonObject& doc) {
     setIgnoreLowAnges(doc[PARAM_IGNORE_LOW_ANGLES].as<bool>());
   if (!doc[PARAM_BATTERY_SAVING].isNull())
     setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
+  if (!doc[PARAM_DARK_MODE].isNull())
+    setDarkMode(doc[PARAM_DARK_MODE].as<bool>());
 }
 
 void Config::migrateJson(JsonObject& doc) {
-  // Migration from older format to 1.5 format
+  
+  // TODO: Migration from older format to 1.5 format
 
   // * All tags changed from using '-' to '_' to support javascript
   // * PARAM_FORMULA_DATA changed from static to LIST with { a: 0, g: 0 }
@@ -295,13 +299,13 @@ bool Config::saveFile() {
   }
 
   DynamicJsonDocument doc(JSON_BUFFER_SIZE_XL);
-  JsonObject obj = doc.createNestedObject(); // doc.as<JsonObject>();
+  JsonObject obj = doc.createNestedObject();
   createJson(obj);
 
-//#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
+#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
   serializeJson(obj, EspSerial);
   EspSerial.print(CR);
-//#endif
+#endif
 
   serializeJson(obj, configFile);
   configFile.flush();
