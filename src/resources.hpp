@@ -35,6 +35,7 @@ constexpr auto PARAM_SSID2 = "wifi_ssid2";
 constexpr auto PARAM_PASS2 = "wifi_pass2";
 constexpr auto PARAM_HARDWARE = "hardware";
 constexpr auto PARAM_RUNTIME_AVERAGE = "runtime_average";
+constexpr auto PARAM_DARK_MODE = "dark_mode";
 constexpr auto PARAM_TOKEN = "token";
 constexpr auto PARAM_TOKEN2 = "token2";
 constexpr auto PARAM_PUSH_HTTP = "http_push";
@@ -122,5 +123,6 @@ constexpr auto PARAM_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
 constexpr auto PARAM_ENCRYPTION = "encryption";
 constexpr auto PARAM_CHANNEL = "channel";
 constexpr auto PARAM_NETWORKS ="networks";
+constexpr auto PARAM_WIFI_SETUP ="wifi_setup";
 
 #endif  // SRC_RESOURCES_HPP_
