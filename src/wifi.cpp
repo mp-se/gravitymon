@@ -34,8 +34,6 @@ SOFTWARE.
 #include <config.hpp>
 #include <main.hpp>
 #include <wifi.hpp>
-#include <wifimanager.hpp>
-ESP_WiFiManager *myWifiManager = 0;
 WifiConnection myWifi;
 
 #if defined(USER_SSID)
@@ -89,12 +87,7 @@ bool WifiConnection::hasConfig() {
 #if defined(ESP8266)
   String ssid = WiFi.SSID();
   String pwd = WiFi.psk();
-#else
-  if (myWifiManager == 0) myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
 
-  String ssid = myWifiManager->WiFi_SSID();
-  String pwd = myWifiManager->WiFi_Pass();
-#endif
   if (ssid.length()) {
     Log.notice(F("WIFI: Found stored credentials." CR));
     myConfig.setWifiSSID(ssid, 0);
@@ -104,7 +97,8 @@ bool WifiConnection::hasConfig() {
     myConfig.saveFile();
     return true;
   }
-
+#else
+#endif
   return false;
 }
 
@@ -125,57 +119,27 @@ void WifiConnection::stopDoubleReset() {
   writeReset();
 }
 
-void WifiConnection::startPortal() {
-  Log.notice(F("WIFI: Starting Wifi config portal." CR));
+void WifiConnection::startWifiAP() {
+  IPAddress local(192, 168, 4, 1);
+  IPAddress gateway(192, 168, 4, 1);
+  IPAddress subnet(255, 255, 255, 0);
 
-  stopDoubleReset();
-  ledOn(LedColor::WHITE);  // White or Led ON
-
-  if (myWifiManager == 0) myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
-
-  myWifiManager->setMinimumSignalQuality(-1);
-  myWifiManager->setConfigPortalChannel(0);
-  myWifiManager->setConfigPortalTimeout(myConfig.getWifiPortalTimeout());
-
-  String mdns("<p>Default mDNS name is: http://");
-  mdns += myConfig.getMDNS();
-  mdns += ".local<p>";
-  ESP_WMParameter deviceName(mdns.c_str());
-  myWifiManager->addParameter(&deviceName);
-
-#if defined(ESP32C3_REV1)
-  Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
-  WiFi.setTxPower(WIFI_POWER_8_5dBm);  // Required for ESP32C3 Mini
-#elif defined(ESP32C3)
-  WiFi.setTxPower(WIFI_POWER_15dBm);
-#endif
-
-  myWifiManager->startConfigPortal(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD);
-
-  if (myWifiManager->getSSID(0).length()) {
-    myConfig.setWifiSSID(myWifiManager->getSSID(0), 0);
-    myConfig.setWifiPass(myWifiManager->getPW(0), 0);
-    myConfig.setWifiSSID(myWifiManager->getSSID(1), 1);
-    myConfig.setWifiPass(myWifiManager->getPW(1), 1);
-
-    // If the same SSID has been used, lets delete the second
-    if (!strcmp(myConfig.getWifiSSID(0), myConfig.getWifiSSID(1))) {
-      myConfig.setWifiSSID("", 1);
-      myConfig.setWifiPass("", 1);
-    }
-
-    Log.notice(F("WIFI: Stored SSID1:'%s' SSID2:'%s'" CR),
-               myConfig.getWifiSSID(0), myConfig.getWifiSSID(1));
-    myConfig.saveFile();
-  } else {
-    Log.notice(
-        F("WIFI: Could not find first SSID so assuming we got a timeout." CR));
+  if (!WiFi.softAPConfig(local, gateway, subnet)) {
+    Log.notice(F("WIFI: Failed to configure access point." CR));
+    return;
   }
 
-  Log.notice(F("WIFI: Exited wifi config portal. Rebooting..." CR));
-  ledOff();
-  delay(500);
-  ESP_RESET();
+  if (!WiFi.softAP(WIFI_DEFAULT_SSID, WIFI_DEFAULT_PWD)) {
+    Log.notice(F("WIFI: Failed to create access point." CR));
+    return;
+  }
+
+  DNSServer *_dns = new DNSServer();
+  _dns->setErrorReplyCode(DNSReplyCode::NoError);
+  _dns->start(53, "*", local);
+
+  Log.notice(F("WIFI: Access point created %s." CR),
+             WiFi.softAPIP().toString().c_str());
 }
 
 void WifiConnection::loop() {
@@ -185,20 +149,36 @@ void WifiConnection::loop() {
     writeReset();
   }
 
-  if (!WiFi.isConnected()) {
-    if (_reconnectCounter > 5) {
-      Log.notice(F("WIFI: Failed to reconnect with wifi, rebooting..." CR));
-      delay(500);
-      ESP_RESET();
-    }
+  switch (runMode) {
+    case RunMode::wifiSetupMode: {
+      if (_dns) {
+        _dns->processNextRequest();
+      }
+    } break;
 
-    Log.notice(F("WIFI: Not connected, trying to reconnect %d..." CR),
-               _reconnectCounter);
-    _reconnectCounter++;
-    WiFi.reconnect();
-    delay(500);
-  } else {
-    _reconnectCounter = 0;
+    case RunMode::configurationMode: {
+      if (!WiFi.isConnected()) {
+        if (_reconnectCounter > 5) {
+          Log.notice(F("WIFI: Failed to reconnect with wifi, rebooting..." CR));
+          delay(500);
+          ESP_RESET();
+        }
+
+        Log.notice(F("WIFI: Not connected, trying to reconnect %d..." CR),
+                   _reconnectCounter);
+        _reconnectCounter++;
+        WiFi.reconnect();
+        delay(500);
+      } else {
+        _reconnectCounter = 0;
+      }
+    } break;
+
+    case RunMode::gravityMode:
+      break;
+
+    case RunMode::storageMode:
+      break;
   }
 }
 

@@ -123,8 +123,8 @@ void Config::createJson(JsonObject& doc) {
 }
 
 void Config::parseJson(JsonObject& doc) {
-  /* TODO: for iterating over the array, needed when we need to migrate from the old
-  format. for (JsonPair kv : doc.as<JsonObject>()) {
+  /* TODO: for iterating over the array, needed when we need to migrate from the
+  old format. for (JsonPair kv : doc.as<JsonObject>()) {
     Serial.println(kv.key().c_str());
   }*/
 
@@ -266,7 +266,6 @@ void Config::parseJson(JsonObject& doc) {
 }
 
 void Config::migrateJson(JsonObject& doc) {
-  
   // TODO: Migration from older format to 1.5 format
 
   // * All tags changed from using '-' to '_' to support javascript

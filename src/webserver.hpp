@@ -82,7 +82,9 @@ class WebServerHandler {
   String _pushTestTarget;
   int _pushTestLastCode;
   bool _pushTestLastSuccess, _pushTestEnabled;
+  uint32_t _wifiPortalTimer = 0;
 
+  void resetWifiPortalTimer() { _wifiPortalTimer = millis(); }
   bool isAuthenticated(AsyncWebServerRequest *request);
 
   void webHandleStatus(AsyncWebServerRequest *request);
@@ -91,7 +93,6 @@ class WebServerHandler {
   void webHandleConfigFormatRead(AsyncWebServerRequest *request);
   void webHandleConfigFormatWrite(AsyncWebServerRequest *request,
                                   JsonVariant &json);
-  void webHandleConfigWifi(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleSleepmode(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleFormulaCreate(AsyncWebServerRequest *request);
   void webHandleTestPush(AsyncWebServerRequest *request, JsonVariant &json);

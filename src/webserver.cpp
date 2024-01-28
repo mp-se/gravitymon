@@ -44,6 +44,8 @@ extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
 bool WebServerHandler::isAuthenticated(AsyncWebServerRequest *request) {
+  resetWifiPortalTimer();
+
   if (request->hasHeader("Authorization")) {
     String token("Bearer ");
     token += myConfig.getID();
@@ -55,7 +57,7 @@ bool WebServerHandler::isAuthenticated(AsyncWebServerRequest *request) {
   }
 
   Log.info(
-      F("WEB : No valid authorization header found, returning error 401." CR));
+      F("WEB : No valid authorization header found, returning error 401. Url %s" CR), request->url().c_str());
   AsyncWebServerResponse *response = request->beginResponse(401);
   request->send(response);
   return false;
@@ -72,8 +74,6 @@ void WebServerHandler::webHandleConfigRead(AsyncWebServerRequest *request) {
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_LARGE);
   JsonObject obj = response->getRoot().as<JsonObject>();
   myConfig.createJson(obj);
-  obj.remove(PARAM_PASS);  // dont show the wifi password
-  obj.remove(PARAM_PASS2);
   response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-config-read");
@@ -88,10 +88,6 @@ void WebServerHandler::webHandleConfigWrite(AsyncWebServerRequest *request,
   LOG_PERF_START("webserver-api-config-write");
   Log.notice(F("WEB : webServer callback for /api/config(write)." CR));
   JsonObject obj = json.as<JsonObject>();
-  obj.remove(PARAM_SSID);  // wifi credentials are managed in separate api
-  obj.remove(PARAM_SSID2);
-  obj.remove(PARAM_PASS);
-  obj.remove(PARAM_PASS2);
   myConfig.parseJson(obj);
   obj.clear();
   myConfig.saveFile();
@@ -206,8 +202,8 @@ void WebServerHandler::webHandleCalibrateStatus(
   obj[PARAM_SUCCESS] = false;
   obj[PARAM_MESSAGE] = "Calibration running";
 
-  if(!_sensorCalibrationTask) {
-    if(myGyro.isConnected()) {
+  if (!_sensorCalibrationTask) {
+    if (myGyro.isConnected()) {
       obj[PARAM_SUCCESS] = true;
       obj[PARAM_MESSAGE] = "Calibration completed";
     } else {
@@ -229,6 +225,7 @@ void WebServerHandler::webHandleWifiScan(AsyncWebServerRequest *request) {
   LOG_PERF_START("webserver-api-wifi-scan");
   Log.notice(F("WEB : webServer callback for /api/wifi/scan." CR));
   _wifiScanTask = true;
+  _wifiScanData = "";
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
   JsonObject obj = response->getRoot().as<JsonObject>();
@@ -247,13 +244,13 @@ void WebServerHandler::webHandleWifiScanStatus(AsyncWebServerRequest *request) {
   LOG_PERF_START("webserver-api-wifi-scan-status");
   Log.notice(F("WEB : webServer callback for /api/wifi/scan." CR));
 
-  if(_wifiScanTask) {
+  if (_wifiScanTask || !_wifiScanData.length()) {
     AsyncJsonResponse *response =
         new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
     JsonObject obj = response->getRoot().as<JsonObject>();
-    obj[PARAM_STATUS] = false;
+    obj[PARAM_STATUS] = static_cast<bool>(_wifiScanTask);
     obj[PARAM_SUCCESS] = false;
-    obj[PARAM_MESSAGE] = "Wifi scanning running";
+    obj[PARAM_MESSAGE] = _wifiScanTask ? "Wifi scanning running" : "No scanning running";
     response->setLength();
     request->send(response);
   } else {
@@ -405,6 +402,7 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
   obj[PARAM_IP] = WiFi.localIP().toString();
 #endif
+  obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
   obj[PARAM_RUNTIME_AVERAGE] = serialized(String(
@@ -498,31 +496,6 @@ void WebServerHandler::webHandleSleepmode(AsyncWebServerRequest *request,
   LOG_PERF_STOP("webserver-api-config-sleepmode");
 }
 
-void WebServerHandler::webHandleConfigWifi(AsyncWebServerRequest *request,
-                                           JsonVariant &json) {
-  if (!isAuthenticated(request)) {
-    return;
-  }
-
-  LOG_PERF_START("webserver-api-config-wifi");
-  Log.notice(F("WEB : webServer callback for /api/config/wifi." CR));
-  JsonObject obj = json.as<JsonObject>();
-
-  if (!obj[PARAM_SSID].isNull()) myConfig.setWifiSSID(obj[PARAM_SSID], 0);
-  if (!obj[PARAM_SSID2].isNull()) myConfig.setWifiSSID(obj[PARAM_SSID2], 1);
-  if (!obj[PARAM_PASS].isNull()) myConfig.setWifiPass(obj[PARAM_PASS], 0);
-  if (!obj[PARAM_PASS2].isNull()) myConfig.setWifiPass(obj[PARAM_PASS2], 1);
-
-  AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
-  obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_STATUS] = true;
-  obj[PARAM_MESSAGE] = "Wifi settings updated.";
-  response->setLength();
-  request->send(response);
-  LOG_PERF_STOP("webserver-api-config-wifi");
-}
-
 void WebServerHandler::webHandleFormulaCreate(AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
@@ -588,8 +561,7 @@ void WebServerHandler::webHandleFormulaCreate(AsyncWebServerRequest *request) {
       break;
     default:
       obj[PARAM_GRAVITY_FORMULA] = myConfig.getGravityFormula();
-      obj[PARAM_MESSAGE] =
-          "New formula created based on the entered values.";
+      obj[PARAM_MESSAGE] = "New formula created based on the entered values.";
       break;
   }
 
@@ -783,6 +755,11 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
 }
 
 void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
+  if(runMode == RunMode::wifiSetupMode) {
+    request->redirect("http://192.168.4.1");
+    return;
+  }
+
   if (request->method() == HTTP_OPTIONS) {
     Log.notice(F("WEB : Got OPTIONS request for %s." CR),
                request->url().c_str());
@@ -802,19 +779,20 @@ void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
   }
 
   if (request->method() == HTTP_GET)
-    Log.error(F("WEB : GET on %s not recognized." CR), request->url().c_str());
+    Log.warning(F("WEB : GET on %s not recognized." CR), request->url().c_str());
   else if (request->method() == HTTP_POST)
-    Log.error(F("WEB : POST on %s not recognized." CR), request->url().c_str());
+    Log.warning(F("WEB : POST on %s not recognized." CR), request->url().c_str());
   else if (request->method() == HTTP_PUT)
-    Log.error(F("WEB : PUT on %s not recognized." CR), request->url().c_str());
+    Log.warning(F("WEB : PUT on %s not recognized." CR), request->url().c_str());
   else if (request->method() == HTTP_DELETE)
-    Log.error(F("WEB : DELETE on %s not recognized." CR),
+    Log.warning(F("WEB : DELETE on %s not recognized." CR),
               request->url().c_str());
   else
-    Log.error(F("WEB : Unknown on %s not recognized." CR),
+    Log.warning(F("WEB : Unknown on %s not recognized." CR),
               request->url().c_str());
 
-  request->send(404, "application/json", "{\"message\":\"URL not found\"}");
+  request->redirect("/");
+  //request->send(404, "application/json", "{\"message\":\"URL not found\"}");
 }
 
 bool WebServerHandler::setupWebServer() {
@@ -893,13 +871,6 @@ bool WebServerHandler::setupWebServer() {
       JSON_BUFFER_SIZE_LARGE);
   _server->addHandler(handler);
   handler = new AsyncCallbackJsonWebHandler(
-      "/api/config/wifi",
-      std::bind(&WebServerHandler::webHandleConfigWifi, this,
-                std::placeholders::_1, std::placeholders::_2),
-      JSON_BUFFER_SIZE_SMALL);
-  _server->addHandler(handler);
-
-  handler = new AsyncCallbackJsonWebHandler(
       "/api/config/sleepmode",
       std::bind(&WebServerHandler::webHandleSleepmode, this,
                 std::placeholders::_1, std::placeholders::_2),
@@ -967,6 +938,7 @@ bool WebServerHandler::setupWebServer() {
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
 #endif
   _server->begin();
+  resetWifiPortalTimer();
   Log.notice(F("WEB : Web server started." CR));
   return true;
 }
@@ -975,6 +947,14 @@ void WebServerHandler::loop() {
 #if defined(ESP8266)
   MDNS.update();
 #endif
+
+  if(runMode == RunMode::wifiSetupMode) {
+    if ((millis() - _wifiPortalTimer) > (myConfig.getWifiPortalTimeout()*1000)) {
+      Log.notice(F("WEB : Wifi portal timeout, reboot device." CR));
+      delay(500);
+      ESP_RESET();
+    }
+  }
 
   if (_rebootTask) {
     Log.notice(F("WEB : Rebooting..." CR));
@@ -992,8 +972,8 @@ void WebServerHandler::loop() {
     _sensorCalibrationTask = false;
   }
 
-  if(_wifiScanTask) {
-    DynamicJsonDocument doc(JSON_BUFFER_SIZE_SMALL);
+  if (_wifiScanTask) {
+    DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
     JsonObject obj = doc.createNestedObject();
     obj[PARAM_STATUS] = false;
     obj[PARAM_SUCCESS] = true;
@@ -1009,13 +989,13 @@ void WebServerHandler::loop() {
       n[PARAM_RSSI] = WiFi.RSSI(i);
       n[PARAM_CHANNEL] = WiFi.channel(i);
 #if defined(ESP8266)
-      n[PARAM_ENCRYPTION = WiFi.encryptionType(i);
+      n[PARAM_ENCRYPTION] = WiFi.encryptionType(i);
 #else
       n[PARAM_ENCRYPTION] = WiFi.encryptionType(i);
 #endif
     }
-    
-    serializeJson(doc, _wifiScanData);
+
+    serializeJson(obj, _wifiScanData);
     Log.notice(F("WEB : Scan complete %s." CR), _wifiScanData.c_str());
     _wifiScanTask = false;
   }

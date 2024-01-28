@@ -31,6 +31,7 @@ SOFTWARE.
 #else  // defined (ESP32)
 #include <HTTPClient.h>
 #endif
+#include <DNSServer.h>
 
 #define WIFI_DEFAULT_SSID "GravityMon"  // Name of created SSID
 #define WIFI_DEFAULT_PWD "password"     // Password for created SSID
@@ -43,6 +44,7 @@ class WifiConnection {
   uint8_t _resetCounter = 0;
   uint8_t _reconnectCounter = 0;
   const uint8_t _minResetCount = 2;
+  DNSServer* _dns = NULL;
 
   // OTA
   bool _newFirmware = false;
@@ -75,7 +77,7 @@ class WifiConnection {
   void stopDoubleReset();
   bool hasConfig();
   String getIPAddress();
-  void startPortal();
+  void startWifiAP();
   void loop();
 
   // OTA

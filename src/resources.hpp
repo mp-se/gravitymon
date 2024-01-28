@@ -122,7 +122,7 @@ constexpr auto PARAM_IP = "ip";
 constexpr auto PARAM_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
 constexpr auto PARAM_ENCRYPTION = "encryption";
 constexpr auto PARAM_CHANNEL = "channel";
-constexpr auto PARAM_NETWORKS ="networks";
-constexpr auto PARAM_WIFI_SETUP ="wifi_setup";
+constexpr auto PARAM_NETWORKS = "networks";
+constexpr auto PARAM_WIFI_SETUP = "wifi_setup";
 
 #endif  // SRC_RESOURCES_HPP_

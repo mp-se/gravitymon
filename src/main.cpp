@@ -211,7 +211,7 @@ void setup() {
   // Do this setup for all modes exect wifi setup
   switch (runMode) {
     case RunMode::wifiSetupMode:
-      myWifi.startPortal();
+      myWifi.startWifiAP();
       break;
 
     default:
@@ -263,10 +263,11 @@ void setup() {
         if (myWifi.checkFirmwareVersion()) myWifi.updateFirmware();
         LOG_PERF_STOP("main-wifi-ota");
 #endif
-        myWebServerHandler
-            .setupWebServer();  // Takes less than 4ms, so skip this measurement
-        mySerialWebSocket.begin(myWebServerHandler.getWebServer(), &Serial);
-        mySerial.begin(&mySerialWebSocket);
+        case RunMode::wifiSetupMode:
+          myWebServerHandler.setupWebServer();  // Takes less than 4ms, so skip
+                                                // this measurement
+          mySerialWebSocket.begin(myWebServerHandler.getWebServer(), &Serial);
+          mySerial.begin(&mySerialWebSocket);
       } else {
         ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
                                // error
@@ -415,7 +416,9 @@ void loopGravityOnInterval() {
     myGyro.read();
     LOG_PERF_STOP("loop-gyro-read");
     myBatteryVoltage.read();
-    checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+    
+    if(runMode != RunMode::wifiSetupMode)
+      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
   }
 }
 
@@ -453,6 +456,7 @@ void loop() {
       // This point is never reached, just here to remove warning.
       break;
 
+    case RunMode::wifiSetupMode:
     case RunMode::configurationMode:
       myWebServerHandler.loop();
       myWifi.loop();
@@ -494,10 +498,6 @@ void loop() {
       LOG_PERF_START("loop-gyro-read");
       myGyro.read();
       LOG_PERF_STOP("loop-gyro-read");
-      myWifi.loop();
-      break;
-
-    case RunMode::wifiSetupMode:
       myWifi.loop();
       break;
   }
