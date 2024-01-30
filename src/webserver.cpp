@@ -415,7 +415,7 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   self[PARAM_SELF_BATTERY_LEVEL] = true;  // No hardware support for these
   self[PARAM_SELF_TEMP_CONNECTED] = true;
 #else
-  self[PARAM_SELF_BATTERY_LEVEL] = v < 3.0 || v > 4.4 ? false : true;
+  self[PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
   self[PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
 #endif
   self[PARAM_SELF_GRAVITY_FORMULA] =
