@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ BleSender myBleSender;
 #ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000;  // ms, time to wait between changes to output
 #else
-int interval = 200;    // ms, time to wait between changes to output
+int interval = 200;  // ms, time to wait between changes to output
 #endif
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
@@ -65,79 +65,7 @@ uint32_t stableGyroMillis;  // Used to calculate the total time since last
 
 RunMode runMode = RunMode::gravityMode;
 
-void checkSleepMode(float angle, float volt) {
-#if defined(SKIP_SLEEPMODE)
-  runMode = RunMode::configurationMode;
-  Log.verbose(F("MAIN: Skipping sleep mode (SKIP_SLEEPMODE is defined)." CR));
-  return;
-#endif
-
-#if defined(FORCE_GRAVITY_MODE)
-  Log.notice(F("MAIN: Forcing device into gravity mode for debugging" CR));
-  runMode = RunMode::gravityMode;
-  return;
-#endif
-
-  if (!myConfig.hasGyroCalibration()) {
-    // Will not enter sleep mode if: no calibration data
-#if !defined(MAIN_DISABLE_LOGGING)
-    Log.notice(
-        F("MAIN: Missing calibration data, so forcing webserver to be "
-          "active." CR));
-#endif
-    runMode = RunMode::configurationMode;
-  } else if (!myGyro.hasValue() || !myGyro.isConnected()) {
-    runMode = RunMode::configurationMode;
-  } else if (sleepModeAlwaysSkip) {
-    // Check if the flag from the UI has been set, the we force configuration
-    // mode.
-#if !defined(MAIN_DISABLE_LOGGING)
-    Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
-#endif
-    runMode = RunMode::configurationMode;
-  } else if ((volt < myConfig.getVoltageConfig() &&
-              (angle > 85 && angle < 95)) ||
-             (volt > myConfig.getVoltageConfig())) {
-    runMode = RunMode::configurationMode;
-  } else if (angle < 5 && myConfig.isStorageSleep()) {
-    runMode = RunMode::storageMode;
-  } else {
-    runMode = RunMode::gravityMode;
-  }
-
-  switch (runMode) {
-    case RunMode::configurationMode:
-#if !defined(MAIN_DISABLE_LOGGING)
-      Log.notice(F("MAIN: run mode CONFIG (angle=%F volt=%F)." CR), angle,
-                 volt);
-#endif
-      break;
-    case RunMode::wifiSetupMode:
-      break;
-    case RunMode::gravityMode:
-#if !defined(MAIN_DISABLE_LOGGING)
-      Log.notice(F("MAIN: run mode GRAVITY (angle=%F volt=%F)." CR), angle,
-                 volt);
-#endif
-      break;
-    case RunMode::storageMode:
-#if !defined(MAIN_DISABLE_LOGGING)
-      Log.notice(F("MAIN: run mode STORAGE (angle=%F)." CR), angle);
-#endif
-      break;
-  }
-
-  // If we are in storage mode, just go back to sleep
-  if (runMode == RunMode::storageMode) {
-    Log.notice(
-        F("Main: Storage mode entered, going to sleep for maximum time." CR));
-#if defined(ESP8266)
-    ESP.deepSleep(0);  // indefinite sleep
-#else
-    ESP.deepSleep(0);  // indefinite sleep
-#endif
-  }
-}
+void checkSleepMode(float angle, float volt);
 
 void setup() {
   LOG_PERF_START("run-time");
@@ -500,6 +428,80 @@ void loop() {
       LOG_PERF_STOP("loop-gyro-read");
       myWifi.loop();
       break;
+  }
+}
+
+void checkSleepMode(float angle, float volt) {
+#if defined(SKIP_SLEEPMODE)
+  runMode = RunMode::configurationMode;
+  Log.verbose(F("MAIN: Skipping sleep mode (SKIP_SLEEPMODE is defined)." CR));
+  return;
+#endif
+
+#if defined(FORCE_GRAVITY_MODE)
+  Log.notice(F("MAIN: Forcing device into gravity mode for debugging" CR));
+  runMode = RunMode::gravityMode;
+  return;
+#endif
+
+  if (!myConfig.hasGyroCalibration()) {
+    // Will not enter sleep mode if: no calibration data
+#if !defined(MAIN_DISABLE_LOGGING)
+    Log.notice(
+        F("MAIN: Missing calibration data, so forcing webserver to be "
+          "active." CR));
+#endif
+    runMode = RunMode::configurationMode;
+  } else if (!myGyro.hasValue() || !myGyro.isConnected()) {
+    runMode = RunMode::configurationMode;
+  } else if (sleepModeAlwaysSkip) {
+    // Check if the flag from the UI has been set, the we force configuration
+    // mode.
+#if !defined(MAIN_DISABLE_LOGGING)
+    Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
+#endif
+    runMode = RunMode::configurationMode;
+  } else if ((volt < myConfig.getVoltageConfig() &&
+              (angle > 85 && angle < 95)) ||
+             (volt > myConfig.getVoltageConfig())) {
+    runMode = RunMode::configurationMode;
+  } else if (angle < 5 && myConfig.isStorageSleep()) {
+    runMode = RunMode::storageMode;
+  } else {
+    runMode = RunMode::gravityMode;
+  }
+
+  switch (runMode) {
+    case RunMode::configurationMode:
+#if !defined(MAIN_DISABLE_LOGGING)
+      Log.notice(F("MAIN: run mode CONFIG (angle=%F volt=%F)." CR), angle,
+                 volt);
+#endif
+      break;
+    case RunMode::wifiSetupMode:
+      break;
+    case RunMode::gravityMode:
+#if !defined(MAIN_DISABLE_LOGGING)
+      Log.notice(F("MAIN: run mode GRAVITY (angle=%F volt=%F)." CR), angle,
+                 volt);
+#endif
+      break;
+    case RunMode::storageMode:
+#if !defined(MAIN_DISABLE_LOGGING)
+      Log.notice(F("MAIN: run mode STORAGE (angle=%F)." CR), angle);
+#endif
+      break;
+  }
+
+  // If we are in storage mode, just go back to sleep
+  if (runMode == RunMode::storageMode) {
+    Log.notice(
+        F("Main: Storage mode entered, going to sleep for maximum time." CR));
+#if defined(ESP8266)
+    ESP.deepSleep(0);  // indefinite sleep
+#else
+    ESP.deepSleep(0);  // indefinite sleep
+#endif
   }
 }
 
