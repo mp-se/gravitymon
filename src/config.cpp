@@ -123,11 +123,6 @@ void Config::createJson(JsonObject& doc) {
 }
 
 void Config::parseJson(JsonObject& doc) {
-  /* TODO: for iterating over the array, needed when we need to migrate from the
-  old format. for (JsonPair kv : doc.as<JsonObject>()) {
-    Serial.println(kv.key().c_str());
-  }*/
-
   if (!doc[PARAM_OTA].isNull()) setOtaURL(doc[PARAM_OTA]);
   if (!doc[PARAM_MDNS].isNull()) setMDNS(doc[PARAM_MDNS]);
   if (!doc[PARAM_SSID].isNull()) setWifiSSID(doc[PARAM_SSID], 0);
@@ -263,19 +258,6 @@ void Config::parseJson(JsonObject& doc) {
     setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
   if (!doc[PARAM_DARK_MODE].isNull())
     setDarkMode(doc[PARAM_DARK_MODE].as<bool>());
-}
-
-void Config::migrateJson(JsonObject& doc) {
-  // TODO: Migration from older format to 1.5 format
-
-  // * All tags changed from using '-' to '_' to support javascript
-  // * PARAM_FORMULA_DATA changed from static to LIST with { a: 0, g: 0 }
-  // * INT_HTTP1 -> HTTP_INT
-  // * INT_HTTP2 -> HTTP_INT2
-  // * INT_HTTP3 -> HTTP_INT3
-  // * INT_INFLUX -> INFLUXDB2_INT
-  // * INT_MQTT -> MQTT_INT
-  // * BLE -> BLE_TILT_COLOR
 }
 
 bool Config::saveFile() {

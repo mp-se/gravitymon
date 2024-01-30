@@ -30,11 +30,6 @@ SOFTWARE.
 #define CFG_APPNAME "GravityMon"
 #define CFG_FILENAME "/gravitymon2.json"
 
-#define CFG_FILENAME_OLD \
-  "/gravitymon.json"  // TODO: Keep these for migration routine.
-#define CFG_HW_FILENAME_OLD \
-  "/hardware.json"  // TODO: Keep these for migration routine.
-
 enum BleFormat {
   BLE_DISABLED = 0,
   BLE_TILT = 1,
@@ -516,7 +511,6 @@ class Config {
   // IO functions
   void createJson(JsonObject& doc);
   void parseJson(JsonObject& doc);
-  void migrateJson(JsonObject& doc);
   bool saveFile();
   bool loadFile();
   void checkFileSystem();
