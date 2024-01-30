@@ -59,13 +59,13 @@ extern const uint8_t appCssEnd[] asm("_binary_html_app_css_gz_end");
 // specify length of file and subtracting pointers to different objects are not
 // allowed
 #if !defined(SIZE_INDEX_HTML)
-#define SIZE_INDEX_HTML 0
+#define SIZE_INDEX_HTML 593
 #endif
 #if !defined(SIZE_APP_JS_GZ)
-#define SIZE_APP_JS_GZ 0
+#define SIZE_APP_JS_GZ 167146
 #endif
 #if !defined(SIZE_APP_CSS_GZ)
-#define SIZE_APP_CSS_GZ 0
+#define SIZE_APP_CSS_GZ 30572
 #endif
 
 class WebServerHandler {
@@ -107,8 +107,8 @@ class WebServerHandler {
   void webHandleLogClear(AsyncWebServerRequest *request);
   void webHandleRestart(AsyncWebServerRequest *request);
   void webHandleFactoryDefaults(AsyncWebServerRequest *request);
-  void webHandleMigrate(AsyncWebServerRequest *request);
   void webHandlePageNotFound(AsyncWebServerRequest *request);
+  void webHandleFileSystem(AsyncWebServerRequest *request, JsonVariant &json);
 
   String readFile(String fname);
   bool writeFile(String fname, String data);

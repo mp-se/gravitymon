@@ -328,7 +328,7 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   }
 
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_LARGE);
   JsonObject obj = response->getRoot().as<JsonObject>();
 
   double angle = 0;  // Indicate we have no valid gyro value
@@ -405,6 +405,7 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_IP] = WiFi.localIP().toString();
 #endif
   obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
+  obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
 
   FloatHistoryLog runLog(RUNTIME_FILENAME);
   obj[PARAM_RUNTIME_AVERAGE] = serialized(String(
@@ -543,8 +544,6 @@ void WebServerHandler::webHandleFormulaCreate(AsyncWebServerRequest *request) {
   JsonObject obj = response->getRoot().as<JsonObject>();
 
   obj[PARAM_SUCCESS] = createErr ? false : true;
-  // obj[PARAM_ANGLE] = serialized(String(myGyro.getAngle(), DECIMALS_TILT));
-  // obj[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
   obj[PARAM_GRAVITY_FORMULA] = "";
   obj[PARAM_MESSAGE] = "";
 
@@ -734,27 +733,74 @@ void WebServerHandler::webHandleConfigFormatRead(
   LOG_PERF_STOP("webserver-api-config-format-read");
 }
 
-void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
+void WebServerHandler::webHandleFileSystem(AsyncWebServerRequest *request,
+                                           JsonVariant &json) {
   if (!isAuthenticated(request)) {
     return;
   }
 
-  LOG_PERF_START("webserver-api-migrate");
-  Log.notice(F("WEB : webServer callback for /api/migrate." CR));
+  LOG_PERF_START("webserver-api-filesystem");
+  Log.notice(F("WEB : webServer callback for /api/filesystem." CR));
+
+  JsonObject obj = json.as<JsonObject>();
+
+  if (!obj[PARAM_FS_COMMAND].isNull()) {
+    if(obj[PARAM_FS_COMMAND] == String("dir")) {
+      Log.notice(F("WEB : File system listing requested." CR));
+      AsyncJsonResponse *response =
+          new AsyncJsonResponse(false, JSON_BUFFER_SIZE_LARGE);
+      JsonObject obj = response->getRoot().as<JsonObject>();
 
 #if defined(ESP8266)
-  LittleFS.remove("/ispindel.json");
-  LittleFS.rename("/config.json", "/ispindel.json");
+      FSInfo fs;
+      LittleFS.info(fs);
+      Dir dir = LittleFS.openDir("/");
+      while (dir.next()) {
+        obj.add(dir.fileName());
+      }
+#else  // ESP32
+      File root = LittleFS.open("/");
+      File f = root.openNextFile();
+      JsonArray arr = obj.createNestedArray(PARAM_FS_FILES);
+      while (f) {
+        Serial.println(f.name());
+        arr.add("/" + String(f.name()));
+        f = root.openNextFile();
+      }
+      f.close();
+      root.close();
 #endif
+      response->setLength();
+      request->send(response);
+    } else if(obj[PARAM_FS_COMMAND] == String("del")) {
+      Log.notice(F("WEB : File system delete requested." CR));
+    
+      if (!obj[PARAM_FS_FILE].isNull()) {
+        String f = obj[PARAM_FS_FILE];
+        bool b = LittleFS.remove(f);
+        request->send(200);       
+      } else {
+        request->send(400);       
+      }
+    } else if(obj[PARAM_FS_COMMAND] == String("get")) {
+      Log.notice(F("WEB : File system get requested." CR));
+      if (!obj[PARAM_FS_FILE].isNull()) {
+        String f = obj[PARAM_FS_FILE];
+        AsyncWebServerResponse *response = request->beginResponse(LittleFS, f);
+        request->send(response);
+      } else {
+        request->send(400);       
+      }
+    } else {
+      Log.warning(F("WEB : Unknown file system command." CR));
+      request->send(400);
+    }
+  } else {
+    Log.warning(F("WEB : Unknown file system command." CR));
+    request->send(400);
+  }
 
-  AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
-  JsonObject obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_SUCCESS] = true;
-  obj[PARAM_MESSAGE] = "iSpindel config file is renamed.";
-  response->setLength();
-  request->send(response);
-  LOG_PERF_STOP("webserver-api-migrate");
+  LOG_PERF_STOP("webserver-api-filesystem");
 }
 
 void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
@@ -851,11 +897,6 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/css/app.css", std::bind(&WebServerHandler::webReturnAppCss,
                                         this, std::placeholders::_1));
 
-  _server->serveStatic("/log", LittleFS, ERR_FILENAME);
-  _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
-  _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
-  _server->serveStatic("/migrate", LittleFS, "/config.json");
-
   AsyncCallbackJsonWebHandler *handler;
 
   // Dynamic content
@@ -913,9 +954,12 @@ bool WebServerHandler::setupWebServer() {
   _server->on("/api/restart", HTTP_GET,
               std::bind(&WebServerHandler::webHandleRestart, this,
                         std::placeholders::_1));
-  _server->on("/api/migrate", HTTP_POST,
-              std::bind(&WebServerHandler::webHandleMigrate, this,
-                        std::placeholders::_1));
+  handler = new AsyncCallbackJsonWebHandler(
+      "/api/filesystem",
+      std::bind(&WebServerHandler::webHandleFileSystem, this,
+                std::placeholders::_1, std::placeholders::_2),
+      JSON_BUFFER_SIZE_SMALL);
+  _server->addHandler(handler);
   _server->on(
       "/api/upload", HTTP_POST,
       std::bind(&WebServerHandler::webReturnOK, this, std::placeholders::_1),

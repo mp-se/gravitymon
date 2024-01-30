@@ -82,6 +82,7 @@ constexpr auto PARAM_PLATFORM = "platform";
 constexpr auto PARAM_BLE_TILT_COLOR = "ble_tilt_color";
 constexpr auto PARAM_BLE_FORMAT = "ble_format";
 constexpr auto PARAM_ISPINDEL_CONFIG = "ispindel_config";
+constexpr auto PARAM_GRAVITYMON1_CONFIG = "gravitymon1_config";
 constexpr auto PARAM_GYRO_READ_COUNT = "gyro_read_count";
 // constexpr auto PARAM_GYRO_READ_DELAY = "gyro_read_delay";
 constexpr auto PARAM_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
@@ -124,5 +125,8 @@ constexpr auto PARAM_ENCRYPTION = "encryption";
 constexpr auto PARAM_CHANNEL = "channel";
 constexpr auto PARAM_NETWORKS = "networks";
 constexpr auto PARAM_WIFI_SETUP = "wifi_setup";
+constexpr auto PARAM_FS_COMMAND = "command";
+constexpr auto PARAM_FS_FILE = "file";
+constexpr auto PARAM_FS_FILES = "files";
 
 #endif  // SRC_RESOURCES_HPP_
