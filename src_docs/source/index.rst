@@ -153,7 +153,6 @@ the following libraries and without these this would have been much more difficu
    formula
    services
    advanced
-   api
    data
    compiling
    contributing
