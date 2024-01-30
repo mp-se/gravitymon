@@ -56,8 +56,9 @@ bool WebServerHandler::isAuthenticated(AsyncWebServerRequest *request) {
     }
   }
 
-  Log.info(
-      F("WEB : No valid authorization header found, returning error 401. Url %s" CR), request->url().c_str());
+  Log.info(F("WEB : No valid authorization header found, returning error 401. "
+             "Url %s" CR),
+           request->url().c_str());
   AsyncWebServerResponse *response = request->beginResponse(401);
   request->send(response);
   return false;
@@ -250,7 +251,8 @@ void WebServerHandler::webHandleWifiScanStatus(AsyncWebServerRequest *request) {
     JsonObject obj = response->getRoot().as<JsonObject>();
     obj[PARAM_STATUS] = static_cast<bool>(_wifiScanTask);
     obj[PARAM_SUCCESS] = false;
-    obj[PARAM_MESSAGE] = _wifiScanTask ? "Wifi scanning running" : "No scanning running";
+    obj[PARAM_MESSAGE] =
+        _wifiScanTask ? "Wifi scanning running" : "No scanning running";
     response->setLength();
     request->send(response);
   } else {
@@ -741,6 +743,7 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
   Log.notice(F("WEB : webServer callback for /api/migrate." CR));
 
 #if defined(ESP8266)
+  LittleFS.remove("/ispindel.json");
   LittleFS.rename("/config.json", "/ispindel.json");
 #endif
 
@@ -755,7 +758,7 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
 }
 
 void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
-  if(runMode == RunMode::wifiSetupMode) {
+  if (runMode == RunMode::wifiSetupMode) {
     request->redirect("http://192.168.4.1");
     return;
   }
@@ -779,20 +782,23 @@ void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
   }
 
   if (request->method() == HTTP_GET)
-    Log.warning(F("WEB : GET on %s not recognized." CR), request->url().c_str());
+    Log.warning(F("WEB : GET on %s not recognized." CR),
+                request->url().c_str());
   else if (request->method() == HTTP_POST)
-    Log.warning(F("WEB : POST on %s not recognized." CR), request->url().c_str());
+    Log.warning(F("WEB : POST on %s not recognized." CR),
+                request->url().c_str());
   else if (request->method() == HTTP_PUT)
-    Log.warning(F("WEB : PUT on %s not recognized." CR), request->url().c_str());
+    Log.warning(F("WEB : PUT on %s not recognized." CR),
+                request->url().c_str());
   else if (request->method() == HTTP_DELETE)
     Log.warning(F("WEB : DELETE on %s not recognized." CR),
-              request->url().c_str());
+                request->url().c_str());
   else
     Log.warning(F("WEB : Unknown on %s not recognized." CR),
-              request->url().c_str());
+                request->url().c_str());
 
   request->redirect("/");
-  //request->send(404, "application/json", "{\"message\":\"URL not found\"}");
+  // request->send(404, "application/json", "{\"message\":\"URL not found\"}");
 }
 
 bool WebServerHandler::setupWebServer() {
@@ -849,11 +855,6 @@ bool WebServerHandler::setupWebServer() {
   _server->serveStatic("/log2", LittleFS, ERR_FILENAME2);
   _server->serveStatic("/runtime", LittleFS, RUNTIME_FILENAME);
   _server->serveStatic("/migrate", LittleFS, "/config.json");
-
-  _server->serveStatic("/debug1", LittleFS,
-                       CFG_FILENAME_OLD);  // TODO: Remove this when done
-  _server->serveStatic("/debug2", LittleFS,
-                       CFG_FILENAME);  // TODO: Remove this when done
 
   AsyncCallbackJsonWebHandler *handler;
 
@@ -948,8 +949,9 @@ void WebServerHandler::loop() {
   MDNS.update();
 #endif
 
-  if(runMode == RunMode::wifiSetupMode) {
-    if ((millis() - _wifiPortalTimer) > (myConfig.getWifiPortalTimeout()*1000)) {
+  if (runMode == RunMode::wifiSetupMode) {
+    if ((millis() - _wifiPortalTimer) >
+        (myConfig.getWifiPortalTimeout() * 1000)) {
       Log.notice(F("WEB : Wifi portal timeout, reboot device." CR));
       delay(500);
       ESP_RESET();

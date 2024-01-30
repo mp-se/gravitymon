@@ -416,8 +416,8 @@ void loopGravityOnInterval() {
     myGyro.read();
     LOG_PERF_STOP("loop-gyro-read");
     myBatteryVoltage.read();
-    
-    if(runMode != RunMode::wifiSetupMode)
+
+    if (runMode != RunMode::wifiSetupMode)
       checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
   }
 }
