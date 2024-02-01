@@ -104,7 +104,6 @@ class WebServerHandler {
   void webHandleWifiClear(AsyncWebServerRequest *request);
   void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
                            size_t index, uint8_t *data, size_t len, bool final);
-  void webHandleLogClear(AsyncWebServerRequest *request);
   void webHandleRestart(AsyncWebServerRequest *request);
   void webHandleFactoryDefaults(AsyncWebServerRequest *request);
   void webHandlePageNotFound(AsyncWebServerRequest *request);

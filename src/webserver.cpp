@@ -291,30 +291,6 @@ void WebServerHandler::webHandleFactoryDefaults(
   ESP_RESET();
 }
 
-void WebServerHandler::webHandleLogClear(AsyncWebServerRequest *request) {
-  if (!isAuthenticated(request)) {
-    return;
-  }
-
-  LOG_PERF_START("webserver-api-log-clear");
-  Log.notice(F("WEB : webServer callback for /api/log/clear." CR));
-  LittleFS.remove(ERR_FILENAME);
-  LittleFS.remove(ERR_FILENAME2);
-
-  AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
-  JsonObject obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_SUCCESS] = true;
-  obj[PARAM_MESSAGE] = "Logfiles removed";
-  response->setLength();
-  request->send(response);
-  LOG_PERF_STOP("webserver-api-log-clear");
-
-#if defined(ACTIVATE_GCOV)
-  __gcov_exit();
-#endif
-}
-
 void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   LOG_PERF_START("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
@@ -898,11 +874,6 @@ bool WebServerHandler::setupWebServer() {
                                         this, std::placeholders::_1));
 
   AsyncCallbackJsonWebHandler *handler;
-
-  // Dynamic content
-  _server->on("/api/clearlog", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleLogClear, this,
-                        std::placeholders::_1));
   _server->on("/api/config/format", HTTP_GET,
               std::bind(&WebServerHandler::webHandleConfigFormatRead, this,
                         std::placeholders::_1));
