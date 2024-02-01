@@ -368,4 +368,120 @@ void Config::checkFileSystem() {
 #endif
 }
 
+void Config::migrateSettings() {
+  constexpr auto CFG_FILENAME_OLD = "/gravitymon.json";
+
+  if (!LittleFS.exists(CFG_FILENAME_OLD)) {
+    return;
+  }
+
+  File configFile = LittleFS.open(CFG_FILENAME_OLD, "r");
+
+  if (!configFile) {
+    Serial.println("Failed to open old config file");
+    return;
+  }
+
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
+  DynamicJsonDocument doc2(JSON_BUFFER_SIZE_LARGE);
+
+  DeserializationError err = deserializeJson(doc, configFile);
+  configFile.close();
+
+  if (err) {
+    Serial.println("Failed to open parse old config file");
+    return;
+  }
+
+  JsonObject obj = doc.as<JsonObject>();
+  JsonObject obj2 = doc2.createNestedObject();
+
+  serializeJson(obj, EspSerial);
+  EspSerial.print(CR);
+
+  for (JsonPair kv : obj) {
+    String k = kv.key().c_str();
+    k.replace("-", "_");
+    if(k != "formula_calculation_data")
+      obj2[k] = obj[kv.key().c_str()];
+  }
+
+  obj2["ble_tilt_color"] = obj["ble"];
+
+  JsonArray fdArray = obj2.createNestedArray(PARAM_FORMULA_DATA);
+  for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
+    JsonObject fd = fdArray.createNestedObject();
+    String num(i+1);
+    fd["a"] = obj["formula-calculation-data"]["a"+num];
+    fd["g"] = obj["formula-calculation-data"]["g"+num];;
+  }
+
+  obj.clear();
+  // serializeJson(obj2, EspSerial);
+  // EspSerial.print(CR);
+  parseJson(obj2);
+  obj2.clear();
+
+  if(saveFile()) {
+    LittleFS.remove(CFG_FILENAME_OLD);
+  }
+
+  Log.notice(F("CFG : Migrated old configuration /gravitymon.json." CR));
+}
+
+void Config::migrateHwSettings() {
+  constexpr auto CFG_FILENAME_HW_OLD = "/hardware.json";
+
+  if (!LittleFS.exists(CFG_FILENAME_HW_OLD)) {
+    return;
+  }
+
+  File configFile = LittleFS.open(CFG_FILENAME_HW_OLD, "r");
+
+  if (!configFile) {
+    Serial.println("Failed to open old hw config file");
+    return;
+  }
+
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
+  DynamicJsonDocument doc2(JSON_BUFFER_SIZE_LARGE);
+
+  DeserializationError err = deserializeJson(doc, configFile);
+  configFile.close();
+
+  if (err) {
+    Serial.println("Failed to open parse old hw config file");
+    return;
+  }
+
+  JsonObject obj = doc.as<JsonObject>();
+  JsonObject obj2 = doc2.createNestedObject();
+
+  serializeJson(obj, EspSerial);
+  EspSerial.print(CR);
+
+  for (JsonPair kv : obj) {
+    String k = kv.key().c_str();
+    k.replace("-", "_");
+    obj2[k] = obj[kv.key().c_str()];
+  }
+
+  obj2["http_int"] = obj["int-http1"];
+  obj2["http_int2"] = obj["int-http2"];
+  obj2["http_int3"] = obj["int-http3"];
+  obj2["influxdb2_int"] = obj["int-influx"];
+  obj2["mqtt_int"] = obj["int-mqtt"];
+
+  obj.clear();
+  // serializeJson(obj2, EspSerial);
+  // EspSerial.print(CR);
+  parseJson(obj2);
+  obj2.clear();
+
+  if(saveFile()) {
+    LittleFS.remove(CFG_FILENAME_HW_OLD);
+  }
+
+  Log.notice(F("CFG : Migrated old configuration /gravitymon.json." CR));
+}
 // EOF

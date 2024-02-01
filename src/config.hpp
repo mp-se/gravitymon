@@ -442,52 +442,54 @@ class Config {
   }
 
   int getWifiPortalTimeout() { return _wifiPortalTimeout; }
-  void setWifiPortalTimeout(int t) { _wifiPortalTimeout = t; }
+  void setWifiPortalTimeout(int t) { _wifiPortalTimeout = t; _saveNeeded = true; }
 
   int getWifiConnectTimeout() { return _wifiConnectTimeout; }
-  void setWifiConnectTimeout(int t) { _wifiConnectTimeout = t; }
+  void setWifiConnectTimeout(int t) { _wifiConnectTimeout = t; _saveNeeded = true; }
 
   float getMaxFormulaCreationDeviation() {
     return _maxFormulaCreationDeviation;
   }
   void setMaxFormulaCreationDeviation(float f) {
     _maxFormulaCreationDeviation = f;
+    _saveNeeded = true;
   }
 
   int getTempSensorResolution() { return _tempSensorResolution; }
   void setTempSensorResolution(int t) {
     if (t >= 9 && t <= 12) _tempSensorResolution = t;
+    _saveNeeded = true;
   }
 
   float getDefaultCalibrationTemp() { return _defaultCalibrationTemp; }
-  void SetDefaultCalibrationTemp(float t) { _defaultCalibrationTemp = t; }
+  void SetDefaultCalibrationTemp(float t) { _defaultCalibrationTemp = t; _saveNeeded = true;}
 
   int getGyroSensorMovingThreashold() { return _gyroSensorMovingThreashold; }
-  void setGyroSensorMovingThreashold(int t) { _gyroSensorMovingThreashold = t; }
+  void setGyroSensorMovingThreashold(int t) { _gyroSensorMovingThreashold = t; _saveNeeded = true;}
 
   int getGyroReadCount() { return _gyroReadCount; }
-  void setGyroReadCount(int c) { _gyroReadCount = c; }
+  void setGyroReadCount(int c) { _gyroReadCount = c; _saveNeeded = true;}
 
   int getGyroReadDelay() { return _gyroReadDelay; }
-  void setGyroReadDelay(int d) { _gyroReadDelay = d; }
+  void setGyroReadDelay(int d) { _gyroReadDelay = d; _saveNeeded = true;}
 
   int getPushTimeout() { return _pushTimeout; }
-  void setPushTimeout(int t) { _pushTimeout = t; }
+  void setPushTimeout(int t) { _pushTimeout = t; _saveNeeded = true;}
 
   int getPushIntervalHttp1() { return _pushIntervalHttp1; }
-  void setPushIntervalHttp1(int t) { _pushIntervalHttp1 = t; }
+  void setPushIntervalHttp1(int t) { _pushIntervalHttp1 = t; _saveNeeded = true;}
 
   int getPushIntervalHttp2() { return _pushIntervalHttp2; }
-  void setPushIntervalHttp2(int t) { _pushIntervalHttp2 = t; }
+  void setPushIntervalHttp2(int t) { _pushIntervalHttp2 = t; _saveNeeded = true;}
 
   int getPushIntervalHttp3() { return _pushIntervalHttp3; }
-  void setPushIntervalHttp3(int t) { _pushIntervalHttp3 = t; }
+  void setPushIntervalHttp3(int t) { _pushIntervalHttp3 = t; _saveNeeded = true;}
 
   int getPushIntervalInflux() { return _pushIntervalInflux; }
-  void setPushIntervalInflux(int t) { _pushIntervalInflux = t; }
+  void setPushIntervalInflux(int t) { _pushIntervalInflux = t; _saveNeeded = true;}
 
   int getPushIntervalMqtt() { return _pushIntervalMqtt; }
-  void setPushIntervalMqtt(int t) { _pushIntervalMqtt = t; }
+  void setPushIntervalMqtt(int t) { _pushIntervalMqtt = t; _saveNeeded = true;}
 
   bool isPushIntervalActive() {
     return (_pushIntervalHttp1 + _pushIntervalHttp2 + _pushIntervalHttp3 +
@@ -497,16 +499,16 @@ class Config {
   }
 
   bool isSkipSslOnTest() { return _skipSslOnTest; }
-  void setSkipSslOnTest(bool b) { _skipSslOnTest = b; }
+  void setSkipSslOnTest(bool b) { _skipSslOnTest = b; _saveNeeded = true;}
 
   const bool isIgnoreLowAnges() { return _ignoreLowAnges; }
-  void setIgnoreLowAnges(bool b) { _ignoreLowAnges = b; }
+  void setIgnoreLowAnges(bool b) { _ignoreLowAnges = b; _saveNeeded = true;}
 
   const bool isBatterySaving() { return _batterySaving; }
-  void setBatterySaving(bool b) { _batterySaving = b; }
+  void setBatterySaving(bool b) { _batterySaving = b; _saveNeeded = true;}
 
   const bool isDarkMode() { return _darkMode; }
-  void setDarkMode(bool b) { _darkMode = b; }
+  void setDarkMode(bool b) { _darkMode = b; _saveNeeded = true;}
 
   // IO functions
   void createJson(JsonObject& doc);
@@ -514,6 +516,8 @@ class Config {
   bool saveFile();
   bool loadFile();
   void checkFileSystem();
+  void migrateSettings();
+  void migrateHwSettings();
   bool isSaveNeeded() { return _saveNeeded; }
   void setSaveNeeded() { _saveNeeded = true; }
 };

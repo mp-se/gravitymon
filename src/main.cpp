@@ -102,6 +102,8 @@ void setup() {
   myConfig.checkFileSystem();
   myWifi.init();  // double reset check
   checkResetReason();
+  myConfig.migrateSettings();
+  myConfig.migrateHwSettings();
   myConfig.loadFile();
   LOG_PERF_STOP("main-config-load");
 
