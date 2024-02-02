@@ -87,6 +87,7 @@ class WebServerHandler {
   void resetWifiPortalTimer() { _wifiPortalTimer = millis(); }
   bool isAuthenticated(AsyncWebServerRequest *request);
 
+  void webHandleAuth(AsyncWebServerRequest *request);
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);

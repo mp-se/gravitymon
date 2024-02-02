@@ -243,7 +243,7 @@ void WebServerHandler::webHandleWifiScanStatus(AsyncWebServerRequest *request) {
   }
 
   LOG_PERF_START("webserver-api-wifi-scan-status");
-  Log.notice(F("WEB : webServer callback for /api/wifi/scan." CR));
+  Log.notice(F("WEB : webServer callback for /api/wifi/scan/status." CR));
 
   if (_wifiScanTask || !_wifiScanData.length()) {
     AsyncJsonResponse *response =
@@ -269,8 +269,7 @@ void WebServerHandler::webHandleFactoryDefaults(
   }
 
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
-  LittleFS.remove(CFG_FILENAME);
-  LittleFS.remove(CFG_FILENAME);
+  myConfig.saveWifiOnly();
   LittleFS.remove(ERR_FILENAME);
   LittleFS.remove(RUNTIME_FILENAME);
   LittleFS.remove(TPL_FNAME_HTTP1);
@@ -411,6 +410,18 @@ void WebServerHandler::webHandleStatus(AsyncWebServerRequest *request) {
   response->setLength();
   request->send(response);
   LOG_PERF_STOP("webserver-api-status");
+}
+
+void WebServerHandler::webHandleAuth(AsyncWebServerRequest *request) {
+  LOG_PERF_START("webserver-api-auth");
+  Log.notice(F("WEB : webServer callback for /api/auth." CR));
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_TOKEN] = myConfig.getID();
+  response->setLength();
+  request->send(response);
+  LOG_PERF_STOP("webserver-api-auth");
 }
 
 void WebServerHandler::webHandleWifiClear(AsyncWebServerRequest *request) {
@@ -721,7 +732,7 @@ void WebServerHandler::webHandleFileSystem(AsyncWebServerRequest *request,
   JsonObject obj = json.as<JsonObject>();
 
   if (!obj[PARAM_FS_COMMAND].isNull()) {
-    if(obj[PARAM_FS_COMMAND] == String("dir")) {
+    if (obj[PARAM_FS_COMMAND] == String("dir")) {
       Log.notice(F("WEB : File system listing requested." CR));
       AsyncJsonResponse *response =
           new AsyncJsonResponse(false, JSON_BUFFER_SIZE_LARGE);
@@ -748,24 +759,24 @@ void WebServerHandler::webHandleFileSystem(AsyncWebServerRequest *request,
 #endif
       response->setLength();
       request->send(response);
-    } else if(obj[PARAM_FS_COMMAND] == String("del")) {
+    } else if (obj[PARAM_FS_COMMAND] == String("del")) {
       Log.notice(F("WEB : File system delete requested." CR));
-    
+
       if (!obj[PARAM_FS_FILE].isNull()) {
         String f = obj[PARAM_FS_FILE];
         bool b = LittleFS.remove(f);
-        request->send(200);       
+        request->send(200);
       } else {
-        request->send(400);       
+        request->send(400);
       }
-    } else if(obj[PARAM_FS_COMMAND] == String("get")) {
+    } else if (obj[PARAM_FS_COMMAND] == String("get")) {
       Log.notice(F("WEB : File system get requested." CR));
       if (!obj[PARAM_FS_FILE].isNull()) {
         String f = obj[PARAM_FS_FILE];
         AsyncWebServerResponse *response = request->beginResponse(LittleFS, f);
         request->send(response);
       } else {
-        request->send(400);       
+        request->send(400);
       }
     } else {
       Log.warning(F("WEB : Unknown file system command." CR));
@@ -895,6 +906,9 @@ bool WebServerHandler::setupWebServer() {
                 std::placeholders::_1, std::placeholders::_2),
       JSON_BUFFER_SIZE_LARGE);
   _server->addHandler(handler);
+  _server->on("/api/auth", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleAuth, this,
+                        std::placeholders::_1));
   _server->on("/api/config", HTTP_GET,
               std::bind(&WebServerHandler::webHandleConfigRead, this,
                         std::placeholders::_1));
