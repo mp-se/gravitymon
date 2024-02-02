@@ -402,8 +402,7 @@ void Config::migrateSettings() {
   for (JsonPair kv : obj) {
     String k = kv.key().c_str();
     k.replace("-", "_");
-    if(k != "formula_calculation_data")
-      obj2[k] = obj[kv.key().c_str()];
+    if (k != "formula_calculation_data") obj2[k] = obj[kv.key().c_str()];
   }
 
   obj2["ble_tilt_color"] = obj["ble"];
@@ -411,9 +410,9 @@ void Config::migrateSettings() {
   JsonArray fdArray = obj2.createNestedArray(PARAM_FORMULA_DATA);
   for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
     JsonObject fd = fdArray.createNestedObject();
-    String num(i+1);
-    fd["a"] = obj["formula-calculation-data"]["a"+num];
-    fd["g"] = obj["formula-calculation-data"]["g"+num];;
+    String num(i + 1);
+    fd["a"] = obj["formula-calculation-data"]["a" + num];
+    fd["g"] = obj["formula-calculation-data"]["g" + num];
   }
 
   obj.clear();
@@ -422,11 +421,11 @@ void Config::migrateSettings() {
   parseJson(obj2);
   obj2.clear();
 
-  if(saveFile()) {
+  if (saveFile()) {
     LittleFS.remove(CFG_FILENAME_OLD);
   }
 
-  Log.notice(F("CFG : Migrated old configuration /gravitymon.json." CR));
+  Log.notice(F("CFG : Migrated old config /gravitymon.json." CR));
 }
 
 void Config::migrateHwSettings() {
@@ -473,15 +472,41 @@ void Config::migrateHwSettings() {
   obj2["mqtt_int"] = obj["int-mqtt"];
 
   obj.clear();
-  // serializeJson(obj2, EspSerial);
+  serializeJson(obj2, EspSerial);
   // EspSerial.print(CR);
-  parseJson(obj2);
+  // parseJson(obj2);
   obj2.clear();
 
-  if(saveFile()) {
+  if (saveFile()) {
     LittleFS.remove(CFG_FILENAME_HW_OLD);
   }
 
-  Log.notice(F("CFG : Migrated old configuration /gravitymon.json." CR));
+  Log.notice(F("CFG : Migrated old hw config /hardware.json." CR));
 }
+
+bool Config::saveWifiOnly() {
+  File configFile = LittleFS.open(CFG_FILENAME, "w");
+
+  if (!configFile) {
+    writeErrorLog("CFG : Failed to save configuration.");
+    return false;
+  }
+
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE_SMALL);
+  JsonObject obj = doc.createNestedObject();
+
+  obj[PARAM_SSID] = getWifiSSID(0);
+  obj[PARAM_PASS] = getWifiPass(0);
+  obj[PARAM_SSID2] = getWifiSSID(1);
+  obj[PARAM_PASS2] = getWifiPass(1);
+
+  serializeJson(obj, configFile);
+  configFile.flush();
+  configFile.close();
+
+  _saveNeeded = false;
+  Log.notice(F("CFG : WIFI configuration saved to " CFG_FILENAME "." CR));
+  return true;
+}
+
 // EOF
