@@ -92,6 +92,7 @@ void WebServerHandler::webHandleConfigWrite(AsyncWebServerRequest *request,
   myConfig.parseJson(obj);
   obj.clear();
   myConfig.saveFile();
+  myBatteryVoltage.read();
 
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_SMALL);

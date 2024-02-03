@@ -62,7 +62,7 @@ extern const uint8_t appCssEnd[] asm("_binary_html_app_css_gz_end");
 #define SIZE_INDEX_HTML 593
 #endif
 #if !defined(SIZE_APP_JS_GZ)
-#define SIZE_APP_JS_GZ 167146
+#define SIZE_APP_JS_GZ 170492
 #endif
 #if !defined(SIZE_APP_CSS_GZ)
 #define SIZE_APP_CSS_GZ 30572
