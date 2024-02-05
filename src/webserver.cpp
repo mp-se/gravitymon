@@ -907,9 +907,9 @@ bool WebServerHandler::setupWebServer() {
                 std::placeholders::_1, std::placeholders::_2),
       JSON_BUFFER_SIZE_LARGE);
   _server->addHandler(handler);
-  _server->on("/api/auth", HTTP_GET,
-              std::bind(&WebServerHandler::webHandleAuth, this,
-                        std::placeholders::_1));
+  _server->on(
+      "/api/auth", HTTP_GET,
+      std::bind(&WebServerHandler::webHandleAuth, this, std::placeholders::_1));
   _server->on("/api/config", HTTP_GET,
               std::bind(&WebServerHandler::webHandleConfigRead, this,
                         std::placeholders::_1));

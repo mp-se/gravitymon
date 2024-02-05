@@ -55,19 +55,6 @@ extern const uint8_t appCssStart[] asm("_binary_html_app_css_gz_start");
 extern const uint8_t appCssEnd[] asm("_binary_html_app_css_gz_end");
 #endif
 
-// These are set in a pre:script since the embedding function for esp32 does not
-// specify length of file and subtracting pointers to different objects are not
-// allowed
-#if !defined(SIZE_INDEX_HTML)
-#define SIZE_INDEX_HTML 593
-#endif
-#if !defined(SIZE_APP_JS_GZ)
-#define SIZE_APP_JS_GZ 170492
-#endif
-#if !defined(SIZE_APP_CSS_GZ)
-#define SIZE_APP_CSS_GZ 30572
-#endif
-
 class WebServerHandler {
  private:
   AsyncWebServer *_server = 0;
@@ -135,18 +122,22 @@ class WebServerHandler {
 #else  // ESP32
   void webReturnIndexHtm(AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", (const uint8_t *)indexHtmlStart,
-                    SIZE_INDEX_HTML);
+                    reinterpret_cast<uint32_t>(&indexHtmlEnd[0]) -
+                        reinterpret_cast<uint32_t>(&indexHtmlStart[0]));
   }
   void webReturnAppJs(AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response =
-        request->beginResponse_P(200, "application/javascript",
-                                 (const uint8_t *)appJsStart, SIZE_APP_JS_GZ);
+    AsyncWebServerResponse *response = request->beginResponse_P(
+        200, "application/javascript", (const uint8_t *)appJsStart,
+        reinterpret_cast<uint32_t>(&appJsEnd[0]) -
+            reinterpret_cast<uint32_t>(&appJsStart[0]));
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
   }
   void webReturnAppCss(AsyncWebServerRequest *request) {
     AsyncWebServerResponse *response = request->beginResponse_P(
-        200, "text/css", (const uint8_t *)appCssStart, SIZE_APP_CSS_GZ);
+        200, "text/css", (const uint8_t *)appCssStart,
+        reinterpret_cast<uint32_t>(&appCssEnd[0]) -
+            reinterpret_cast<uint32_t>(&appCssStart[0]));
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);
   }
