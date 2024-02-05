@@ -282,6 +282,11 @@ bool loopReadGravity() {
             myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
                                      true);
           } break;
+          case BleFormat::BLE_GRAVITYMON_IBEACON: {
+            myBleSender.sendCustomBeaconData(myBatteryVoltage.getVoltage(),
+                                             tempC, gravitySG, angle);
+          } break;
+
           case BleFormat::BLE_GRAVITYMON_EDDYSTONE: {
             myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
                                       gravitySG, angle);

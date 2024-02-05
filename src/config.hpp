@@ -36,7 +36,7 @@ enum BleFormat {
   BLE_TILT_PRO = 2,
   BLE_GRAVITYMON_SERVICE = 3,
   BLE_GRAVITYMON_EDDYSTONE = 4,
-  BLE_GRAVITYMON_IBEACON = 5  // TODO: Implement this format
+  BLE_GRAVITYMON_IBEACON = 5
 };
 
 // Used for holding sensordata or sensoroffsets

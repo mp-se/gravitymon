@@ -50,6 +50,8 @@ class BleSender {
   // Beacons
   void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
   void sendEddystone(float battery, float tempC, float gravity, float angle);
+  void sendCustomBeaconData(float battery, float tempC, float gravity,
+                            float angle);
 
   // Use GATT
   void sendGravitymonData(String payload);
