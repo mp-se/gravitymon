@@ -26,6 +26,10 @@ def call_api_get( path ):
     url = "http://" + host + path
     return requests.get( url, headers=headers )
 
+def call_api_auth( path, auth ):
+    url = "http://" + host + path
+    return requests.get( url, headers=auth )
+
 def do_factory_reset():
     try:
         r = call_api_get( "/api/factory?id=" + id)
@@ -672,17 +676,29 @@ class API(unittest.TestCase):
         j = json.loads(r.text)
         self.assertEqual(j["success"], True)
         self.assertNotEqual(j["message"], "")
-        time.sleep(4)
         r = call_api_get( "/api/calibrate/status" )
         if debugResult: print(r.text)
         self.assertEqual(r.status_code, 200)
         j = json.loads(r.text)
-        self.assertEqual(j["status"], False)
-        self.assertEqual(j["success"], True)
+        self.assertEqual(j["status"], True)
+        self.assertEqual(j["success"], False)
         self.assertNotEqual(j["message"], "")
 
-    def test_58(self):
-        pass
+    def test_58_testpush(self):
+        j = {"push_format": "http_format" }
+        r = call_api_post( "/api/test/push", j )
+        if debugResult: print(r.text)
+        self.assertEqual(r.status_code, 200)
+        j = json.loads(r.text)
+        self.assertEqual(j["success"], True)
+        self.assertNotEqual(j["message"], "")
+        r = call_api_get( "/api/test/push/status" )
+        if debugResult: print(r.text)
+        self.assertEqual(r.status_code, 200)
+        j = json.loads(r.text)
+        self.assertEqual(j["status"], True)
+        self.assertEqual(j["success"], False)
+        self.assertNotEqual(j["message"], "")
 
     def test_59_config_sleepmode(self):
         j = { "sleep_mode": True }
@@ -699,16 +715,50 @@ class API(unittest.TestCase):
         j = json.loads(r.text)
         self.assertEqual(j["sleep_mode"], False)
 
-    # TODO: Wifi Scan / WIfi Scan status
-        
-    # TODO: Test push / Test Push status
-        
-    # TODO: Filesystem
-        
-    # TODO: Authenticate
-        
-    # TODO: Create formula
+    def test_60_wifiscan(self):
+        r = call_api_get( "/api/wifi/scan" )
+        if debugResult: print(r.text)
+        self.assertEqual(r.status_code, 200)
+        j = json.loads(r.text)
+        self.assertEqual(j["success"], True)
+        self.assertNotEqual(j["message"], "")
+        r = call_api_get( "/api/wifi/scan/status" )
+        if debugResult: print(r.text)
+        self.assertEqual(r.status_code, 200)
+        j = json.loads(r.text)
+        self.assertEqual(j["status"], True)
+        self.assertEqual(j["success"], False)
+        self.assertNotEqual(j["message"], "")
+        # test for "networks" tag
 
+    def test_61_filesystem(self):
+        j = { "command": "dir" }
+        r = call_api_post( "/api/filesystem", j )
+        if debugResult: print(r.text)
+        self.assertEqual(r.status_code, 200)
+        # test for "files" tag
 
+        j = { "command": "get", "file": "/gravitymon2.json" }
+        r = call_api_post( "/api/filesystem", j )
+        if debugResult: print(r.text)
+        self.assertEqual(r.status_code, 200)
+        # test for content
+
+    def test_62_auth(self):
+        r = call_api_auth( "/api/auth", { "Authorization": "Basic testme"} )
+        if debugResult: print(r.text)
+        self.assertEqual(r.status_code, 200)
+        j = json.loads(r.text)
+        self.assertEqual(j["token"], id)
+      
+    def test_63_createformula(self):
+        r = call_api_get( "/api/formula" )
+        if debugResult: print(r.text)
+        self.assertEqual(r.status_code, 200)
+        j = json.loads(r.text)
+        self.assertEqual(j["success"], True)
+        self.assertNotEqual(j["message"], "")
+        self.assertNotEqual(j["gravity_formula"], "")
+               
 if __name__ == '__main__':
     unittest.main()
