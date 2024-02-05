@@ -37,6 +37,8 @@ SOFTWARE.
 #define WIFI_DEFAULT_PWD "password"     // Password for created SSID
 #define WIFI_MDNS "gravitymon"          // Prefix for MDNS name
 
+// TODO: Add function to get NTP
+
 class WifiConnection {
  private:
   uint32_t _timer = 0;
