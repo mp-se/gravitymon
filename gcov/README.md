@@ -7,7 +7,7 @@ This directory will contain the code coverage reports from testing.
 | File | Coverage | Comment |
 | ----------- | ----------- | ----------- |
 | calc.cpp | 95 % | Good |
-| gyro.cpp | 20 % | Lacking features in wokwi to increase coverage |
+| gyro.cpp | 20 % | To be evaluated again |
 | helper.cpp | 44 % | Lot of code that is board specific so hard to get better coverage |
 | ble.cpp | - | Manual tests |
 | main.cpp | - | Manual tests + Pytests  |

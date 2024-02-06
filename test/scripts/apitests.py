@@ -1,10 +1,6 @@
 import unittest, requests, json, time, urllib3
 
-ver  = "1.4.0"
-
-# wokwi
-#host = "localhost:8180"
-#id = "000110"
+ver  = "2.0.0"
 
 # Physical device
 host = "192.168.1.160"

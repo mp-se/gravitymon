@@ -119,14 +119,14 @@ test(helper_writeErrorLog) { // Include for code coverage
   assertEqual(1,1);
 }
 
-/*test(helper_floatHistory) { // TODO: Issues with opening the file system on WOKWI
-  LittleFS.begin(true);
+test(helper_floatHistory) { 
+  LittleFS.begin();
 
   FloatHistoryLog hist("/history.log");
   hist.addEntry(1.0);
   hist.addEntry(1.0);
   float f = hist.getAverage();
   assertEqual(f, 1.0);
-}*/
+}
 
 // EOF
