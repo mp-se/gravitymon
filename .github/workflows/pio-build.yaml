@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: 
+      - '2.0.0'
       - dev
 
 jobs:
