@@ -774,8 +774,14 @@ void WebServerHandler::webHandleFileSystem(AsyncWebServerRequest *request,
       Log.notice(F("WEB : File system get requested." CR));
       if (!obj[PARAM_FS_FILE].isNull()) {
         String f = obj[PARAM_FS_FILE];
-        AsyncWebServerResponse *response = request->beginResponse(LittleFS, f);
-        request->send(response);
+
+        if (LittleFS.exists(obj[PARAM_FS_FILE].as<String>())) {
+          AsyncWebServerResponse *response =
+              request->beginResponse(LittleFS, f);
+          request->send(response);
+        } else {
+          request->send(404);
+        }
       } else {
         request->send(400);
       }
