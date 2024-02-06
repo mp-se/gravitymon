@@ -157,6 +157,17 @@ void WifiConnection::loop() {
     } break;
 
     case RunMode::configurationMode: {
+      if (abs((int32_t)(millis() - _pingTimer)) > 3000) {
+        _pingTimer = millis();
+        /*Log.notice(F("WIFI: Connected to wifi %s ip=%s, channel=%d, gw=%s,
+           dns=%s, rssi=%d, bssi=%s." CR), WiFi.SSID().c_str(),
+           getIPAddress().c_str(), WiFi.channel(),
+             WiFi.gatewayIP().toString().c_str(),
+             WiFi.dnsIP().toString().c_str(), WiFi.RSSI(),
+             WiFi.BSSIDstr().c_str()); */
+        EspSerial.print(".");
+      }
+
       if (!WiFi.isConnected()) {
         if (_reconnectCounter > 5) {
           Log.notice(F("WIFI: Failed to reconnect with wifi, rebooting..." CR));
@@ -182,6 +193,29 @@ void WifiConnection::loop() {
   }
 }
 
+/*void wifiEventCallback(arduino_event_id_t event) {
+  switch (event) {
+    case ARDUINO_EVENT_WIFI_STA_START:
+      Log.notice(F("WIFI: Event STA_START." CR));
+      break;
+    case ARDUINO_EVENT_WIFI_STA_STOP:
+      Log.notice(F("WIFI: Event STA_STOP." CR));
+      break;
+    case ARDUINO_EVENT_WIFI_STA_CONNECTED:
+      Log.notice(F("WIFI: Event STA_CONNECTED." CR));
+      break;
+    case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
+      Log.notice(F("WIFI: Event STA_DISCONNECTED." CR));
+      break;
+    case ARDUINO_EVENT_WIFI_STA_GOT_IP:
+      Log.notice(F("WIFI: Event STA_GOTIP." CR));
+      break;
+    default:
+      Log.notice(F("WIFI: Event %d." CR), event);
+      break;
+  }
+}*/
+
 void WifiConnection::connectAsync(int wifiIndex) {
   WiFi.setHostname(myConfig.getMDNS());
   WiFi.persistent(true);
@@ -193,6 +227,8 @@ void WifiConnection::connectAsync(int wifiIndex) {
 #elif defined(ESP32C3)
   WiFi.setTxPower(WIFI_POWER_13dBm);
 #endif
+
+  // WiFi.onEvent(wifiEventCallback);
 
   if (strlen(userSSID)) {
     Log.notice(F("WIFI: Connecting to wifi using hardcoded settings %s." CR),
@@ -228,6 +264,10 @@ bool WifiConnection::waitForConnection(int maxTime) {
   EspSerial.print(CR);
   Log.notice(F("WIFI: Connected to wifi %s ip=%s, channel=%d." CR),
              WiFi.SSID().c_str(), getIPAddress().c_str(), WiFi.channel());
+  /* Log.notice(F("WIFI: gw=%s, dns=%s, rssi=%d, bssi=%s." CR),
+             WiFi.gatewayIP().toString().c_str(),
+             WiFi.dnsIP().toString().c_str(), WiFi.RSSI(),
+             WiFi.BSSIDstr().c_str()); */
   Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS());
   return true;
 }
