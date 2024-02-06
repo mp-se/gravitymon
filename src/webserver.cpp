@@ -743,15 +743,15 @@ void WebServerHandler::webHandleFileSystem(AsyncWebServerRequest *request,
       FSInfo fs;
       LittleFS.info(fs);
       Dir dir = LittleFS.openDir("/");
+      JsonArray arr = obj.createNestedArray(PARAM_FS_FILES);
       while (dir.next()) {
-        obj.add(dir.fileName());
+        arr.add("/" + dir.fileName());
       }
 #else  // ESP32
       File root = LittleFS.open("/");
       File f = root.openNextFile();
       JsonArray arr = obj.createNestedArray(PARAM_FS_FILES);
       while (f) {
-        Serial.println(f.name());
         arr.add("/" + String(f.name()));
         f = root.openNextFile();
       }
