@@ -69,6 +69,8 @@ void Config::createJson(JsonObject& doc) {
   doc[PARAM_PUSH_HTTP2_H1] = getHttp2Header(0);
   doc[PARAM_PUSH_HTTP2_H2] = getHttp2Header(1);
   doc[PARAM_PUSH_HTTP3] = getHttp3Url();
+  doc[PARAM_PUSH_HTTP3_H1] = getHttp3Header(0);
+  doc[PARAM_PUSH_HTTP3_H2] = getHttp3Header(1);
   doc[PARAM_PUSH_INFLUXDB2] = getInfluxDb2PushUrl();
   doc[PARAM_PUSH_INFLUXDB2_ORG] = getInfluxDb2PushOrg();
   doc[PARAM_PUSH_INFLUXDB2_BUCKET] = getInfluxDb2PushBucket();
@@ -152,6 +154,10 @@ void Config::parseJson(JsonObject& doc) {
   if (!doc[PARAM_PUSH_HTTP2_H2].isNull())
     setHttp2Header(doc[PARAM_PUSH_HTTP2_H2], 1);
   if (!doc[PARAM_PUSH_HTTP3].isNull()) setHttp3Url(doc[PARAM_PUSH_HTTP3]);
+  if (!doc[PARAM_PUSH_HTTP3_H1].isNull())
+    setHttp3Header(doc[PARAM_PUSH_HTTP3_H1], 0);
+  if (!doc[PARAM_PUSH_HTTP3_H2].isNull())
+    setHttp3Header(doc[PARAM_PUSH_HTTP3_H2], 1);
 
   if (!doc[PARAM_PUSH_INFLUXDB2].isNull())
     setInfluxDb2PushUrl(doc[PARAM_PUSH_INFLUXDB2]);

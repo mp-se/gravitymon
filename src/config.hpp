@@ -111,6 +111,7 @@ class Config {
   String _http2Url = "";
   String _http2Header[2] = {"Content-Type: application/json", ""};
   String _http3Url = "";
+  String _http3Header[2] = {"", ""};
 
   String _influxDb2Url = "";
   String _influxDb2Org = "";
@@ -264,6 +265,11 @@ class Config {
   const char* getHttp3Url() { return _http3Url.c_str(); }
   void setHttp3Url(String s) {
     _http3Url = s;
+    _saveNeeded = true;
+  }
+  const char* getHttp3Header(int idx) { return _http3Header[idx].c_str(); }
+  void setHttp3Header(String s, int idx) {
+    _http3Header[idx] = s;
     _saveNeeded = true;
   }
   bool isHttp3Active() { return _http3Url.length() ? true : false; }

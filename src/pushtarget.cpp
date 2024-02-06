@@ -66,9 +66,6 @@ void PushIntervalTracker::load() {
 #endif
 }
 
-//
-// Update and save counters
-//
 void PushIntervalTracker::save() {
   update(0, myConfig.getPushIntervalHttp1());
   update(1, myConfig.getPushIntervalHttp2());
@@ -96,9 +93,6 @@ void PushIntervalTracker::save() {
   }
 }
 
-//
-// Send the data to targets
-//
 void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
                          float tempC, float runTime) {
   printHeap("PUSH");
@@ -146,9 +140,6 @@ void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
   intDelay.save();
 }
 
-//
-// Check if the server can reduce the buffer size to save memory (ESP8266 only)
-//
 void PushTarget::probeMaxFragement(String& serverPath) {
 #if defined(ESP8266)  // Looks like this is feature is not supported by influxdb
   // Format: http:://servername:port/path
@@ -176,9 +167,6 @@ void PushTarget::probeMaxFragement(String& serverPath) {
 #endif
 }
 
-//
-// Send to influx db v2
-//
 void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to influxdb2." CR));
@@ -241,9 +229,6 @@ void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
   tcp_cleanup();
 }
 
-//
-// Add HTTP header to request
-//
 void PushTarget::addHttpHeader(HTTPClient& http, String header) {
   if (!header.length()) return;
 
@@ -261,9 +246,6 @@ void PushTarget::addHttpHeader(HTTPClient& http, String header) {
   }
 }
 
-//
-// Send data to http target using POST
-//
 void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
                               int index) {
 #if !defined(PUSH_DISABLE_LOGGING)
@@ -347,9 +329,6 @@ void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
   tcp_cleanup();
 }
 
-//
-// Send data to http target using GET
-//
 void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
 #if !defined(PUSH_DISABLE_LOGGING)
   Log.notice(F("PUSH: Sending values to http3" CR));
@@ -382,10 +361,14 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
     probeMaxFragement(serverPath);
     _httpSecure.setTimeout(myConfig.getPushTimeout() * 1000);
     _httpSecure.begin(_wifiSecure, serverPath);
+    addHttpHeader(_httpSecure, myConfig.getHttp3Header(0));
+    addHttpHeader(_httpSecure, myConfig.getHttp3Header(1));
     _lastCode = _httpSecure.GET();
   } else {
     _http.setTimeout(myConfig.getPushTimeout() * 1000);
     _http.begin(_wifi, serverPath);
+    addHttpHeader(_http, myConfig.getHttp3Header(0));
+    addHttpHeader(_http, myConfig.getHttp3Header(1));
     _lastCode = _http.GET();
   }
 
@@ -406,9 +389,6 @@ void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
   tcp_cleanup();
 }
 
-//
-// Send data to mqtt target
-//
 void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
                           bool skipHomeAssistantRegistration) {
 #if !defined(PUSH_DISABLE_LOGGING)
