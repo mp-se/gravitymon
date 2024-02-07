@@ -157,17 +157,6 @@ void WifiConnection::loop() {
     } break;
 
     case RunMode::configurationMode: {
-      if (abs((int32_t)(millis() - _pingTimer)) > 3000) {
-        _pingTimer = millis();
-        /*Log.notice(F("WIFI: Connected to wifi %s ip=%s, channel=%d, gw=%s,
-           dns=%s, rssi=%d, bssi=%s." CR), WiFi.SSID().c_str(),
-           getIPAddress().c_str(), WiFi.channel(),
-             WiFi.gatewayIP().toString().c_str(),
-             WiFi.dnsIP().toString().c_str(), WiFi.RSSI(),
-             WiFi.BSSIDstr().c_str()); */
-        EspSerial.print(".");
-      }
-
       if (!WiFi.isConnected()) {
         if (_reconnectCounter > 5) {
           Log.notice(F("WIFI: Failed to reconnect with wifi, rebooting..." CR));
@@ -401,6 +390,25 @@ bool WifiConnection::disconnect() {
   Log.notice(F("WIFI: Erasing stored WIFI credentials." CR));
   // Erase WIFI credentials
   return WiFi.disconnect(true);
+}
+
+void WifiConnection::timeSync() {
+  configTime(0 * 3600, 0, "pool.ntp.org", "time.nist.gov");
+
+  Log.notice(F("WIFI: Waiting for NTP sync."));
+  time_t now = time(nullptr);
+
+  while (now < 8 * 3600 * 2) {
+    delay(500);
+    EspSerial.print(".");
+    now = time(nullptr);
+  }
+
+  EspSerial.print(CR);
+
+  struct tm timeinfo;
+  gmtime_r(&now, &timeinfo);
+  Log.notice(F("WIFI: Current time: %s."), asctime(&timeinfo));
 }
 
 #if defined(ACTIVATE_OTA)

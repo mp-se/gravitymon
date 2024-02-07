@@ -43,7 +43,6 @@ class WifiConnection {
  private:
   uint32_t _timer = 0;
   uint32_t _timeout = 3000;  // 3 seconds
-  uint32_t _pingTimer = 0;
   uint8_t _resetCounter = 0;
   uint8_t _reconnectCounter = 0;
   const uint8_t _minResetCount = 2;
@@ -70,7 +69,6 @@ class WifiConnection {
  public:
   WifiConnection() {
     _timer = millis();
-    _pingTimer = millis();
   }
 
   // WIFI
@@ -84,6 +82,7 @@ class WifiConnection {
   bool hasConfig();
   String getIPAddress();
   void startWifiAP();
+  void timeSync();
   void loop();
 
   // OTA

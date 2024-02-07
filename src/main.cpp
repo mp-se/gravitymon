@@ -187,6 +187,7 @@ void setup() {
       if (myWifi.isConnected()) {
         Log.notice(F("Main: Activating web server." CR));
         ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
+        // myWifi.timeSync();
 
 #if defined(ACTIVATE_OTA)
         LOG_PERF_START("main-wifi-ota");
