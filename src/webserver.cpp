@@ -987,7 +987,7 @@ void WebServerHandler::loop() {
 #endif
 
   if (runMode == RunMode::wifiSetupMode) {
-    if (abs((int32_t)(millis() - _wifiPortalTimer))  >
+    if (abs((int32_t)(millis() - _wifiPortalTimer)) >
         (myConfig.getWifiPortalTimeout() * 1000)) {
       Log.notice(F("WEB : Wifi portal timeout, reboot device." CR));
       delay(500);

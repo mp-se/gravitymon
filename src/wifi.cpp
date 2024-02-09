@@ -134,9 +134,9 @@ void WifiConnection::startWifiAP() {
   }
 
   _dns = new DNSServer();
-  if(_dns) {
+  if (_dns) {
     _dns->setErrorReplyCode(DNSReplyCode::NoError);
-    if(!_dns->start(53, "*", local)) {
+    if (!_dns->start(53, "*", local)) {
       Log.error(F("WIFI: Failed to start dns server." CR));
     }
   } else {

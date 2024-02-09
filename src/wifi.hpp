@@ -65,9 +65,7 @@ class WifiConnection {
 #endif
 
  public:
-  WifiConnection() {
-    _timer = millis();
-  }
+  WifiConnection() { _timer = millis(); }
 
   // WIFI
   void init();
