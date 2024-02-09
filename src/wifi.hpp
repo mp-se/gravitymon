@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,8 +36,6 @@ SOFTWARE.
 #define WIFI_DEFAULT_SSID "GravityMon"  // Name of created SSID
 #define WIFI_DEFAULT_PWD "password"     // Password for created SSID
 #define WIFI_MDNS "gravitymon"          // Prefix for MDNS name
-
-// TODO: Add function to get NTP
 
 class WifiConnection {
  private:

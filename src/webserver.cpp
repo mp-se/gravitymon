@@ -799,6 +799,7 @@ void WebServerHandler::webHandleFileSystem(AsyncWebServerRequest *request,
 
 void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
   if (runMode == RunMode::wifiSetupMode) {
+    Log.notice(F("WEB : Got request for %s." CR), request->url().c_str());
     request->redirect("http://192.168.4.1");
     return;
   }
