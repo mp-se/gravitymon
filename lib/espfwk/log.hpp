@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2023-2024 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +21,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <helper.hpp>
-#include <serialws.hpp>
+#ifndef SRC_LOG_HPP_
+#define SRC_LOG_HPP_
 
-void SerialWebSocket::begin(AsyncWebServer *server, Print *secondary) {
-  Log.notice(F("WS  : Starting serial websocket" CR));
+#include <ArduinoLog.h>
 
-  _server = server;
-  _secondayLog = secondary;
-  _webSocket = new AsyncWebSocket("/serialws");
-  _server->addHandler(_webSocket);
-}
+#define ERR_FILENAME "/error.log"
+#define ERR_FILENAME2 "/error2.log"
+#define ERR_FILEMAXSIZE 2048
 
-size_t SerialWebSocket::write(uint8_t c) {
-  _buf[_bufSize++] = c;
+class SerialDebug {
+ public:
+  explicit SerialDebug(const uint32_t serialSpeed = 115200L);
+  void begin(Print* p) { getLog()->begin(LOG_LEVEL, p, true); }
+  static Logging* getLog() { return &Log; }
+};
 
-  if (_bufSize >= sizeof(_buf) || c == '\n') {
-    flush();
-  }
+void printTimestamp(Print* _logOutput, int _logLevel);
+void printNewline(Print* _logOutput);
 
-  return sizeof(c);
-}
+void writeErrorLog(const char* format, ...);
+void dumpErrorLog1();
+void dumpErrorLog2();
 
-void SerialWebSocket::flush() {
-  if (_secondayLog) _secondayLog->write(_buf, _bufSize);
+#if defined(USE_SERIAL_PINS) && defined(ESP32) && \
+    !defined(ARDUINO_USB_CDC_ON_BOOT)
+#define EspSerial Serial0
+#else
+#define EspSerial Serial
+#endif
 
-  if (_webSocket->count()) {
-    // Only send data to socket if there are connected clients
-    _webSocket->textAll(reinterpret_cast<const char *>(_buf), _bufSize);
-  }
-
-  memset(_buf, 0, sizeof(_buf));
-  _bufSize = 0;
-}
+#endif  // SRC_LOG_HPP_
 
 // EOF

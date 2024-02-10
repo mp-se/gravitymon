@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,50 +21,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <Ticker.h>
+#ifndef SRC_OTA_HPP_
+#define SRC_OTA_HPP_
 
-#include <helper.hpp>
-#include <led.hpp>
-
-#if defined(ESP32S3)
-#warning "Bug in arduino frameworks caused rgb led to fail on this target"
-#endif
-
-#if defined(ESP32C3) || defined(ESP32S3)
-void ledOn(LedColor l) {
-  uint8_t r, g, b, pin;
-
-  r = (l & 0xff0000) >> 16;
-  g = (l & 0x00ff00) >> 8;
-  b = (l & 0x0000ff);
-  pin = LED_BUILTIN;
-
-  Log.info(F("HELP: Setting led %d to RGB %d-%d-%d" CR), pin, r, g, b);
-  neopixelWrite(pin, r, g, b);
-}
+#if defined(ESP8266)
+#include <ESP8266HTTPClient.h>
 #else
-bool ledInit = false;
-Ticker ledTicker;
-
-void ledToggle() { digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); }
-
-void ledOn(LedColor l) {
-  if (!ledInit) {
-    pinMode(LED_BUILTIN, OUTPUT);
-    ledInit = true;
-  }
-
-  if (l == LedColor::BLUE) {
-    ledTicker.attach(1, ledToggle);
-  } else if (l == LedColor::RED) {
-    ledTicker.attach(0.2, ledToggle);
-  } else {
-    ledTicker.detach();
-    digitalWrite(LED_BUILTIN, l);
-  }
-}
+#include <HTTPClient.h>
 #endif
 
-void ledOff() { ledOn(LedColor::OFF); }
+#include <interface.hpp>
+
+class OtaUpdate {
+ private:
+  OtaConfig* _otaConfig;
+  String _curVer;
+  bool _newFirmware = false;
+
+  bool parseFirmwareVersionString(int (&num)[3], const char* version);
+  void downloadFile(HTTPClient& http, String& fname);
+
+ public:
+  OtaUpdate(OtaConfig* cfg, String ver);
+
+  bool updateFirmware();
+  bool checkFirmwareVersion();
+};
+
+#endif  // SRC_OTA_HPP_
 
 // EOF

@@ -21,64 +21,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#include <basewebserver.hpp>
 #include <config.hpp>
-#include <main.hpp>
-#include <wifi.hpp>
 
-Config myConfig;
+GravmonConfig::GravmonConfig(String baseMDNS, String fileName)
+    : BaseConfig(baseMDNS, fileName, JSON_BUFFER_SIZE_XL) {}
 
-Config::Config() {
-  char buf[30];
-#if defined(ESP8266)
-  snprintf(&buf[0], sizeof(buf), "%06x", (unsigned int)ESP.getChipId());
-#else  // defined (ESP32)
-  uint32_t chipId = 0;
-  for (int i = 0; i < 17; i = i + 8) {
-    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
-  }
-  snprintf(&buf[0], sizeof(buf), "%06x", chipId);
-#endif
-  _id = String(&buf[0]);
-  snprintf(&buf[0], sizeof(buf), "" WIFI_MDNS "%s", getID());
-  _mDNS = String(&buf[0]);
+void GravmonConfig::createJson(JsonObject& doc) {
+  // Call base class functions
+  createJsonBase(doc);
+  createJsonWifi(doc);
+  createJsonOta(doc);
+  createJsonPush(doc);
 
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Created config for %s (%s)." CR), _id.c_str(),
-              _mDNS.c_str());
-#endif
-}
-
-void Config::createJson(JsonObject& doc) {
-  doc[PARAM_MDNS] = getMDNS();
-  doc[PARAM_ID] = getID();
-  doc[PARAM_OTA] = getOtaURL();
-  doc[PARAM_SSID] = getWifiSSID(0);
-  doc[PARAM_PASS] = getWifiPass(0);
-  doc[PARAM_SSID2] = getWifiSSID(1);
-  doc[PARAM_PASS2] = getWifiPass(1);
   doc[PARAM_BLE_TILT_COLOR] = getBleTiltColor();
   doc[PARAM_BLE_FORMAT] = getBleFormat();
-  doc[PARAM_TEMPFORMAT] = String(getTempFormat());
-  doc[PARAM_DARK_MODE] = isDarkMode();
   doc[PARAM_TOKEN] = getToken();
   doc[PARAM_TOKEN2] = getToken2();
-  doc[PARAM_PUSH_HTTP] = getHttpUrl();
-  doc[PARAM_PUSH_HTTP_H1] = getHttpHeader(0);
-  doc[PARAM_PUSH_HTTP_H2] = getHttpHeader(1);
-  doc[PARAM_PUSH_HTTP2] = getHttp2Url();
-  doc[PARAM_PUSH_HTTP2_H1] = getHttp2Header(0);
-  doc[PARAM_PUSH_HTTP2_H2] = getHttp2Header(1);
-  doc[PARAM_PUSH_HTTP3] = getHttp3Url();
-  doc[PARAM_PUSH_HTTP3_H1] = getHttp3Header(0);
-  doc[PARAM_PUSH_HTTP3_H2] = getHttp3Header(1);
-  doc[PARAM_PUSH_INFLUXDB2] = getInfluxDb2PushUrl();
-  doc[PARAM_PUSH_INFLUXDB2_ORG] = getInfluxDb2PushOrg();
-  doc[PARAM_PUSH_INFLUXDB2_BUCKET] = getInfluxDb2PushBucket();
-  doc[PARAM_PUSH_INFLUXDB2_AUTH] = getInfluxDb2PushToken();
-  doc[PARAM_PUSH_MQTT] = getMqttUrl();
-  doc[PARAM_PUSH_MQTT_PORT] = getMqttPort();
-  doc[PARAM_PUSH_MQTT_USER] = getMqttUser();
-  doc[PARAM_PUSH_MQTT_PASS] = getMqttPass();
   doc[PARAM_SLEEP_INTERVAL] = getSleepInterval();
   doc[PARAM_VOLTAGE_FACTOR] =
       serialized(String(getVoltageFactor(), DECIMALS_BATTERY));
@@ -111,12 +70,10 @@ void Config::createJson(JsonObject& doc) {
   // doc[PARAM_GYRO_READ_DELAY] = this->getGyroReadDelay();
   doc[PARAM_GYRO_MOVING_THREASHOLD] = this->getGyroSensorMovingThreashold();
   doc[PARAM_FORMULA_DEVIATION] = this->getMaxFormulaCreationDeviation();
-  doc[PARAM_WIFI_PORTAL_TIMEOUT] = this->getWifiPortalTimeout();
-  doc[PARAM_WIFI_CONNECT_TIMEOUT] = this->getWifiConnectTimeout();
   doc[PARAM_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
-  doc[PARAM_PUSH_INTERVAL_HTTP1] = this->getPushIntervalHttp1();
-  doc[PARAM_PUSH_INTERVAL_HTTP2] = this->getPushIntervalHttp2();
-  doc[PARAM_PUSH_INTERVAL_HTTP3] = this->getPushIntervalHttp3();
+  doc[PARAM_PUSH_INTERVAL_POST] = this->getPushIntervalPost();
+  doc[PARAM_PUSH_INTERVAL_POST2] = this->getPushIntervalPost2();
+  doc[PARAM_PUSH_INTERVAL_GET] = this->getPushIntervalGet();
   doc[PARAM_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
   doc[PARAM_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
   doc[PARAM_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
@@ -124,57 +81,20 @@ void Config::createJson(JsonObject& doc) {
   doc[PARAM_BATTERY_SAVING] = this->isBatterySaving();
 }
 
-void Config::parseJson(JsonObject& doc) {
-  if (!doc[PARAM_OTA].isNull()) setOtaURL(doc[PARAM_OTA]);
-  if (!doc[PARAM_MDNS].isNull()) setMDNS(doc[PARAM_MDNS]);
-  if (!doc[PARAM_SSID].isNull()) setWifiSSID(doc[PARAM_SSID], 0);
-  if (!doc[PARAM_PASS].isNull()) setWifiPass(doc[PARAM_PASS], 0);
-  if (!doc[PARAM_SSID2].isNull()) setWifiSSID(doc[PARAM_SSID2], 1);
-  if (!doc[PARAM_PASS2].isNull()) setWifiPass(doc[PARAM_PASS2], 1);
+void GravmonConfig::parseJson(JsonObject& doc) {
+  // Call base class functions
+  parseJsonBase(doc);
+  parseJsonWifi(doc);
+  parseJsonOta(doc);
+  parseJsonPush(doc);
+
   if (!doc[PARAM_BLE_TILT_COLOR].isNull())
     setBleTiltColor(doc[PARAM_BLE_TILT_COLOR]);
   if (!doc[PARAM_BLE_FORMAT].isNull())
     setBleFormat(doc[PARAM_BLE_FORMAT].as<int>());
 
-  if (!doc[PARAM_TEMPFORMAT].isNull()) {
-    String s = doc[PARAM_TEMPFORMAT];
-    setTempFormat(s.charAt(0));
-  }
-
   if (!doc[PARAM_TOKEN].isNull()) setToken(doc[PARAM_TOKEN]);
   if (!doc[PARAM_TOKEN2].isNull()) setToken2(doc[PARAM_TOKEN2]);
-  if (!doc[PARAM_PUSH_HTTP].isNull()) setHttpUrl(doc[PARAM_PUSH_HTTP]);
-  if (!doc[PARAM_PUSH_HTTP_H1].isNull())
-    setHttpHeader(doc[PARAM_PUSH_HTTP_H1], 0);
-  if (!doc[PARAM_PUSH_HTTP_H2].isNull())
-    setHttpHeader(doc[PARAM_PUSH_HTTP_H2], 1);
-  if (!doc[PARAM_PUSH_HTTP2].isNull()) setHttp2Url(doc[PARAM_PUSH_HTTP2]);
-  if (!doc[PARAM_PUSH_HTTP2_H1].isNull())
-    setHttp2Header(doc[PARAM_PUSH_HTTP2_H1], 0);
-  if (!doc[PARAM_PUSH_HTTP2_H2].isNull())
-    setHttp2Header(doc[PARAM_PUSH_HTTP2_H2], 1);
-  if (!doc[PARAM_PUSH_HTTP3].isNull()) setHttp3Url(doc[PARAM_PUSH_HTTP3]);
-  if (!doc[PARAM_PUSH_HTTP3_H1].isNull())
-    setHttp3Header(doc[PARAM_PUSH_HTTP3_H1], 0);
-  if (!doc[PARAM_PUSH_HTTP3_H2].isNull())
-    setHttp3Header(doc[PARAM_PUSH_HTTP3_H2], 1);
-
-  if (!doc[PARAM_PUSH_INFLUXDB2].isNull())
-    setInfluxDb2PushUrl(doc[PARAM_PUSH_INFLUXDB2]);
-  if (!doc[PARAM_PUSH_INFLUXDB2_ORG].isNull())
-    setInfluxDb2PushOrg(doc[PARAM_PUSH_INFLUXDB2_ORG]);
-  if (!doc[PARAM_PUSH_INFLUXDB2_BUCKET].isNull())
-    setInfluxDb2PushBucket(doc[PARAM_PUSH_INFLUXDB2_BUCKET]);
-  if (!doc[PARAM_PUSH_INFLUXDB2_AUTH].isNull())
-    setInfluxDb2PushToken(doc[PARAM_PUSH_INFLUXDB2_AUTH]);
-
-  if (!doc[PARAM_PUSH_MQTT].isNull()) setMqttUrl(doc[PARAM_PUSH_MQTT]);
-  if (!doc[PARAM_PUSH_MQTT_PORT].isNull())
-    setMqttPort(doc[PARAM_PUSH_MQTT_PORT].as<int>());
-  if (!doc[PARAM_PUSH_MQTT_USER].isNull())
-    setMqttUser(doc[PARAM_PUSH_MQTT_USER]);
-  if (!doc[PARAM_PUSH_MQTT_PASS].isNull())
-    setMqttPass(doc[PARAM_PUSH_MQTT_PASS]);
 
   if (!doc[PARAM_SLEEP_INTERVAL].isNull())
     setSleepInterval(doc[PARAM_SLEEP_INTERVAL].as<int>());
@@ -240,18 +160,12 @@ void Config::parseJson(JsonObject& doc) {
   if (!doc[PARAM_FORMULA_CALIBRATION_TEMP].isNull())
     this->SetDefaultCalibrationTemp(
         doc[PARAM_FORMULA_CALIBRATION_TEMP].as<float>());
-  if (!doc[PARAM_WIFI_PORTAL_TIMEOUT].isNull())
-    this->setWifiPortalTimeout(doc[PARAM_WIFI_PORTAL_TIMEOUT].as<int>());
-  if (!doc[PARAM_WIFI_CONNECT_TIMEOUT].isNull())
-    this->setWifiConnectTimeout(doc[PARAM_WIFI_CONNECT_TIMEOUT].as<int>());
-  if (!doc[PARAM_PUSH_TIMEOUT].isNull())
-    this->setPushTimeout(doc[PARAM_PUSH_TIMEOUT].as<int>());
-  if (!doc[PARAM_PUSH_INTERVAL_HTTP1].isNull())
-    this->setPushIntervalHttp1(doc[PARAM_PUSH_INTERVAL_HTTP1].as<int>());
-  if (!doc[PARAM_PUSH_INTERVAL_HTTP2].isNull())
-    this->setPushIntervalHttp2(doc[PARAM_PUSH_INTERVAL_HTTP2].as<int>());
-  if (!doc[PARAM_PUSH_INTERVAL_HTTP3].isNull())
-    this->setPushIntervalHttp3(doc[PARAM_PUSH_INTERVAL_HTTP3].as<int>());
+  if (!doc[PARAM_PUSH_INTERVAL_POST].isNull())
+    this->setPushIntervalPost(doc[PARAM_PUSH_INTERVAL_POST].as<int>());
+  if (!doc[PARAM_PUSH_INTERVAL_POST2].isNull())
+    this->setPushIntervalPost2(doc[PARAM_PUSH_INTERVAL_POST2].as<int>());
+  if (!doc[PARAM_PUSH_INTERVAL_GET].isNull())
+    this->setPushIntervalGet(doc[PARAM_PUSH_INTERVAL_GET].as<int>());
   if (!doc[PARAM_PUSH_INTERVAL_INFLUX].isNull())
     this->setPushIntervalInflux(doc[PARAM_PUSH_INTERVAL_INFLUX].as<int>());
   if (!doc[PARAM_PUSH_INTERVAL_MQTT].isNull())
@@ -262,119 +176,9 @@ void Config::parseJson(JsonObject& doc) {
     setIgnoreLowAnges(doc[PARAM_IGNORE_LOW_ANGLES].as<bool>());
   if (!doc[PARAM_BATTERY_SAVING].isNull())
     setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
-  if (!doc[PARAM_DARK_MODE].isNull())
-    setDarkMode(doc[PARAM_DARK_MODE].as<bool>());
 }
 
-bool Config::saveFile() {
-  if (!_saveNeeded) {
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-    Log.verbose(F("CFG : Skipping save, not needed." CR));
-#endif
-    return true;
-  }
-
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Saving configuration to file." CR));
-#endif
-
-  File configFile = LittleFS.open(CFG_FILENAME, "w");
-
-  if (!configFile) {
-    writeErrorLog("CFG : Failed to save configuration.");
-    return false;
-  }
-
-  DynamicJsonDocument doc(JSON_BUFFER_SIZE_XL);
-  JsonObject obj = doc.createNestedObject();
-  createJson(obj);
-
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  serializeJson(obj, EspSerial);
-  EspSerial.print(CR);
-#endif
-
-  serializeJson(obj, configFile);
-  configFile.flush();
-  configFile.close();
-
-  _saveNeeded = false;
-  Log.notice(F("CFG : Configuration saved to " CFG_FILENAME "." CR));
-  return true;
-}
-
-bool Config::loadFile() {
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Loading configuration from file." CR));
-#endif
-
-  if (!LittleFS.exists(CFG_FILENAME)) {
-    writeErrorLog("CFG : Configuration file does not exist.");
-    return false;
-  }
-
-  File configFile = LittleFS.open(CFG_FILENAME, "r");
-
-  if (!configFile) {
-    writeErrorLog("CFG : Failed to load configuration.");
-    return false;
-  }
-
-  Log.notice(F("CFG : Size of configuration file=%d bytes." CR),
-             configFile.size());
-
-  DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
-  DeserializationError err = deserializeJson(doc, configFile);
-#if LOG_LEVEL == 6
-  serializeJson(doc, EspSerial);
-  EspSerial.print(CR);
-#endif
-  configFile.close();
-
-  if (err) {
-    writeErrorLog("CFG : Failed to parse configuration (json)");
-    return false;
-  }
-
-#if LOG_LEVEL == 6
-  Log.verbose(F("CFG : Parsed configuration file." CR));
-#endif
-
-  JsonObject obj = doc.as<JsonObject>();
-  parseJson(obj);
-
-  _saveNeeded = false;  // Reset save flag
-  Log.notice(F("CFG : Configuration file " CFG_FILENAME " loaded." CR));
-  return true;
-}
-
-void Config::formatFileSystem() {
-  Log.notice(F("CFG : Formating filesystem." CR));
-  LittleFS.format();
-}
-
-void Config::checkFileSystem() {
-#if LOG_LEVEL == 6 && !defined(DISABLE_LOGGING)
-  Log.verbose(F("CFG : Checking if filesystem is valid." CR));
-#endif
-
-#if defined(ESP8266)
-  if (LittleFS.begin()) {
-    Log.notice(F("CFG : Filesystem mounted." CR));
-  } else {
-    Log.error(F("CFG : Unable to mount file system, formatting..." CR));
-    LittleFS.format();
-  }
-#else
-  if (LittleFS.begin(true)) {
-    Log.notice(F("CFG : Filesystem mounted." CR));
-  } else {
-    Log.error(F("CFG : Unable to mount file system..." CR));
-  }
-#endif
-}
-
-void Config::migrateSettings() {
+void GravmonConfig::migrateSettings() {
   constexpr auto CFG_FILENAME_OLD = "/gravitymon.json";
 
   if (!LittleFS.exists(CFG_FILENAME_OLD)) {
@@ -388,8 +192,8 @@ void Config::migrateSettings() {
     return;
   }
 
-  DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
-  DynamicJsonDocument doc2(JSON_BUFFER_SIZE_LARGE);
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE_L);
+  DynamicJsonDocument doc2(JSON_BUFFER_SIZE_L);
 
   DeserializationError err = deserializeJson(doc, configFile);
   configFile.close();
@@ -411,7 +215,7 @@ void Config::migrateSettings() {
     if (k != "formula_calculation_data") obj2[k] = obj[kv.key().c_str()];
   }
 
-  obj2["ble_tilt_color"] = obj["ble"];
+  obj2[PARAM_BLE_TILT_COLOR] = obj["ble"];
 
   JsonArray fdArray = obj2.createNestedArray(PARAM_FORMULA_DATA);
   for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
@@ -434,7 +238,7 @@ void Config::migrateSettings() {
   Log.notice(F("CFG : Migrated old config /gravitymon.json." CR));
 }
 
-void Config::migrateHwSettings() {
+void GravmonConfig::migrateHwSettings() {
   constexpr auto CFG_FILENAME_HW_OLD = "/hardware.json";
 
   if (!LittleFS.exists(CFG_FILENAME_HW_OLD)) {
@@ -448,8 +252,8 @@ void Config::migrateHwSettings() {
     return;
   }
 
-  DynamicJsonDocument doc(JSON_BUFFER_SIZE_LARGE);
-  DynamicJsonDocument doc2(JSON_BUFFER_SIZE_LARGE);
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE_L);
+  DynamicJsonDocument doc2(JSON_BUFFER_SIZE_L);
 
   DeserializationError err = deserializeJson(doc, configFile);
   configFile.close();
@@ -471,11 +275,21 @@ void Config::migrateHwSettings() {
     obj2[k] = obj[kv.key().c_str()];
   }
 
-  obj2["http_int"] = obj["int-http1"];
-  obj2["http_int2"] = obj["int-http2"];
-  obj2["http_int3"] = obj["int-http3"];
-  obj2["influxdb2_int"] = obj["int-influx"];
-  obj2["mqtt_int"] = obj["int-mqtt"];
+  obj2[PARAM_HTTP_POST_TARGET] = obj["http_push"];
+  obj2[PARAM_HTTP_POST_HEADER1] = obj["http_push_h1"];
+  obj2[PARAM_HTTP_POST_HEADER2] = obj["http_push_h2"];
+  obj2[PARAM_HTTP_POST2_TARGET] = obj["http_push2"];
+  obj2[PARAM_HTTP_POST2_HEADER1] = obj["http_push2_h1"];
+  obj2[PARAM_HTTP_POST2_HEADER2] = obj["http_push2_h2"];
+  obj2[PARAM_HTTP_GET_TARGET] = obj["http_push3"];
+  obj2[PARAM_INFLUXDB2_TARGET] = obj["influxdb2_push"];
+  obj2[PARAM_MQTT_TARGET] = obj["mqtt_push"];
+
+  obj2[PARAM_PUSH_INTERVAL_POST] = obj["int-http1"];
+  obj2[PARAM_PUSH_INTERVAL_POST2] = obj["int-http2"];
+  obj2[PARAM_PUSH_INTERVAL_GET] = obj["int-http3"];
+  obj2[PARAM_PUSH_INTERVAL_INFLUX] = obj["int-influx"];
+  obj2[PARAM_PUSH_INTERVAL_MQTT] = obj["int-mqtt"];
 
   obj.clear();
   serializeJson(obj2, EspSerial);
@@ -488,31 +302,6 @@ void Config::migrateHwSettings() {
   }
 
   Log.notice(F("CFG : Migrated old hw config /hardware.json." CR));
-}
-
-bool Config::saveWifiOnly() {
-  File configFile = LittleFS.open(CFG_FILENAME, "w");
-
-  if (!configFile) {
-    writeErrorLog("CFG : Failed to save configuration.");
-    return false;
-  }
-
-  DynamicJsonDocument doc(JSON_BUFFER_SIZE_SMALL);
-  JsonObject obj = doc.createNestedObject();
-
-  obj[PARAM_SSID] = getWifiSSID(0);
-  obj[PARAM_PASS] = getWifiPass(0);
-  obj[PARAM_SSID2] = getWifiSSID(1);
-  obj[PARAM_PASS2] = getWifiPass(1);
-
-  serializeJson(obj, configFile);
-  configFile.flush();
-  configFile.close();
-
-  _saveNeeded = false;
-  Log.notice(F("CFG : WIFI configuration saved to " CFG_FILENAME "." CR));
-  return true;
 }
 
 // EOF

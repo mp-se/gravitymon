@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,39 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
+#include <templating.hpp>
 
-#if defined(ESP32) && !defined(ESP32S2)
+// the useDefaultTemplate param is there to support unit tests.
+const char* TemplatingEngine::create(const char* base) {
+#if LOG_LEVEL == 6
+  // Log.verbose(F("TPL : Base '%s'." CR), baseTemplate.c_str());
+#endif
 
-#include <NimBLEBeacon.h>
-#include <NimBLEDevice.h>
+  // Insert data into template.
+  transform(base);
 
-class BleSender {
- private:
-  BLEServer* _server = nullptr;
-  BLEAdvertising* _advertising = nullptr;
-  BLEService* _service = nullptr;
-  BLECharacteristic* _characteristic = nullptr;
-  BLEUUID _uuid;
-  bool _initFlag = false;
-  int _beaconTime = 1000;
+#if LOG_LEVEL == 6
+  // Log.verbose(F("TPL : Transformed '%s'." CR), baseTemplate.c_str());
+#endif
 
- public:
-  BleSender() {}
+  if (_output) return _output;
 
-  void init();
+  return "";
+}
 
-  // Beacons
-  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendEddystone(float battery, float tempC, float gravity, float angle);
-  void sendCustomBeaconData(float battery, float tempC, float gravity,
-                            float angle);
-
-  // Use GATT
-  void sendGravitymonData(String payload);
-  bool isGravitymonDataSent();
-};
-
-#endif  // ESP32 && !ESP32S2
-#endif  // SRC_BLE_HPP_
+// EOF

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,24 @@ SOFTWARE.
 #ifndef SRC_PERF_HPP_
 #define SRC_PERF_HPP_
 
-#include <Arduino.h>
+#if defined(PERF_ENABLE)
 
-#if defined(COLLECT_PERFDATA)
+#include <baseconfig.hpp>
 
 class PerfLogging {
  private:
+  BaseConfig* _config = 0;
+
   struct PerfEntry {
     uint32_t start;   // millis()
     uint32_t end;     // millis()
     uint32_t max;     // max time in ms
     const char* key;  // measurement
 
-    PerfEntry* next;  // Next in the linked list
+    PerfEntry* next;
 
-    float mA;  // Power consumption
-    float V;   // Power consumption
+    float mA;  // used when a power meeter is attached
+    float V;
   };
 
   PerfEntry* first = 0;
@@ -83,7 +85,19 @@ class PerfLogging {
     return pe;
   }
 
+  PerfLogging(PerfLogging const&) = delete;
+  void operator=(PerfLogging const&) = delete;
+
  public:
+  PerfLogging() {}
+
+  static PerfLogging& getInstance() {
+    static PerfLogging _instance;
+    return _instance;
+  }
+
+  void setBaseConfig(BaseConfig* config) { _config = config; }
+
   void clear();
   void start(const char* key);
   void stop(const char* key);
@@ -91,26 +105,23 @@ class PerfLogging {
   void pushInflux();
 };
 
-extern PerfLogging myPerfLogging;
+extern PerfLogging gblPerfLogging;
 
 // Use these to collect performance data from various parts of the code
-#define LOG_PERF_START(s) myPerfLogging.start(s)
-#define LOG_PERF_STOP(s) myPerfLogging.stop(s)
-// #define LOG_PERF_PRINT() myPerfLogging.print()
-#define LOG_PERF_PRINT()
-#define LOG_PERF_CLEAR() myPerfLogging.clear()
-#define LOG_PERF_PUSH() myPerfLogging.pushInflux()
+#define PERF_BEGIN(s) gblPerfLogging.getInstance().start(s)
+#define PERF_END(s) gblPerfLogging.getInstance().stop(s)
+#define PERF_CLEAR() gblPerfLogging.getInstance().clear()
+#define PERF_PUSH() gblPerfLogging.getInstance().pushInflux()
 
 #else
 
 // These will disable the performance collection function
-#define LOG_PERF_START(s)
-#define LOG_PERF_STOP(s)
-#define LOG_PERF_PRINT()
-#define LOG_PERF_CLEAR()
-#define LOG_PERF_PUSH()
+#define PERF_BEGIN(s)
+#define PERF_END(s)
+#define PERF_CLEAR()
+#define PERF_PUSH()
 
-#endif  // COLLECT_PERFDATA
+#endif  // PERF_ENABLE
 
 #endif  // SRC_PERF_HPP_
 

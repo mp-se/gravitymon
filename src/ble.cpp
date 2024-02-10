@@ -24,6 +24,7 @@ SOFTWARE.
 #if defined(ESP32) && !defined(ESP32S2)
 
 #include <ble.hpp>
+#include <main.hpp>
 #include <string>
 
 // Tilt UUID variants and data format, based on tilt-sim

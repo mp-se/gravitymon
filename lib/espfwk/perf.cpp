@@ -21,28 +21,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#if defined(PERF_ENABLE)
+
+#include <Arduino.h>
+
+#include <log.hpp>
+#include <perf.hpp>
+#include <utils.hpp>
+
 #if defined(ESP8266)
 #include <ESP8266HTTPClient.h>
-#include <ESP8266WiFi.h>
-#else  // defined (ESP32)
+#else
 #include <HTTPClient.h>
-#include <WiFi.h>
 #endif
 
-#include <config.hpp>
-#include <gyro.hpp>
-#include <helper.hpp>
-#include <main.hpp>
-#include <perf.hpp>
-#include <tempsensor.hpp>
-#include <wifi.hpp>
-
-#if defined(COLLECT_PERFDATA)
-
-PerfLogging myPerfLogging;
+PerfLogging gblPerfLogging;
 
 void PerfLogging::clear() {
-  // Clear the measurements
   if (first == 0) return;
 
   PerfEntry* pe = first;
@@ -84,35 +79,25 @@ void PerfLogging::print() {
 }
 
 void PerfLogging::pushInflux() {
-  if (!myConfig.isInfluxDb2Active()) return;
+  if (strlen(PERF_INFLUX_TARGET) == 0) return;
 
-  if (myConfig.isInfluxSSL()) {
-    Log.warning(
-        F("PERF: InfluxDB2 with SSL is not supported when pushing performance "
-          "data, skipping" CR));
-    return;
-  }
+  if (_config == 0) return;
 
   WiFiClient wifi;
   HTTPClient http;
-  String serverPath =
-      String(myConfig.getInfluxDb2PushUrl()) +
-      "/api/v2/write?org=" + String(myConfig.getInfluxDb2PushOrg()) +
-      "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
+  String serverPath = String(PERF_INFLUX_TARGET) +
+                      "/api/v2/write?org=" + String(PERF_INFLUX_ORG) +
+                      "&bucket=" + String(PERF_INFLUX_BUCKET);
 
   http.begin(wifi, serverPath);
 
-  // Create body for influxdb2, format used
-  // key,host=mdns value=0.0
   String body;
   body.reserve(500);
 
-  // Create the payload with performance data.
-  // ------------------------------------------------------------------------------------------
   PerfEntry* pe = first;
   char buf[150];
-  snprintf(&buf[0], sizeof(buf), "perf,host=%s,device=%s ", myConfig.getMDNS(),
-           myConfig.getID());
+  snprintf(&buf[0], sizeof(buf), "perf,host=%s,device=%s ", _config->getMDNS(),
+           _config->getID());
   body += &buf[0];
 
   while (pe != 0) {
@@ -127,50 +112,32 @@ void PerfLogging::pushInflux() {
     pe = pe->next;
   }
 
-  // Create the payload with debug data for validating sensor stability
-  // ------------------------------------------------------------------------------------------
   snprintf(&buf[0], sizeof(buf), "\ndebug,host=%s,device=%s ",
-           myConfig.getMDNS(), myConfig.getID());
+           _config->getMDNS(), _config->getID());
   body += &buf[0];
 #if defined(ESP8266)
-  snprintf(&buf[0], sizeof(buf),
-           "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp="
-           "%.2f,heap=%d,heap-frag=%d,heap-max=%d,stack=%d",
-           myGyro.getAngle(), myGyro.getLastGyroData().ax,
-           myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
-           myGyro.getSensorTempC(),
-           myTempSensor.getTempC(myConfig.isGyroTemp()), ESP.getFreeHeap(),
-           ESP.getHeapFragmentation(), ESP.getMaxFreeBlockSize(),
-           ESP.getFreeContStack());
+  snprintf(&buf[0], sizeof(buf), "heap=%d,heap-frag=%d,heap-max=%d,stack=%d",
+           ESP.getFreeHeap(), ESP.getHeapFragmentation(),
+           ESP.getMaxFreeBlockSize(), ESP.getFreeContStack());
 #else  // defined (ESP32)
-  snprintf(&buf[0], sizeof(buf),
-           "angle=%.4f,gyro-ax=%d,gyro-ay=%d,gyro-az=%d,gyro-temp=%.2f,ds-temp="
-           "%.2f,heap=%d,heap-frag=%d,heap-max=%d",
-           myGyro.getAngle(), myGyro.getLastGyroData().ax,
-           myGyro.getLastGyroData().ay, myGyro.getLastGyroData().az,
-           myGyro.getSensorTempC(), myTempSensor.getTempC(), ESP.getFreeHeap(),
-           0, ESP.getMaxAllocHeap());
+  snprintf(&buf[0], sizeof(buf), "heap=%d,heap-frag=%d,heap-max=%d",
+           ESP.getFreeHeap(), 0, ESP.getMaxAllocHeap());
 #endif
 
   body += &buf[0];
 
-#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("PERF: url %s." CR), serverPath.c_str());
   Log.verbose(F("PERF: data %s." CR), body.c_str());
 #endif
 
-  // Send HTTP POST request
-  String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
+  String auth = "Token " + String(PERF_INFLUX_TOKEN);
   http.addHeader(F("Authorization"), auth.c_str());
-  http.setTimeout(myConfig.getPushTimeout() * 1000);
+  http.setTimeout(_config->getPushTimeout() * 1000);
   int httpResponseCode = http.POST(body);
 
   if (httpResponseCode == 204) {
-#if !defined(HELPER_DISABLE_LOGGING)
-    Log.notice(
-        F("PERF: InfluxDB2 push performance data successful, response=%d" CR),
-        httpResponseCode);
-#endif
+    // No need to report success.
   } else {
     Log.error(F("PERF: InfluxDB2 push performance data failed, response=%d" CR),
               httpResponseCode);
@@ -181,6 +148,6 @@ void PerfLogging::pushInflux() {
   tcp_cleanup();
 }
 
-#endif  // src/helper.hpp src/helper.cpp
+#endif  // PERF_ENABLE
 
 // EOF

@@ -24,32 +24,6 @@ SOFTWARE.
 #ifndef SRC_HELPER_HPP_
 #define SRC_HELPER_HPP_
 
-#include <battery.hpp>
-#include <history.hpp>
-#include <led.hpp>
-#include <main.hpp>
-#include <perf.hpp>
-#include <serialdbg.hpp>
-
-#define ERR_FILENAME "/error.log"
-#define ERR_FILENAME2 "/error2.log"
-#define ERR_FILEMAXSIZE 4000
-
-#define RUNTIME_FILENAME "/runtime.log"
-
-// tcp cleanup
-void tcp_cleanup();
-
-// forced reset as alternative to reset()
-void forcedReset();
-
-// Error logging
-void writeErrorLog(const char* format, ...);
-void checkResetReason();
-
-// Sleep mode
-void deepSleep(int t);
-
 // Force config mode
 bool checkPinConnected();
 
@@ -57,23 +31,6 @@ bool checkPinConnected();
 void printBuildOptions();
 void detectChipRevision();
 void runGpioHardwareTests();
-
-// Data conversion
-double convertToPlato(double sg);
-double convertToSG(double plato);
-float convertCtoF(float c);
-float convertFtoC(float f);
-
-// url encode/decode
-String urldecode(String str);
-String urlencode(String str);
-
-// Float to String
-char* convertFloatToString(float f, char* buf, int dec = 2);
-float reduceFloatPrecision(float f, int dec = 2);
-
-// Logging via serial
-void printHeap(String prefix = "HELP");
 
 #endif  // SRC_HELPER_HPP_
 

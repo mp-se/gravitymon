@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2023-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,39 +21,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
+#ifndef SRC_LED_HPP_
+#define SRC_LED_HPP_
 
-#if defined(ESP32) && !defined(ESP32S2)
+#include <Arduino.h>
 
-#include <NimBLEBeacon.h>
-#include <NimBLEDevice.h>
-
-class BleSender {
- private:
-  BLEServer* _server = nullptr;
-  BLEAdvertising* _advertising = nullptr;
-  BLEService* _service = nullptr;
-  BLECharacteristic* _characteristic = nullptr;
-  BLEUUID _uuid;
-  bool _initFlag = false;
-  int _beaconTime = 1000;
-
- public:
-  BleSender() {}
-
-  void init();
-
-  // Beacons
-  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendEddystone(float battery, float tempC, float gravity, float angle);
-  void sendCustomBeaconData(float battery, float tempC, float gravity,
-                            float angle);
-
-  // Use GATT
-  void sendGravitymonData(String payload);
-  bool isGravitymonDataSent();
+enum LedColor {
+#if defined(ESP32C3) || defined(ESP32S3)
+  OFF = 0x000000,
+  BLACK = 0x000000,
+  RED = 0xff0000,
+  GREEN = 0x00ff00,
+  BLUE = 0x0000ff,
+  CYAN = 0x00ffff,
+  PURPLE = 0xff00ff,
+  YELLOW = 0xffff00,
+  WHITE = 0xffffff
+#else
+  OFF = HIGH,
+  BLACK = HIGH,
+  RED = 3,  // TIcker at fast pace
+  GREEN = LOW,
+  BLUE = 2,  // Ticker at slow pace
+  PURPLE = LOW,
+  CYAN = LOW,
+  YELLOW = LOW,
+  WHITE = LOW
+#endif
 };
 
-#endif  // ESP32 && !ESP32S2
-#endif  // SRC_BLE_HPP_
+void ledOn(LedColor l = LedColor::WHITE);
+void ledOff();
+
+#endif  // SRC_LED_HPP_
+
+// EOF

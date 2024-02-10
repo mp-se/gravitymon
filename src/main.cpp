@@ -24,16 +24,20 @@ SOFTWARE.
 #include <ble.hpp>
 #undef LOG_LEVEL_ERROR
 #undef LOG_LEVEL_INFO
+#include <battery.hpp>
 #include <calc.hpp>
 #include <config.hpp>
 #include <gyro.hpp>
 #include <helper.hpp>
+#include <history.hpp>
 #include <main.hpp>
+#include <ota.hpp>
+#include <perf.hpp>
 #include <pushtarget.hpp>
 #include <serialws.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
-#include <wifi.hpp>
+#include <wificonnection.hpp>
 
 #if defined(ACTIVATE_GCOV)
 extern "C" {
@@ -41,11 +45,26 @@ extern "C" {
 }
 #endif
 
+#define CFG_APPNAME "gravitymon"
+#define CFG_FILENAME "/gravitymon2.json"
+#define CFG_AP_SSID "gravitymon"
+#define CFG_AP_PASS "password"
+
+#if !defined(USER_SSID)
+#define USER_SSID ""
+#define USER_PASS ""
+#endif
+
 // #define FORCE_GRAVITY_MODE
 SerialDebug mySerial;
+GravmonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
+WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
+                      USER_SSID, USER_PASS);
+OtaUpdate myOta(&myConfig, CFG_APPVER);
 BatteryVoltage myBatteryVoltage;
+GravmonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
-#if defined(ESP32) && !defined(ESP32S2)
+#if defined(ESP32C3) || defined(ESP32S3)
 BleSender myBleSender;
 #endif
 
@@ -53,7 +72,7 @@ BleSender myBleSender;
 #ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000;  // ms, time to wait between changes to output
 #else
-int interval = 200;  // ms, time to wait between changes to output
+int interval = 200;    // ms, time to wait between changes to output
 #endif
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
@@ -68,25 +87,12 @@ RunMode runMode = RunMode::gravityMode;
 void checkSleepMode(float angle, float volt);
 
 void setup() {
-  LOG_PERF_START("run-time");
-  LOG_PERF_START("main-setup");
+  PERF_BEGIN("run-time");
+  PERF_BEGIN("main-setup");
   runtimeMillis = millis();
 
   // Main startup
-#if defined(ESP8266)
-  Log.notice(F("Main: Started setup for %s." CR),
-             String(ESP.getChipId(), HEX).c_str());
-#else  // defined (ESP32)
-  char buf[20];
-  uint32_t chipId = 0;
-  for (int i = 0; i < 17; i = i + 8) {
-    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
-  }
-  snprintf(&buf[0], sizeof(buf), "%6x", chipId);
-  Log.notice(F("Main: Started setup for %s." CR), &buf[0]);
-  ledOff();
-
-#endif
+  Log.notice(F("Main: Started setup for %s." CR), myConfig.getID());
   printBuildOptions();
   detectChipRevision();
 
@@ -98,14 +104,14 @@ void setup() {
   runGpioHardwareTests();
 #endif
 
-  LOG_PERF_START("main-config-load");
+  PERF_BEGIN("main-config-load");
   myConfig.checkFileSystem();
   myWifi.init();  // double reset check
   checkResetReason();
   myConfig.migrateSettings();
   myConfig.migrateHwSettings();
   myConfig.loadFile();
-  LOG_PERF_STOP("main-config-load");
+  PERF_END("main-config-load");
 
   // For restoring ispindel backup to test migration
   // LittleFS.rename("/ispindel.json", "/config.json");
@@ -146,9 +152,9 @@ void setup() {
 
     default:
       if (myGyro.setup()) {
-        LOG_PERF_START("main-gyro-read");
+        PERF_BEGIN("main-gyro-read");
         myGyro.read();
-        LOG_PERF_STOP("main-gyro-read");
+        PERF_END("main-gyro-read");
       } else {
         Log.notice(
             F("Main: Failed to connect to the gyro, software will not be able "
@@ -170,14 +176,14 @@ void setup() {
 #endif
 
       if (needWifi) {
-        LOG_PERF_START("main-wifi-connect");
+        PERF_BEGIN("main-wifi-connect");
         myWifi.connect();
-        LOG_PERF_STOP("main-wifi-connect");
+        PERF_END("main-wifi-connect");
       }
 
-      LOG_PERF_START("main-temp-setup");
+      PERF_BEGIN("main-temp-setup");
       myTempSensor.setup();
-      LOG_PERF_STOP("main-temp-setup");
+      PERF_END("main-temp-setup");
       break;
   }
 
@@ -190,14 +196,14 @@ void setup() {
                                 // myWifi.timeSync();
 
 #if defined(ACTIVATE_OTA)
-        LOG_PERF_START("main-wifi-ota");
-        if (myWifi.checkFirmwareVersion()) myWifi.updateFirmware();
-        LOG_PERF_STOP("main-wifi-ota");
+        PERF_BEGIN("main-wifi-ota");
+        if (myOta.checkFirmwareVersion()) myOta.updateFirmware();
+        PERF_END("main-wifi-ota");
 #endif
         case RunMode::wifiSetupMode:
-          myWebServerHandler.setupWebServer();  // Takes less than 4ms, so skip
-                                                // this measurement
-          mySerialWebSocket.begin(myWebServerHandler.getWebServer(), &Serial);
+          myWebServer.setupWebServer();  // Takes less than 4ms, so skip
+                                         // this measurement
+          mySerialWebSocket.begin(myWebServer.getWebServer(), &Serial);
           mySerial.begin(&mySerialWebSocket);
       } else {
         ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
@@ -211,7 +217,7 @@ void setup() {
       break;
   }
 
-  LOG_PERF_STOP("main-setup");
+  PERF_END("main-setup");
   Log.notice(F("Main: Setup completed." CR));
   pushMillis = stableGyroMillis =
       millis();  // Dont include time for wifi connection
@@ -235,10 +241,10 @@ bool loopReadGravity() {
     angle = myGyro.getAngle();    // Gyro angle
     stableGyroMillis = millis();  // Reset timer
 
-    LOG_PERF_START("loop-temp-read");
+    PERF_BEGIN("loop-temp-read");
     myTempSensor.readSensor(myConfig.isGyroTemp());
     float tempC = myTempSensor.getTempC();
-    LOG_PERF_STOP("loop-temp-read");
+    PERF_END("loop-temp-read");
 
     float gravitySG = calculateGravity(angle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
@@ -266,7 +272,7 @@ bool loopReadGravity() {
 
     if (pushExpired || runMode == RunMode::gravityMode) {
       pushMillis = millis();
-      LOG_PERF_START("loop-push");
+      PERF_BEGIN("loop-push");
 
 #if defined(ESP32) && !defined(ESP32S2)
       if (myConfig.isBleActive()) {
@@ -294,10 +300,12 @@ bool loopReadGravity() {
           } break;
           case BleFormat::BLE_GRAVITYMON_SERVICE: {
             TemplatingEngine engine;
-            engine.initialize(angle, gravitySG, corrGravitySG, tempC,
-                              (millis() - runtimeMillis) / 1000,
-                              myBatteryVoltage.getVoltage());
-            String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
+            GravmonPush push(&myConfig);
+            push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG,
+                                     tempC, (millis() - runtimeMillis) / 1000,
+                                     myBatteryVoltage.getVoltage());
+            String tpl = push.getTemplate(GravmonPush::TEMPLATE_BLE);
+            String payload = engine.create(tpl.c_str());
             myBleSender.sendGravitymonData(payload);
           } break;
         }
@@ -306,7 +314,7 @@ bool loopReadGravity() {
 
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.
-        PushTarget push;
+        GravmonPush push(&myConfig);
         push.sendAll(angle, gravitySG, corrGravitySG, tempC,
                      (millis() - runtimeMillis) / 1000);
       }
@@ -326,11 +334,11 @@ bool loopReadGravity() {
       }
 #endif  // ESP32 && !ESP32S2
 
-      LOG_PERF_STOP("loop-push");
+      PERF_END("loop-push");
 
       // Send stats to influx after each push run.
       if (runMode == RunMode::configurationMode) {
-        LOG_PERF_PUSH();
+        PERF_PUSH();
       }
     }
     return true;
@@ -348,9 +356,9 @@ void loopGravityOnInterval() {
     loopReadGravity();
     loopMillis = millis();
     // printHeap("MAIN");
-    LOG_PERF_START("loop-gyro-read");
+    PERF_BEGIN("loop-gyro-read");
     myGyro.read();
-    LOG_PERF_STOP("loop-gyro-read");
+    PERF_END("loop-gyro-read");
     myBatteryVoltage.read();
 
     if (runMode != RunMode::wifiSetupMode)
@@ -375,8 +383,8 @@ void goToSleep(int sleepInterval) {
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
   LittleFS.end();
   myGyro.enterSleep();
-  LOG_PERF_STOP("run-time");
-  LOG_PERF_PUSH();
+  PERF_END("run-time");
+  PERF_PUSH();
 
   if (myConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
     sleepInterval = 3600;
@@ -394,7 +402,7 @@ void loop() {
 
     case RunMode::wifiSetupMode:
     case RunMode::configurationMode:
-      myWebServerHandler.loop();
+      myWebServer.loop();
       myWifi.loop();
       loopGravityOnInterval();
       delay(1);
@@ -431,9 +439,9 @@ void loop() {
         goToSleep(60);
       }
 
-      LOG_PERF_START("loop-gyro-read");
+      PERF_BEGIN("loop-gyro-read");
       myGyro.read();
-      LOG_PERF_STOP("loop-gyro-read");
+      PERF_END("loop-gyro-read");
       myWifi.loop();
       break;
   }

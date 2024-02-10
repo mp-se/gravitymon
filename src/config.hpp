@@ -24,11 +24,9 @@ SOFTWARE.
 #ifndef SRC_CONFIG_HPP_
 #define SRC_CONFIG_HPP_
 
-#include <helper.hpp>
+#include <baseconfig.hpp>
+#include <main.hpp>
 #include <resources.hpp>
-
-#define CFG_APPNAME "GravityMon"
-#define CFG_FILENAME "/gravitymon2.json"
 
 enum BleFormat {
   BLE_DISABLED = 0,
@@ -60,16 +58,11 @@ struct RawFormulaData {
   double g[FORMULA_DATA_SIZE];
 };
 
-class Config {
+class GravmonConfig : public BaseConfig {
  private:
-  bool _saveNeeded = false;
   int _configVersion = 2;
 
   // Device configuration
-  String _id = "";
-  String _mDNS = "";
-  String _otaURL = "";
-  char _tempFormat = 'C';
 #if defined(ESP8266)
   float _voltageFactor = 1.59;
 #elif defined(ESP32C3)
@@ -98,30 +91,9 @@ class Config {
   bool _skipSslOnTest = false;
 #endif
 
-  // Wifi Config
-  String _wifiSSID[2] = {"", ""};
-  String _wifiPASS[2] = {"", ""};
-
   // Push target settings
   String _token = "";
   String _token2 = "";
-
-  String _httpUrl = "";
-  String _httpHeader[2] = {"Content-Type: application/json", ""};
-  String _http2Url = "";
-  String _http2Header[2] = {"Content-Type: application/json", ""};
-  String _http3Url = "";
-  String _http3Header[2] = {"", ""};
-
-  String _influxDb2Url = "";
-  String _influxDb2Org = "";
-  String _influxDb2Bucket = "";
-  String _influxDb2Token = "";
-
-  String _mqttUrl = "";
-  int _mqttPort = 1883;
-  String _mqttUser = "";
-  String _mqttPass = "";
 
   // Gravity and temperature calculations
   String _gravityFormula = "";
@@ -137,18 +109,15 @@ class Config {
   RawFormulaData _formulaData = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                                  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-  int _wifiPortalTimeout = 120;            // seconds
-  int _wifiConnectTimeout = 20;            // seconds
   float _maxFormulaCreationDeviation = 3;  // SG
   float _defaultCalibrationTemp = 20.0;    // C
   int _gyroSensorMovingThreashold = 500;
   int _tempSensorResolution = 9;  // bits
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
-  int _pushTimeout = 10;      // seconds
-  int _pushIntervalHttp1 = 0;
-  int _pushIntervalHttp2 = 0;
-  int _pushIntervalHttp3 = 0;
+  int _pushIntervalPost = 0;
+  int _pushIntervalPost2 = 0;
+  int _pushIntervalGet = 0;
   int _pushIntervalInflux = 0;
   int _pushIntervalMqtt = 0;
   bool _ignoreLowAnges = false;
@@ -162,15 +131,7 @@ class Config {
   void formatFileSystem();
 
  public:
-  Config();
-  const char* getID() { return _id.c_str(); }
-
-  const char* getMDNS() { return _mDNS.c_str(); }
-  void setMDNS(String s) {
-    _mDNS = s;
-    _saveNeeded = true;
-  }
-
+  GravmonConfig(String baseMDNS, String fileName);
   int getConfigVersion() { return _configVersion; }
 
   const bool isGyroTemp() { return _gyroTemp; }
@@ -189,40 +150,6 @@ class Config {
     _saveNeeded = true;
   }
 
-  const char* getOtaURL() { return _otaURL.c_str(); }
-  void setOtaURL(String s) {
-    _otaURL = s;
-    _saveNeeded = true;
-  }
-  bool isOtaActive() { return _otaURL.length() ? true : false; }
-  bool isOtaSSL() { return _otaURL.startsWith("https://"); }
-
-  const char* getWifiSSID(int idx) { return _wifiSSID[idx].c_str(); }
-  void setWifiSSID(String s, int idx) {
-    _wifiSSID[idx] = s;
-    _saveNeeded = true;
-  }
-  const char* getWifiPass(int idx) { return _wifiPASS[idx].c_str(); }
-  void setWifiPass(String s, int idx) {
-    _wifiPASS[idx] = s;
-    _saveNeeded = true;
-  }
-  bool dualWifiConfigured() {
-    return _wifiSSID[0].length() > 0 && _wifiSSID[1].length() > 0 ? true
-                                                                  : false;
-  }
-  void swapPrimaryWifi() {
-    String s = _wifiSSID[0];
-    _wifiSSID[0] = _wifiSSID[1];
-    _wifiSSID[1] = s;
-
-    String p = _wifiPASS[0];
-    _wifiPASS[0] = _wifiPASS[1];
-    _wifiPASS[1] = p;
-
-    _saveNeeded = true;
-  }
-
   // Token parameter
   const char* getToken() { return _token.c_str(); }
   void setToken(String s) {
@@ -235,99 +162,6 @@ class Config {
     _saveNeeded = true;
   }
 
-  // Standard HTTP
-  const char* getHttpUrl() { return _httpUrl.c_str(); }
-  void setHttpUrl(String s) {
-    _httpUrl = s;
-    _saveNeeded = true;
-  }
-  const char* getHttpHeader(int idx) { return _httpHeader[idx].c_str(); }
-  void setHttpHeader(String s, int idx) {
-    _httpHeader[idx] = s;
-    _saveNeeded = true;
-  }
-  bool isHttpActive() { return _httpUrl.length() ? true : false; }
-  bool isHttpSSL() { return _httpUrl.startsWith("https://"); }
-
-  const char* getHttp2Url() { return _http2Url.c_str(); }
-  void setHttp2Url(String s) {
-    _http2Url = s;
-    _saveNeeded = true;
-  }
-  const char* getHttp2Header(int idx) { return _http2Header[idx].c_str(); }
-  void setHttp2Header(String s, int idx) {
-    _http2Header[idx] = s;
-    _saveNeeded = true;
-  }
-  bool isHttp2Active() { return _http2Url.length() ? true : false; }
-  bool isHttp2SSL() { return _http2Url.startsWith("https://"); }
-
-  const char* getHttp3Url() { return _http3Url.c_str(); }
-  void setHttp3Url(String s) {
-    _http3Url = s;
-    _saveNeeded = true;
-  }
-  const char* getHttp3Header(int idx) { return _http3Header[idx].c_str(); }
-  void setHttp3Header(String s, int idx) {
-    _http3Header[idx] = s;
-    _saveNeeded = true;
-  }
-  bool isHttp3Active() { return _http3Url.length() ? true : false; }
-  bool isHttp3SSL() { return _http3Url.startsWith("https://"); }
-
-  // InfluxDB2
-  const char* getInfluxDb2PushUrl() { return _influxDb2Url.c_str(); }
-  void setInfluxDb2PushUrl(String s) {
-    _influxDb2Url = s;
-    _saveNeeded = true;
-  }
-  bool isInfluxDb2Active() { return _influxDb2Url.length() ? true : false; }
-  bool isInfluxSSL() { return _influxDb2Url.startsWith("https://"); }
-  const char* getInfluxDb2PushOrg() { return _influxDb2Org.c_str(); }
-  void setInfluxDb2PushOrg(String s) {
-    _influxDb2Org = s;
-    _saveNeeded = true;
-  }
-  const char* getInfluxDb2PushBucket() { return _influxDb2Bucket.c_str(); }
-  void setInfluxDb2PushBucket(String s) {
-    _influxDb2Bucket = s;
-    _saveNeeded = true;
-  }
-  const char* getInfluxDb2PushToken() { return _influxDb2Token.c_str(); }
-  void setInfluxDb2PushToken(String s) {
-    _influxDb2Token = s;
-    _saveNeeded = true;
-  }
-
-  // MQTT
-  const char* getMqttUrl() { return _mqttUrl.c_str(); }
-  void setMqttUrl(String s) {
-    _mqttUrl = s;
-    _saveNeeded = true;
-  }
-  bool isMqttActive() { return _mqttUrl.length() ? true : false; }
-  bool isMqttSSL() { return _mqttPort > 8000 ? true : false; }
-
-  int getMqttPort() { return _mqttPort; }
-  void setMqttPort(String s) {
-    _mqttPort = s.toInt();
-    _saveNeeded = true;
-  }
-  void setMqttPort(int i) {
-    _mqttPort = i;
-    _saveNeeded = true;
-  }
-  const char* getMqttUser() { return _mqttUser.c_str(); }
-  void setMqttUser(String s) {
-    _mqttUser = s;
-    _saveNeeded = true;
-  }
-  const char* getMqttPass() { return _mqttPass.c_str(); }
-  void setMqttPass(String s) {
-    _mqttPass = s;
-    _saveNeeded = true;
-  }
-
   int getSleepInterval() { return _sleepInterval; }
   void setSleepInterval(int v) {
     _sleepInterval = v;
@@ -337,16 +171,6 @@ class Config {
     _sleepInterval = s.toInt();
     _saveNeeded = true;
   }
-
-  char getTempFormat() { return _tempFormat; }
-  void setTempFormat(char c) {
-    if (c == 'C' || c == 'F') {
-      _tempFormat = c;
-      _saveNeeded = true;
-    }
-  }
-  bool isTempC() { return _tempFormat == 'C'; }
-  bool isTempF() { return _tempFormat == 'F'; }
 
   float getVoltageFactor() { return _voltageFactor; }
   void setVoltageFactor(float f) {
@@ -411,8 +235,8 @@ class Config {
   }
   bool isBleActive() { return (_bleFormat != BleFormat::BLE_DISABLED); }
   bool isWifiPushActive() {
-    return (isHttpActive() || isHttp2Active() || isHttp3Active() ||
-            isInfluxDb2Active() || isMqttActive())
+    return (hasTargetHttpPost() || hasTargetHttpPost2() || hasTargetHttpGet() ||
+            hasTargetInfluxDb2() || hasTargetMqtt())
                ? true
                : false;
   }
@@ -444,18 +268,6 @@ class Config {
   const RawFormulaData& getFormulaData() { return _formulaData; }
   void setFormulaData(const RawFormulaData& r) {
     _formulaData = r;
-    _saveNeeded = true;
-  }
-
-  int getWifiPortalTimeout() { return _wifiPortalTimeout; }
-  void setWifiPortalTimeout(int t) {
-    _wifiPortalTimeout = t;
-    _saveNeeded = true;
-  }
-
-  int getWifiConnectTimeout() { return _wifiConnectTimeout; }
-  void setWifiConnectTimeout(int t) {
-    _wifiConnectTimeout = t;
     _saveNeeded = true;
   }
 
@@ -497,27 +309,21 @@ class Config {
     _saveNeeded = true;
   }
 
-  int getPushTimeout() { return _pushTimeout; }
-  void setPushTimeout(int t) {
-    _pushTimeout = t;
+  int getPushIntervalPost() { return _pushIntervalPost; }
+  void setPushIntervalPost(int t) {
+    _pushIntervalPost = t;
     _saveNeeded = true;
   }
 
-  int getPushIntervalHttp1() { return _pushIntervalHttp1; }
-  void setPushIntervalHttp1(int t) {
-    _pushIntervalHttp1 = t;
+  int getPushIntervalPost2() { return _pushIntervalPost2; }
+  void setPushIntervalPost2(int t) {
+    _pushIntervalPost2 = t;
     _saveNeeded = true;
   }
 
-  int getPushIntervalHttp2() { return _pushIntervalHttp2; }
-  void setPushIntervalHttp2(int t) {
-    _pushIntervalHttp2 = t;
-    _saveNeeded = true;
-  }
-
-  int getPushIntervalHttp3() { return _pushIntervalHttp3; }
-  void setPushIntervalHttp3(int t) {
-    _pushIntervalHttp3 = t;
+  int getPushIntervalGet() { return _pushIntervalGet; }
+  void setPushIntervalGet(int t) {
+    _pushIntervalGet = t;
     _saveNeeded = true;
   }
 
@@ -534,7 +340,7 @@ class Config {
   }
 
   bool isPushIntervalActive() {
-    return (_pushIntervalHttp1 + _pushIntervalHttp2 + _pushIntervalHttp3 +
+    return (_pushIntervalPost + _pushIntervalPost2 + _pushIntervalGet +
             _pushIntervalInflux + _pushIntervalMqtt) == 0
                ? false
                : true;
@@ -558,26 +364,14 @@ class Config {
     _saveNeeded = true;
   }
 
-  const bool isDarkMode() { return _darkMode; }
-  void setDarkMode(bool b) {
-    _darkMode = b;
-    _saveNeeded = true;
-  }
-
   // IO functions
   void createJson(JsonObject& doc);
   void parseJson(JsonObject& doc);
-  bool saveWifiOnly();
-  bool saveFile();
-  bool loadFile();
-  void checkFileSystem();
   void migrateSettings();
   void migrateHwSettings();
-  bool isSaveNeeded() { return _saveNeeded; }
-  void setSaveNeeded() { _saveNeeded = true; }
 };
 
-extern Config myConfig;
+extern GravmonConfig myConfig;
 
 #endif  // SRC_CONFIG_HPP_
 

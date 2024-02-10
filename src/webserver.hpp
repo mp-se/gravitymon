@@ -24,57 +24,17 @@ SOFTWARE.
 #ifndef SRC_WEBSERVER_HPP_
 #define SRC_WEBSERVER_HPP_
 
-#if defined(ESP8266)
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
-#include <ESPAsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#define MAX_SKETCH_SPACE 1044464
-#else
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <ESPmDNS.h>
-#include <Update.h>
-#include <WiFi.h>
-#define MAX_SKETCH_SPACE 1835008
-#endif
-#include <ArduinoJson.h>
-#include <AsyncJson.h>
+#include <basewebserver.hpp>
 
-#if defined(ESP8266)
-#include <incbin.h>
-INCBIN_EXTERN(IndexHtml);
-INCBIN_EXTERN(AppJs);
-INCBIN_EXTERN(AppCss);
-#else  // ESP32
-extern const uint8_t indexHtmlStart[] asm("_binary_html_index_html_start");
-extern const uint8_t indexHtmlEnd[] asm("_binary_html_index_html_end");
-extern const uint8_t appJsStart[] asm("_binary_html_app_js_gz_start");
-extern const uint8_t appJsEnd[] asm("_binary_html_app_js_gz_end");
-extern const uint8_t appCssStart[] asm("_binary_html_app_css_gz_start");
-extern const uint8_t appCssEnd[] asm("_binary_html_app_css_gz_end");
-#endif
-
-class WebServerHandler {
+class GravmonWebServer : public BaseWebServer {
  private:
-  AsyncWebServer *_server = 0;
-  File _uploadFile;
-  int _uploadedSize = 0;
-  int _uploadReturn = 200;
-  volatile bool _rebootTask = false;
   volatile bool _sensorCalibrationTask = false;
   volatile bool _pushTestTask = false;
-  volatile bool _wifiScanTask = false;
-  String _wifiScanData;
+
   String _pushTestTarget;
   int _pushTestLastCode;
   bool _pushTestLastSuccess, _pushTestEnabled;
-  uint32_t _wifiPortalTimer = 0;
 
-  void resetWifiPortalTimer() { _wifiPortalTimer = millis(); }
-  bool isAuthenticated(AsyncWebServerRequest *request);
-
-  void webHandleAuth(AsyncWebServerRequest *request);
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
@@ -87,71 +47,22 @@ class WebServerHandler {
   void webHandleTestPushStatus(AsyncWebServerRequest *request);
   void webHandleCalibrate(AsyncWebServerRequest *request);
   void webHandleCalibrateStatus(AsyncWebServerRequest *request);
-  void webHandleWifiScan(AsyncWebServerRequest *request);
-  void webHandleWifiScanStatus(AsyncWebServerRequest *request);
-  void webHandleWifiClear(AsyncWebServerRequest *request);
   void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
                            size_t index, uint8_t *data, size_t len, bool final);
-  void webHandleRestart(AsyncWebServerRequest *request);
   void webHandleFactoryDefaults(AsyncWebServerRequest *request);
-  void webHandlePageNotFound(AsyncWebServerRequest *request);
-  void webHandleFileSystem(AsyncWebServerRequest *request, JsonVariant &json);
 
   String readFile(String fname);
   bool writeFile(String fname, String data);
 
-  void webReturnOK(AsyncWebServerRequest *request);
-
-#if defined(ESP8266)
-  void webReturnIndexHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gIndexHtmlData,
-                    gIndexHtmlSize);
-  }
-  void webReturnAppJs(AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response = request->beginResponse_P(
-        200, "application/javascript", (const uint8_t *)gAppJsData, gAppJsSize);
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
-  }
-  void webReturnAppCss(AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response = request->beginResponse_P(
-        200, "text/css", (const uint8_t *)gAppCssData, gAppCssSize);
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
-  }
-#else  // ESP32
-  void webReturnIndexHtm(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)indexHtmlStart,
-                    reinterpret_cast<uint32_t>(&indexHtmlEnd[0]) -
-                        reinterpret_cast<uint32_t>(&indexHtmlStart[0]));
-  }
-  void webReturnAppJs(AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response = request->beginResponse_P(
-        200, "application/javascript", (const uint8_t *)appJsStart,
-        reinterpret_cast<uint32_t>(&appJsEnd[0]) -
-            reinterpret_cast<uint32_t>(&appJsStart[0]));
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
-  }
-  void webReturnAppCss(AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response = request->beginResponse_P(
-        200, "text/css", (const uint8_t *)appCssStart,
-        reinterpret_cast<uint32_t>(&appCssEnd[0]) -
-            reinterpret_cast<uint32_t>(&appCssStart[0]));
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
-  }
-#endif
-
  public:
+  explicit GravmonWebServer(WebConfig *config);
+
   bool setupWebServer();
   void loop();
-
-  AsyncWebServer *getWebServer() { return _server; }
 };
 
 // Global instance created
-extern WebServerHandler myWebServerHandler;
+extern GravmonWebServer myWebServer;
 
 #endif  // SRC_WEBSERVER_HPP_
 

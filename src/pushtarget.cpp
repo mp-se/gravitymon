@@ -27,12 +27,82 @@ SOFTWARE.
 #endif
 #include <MQTT.h>
 
+#include <battery.hpp>
 #include <config.hpp>
 #include <helper.hpp>
+#include <perf.hpp>
 #include <pushtarget.hpp>
-#include <wifi.hpp>
+#include <templating.hpp>
+// #include <wifi.hpp>
 
 #define PUSHINT_FILENAME "/push.dat"
+
+// Use iSpindle format for compatibility, HTTP POST
+const char iSpindleFormat[] PROGMEM =
+    "{"
+    "\"name\": \"${mdns}\", "
+    "\"ID\": \"${id}\", "
+    "\"token\": \"${token}\", "
+    "\"interval\": ${sleep-interval}, "
+    "\"temperature\": ${temp}, "
+    "\"temp_units\": \"${temp-unit}\", "
+    "\"gravity\": ${gravity}, "
+    "\"angle\": ${angle}, "
+    "\"battery\": ${battery}, "
+    "\"RSSI\": ${rssi}, "
+    "\"corr-gravity\": ${corr-gravity}, "
+    "\"gravity-unit\": \"${gravity-unit}\", "
+    "\"run-time\": ${run-time} "
+    "}";
+
+const char bleFormat[] PROGMEM =
+    "{"
+    "\"name\":\"${mdns}\","
+    "\"ID\":\"${id}\","
+    "\"token\":\"${token}\","
+    "\"interval\":${sleep-interval},"
+    "\"temperature\":${temp},"
+    "\"temp_units\":\"${temp-unit}\","
+    "\"gravity\":${gravity},"
+    "\"angle\":${angle},"
+    "\"battery\":${battery},"
+    "\"RSSI\":0,"
+    "\"corr-gravity\":${corr-gravity},"
+    "\"gravity-unit\":\"${gravity-unit}\","
+    "\"run-time\":${run-time}"
+    "}";
+
+// Format for an HTTP GET
+const char iHttpGetFormat[] PROGMEM =
+    "?name=${mdns}"
+    "&id=${id}"
+    "&token=${token2}"
+    "&interval=${sleep-interval}"
+    "&temperature=${temp}"
+    "&temp-units=${temp-unit}"
+    "&gravity=${gravity}"
+    "&angle=${angle}"
+    "&battery=${battery}"
+    "&rssi=${rssi}"
+    "&corr-gravity=${corr-gravity}"
+    "&gravity-unit=${gravity-unit}"
+    "&run-time=${run-time}";
+
+const char influxDbFormat[] PROGMEM =
+    "measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-"
+    "format=${gravity-unit} "
+    "gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${"
+    "temp},battery=${battery},"
+    "rssi=${rssi}\n";
+
+const char mqttFormat[] PROGMEM =
+    "ispindel/${mdns}/tilt:${angle}|"
+    "ispindel/${mdns}/temperature:${temp}|"
+    "ispindel/${mdns}/temp_units:${temp-unit}|"
+    "ispindel/${mdns}/battery:${battery}|"
+    "ispindel/${mdns}/gravity:${gravity}|"
+    "ispindel/${mdns}/interval:${sleep-interval}|"
+    "ispindel/${mdns}/RSSI:${rssi}|";
 
 void PushIntervalTracker::update(const int index, const int defaultValue) {
   if (_counters[index] <= 0)
@@ -67,9 +137,9 @@ void PushIntervalTracker::load() {
 }
 
 void PushIntervalTracker::save() {
-  update(0, myConfig.getPushIntervalHttp1());
-  update(1, myConfig.getPushIntervalHttp2());
-  update(2, myConfig.getPushIntervalHttp3());
+  update(0, myConfig.getPushIntervalPost());
+  update(1, myConfig.getPushIntervalPost2());
+  update(2, myConfig.getPushIntervalGet());
   update(3, myConfig.getPushIntervalInflux());
   update(4, myConfig.getPushIntervalMqtt());
 
@@ -93,400 +163,203 @@ void PushIntervalTracker::save() {
   }
 }
 
-void PushTarget::sendAll(float angle, float gravitySG, float corrGravitySG,
-                         float tempC, float runTime) {
+GravmonPush::GravmonPush(GravmonConfig* gravmonConfig)
+    : BasePush(gravmonConfig) {
+  _gravmonConfig = gravmonConfig;
+}
+
+void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
+                          float tempC, float runTime) {
   printHeap("PUSH");
   _http.setReuse(true);
   _httpSecure.setReuse(true);
 
   TemplatingEngine engine;
-  engine.initialize(angle, gravitySG, corrGravitySG, tempC, runTime,
-                    myBatteryVoltage.getVoltage());
+  setupTemplateEngine(engine, angle, gravitySG, corrGravitySG, tempC, runTime,
+                      myBatteryVoltage.getVoltage());
 
   PushIntervalTracker intDelay;
   intDelay.load();
 
-  if (myConfig.isHttpActive() && intDelay.useHttp1()) {
-    LOG_PERF_START("push-http");
-    sendHttpPost(engine, myConfig.isHttpSSL(), 0);
-    LOG_PERF_STOP("push-http");
+  if (myConfig.hasTargetHttpPost() && intDelay.useHttp1()) {
+    PERF_BEGIN("push-http");
+    String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP1);
+    String doc = engine.create(tpl.c_str());
+    sendHttpPost(doc);
+    PERF_END("push-http");
   }
 
-  if (myConfig.isHttp2Active() && intDelay.useHttp2()) {
-    LOG_PERF_START("push-http2");
-    sendHttpPost(engine, myConfig.isHttp2SSL(), 1);
-    LOG_PERF_STOP("push-http2");
+  if (myConfig.hasTargetHttpPost2() && intDelay.useHttp2()) {
+    PERF_BEGIN("push-http2");
+    String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP2);
+    String doc = engine.create(tpl.c_str());
+    sendHttpPost2(doc);
+    PERF_END("push-http2");
   }
 
-  if (myConfig.isHttp3Active() && intDelay.useHttp3()) {
-    LOG_PERF_START("push-http3");
-    sendHttpGet(engine, myConfig.isHttp3SSL());
-    LOG_PERF_STOP("push-http3");
+  if (myConfig.hasTargetHttpGet() && intDelay.useHttp3()) {
+    PERF_BEGIN("push-http3");
+    String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP3);
+    String doc = engine.create(tpl.c_str());
+    sendHttpGet(doc);
+    PERF_END("push-http3");
   }
 
-  if (myConfig.isInfluxDb2Active() && intDelay.useInflux()) {
-    LOG_PERF_START("push-influxdb2");
-    sendInfluxDb2(engine, myConfig.isInfluxSSL());
-    LOG_PERF_STOP("push-influxdb2");
+  if (myConfig.hasTargetInfluxDb2() && intDelay.useInflux()) {
+    PERF_BEGIN("push-influxdb2");
+    String tpl = getTemplate(GravmonPush::TEMPLATE_INFLUX);
+    String doc = engine.create(tpl.c_str());
+    sendInfluxDb2(doc);
+    PERF_END("push-influxdb2");
   }
 
-  if (myConfig.isMqttActive() && intDelay.useMqtt()) {
-    LOG_PERF_START("push-mqtt");
-    sendMqtt(engine, myConfig.isMqttSSL(), true);
-    LOG_PERF_STOP("push-mqtt");
+  if (myConfig.hasTargetMqtt() && intDelay.useMqtt()) {
+    PERF_BEGIN("push-mqtt");
+    String tpl = getTemplate(GravmonPush::TEMPLATE_MQTT);
+    String doc = engine.create(tpl.c_str());
+    sendMqtt(doc);
+    PERF_END("push-mqtt");
   }
 
   engine.freeMemory();
   intDelay.save();
 }
 
-void PushTarget::probeMaxFragement(String& serverPath) {
-#if defined(ESP8266)  // Looks like this is feature is not supported by influxdb
-  // Format: http:://servername:port/path
-  int port = 443;
-  String host = serverPath.substring(8);  // remove the prefix or the probe will
-                                          // fail, it needs a pure host name.
-  // Remove the path if it exist
-  int idx = host.indexOf("/");
-  if (idx != -1) host = host.substring(0, idx);
+const char* GravmonPush::getTemplate(Templates t, bool useDefaultTemplate) {
+  String fname;
+  _baseTemplate.reserve(600);
 
-  // If a server port is defined, lets extract that part
-  idx = host.indexOf(":");
-  if (idx != -1) {
-    String p = host.substring(idx + 1);
-    port = p.toInt();
-    host = host.substring(0, idx);
+  // Load templates from memory
+  switch (t) {
+    case TEMPLATE_HTTP1:
+      _baseTemplate = String(iSpindleFormat);
+      fname = TPL_FNAME_POST;
+      break;
+    case TEMPLATE_HTTP2:
+      _baseTemplate = String(iSpindleFormat);
+      fname = TPL_FNAME_POST2;
+      break;
+    case TEMPLATE_HTTP3:
+      _baseTemplate = String(iHttpGetFormat);
+      fname = TPL_FNAME_GET;
+      break;
+    case TEMPLATE_INFLUX:
+      _baseTemplate = String(influxDbFormat);
+      fname = TPL_FNAME_INFLUXDB;
+      break;
+    case TEMPLATE_MQTT:
+      _baseTemplate = String(mqttFormat);
+      fname = TPL_FNAME_MQTT;
+      break;
+    case TEMPLATE_BLE:
+      _baseTemplate = String(bleFormat);
+      fname =
+          "/dummy";  // this file should not exist, use standard template only
+      break;
   }
 
-  Log.notice(F("PUSH: Probing server to max fragment %s:%d" CR), host.c_str(),
-             port);
-  if (_wifiSecure.probeMaxFragmentLength(host, port, 512)) {
-    Log.notice(F("PUSH: Server supports smaller SSL buffer." CR));
-    _wifiSecure.setBufferSizes(512, 512);
+  if (!useDefaultTemplate) {
+    File file = LittleFS.open(fname, "r");
+    if (file) {
+      char buf[file.size() + 1];
+      memset(&buf[0], 0, file.size() + 1);
+      file.readBytes(&buf[0], file.size());
+      _baseTemplate = String(&buf[0]);
+      file.close();
+      Log.notice(F("PUSH: Template loaded from disk %s." CR), fname.c_str());
+    }
   }
+
+#if LOG_LEVEL == 6
+  Log.verbose(F("TPL : Base '%s'." CR), _baseTemplate.c_str());
 #endif
+
+  return _baseTemplate.c_str();
 }
 
-void PushTarget::sendInfluxDb2(TemplatingEngine& engine, bool isSecure) {
-#if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to influxdb2." CR));
-#endif
-  _lastCode = 0;
-  _lastSuccess = false;
+void GravmonPush::setupTemplateEngine(TemplatingEngine& engine, float angle,
+                                      float gravitySG, float corrGravitySG,
+                                      float tempC, float runTime,
+                                      float voltage) {
+  // Names
+  engine.setVal(TPL_MDNS, myConfig.getMDNS());
+  engine.setVal(TPL_ID, myConfig.getID());
+  engine.setVal(TPL_TOKEN, myConfig.getToken());
+  engine.setVal(TPL_TOKEN2, myConfig.getToken2());
 
-  String serverPath =
-      String(myConfig.getInfluxDb2PushUrl()) +
-      "/api/v2/write?org=" + String(myConfig.getInfluxDb2PushOrg()) +
-      "&bucket=" + String(myConfig.getInfluxDb2PushBucket());
-  String doc = engine.create(TemplatingEngine::TEMPLATE_INFLUX);
-
-#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
-  Log.verbose(F("PUSH: data %s." CR), doc.c_str());
-#endif
-
-  String auth = "Token " + String(myConfig.getInfluxDb2PushToken());
-
-  if (isSecure) {
-#if defined(ESP8266)
-    if (runMode == RunMode::configurationMode && myConfig.isSkipSslOnTest()) {
-      Log.notice(
-          F("PUSH: Skipping InfluxDB since SSL is enabled and we are in config "
-            "mode." CR));
-      _lastCode = -100;
-      return;
-    }
-#endif
-
-    Log.notice(F("PUSH: InfluxDB, SSL enabled without validation." CR));
-    _wifiSecure.setInsecure();
-    probeMaxFragement(serverPath);
-    _httpSecure.setTimeout(myConfig.getPushTimeout() * 1000);
-    _httpSecure.begin(_wifiSecure, serverPath);
-    _httpSecure.addHeader(F("Authorization"), auth.c_str());
-    _lastCode = _httpSecure.POST(doc);
+  // Temperature
+  if (myConfig.isTempFormatC()) {
+    engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
   } else {
-    _http.setTimeout(myConfig.getPushTimeout() * 1000);
-    _http.begin(_wifi, serverPath);
-    _http.addHeader(F("Authorization"), auth.c_str());
-    _lastCode = _http.POST(doc);
+    engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
   }
 
-  if (_lastCode == 204) {
-    _lastSuccess = true;
-    Log.notice(F("PUSH: InfluxDB2 push successful, response=%d" CR), _lastCode);
+  engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
+  engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
+  engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
+
+  // Battery & Timer
+  engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
+  engine.setVal(TPL_SLEEP_INTERVAL, myConfig.getSleepInterval());
+
+  int charge = 0;
+
+  if (voltage > 4.15)
+    charge = 100;
+  else if (voltage > 4.05)
+    charge = 90;
+  else if (voltage > 3.97)
+    charge = 80;
+  else if (voltage > 3.91)
+    charge = 70;
+  else if (voltage > 3.86)
+    charge = 60;
+  else if (voltage > 3.81)
+    charge = 50;
+  else if (voltage > 3.78)
+    charge = 40;
+  else if (voltage > 3.76)
+    charge = 30;
+  else if (voltage > 3.73)
+    charge = 20;
+  else if (voltage > 3.67)
+    charge = 10;
+  else if (voltage > 3.44)
+    charge = 5;
+
+  engine.setVal(TPL_BATTERY_PERCENT, charge);
+
+  // Performance metrics
+  engine.setVal(TPL_RUN_TIME, runTime, DECIMALS_RUNTIME);
+  engine.setVal(TPL_RSSI, WiFi.RSSI());
+
+  // Angle/Tilt
+  engine.setVal(TPL_TILT, angle, DECIMALS_TILT);
+  engine.setVal(TPL_ANGLE, angle, DECIMALS_TILT);
+
+  // Gravity options
+  if (myConfig.isGravitySG()) {
+    engine.setVal(TPL_GRAVITY, gravitySG, DECIMALS_SG);
+    engine.setVal(TPL_GRAVITY_CORR, corrGravitySG, DECIMALS_SG);
   } else {
-    writeErrorLog("PUSH: Influxdb push failed response=%d", _lastCode);
+    engine.setVal(TPL_GRAVITY, convertToPlato(gravitySG), DECIMALS_PLATO);
+    engine.setVal(TPL_GRAVITY_CORR, convertToPlato(corrGravitySG),
+                  DECIMALS_PLATO);
   }
 
-  if (isSecure) {
-    _httpSecure.end();
-    _wifiSecure.stop();
-  } else {
-    _http.end();
-    _wifi.stop();
-  }
-  tcp_cleanup();
-}
+  engine.setVal(TPL_GRAVITY_G, gravitySG, DECIMALS_SG);
+  engine.setVal(TPL_GRAVITY_P, convertToPlato(gravitySG), DECIMALS_PLATO);
+  engine.setVal(TPL_GRAVITY_CORR_G, corrGravitySG, DECIMALS_SG);
+  engine.setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG),
+                DECIMALS_PLATO);
+  engine.setVal(TPL_GRAVITY_UNIT, myConfig.getGravityFormat());
 
-void PushTarget::addHttpHeader(HTTPClient& http, String header) {
-  if (!header.length()) return;
+  engine.setVal(TPL_APP_VER, CFG_APPVER);
+  engine.setVal(TPL_APP_BUILD, CFG_GITREV);
 
-  int i = header.indexOf(":");
-  if (i) {
-    String name = header.substring(0, i);
-    String value = header.substring(i + 1);
-    value.trim();
-    Log.notice(F("PUSH: Adding header '%s': '%s'" CR), name.c_str(),
-               value.c_str());
-    http.addHeader(name, value);
-  } else {
-    writeErrorLog("PUSH: Unable to set header, invalid value %s",
-                  header.c_str());
-  }
-}
-
-void PushTarget::sendHttpPost(TemplatingEngine& engine, bool isSecure,
-                              int index) {
-#if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to http (%s)" CR),
-             index ? "http2" : "http");
+#if LOG_LEVEL == 6
+  // dumpAll();
 #endif
-  _lastCode = 0;
-  _lastSuccess = false;
-
-  String serverPath, doc;
-
-  if (index == 0) {
-    serverPath = myConfig.getHttpUrl();
-    doc = engine.create(TemplatingEngine::TEMPLATE_HTTP1);
-  } else {
-    serverPath = myConfig.getHttp2Url();
-    doc = engine.create(TemplatingEngine::TEMPLATE_HTTP2);
-  }
-
-#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
-  Log.verbose(F("PUSH: json %s." CR), doc.c_str());
-#endif
-
-  if (isSecure) {
-#if defined(ESP8266)
-    if (runMode == RunMode::configurationMode && myConfig.isSkipSslOnTest()) {
-      Log.notice(
-          F("PUSH: Skipping HTTP since SSL is enabled and we are in config "
-            "mode." CR));
-      _lastCode = -100;
-      return;
-    }
-#endif
-
-    Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
-    _wifiSecure.setInsecure();
-    probeMaxFragement(serverPath);
-    _httpSecure.setTimeout(myConfig.getPushTimeout() * 1000);
-    _httpSecure.begin(_wifiSecure, serverPath);
-
-    if (index == 0) {
-      addHttpHeader(_httpSecure, myConfig.getHttpHeader(0));
-      addHttpHeader(_httpSecure, myConfig.getHttpHeader(1));
-    } else {
-      addHttpHeader(_httpSecure, myConfig.getHttp2Header(0));
-      addHttpHeader(_httpSecure, myConfig.getHttp2Header(1));
-    }
-
-    _lastCode = _httpSecure.POST(doc);
-  } else {
-    _http.setTimeout(myConfig.getPushTimeout() * 1000);
-    _http.begin(_wifi, serverPath);
-
-    if (index == 0) {
-      addHttpHeader(_http, myConfig.getHttpHeader(0));
-      addHttpHeader(_http, myConfig.getHttpHeader(1));
-    } else {
-      addHttpHeader(_http, myConfig.getHttp2Header(0));
-      addHttpHeader(_http, myConfig.getHttp2Header(1));
-    }
-
-    _lastCode = _http.POST(doc);
-  }
-
-  if (_lastCode == 200) {
-    _lastSuccess = true;
-    Log.notice(F("PUSH: HTTP post successful, response=%d" CR), _lastCode);
-  } else {
-    writeErrorLog("PUSH: HTTP post failed response=%d http%d", _lastCode,
-                  index + 1);
-  }
-
-  if (isSecure) {
-    _httpSecure.end();
-    _wifiSecure.stop();
-  } else {
-    _http.end();
-    _wifi.stop();
-  }
-  tcp_cleanup();
-}
-
-void PushTarget::sendHttpGet(TemplatingEngine& engine, bool isSecure) {
-#if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to http3" CR));
-#endif
-  _lastCode = 0;
-  _lastSuccess = false;
-
-  String serverPath;
-
-  serverPath = myConfig.getHttp3Url();
-  serverPath += engine.create(TemplatingEngine::TEMPLATE_HTTP3);
-
-#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: url %s." CR), serverPath.c_str());
-#endif
-
-  if (isSecure) {
-#if defined(ESP8266)
-    if (runMode == RunMode::configurationMode && myConfig.isSkipSslOnTest()) {
-      Log.notice(
-          F("PUSH: Skipping HTTP since SSL is enabled and we are in config "
-            "mode." CR));
-      _lastCode = -100;
-      return;
-    }
-#endif
-
-    Log.notice(F("PUSH: HTTP, SSL enabled without validation." CR));
-    _wifiSecure.setInsecure();
-    probeMaxFragement(serverPath);
-    _httpSecure.setTimeout(myConfig.getPushTimeout() * 1000);
-    _httpSecure.begin(_wifiSecure, serverPath);
-    addHttpHeader(_httpSecure, myConfig.getHttp3Header(0));
-    addHttpHeader(_httpSecure, myConfig.getHttp3Header(1));
-    _lastCode = _httpSecure.GET();
-  } else {
-    _http.setTimeout(myConfig.getPushTimeout() * 1000);
-    _http.begin(_wifi, serverPath);
-    addHttpHeader(_http, myConfig.getHttp3Header(0));
-    addHttpHeader(_http, myConfig.getHttp3Header(1));
-    _lastCode = _http.GET();
-  }
-
-  if (_lastCode == 200) {
-    _lastSuccess = true;
-    Log.notice(F("PUSH: HTTP get successful, response=%d" CR), _lastCode);
-  } else {
-    writeErrorLog("PUSH: HTTP get failed response=%d", _lastCode);
-  }
-
-  if (isSecure) {
-    _httpSecure.end();
-    _wifiSecure.stop();
-  } else {
-    _http.end();
-    _wifi.stop();
-  }
-  tcp_cleanup();
-}
-
-void PushTarget::sendMqtt(TemplatingEngine& engine, bool isSecure,
-                          bool skipHomeAssistantRegistration) {
-#if !defined(PUSH_DISABLE_LOGGING)
-  Log.notice(F("PUSH: Sending values to mqtt. Skip HA registration=%s" CR),
-             skipHomeAssistantRegistration ? "yes" : "no");
-#endif
-  _lastCode = 0;
-  _lastSuccess = false;
-
-  MQTTClient mqtt(512);
-  String host = myConfig.getMqttUrl();
-  String doc = engine.create(TemplatingEngine::TEMPLATE_MQTT);
-  int port = myConfig.getMqttPort();
-
-  if (myConfig.isMqttSSL()) {
-#if defined(ESP8266)
-    if (runMode == RunMode::configurationMode && myConfig.isSkipSslOnTest()) {
-      Log.notice(
-          F("PUSH: Skipping MQTT since SSL is enabled and we are in config "
-            "mode." CR));
-      _lastCode = -100;
-      return;
-    }
-#endif
-
-    Log.notice(F("PUSH: MQTT, SSL enabled without validation." CR));
-    _wifiSecure.setInsecure();
-
-#if defined(ESP8266)
-    if (_wifiSecure.probeMaxFragmentLength(host, port, 512)) {
-      Log.notice(F("PUSH: MQTT server supports smaller SSL buffer." CR));
-      _wifiSecure.setBufferSizes(512, 512);
-    }
-#endif
-
-    mqtt.setTimeout(myConfig.getPushTimeout() * 1000);
-    mqtt.begin(host.c_str(), port, _wifiSecure);
-  } else {
-    mqtt.setTimeout(myConfig.getPushTimeout() * 1000);
-    mqtt.begin(host.c_str(), port, _wifi);
-  }
-
-  mqtt.connect(myConfig.getMDNS(), myConfig.getMqttUser(),
-               myConfig.getMqttPass());
-
-#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-  Log.verbose(F("PUSH: url %s." CR), myConfig.getMqttUrl());
-  Log.verbose(F("PUSH: data %s." CR), doc.c_str());
-#endif
-
-  int lines = 1;
-  // Find out how many lines are in the document. Each line is one
-  // topic/message. | is used as new line.
-  for (unsigned int i = 0; i < doc.length() - 1; i++) {
-    if (doc.charAt(i) == '|') lines++;
-  }
-
-  int index = 0;
-  while (lines) {
-    int next = doc.indexOf('|', index);
-    String line = doc.substring(index, next);
-
-    // Each line equals one topic post, format is <topic>:<value>
-    String topic = line.substring(0, line.indexOf(":"));
-    String value = line.substring(line.indexOf(":") + 1);
-#if LOG_LEVEL == 6 && !defined(PUSH_DISABLE_LOGGING)
-    Log.verbose(F("PUSH: topic '%s', value '%s'." CR), topic.c_str(),
-                value.c_str());
-#endif
-
-    if (skipHomeAssistantRegistration &&
-        topic.startsWith("homeassistant/sensor/")) {
-      Log.notice(F("PUSH: Ignoring Home Assistant registration topic %s" CR),
-                 topic.c_str());
-    } else {
-      if (mqtt.publish(topic, value)) {
-        _lastSuccess = true;
-        Log.notice(F("PUSH: MQTT publish successful on %s" CR), topic.c_str());
-        _lastCode = 0;
-      } else {
-        _lastSuccess = false;
-        _lastCode = mqtt.lastError();
-        writeErrorLog("PUSH: MQTT push on %s  failed error=%d", topic.c_str(),
-                      _lastCode);
-      }
-    }
-
-    index = next + 1;
-    lines--;
-  }
-
-  mqtt.disconnect();
-  if (isSecure) {
-    _wifiSecure.stop();
-  } else {
-    _wifi.stop();
-  }
-  tcp_cleanup();
 }
 
 // EOF

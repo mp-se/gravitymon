@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,37 +21,51 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <battery.hpp>
-#include <config.hpp>
-#include <main.hpp>
+#ifndef SRC_ESPFRAMEWORK_HPP_
+#define SRC_ESPFRAMEWORK_HPP_
 
-BatteryVoltage::BatteryVoltage() {
-#if defined(ESP8266)
-  pinMode(PIN_VOLT, INPUT);
-#else
-  pinMode(PIN_VOLT, INPUT_PULLDOWN);
-#endif
-}
+#include <Arduino.h>
+#include <ArduinoJson.h>
 
-void BatteryVoltage::read() {
-  // The analog pin can only handle 3.3V maximum voltage so we need to reduce
-  // the voltage (from max 5V)
-  float factor = myConfig.getVoltageFactor();  // Default value is 1.63
-  int v = analogRead(PIN_VOLT);
+#define ESPFWK_VER "1.0.0-alfa1"
 
-  // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
-  // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
+void forcedReset();
 
 #if defined(ESP8266)
-  _batteryLevel = ((3.3 / 1023) * v) * factor;
+#include <LittleFS.h>
+#define ESP_RESET ESP.reset
+#elif defined(ESP32C3)
+#include <FS.h>
+#include <LittleFS.h>
+#include "esp32c3/rom/rtc.h"
+#define ESP_RESET forcedReset
+#elif defined(ESP32S2)
+#include <FS.h>
+#include <LittleFS.h>
+#include "esp32s2/rom/rtc.h"
+#define ESP_RESET forcedReset
+#elif defined(ESP32S3)
+#include <FS.h>
+#include <LittleFS.h>
+#include "esp32s3/rom/rtc.h"
+#define ESP_RESET forcedReset
+#elif defined(ESP32LITE)
+#include <FS.h>
+#include <LittleFS.h>
+#include "esp32/rom/rtc.h"
+#define ESP_RESET forcedReset
 #else  // defined (ESP32)
-  _batteryLevel = ((3.3 / 4095) * v) * factor;
+#include <FS.h>
+#include <LittleFS.h>
+#include "esp32/rom/rtc.h"
+#define ESP_RESET forcedReset
 #endif
-#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
-  Log.verbose(
-      F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
-      factor, v, _batteryLevel);
-#endif
-}
+
+constexpr auto JSON_BUFFER_SIZE_S = 500;
+constexpr auto JSON_BUFFER_SIZE_M = 1000;
+constexpr auto JSON_BUFFER_SIZE_L = 3000;
+constexpr auto JSON_BUFFER_SIZE_XL = 5000;
+
+#endif  // SRC_ESPFRAMEWORK_HPP_
 
 // EOF

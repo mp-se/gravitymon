@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,60 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <main.hpp>
-#include <serialdbg.hpp>
+#include <LittleFS.h>
+
+#include <log.hpp>
+
+void writeErrorLog(const char *format, ...) {
+  File f = LittleFS.open(ERR_FILENAME, "a");
+
+  if (f && f.size() > ERR_FILEMAXSIZE) {
+    f.close();
+    LittleFS.remove(ERR_FILENAME2);
+    LittleFS.rename(ERR_FILENAME, ERR_FILENAME2);
+    f = LittleFS.open(ERR_FILENAME, "a");
+  }
+
+  if (f) {
+    va_list arg;
+    va_start(arg, format);
+    char buf[80];
+    vsnprintf(&buf[0], sizeof(buf), format, arg);
+    f.write(reinterpret_cast<unsigned char *>(&buf[0]), strlen(&buf[0]));
+    va_end(arg);
+    f.println();
+    f.close();
+  }
+}
+
+void dumpErrorLog(const char *fname) {
+  File f = LittleFS.open(fname, "r");
+
+  if (f) {
+    String s;
+    do {
+      s = f.readString();
+      Serial.print(s.c_str());
+    } while (s.length());
+    f.close();
+  }
+  LittleFS.remove(fname);
+}
+
+void dumpErrorLog1() { dumpErrorLog(ERR_FILENAME); }
+
+void dumpErrorLog2() { dumpErrorLog(ERR_FILENAME2); }
 
 SerialDebug::SerialDebug(const uint32_t serialSpeed) {
-  // Start serial with auto-detected rate (default to defined BAUD)
 #if defined(USE_SERIAL_PINS) && defined(ESP8266)
-  uint8_t txPin = 3;
-  EspSerial.begin(serialSpeed, SERIAL_8N1, SERIAL_TX_ONLY, txPin);
+  // EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
+  EspSerial.begin(serialSpeed);
+#warning "SerialPins is not implemented on ESP8266"
 #elif defined(ESP8266)
   EspSerial.begin(serialSpeed);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32C3)
-  EspSerial.begin(115200L, SERIAL_8N1, 20, 21);
+  // EspSerial.begin(115200L, SERIAL_8N1, 20, 21);
+  EspSerial.begin(115200L);
 #elif defined(ESP32C3)
   EspSerial.begin(115200L);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32S2)
@@ -40,25 +82,24 @@ SerialDebug::SerialDebug(const uint32_t serialSpeed) {
 #elif defined(ESP32S2)
   EspSerial.begin(115200L);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32S3)
-  EspSerial.begin(115200L, SERIAL_8N1, 37, 39);
+  EspSerial.begin(115200L, SERIAL_8N1, 44, 43);
 #elif defined(ESP32S3)
   EspSerial.begin(115200L);
-#elif defined(USE_SERIAL_PINS) && defined(ESP32LITE)
-  EspSerial.begin(serialSpeed, SERIAL_8N1, 16, 17);
 #elif defined(USE_SERIAL_PINS) && defined(ESP32)
-  EspSerial.begin(serialSpeed, SERIAL_8N1, 1, 3);
+  EspSerial.begin(serialSpeed, SERIAL_8N1, 3, 1);
 #elif defined(ESP32)
   EspSerial.begin(115200L);
 #endif
+  EspSerial.println("Serial console activated.");
 
-  EspSerial.println("Serial connection established");
-  EspSerial.setDebugOutput(true);
-  getLog()->begin(LOG_LEVEL, &EspSerial, true);
+  begin(&EspSerial);
   getLog()->setPrefix(printTimestamp);
-  getLog()->notice(F("SDBG: Serial logging started at %u." CR), serialSpeed);
+  getLog()->notice(F("SDBG: Serial logging started at %l." CR), serialSpeed);
 }
 
-void printTimestamp(Print* _logOutput, int _logLevel) {
+void printTimestamp(Print *_logOutput, int _logLevel) {
+  // TODO: Add real time if we are using NTP
+
   char c[12];
   snprintf(c, sizeof(c), "%10lu ", millis());
   _logOutput->print(c);
