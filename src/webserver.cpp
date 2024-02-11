@@ -543,7 +543,7 @@ bool GravmonWebServer::setupWebServer() {
 
   BaseWebServer::setupWebServer();
   MDNS.addService("gravitymon", "tcp", 80);
-  
+
   // Static content
   Log.notice(F("WEB : Setting up handlers for gravmon web server." CR));
 

@@ -30,12 +30,12 @@ SOFTWARE.
 #include <battery.hpp>
 #include <config.hpp>
 #include <helper.hpp>
+#include <main.hpp>
 #include <perf.hpp>
 #include <pushtarget.hpp>
 #include <templating.hpp>
-// #include <wifi.hpp>
 
-#define PUSHINT_FILENAME "/push.dat"
+constexpr auto PUSHINT_FILENAME = "/push.dat";
 
 // Use iSpindle format for compatibility, HTTP POST
 const char iSpindleFormat[] PROGMEM =
@@ -130,7 +130,7 @@ void PushIntervalTracker::load() {
     intFile.close();
   }
 
-#if !defined(PUSH_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("PUSH: Parsed trackers: %d:%d:%d:%d:%d." CR), _counters[0],
               _counters[1], _counters[2], _counters[3], _counters[4]);
 #endif
@@ -145,7 +145,7 @@ void PushIntervalTracker::save() {
 
   // If this feature is disabled we skip saving the file
   if (!myConfig.isPushIntervalActive()) {
-#if !defined(PUSH_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.notice(F("PUSH: Variabled push interval disabled." CR));
 #endif
     LittleFS.remove(PUSHINT_FILENAME);
@@ -358,7 +358,7 @@ void GravmonPush::setupTemplateEngine(TemplatingEngine& engine, float angle,
   engine.setVal(TPL_APP_BUILD, CFG_GITREV);
 
 #if LOG_LEVEL == 6
-  // dumpAll();
+  dumpAll();
 #endif
 }
 

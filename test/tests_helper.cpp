@@ -23,6 +23,10 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
+#include <battery.hpp>
+#include <utils.hpp>
+#include <log.hpp>
+#include <history.hpp>
 #include <helper.hpp>
 
 BatteryVoltage myBatteryVoltage;

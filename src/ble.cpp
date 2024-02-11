@@ -21,10 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(ESP32) && !defined(ESP32S2)
+#include <main.hpp>
+
+#if defined(ENABLE_BLE)
 
 #include <ble.hpp>
-//#include <main.hpp>
 #include <log.hpp>
 #include <string>
 
@@ -44,7 +45,9 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
   bool isRead() { return _isRead; }
 
   void onRead(NimBLECharacteristic* pCharacteristic) {
-    // Log.info(F("BLE : Remote reading data" CR));
+#if LOG_LEVEL == 6
+    Log.verbose(F("BLE : Remote reading data" CR));
+#endif
     _isRead = true;
   }
 };
@@ -201,7 +204,9 @@ void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
   mf += static_cast<char>((t & 0xFF));
   mf += static_cast<char>(0x00);  // Signal
 
-  // dumpPayload(mf.c_str(), mf.length());
+#if LOG_LEVEL == 6
+  dumpPayload(mf.c_str(), mf.length());
+#endif
 
   BLEAdvertisementData advData = BLEAdvertisementData();
   advData.setFlags(0x04);
@@ -256,4 +261,4 @@ void BleSender::dumpPayload(const char* p, int len) {
 
 bool BleSender::isGravitymonDataSent() { return myCharCallbacks.isRead(); }
 
-#endif  // ESP32 && !ESP32S2
+#endif  // ENABLE_BLE

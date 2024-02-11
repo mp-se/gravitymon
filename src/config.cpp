@@ -23,6 +23,9 @@ SOFTWARE.
  */
 #include <basewebserver.hpp>
 #include <config.hpp>
+#include <log.hpp>
+#include <main.hpp>
+#include <resources.hpp>
 
 GravmonConfig::GravmonConfig(String baseMDNS, String fileName)
     : BaseConfig(baseMDNS, fileName, JSON_BUFFER_SIZE_XL) {}
@@ -226,8 +229,10 @@ void GravmonConfig::migrateSettings() {
   }
 
   obj.clear();
-  // serializeJson(obj2, EspSerial);
-  // EspSerial.print(CR);
+#if LOG_LEVEL == 6
+  serializeJson(obj2, EspSerial);
+  EspSerial.print(CR);
+#endif
   parseJson(obj2);
   obj2.clear();
 
@@ -292,9 +297,10 @@ void GravmonConfig::migrateHwSettings() {
   obj2[PARAM_PUSH_INTERVAL_MQTT] = obj["int-mqtt"];
 
   obj.clear();
+#if LOG_LEVEL == 6
   serializeJson(obj2, EspSerial);
-  // EspSerial.print(CR);
-  // parseJson(obj2);
+  EspSerial.print(CR);
+#endif
   obj2.clear();
 
   if (saveFile()) {

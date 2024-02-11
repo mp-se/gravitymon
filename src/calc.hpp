@@ -26,9 +26,9 @@ SOFTWARE.
 
 #include <config.hpp>
 
-#define ERR_FORMULA_NOTENOUGHVALUES -1
-#define ERR_FORMULA_INTERNAL -2
-#define ERR_FORMULA_UNABLETOFFIND -3
+constexpr auto ERR_FORMULA_NOTENOUGHVALUES = -1;
+constexpr auto ERR_FORMULA_INTERNAL = -2;
+constexpr auto ERR_FORMULA_UNABLETOFFIND = -3;
 
 double calculateGravity(double angle, double tempC,
                         const char *tempFormula = 0);

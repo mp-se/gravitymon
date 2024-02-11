@@ -26,7 +26,7 @@ SOFTWARE.
 
 #include <Arduino.h>
 
-#define RUNTIME_FILENAME "/runtime.log"
+constexpr auto RUNTIME_FILENAME = "/runtime.log";
 
 class FloatHistoryLog {
  private:

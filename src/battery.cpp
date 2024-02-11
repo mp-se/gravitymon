@@ -47,7 +47,7 @@ void BatteryVoltage::read() {
 #else  // defined (ESP32)
   _batteryLevel = ((3.3 / 4095) * v) * factor;
 #endif
-#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
       factor, v, _batteryLevel);

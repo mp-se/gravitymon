@@ -101,14 +101,8 @@ This is a list of C++ defines that is used to enable/disable functions in the co
 
    * - define
      - description
-   * - ACTIVATE_OTA
-     - Enables the OTA functionallity in the code
    * - SKIP_SLEEPMODE
      - The device never goes into sleep mode, useful when developing.
-   * - xxx_DISABLE_LOGGING
-     - Done include verbose logging in the corresponding class. Excessive logging may crash device.
-   * - USE_LITTLEFS
-     - Use the new filesystem in Ardurino
    * - USER_SSID
      - If defined the device will always use this SSID
    * - USER_SSID_PWD

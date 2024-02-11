@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include <config.hpp>
 #include <gyro.hpp>
+#include <log.hpp>
 #include <main.hpp>
 #include <tempsensor.hpp>
 
@@ -36,7 +37,7 @@ DallasTemperature mySensors(&myOneWire);
 TempSensor myTempSensor;
 
 void TempSensor::setup() {
-#if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("TSEN: Looking for temp sensors." CR));
 #endif
   mySensors.begin();
@@ -63,7 +64,7 @@ void TempSensor::readSensor(bool useGyro) {
     // accurate so we will use this for processing.
     _temperatureC = myGyro.getInitialSensorTempC();
     _hasSensor = true;
-#if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR),
                 _temperatureC);
 #endif
@@ -72,7 +73,7 @@ void TempSensor::readSensor(bool useGyro) {
 
   // If we dont have sensors just return 0
   if (!mySensors.getDS18Count()) {
-#if !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.notice(F("TSEN: No temperature sensors found. Skipping read." CR));
 #endif
     _temperatureC = -273;
@@ -87,7 +88,7 @@ void TempSensor::readSensor(bool useGyro) {
     _temperatureC = mySensors.getTempCByIndex(0);
     _hasSensor = true;
 
-#if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.verbose(F("TSEN: Reciving temp value for DS18B20 sensor %F C." CR),
                 _temperatureC);
 #endif

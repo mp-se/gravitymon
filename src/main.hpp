@@ -27,9 +27,6 @@ SOFTWARE.
 #include <stdlib.h>
 
 #include <espframework.hpp>
-#include <led.hpp>
-#include <log.hpp>
-#include <utils.hpp>
 
 enum RunMode {
   gravityMode = 0,
@@ -68,6 +65,7 @@ extern RunMode runMode;
 #define PIN_DS A0
 #define PIN_VOLT A3
 #endif
+#define ENABLE_BLE
 #elif defined(ESP32S2)
 // Hardware config for ESP32-s2-mini, iSpindel hardware
 // ------------------------------------------------------
@@ -86,6 +84,7 @@ extern RunMode runMode;
 #define PIN_CFG2 A9
 #define PIN_DS A12
 #define PIN_VOLT A1
+#define ENABLE_BLE
 #elif defined(ESP32LITE)
 // Hardware config for ESP32-lite, Floaty hardware
 // ------------------------------------------------------
@@ -97,6 +96,7 @@ extern RunMode runMode;
 #define PIN_CFG2 A13
 #define PIN_VCC A5
 #define PIN_GND A18
+#define ENABLE_BLE
 #else  // defined (ESP32)
 // Hardware config for ESP32-d1-min, iSpindel hardware
 // ------------------------------------------------------
@@ -106,13 +106,14 @@ extern RunMode runMode;
 #define PIN_CFG1 D8
 #define PIN_CFG2 D7
 #define PIN_VOLT PIN_A0
+#define ENABLE_BLE
 #endif
 
-#define DECIMALS_SG 4
-#define DECIMALS_PLATO 2
-#define DECIMALS_TEMP 2
-#define DECIMALS_RUNTIME 2
-#define DECIMALS_TILT 3
-#define DECIMALS_BATTERY 2
+constexpr auto DECIMALS_SG = 4;
+constexpr auto DECIMALS_PLATO = 2;
+constexpr auto DECIMALS_TEMP = 2;
+constexpr auto DECIMALS_RUNTIME = 2;
+constexpr auto DECIMALS_TILT = 3;
+constexpr auto DECIMALS_BATTERY = 2;
 
 #endif  // SRC_MAIN_HPP_

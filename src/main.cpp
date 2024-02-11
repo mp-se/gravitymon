@@ -30,12 +30,15 @@ SOFTWARE.
 #include <gyro.hpp>
 #include <helper.hpp>
 #include <history.hpp>
+#include <led.hpp>
+#include <log.hpp>
 #include <main.hpp>
 #include <ota.hpp>
 #include <perf.hpp>
 #include <pushtarget.hpp>
 #include <serialws.hpp>
 #include <tempsensor.hpp>
+#include <utils.hpp>
 #include <webserver.hpp>
 #include <wificonnection.hpp>
 
@@ -45,10 +48,10 @@ extern "C" {
 }
 #endif
 
-#define CFG_APPNAME "gravitymon"
-#define CFG_FILENAME "/gravitymon2.json"
-#define CFG_AP_SSID "gravitymon"
-#define CFG_AP_PASS "password"
+constexpr auto CFG_APPNAME = "gravitymon";
+constexpr auto CFG_FILENAME = "/gravitymon2.json";
+constexpr auto CFG_AP_SSID = "gravitymon";
+constexpr auto CFG_AP_PASS = "password";
 
 #if !defined(USER_SSID)
 #define USER_SSID ""
@@ -64,7 +67,7 @@ OtaUpdate myOta(&myConfig, CFG_APPVER);
 BatteryVoltage myBatteryVoltage;
 GravmonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
-#if defined(ESP32C3) || defined(ESP32S3)
+#if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
 
@@ -194,12 +197,9 @@ void setup() {
         Log.notice(F("Main: Activating web server." CR));
         ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
                                 // myWifi.timeSync();
-
-#if defined(ACTIVATE_OTA)
         PERF_BEGIN("main-wifi-ota");
         if (myOta.checkFirmwareVersion()) myOta.updateFirmware();
         PERF_END("main-wifi-ota");
-#endif
         case RunMode::wifiSetupMode:
           myWebServer.setupWebServer();  // Takes less than 4ms, so skip
                                          // this measurement
@@ -228,7 +228,7 @@ void setup() {
 bool loopReadGravity() {
   float angle = 0;
 
-#if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("Main: Entering main loopGravity." CR));
 #endif
 
@@ -253,7 +253,7 @@ bool loopReadGravity() {
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
     }
-#if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
                   "corr_gravity=%F." CR),
                 angle, tempC, gravitySG, corrGravitySG);
@@ -462,7 +462,7 @@ void checkSleepMode(float angle, float volt) {
 
   if (!myConfig.hasGyroCalibration()) {
     // Will not enter sleep mode if: no calibration data
-#if !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.notice(
         F("MAIN: Missing calibration data, so forcing webserver to be "
           "active." CR));
@@ -473,7 +473,7 @@ void checkSleepMode(float angle, float volt) {
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration
     // mode.
-#if !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
 #endif
     runMode = RunMode::configurationMode;
@@ -489,7 +489,7 @@ void checkSleepMode(float angle, float volt) {
 
   switch (runMode) {
     case RunMode::configurationMode:
-#if !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
       Log.notice(F("MAIN: run mode CONFIG (angle=%F volt=%F)." CR), angle,
                  volt);
 #endif
@@ -497,13 +497,13 @@ void checkSleepMode(float angle, float volt) {
     case RunMode::wifiSetupMode:
       break;
     case RunMode::gravityMode:
-#if !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
       Log.notice(F("MAIN: run mode GRAVITY (angle=%F volt=%F)." CR), angle,
                  volt);
 #endif
       break;
     case RunMode::storageMode:
-#if !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
       Log.notice(F("MAIN: run mode STORAGE (angle=%F)." CR), angle);
 #endif
       break;

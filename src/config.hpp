@@ -25,8 +25,7 @@ SOFTWARE.
 #define SRC_CONFIG_HPP_
 
 #include <baseconfig.hpp>
-#include <main.hpp>
-#include <resources.hpp>
+#include <utils.hpp>
 
 enum BleFormat {
   BLE_DISABLED = 0,

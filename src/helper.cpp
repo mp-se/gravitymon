@@ -24,6 +24,7 @@ SOFTWARE.
 #include <Ticker.h>
 
 #include <helper.hpp>
+#include <log.hpp>
 #include <main.hpp>
 
 extern "C" {

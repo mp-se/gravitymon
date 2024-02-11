@@ -24,7 +24,9 @@ SOFTWARE.
 #ifndef SRC_BLE_HPP_
 #define SRC_BLE_HPP_
 
-#if defined(ESP32) && !defined(ESP32S2)
+#include <main.hpp>
+
+#if defined(ENABLE_BLE)
 
 #include <NimBLEBeacon.h>
 #include <NimBLEDevice.h>
@@ -57,5 +59,5 @@ class BleSender {
   bool isGravitymonDataSent();
 };
 
-#endif  // ESP32 && !ESP32S2
+#endif  // ENABLE_BLE
 #endif  // SRC_BLE_HPP_

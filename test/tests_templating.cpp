@@ -25,19 +25,25 @@ SOFTWARE.
 
 #include <config.hpp>
 #include <templating.hpp>
+#include <pushtarget.hpp>
+#include <config.hpp>
 #if defined(ESP8266)
 #include <ESP8266WiFi.h>
 #else
 #include <WiFi.h>
 #endif
 
+GravmonConfig cfg("", "");
+
 test(template_applyTemplate1) {
   TemplatingEngine e;
+  GravmonPush p(&cfg);
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
-  String s = e.create(TemplatingEngine::TEMPLATE_HTTP1);
+  String t = p.getTemplate(GravmonPush::TEMPLATE_HTTP1);
+  p.setupTemplateEngine(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
   String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id +
@@ -51,11 +57,13 @@ test(template_applyTemplate1) {
 
 test(template_applyTemplate2) {
   TemplatingEngine e;
+  GravmonPush p(&cfg);
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
-  String s = e.create(TemplatingEngine::TEMPLATE_HTTP2);
+  String t = p.getTemplate(GravmonPush::TEMPLATE_HTTP2);
+  p.setupTemplateEngine(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
   String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id +
@@ -69,11 +77,13 @@ test(template_applyTemplate2) {
 
 test(template_applyTemplate3) {
   TemplatingEngine e;
+  GravmonPush p(&cfg);
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
-  String s = e.create(TemplatingEngine::TEMPLATE_HTTP3);
+  String t = p.getTemplate(GravmonPush::TEMPLATE_HTTP3);
+  p.setupTemplateEngine(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
   String v = "?name=gravitymon&id=" + id +
@@ -85,11 +95,13 @@ test(template_applyTemplate3) {
 
 test(template_applyTemplate4) {
   TemplatingEngine e;
+  GravmonPush p(&cfg);
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
-  String s = e.create(TemplatingEngine::TEMPLATE_INFLUX);
+  String t = p.getTemplate(GravmonPush::TEMPLATE_INFLUX);
+  p.setupTemplateEngine(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
   String v =
@@ -102,11 +114,13 @@ test(template_applyTemplate4) {
 
 test(template_applyTemplate5) {
   TemplatingEngine e;
+  GravmonPush p(&cfg);
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
-  String s = e.create(TemplatingEngine::TEMPLATE_MQTT);
+  String t = p.getTemplate(GravmonPush::TEMPLATE_MQTT);
+  p.setupTemplateEngine(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  String s = e.create(t.c_str());
   String rssi = String(WiFi.RSSI());
   String v =
       "ispindel/gravitymon/tilt:45.000|ispindel/gravitymon/"
@@ -119,6 +133,7 @@ test(template_applyTemplate5) {
 
 test(template_applyTemplate6) {
   TemplatingEngine e;
+  GravmonPush p(&cfg);
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
@@ -127,7 +142,7 @@ test(template_applyTemplate6) {
     "<result><channel>Batterie</channel><float>1</float><value>${battery}</value></result>"
     "<result><channel>Temperature</channel><float>1</float><value>${temp}</value></result></prtg>";
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  p.setupTemplateEngine(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(tpl);
   String v = "<prtg><result><channel>Densite</channel><float>1</float><value>1.1230</value></result>"
              "<result><channel>Batterie</channel><float>1</float><value>3.88</value></result>"
@@ -137,13 +152,14 @@ test(template_applyTemplate6) {
 
 test(template_applyTemplate7) {
   TemplatingEngine e;
+  GravmonPush p(&cfg);
   char buffer[20];
   myConfig.setMDNS("gravitymon");
 
   const char* tpl = 
     "${battery}-${battery-percent}";
 
-  e.initialize(45.0, 1.123, 1.223, 21.2, 2.98, 4.20);
+  p.setupTemplateEngine(e, 45.0, 1.123, 1.223, 21.2, 2.98, 4.20);
   String s = e.create(tpl);
 
   // When run using charger the level should be 100%
