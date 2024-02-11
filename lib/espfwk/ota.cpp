@@ -30,8 +30,6 @@ SOFTWARE.
 #define ESPhttpUpdate httpUpdate
 #endif
 
-#include <LittleFS.h>
-
 #include <espframework.hpp>
 #include <log.hpp>
 #include <ota.hpp>

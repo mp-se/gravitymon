@@ -24,8 +24,6 @@ SOFTWARE.
 #ifndef SRC_LED_HPP_
 #define SRC_LED_HPP_
 
-#include <Arduino.h>
-
 enum LedColor {
 #if defined(ESP32C3) || defined(ESP32S3)
   OFF = 0x000000,

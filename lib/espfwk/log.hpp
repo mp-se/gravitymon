@@ -26,6 +26,8 @@ SOFTWARE.
 
 #include <ArduinoLog.h>
 
+#include <espframework.hpp>
+
 #define ERR_FILENAME "/error.log"
 #define ERR_FILENAME2 "/error2.log"
 #define ERR_FILEMAXSIZE 2048
@@ -49,6 +51,10 @@ void dumpErrorLog2();
 #define EspSerial Serial0
 #else
 #define EspSerial Serial
+#if defined(USE_SERIAL_PINS)
+#undef USE_SERIAL_PINS
+#warning "Cannot use serial pins with ARDUINO_USB_CDC_ON_BOOT"
+#endif
 #endif
 
 #endif  // SRC_LOG_HPP_

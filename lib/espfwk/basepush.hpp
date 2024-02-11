@@ -55,7 +55,7 @@ class BasePush {
   String sendHttpPost(String& payload, const char* target, const char* header1,
                       const char* header2);
   String sendHttpPost2(String& payload, const char* target, const char* header1,
-                      const char* header2);
+                       const char* header2);
   String sendHttpGet(String& payload, const char* target, const char* header1,
                      const char* header2);
   void sendInfluxDb2(String& payload, const char* target, const char* org,

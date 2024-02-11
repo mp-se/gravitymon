@@ -132,13 +132,13 @@ void WifiConnection::startWifiAP() {
 
   Log.notice(F("WIFI: Starting dns server." CR));
   _dnsServer = new DNSServer();
-  if(_dnsServer) {
+  if (_dnsServer) {
     _dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
-    if(!_dnsServer->start(53, "*", local)) {
+    if (!_dnsServer->start(53, "*", local)) {
       Log.error(F("WIFI: Failed to start dns server." CR));
     }
   } else {
-      Log.error(F("WIFI: Failed to create dns server." CR));
+    Log.error(F("WIFI: Failed to create dns server." CR));
   }
 
   Log.notice(F("WIFI: Access point created %s." CR),
@@ -152,7 +152,7 @@ void WifiConnection::loop() {
     writeReset();
   }
 
-  if(_dnsServer) {
+  if (_dnsServer) {
     _dnsServer->processNextRequest();
   }
 }

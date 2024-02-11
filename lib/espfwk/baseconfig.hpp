@@ -27,36 +27,6 @@ SOFTWARE.
 #include <espframework.hpp>
 #include <interface.hpp>
 
-constexpr auto PARAM_ID = "id";
-constexpr auto PARAM_MDNS = "mdns";
-constexpr auto PARAM_SSID = "wifi_ssid";
-constexpr auto PARAM_PASS = "wifi_pass";
-constexpr auto PARAM_SSID2 = "wifi_ssid2";
-constexpr auto PARAM_PASS2 = "wifi_pass2";
-constexpr auto PARAM_OTA_URL = "ota_url";
-constexpr auto PARAM_TEMP_FORMAT = "temp_format";
-constexpr auto PARAM_HTTP_POST_TARGET = "http_post_target";
-constexpr auto PARAM_HTTP_POST_HEADER1 = "http_post_header1";
-constexpr auto PARAM_HTTP_POST_HEADER2 = "http_post_header2";
-constexpr auto PARAM_HTTP_POST2_TARGET = "http_post2_target";
-constexpr auto PARAM_HTTP_POST2_HEADER1 = "http_post2_header1";
-constexpr auto PARAM_HTTP_POST2_HEADER2 = "http_post2_header2";
-constexpr auto PARAM_HTTP_GET_TARGET = "http_get_target";
-constexpr auto PARAM_HTTP_GET_HEADER1 = "http_get_header1";
-constexpr auto PARAM_HTTP_GET_HEADER2 = "http_get_header2";
-constexpr auto PARAM_INFLUXDB2_TARGET = "influxdb2_target";
-constexpr auto PARAM_INFLUXDB2_ORG = "influxdb2_org";
-constexpr auto PARAM_INFLUXDB2_BUCKET = "influxdb2_bucket";
-constexpr auto PARAM_INFLUXDB2_TOKEN = "influxdb2_token";
-constexpr auto PARAM_MQTT_TARGET = "mqtt_target";
-constexpr auto PARAM_MQTT_PORT = "mqtt_port";
-constexpr auto PARAM_MQTT_USER = "mqtt_user";
-constexpr auto PARAM_MQTT_PASS = "mqtt_pass";
-constexpr auto PARAM_WIFI_PORTAL_TIMEOUT = "wifi_portal_timeout";
-constexpr auto PARAM_WIFI_CONNECT_TIMEOUT = "wifi_connect_timeout";
-constexpr auto PARAM_PUSH_TIMEOUT = "push_timeout";
-constexpr auto PARAM_DARK_MODE = "dark_mode";
-
 class BaseConfig : public WifiConfig,
                    public OtaConfig,
                    public WebConfig,

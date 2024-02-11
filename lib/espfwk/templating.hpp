@@ -24,13 +24,12 @@ SOFTWARE.
 #ifndef SRC_TEMPLATING_HPP_
 #define SRC_TEMPLATING_HPP_
 
-#include <Arduino.h>
-
 #include <algorithm>
+#include <espframework.hpp>
 #include <log.hpp>
 #include <utils.hpp>
 
-#define MAX_KEY_VAL 20
+constexpr auto MAX_KEY_VAL = 30;
 
 class TemplatingEngine {
  private:

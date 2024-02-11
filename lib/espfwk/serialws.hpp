@@ -24,8 +24,9 @@ SOFTWARE.
 #ifndef SRC_SERIALWS_HPP_
 #define SRC_SERIALWS_HPP_
 
-#include <Arduino.h>
 #include <Print.h>
+
+#include <espframework.hpp>
 
 #if defined(ESP32)
 #include <freertos/FreeRTOS.h>

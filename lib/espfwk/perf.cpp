@@ -23,8 +23,7 @@ SOFTWARE.
  */
 #if defined(PERF_ENABLE)
 
-#include <Arduino.h>
-
+#include <espframework.hpp>
 #include <log.hpp>
 #include <perf.hpp>
 #include <utils.hpp>

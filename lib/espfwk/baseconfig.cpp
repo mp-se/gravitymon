@@ -25,13 +25,6 @@ SOFTWARE.
 #include <espframework.hpp>
 #include <log.hpp>
 
-#if defined(ESP8266)
-#include <LittleFS.h>
-#else
-#include <FS.h>
-#include <LittleFS.h>
-#endif
-
 BaseConfig::BaseConfig(String baseMDNS, String fileName, int dynamicJsonSize) {
   _dynamicJsonSize = dynamicJsonSize;
 

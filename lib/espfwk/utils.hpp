@@ -24,8 +24,6 @@ SOFTWARE.
 #ifndef SRC_UTILS_HPP_
 #define SRC_UTILS_HPP_
 
-#include <Arduino.h>
-
 float convertCtoF(float c);
 float convertFtoC(float f);
 float convertKGtoLBS(float kg);

@@ -65,6 +65,7 @@ class WifiConfig {
 
 class PushConfig {
  public:
+  virtual const char* getID();
   virtual const char* getMDNS();
 
   virtual int getPushTimeout();

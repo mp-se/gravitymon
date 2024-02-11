@@ -30,7 +30,7 @@ SOFTWARE.
 
 class PerfLogging {
  private:
-  BaseConfig* _config = 0;
+  PushConfig* _config = 0;
 
   struct PerfEntry {
     uint32_t start;   // millis()
@@ -96,7 +96,7 @@ class PerfLogging {
     return _instance;
   }
 
-  void setBaseConfig(BaseConfig* config) { _config = config; }
+  void setBaseConfig(PushConfig* config) { _config = config; }
 
   void clear();
   void start(const char* key);

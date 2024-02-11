@@ -27,13 +27,20 @@ SOFTWARE.
 #include <log.hpp>
 
 #if defined(ESP8266)
-#include <LittleFS.h>
 #define MAX_SKETCH_SPACE 1044464
 #else
-#include <FS.h>
 #include <HTTPUpdate.h>
-#include <LittleFS.h>
 #define MAX_SKETCH_SPACE 1835008
+#endif
+
+#if defined(ESP8266)
+#define INCBIN_OUTPUT_SECTION ".irom.text"
+#include <incbin.h>
+// These are used in the webhandler class and needs to be defined when using
+// ESP8266. For esp32 the files are defined in the platformio.ini file
+INCBIN(IndexHtml, "html/index.html");
+INCBIN(AppJs, "html/app.js.gz");
+INCBIN(AppCss, "html/app.css.gz");
 #endif
 
 BaseWebServer::BaseWebServer(WebConfig *config, int dynamicJsonSize) {
@@ -49,7 +56,6 @@ bool BaseWebServer::isAuthenticated(AsyncWebServerRequest *request) {
     token += _webConfig->getID();
 
     if (request->getHeader("Authorization")->value() == token) {
-      // Log.info(F("WEB : Auth token is valid." CR));
       return true;
     }
   }
