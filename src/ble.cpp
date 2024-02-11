@@ -24,7 +24,8 @@ SOFTWARE.
 #if defined(ESP32) && !defined(ESP32S2)
 
 #include <ble.hpp>
-#include <main.hpp>
+//#include <main.hpp>
+#include <log.hpp>
 #include <string>
 
 // Tilt UUID variants and data format, based on tilt-sim
@@ -200,12 +201,7 @@ void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
   mf += static_cast<char>((t & 0xFF));
   mf += static_cast<char>(0x00);  // Signal
 
-  /* Dump payload into hex string
-  const char *p = mf.c_str();
-  for(int i = 0; i < mf.length(); i++ ) {
-    Serial.printf("%X%X ", (*(p+i)&0xf0)>>4, (*(p+i)&0x0f));
-  }
-  Serial.println();*/
+  // dumpPayload(mf.c_str(), mf.length());
 
   BLEAdvertisementData advData = BLEAdvertisementData();
   advData.setFlags(0x04);
@@ -249,6 +245,13 @@ void BleSender::sendGravitymonData(String payload) {
 
   _characteristic->setValue(payload);
   _advertising->start();
+}
+
+void BleSender::dumpPayload(const char* p, int len) {
+  for (int i = 0; i < len; i++) {
+    EspSerial.printf("%X%X ", (*(p + i) & 0xf0) >> 4, (*(p + i) & 0x0f));
+  }
+  EspSerial.println();
 }
 
 bool BleSender::isGravitymonDataSent() { return myCharCallbacks.isRead(); }

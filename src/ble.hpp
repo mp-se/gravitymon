@@ -39,6 +39,8 @@ class BleSender {
   bool _initFlag = false;
   int _beaconTime = 1000;
 
+  void dumpPayload(const char* payload, int len);
+
  public:
   BleSender() {}
 
