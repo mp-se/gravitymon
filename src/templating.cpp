@@ -239,7 +239,7 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
     Log.verbose(F("TPL : Transformed '%s'." CR), _output);
 #endif
     return _output;
-  } 
+  }
 
   return "";
 }
