@@ -129,8 +129,7 @@ void WifiConnection::startPortal() {
   Log.notice(F("WIFI: Starting Wifi config portal." CR));
 
   stopDoubleReset();
-  pinMode(PIN_LED, OUTPUT);
-  digitalWrite(PIN_LED, LOW);
+  ledOn(LedColor::WHITE);  // White or Led ON
 
   if (myWifiManager == 0) myWifiManager = new ESP_WiFiManager(WIFI_MDNS);
 
@@ -175,6 +174,7 @@ void WifiConnection::startPortal() {
   }
 
   Log.notice(F("WIFI: Exited wifi config portal. Rebooting..." CR));
+  ledOff();
   delay(500);
   ESP_RESET();
 }
@@ -196,7 +196,7 @@ void WifiConnection::connectAsync(int wifiIndex) {
   Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
   WiFi.setTxPower(WIFI_POWER_8_5dBm);  // Required for ESP32C3 Mini
 #elif defined(ESP32C3)
-  WiFi.setTxPower(WIFI_POWER_15dBm);
+  WiFi.setTxPower(WIFI_POWER_13dBm);
 #endif
 
   if (strlen(userSSID)) {
@@ -231,8 +231,8 @@ bool WifiConnection::waitForConnection(int maxTime) {
     }
   }
   EspSerial.print(CR);
-  Log.notice(F("WIFI: Connected to wifi %s ip=%s." CR), WiFi.SSID().c_str(),
-             getIPAddress().c_str());
+  Log.notice(F("WIFI: Connected to wifi %s ip=%s, channel=%d." CR),
+             WiFi.SSID().c_str(), getIPAddress().c_str(), WiFi.channel());
   Log.notice(F("WIFI: Using mDNS name %s." CR), myConfig.getMDNS());
   return true;
 }
@@ -270,7 +270,73 @@ int WifiConnection::findStrongestNetwork() {
   return 1;  // Second network is the strongest
 }
 
+#if defined(ESP8266)
+String WifiConnection::getEncryptionType(uint8_t encryptionType) {
+  switch (encryptionType) {
+    case ENC_TYPE_NONE:
+      return "None";
+    case ENC_TYPE_WEP:
+      return "WEP";
+    case ENC_TYPE_TKIP:
+      return "TKIP";
+    case ENC_TYPE_CCMP:
+      return "CCMP";
+    case ENC_TYPE_AUTO:
+      return "AUTO";
+  }
+  return "UNKNOWN";
+}
+#else
+String WifiConnection::getEncryptionType(wifi_auth_mode_t encryptionType) {
+  switch (encryptionType) {
+    case WIFI_AUTH_OPEN:
+      return "Open";
+    case WIFI_AUTH_WEP:
+      return "WEP";
+    case WIFI_AUTH_WPA_PSK:
+      return "WPA_PSK";
+    case WIFI_AUTH_WPA2_PSK:
+      return "WPA2_PSK";
+    case WIFI_AUTH_WPA_WPA2_PSK:
+      return "WPA_WPA2_PSK";
+    case WIFI_AUTH_WPA2_ENTERPRISE:
+      return "WPA2_ENTERPRISE";
+    case WIFI_AUTH_WPA3_PSK:
+      return "WPA3_PSK";
+    case WIFI_AUTH_WPA2_WPA3_PSK:
+      return "WPA2_WPA3_PSK";
+    case WIFI_AUTH_WAPI_PSK:
+      return "WPAI_PSK";
+    case WIFI_AUTH_MAX:
+      return "MAX";
+  }
+
+  return "UNKNOWN";
+}
+#endif
+
+void WifiConnection::scanWifiNetworks() {
+  Log.notice(F("WIFI: Scanning for wifi." CR));
+  int noNetwork = WiFi.scanNetworks(false, false);
+
+  for (int i = 0; i < noNetwork; i++) {
+    int rssi = WiFi.RSSI(i);
+    String ssid = WiFi.SSID(i);
+    int channel = WiFi.channel(i);
+#if defined(ESP8266)
+    uint8_t encryptionType = WiFi.encryptionType(i);
+#else
+    wifi_auth_mode_t encryptionType = WiFi.encryptionType(i);
+#endif
+
+    Log.notice(F("WIFI: Found ssid=%s dBm=%d ch=%d %s." CR), ssid.c_str(), rssi,
+               channel, getEncryptionType(encryptionType).c_str());
+  }
+}
+
 bool WifiConnection::connect() {
+  // scanWifiNetworks();
+
   /*
   // Alternative code for connecting to strongest wifi.
   // Takes approximatly 2 seconds to scan for available network

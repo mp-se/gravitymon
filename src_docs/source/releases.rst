@@ -3,18 +3,24 @@
 Releases 
 ########
 
-v1.4.0 (beta)
-=============
+v1.4.0
+======
 
 Features
 ++++++++
+* *NEW* Added led indicator: Blue / Slow Blinking = Config Mode, White/Solid = WiFi setup  
 * *BUG* Reduced WIFI TX Power for C3 chip to improve WIFI connnection stability
-* *NEW* Added experimental support for extended BLE data transmission (will require specialized server software)
+* *NEW* Added 4 options to ble data transmission (TILT, TILT PRO, GRAVITYMON SERVICE, GRAVITYMON EDDYSTONE)
 * *NEW* Added support for ESP32S3 mini board
 * *NEW* Moved to async webserver to speed up performance in configuration mode
 * Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don't do a full erase before flashing)
 * Added possibility to set wifi settings in config (need manual reboot to apply)
-+ Added option that shows the average value from the gyro reads + a button to reset that on the web ui. Might make it easier to do calibration of the value jumps around.
+* Added option that shows the average value from the gyro reads + a button to reset that on the web ui. Might make it easier to do calibration of the value jumps around.
+
+Known issues
+++++++++++++
+* On ESP32c3 mini the rgb led does not turn blue when in config mode
+* On ESP32s3 mini the rgb led does not work due to issue in arduino/esp32 unless manual patching of the arduino framework `#define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT`
 
 Maintenance
 +++++++++++
@@ -29,6 +35,7 @@ Maintenance
 Documentation
 +++++++++++++
 * Published code coverage for unit tests and apitest.py (gcov/README.md)
+* Added BierBot Bricks configuration as external service target. 
 
 Issues adressed
 ++++++++++++++++

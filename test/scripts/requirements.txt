@@ -1,0 +1,5 @@
+selenium
+requests
+bleak
+construct
+pytest

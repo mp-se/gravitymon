@@ -30,6 +30,7 @@ SOFTWARE.
 #include <helper.hpp>
 #include <main.hpp>
 #include <pushtarget.hpp>
+#include <serialws.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
 #include <wifi.hpp>
@@ -43,6 +44,10 @@ extern "C" {
 // #define FORCE_GRAVITY_MODE
 SerialDebug mySerial;
 BatteryVoltage myBatteryVoltage;
+SerialWebSocket mySerialWebSocket;
+#if defined(ESP32) && !defined(ESP32S2)
+BleSender myBleSender;
+#endif
 
 // Define constats for this program
 #ifdef DEACTIVATE_SLEEPMODE
@@ -151,8 +156,8 @@ void setup() {
   }
   snprintf(&buf[0], sizeof(buf), "%6x", chipId);
   Log.notice(F("Main: Started setup for %s." CR), &buf[0]);
-  pinMode(PIN_LED, OUTPUT);
-  digitalWrite(PIN_LED, HIGH);
+  ledOff();
+
 #endif
   printBuildOptions();
   detectChipRevision();
@@ -252,6 +257,8 @@ void setup() {
     case RunMode::configurationMode:
       if (myWifi.isConnected()) {
         Log.notice(F("Main: Activating web server." CR));
+        ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
+
 #if defined(ACTIVATE_OTA)
         LOG_PERF_START("main-wifi-ota");
         if (myWifi.checkFirmwareVersion()) myWifi.updateFirmware();
@@ -259,6 +266,11 @@ void setup() {
 #endif
         myWebServerHandler
             .setupWebServer();  // Takes less than 4ms, so skip this measurement
+        mySerialWebSocket.begin(myWebServerHandler.getWebServer(), &Serial);
+        mySerial.begin(&mySerialWebSocket);
+      } else {
+        ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
+                               // error
       }
 
       interval = 1000;  // Change interval from 200ms to 1s
@@ -327,21 +339,32 @@ bool loopReadGravity() {
       LOG_PERF_START("loop-push");
 
 #if defined(ESP32) && !defined(ESP32S2)
-      BleSender ble;
-      if (myConfig.isBLEActive()) {
-        String color = myConfig.getColorBLE();
-        if (myConfig.isGravitymonBLE()) {
-          TemplatingEngine engine;
-          engine.initialize(angle, gravitySG, corrGravitySG, tempC,
-                            (millis() - runtimeMillis) / 1000,
-                            myBatteryVoltage.getVoltage());
-          String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
+      if (myConfig.isBleActive()) {
+        myBleSender.init();
 
-          ble.sendGravitymonData(payload);
-          Log.notice(F("MAIN: Broadcast gravitymon data over bluetooth." CR));
-        } else {
-          ble.sendTiltData(color, convertCtoF(tempC), gravitySG, false);
-          Log.notice(F("MAIN: Broadcast tilt data over bluetooth." CR));
+        switch (myConfig.getBleFormat()) {
+          case BleFormat::BLE_TILT: {
+            String color = myConfig.getBleColor();
+            myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
+                                     false);
+          } break;
+          case BleFormat::BLE_TILT_PRO: {
+            String color = myConfig.getBleColor();
+            myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
+                                     true);
+          } break;
+          case BleFormat::BLE_GRAVITYMON_EDDYSTONE: {
+            myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
+                                      gravitySG, angle);
+          } break;
+          case BleFormat::BLE_GRAVITYMON_SERVICE: {
+            TemplatingEngine engine;
+            engine.initialize(angle, gravitySG, corrGravitySG, tempC,
+                              (millis() - runtimeMillis) / 1000,
+                              myBatteryVoltage.getVoltage());
+            String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
+            myBleSender.sendGravitymonData(payload);
+          } break;
         }
       }
 #endif  // ESP32 && !ESP32S2
@@ -354,10 +377,17 @@ bool loopReadGravity() {
       }
 
 #if defined(ESP32) && !defined(ESP32S2)
-      if (myConfig.isBLEActive()) {
-        if (myConfig.isGravitymonBLE()) {
-          if (!ble.isGravitymonDataSent()) delay(1000);
+      if (myConfig.getBleFormat() == BleFormat::BLE_GRAVITYMON_SERVICE) {
+        Log.notice(F("Main: Waiting for ble service to be read." CR));
+        int i = 0;
+        while (!myBleSender.isGravitymonDataSent() && i < 10) {
+          delay(500);
+          EspSerial.print(".");
+          i++;
         }
+        EspSerial.print(CR);
+        if (myBleSender.isGravitymonDataSent())
+          Log.notice(F("Main: Ble service was read by client." CR));
       }
 #endif  // ESP32 && !ESP32S2
 

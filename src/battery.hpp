@@ -21,40 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
+#ifndef SRC_BATTERY_HPP_
+#define SRC_BATTERY_HPP_
 
-#if defined(ESP32) && !defined(ESP32S2)
-
-#include <Arduino.h>
-#include <NimBLEBeacon.h>
-#include <NimBLEDevice.h>
-
-#include <helper.hpp>
-
-class BleSender {
+class BatteryVoltage {
  private:
-  BLEServer* _server = nullptr;
-  BLEAdvertising* _advertising = nullptr;
-  BLEService* _service = nullptr;
-  BLECharacteristic* _characteristic = nullptr;
-  BLEUUID _uuid;
-  bool _initFlag = false;
-  int _beaconTime = 1000;
+  float _batteryLevel = 0;
 
  public:
-  BleSender() {}
-
-  void init();
-
-  // Beacons
-  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendEddystone(float battery, float tempC, float gravity, float angle);
-
-  // Use GATT
-  void sendGravitymonData(String payload);
-  bool isGravitymonDataSent();
+  BatteryVoltage();
+  void read();
+  float getVoltage() { return _batteryLevel; }
 };
 
-#endif  // ESP32 && !ESP32S2
-#endif  // SRC_BLE_HPP_
+extern BatteryVoltage myBatteryVoltage;
+
+#endif  // SRC_BATTERY_HPP_
+
+// EOF

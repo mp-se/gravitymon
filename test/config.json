@@ -31,7 +31,6 @@
     "temp-adjustment-value": 0,
     "gravity-temp-adjustment": false,
     "gyro-temp": false,
-    "gravitymon-ble": false,
     "gyro-calibration-data": {
         "ax": -330,
         "ay": -2249,
@@ -67,6 +66,7 @@
     "battery": 0.04,
     "runtime-average": 3.0,
     "ble": "pink",
+    "ble-format": 1,
     "app-ver": "0.1.0",
     "app-build": "build",
     "platform": "esp32"

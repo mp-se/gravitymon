@@ -28,6 +28,19 @@ My device is no going in to sleep after fully charged
 - Check in reported voltage of the battery in the web interface. If this is higher than 4.15V the device believes its being charged. In that case adjust the voltage factor under hardware so the voltage drops below 4.15V.
 - Check if the `always on` option is activated in the web interface.
 
+What does the flashing led mean?
+--------------------------------
+
+On an ESP32c3 or ESP32s3 there is a multicolor LED and the colors means the following:
+
+- Blue = Configuration mode
+- White = WiFi setup mode
+
+On other devices there is only a single color led.
+
+- Slow Blinking = Config Mode
+- Solid = WiFi setup mode  
+
 My device reports a temperature of -273C or -491F
 -------------------------------------------------
 - The DS18B20 temperature sensor cannot be found and this is the default value reported in this case.

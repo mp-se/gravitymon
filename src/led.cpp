@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2023 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,40 +21,50 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
-
-#if defined(ESP32) && !defined(ESP32S2)
-
-#include <Arduino.h>
-#include <NimBLEBeacon.h>
-#include <NimBLEDevice.h>
+#include <Ticker.h>
 
 #include <helper.hpp>
+#include <led.hpp>
 
-class BleSender {
- private:
-  BLEServer* _server = nullptr;
-  BLEAdvertising* _advertising = nullptr;
-  BLEService* _service = nullptr;
-  BLECharacteristic* _characteristic = nullptr;
-  BLEUUID _uuid;
-  bool _initFlag = false;
-  int _beaconTime = 1000;
+#if defined(ESP32S3)
+#warning "Bug in arduino frameworks caused rgb led to fail on this target"
+#endif
 
- public:
-  BleSender() {}
+#if defined(ESP32C3) || defined(ESP32S3)
+void ledOn(LedColor l) {
+  uint8_t r, g, b, pin;
 
-  void init();
+  r = (l & 0xff0000) >> 16;
+  g = (l & 0x00ff00) >> 8;
+  b = (l & 0x0000ff);
+  pin = LED_BUILTIN;
 
-  // Beacons
-  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendEddystone(float battery, float tempC, float gravity, float angle);
+  Log.info(F("HELP: Setting led %d to RGB %d-%d-%d" CR), pin, r, g, b);
+  neopixelWrite(pin, r, g, b);
+}
+#else
+bool ledInit = false;
+Ticker ledTicker;
 
-  // Use GATT
-  void sendGravitymonData(String payload);
-  bool isGravitymonDataSent();
-};
+void ledToggle() { digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); }
 
-#endif  // ESP32 && !ESP32S2
-#endif  // SRC_BLE_HPP_
+void ledOn(LedColor l) {
+  if (!ledInit) {
+    pinMode(LED_BUILTIN, OUTPUT);
+    ledInit = true;
+  }
+
+  if (l == LedColor::BLUE) {
+    ledTicker.attach(1, ledToggle);
+  } else if (l == LedColor::RED) {
+    ledTicker.attach(0.2, ledToggle);
+  } else {
+    ledTicker.detach();
+    digitalWrite(LED_BUILTIN, l);
+  }
+}
+#endif
+
+void ledOff() { ledOn(LedColor::OFF); }
+
+// EOF
