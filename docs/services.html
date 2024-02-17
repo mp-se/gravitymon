@@ -539,6 +539,44 @@ in the json document if you need other values as well.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="bierbot-bricks">
+<h2>BierBot Bricks<a class="headerlink" href="#bierbot-bricks" title="Permalink to this headline">¶</a></h2>
+<p>For this service you need to change the following for it to work.</p>
+<ul class="simple">
+<li><p>Set Interval to <code class="docutils literal notranslate"><span class="pre">910</span></code> seconds (This service will no accept data more often than 15 min)</p></li>
+<li><p>Set token to your <code class="docutils literal notranslate"><span class="pre">API</span> <span class="pre">KEY</span></code></p></li>
+</ul>
+<p>Enter the following URL for HTTP POST 1 target</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">brewbricks</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">iot</span><span class="o">/</span><span class="n">v1</span>
+</pre></div>
+</div>
+<p>You also need to add the following HTTP Header to POST 1 under the empty header (keep the existing one).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>`User-Agent: iSpindel`
+</pre></div>
+</div>
+<p>Finally add the following format template to HTTP POST 1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
+   "apikey": "${token}",
+   "type":"ispindel",
+   "brand":"wemos_d1_mini",
+   "version":"${app-ver}",
+   "chipid":"${id}",
+   "s_number_wort_0":${gravity-plato},
+   "s_number_temp_0":${temp-c},
+   "s_number_voltage_0":${battery},
+   "s_number_wifi_0":${rssi},
+   "s_number_tilt_0":${tilt}
+}
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are using the ESP8266 you can’t use the test feature from the web UI since we are using SSL. Due to the
+small RAM size on that board Its likley to crash when using SSL and the web server is running.</p>
+<p>To test this set a short sleep interval and tilt the device so it goes into gravity mode. If you have issues you can
+check the error log for any HTTP errors.</p>
+</div>
+</div>
 </div>
 
         </article>
@@ -600,6 +638,7 @@ in the json document if you need other values as well.</p>
 <li><a class="reference internal" href="#brewpi-remix">BrewPi Remix</a></li>
 <li><a class="reference internal" href="#brewpiless">Brewpiless</a></li>
 <li><a class="reference internal" href="#brewblox">BrewBlox</a></li>
+<li><a class="reference internal" href="#bierbot-bricks">BierBot Bricks</a></li>
 </ul>
 </li>
 </ul>

@@ -429,3 +429,47 @@ The json message on the mqtt topic  would look like this:
          "Plato": 0
       }
    }
+
+BierBot Bricks
+++++++++++++++
+
+For this service you need to change the following for it to work.
+
+- Set Interval to ``910`` seconds (This service will no accept data more often than 15 min)
+- Set token to your ``API KEY``
+
+Enter the following URL for HTTP POST 1 target
+
+.. code-block::
+
+   https://brewbricks.com/api/iot/v1
+
+You also need to add the following HTTP Header to POST 1 under the empty header (keep the existing one).
+
+.. code-block::
+
+   `User-Agent: iSpindel`
+
+Finally add the following format template to HTTP POST 1
+
+.. code-block::
+
+   {
+      "apikey": "${token}",
+      "type":"ispindel",
+      "brand":"wemos_d1_mini",
+      "version":"${app-ver}",
+      "chipid":"${id}",
+      "s_number_wort_0":${gravity-plato},
+      "s_number_temp_0":${temp-c},
+      "s_number_voltage_0":${battery},
+      "s_number_wifi_0":${rssi},
+      "s_number_tilt_0":${tilt}
+   }
+
+.. note::
+  If you are using the ESP8266 you can't use the test feature from the web UI since we are using SSL. Due to the 
+  small RAM size on that board Its likley to crash when using SSL and the web server is running.
+
+  To test this set a short sleep interval and tilt the device so it goes into gravity mode. If you have issues you can 
+  check the error log for any HTTP errors.

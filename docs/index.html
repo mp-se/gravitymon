@@ -204,20 +204,22 @@
 <h1>Welcome to GravityMon<a class="headerlink" href="#welcome-to-gravitymon" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v1.4.0 beta</strong>. Last updated 2023-12-02</p>
+<p>This documentation reflects <strong>v1.4.0</strong>. Last updated 2024-02-17</p>
 </div>
 <div class="section" id="what-is-gravitymon">
 <h2>What is GravityMon?<a class="headerlink" href="#what-is-gravitymon" title="Permalink to this headline">¶</a></h2>
-<p>GravityMon is a electronic hydrometer software that can be used to measure gravity and temperature during fermentation of beer and report the progress to a number of external
-services. Is uses a gyro to measure the gravity since there is a correlation between gravity an the density of the fluid. Based on the density the hydrometer will float at a different angle.
-The graph below is an example on how the fermentation process can be tracked. The graph has been rendered using Fermentrack.</p>
+<p>GravityMon is a electronic hydrometer software that can be used to measure gravity and temperature during
+fermentation of beer and report the progress to a number of external services. Is uses a gyro to measure the
+gravity since there is a correlation between gravity an the density of the fluid. Based on the density the
+hydrometer will float at a different angle. The graph below is an example on how the fermentation process
+can be tracked. The graph has been rendered using Fermentrack.</p>
 <a class="reference internal image-reference" href="_images/fermentation.png"><img alt="Example fermentation" src="_images/fermentation.png" style="width: 500px;"/></a>
 <p>GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
 implements a lot of the features that has been requested in the original iSpindle project but never implemented for
 various reasons.</p>
 <p>The firmware also supports a iSpindle built using an ESP32 which is pin compatible with esp8266, currently there are 3 options that are
-supported ESP32-D1 mini, ESP32-C3 mini, ESP32-S2 mini, ESP32 lite (floaty). See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>. The more modern hardware will allow better support for SSL and
-other memory intensive functions.</p>
+supported ESP32-D1 mini, ESP32-C3 mini, ESP32-S2 mini, ESP32-S3 mini, ESP32 lite (floaty). See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>. The more modern hardware
+will allow better support for SSL and other memory intensive functions.</p>
 <p>I started GravityMon because I like to create software and wanted to do some microcontroller programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural.</p>
 <p>The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. For more
@@ -311,7 +313,7 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-4-0-beta">v1.4.0 (beta)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v1-4-0">v1.4.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-3-1">v1.3.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-3-0">v1.3.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-2-1">v1.2.1</a></li>
@@ -372,6 +374,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewpi-remix">BrewPi Remix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewpiless">Brewpiless</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewblox">BrewBlox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#bierbot-bricks">BierBot Bricks</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a><ul>
@@ -422,6 +425,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#user-interface-does-not-render-correctly">User interface does not render correctly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#data-is-not-populated-in-the-fields">Data is not populated in the fields</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#what-does-the-flashing-led-mean">What does the flashing led mean?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#calibration-error-unable-to-find-a-valid-formula">Calibration error (unable to find a valid formula)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#how-can-i-filter-data-on-influxdb-without-needing-to-know-the-time-range">How can I filter data on influxdb without needing to know the time range</a></li>

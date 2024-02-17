@@ -249,8 +249,15 @@ of RAM will cause the device to crash. So enable SSL with caution and only when 
 to minimize the needed RAM but the remote service might not support that feature.</p>
 </div>
 <ul>
-<li><p><strong>Enhanced BLE data transmission</strong></p>
-<p>Offers an option to send JSON payload over BLE (up to 512 chars) to include more data than standard TILT.</p>
+<li><p><strong>Multiple Bluetooth data tranmission options</strong></p>
+<p>TILT has been support since the ESP32c3 board was supported but in this release there are a few new options that allows for
+more data to be transmitted.</p>
+<ul class="simple">
+<li><p>Tilt. Data: Gravity,Temp. Works with passive or active scanning by the client.</p></li>
+<li><p>Tilt PRO. Same as above with higher accuracy.</p></li>
+<li><p>Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.</p></li>
+<li><p>Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.</p></li>
+</ul>
 </li>
 <li><p><strong>Create gravity formulas on the device</strong></p>
 <p>Another big difference is that this software can create the gravity formula in the device, just enter the

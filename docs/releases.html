@@ -202,20 +202,26 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v1-4-0-beta">
-<h2>v1.4.0 (beta)<a class="headerlink" href="#v1-4-0-beta" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v1-4-0">
+<h2>v1.4.0<a class="headerlink" href="#v1-4-0" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p><em>NEW</em> Added led indicator: Blue / Slow Blinking = Config Mode, White/Solid = WiFi setup</p></li>
 <li><p><em>BUG</em> Reduced WIFI TX Power for C3 chip to improve WIFI connnection stability</p></li>
-<li><p><em>NEW</em> Added experimental support for extended BLE data transmission (will require specialized server software)</p></li>
+<li><p><em>NEW</em> Added 4 options to ble data transmission (TILT, TILT PRO, GRAVITYMON SERVICE, GRAVITYMON EDDYSTONE)</p></li>
 <li><p><em>NEW</em> Added support for ESP32S3 mini board</p></li>
 <li><p><em>NEW</em> Moved to async webserver to speed up performance in configuration mode</p></li>
 <li><p>Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don’t do a full erase before flashing)</p></li>
 <li><p>Added possibility to set wifi settings in config (need manual reboot to apply)</p></li>
-</ul>
-<ul class="simple">
 <li><p>Added option that shows the average value from the gyro reads + a button to reset that on the web ui. Might make it easier to do calibration of the value jumps around.</p></li>
+</ul>
+</div>
+<div class="section" id="known-issues">
+<h3>Known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>On ESP32c3 mini the rgb led does not turn blue when in config mode</p></li>
+<li><p>On ESP32s3 mini the rgb led does not work due to issue in arduino/esp32 unless manual patching of the arduino framework <cite>#define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT</cite></p></li>
 </ul>
 </div>
 <div class="section" id="maintenance">
@@ -234,6 +240,7 @@
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Published code coverage for unit tests and apitest.py (gcov/README.md)</p></li>
+<li><p>Added BierBot Bricks configuration as external service target.</p></li>
 </ul>
 </div>
 <div class="section" id="issues-adressed">
@@ -663,8 +670,9 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v1-4-0-beta">v1.4.0 (beta)</a><ul>
+<li><a class="reference internal" href="#v1-4-0">v1.4.0</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#known-issues">Known issues</a></li>
 <li><a class="reference internal" href="#maintenance">Maintenance</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>

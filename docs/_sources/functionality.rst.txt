@@ -60,9 +60,15 @@ The main features
   of RAM will cause the device to crash. So enable SSL with caution and only when you really need it. GravityMon will try
   to minimize the needed RAM but the remote service might not support that feature.
 
-* **Enhanced BLE data transmission**
+* **Multiple Bluetooth data tranmission options**
 
-  Offers an option to send JSON payload over BLE (up to 512 chars) to include more data than standard TILT.
+  TILT has been support since the ESP32c3 board was supported but in this release there are a few new options that allows for 
+  more data to be transmitted.
+
+  - Tilt. Data: Gravity,Temp. Works with passive or active scanning by the client.
+  - Tilt PRO. Same as above with higher accuracy.
+  - Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.
+  - Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.
 
 * **Create gravity formulas on the device**
 
