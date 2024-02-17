@@ -189,6 +189,8 @@ class WebServerHandler {
  public:
   bool setupWebServer();
   void loop();
+
+  AsyncWebServer *getWebServer() { return _server; }
 };
 
 // Global instance created

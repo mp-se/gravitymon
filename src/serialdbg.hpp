@@ -21,40 +21,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
+#ifndef SRC_SERIALDBG_HPP_
+#define SRC_SERIALDBG_HPP_
 
-#if defined(ESP32) && !defined(ESP32S2)
+#include <ArduinoLog.h>
 
-#include <Arduino.h>
-#include <NimBLEBeacon.h>
-#include <NimBLEDevice.h>
+void printTimestamp(Print* _logOutput, int _logLevel);
 
-#include <helper.hpp>
-
-class BleSender {
- private:
-  BLEServer* _server = nullptr;
-  BLEAdvertising* _advertising = nullptr;
-  BLEService* _service = nullptr;
-  BLECharacteristic* _characteristic = nullptr;
-  BLEUUID _uuid;
-  bool _initFlag = false;
-  int _beaconTime = 1000;
-
+class SerialDebug {
  public:
-  BleSender() {}
-
-  void init();
-
-  // Beacons
-  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendEddystone(float battery, float tempC, float gravity, float angle);
-
-  // Use GATT
-  void sendGravitymonData(String payload);
-  bool isGravitymonDataSent();
+  explicit SerialDebug(const uint32_t serialSpeed = 115200L);
+  void begin(Print* p) { getLog()->begin(LOG_LEVEL, p, true); }
+  static Logging* getLog() { return &Log; }
 };
 
-#endif  // ESP32 && !ESP32S2
-#endif  // SRC_BLE_HPP_
+extern SerialDebug mySerial;
+
+#endif  // SRC_SERIALDBG_HPP_
+
+// EOF

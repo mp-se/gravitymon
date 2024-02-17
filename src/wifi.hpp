@@ -55,6 +55,13 @@ class WifiConnection {
   void readReset();
   void writeReset();
 
+  void scanWifiNetworks();
+#if defined(ESP8266)
+  String getEncryptionType(uint8_t encryptionType);
+#else
+  String getEncryptionType(wifi_auth_mode_t encryptionType);
+#endif
+
  public:
   WifiConnection() { _timer = millis(); }
 

@@ -59,7 +59,7 @@ const char bleFormat[] PROGMEM =
     "\"gravity\":${gravity},"
     "\"angle\":${angle},"
     "\"battery\":${battery},"
-    "\"RSSI\":${rssi},"
+    "\"RSSI\":0,"
     "\"corr-gravity\":${corr-gravity},"
     "\"gravity-unit\":\"${gravity-unit}\","
     "\"run-time\":${run-time}"
@@ -210,7 +210,7 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
     case TEMPLATE_BLE:
       _baseTemplate = String(bleFormat);
       fname =
-          "dummy";  // this file should not exist, use standard template only
+          "/dummy";  // this file should not exist, use standard template only
       break;
   }
 
@@ -227,18 +227,19 @@ const char* TemplatingEngine::create(TemplatingEngine::Templates idx,
   }
 
 #if LOG_LEVEL == 6
-  // Log.verbose(F("TPL : Base '%s'." CR), baseTemplate.c_str());
+  Log.verbose(F("TPL : Base '%s'." CR), _baseTemplate.c_str());
 #endif
 
   // Insert data into template.
   transform();
   _baseTemplate.clear();
 
+  if (_output) {
 #if LOG_LEVEL == 6
-  // Log.verbose(F("TPL : Transformed '%s'." CR), baseTemplate.c_str());
+    Log.verbose(F("TPL : Transformed '%s'." CR), _output);
 #endif
-
-  if (_output) return _output;
+    return _output;
+  }
 
   return "";
 }

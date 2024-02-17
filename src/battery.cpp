@@ -21,40 +21,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
-
-#if defined(ESP32) && !defined(ESP32S2)
-
-#include <Arduino.h>
-#include <NimBLEBeacon.h>
-#include <NimBLEDevice.h>
-
+#include <battery.hpp>
+#include <config.hpp>
 #include <helper.hpp>
 
-class BleSender {
- private:
-  BLEServer* _server = nullptr;
-  BLEAdvertising* _advertising = nullptr;
-  BLEService* _service = nullptr;
-  BLECharacteristic* _characteristic = nullptr;
-  BLEUUID _uuid;
-  bool _initFlag = false;
-  int _beaconTime = 1000;
+BatteryVoltage::BatteryVoltage() {
+#if defined(ESP8266)
+  pinMode(PIN_VOLT, INPUT);
+#else
+  pinMode(PIN_VOLT, INPUT_PULLDOWN);
+#endif
+}
 
- public:
-  BleSender() {}
+void BatteryVoltage::read() {
+  // The analog pin can only handle 3.3V maximum voltage so we need to reduce
+  // the voltage (from max 5V)
+  float factor = myConfig.getVoltageFactor();  // Default value is 1.63
+  int v = analogRead(PIN_VOLT);
 
-  void init();
+  // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
+  // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
 
-  // Beacons
-  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendEddystone(float battery, float tempC, float gravity, float angle);
+#if defined(ESP8266)
+  _batteryLevel = ((3.3 / 1023) * v) * factor;
+#else  // defined (ESP32)
+  _batteryLevel = ((3.3 / 4095) * v) * factor;
+#endif
+#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
+  Log.verbose(
+      F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
+      factor, v, _batteryLevel);
+#endif
+}
 
-  // Use GATT
-  void sendGravitymonData(String payload);
-  bool isGravitymonDataSent();
-};
-
-#endif  // ESP32 && !ESP32S2
-#endif  // SRC_BLE_HPP_
+// EOF

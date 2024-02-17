@@ -31,6 +31,14 @@ SOFTWARE.
 #define CFG_FILENAME "/gravitymon.json"   // Name of config file
 #define CFG_HW_FILENAME "/hardware.json"  // Name of config file for hw
 
+enum BleFormat {
+  BLE_DISABLED = 0,
+  BLE_TILT = 1,
+  BLE_TILT_PRO = 2,
+  BLE_GRAVITYMON_SERVICE = 3,
+  BLE_GRAVITYMON_EDDYSTONE = 4
+};
+
 // Used for holding sensordata or sensoroffsets
 struct RawGyroData {
   int16_t ax;  // Raw Acceleration
@@ -158,7 +166,7 @@ class Config {
 #elif defined(ESP32S2)
   float _voltageFactor = 0.59;
 #elif defined(ESP32S3)
-  float _voltageFactor = 0.59;
+  float _voltageFactor = 1.54;
 #elif defined(ESP32LITE)
   float _voltageFactor = 1.59;
 #else  // ESP32
@@ -173,7 +181,6 @@ class Config {
   bool _gyroTemp = false;
 #endif
   bool _storageSleep = false;
-  bool _gravitymonBLE = false;
 
   // Wifi Config
   String _wifiSSID[2] = {"", ""};
@@ -205,7 +212,8 @@ class Config {
   char _gravityFormat = 'G';
 
   // BLE (ESP32 only)
-  String _colorBLE;
+  String _bleColor;
+  BleFormat _bleFormat = BleFormat::BLE_DISABLED;
 
   // Gyro calibration and formula calculation data
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
@@ -239,12 +247,6 @@ class Config {
   const bool isStorageSleep() { return _storageSleep; }
   void setStorageSleep(bool b) {
     _storageSleep = b;
-    _saveNeeded = true;
-  }
-
-  const bool isGravitymonBLE() { return _gravitymonBLE; }
-  void setGravitymonBLE(bool b) {
-    _gravitymonBLE = b;
     _saveNeeded = true;
   }
 
@@ -458,19 +460,27 @@ class Config {
   bool isGravitySG() { return _gravityFormat == 'G'; }
   bool isGravityPlato() { return _gravityFormat == 'P'; }
 
-  const char* getColorBLE() { return _colorBLE.c_str(); }
-  void setColorBLE(String c) {
-    _colorBLE = c;
+  const char* getBleColor() { return _bleColor.c_str(); }
+  void setBleColor(String c) {
+    _bleColor = c;
     _saveNeeded = true;
   }
-  bool isBLEActive() {
-    return (_colorBLE.length() > 0 || isGravitymonBLE()) ? true : false;
-  }
+  bool isBleActive() { return (_bleFormat != BleFormat::BLE_DISABLED); }
   bool isWifiPushActive() {
     return (isHttpActive() || isHttp2Active() || isHttp3Active() ||
             isInfluxDb2Active() || isMqttActive())
                ? true
                : false;
+  }
+
+  const BleFormat getBleFormat() { return _bleFormat; }
+  void setBleFormat(int b) {
+    _bleFormat = (BleFormat)b;
+    _saveNeeded = true;
+  }
+  void setBleFormat(BleFormat b) {
+    _bleFormat = b;
+    _saveNeeded = true;
   }
 
   const RawGyroData& getGyroCalibration() { return _gyroCalibration; }

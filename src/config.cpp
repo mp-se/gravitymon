@@ -66,7 +66,8 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_PASS] = getWifiPass(0);
   doc[PARAM_SSID2] = getWifiSSID(1);
   doc[PARAM_PASS2] = getWifiPass(1);
-  doc[PARAM_BLE] = getColorBLE();
+  doc[PARAM_BLE] = getBleColor();
+  doc[PARAM_BLE_FORMAT] = getBleFormat();
   doc[PARAM_TEMPFORMAT] = String(getTempFormat());
   doc[PARAM_TOKEN] = getToken();
   doc[PARAM_TOKEN2] = getToken2();
@@ -96,7 +97,6 @@ void Config::createJson(DynamicJsonDocument& doc) {
   doc[PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
   doc[PARAM_GYRO_TEMP] = isGyroTemp();
   doc[PARAM_STORAGE_SLEEP] = isStorageSleep();
-  doc[PARAM_GRAVITYMON_BLE] = isGravitymonBLE();
 
   JsonObject cal = doc.createNestedObject(PARAM_GYRO_CALIBRATION);
   cal["ax"] = _gyroCalibration.ax;
@@ -214,7 +214,9 @@ bool Config::loadFile() {
   if (!doc[PARAM_PASS].isNull()) setWifiPass(doc[PARAM_PASS], 0);
   if (!doc[PARAM_SSID2].isNull()) setWifiSSID(doc[PARAM_SSID2], 1);
   if (!doc[PARAM_PASS2].isNull()) setWifiPass(doc[PARAM_PASS2], 1);
-  if (!doc[PARAM_BLE].isNull()) setColorBLE(doc[PARAM_BLE]);
+  if (!doc[PARAM_BLE].isNull()) setBleColor(doc[PARAM_BLE]);
+  if (!doc[PARAM_BLE_FORMAT].isNull())
+    setBleFormat(doc[PARAM_BLE_FORMAT].as<int>());
 
   if (!doc[PARAM_TEMPFORMAT].isNull()) {
     String s = doc[PARAM_TEMPFORMAT];
@@ -266,8 +268,6 @@ bool Config::loadFile() {
     setGyroTemp(doc[PARAM_GYRO_TEMP].as<bool>());
   if (!doc[PARAM_STORAGE_SLEEP].isNull())
     setStorageSleep(doc[PARAM_STORAGE_SLEEP].as<bool>());
-  if (!doc[PARAM_GRAVITYMON_BLE].isNull())
-    setGravitymonBLE(doc[PARAM_GRAVITYMON_BLE].as<bool>());
   if (!doc[PARAM_GRAVITY_FORMAT].isNull()) {
     String s = doc[PARAM_GRAVITY_FORMAT];
     setGravityFormat(s.charAt(0));

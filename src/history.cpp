@@ -21,40 +21,43 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
+#include <LittleFS.h>
 
-#if defined(ESP32) && !defined(ESP32S2)
+#include <history.hpp>
 
-#include <Arduino.h>
-#include <NimBLEBeacon.h>
-#include <NimBLEDevice.h>
+FloatHistoryLog::FloatHistoryLog(String fName) {
+  _fName = fName;
 
-#include <helper.hpp>
+  File runFile = LittleFS.open(_fName, "r");
+  if (runFile) {
+    for (int i = 0; i < 10; i++) {
+      _runTime[i] = runFile.readStringUntil('\n').toFloat();
+      if (_runTime[i]) {
+        _average += _runTime[i];
+        _count++;
+      }
+    }
+    runFile.close();
+    _average = _average / _count;
+  }
+}
 
-class BleSender {
- private:
-  BLEServer* _server = nullptr;
-  BLEAdvertising* _advertising = nullptr;
-  BLEService* _service = nullptr;
-  BLECharacteristic* _characteristic = nullptr;
-  BLEUUID _uuid;
-  bool _initFlag = false;
-  int _beaconTime = 1000;
+void FloatHistoryLog::addEntry(float time) {
+  for (int i = (10 - 1); i > 0; i--) {
+    _runTime[i] = _runTime[i - 1];
+  }
+  _runTime[0] = time;
+  save();
+}
 
- public:
-  BleSender() {}
+void FloatHistoryLog::save() {
+  File runFile = LittleFS.open(_fName, "w");
+  if (runFile) {
+    for (int i = 0; i < 10; i++) {
+      runFile.println(_runTime[i], 2);
+    }
+    runFile.close();
+  }
+}
 
-  void init();
-
-  // Beacons
-  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendEddystone(float battery, float tempC, float gravity, float angle);
-
-  // Use GATT
-  void sendGravitymonData(String payload);
-  bool isGravitymonDataSent();
-};
-
-#endif  // ESP32 && !ESP32S2
-#endif  // SRC_BLE_HPP_
+// EOF
