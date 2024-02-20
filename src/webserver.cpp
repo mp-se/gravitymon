@@ -1187,7 +1187,7 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
 
 #if defined(ESP8266)
   DynamicJsonDocument doc(500);
-  DeserializationError err = deserializeJson(doc, request->arg("plain"));
+  DeserializationError err = deserializeJson(doc, request->arg("body"));
 
   if (err) {
     writeErrorLog("CFG : Failed to parse migration data (json)");
@@ -1199,15 +1199,18 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
   myConfig.setGravityFormula(doc[PARAM_GRAVITY_FORMULA]);
 
   RawGyroData gyro = {0, 0, 0, 0, 0, 0};
-  gyro.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];
-  gyro.ay = doc[PARAM_GYRO_CALIBRATION]["ay"];
-  gyro.az = doc[PARAM_GYRO_CALIBRATION]["az"];
-  gyro.gx = doc[PARAM_GYRO_CALIBRATION]["gx"];
-  gyro.gy = doc[PARAM_GYRO_CALIBRATION]["gy"];
-  gyro.gz = doc[PARAM_GYRO_CALIBRATION]["gz"];
+  gyro.ax = doc["ax"];
+  gyro.ay = doc["ay"];
+  gyro.az = doc["az"];
+  gyro.gx = doc["gx"];
+  gyro.gy = doc["gy"];
+  gyro.gz = doc["gz"];
 
   myConfig.setGyroCalibration(gyro);
   myConfig.saveFile();
+
+  Log.notice(F("WEB : %s." CR), myConfig.getGravityFormula());
+  Log.notice(F("WEB : %d." CR), myConfig.getGyroCalibration().ax);
 
   LittleFS.rename("/config.json", "/ispindel.json");
   request->send(200, "text/plain", F("Data migrated"));
