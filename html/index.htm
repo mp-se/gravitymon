@@ -139,7 +139,7 @@
             data: JSON.stringify(data), 
             statusCode: { 
               200: function(response) { 
-                showSuccess("Migration completed!");
+                showSuccess("Migration completed! Please restart device for changes to be applied to gyro.");
                 hideMigration();
                 $('#spinner').hide(); 
               },

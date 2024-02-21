@@ -1221,6 +1221,20 @@ void WebServerHandler::webHandleMigrate(AsyncWebServerRequest *request) {
   LOG_PERF_STOP("webserver-api-migrate");
 }
 
+void WebServerHandler::webHandleMigrateUndo(AsyncWebServerRequest *request) {
+  LOG_PERF_START("webserver-api-migrate-undo");
+  Log.notice(F("WEB : webServer callback for /api/migrate/undo." CR));
+
+#if defined(ESP8266)
+  LittleFS.rename("/ispindel.json", "/config.json");
+  request->send(200, "text/plain", F("ispindel config restored"));
+#else
+  request->send(404, "text/plain", F("Not implemented"));
+#endif
+
+  LOG_PERF_STOP("webserver-api-migrate-undo");
+}
+
 void WebServerHandler::webHandlePageNotFound(AsyncWebServerRequest *request) {
   Log.error(F("WEB : URL not found %s received." CR), request->url().c_str());
   request->send(404, "text/plain", F("URL not found"));
@@ -1352,6 +1366,9 @@ bool WebServerHandler::setupWebServer() {
                         std::placeholders::_1));
   _server->on("/api/restart", HTTP_GET,
               std::bind(&WebServerHandler::webHandleRestart, this,
+                        std::placeholders::_1));
+  _server->on("/api/migrate/undo", HTTP_GET,
+              std::bind(&WebServerHandler::webHandleMigrateUndo, this,
                         std::placeholders::_1));
   _server->on("/api/migrate", HTTP_POST,
               std::bind(&WebServerHandler::webHandleMigrate, this,
