@@ -122,6 +122,8 @@ class BaseWebServer {
   void webHandleWifiScanStatus(AsyncWebServerRequest *request);
   void webHandleWifiClear(AsyncWebServerRequest *request);
   void webHandlePageNotFound(AsyncWebServerRequest *request);
+  void webHandleUploadFirmware(AsyncWebServerRequest *request, String filename,
+                           size_t index, uint8_t *data, size_t len, bool final);
   void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
                            size_t index, uint8_t *data, size_t len, bool final);
   void webHandleRestart(AsyncWebServerRequest *request);

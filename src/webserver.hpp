@@ -47,8 +47,6 @@ class GravmonWebServer : public BaseWebServer {
   void webHandleTestPushStatus(AsyncWebServerRequest *request);
   void webHandleCalibrate(AsyncWebServerRequest *request);
   void webHandleCalibrateStatus(AsyncWebServerRequest *request);
-  void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
-                           size_t index, uint8_t *data, size_t len, bool final);
   void webHandleFactoryDefaults(AsyncWebServerRequest *request);
 
   String readFile(String fname);
