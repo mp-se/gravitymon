@@ -3,6 +3,14 @@
 Releases 
 ########
 
+v1.4.1
+======
+
+Issues adressed
+++++++++++++++++
+* Fixed broken iSpindel configuration migration for the esp8266. 
+* Fixed broken gather support button. 
+
 v1.4.0
 ======
 

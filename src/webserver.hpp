@@ -109,6 +109,7 @@ class WebServerHandler {
   void webHandlePageNotFound(AsyncWebServerRequest *request);
   void webHandleRestart(AsyncWebServerRequest *request);
   void webHandleMigrate(AsyncWebServerRequest *request);
+  void webHandleMigrateUndo(AsyncWebServerRequest *request);
 
   String readFile(String fname);
   bool writeFile(String fname, String data);

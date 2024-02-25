@@ -101,7 +101,7 @@
           iSpindel configuration file has been detected, do you want to copy formula and gyro calibration ?
         </div>
         <div class="col-md-2">
-          <button class="btn btn-primary btn-sm" type="button" id="migrate-btn" data-bs-toggle="collapse" data-bs-target="#collapseSupport" aria-expanded="false" aria-controls="collapseSupport" data-bs-toggle="tooltip" name="support-btn" id="support-btn" title="Collect data relevant for a support case">
+          <button class="btn btn-primary btn-sm" type="button" id="migrate-btn" data-bs-toggle="tooltip" name="migrate-btn" title="Migrate ispindel config">
             Migrate
           </button>
         </div>
@@ -124,17 +124,14 @@
         // var url = "/test/migrate.json";
         $.getJSON(url, function (cfg) {
           console.log( cfg );
-
-          gyro = {}
-          gyro["ax"] = cfg["Offset"][0];
-          gyro["ay"] = cfg["Offset"][1];
-          gyro["az"] = cfg["Offset"][2];
-          gyro["gx"] = cfg["Offset"][3];
-          gyro["gy"] = cfg["Offset"][4];
-          gyro["gz"] = cfg["Offset"][5];
           
           data = {}
-          data["gyro-calibration-data"] = gyro;
+          data["ax"] = cfg["Offset"][0];
+          data["ay"] = cfg["Offset"][1];
+          data["az"] = cfg["Offset"][2];
+          data["gx"] = cfg["Offset"][3];
+          data["gy"] = cfg["Offset"][4];
+          data["gz"] = cfg["Offset"][5];
           data["gravity-formula"] = cfg["POLY"];
 
           $.ajax( "/api/migrate", { 
@@ -142,7 +139,7 @@
             data: JSON.stringify(data), 
             statusCode: { 
               200: function(response) { 
-                showSuccess("Migration completed!");
+                showSuccess("Migration completed! Please restart device for changes to be applied to gyro.");
                 hideMigration();
                 $('#spinner').hide(); 
               },
@@ -269,15 +266,15 @@
               };
             </script>
 
-            <button class="btn btn-primary btn-sm" id="log-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLog" aria-expanded="false" aria-controls="collapseLog" data-bs-toggle="tooltip" title="Load and show the last 10 errors that has occured on the device">
+            <button class="btn btn-primary btn-sm" id="log-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLog" aria-expanded="false" aria-controls="collapseLog">
               View error log
             </button>
 
-            <button class="btn btn-secondary btn-sm" id="issue-btn" type="button" data-bs-toggle="tooltip" name="github-btn" id="github-btn" title="Go to github and place a issue">
+            <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="tooltip" name="github-btn" id="github-btn" title="Go to github and place a issue">
               Submit a issue on github
             </button>
 
-            <button class="btn btn-secondary btn-sm" id="support-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupport" aria-expanded="false" aria-controls="collapseSupport" data-bs-toggle="tooltip" name="support-btn" id="support-btn" title="Collect data relevant for a support case">
+            <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupport" aria-expanded="false" aria-controls="collapseSupport" data-bs-toggle="tooltip" name="support-btn" id="support-btn" title="Collect data relevant for a support case">
               Gather support information
             </button>
 
@@ -361,23 +358,17 @@
           //var url = "/test/adv.json";
           $.getJSON(url, function (cfg) {
             debug["advanced"] = cfg;
-
-            var url = "/api/upload";
-            //var url = "/test/upload.json";
-            $.getJSON(url, function (cfg) {
-              debug["files"] = cfg;
             
-              var url = "/log";
-              //var url = "/test/log";
-              $.ajax({url: url, method: 'get', success: function (data) {
-                debug["log"] = data.split("\n");
-                var s = JSON.stringify(debug, null, 2);
-                $("#supportContent").text( s );
-                $('#spinner').hide(); 
-                //navigator.clipboard.writeText(s);
-                //alert("Support information copied to clipboard");
-                } 
-              });
+            var url = "/log";
+            //var url = "/test/log";
+            $.ajax({url: url, method: 'get', success: function (data) {
+              debug["log"] = data.split("\n");
+              var s = JSON.stringify(debug, null, 2);
+              $("#supportContent").text( s );
+              $('#spinner').hide(); 
+              //navigator.clipboard.writeText(s);
+              //alert("Support information copied to clipboard");
+              } 
             });
           });
         });
