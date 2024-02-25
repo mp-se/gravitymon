@@ -21,6 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#include <MPU6050.h>
+
 #include <gyro.hpp>
 #include <log.hpp>
 #include <main.hpp>
@@ -31,6 +33,8 @@ MPU6050 accelgyro;
 #define GYRO_USE_INTERRUPT  // Use interrupt to detect when new sample is ready
 #define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
                             // calibration
+
+uint8_t GyroSensor::getGyroID() { return accelgyro.getDeviceID(); }
 
 bool GyroSensor::setup() {
   int clock = 400000;

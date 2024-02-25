@@ -43,6 +43,11 @@ extern "C" {
 }
 #endif
 
+#if !defined(ESP8266)
+#include <esp_int_wdt.h>
+#include <esp_task_wdt.h>
+#endif
+
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
@@ -784,10 +789,69 @@ void GravmonWebServer::loop() {
     }
 
     // TODO: Test the gyro
+    JsonObject gyro = obj.createNestedObject(PARAM_GYRO);
+    switch (myGyro.getGyroID()) {
+      case 0x34:
+        gyro[PARAM_FAMILY] = "MPU6050";
+        break;
+      case 0x38:
+        gyro[PARAM_FAMILY] = "MPU6500";
+        break;
+      default:
+        gyro[PARAM_FAMILY] = "0x" + String(myGyro.getGyroID(), 16);
+        break;
+    }
 
     // TODO: Test GPIO
 
     // TODO: Get CPU info
+
+    JsonObject cpu = obj.createNestedObject(PARAM_CHIP);
+
+#if defined(ESP8266)
+    cpu[PARAM_FAMILY] = "ESP8266";
+#else
+    esp_chip_info_t chip_info;
+    esp_chip_info(&chip_info);
+
+    cpu[PARAM_REVISION] = chip_info.revision;
+    cpu[PARAM_CORES] = chip_info.cores;
+
+    JsonArray feature = cpu.createNestedArray(PARAM_FEATURES);
+
+    if (chip_info.features & CHIP_FEATURE_EMB_FLASH)
+      feature.add("embedded flash");
+    if (chip_info.features & CHIP_FEATURE_WIFI_BGN)
+      feature.add("Embedded Flash");
+    if (chip_info.features & CHIP_FEATURE_EMB_FLASH) feature.add("2.4Ghz WIFI");
+    if (chip_info.features & CHIP_FEATURE_BLE) feature.add("Bluetooth LE");
+    if (chip_info.features & CHIP_FEATURE_BT) feature.add("Bluetooth Classic");
+    if (chip_info.features & CHIP_FEATURE_IEEE802154)
+      feature.add("IEEE 802.15.4/LR-WPAN");
+    if (chip_info.features & CHIP_FEATURE_EMB_PSRAM)
+      feature.add("Embedded PSRAM");
+
+    switch (chip_info.model) {
+      case CHIP_ESP32:
+        cpu[PARAM_FAMILY] = "ESP32";
+        break;
+      case CHIP_ESP32S2:
+        cpu[PARAM_FAMILY] = "ESP32S2";
+        break;
+      case CHIP_ESP32S3:
+        cpu[PARAM_FAMILY] = "ESP32S3";
+        break;
+      case CHIP_ESP32C3:
+        cpu[PARAM_FAMILY] = "ESP32C3";
+        break;
+      case CHIP_ESP32H2:
+        cpu[PARAM_FAMILY] = "ESP32H2";
+        break;
+      default:
+        cpu[PARAM_FAMILY] = String(chip_info.model);
+        break;
+    }
+#endif
 
     serializeJson(obj, _hardwareScanData);
     Log.notice(F("WEB : Scan complete %s." CR), _hardwareScanData.c_str());

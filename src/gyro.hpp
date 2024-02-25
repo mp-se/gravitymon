@@ -27,8 +27,6 @@ SOFTWARE.
 #define I2CDEV_IMPLEMENTATION I2CDEV_ARDUINO_WIRE
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
 
-#include <MPU6050.h>
-
 #include <config.hpp>
 
 struct RawGyroDataL {  // Used for average multiple readings
@@ -67,6 +65,7 @@ class GyroSensor {
   bool setup();
   bool read();
   void calibrateSensor();
+  uint8_t getGyroID();
 
   const RawGyroData &getLastGyroData() { return _lastGyroData; }
   float getAngle() { return _angle; }

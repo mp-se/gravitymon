@@ -98,5 +98,10 @@ constexpr auto PARAM_ONEWIRE = "onewire";
 constexpr auto PARAM_ADRESS = "adress";
 constexpr auto PARAM_RESOLUTION = "resolution";
 constexpr auto PARAM_FAMILY = "family";
+constexpr auto PARAM_GYRO = "gyro";
+constexpr auto PARAM_CHIP = "chip";
+constexpr auto PARAM_REVISION = "revision";
+constexpr auto PARAM_CORES = "cores";
+constexpr auto PARAM_FEATURES = "features";
 
 #endif  // SRC_RESOURCES_HPP_
