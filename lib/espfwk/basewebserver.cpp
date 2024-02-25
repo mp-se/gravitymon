@@ -186,7 +186,13 @@ void BaseWebServer::webHandleUploadFile(AsyncWebServerRequest *request,
     return;
   }
 
+#if defined(ESP8266)
+  FSInfo info;
+  LittleFS.info(info);
+  uint32_t maxFileSize =  info.totalBytes - info.usedBytes - 4096;
+#else
   uint32_t maxFileSize = LittleFS.totalBytes() - LittleFS.usedBytes() - 4096;
+#endif
   Log.verbose(F("WEB : BaseWebHandler callback for /api/filesystem/upload." CR));
 
   if (!index) {
@@ -286,19 +292,24 @@ void BaseWebServer::webHandleFileSystem(AsyncWebServerRequest *request,
           new AsyncJsonResponse(false, JSON_BUFFER_SIZE_L);
       JsonObject obj = response->getRoot().as<JsonObject>();
 
-      obj[PARAM_TOTAL] = LittleFS.totalBytes();
-      obj[PARAM_USED] = LittleFS.usedBytes();
-      obj[PARAM_FREE] = LittleFS.totalBytes() - LittleFS.usedBytes();
-
 #if defined(ESP8266)
-      FSInfo fs;
-      LittleFS.info(fs);
+      FSInfo info;
+      LittleFS.info(info);
+
+      obj[PARAM_TOTAL] = info.totalBytes;
+      obj[PARAM_USED] = info.usedBytes;
+      obj[PARAM_FREE] = info.totalBytes - info.usedBytes;
+
       Dir dir = LittleFS.openDir("/");
       JsonArray arr = obj.createNestedArray(PARAM_FILES);
       while (dir.next()) {
         arr.add("/" + dir.fileName());
       }
 #else  // ESP32
+      obj[PARAM_TOTAL] = LittleFS.totalBytes();
+      obj[PARAM_USED] = LittleFS.usedBytes();
+      obj[PARAM_FREE] = LittleFS.totalBytes() - LittleFS.usedBytes();
+
       File root = LittleFS.open("/");
       File f = root.openNextFile();
       JsonArray arr = obj.createNestedArray(PARAM_FILES);
