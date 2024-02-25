@@ -21,6 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#include <Wire.h>
+
 #include <battery.hpp>
 #include <calc.hpp>
 #include <config.hpp>
@@ -34,7 +36,6 @@ SOFTWARE.
 #include <templating.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
-#include <Wire.h>
 
 #if defined(ACTIVATE_GCOV)
 extern "C" {
@@ -508,7 +509,8 @@ void GravmonWebServer::webHandleHardwareScan(AsyncWebServerRequest *request) {
   request->send(response);
 }
 
-void GravmonWebServer::webHandleHardwareScanStatus(AsyncWebServerRequest *request) {
+void GravmonWebServer::webHandleHardwareScanStatus(
+    AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
   }
@@ -733,10 +735,11 @@ void GravmonWebServer::loop() {
     Log.notice(F("WEB : Scanning hardware." CR));
 
     // Scan the i2c bus for devices
-    // Wire.begin(PIN_SDA, PIN_SCL); // Should already have been done in gyro.cpp
+    // Wire.begin(PIN_SDA, PIN_SCL); // Should already have been done in
+    // gyro.cpp
     JsonArray i2c = obj.createNestedArray(PARAM_I2C);
 
-    for(int i = 1; i < 127; i++ ) {
+    for (int i = 1; i < 127; i++) {
       // The i2c_scanner uses the return value of
       // the Write.endTransmisstion to see if
       // a device did acknowledge to the address.
@@ -753,29 +756,32 @@ void GravmonWebServer::loop() {
     JsonArray onew = obj.createNestedArray(PARAM_ONEWIRE);
 
     for (int i = 0; i < mySensors.getDS18Count(); i++) {
-        DeviceAddress adr;
-        JsonObject sensor = onew.createNestedObject();
-        mySensors.getAddress(&adr[0], i);
-        sensor[PARAM_ADRESS] = String(adr[0],16) + String(adr[1],16) + String(adr[2],16) + String(adr[3],16) + String(adr[4],16) + String(adr[5],16) + String(adr[6],16) + String(adr[7],16);
-        switch(adr[0]) {
-          case DS18S20MODEL:
+      DeviceAddress adr;
+      JsonObject sensor = onew.createNestedObject();
+      mySensors.getAddress(&adr[0], i);
+      sensor[PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
+                             String(adr[2], 16) + String(adr[3], 16) +
+                             String(adr[4], 16) + String(adr[5], 16) +
+                             String(adr[6], 16) + String(adr[7], 16);
+      switch (adr[0]) {
+        case DS18S20MODEL:
           sensor[PARAM_FAMILY] = "DS18S20";
           break;
-          case DS18B20MODEL:
+        case DS18B20MODEL:
           sensor[PARAM_FAMILY] = "DS18B20";
           break;
-          case DS1822MODEL:
+        case DS1822MODEL:
           sensor[PARAM_FAMILY] = "DS1822";
           break;
-          case DS1825MODEL:
+        case DS1825MODEL:
           sensor[PARAM_FAMILY] = "DS1825";
           break;
-          case DS28EA00MODEL:
+        case DS28EA00MODEL:
           sensor[PARAM_FAMILY] = "DS28EA00";
           break;
-        }
-        sensor[PARAM_RESOLUTION] = mySensors.getResolution();
-    } 
+      }
+      sensor[PARAM_RESOLUTION] = mySensors.getResolution();
+    }
 
     // TODO: Test the gyro
 
