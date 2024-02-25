@@ -108,8 +108,16 @@ constexpr auto PARAM_STATUS = "status";
 constexpr auto PARAM_MESSAGE = "message";
 constexpr auto PARAM_TOKEN = "token";
 constexpr auto PARAM_COMMAND = "command";
+
+// File system
 constexpr auto PARAM_FILE = "file";
+constexpr auto PARAM_SIZE = "size";
+constexpr auto PARAM_TOTAL = "total";
+constexpr auto PARAM_FREE = "free";
+constexpr auto PARAM_USED = "used";
 constexpr auto PARAM_FILES = "files";
+
+// Wifi
 constexpr auto PARAM_NETWORKS = "networks";
 constexpr auto PARAM_RSSI = "rssi";
 constexpr auto PARAM_CHANNEL = "channel";

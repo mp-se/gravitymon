@@ -186,13 +186,18 @@ void BaseWebServer::webHandleUploadFile(AsyncWebServerRequest *request,
     return;
   }
 
-  // TODO: Check if the file will fit in the filesystem
-
   uint32_t maxFileSize = LittleFS.totalBytes() - LittleFS.usedBytes() - 4096;
   Log.verbose(F("WEB : BaseWebHandler callback for /api/filesystem/upload." CR));
 
   if (!index) {
     Log.notice(F("WEB : Start file upload, free space %d kb, size %d." CR), maxFileSize / 1024, request->contentLength());
+
+    if(len > maxFileSize) {
+      Log.error(F("WEB : File is to large to fit in file system." CR));
+      request->send(500);
+      return;
+    }
+
     request->_tempFile = LittleFS.open("/" + filename, "w");
     _uploadReturn = 200;
   }
@@ -281,6 +286,10 @@ void BaseWebServer::webHandleFileSystem(AsyncWebServerRequest *request,
           new AsyncJsonResponse(false, JSON_BUFFER_SIZE_L);
       JsonObject obj = response->getRoot().as<JsonObject>();
 
+      obj[PARAM_TOTAL] = LittleFS.totalBytes();
+      obj[PARAM_USED] = LittleFS.usedBytes();
+      obj[PARAM_FREE] = LittleFS.totalBytes() - LittleFS.usedBytes();
+
 #if defined(ESP8266)
       FSInfo fs;
       LittleFS.info(fs);
@@ -294,7 +303,9 @@ void BaseWebServer::webHandleFileSystem(AsyncWebServerRequest *request,
       File f = root.openNextFile();
       JsonArray arr = obj.createNestedArray(PARAM_FILES);
       while (f) {
-        arr.add("/" + String(f.name()));
+        JsonObject file = arr.createNestedObject();
+        file[PARAM_FILE] = "/" + String(f.name());
+        file[PARAM_SIZE] = static_cast<int>(f.size());
         f = root.openNextFile();
       }
       f.close();

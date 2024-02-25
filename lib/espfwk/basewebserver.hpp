@@ -71,8 +71,8 @@ class BaseWebServer {
   uint32_t _uploadedSize = 0;
   uint32_t _rebootTimer = 0;
   uint32_t _wifiPortalTimer = 0;
-  String _wifiScanData;
   volatile bool _wifiScanTask = false;
+  String _wifiScanData;
   volatile bool _rebootTask = false;
 
   void resetWifiPortalTimer() { _wifiPortalTimer = millis(); }
