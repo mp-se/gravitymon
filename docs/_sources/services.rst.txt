@@ -456,7 +456,7 @@ Finally add the following format template to HTTP POST 1
 
    {
       "apikey": "${token}",
-      "type":"ispindel",
+      "type":"gravitymon",
       "brand":"wemos_d1_mini",
       "version":"${app-ver}",
       "chipid":"${id}",
