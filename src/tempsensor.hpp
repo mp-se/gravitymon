@@ -24,6 +24,8 @@ SOFTWARE.
 #ifndef SRC_TEMPSENSOR_HPP_
 #define SRC_TEMPSENSOR_HPP_
 
+#include <DallasTemperature.h>
+
 class TempSensor {
  private:
   bool _hasSensor = false;
@@ -38,6 +40,7 @@ class TempSensor {
 };
 
 extern TempSensor myTempSensor;
+extern DallasTemperature mySensors;
 
 #endif  // SRC_TEMPSENSOR_HPP_
 

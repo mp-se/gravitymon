@@ -34,6 +34,7 @@ SOFTWARE.
 #include <templating.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
+#include <Wire.h>
 
 #if defined(ACTIVATE_GCOV)
 extern "C" {
@@ -490,6 +491,45 @@ bool GravmonWebServer::writeFile(String fname, String data) {
   return false;
 }
 
+void GravmonWebServer::webHandleHardwareScan(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
+  Log.notice(F("WEB : webServer callback for /api/hardware." CR));
+  _hardwareScanTask = true;
+  _hardwareScanData = "";
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_SUCCESS] = true;
+  obj[PARAM_MESSAGE] = "Scheduled hardware scanning";
+  response->setLength();
+  request->send(response);
+}
+
+void GravmonWebServer::webHandleHardwareScanStatus(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
+  Log.notice(F("WEB : webServer callback for /api/hardware/status." CR));
+
+  if (_hardwareScanTask || !_hardwareScanData.length()) {
+    AsyncJsonResponse *response =
+        new AsyncJsonResponse(false, JSON_BUFFER_SIZE_L);
+    JsonObject obj = response->getRoot().as<JsonObject>();
+    obj[PARAM_STATUS] = static_cast<bool>(_hardwareScanTask);
+    obj[PARAM_SUCCESS] = false;
+    obj[PARAM_MESSAGE] =
+        _hardwareScanTask ? "Hardware scanning running" : "No scanning running";
+    response->setLength();
+    request->send(response);
+  } else {
+    request->send(200, "application/json", _hardwareScanData);
+  }
+}
+
 String GravmonWebServer::readFile(String fname) {
   File file = LittleFS.open(fname, "r");
   if (file) {
@@ -580,6 +620,12 @@ bool GravmonWebServer::setupWebServer() {
                         std::placeholders::_1));
   _server->on("/api/calibrate", HTTP_GET,
               std::bind(&GravmonWebServer::webHandleCalibrate, this,
+                        std::placeholders::_1));
+  _server->on("/api/hardware/status", HTTP_GET,
+              std::bind(&GravmonWebServer::webHandleHardwareScanStatus, this,
+                        std::placeholders::_1));
+  _server->on("/api/hardware", HTTP_GET,
+              std::bind(&GravmonWebServer::webHandleHardwareScan, this,
                         std::placeholders::_1));
   _server->on("/api/factory", HTTP_GET,
               std::bind(&GravmonWebServer::webHandleFactoryDefaults, this,
@@ -676,6 +722,70 @@ void GravmonWebServer::loop() {
       Log.notice(F("WEB : Scheduled push test %s failed, not enabled" CR),
                  _pushTestTarget.c_str());
     _pushTestTask = false;
+  }
+
+  if (_hardwareScanTask) {
+    DynamicJsonDocument doc(JSON_BUFFER_SIZE_L);
+    JsonObject obj = doc.createNestedObject();
+    obj[PARAM_STATUS] = false;
+    obj[PARAM_SUCCESS] = true;
+    obj[PARAM_MESSAGE] = "";
+    Log.notice(F("WEB : Scanning hardware." CR));
+
+    // Scan the i2c bus for devices
+    // Wire.begin(PIN_SDA, PIN_SCL); // Should already have been done in gyro.cpp
+    JsonArray i2c = obj.createNestedArray(PARAM_I2C);
+
+    for(int i = 1; i < 127; i++ ) {
+      // The i2c_scanner uses the return value of
+      // the Write.endTransmisstion to see if
+      // a device did acknowledge to the address.
+      Wire.beginTransmission(i);
+      int err = Wire.endTransmission();
+
+      if (err == 0) {
+        JsonObject sensor = i2c.createNestedObject();
+        sensor[PARAM_ADRESS] = "0x" + String(i, 16);
+      }
+    }
+
+    // Scan onewire
+    JsonArray onew = obj.createNestedArray(PARAM_ONEWIRE);
+
+    for (int i = 0; i < mySensors.getDS18Count(); i++) {
+        DeviceAddress adr;
+        JsonObject sensor = onew.createNestedObject();
+        mySensors.getAddress(&adr[0], i);
+        sensor[PARAM_ADRESS] = String(adr[0],16) + String(adr[1],16) + String(adr[2],16) + String(adr[3],16) + String(adr[4],16) + String(adr[5],16) + String(adr[6],16) + String(adr[7],16);
+        switch(adr[0]) {
+          case DS18S20MODEL:
+          sensor[PARAM_FAMILY] = "DS18S20";
+          break;
+          case DS18B20MODEL:
+          sensor[PARAM_FAMILY] = "DS18B20";
+          break;
+          case DS1822MODEL:
+          sensor[PARAM_FAMILY] = "DS1822";
+          break;
+          case DS1825MODEL:
+          sensor[PARAM_FAMILY] = "DS1825";
+          break;
+          case DS28EA00MODEL:
+          sensor[PARAM_FAMILY] = "DS28EA00";
+          break;
+        }
+        sensor[PARAM_RESOLUTION] = mySensors.getResolution();
+    } 
+
+    // TODO: Test the gyro
+
+    // TODO: Test GPIO
+
+    // TODO: Get CPU info
+
+    serializeJson(obj, _hardwareScanData);
+    Log.notice(F("WEB : Scan complete %s." CR), _hardwareScanData.c_str());
+    _hardwareScanTask = false;
   }
 }
 

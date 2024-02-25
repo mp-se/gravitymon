@@ -30,6 +30,9 @@ class GravmonWebServer : public BaseWebServer {
  private:
   volatile bool _sensorCalibrationTask = false;
   volatile bool _pushTestTask = false;
+  volatile bool _hardwareScanTask = false;
+
+  String _hardwareScanData;
 
   String _pushTestTarget;
   int _pushTestLastCode;
@@ -48,6 +51,8 @@ class GravmonWebServer : public BaseWebServer {
   void webHandleCalibrate(AsyncWebServerRequest *request);
   void webHandleCalibrateStatus(AsyncWebServerRequest *request);
   void webHandleFactoryDefaults(AsyncWebServerRequest *request);
+  void webHandleHardwareScan(AsyncWebServerRequest *request);
+  void webHandleHardwareScanStatus(AsyncWebServerRequest *request);
 
   String readFile(String fname);
   bool writeFile(String fname, String data);
