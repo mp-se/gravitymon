@@ -122,8 +122,9 @@ void BaseWebServer::loop() {
 }
 
 void BaseWebServer::webHandleUploadFirmware(AsyncWebServerRequest *request,
-                                        String filename, size_t index,
-                                        uint8_t *data, size_t len, bool final) {
+                                            String filename, size_t index,
+                                            uint8_t *data, size_t len,
+                                            bool final) {
   if (!isAuthenticated(request)) {
     return;
   }
@@ -189,16 +190,18 @@ void BaseWebServer::webHandleUploadFile(AsyncWebServerRequest *request,
 #if defined(ESP8266)
   FSInfo info;
   LittleFS.info(info);
-  uint32_t maxFileSize =  info.totalBytes - info.usedBytes - 4096;
+  uint32_t maxFileSize = info.totalBytes - info.usedBytes - 4096;
 #else
   uint32_t maxFileSize = LittleFS.totalBytes() - LittleFS.usedBytes() - 4096;
 #endif
-  Log.verbose(F("WEB : BaseWebHandler callback for /api/filesystem/upload." CR));
+  Log.verbose(
+      F("WEB : BaseWebHandler callback for /api/filesystem/upload." CR));
 
   if (!index) {
-    Log.notice(F("WEB : Start file upload, free space %d kb, size %d." CR), maxFileSize / 1024, request->contentLength());
+    Log.notice(F("WEB : Start file upload, free space %d kb, size %d." CR),
+               maxFileSize / 1024, request->contentLength());
 
-    if(len > maxFileSize) {
+    if (len > maxFileSize) {
       Log.error(F("WEB : File is to large to fit in file system." CR));
       request->send(500);
       return;
