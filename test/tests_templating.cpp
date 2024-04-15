@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Magnus
+Copyright (c) 2022-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,6 @@ GravmonConfig cfg("", "");
 test(template_applyTemplate1) {
   TemplatingEngine e;
   GravmonPush p(&cfg);
-  char buffer[20];
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(GravmonPush::TEMPLATE_HTTP1);
@@ -58,7 +57,6 @@ test(template_applyTemplate1) {
 test(template_applyTemplate2) {
   TemplatingEngine e;
   GravmonPush p(&cfg);
-  char buffer[20];
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(GravmonPush::TEMPLATE_HTTP2);
@@ -78,7 +76,6 @@ test(template_applyTemplate2) {
 test(template_applyTemplate3) {
   TemplatingEngine e;
   GravmonPush p(&cfg);
-  char buffer[20];
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(GravmonPush::TEMPLATE_HTTP3);
@@ -96,7 +93,6 @@ test(template_applyTemplate3) {
 test(template_applyTemplate4) {
   TemplatingEngine e;
   GravmonPush p(&cfg);
-  char buffer[20];
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(GravmonPush::TEMPLATE_INFLUX);
@@ -115,7 +111,6 @@ test(template_applyTemplate4) {
 test(template_applyTemplate5) {
   TemplatingEngine e;
   GravmonPush p(&cfg);
-  char buffer[20];
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(GravmonPush::TEMPLATE_MQTT);
@@ -134,7 +129,6 @@ test(template_applyTemplate5) {
 test(template_applyTemplate6) {
   TemplatingEngine e;
   GravmonPush p(&cfg);
-  char buffer[20];
   myConfig.setMDNS("gravitymon");
 
   const char* tpl = 
@@ -153,7 +147,6 @@ test(template_applyTemplate6) {
 test(template_applyTemplate7) {
   TemplatingEngine e;
   GravmonPush p(&cfg);
-  char buffer[20];
   myConfig.setMDNS("gravitymon");
 
   const char* tpl = 
