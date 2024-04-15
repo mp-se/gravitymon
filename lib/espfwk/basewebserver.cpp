@@ -306,7 +306,9 @@ void BaseWebServer::webHandleFileSystem(AsyncWebServerRequest *request,
       Dir dir = LittleFS.openDir("/");
       JsonArray arr = obj.createNestedArray(PARAM_FILES);
       while (dir.next()) {
-        arr.add("/" + dir.fileName());
+        JsonObject file = arr.createNestedObject();
+        file[PARAM_FILE] = "/" + String(dir.fileName());
+        file[PARAM_SIZE] = static_cast<int>(dir.fileSize());
       }
 #else  // ESP32
       obj[PARAM_TOTAL] = LittleFS.totalBytes();

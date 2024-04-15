@@ -87,11 +87,16 @@ class BaseWebServer {
                     gIndexHtmlSize);
   }
   void webReturnAppJs(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gAppJsData, gAppJsSize);
+    AsyncWebServerResponse *response = request->beginResponse_P(
+        200, "application/javascript", (const uint8_t *)gAppJsData, gAppJsSize);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);    
   }
   void webReturnAppCss(AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", (const uint8_t *)gAppCssData,
-                    gAppCssSize);
+    AsyncWebServerResponse *response = request->beginResponse_P(
+        200, "text/css", (const uint8_t *)gAppCssData, gAppCssSize);
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);    
   }
 #else
   void webReturnIndexHtml(AsyncWebServerRequest *request) {
