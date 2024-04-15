@@ -154,14 +154,19 @@ void setup() {
       break;
 
     default:
-      if (myGyro.setup()) {
-        PERF_BEGIN("main-gyro-read");
-        myGyro.read();
-        PERF_END("main-gyro-read");
+      if (!myConfig.isGyroDisabled()) {
+        if (myGyro.setup()) {
+          PERF_BEGIN("main-gyro-read");
+          myGyro.read();
+          PERF_END("main-gyro-read");
+        } else {
+          Log.notice(
+              F("Main: Failed to connect to the gyro, software will not be able "
+                "to detect angles." CR));
+        }
       } else {
         Log.notice(
-            F("Main: Failed to connect to the gyro, software will not be able "
-              "to detect angles." CR));
+            F("Main: Gyro is disabled in configuration." CR));
       }
 
       myBatteryVoltage.read();
@@ -356,9 +361,11 @@ void loopGravityOnInterval() {
     loopReadGravity();
     loopMillis = millis();
     // printHeap("MAIN");
-    PERF_BEGIN("loop-gyro-read");
-    myGyro.read();
-    PERF_END("loop-gyro-read");
+    if(!myConfig.isGyroDisabled()) {
+      PERF_BEGIN("loop-gyro-read");
+      myGyro.read();
+      PERF_END("loop-gyro-read");
+    }
     myBatteryVoltage.read();
 
     if (runMode != RunMode::wifiSetupMode)
@@ -439,9 +446,11 @@ void loop() {
         goToSleep(60);
       }
 
-      PERF_BEGIN("loop-gyro-read");
-      myGyro.read();
-      PERF_END("loop-gyro-read");
+      if(!myConfig.isGyroDisabled()) {
+        PERF_BEGIN("loop-gyro-read");
+        myGyro.read();
+        PERF_END("loop-gyro-read");
+      }
       myWifi.loop();
       break;
   }
@@ -460,7 +469,7 @@ void checkSleepMode(float angle, float volt) {
   return;
 #endif
 
-  if (!myConfig.hasGyroCalibration()) {
+  if (!myConfig.hasGyroCalibration() && !myConfig.isGyroDisabled()) {
     // Will not enter sleep mode if: no calibration data
 #if LOG_LEVEL == 6
     Log.notice(
@@ -468,7 +477,7 @@ void checkSleepMode(float angle, float volt) {
           "active." CR));
 #endif
     runMode = RunMode::configurationMode;
-  } else if (!myGyro.hasValue() || !myGyro.isConnected()) {
+  } else if (!myConfig.isGyroDisabled() && (!myGyro.hasValue() || !myGyro.isConnected())) {
     runMode = RunMode::configurationMode;
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration

@@ -89,6 +89,7 @@ class GravmonConfig : public BaseConfig {
 #else
   bool _skipSslOnTest = false;
 #endif
+  bool _gyroDisabled = false;
 
   // Push target settings
   String _token = "";
@@ -146,6 +147,12 @@ class GravmonConfig : public BaseConfig {
   const bool isStorageSleep() { return _storageSleep; }
   void setStorageSleep(bool b) {
     _storageSleep = b;
+    _saveNeeded = true;
+  }
+
+  const bool isGyroDisabled() { return _gyroDisabled; }
+  void setGyroDisabled(bool b) {
+    _gyroDisabled = b;
     _saveNeeded = true;
   }
 

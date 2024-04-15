@@ -51,6 +51,7 @@ void GravmonConfig::createJson(JsonObject& doc) {
   doc[PARAM_TEMP_ADJ] = serialized(String(getTempSensorAdjC(), DECIMALS_TEMP));
   doc[PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
   doc[PARAM_GYRO_TEMP] = isGyroTemp();
+  doc[PARAM_GYRO_DISABLED] = isGyroDisabled();
   doc[PARAM_STORAGE_SLEEP] = isStorageSleep();
   doc[PARAM_SKIP_SSL_ON_TEST] = isSkipSslOnTest();
 
@@ -117,6 +118,8 @@ void GravmonConfig::parseJson(JsonObject& doc) {
     String s = doc[PARAM_GRAVITY_FORMAT];
     setGravityFormat(s.charAt(0));
   }
+  if (!doc[PARAM_GYRO_DISABLED].isNull())
+    setGyroDisabled(doc[PARAM_GYRO_DISABLED].as<bool>());
   if (!doc[PARAM_TEMP_ADJ].isNull())
     setTempSensorAdjC(doc[PARAM_TEMP_ADJ].as<float>());
   if (!doc[PARAM_SKIP_SSL_ON_TEST].isNull())
