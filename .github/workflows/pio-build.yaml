@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches: 
-      - '2.0.0'
+      - '2.0.0-fwk'
       - dev
 
 jobs:
@@ -16,6 +16,19 @@ jobs:
     
       - name: Setup PlatformIO
         uses: n-vr/setup-platformio-action@v1.0.1    
+
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          repository: mpse/gravitymon-ui
+          sparse-checkout: |
+            dist
+
+      - run: |
+          ls -al
+          cp dist/css/app.css.gz html/
+          cp dist/js/app.js.gz html/
+          cp dist/index.html html/
 
       - name: PlatformIO Run
         uses: karniv00l/platformio-run-action@v1
