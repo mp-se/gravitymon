@@ -23,6 +23,10 @@ jobs:
           repository: mp-se/gravitymon-ui
           sparse-checkout: |
             dist
+            dist/js
+            dist/css
+          #fetch-depth: 3
+          github-server-url: https://github.com
 
       - run: |
           ls -al
