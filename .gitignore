@@ -8,3 +8,4 @@ src_docs/_build/*
 gcov/*.gcno
 gcov/*.gcov
 gcov/*.gcda
+.DS_Store
