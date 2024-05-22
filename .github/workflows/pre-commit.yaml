@@ -6,6 +6,7 @@ on:
     branches: 
       - master
       - dev
+      - '2.0.0-fwk'
 
 jobs:
   pre-commit:
