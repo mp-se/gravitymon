@@ -160,13 +160,12 @@ void setup() {
           myGyro.read();
           PERF_END("main-gyro-read");
         } else {
-          Log.notice(
-              F("Main: Failed to connect to the gyro, software will not be able "
-                "to detect angles." CR));
+          Log.notice(F(
+              "Main: Failed to connect to the gyro, software will not be able "
+              "to detect angles." CR));
         }
       } else {
-        Log.notice(
-            F("Main: Gyro is disabled in configuration." CR));
+        Log.notice(F("Main: Gyro is disabled in configuration." CR));
       }
 
       myBatteryVoltage.read();
@@ -361,7 +360,7 @@ void loopGravityOnInterval() {
     loopReadGravity();
     loopMillis = millis();
     // printHeap("MAIN");
-    if(!myConfig.isGyroDisabled()) {
+    if (!myConfig.isGyroDisabled()) {
       PERF_BEGIN("loop-gyro-read");
       myGyro.read();
       PERF_END("loop-gyro-read");
@@ -446,7 +445,7 @@ void loop() {
         goToSleep(60);
       }
 
-      if(!myConfig.isGyroDisabled()) {
+      if (!myConfig.isGyroDisabled()) {
         PERF_BEGIN("loop-gyro-read");
         myGyro.read();
         PERF_END("loop-gyro-read");
@@ -477,7 +476,8 @@ void checkSleepMode(float angle, float volt) {
           "active." CR));
 #endif
     runMode = RunMode::configurationMode;
-  } else if (!myConfig.isGyroDisabled() && (!myGyro.hasValue() || !myGyro.isConnected())) {
+  } else if (!myConfig.isGyroDisabled() &&
+             (!myGyro.hasValue() || !myGyro.isConnected())) {
     runMode = RunMode::configurationMode;
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration
