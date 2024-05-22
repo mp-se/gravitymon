@@ -12,27 +12,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-    
+      - name: Checkout 
+        uses: actions/checkout@v4
+
+      - name: Checkout UI
+        run: |
+          echo "Checkout UI"
+          git clone https://github.com/mp-se/gravitymon-ui gravitymon-ui 
+          cp gravitymon-ui/dist/css/app.css.gz html/
+          cp gravitymon-ui/dist/js/app.js.gz html/
+          cp gravitymon-ui/dist/index.html html/
+
       - name: Setup PlatformIO
         uses: n-vr/setup-platformio-action@v1.0.1    
-
-      - uses: actions/checkout@v4
-        with:
-          ref: master
-          repository: mp-se/gravitymon-ui
-          sparse-checkout: |
-            dist
-            dist/js
-            dist/css
-          #fetch-depth: 3
-          github-server-url: https://github.com
-
-      - run: |
-          ls -al
-          cp dist/css/app.css.gz html/
-          cp dist/js/app.js.gz html/
-          cp dist/index.html html/
 
       - name: PlatformIO Run
         uses: karniv00l/platformio-run-action@v1
