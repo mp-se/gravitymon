@@ -13,23 +13,17 @@ Step 1 - Flash the device
 The first step is to flash the firmware, I recommend using Brewflasher as the easy option. Detailed 
 instructions can be found here :ref:`installation`
 
-Step 2 - Setup WIFI
--------------------
+Step 2 - Setup WIFI & Configuration
+-----------------------------------
 
 When the device starts up the first time it will first start an WIFI access point so that the WIFI Settings 
-can be configured. The instructions for that can be found here :ref:`setup_wifi`
+can be configured. The wifi settings can be found under the Device - WIFI menu.
+  
+The user interface does no longer require internet access for most functions, the exception is the graphs which 
+require access to chartjs in order to render properly. This is due to lack of memory on the device.
 
-.. note::
-  Since the user interface is built using modern frameworks the device requires access to the internet 
-  for the UI to render and data to be populated. The sites that are needed are; https://cdn.jsdelivr.net/npm/bootstrap
-  and https://code.jquery.com
-
-
-Step 3 - Configuration
-----------------------
-
-Once the device can connect to WIFI it will go into `configuration mode` and start a web server for 
-doing the initial configuration. In order to access the device you will need to find its name or ip address.
+The device will go into `configuration mode` and start a web server for doing the initial configuration. 
+In order to access the device you will need to find its name or ip address.
 
 It will broadcast a name like gravitymonXXXXXX.local over mDNS. Where the XXXXXX is the unique device id. You can 
 find the name via an mDNS browser, check your router or connect the device to a serial monitor. On windows mDNS 

@@ -517,6 +517,8 @@ Push - Bluetooth
   - **GM SERVICE**: Client can read standard iSpindle JSON payload, require connection with device.
   - **GM EDDYSTONE**: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle 
 
+Other
+=====
 
 Other - Serial
 ++++++++++++++

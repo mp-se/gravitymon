@@ -1,10 +1,7 @@
-Advanced Configuration
-######################
-
 .. _format-template:
 
-Format templates
-++++++++++++++++
+Format Templates
+################
 
 To reduce the need for adding custom endpoints for various services there is an built in format editor that allows the user to customize the format being sent to the push target. 
 
