@@ -113,7 +113,7 @@ Under `Headers` (button after the http url in the UI) enter the following string
 This is the more secure option.
 
 Even though ubidots can handle the default iSpindle format it probably better to just post the data you want. This is an example of a 
-format template that can be used. For information on customizing the format see :ref:`format-editor`.
+format template that can be used. For information on customizing the format see :ref:`format-template`.
 
 .. code-block:: 
 

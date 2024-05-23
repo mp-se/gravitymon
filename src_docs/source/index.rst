@@ -149,10 +149,9 @@ the following libraries and without these this would have been much more difficu
    intro
    installation
    configuration
+   format-template
    hardware
-   formula
    services
-   advanced
    data
    compiling
    contributing

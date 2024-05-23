@@ -1,10 +1,10 @@
 Advanced Configuration
 ######################
 
-.. _format-editor:
+.. _format-template:
 
-Format editor
-+++++++++++++
+Format templates
+++++++++++++++++
 
 To reduce the need for adding custom endpoints for various services there is an built in format editor that allows the user to customize the format being sent to the push target. 
 
@@ -12,16 +12,11 @@ To reduce the need for adding custom endpoints for various services there is an 
 
    If format templates are large this feature can be slow on a small device such as the esp8266. 
 
-.. image:: images/format.png
-  :width: 800
-  :alt: Format editor
 
-You enter the format data in the text field and the test button will show an example on what the output would look like. If the data cannot be formatted in json it will just be displayed as a long string.
-The save button will save the current formula and reload the data from the device. 
+You enter the format data in the text field and the preview button will show an example on what the 
+output would look like. If the data cannot be formatted in json it will just be displayed as a text.
 
 You can also select a template from the list and copy that to the current endpoint. 
-
-Saving an empty formula will reset it to the default value.
 
 .. tip::
 
@@ -29,7 +24,7 @@ Saving an empty formula will reset it to the default value.
 
 These are the format keys available for use in the format.
 
-.. list-table:: Directory structure
+.. list-table:: Format template keywords
    :widths: 30 50 20
    :header-rows: 1
 

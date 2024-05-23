@@ -15,7 +15,7 @@ The main features
   angle/tilt values, change configuration, update the gravity formula. When in this mode you can also interact 
   with the device via an REST API so data can be pushed to the device via scripts (see API section for more information).
 
-  .. image:: images/index.png
+  .. image:: images/ui-home.png
     :width: 700
     :alt: UI example
 
@@ -83,7 +83,7 @@ The main features
   In order to make it easier to support more targets there is a built in format editor that can be used to 
   customize the data that is to be sent. This way you can easily adapt the software to new targets without coding. 
   If you have a good template please share it on the github repository and I will add it to the documentation 
-  for other users to enjoy. See the :ref:`format-editor` for more information. See :ref:`services` for a list of
+  for other users to enjoy. See the :ref:`format-template` for more information. See :ref:`services` for a list of
   services currently validated.
 
 * **Validation of common configuration errors**
