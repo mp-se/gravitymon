@@ -3,6 +3,21 @@
 Releases 
 ########
 
+v2.0.0-alfa1
+============
+
+Features
+++++++++
+* Redesign of user interface using VueJS as the base (UI moved to separate github project mp-se/gravitymon-ui) 
+* Added authorization for API access (currently basic and not really secure)
+* Redesigned REST-API to function better with VueJS
+* Updated documentation to match new version (Still some more work needed)
+* Updated API tests to match new API (Still some more work needed)
+* Moved WIFI configuration to the main application (Removed WiFi Manager)
+* Added additional BLE options for ESP32 builds
+
+NOTE! I dont recommend this version for production yet, only for testing!
+
 v1.4.1
 ======
 
