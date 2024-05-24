@@ -7,7 +7,7 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v1.4.0 beta**. Last updated 2023-12-21
+  This documentation reflects **v2.0.0 alfa**. Last updated 2024-05-23
 
 What is GravityMon?
 --------------------
@@ -47,16 +47,6 @@ The github repository can be found here; `GravityMon on Github <https://github.c
   I have tested this software on 40+ brews with good results.
 
 
-User interface overview
------------------------
-
-This animation shows how the features of the user interface. It's for an older version but the main features are the same.
-
-.. image:: images/gravitymon.gif
-  :width: 800
-  :alt: User Inteface Walkthrough
-
-
 Other resouces
 --------------
 
@@ -92,10 +82,6 @@ the following libraries and without these this would have been much more difficu
 
   Include binary files into the code, used to service html files.
 
-* https://github.com/khoih-prog/ESP_WiFiManager
-
-  Configure wifi settings.
-
 * https://github.com/thijse/Arduino-Log
 
   Logging library for handling different loglevels and configure what sent over the serial.
@@ -128,10 +114,6 @@ the following libraries and without these this would have been much more difficu
 
   CSS templates for the web page.
 
-* https://github.com/lorol/LITTLEFS
-
-  LittleFS library for ESP32 framework 1.x
-
 * https://github.com/h2zero/NimBLE-Arduino
 
   Bluetooth library for ESP32 framework 1.x
@@ -149,10 +131,9 @@ the following libraries and without these this would have been much more difficu
    intro
    installation
    configuration
+   format-template
    hardware
-   formula
    services
-   advanced
    data
    compiling
    contributing
