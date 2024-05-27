@@ -25,8 +25,8 @@ SOFTWARE.
 #define SRC_CONFIG_HPP_
 
 #include <baseconfig.hpp>
-#include <utils.hpp>
 #include <main.hpp>
+#include <utils.hpp>
 
 enum BleFormat {
   BLE_DISABLED = 0,
@@ -180,7 +180,13 @@ class GravmonConfig : public BaseConfig {
     _saveNeeded = true;
   }
 
-  int getVoltagePin() { return _voltagePin; }
+  int getVoltagePin() {
+#if defined(ESP32LITE)  // Can only be configured for the floaty hardware
+    return _voltagePin;
+#else
+    return PIN_VOLT;
+#endif
+  }
   void setVoltagePin(int v) {
     _voltagePin = v;
     _saveNeeded = true;

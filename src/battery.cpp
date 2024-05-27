@@ -27,11 +27,9 @@ SOFTWARE.
 
 BatteryVoltage::BatteryVoltage() {
 #if defined(ESP8266)
-  pinMode(PIN_VOLT, INPUT);
-#elif defined(ESP32LITE)
-  pinMode(myConfig.getVoltagePin(), INPUT_PULLDOWN);
+  pinMode(myConfig.getVoltagePin(), INPUT);
 #else
-  pinMode(PIN_VOLT, INPUT_PULLDOWN);
+  pinMode(myConfig.getVoltagePin(), INPUT_PULLDOWN);
 #endif
 }
 
@@ -39,11 +37,7 @@ void BatteryVoltage::read() {
   // The analog pin can only handle 3.3V maximum voltage so we need to reduce
   // the voltage (from max 5V)
   float factor = myConfig.getVoltageFactor();  // Default value is 1.63
-#if defined(ESP32LITE)
   int v = analogRead(myConfig.getVoltagePin());
-#else
-  int v = analogRead(PIN_VOLT);
-#endif
 
   // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
