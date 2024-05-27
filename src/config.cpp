@@ -54,6 +54,7 @@ void GravmonConfig::createJson(JsonObject& doc) {
   doc[PARAM_GYRO_DISABLED] = isGyroDisabled();
   doc[PARAM_STORAGE_SLEEP] = isStorageSleep();
   doc[PARAM_SKIP_SSL_ON_TEST] = isSkipSslOnTest();
+  doc[PARAM_VOLTAGE_PIN] = getVoltagePin();
 
   JsonObject cal = doc.createNestedObject(PARAM_GYRO_CALIBRATION);
   cal["ax"] = _gyroCalibration.ax;
@@ -124,6 +125,8 @@ void GravmonConfig::parseJson(JsonObject& doc) {
     setTempSensorAdjC(doc[PARAM_TEMP_ADJ].as<float>());
   if (!doc[PARAM_SKIP_SSL_ON_TEST].isNull())
     setSkipSslOnTest(doc[PARAM_SKIP_SSL_ON_TEST].as<bool>());
+  if (!doc[PARAM_VOLTAGE_PIN].isNull())
+    setVoltagePin(doc[PARAM_VOLTAGE_PIN].as<int>());
 
   if (!doc[PARAM_GYRO_CALIBRATION]["ax"].isNull())
     _gyroCalibration.ax = doc[PARAM_GYRO_CALIBRATION]["ax"];

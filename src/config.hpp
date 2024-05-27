@@ -26,6 +26,7 @@ SOFTWARE.
 
 #include <baseconfig.hpp>
 #include <utils.hpp>
+#include <main.hpp>
 
 enum BleFormat {
   BLE_DISABLED = 0,
@@ -90,6 +91,7 @@ class GravmonConfig : public BaseConfig {
   bool _skipSslOnTest = false;
 #endif
   bool _gyroDisabled = false;
+  int _voltagePin = PIN_VOLT;
 
   // Push target settings
   String _token = "";
@@ -175,6 +177,12 @@ class GravmonConfig : public BaseConfig {
   }
   void setSleepInterval(String s) {
     _sleepInterval = s.toInt();
+    _saveNeeded = true;
+  }
+
+  int getVoltagePin() { return _voltagePin; }
+  void setVoltagePin(int v) {
+    _voltagePin = v;
     _saveNeeded = true;
   }
 
