@@ -16,7 +16,12 @@ Features
 * Moved WIFI configuration to the main application (Removed WiFi Manager)
 * Added additional BLE options for ESP32 builds
 
-NOTE! I dont recommend this version for production yet, only for testing!
+NOTE! I dont recommend this version for production yet, only for testing / feedback!
+
+Known Issues
+++++++++++++
+
+* Reboot does not refresh the UI when going from WIFI setup
 
 v1.4.1
 ======
