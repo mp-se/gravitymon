@@ -120,15 +120,23 @@ void WifiConnection::startWifiAP() {
   IPAddress local(192, 168, 4, 1);
   IPAddress subnet(255, 255, 255, 0);
 
+  WiFi.mode(WIFI_AP);
+  
   if (!WiFi.softAPConfig(local, local, subnet)) {
     Log.notice(F("WIFI: Failed to configure access point." CR));
     return;
   }
 
-  if (!WiFi.softAP(_apSSID, _apPWD)) {
+  Log.notice(F("WIFI: Creating AP with %s,%s." CR), _apSSID.c_str(), _apPWD.c_str());
+  if (!WiFi.softAP(_apSSID.c_str(), _apPWD.c_str())) {
     Log.notice(F("WIFI: Failed to create access point." CR));
     return;
   }
+
+#if defined(ESP32C3)
+  Log.notice(F("WIFI: Reducing wifi power for c3 chip." CR));
+  WiFi.setTxPower(WIFI_POWER_8_5dBm);  // Required for ESP32C3 Mini
+#endif
 
   Log.notice(F("WIFI: Starting dns server." CR));
   _dnsServer = new DNSServer();

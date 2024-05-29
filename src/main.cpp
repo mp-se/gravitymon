@@ -48,10 +48,10 @@ extern "C" {
 }
 #endif
 
-constexpr auto CFG_APPNAME = "gravitymon";
-constexpr auto CFG_FILENAME = "/gravitymon2.json";
-constexpr auto CFG_AP_SSID = "gravitymon";
-constexpr auto CFG_AP_PASS = "password";
+const char* CFG_APPNAME = "gravitymon";
+const char* CFG_FILENAME = "/gravitymon2.json";
+const char* CFG_AP_SSID = "GravityMon";
+const char* CFG_AP_PASS = "password";
 
 #if !defined(USER_SSID)
 #define USER_SSID ""

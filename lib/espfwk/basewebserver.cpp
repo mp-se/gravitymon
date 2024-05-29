@@ -413,12 +413,12 @@ void BaseWebServer::webHandleRestart(AsyncWebServerRequest *request) {
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
   JsonObject obj = response->getRoot().as<JsonObject>();
   obj[PARAM_STATUS] = true;
+  obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Restarting...";
   response->setLength();
   request->send(response);
-
-  delay(1000);
-  ESP_RESET();
+  _rebootTimer = millis();
+  _rebootTask = true;
 }
 
 void BaseWebServer::setupWebHandlers() {
