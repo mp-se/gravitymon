@@ -48,7 +48,7 @@ extern "C" {
 }
 #endif
 
-const char* CFG_APPNAME = "GravityMon";
+const char* CFG_APPNAME = "gravitymon";
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";
 const char* CFG_AP_PASS = "password";
