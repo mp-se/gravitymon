@@ -804,8 +804,6 @@ void GravmonWebServer::loop() {
 
     // TODO: Test GPIO
 
-    // TODO: Get CPU info
-
     JsonObject cpu = obj.createNestedObject(PARAM_CHIP);
 
 #if defined(ESP8266)

@@ -286,8 +286,6 @@ void BaseWebServer::webHandleFileSystem(AsyncWebServerRequest *request,
   Log.notice(F("WEB : webServer callback for /api/filesystem." CR));
   JsonObject obj = json.as<JsonObject>();
 
-  // TODO: Add total and free space on file system
-
   if (!obj[PARAM_COMMAND].isNull()) {
     if (obj[PARAM_COMMAND] == String("dir")) {
       Log.notice(F("WEB : File system listing requested." CR));
