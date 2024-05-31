@@ -45,6 +45,7 @@ SOFTWARE.
 
 #include <espframework.hpp>
 #include <interface.hpp>
+#include <log.hpp>
 
 #if defined(ESP8266)
 #include <incbin.h>
@@ -83,16 +84,19 @@ class BaseWebServer {
   }
 #if defined(ESP8266)
   void webReturnIndexHtml(AsyncWebServerRequest *request) {
+    Log.notice(F("WEB : webServer callback for /index.html." CR));
     request->send_P(200, "text/html", (const uint8_t *)gIndexHtmlData,
                     gIndexHtmlSize);
   }
   void webReturnAppJs(AsyncWebServerRequest *request) {
+    Log.notice(F("WEB : webServer callback for /app.js." CR));
     AsyncWebServerResponse *response = request->beginResponse_P(
         200, "application/javascript", (const uint8_t *)gAppJsData, gAppJsSize);
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);    
   }
   void webReturnAppCss(AsyncWebServerRequest *request) {
+    Log.notice(F("WEB : webServer callback for /app.css." CR));
     AsyncWebServerResponse *response = request->beginResponse_P(
         200, "text/css", (const uint8_t *)gAppCssData, gAppCssSize);
     response->addHeader("Content-Encoding", "gzip");
@@ -100,11 +104,13 @@ class BaseWebServer {
   }
 #else
   void webReturnIndexHtml(AsyncWebServerRequest *request) {
+    Log.notice(F("WEB : webServer callback for /index.html." CR));
     request->send_P(200, "text/html", (const uint8_t *)indexHtmlStart,
                     reinterpret_cast<uint32_t>(&indexHtmlEnd[0]) -
                         reinterpret_cast<uint32_t>(&indexHtmlStart[0]));
   }
   void webReturnAppJs(AsyncWebServerRequest *request) {
+    Log.notice(F("WEB : webServer callback for /app.js." CR));
     AsyncWebServerResponse *response = request->beginResponse_P(
         200, "application/javascript", (const uint8_t *)appJsStart,
         reinterpret_cast<uint32_t>(&appJsEnd[0]) -
@@ -113,6 +119,7 @@ class BaseWebServer {
     request->send(response);
   }
   void webReturnAppCss(AsyncWebServerRequest *request) {
+    Log.notice(F("WEB : webServer callback for /app.css." CR));
     AsyncWebServerResponse *response = request->beginResponse_P(
         200, "text/css", (const uint8_t *)appCssStart,
         reinterpret_cast<uint32_t>(&appCssEnd[0]) -

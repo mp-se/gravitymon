@@ -23,8 +23,7 @@ SOFTWARE.
  */
 #include <baseconfig.hpp>
 #include <basewebserver.hpp>
-#include <espframework.hpp>
-#include <log.hpp>
+#include <espframework.hpp>0
 
 #if defined(ESP8266)
 #define MAX_SKETCH_SPACE 1044464
