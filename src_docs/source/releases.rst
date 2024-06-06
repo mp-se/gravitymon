@@ -3,6 +3,21 @@
 Releases 
 ########
 
+v2.0.0-alfa3
+============
+
+Issues adressed
+++++++++++++++++
+* Fixed broken test function
+* Added line breaks to format editor for easier editing
+* Added check if device is responding and notify user when there is an issue
+
+Known Issues
+++++++++++++
+
+* OneWire (Reading temperature probe), does not work on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
+* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32
+
 v2.0.0-alfa1
 ============
 
@@ -17,11 +32,6 @@ Features
 * Added additional BLE options for ESP32 builds
 
 NOTE! I dont recommend this version for production yet, only for testing / feedback!
-
-Known Issues
-++++++++++++
-
-* Reboot does not refresh the UI when going from WIFI setup
 
 v1.4.1
 ======
