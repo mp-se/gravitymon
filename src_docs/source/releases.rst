@@ -9,6 +9,7 @@ v2.0.0-alfa3
 Issues adressed
 ++++++++++++++++
 * Fixed broken test function
+* Fixed fault error message when checking status of push test
 * Added line breaks to format editor for easier editing
 * Added check if device is responding and notify user when there is an issue
 
