@@ -140,6 +140,7 @@ class BaseWebServer {
   void webHandleUploadFile(AsyncWebServerRequest *request, String filename,
                            size_t index, uint8_t *data, size_t len, bool final);
   void webHandleRestart(AsyncWebServerRequest *request);
+  void webHandlePing(AsyncWebServerRequest *request);
   void webHandleFileSystem(AsyncWebServerRequest *request, JsonVariant &json);
 
   virtual void setupWebHandlers();

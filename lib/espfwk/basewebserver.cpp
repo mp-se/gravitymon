@@ -418,6 +418,16 @@ void BaseWebServer::webHandleRestart(AsyncWebServerRequest *request) {
   _rebootTask = true;
 }
 
+void BaseWebServer::webHandlePing(AsyncWebServerRequest *request) {
+  Log.notice(F("WEB : webServer callback for /api/ping." CR));
+  AsyncJsonResponse *response =
+      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = true;
+  response->setLength();
+  request->send(response);
+}
+
 void BaseWebServer::setupWebHandlers() {
   if (!_server) return;
 
@@ -447,6 +457,9 @@ void BaseWebServer::setupWebHandlers() {
   _server->on(
       "/api/restart", HTTP_GET,
       std::bind(&BaseWebServer::webHandleRestart, this, std::placeholders::_1));
+  _server->on(
+      "/api/ping", HTTP_GET,
+      std::bind(&BaseWebServer::webHandlePing, this, std::placeholders::_1));
   _server->on(
       "/api/filesystem/upload", HTTP_POST,
       std::bind(&BaseWebServer::webReturnOK, this, std::placeholders::_1),
