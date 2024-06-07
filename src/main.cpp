@@ -75,7 +75,7 @@ BleSender myBleSender;
 #ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000;  // ms, time to wait between changes to output
 #else
-int interval = 200;  // ms, time to wait between changes to output
+int interval = 200;    // ms, time to wait between changes to output
 #endif
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
