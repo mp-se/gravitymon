@@ -3,6 +3,27 @@
 Releases 
 ########
 
+v2.0.0-alfa4
+============
+
+Issues adressed
+++++++++++++++++
+* Fixed push format updates
+* Enabled file upload / delete features (Tools)
+* Updated build workflows
+* Updated libraires due to security vulnerability
+* Added default format for influxdb
+* Fixed broken backup feature
+* Fixed broken influx token parameter*  
+
+NOTE! I dont recommend this version for production yet, only for testing / feedback!
+
+Known Issues
+++++++++++++
+
+* OneWire (Reading temperature probe), does not work on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
+* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32
+
 v2.0.0-alfa3
 ============
 
@@ -12,12 +33,6 @@ Issues adressed
 * Fixed fault error message when checking status of push test
 * Added line breaks to format editor for easier editing
 * Added check if device is responding and notify user when there is an issue
-
-Known Issues
-++++++++++++
-
-* OneWire (Reading temperature probe), does not work on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
-* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32
 
 v2.0.0-alfa1
 ============
@@ -31,8 +46,6 @@ Features
 * Updated API tests to match new API (Still some more work needed)
 * Moved WIFI configuration to the main application (Removed WiFi Manager)
 * Added additional BLE options for ESP32 builds
-
-NOTE! I dont recommend this version for production yet, only for testing / feedback!
 
 v1.4.1
 ======
