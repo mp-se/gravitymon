@@ -20,7 +20,6 @@ Issues adressed
 
 NOTE! I dont recommend this version for production yet, only for testing / feedback!
 
-
 Known Issues
 ++++++++++++
 
