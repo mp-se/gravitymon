@@ -14,7 +14,9 @@ Issues adressed
 * Updated libraires due to security vulnerability
 * Added default format for influxdb
 * Fixed broken backup feature
-* Fixed broken influx token parameter*  
+* Fixed broken influx token parameter
+* Fixed restore of format templates
+* Added message for http error 422
 
 NOTE! I dont recommend this version for production yet, only for testing / feedback!
 
