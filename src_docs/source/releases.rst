@@ -24,7 +24,7 @@ Known Issues
 ++++++++++++
 
 * OneWire (Reading temperature probe), does not work on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
-* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32
+* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32 (Manually edit the pins_arduino.h for esp32s3 will fix the issue, #define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT)
 
 v2.0.0-alfa3
 ============
