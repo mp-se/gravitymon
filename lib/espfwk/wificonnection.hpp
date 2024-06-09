@@ -60,7 +60,7 @@ class WifiConnection {
   WifiConnection(WifiConfig* cfg, String apSSID, String apPWD, String apMDNS,
                  String userSSID = "", String userPWD = "");
   void init();
-  void timeSync();
+  void timeSync(String timeZone = "");
 
   bool connect();
   bool disconnect();

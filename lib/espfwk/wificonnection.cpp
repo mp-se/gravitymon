@@ -238,8 +238,8 @@ bool WifiConnection::disconnect() {
   return WiFi.disconnect(true);  // Erase WIFI credentials
 }
 
-void WifiConnection::timeSync() {
-  configTime(0 * 3600, 0, "pool.ntp.org", "time.nist.gov");
+void WifiConnection::timeSync(String timeZone) {
+  configTime(0, 0, "pool.ntp.org", "time.nist.gov");
 
   Log.notice(F("WIFI: Waiting for NTP sync."));
   time_t now = time(nullptr);
@@ -253,7 +253,15 @@ void WifiConnection::timeSync() {
   EspSerial.print(CR);
 
   struct tm timeinfo;
-  gmtime_r(&now, &timeinfo);
+  getLocalTime(&timeinfo);
+
+  // List of timezone configuration can be found here; https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
+  if(timeZone.length()) {
+    setenv("TZ", timeZone.c_str(), 1);
+    tzset();
+  }
+
+  getLocalTime(&timeinfo);
   Log.notice(F("WIFI: Current time: %s."), asctime(&timeinfo));
 }
 
