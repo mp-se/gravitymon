@@ -30,10 +30,11 @@ SOFTWARE.
 #define ESPFWK_VER "1.0.0-alfa1"
 
 void forcedReset();
+void espReset();
 
 #if defined(ESP8266)
 #include <LittleFS.h>
-#define ESP_RESET ESP.reset
+#define ESP_RESET espReset
 #elif defined(ESP32C3)
 #include <FS.h>
 #include <LittleFS.h>

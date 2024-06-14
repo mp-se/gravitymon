@@ -24,6 +24,7 @@ SOFTWARE.
 #include <espframework.hpp>
 #include <log.hpp>
 #include <utils.hpp>
+#include <led.hpp>
 
 #if !defined(ESP8266)
 #include <esp_int_wdt.h>
@@ -74,6 +75,7 @@ void deepSleep(int t) {
 #if LOG_LEVEL == 6
   Log.verbose(F("HELP: Entering sleep mode for %d seconds." CR), t);
 #endif
+  ledOff();
   uint32_t wake = t * 1000000;
   ESP.deepSleep(wake);
 }
@@ -92,6 +94,7 @@ void printHeap(String prefix) {
 
 void forcedReset() {
 #if !defined(ESP8266)
+  ledOff();
   LittleFS.end();
   delay(100);
   esp_task_wdt_init(1, true);
@@ -99,6 +102,13 @@ void forcedReset() {
   while (true) {
     // wait for watchdog timer to be triggered
   }
+#endif
+}
+
+void espReset() {
+#if defined(ESP8266)
+  ledOff();
+  ESP.reset();
 #endif
 }
 
