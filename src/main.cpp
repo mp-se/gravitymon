@@ -219,7 +219,8 @@ void setup() {
       break;
 
     default:
-      ledOn(LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
+      ledOn(
+          LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
       break;
   }
 
