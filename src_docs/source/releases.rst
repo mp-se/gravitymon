@@ -8,6 +8,9 @@ v2.0.0-alfa4
 
 Issues adressed
 ++++++++++++++++
+* Fixed led indicator when going into wifi mode
+* Turning off led when going to sleep mode or doing reset
+
 * Fixed push format updates
 * Enabled file upload / delete features (Tools)
 * Updated build workflows
@@ -24,7 +27,9 @@ Known Issues
 ++++++++++++
 
 * OneWire (Reading temperature probe), does not work on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
+  https://github.com/espressif/arduino-esp32/issues/8056
 * RGB led on ESP32S3 does not work due to bug in Arduino for ESP32 (Manually edit the pins_arduino.h for esp32s3 will fix the issue, #define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT)
+
 
 v2.0.0-alfa3
 ============

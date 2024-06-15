@@ -150,6 +150,8 @@ void setup() {
   // Do this setup for all modes exect wifi setup
   switch (runMode) {
     case RunMode::wifiSetupMode:
+      ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
+                             // error
       myWifi.startWifiAP();
       break;
 
@@ -200,7 +202,6 @@ void setup() {
       if (myWifi.isConnected()) {
         Log.notice(F("Main: Activating web server." CR));
         ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
-                                // myWifi.timeSync();
         PERF_BEGIN("main-wifi-ota");
         if (myOta.checkFirmwareVersion()) myOta.updateFirmware();
         PERF_END("main-wifi-ota");
@@ -218,6 +219,7 @@ void setup() {
       break;
 
     default:
+      ledOn(LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
       break;
   }
 
