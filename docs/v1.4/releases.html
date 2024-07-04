@@ -1,0 +1,758 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Getting started" href="intro.html" /><link rel="prev" title="Functionality" href="functionality.html" />
+
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+        <title>Releases - GravityMon v1.4.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">GravityMon v1.4.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="releases">
+<span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="v1-4-1">
+<h2>v1.4.1<a class="headerlink" href="#v1-4-1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="issues-adressed">
+<h3>Issues adressed<a class="headerlink" href="#issues-adressed" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed broken iSpindel configuration migration for the esp8266.</p></li>
+<li><p>Fixed broken gather support button.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v1-4-0">
+<h2>v1.4.0<a class="headerlink" href="#v1-4-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><em>NEW</em> Added led indicator: Blue / Slow Blinking = Config Mode, White/Solid = WiFi setup</p></li>
+<li><p><em>BUG</em> Reduced WIFI TX Power for C3 chip to improve WIFI connnection stability</p></li>
+<li><p><em>NEW</em> Added 4 options to ble data transmission (TILT, TILT PRO, GRAVITYMON SERVICE, GRAVITYMON EDDYSTONE)</p></li>
+<li><p><em>NEW</em> Added support for ESP32S3 mini board</p></li>
+<li><p><em>NEW</em> Moved to async webserver to speed up performance in configuration mode</p></li>
+<li><p>Added feature to migrate formula and gyro calibration data from an existing ispindel configuration (don’t do a full erase before flashing)</p></li>
+<li><p>Added possibility to set wifi settings in config (need manual reboot to apply)</p></li>
+<li><p>Added option that shows the average value from the gyro reads + a button to reset that on the web ui. Might make it easier to do calibration of the value jumps around.</p></li>
+</ul>
+</div>
+<div class="section" id="known-issues">
+<h3>Known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>On ESP32c3 mini the rgb led does not turn blue when in config mode</p></li>
+<li><p>On ESP32s3 mini the rgb led does not work due to issue in arduino/esp32 unless manual patching of the arduino framework <cite>#define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT</cite></p></li>
+</ul>
+</div>
+<div class="section" id="maintenance">
+<h3>Maintenance<a class="headerlink" href="#maintenance" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Changed wifi manager to modified version since the source project is no longer supported by author</p></li>
+<li><p>Updated dependencies to latest versions as of Aug -23</p></li>
+<li><p>Added UI tests to improve test coverage</p></li>
+<li><p>Added unit tests to improve test coverage</p></li>
+<li><p>Added option to run unit test code coverage with WOKWI</p></li>
+<li><p>Added scripts to check for code coverage on the esp32 (work in progess, not yet covering all parts of the code)</p></li>
+<li><p>Created script that checks for updates to dependant projects (test/converage.py)</p></li>
+</ul>
+</div>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Published code coverage for unit tests and apitest.py (gcov/README.md)</p></li>
+<li><p>Added BierBot Bricks configuration as external service target.</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>Issues adressed<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Updated code so it now works with newer versions of ArduniJSON</p></li>
+<li><p>Fixed issue with ESP32 were reboot didn’t work sometimes</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v1-3-1">
+<h2>v1.3.1<a class="headerlink" href="#v1-3-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added option to restart device from the configuration menu (user request).</p></li>
+<li><p>Updated to latest arduino builds for both esp8266 and esp32.</p></li>
+</ul>
+</div>
+<div class="section" id="v1-3-0">
+<h2>v1.3.0<a class="headerlink" href="#v1-3-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Features<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Refactored logoutput from WifiManager to be consistent with other logs.</p></li>
+<li><p>Added feature to do backup and restore of device settings. Data will be exported as a text (json) file.</p></li>
+<li><p>Added validation feature that checks for configuration errors or missing steps in setup. Warnings will be displayed on index page.</p></li>
+<li><p>Added restore to factory default button under configuration</p></li>
+<li><p>Upgraded to bootstrap v5.2.3, jquery v3.6.3 and jchart v4.2.1</p></li>
+<li><p>Added feature to check for newer GravityMon releases from gravitymon.com (Will only check against promoted / stable version).</p></li>
+<li><p>Added chip information to startup for easier support</p></li>
+<li><p>Added option to select a default gravity formula under settings. This is based on measurements from several different devices.</p></li>
+<li><p>Increased the number of decimals for tilt/angle (3), temperature (2), plato (2), runtime (2).</p></li>
+<li><p>Added ${battery-percent} as new variable for use in format templates.</p></li>
+<li><p>Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.</p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Updated getting started section to clarify what needs to be done during setup.</p></li>
+<li><p>Updated documentation with new images and text</p></li>
+<li><p>Added new option for home assistant sensor registration through automation script.</p></li>
+<li><p>Added description for how to get voltage measurement on a floaty, see Hardware section.</p></li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>Issues adressed<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>BUG: Double reset was detected incorrectly on ESP32C3, created own code and dropped douoble reset detection library for better stability. Will now require 3 taps within 3 seconds each to go into wifi configuration.</p></li>
+<li><p>BUG: Gyro and Tempsensor was not detected after a reset on ESP32 (needed power cycle), reverted to older Arduino version to solve the problem.</p></li>
+<li><p>BUG: Pin numbers on the newer ESP32C3 is different from v1</p></li>
+<li><p>BUG: Wrong OTA filename for ESP32C3v1</p></li>
+<li><p>BUG: Fixed long statup delay when creating access point on ESP32C3</p></li>
+<li><p>BUG: Sometimes it could be hard to get into config mode and ended up in wifi portal instead due to double restet detect.</p></li>
+<li><p>BUG: If the gyro value was invalid (moving) during startup that would cause the device to go into gravitymode instead of config mode.</p></li>
+<li><p>BUG: When trying to do calibration without a connected gyro the device would enter endless loop.</p></li>
+<li><p>BUG: Clarified that its the bucket ID and auth TOKEN for influxdb (config page)</p></li>
+<li><p>BUG: Fixed wrong device classes in home assistant template.</p></li>
+</ul>
+</div>
+<div class="section" id="other">
+<h3>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Removed khoih-prog/ESP_DoubleResetDetector since this didnt work properly on the ESP32c3, this library has no support from author anymore.</p></li>
+<li><p>Updated platformio esp8266 to v4.1.0</p></li>
+<li><p>Updated platformio esp32 to v6.0.0</p></li>
+<li><p>Updated h2zero/NimBLE-Arduino to b 1.4.1</p></li>
+<li><p>Updated 256dpi/arduino-mqtt to v2.5.1</p></li>
+<li><p>Created tag v1.0.0 for codeplea/tinyexpr to get control over releases</p></li>
+<li><p>Created tag v1.0.0 for graphitemaster/incbin to get control over releases</p></li>
+<li><p>Updated khoih-prog/ESP_WiFiManager to v1.12.1</p></li>
+<li><p>Updated khoih-prog/ESP_DoubleResetDetector to v1.3.2</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v1-2-1">
+<h2>v1.2.1<a class="headerlink" href="#v1-2-1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h3>Issues adressed<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>BUG: Under some circumstances the last part of the format template was omitted.</p></li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h3>Other<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Update tinyexpr library to latest baseline (Used for forumula evaluation).</p></li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h3>Documentation<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Minor updates and corrections to the documetation.</p></li>
+<li><p>Updated Q&amp;A section</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v1-2-0">
+<h2>v1.2.0<a class="headerlink" href="#v1-2-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id9">
+<h3>Features<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added function to calcualate voltage factor based on measured value.</p></li>
+<li><p>Updated battery estimation for the various esp32 boards.</p></li>
+<li><p>Added support for the ESP32 lite board which is used in the Floaty Hydrometer variant.</p></li>
+<li><p>Added support for the ESP32 C3 mini board</p></li>
+<li><p>Added support for the ESP32 S2 mini board</p></li>
+<li><p>Serial output is written to TX/RX pins instead of the USB connection for the ESP32c3. This way the serial console can be viewed when running on battery power.</p></li>
+<li><p>Merged in unit tests and api tests into this project</p></li>
+<li><p>Added option to download firmware updates from <a class="reference external" href="https://www.gravitymon.com">https://www.gravitymon.com</a></p></li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h3>Documentation<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added section about the Floaty hardware</p></li>
+<li><p>Fixed schema errors in hardware section and linked PCB options</p></li>
+<li><p>Updated hardware section with options for ESP32 boards</p></li>
+<li><p>Updated installation instructions.</p></li>
+</ul>
+</div>
+<div class="section" id="id11">
+<h3>Issues adressed<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>BUG: The first portion of a format template was lost when doing conversion.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v1-1-1">
+<h2>v1.1.1<a class="headerlink" href="#v1-1-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>BUG: The text before the first variable was missed in the conversion of a format template.</p></li>
+</ul>
+</div>
+<div class="section" id="v1-1-0">
+<h2>v1.1.0<a class="headerlink" href="#v1-1-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id12">
+<h3>Features<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added information to error log about abnormal resets (for instance crashes) to detect and fix those</p></li>
+<li><p>Changed storage mode so that the device will go into deep sleep until reset (sleep forever)</p></li>
+<li><p>Updated sensor types in home assistant for auto registration of device</p></li>
+<li><p>Added ${app-ver} and ${app-build} to format template as new variables</p></li>
+<li><p>Improved error messages when creating formula so the troublesome measurement points can be identified</p></li>
+<li><p>Changed default validation threshold from 1.6 SG to 3.0 SG, this should allow for some more variance when creating formula</p></li>
+<li><p>Updated format template for Home Assistant, aligned with new mqtt configuration format</p></li>
+<li><p>Added format template for Home Assistant with automatic device registration</p></li>
+<li><p>Added storage mode which is activated under hardware setting. When place on the cap (&lt;5 degree tilt) the device will go into storage mode and deep sleep.</p></li>
+</ul>
+</div>
+<div class="section" id="known-issues-not-yet-fixed">
+<h3>Known issues, not yet fixed<a class="headerlink" href="#known-issues-not-yet-fixed" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>When updating firmware and the feature <cite>deep sleep</cite> is active the device will activate deep sleep if the gyro is not responding. FIX: Reboot device</p></li>
+</ul>
+</div>
+<div class="section" id="issues-addressed">
+<h3>Issues addressed<a class="headerlink" href="#issues-addressed" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Refactored error logging function to reduce memory usage and crashes. Max size of error log is 2 x 4 kb</p></li>
+<li><p>Refactored format template engine to reduce memory usage and crashes, can how handle slightly larger payloads than before. Increase from around 1100 chars to 1600 chars</p></li>
+<li><p>BUG: Refactored format api to handle larger payloads</p></li>
+<li><p>BUG: After manual firmware upload the device would crash and go into wifi setup mode.</p></li>
+<li><p>BUG: After manual firmware upload the device will in some cases not be able to connect with the gyro, the symptom is that it will say, “Gyro moving” in the web UI. In this case the device needs to be reset (or powered on/off). I havent found a way to fix this from the code. The message after firmware update has been updated with this information</p></li>
+<li><p>BUG: Temp corrected gravity was not used when pushing data to removed</p></li>
+<li><p>BUG: Low memory in format api which resulted in mqtt template to be set to null</p></li>
+<li><p>BUG: Large format templates could be saved but when loading it’s only blank</p></li>
+<li><p>BUG: Copy format templates used an old format for iSpindle and Gravmon where the token was not used</p></li>
+<li><p>BUG: Gravity correction formula not calculating correctly</p></li>
+</ul>
+</div>
+<div class="section" id="user-interface">
+<h3>User interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Updated format template with information on size and warning message if the template is too large</p></li>
+<li><p>Added error message if gyro connection/initialization fails (before the message was Gyro Moving only)</p></li>
+<li><p>Added error message if no temp sensor can be found</p></li>
+<li><p>Added drop down menus in user interface to simplify navigation to sub pages (format, test and upload)</p></li>
+<li><p>Added Assistant Device registration, this is only done when format template is saved, during normal operation only data values are posted on MQTT. If HA is restarted then the device will disappear</p></li>
+<li><p>Calibration temperature (for temp adjustment) can now be set under advanced settings, default is 20C</p></li>
+<li><p>Changed length of device name from 12 to 63 chars. 63 is the max limit according to mdns.</p></li>
+<li><p>Under format options its now possible to select brewfather iSpindle format to avoid errors connected to using the wrong format template with the various brewfather endpoints</p></li>
+<li><p>Added brewblox as format under format options</p></li>
+<li><p>Added home assistant (with device registration) as format under format options</p></li>
+<li><p>User can now edit the voltage level that forces the device into config mode (device detects charging)</p></li>
+</ul>
+</div>
+<div class="section" id="id13">
+<h3>Documentation<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added documentation for Brewpiless as target</p></li>
+<li><p>Added documentation for BVrewblox as target</p></li>
+<li><p>Updated documentation for HA integration since described method was deprecated</p></li>
+<li><p>Updated documentation for ubidots service integration</p></li>
+<li><p>Updated documentation in data format section</p></li>
+<li><p>Updated hardware section with documentation on installing reed switch</p></li>
+<li><p>Updated configuration section with documentation on new settings</p></li>
+<li><p>Added q&amp;a on formula creation and value deviation</p></li>
+</ul>
+</div>
+<div class="section" id="id14">
+<h3>Other<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Upgraded framework for ESP8266 to v5.0.0</p></li>
+<li><p>Upgraded framework for ESP32 to v2.0.2</p></li>
+<li><p>Updated OneWire library to be complaint with new ESP32 SDK</p></li>
+<li><p>Fixed issue in i2cdev connected to wrong usage of TwoWire on ESP32 (Gyro initialization hang).</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v1-0-0">
+<h2>v1.0.0<a class="headerlink" href="#v1-0-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id15">
+<h3>Documentation<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Update documentation to match v1.0</p></li>
+<li><p>Installation instructions updated on how to find the device after wifi has been configured.</p></li>
+<li><p>Documentation on brewfather has been updated to address SG/Plato conversion</p></li>
+<li><p>Added circuit diagram for esp8266 and esp32</p></li>
+<li><p>Added additional http error codes to troubleshooting documentation</p></li>
+</ul>
+</div>
+<div class="section" id="id16">
+<h3>User interface<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
+<li><p>Added button on index page to direct to github issues.</p></li>
+<li><p>Added button to extract important information for support requests.</p></li>
+<li><p>First point in gravity formula is now reserved for water gravity, this to allow detection of angles below water that can be filtered out.</p></li>
+<li><p>Changed layout on index page with measured data on top.</p></li>
+<li><p>Added tooltips to all fields in user interface</p></li>
+<li><p>Added function on format page so that it’s easy to copy a format template from the docs (simplify service integration).</p></li>
+</ul>
+</div>
+<div class="section" id="id17">
+<h3>Features<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
+<li><p>Added support for MPU6500 (standard is MPU6050).</p></li>
+<li><p>Removed brewfather option (can use standard HTTP options), the old approach can still be used via changing format template.</p></li>
+<li><p>Added 5 more points for formula creation, so a total of 10 angles/gravity values can be stored.</p></li>
+<li><p>Added https support for Influxdb v2</p></li>
+<li><p>Added possibility to set 2 wifi ssid where the second acts as a fallback in case it fails to connect. If successful the secondary becomes the new primary.</p></li>
+<li><p>SSL connections are skipped on ESP8266 when in config mode since there is a high probability it will crash due to low memory.</p></li>
+<li><p>Advanced settings: Added possibility to have variable push intervals for different endpoints so that different frequency can be used, for example; 5min mqtt, 15min brewfather.</p></li>
+<li><p>Advanced settings: Changes how many times the gyro is read (less reads, quicker but less accurate)</p></li>
+<li><p>Advanced settings: Set amount of gyro movement is allowed for a accurate read.</p></li>
+<li><p>Advanced settings: What deviation is acceptable for creating formula deviation</p></li>
+<li><p>Advanced settings: Various timeouts, wifi connect, wifi portal, http connects.</p></li>
+<li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing battery life</p></li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h3>Issues addressed<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>BUG: Fixed issue in formula calculation in case there were a gap in the data series</p></li>
+<li><p>BUG: Field name for wifi strength changed from “rssi” to “RSSI”</p></li>
+<li><p>BUG: Fixed issue with probing MFLN on non standard ports</p></li>
+<li><p>BUG: Changed http connection to keep-alive so that server does not close port before the client has had a chance to read the response.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-9-0">
+<h2>v0.9.0<a class="headerlink" href="#v0-9-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added one http push target that uses HTTP GET. This can be used with ubidots or blynk api’s.</p></li>
+<li><p>Added function to test push targets from configuration page. It will send data and show the return code as a first step.</p></li>
+<li><p>Added documentation on how to integrate with Blynk.io using http get.</p></li>
+<li><p>Config page now shows the estimated runtime for the device (based on a full battery and previous average runtime)</p></li>
+<li><p>Experimental release of firmware using an esp32 instead of esp8266</p></li>
+<li><p>Merged index and device pages into one so that all the needed information is available on the index page.</p></li>
+<li><p>Removed api for device (/api/device), it’s now merged into the /api/status api.</p></li>
+<li><p>Test function in format editor now uses real data and not fake.</p></li>
+<li><p>Split push configuration into two sections to make it fit better on smaller devices</p></li>
+<li><p>Updated WifiManager and DoubleReset libraries</p></li>
+<li><p>Updated esp32 target with littlefs support</p></li>
+<li><p>Updated esp32 target with BLE send support (it will simulate a tilt)</p></li>
+<li><p>Mounted esp32 d1 mini mounted to a iSpindle PCB 4.0 (CherryPhilip) which worked fine.</p></li>
+<li><p>Documented hardware changes on esp32</p></li>
+<li><p>Default mDNS name is now shown on WIFI setup page.</p></li>
+<li><p>Added option to manually update/downgrade firmware under hardware settings.</p></li>
+<li><p>BUG: Corrected PIN for voltage read on ESP32</p></li>
+<li><p>BUG: If using plato and not gravity formula was defined the value was set to null.</p></li>
+<li><p>BUG: Temp format name was incorrect in iSpindle format causing receiver to incorrectly read temperature.</p></li>
+<li><p>BUG: Temperature sensor adjustment value was not handled properly when using Fahrenheit.</p></li>
+<li><p>BUG: If the ID was to low the device id could end up with a leading space causing errors in data post. Added leading zero to ID.</p></li>
+<li><p>BUG: Entering wifi setup and a timeout occurred the wifi settings could be deleted.</p></li>
+</ul>
+</div>
+<div class="section" id="v0-8-0">
+<h2>v0.8.0<a class="headerlink" href="#v0-8-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added option to set http headers (2 per http endpoint), these can be used for
+other http formats than json (default) and for adding authentication headers.</p></li>
+<li><p>Added possibility to view last 10 errors on device page.</p></li>
+<li><p>Added possibility to define token parameter used in iSpindle format.</p></li>
+<li><p>Added instructions for how to configure integration with Brewspy</p></li>
+<li><p>Added instructions for how to configure integration with Thingspeak</p></li>
+<li><p>Added option to do a factory reset via API.</p></li>
+<li><p>Added logging of the runtime, how long a measurement take (last 10 are stored). This can be
+used to check how good the wifi connection is and estimate the lifetime when on battery.
+Check the device page in the UI for this information.</p></li>
+<li><p>Refactored code to free up more RAM to make SSL more stable.</p></li>
+<li><p>Before connecting to an SSL endpoint the device will try to use a new SSL feature
+called MFLN (Maximum Fragment Length Negotiation) that allow us to reduce the buffers
+from 16k to 2k. This can make a huge difference on a device with only 40k RAM. Not all
+servers might support this feature.</p></li>
+<li><p>Updated documentation pages.</p></li>
+<li><p>Tested battery life, 47 days using an update frequency of 5 min</p></li>
+</ul>
+</div>
+<div class="section" id="v0-7-1">
+<h2>v0.7.1<a class="headerlink" href="#v0-7-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added instructions for how to configure integration with Fermentrack</p></li>
+<li><p>Added instructions for how to configure integration with Ubidots</p></li>
+<li><p>Added instructions for how to configure integration with HomeAssistant</p></li>
+<li><p>Added instructions for how to configure integration with Brewers Friend (not verified)</p></li>
+<li><p>BUG: Defined mqtt port was ignored, used default values.</p></li>
+<li><p>BUG: Extended length of HTTP url fields from 100 to 120 chars.</p></li>
+<li><p>BUG: Fixed issue with default template so it now includes the device name correctly.</p></li>
+</ul>
+</div>
+<div class="section" id="v0-7-0">
+<h2>v0.7.0<a class="headerlink" href="#v0-7-0" title="Permalink to this headline">¶</a></h2>
+<p>Latest stable version.</p>
+<ul class="simple">
+<li><p>SSL support for HTTP targets</p></li>
+<li><p>SSL support for MQTT targets</p></li>
+<li><p>SSL support for OTA</p></li>
+<li><p>Added support for Plato</p></li>
+<li><p>Added error handling for calibration page.</p></li>
+<li><p>Added experimental target ESP32 (using an ESP32 D1 Mini which is pin compatible with ESP8266). Not
+really usable since wifi connection is extremely slow with current Arduino releases (3-8 seconds).</p></li>
+<li><p>Added experimental format editor so users can customize their data format used for pushing data.
+This will reduce the need for custom push targets. As long as the service is supporting http
+or https then the data format can be customized.</p></li>
+<li><p>Added check so that pushing data is not done if memory is low (this will avoid crashes)</p></li>
+<li><p>MQTT topic has been removed from config (handled via format templates)</p></li>
+<li><p>MQTT port port number added. Port over 8000 will activate SSL.</p></li>
+<li><p><strong>Breaking change</strong>: To simplify the internal structure the
+temp sensor adjustment is now stored in C. So if you have
+enabled this function using F you will need to go into
+the configuration and update the adjustment factor again (hardware config).</p></li>
+<li><p><strong>Breaking change</strong>: The MQTT push option has been changed to match the iSpindle behaviour. If
+the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
+</ul>
+</div>
+<div class="section" id="v0-6-0">
+<h2>v0.6.0<a class="headerlink" href="#v0-6-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Changed the wifi manager and refactored wifi.cpp</p></li>
+<li><p>LED is now turned on when Wifi Portal is open</p></li>
+<li><p>Refactored main.cpp to make it easier to read</p></li>
+<li><p>Tested runtime performance</p></li>
+<li><p>Improved documentation</p></li>
+<li><p>Added warning on config page when sleep is &lt;300</p></li>
+<li><p>Enabled selection of gyro temperature sensor under Hardware settings</p></li>
+<li><p>Added warning when short sleep interval and gyro temp is enabled</p></li>
+<li><p>Added support for MQTT</p></li>
+<li><p>Bug: MPU init sometimes caused crash during startup.</p></li>
+</ul>
+</div>
+<div class="section" id="v0-5-0">
+<h2>v0.5.0<a class="headerlink" href="#v0-5-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added feature to calculate formula on device</p></li>
+<li><p>Total rewrite of documentation</p></li>
+<li><p>WIFI settings are now stored in config file</p></li>
+<li><p>Defined version numbers for all dependant libraries to avoid updates breaking build.</p></li>
+<li><p>Cleanup of code</p></li>
+<li><p>Refactor code from C to C++</p></li>
+</ul>
+</div>
+<div class="section" id="v0-4-0">
+<h2>v0.4.0<a class="headerlink" href="#v0-4-0" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>First public release</p></li>
+</ul>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="intro.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Getting started</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="functionality.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Functionality</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021-2023, Magnus Persson |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Releases</a><ul>
+<li><a class="reference internal" href="#v1-4-1">v1.4.1</a><ul>
+<li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v1-4-0">v1.4.0</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#known-issues">Known issues</a></li>
+<li><a class="reference internal" href="#maintenance">Maintenance</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#id2">Issues adressed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v1-3-1">v1.3.1</a></li>
+<li><a class="reference internal" href="#v1-3-0">v1.3.0</a><ul>
+<li><a class="reference internal" href="#id3">Features</a></li>
+<li><a class="reference internal" href="#id4">Documentation</a></li>
+<li><a class="reference internal" href="#id5">Issues adressed</a></li>
+<li><a class="reference internal" href="#other">Other</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v1-2-1">v1.2.1</a><ul>
+<li><a class="reference internal" href="#id6">Issues adressed</a></li>
+<li><a class="reference internal" href="#id7">Other</a></li>
+<li><a class="reference internal" href="#id8">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v1-2-0">v1.2.0</a><ul>
+<li><a class="reference internal" href="#id9">Features</a></li>
+<li><a class="reference internal" href="#id10">Documentation</a></li>
+<li><a class="reference internal" href="#id11">Issues adressed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v1-1-1">v1.1.1</a></li>
+<li><a class="reference internal" href="#v1-1-0">v1.1.0</a><ul>
+<li><a class="reference internal" href="#id12">Features</a></li>
+<li><a class="reference internal" href="#known-issues-not-yet-fixed">Known issues, not yet fixed</a></li>
+<li><a class="reference internal" href="#issues-addressed">Issues addressed</a></li>
+<li><a class="reference internal" href="#user-interface">User interface</a></li>
+<li><a class="reference internal" href="#id13">Documentation</a></li>
+<li><a class="reference internal" href="#id14">Other</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v1-0-0">v1.0.0</a><ul>
+<li><a class="reference internal" href="#id15">Documentation</a></li>
+<li><a class="reference internal" href="#id16">User interface</a></li>
+<li><a class="reference internal" href="#id17">Features</a></li>
+<li><a class="reference internal" href="#id18">Issues addressed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>
+<li><a class="reference internal" href="#v0-8-0">v0.8.0</a></li>
+<li><a class="reference internal" href="#v0-7-1">v0.7.1</a></li>
+<li><a class="reference internal" href="#v0-7-0">v0.7.0</a></li>
+<li><a class="reference internal" href="#v0-6-0">v0.6.0</a></li>
+<li><a class="reference internal" href="#v0-5-0">v0.5.0</a></li>
+<li><a class="reference internal" href="#v0-4-0">v0.4.0</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    </body>
+</html>
