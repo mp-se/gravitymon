@@ -3,14 +3,25 @@
 Releases 
 ########
 
+v2.0.0-beta1
+============
+
+Issues adressed
++++++++++++++++
+* Fixed issue with post options not being converted correcly when doing upgrade
+* Remove old data file for the wifi manager to clean up filesystem
+
+New Features
+++++++++++++
+* Added option for wifi direct when in gravity mode, wifi direct allows direct access to device without going through AP. This feature is inteded to be used with the gravitymon gateway.
+
 v2.0.0-alfa4
 ============
 
 Issues adressed
-++++++++++++++++
++++++++++++++++
 * Fixed led indicator when going into wifi mode
 * Turning off led when going to sleep mode or doing reset
-
 * Fixed push format updates
 * Enabled file upload / delete features (Tools)
 * Updated build workflows

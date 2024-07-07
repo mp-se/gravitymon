@@ -39,6 +39,7 @@ void GravmonConfig::createJson(JsonObject& doc) {
 
   doc[PARAM_BLE_TILT_COLOR] = getBleTiltColor();
   doc[PARAM_BLE_FORMAT] = getBleFormat();
+  doc[PARAM_USE_WIFI_DIRECT] = isWifiDirect();
   doc[PARAM_TOKEN] = getToken();
   doc[PARAM_TOKEN2] = getToken2();
   doc[PARAM_SLEEP_INTERVAL] = getSleepInterval();
@@ -97,6 +98,9 @@ void GravmonConfig::parseJson(JsonObject& doc) {
     setBleTiltColor(doc[PARAM_BLE_TILT_COLOR]);
   if (!doc[PARAM_BLE_FORMAT].isNull())
     setBleFormat(doc[PARAM_BLE_FORMAT].as<int>());
+
+  if (!doc[PARAM_USE_WIFI_DIRECT].isNull())
+    setWifiDirect(doc[PARAM_USE_WIFI_DIRECT]);
 
   if (!doc[PARAM_TOKEN].isNull()) setToken(doc[PARAM_TOKEN]);
   if (!doc[PARAM_TOKEN2].isNull()) setToken2(doc[PARAM_TOKEN2]);
@@ -234,6 +238,23 @@ void GravmonConfig::migrateSettings() {
     fd["g"] = obj["formula-calculation-data"]["g" + num];
   }
 
+  obj2[PARAM_HTTP_POST_TARGET] = obj["http-push"];
+  obj2[PARAM_HTTP_POST_HEADER1] = obj["http-push-h1"];
+  obj2[PARAM_HTTP_POST_HEADER2] = obj["http-push-h2"];
+  obj2[PARAM_HTTP_POST2_TARGET] = obj["http-push2"];
+  obj2[PARAM_HTTP_POST2_HEADER1] = obj["http-push2-h1"];
+  obj2[PARAM_HTTP_POST2_HEADER2] = obj["http-push2-h2"];
+  obj2[PARAM_HTTP_GET_TARGET] = obj["http-push3"];
+  obj2[PARAM_INFLUXDB2_TARGET] = obj["influxdb2-push"];
+  obj2[PARAM_INFLUXDB2_TOKEN] = obj["influxdb2-auth"];
+  obj2[PARAM_MQTT_TARGET] = obj["mqtt-push"];
+
+  obj2[PARAM_PUSH_INTERVAL_POST] = obj["int-http1"];
+  obj2[PARAM_PUSH_INTERVAL_POST2] = obj["int-http2"];
+  obj2[PARAM_PUSH_INTERVAL_GET] = obj["int-http3"];
+  obj2[PARAM_PUSH_INTERVAL_INFLUX] = obj["int-influx"];
+  obj2[PARAM_PUSH_INTERVAL_MQTT] = obj["int-mqtt"];
+
   obj.clear();
 #if LOG_LEVEL == 6
   serializeJson(obj2, EspSerial);
@@ -285,22 +306,6 @@ void GravmonConfig::migrateHwSettings() {
     k.replace("-", "_");
     obj2[k] = obj[kv.key().c_str()];
   }
-
-  obj2[PARAM_HTTP_POST_TARGET] = obj["http_push"];
-  obj2[PARAM_HTTP_POST_HEADER1] = obj["http_push_h1"];
-  obj2[PARAM_HTTP_POST_HEADER2] = obj["http_push_h2"];
-  obj2[PARAM_HTTP_POST2_TARGET] = obj["http_push2"];
-  obj2[PARAM_HTTP_POST2_HEADER1] = obj["http_push2_h1"];
-  obj2[PARAM_HTTP_POST2_HEADER2] = obj["http_push2_h2"];
-  obj2[PARAM_HTTP_GET_TARGET] = obj["http_push3"];
-  obj2[PARAM_INFLUXDB2_TARGET] = obj["influxdb2_push"];
-  obj2[PARAM_MQTT_TARGET] = obj["mqtt_push"];
-
-  obj2[PARAM_PUSH_INTERVAL_POST] = obj["int-http1"];
-  obj2[PARAM_PUSH_INTERVAL_POST2] = obj["int-http2"];
-  obj2[PARAM_PUSH_INTERVAL_GET] = obj["int-http3"];
-  obj2[PARAM_PUSH_INTERVAL_INFLUX] = obj["int-influx"];
-  obj2[PARAM_PUSH_INTERVAL_MQTT] = obj["int-mqtt"];
 
   obj.clear();
 #if LOG_LEVEL == 6

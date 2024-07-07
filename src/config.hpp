@@ -93,6 +93,8 @@ class GravmonConfig : public BaseConfig {
   bool _gyroDisabled = false;
   int _voltagePin = PIN_VOLT;
 
+  bool _wifiDirect = false;
+
   // Push target settings
   String _token = "";
   String _token2 = "";
@@ -144,6 +146,12 @@ class GravmonConfig : public BaseConfig {
     _gyroTemp = b;
     _saveNeeded = true;
 #endif
+  }
+
+  const bool isWifiDirect() { return _wifiDirect; }
+  void setWifiDirect(bool b) {
+    _wifiDirect = b;
+    _saveNeeded = true;
   }
 
   const bool isStorageSleep() { return _storageSleep; }

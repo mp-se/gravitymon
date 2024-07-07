@@ -29,6 +29,7 @@ constexpr auto PARAM_CONFIG_VER = "config_version";
 constexpr auto PARAM_HARDWARE = "hardware";
 constexpr auto PARAM_RUNTIME_AVERAGE = "runtime_average";
 constexpr auto PARAM_TOKEN2 = "token2";
+constexpr auto PARAM_USE_WIFI_DIRECT = "use_wifi_direct";
 constexpr auto PARAM_SLEEP_INTERVAL = "sleep_interval";
 constexpr auto PARAM_VOLTAGE_FACTOR = "voltage_factor";
 constexpr auto PARAM_VOLTAGE_CONFIG = "voltage_config";

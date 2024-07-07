@@ -124,6 +124,11 @@ void setup() {
     Log.notice(F("Main: Forcing config mode since D7/D8 are connected." CR));
   }
 
+  // TODO: Remove the file from the old wifi manager if that exist.
+  if (LittleFS.exists("/drd.dat")) {
+    LittleFS.remove("/drd.dat");
+  }
+
   // Setup watchdog
 #if defined(ESP8266)
   ESP.wdtDisable();
@@ -152,7 +157,7 @@ void setup() {
     case RunMode::wifiSetupMode:
       ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
                              // error
-      myWifi.startWifiAP();
+      myWifi.startAP();
       break;
 
     default:
@@ -186,7 +191,11 @@ void setup() {
 
       if (needWifi) {
         PERF_BEGIN("main-wifi-connect");
-        myWifi.connect();
+        if (myConfig.isWifiDirect() && runMode == RunMode::gravityMode) {
+          myWifi.connect(true);
+        } else {
+          myWifi.connect();
+        }
         PERF_END("main-wifi-connect");
       }
 
@@ -321,9 +330,30 @@ bool loopReadGravity() {
 
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.
-        GravmonPush push(&myConfig);
-        push.sendAll(angle, gravitySG, corrGravitySG, tempC,
-                     (millis() - runtimeMillis) / 1000);
+        if (myConfig.isWifiDirect() && runMode == RunMode::gravityMode) {
+          Log.notice(F("Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
+
+          TemplatingEngine engine;
+          GravmonPush push(&myConfig);
+          push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG,
+                                   tempC, (millis() - runtimeMillis) / 1000,
+                                   myBatteryVoltage.getVoltage());
+          String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP1,
+                                        true);  // Use default post template
+          String payload = engine.create(tpl.c_str());
+          myConfig.setTargetHttpPost(
+              "http://192.168.4.1/post");  // Default URL for Gravitymon Gateway
+                                           // v0.3+
+          myConfig.setHeader1HttpPost("Content-Type: application/json");
+          myConfig.setHeader2HttpPost("");
+          push.sendHttpPost(payload);
+        } else {
+          Log.notice(F("Main: Sending data to all defined push targets." CR));
+
+          GravmonPush push(&myConfig);
+          push.sendAll(angle, gravitySG, corrGravitySG, tempC,
+                       (millis() - runtimeMillis) / 1000);
+        }
       }
 
 #if defined(ESP32) && !defined(ESP32S2)
