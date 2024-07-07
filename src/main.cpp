@@ -331,7 +331,8 @@ bool loopReadGravity() {
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.
         if (myConfig.isWifiDirect() && runMode == RunMode::gravityMode) {
-          Log.notice(F("Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
+          Log.notice(F(
+              "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
 
           TemplatingEngine engine;
           GravmonPush push(&myConfig);
