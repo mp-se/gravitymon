@@ -70,6 +70,12 @@ The main features
   - Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.
   - Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.
 
+* **WIFI Direct to GravityMon Gateway**
+
+  This works in combination with the GravityMon Gatewat that will act as an Access Point (AP) and receive data from GravityMon and then forward 
+  it to the right destination. The Gatewway works with both BLE and WIFI. This works only in gravity mode and will force the device to connect to the closest
+  defined AP with the best reception.
+
 * **Create gravity formulas on the device**
 
   Another big difference is that this software can create the gravity formula in the device, just enter the 

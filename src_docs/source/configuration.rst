@@ -322,6 +322,18 @@ Push - Settings
     there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain. 
     The device will show the estimated lifespan based on the average connection time, if no data exist it will not be shown.
 
+* **WIFI Direct SSID:** 
+
+  This WIFI SSID will be used during gravity mode to send data to the GravityMon Gateway.
+
+* **WIFI Direct Password:** 
+
+  This WIFI Password will be used during gravity mode to send data to the GravityMon Gateway.
+
+* **Enable WIFI Direct:** 
+
+  Enabling this feature will disable all other push target settings and data will be sent to the gateway in a pre-defined format (Currently the iSpindle format).
+
 * **Estimated battery life:** 
 
   Based on the hardware and the historical execution time the device will estimate how long it can run on a full battery

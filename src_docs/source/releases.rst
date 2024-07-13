@@ -10,6 +10,14 @@ Issues adressed
 +++++++++++++++
 * Fixed issue with post options not being converted correcly when doing upgrade
 * Remove old data file for the wifi manager to clean up filesystem
+* Added WIFI Direct Connect option with GravityMon Gateway, I hope this will help with wifi connection issues in my steel fermenter and force a connect to the designated AP. Wifi Direct will send the data via http 
+  to the Gateway and then forward this to the correct endpoint. 
+
+Known Issues
+++++++++++++
+* Wire (Gyro communication), does not work properly on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
+  https://github.com/espressif/arduino-esp32/issues/8056
+* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32 (Manually edit the pins_arduino.h for esp32s3 will fix the issue, #define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT)
 
 New Features
 ++++++++++++
@@ -31,16 +39,6 @@ Issues adressed
 * Fixed broken influx token parameter
 * Fixed restore of format templates
 * Added message for http error 422
-
-NOTE! I dont recommend this version for production yet, only for testing / feedback!
-
-Known Issues
-++++++++++++
-
-* OneWire (Reading temperature probe), does not work on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
-  https://github.com/espressif/arduino-esp32/issues/8056
-* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32 (Manually edit the pins_arduino.h for esp32s3 will fix the issue, #define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT)
-
 
 v2.0.0-alfa3
 ============
