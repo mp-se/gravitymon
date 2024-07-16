@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,9 @@ SOFTWARE.
 
 #include <config.hpp>
 
-#define ERR_FORMULA_NOTENOUGHVALUES -1
-#define ERR_FORMULA_INTERNAL -2
-#define ERR_FORMULA_UNABLETOFFIND -3
+constexpr auto ERR_FORMULA_NOTENOUGHVALUES = -1;
+constexpr auto ERR_FORMULA_INTERNAL = -2;
+constexpr auto ERR_FORMULA_UNABLETOFFIND = -3;
 
 double calculateGravity(double angle, double tempC,
                         const char *tempFormula = 0);

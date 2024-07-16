@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,9 @@ SOFTWARE.
 #ifndef SRC_MAIN_HPP_
 #define SRC_MAIN_HPP_
 
-#include <Arduino.h>
-#include <ArduinoJson.h>
-#include <ArduinoLog.h>
 #include <stdlib.h>
+
+#include <espframework.hpp>
 
 enum RunMode {
   gravityMode = 0,
@@ -40,8 +39,6 @@ extern RunMode runMode;
 #if defined(ESP8266)
 // Hardware config for ESP8266-d1, iSpindel hardware
 // ------------------------------------------------------
-#include <LittleFS.h>
-#define ESP_RESET ESP.reset
 #define PIN_SDA D3
 #define PIN_SCL D4
 #define PIN_CFG1 D8
@@ -51,13 +48,6 @@ extern RunMode runMode;
 #elif defined(ESP32C3)
 // Hardware config for ESP32-c3-mini, iSpindel hardware
 // ------------------------------------------------------
-#include <FS.h>
-#include <LittleFS.h>
-
-#include "esp32c3/rom/rtc.h"
-#define ESPhttpUpdate httpUpdate
-#define ESP_RESET forcedReset
-#define ESP8266WebServer WebServer
 #if defined(JTAG_DEBUG)
 #define PIN_SDA 8
 #define PIN_SCL 9
@@ -75,16 +65,10 @@ extern RunMode runMode;
 #define PIN_DS A0
 #define PIN_VOLT A3
 #endif
+#define ENABLE_BLE
 #elif defined(ESP32S2)
 // Hardware config for ESP32-s2-mini, iSpindel hardware
 // ------------------------------------------------------
-#include <FS.h>
-#include <LittleFS.h>
-
-#include "esp32s2/rom/rtc.h"
-#define ESPhttpUpdate httpUpdate
-#define ESP_RESET forcedReset
-#define ESP8266WebServer WebServer
 #define PIN_SDA A17
 #define PIN_SCL A15
 #define PIN_CFG1 A11
@@ -94,29 +78,16 @@ extern RunMode runMode;
 #elif defined(ESP32S3)
 // Hardware config for ESP32-s3-mini, iSpindel hardware
 // ------------------------------------------------------
-#include <FS.h>
-#include <LittleFS.h>
-
-#include "esp32s3/rom/rtc.h"
-#define ESPhttpUpdate httpUpdate
-#define ESP_RESET forcedReset
-#define ESP8266WebServer WebServer
 #define PIN_SDA A17
 #define PIN_SCL A15
 #define PIN_CFG1 A10
 #define PIN_CFG2 A9
 #define PIN_DS A12
 #define PIN_VOLT A1
+#define ENABLE_BLE
 #elif defined(ESP32LITE)
 // Hardware config for ESP32-lite, Floaty hardware
 // ------------------------------------------------------
-#include <FS.h>
-#include <LittleFS.h>
-
-#include "esp32/rom/rtc.h"
-#define ESPhttpUpdate httpUpdate
-#define ESP_RESET forcedReset
-#define ESP8266WebServer WebServer
 #define PIN_SDA A17
 #define PIN_SCL A19
 #define PIN_DS A3
@@ -125,39 +96,24 @@ extern RunMode runMode;
 #define PIN_CFG2 A13
 #define PIN_VCC A5
 #define PIN_GND A18
+#define ENABLE_BLE
 #else  // defined (ESP32)
 // Hardware config for ESP32-d1-min, iSpindel hardware
 // ------------------------------------------------------
-#include <FS.h>
-#include <LittleFS.h>
-
-#include "esp32/rom/rtc.h"
-#define ESPhttpUpdate httpUpdate
-#define ESP_RESET forcedReset
-#define ESP8266WebServer WebServer
 #define PIN_SDA D3
 #define PIN_SCL D4
 #define PIN_DS D6
 #define PIN_CFG1 D8
 #define PIN_CFG2 D7
 #define PIN_VOLT PIN_A0
+#define ENABLE_BLE
 #endif
 
-#if defined(USE_SERIAL_PINS) && \
-    (defined(ESP32C3) || defined(ESP32S2) || defined(ESP32S3))
-// #define EspSerial Serial0 // We cant use Serial on newer boards since this is
-// using USBC port
-#define EspSerial \
-  Serial0  // We cant use Serial on newer boards since this is using USBC port
-#else
-#define EspSerial Serial
-#endif
-
-#define DECIMALS_SG 4
-#define DECIMALS_PLATO 2
-#define DECIMALS_TEMP 2
-#define DECIMALS_RUNTIME 2
-#define DECIMALS_TILT 3
-#define DECIMALS_BATTERY 2
+constexpr auto DECIMALS_SG = 4;
+constexpr auto DECIMALS_PLATO = 2;
+constexpr auto DECIMALS_TEMP = 2;
+constexpr auto DECIMALS_RUNTIME = 2;
+constexpr auto DECIMALS_TILT = 3;
+constexpr auto DECIMALS_BATTERY = 2;
 
 #endif  // SRC_MAIN_HPP_

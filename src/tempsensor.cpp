@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <DallasTemperature.h>
 #include <OneWire.h>
 #include <Wire.h>
 
 #include <config.hpp>
 #include <gyro.hpp>
+#include <log.hpp>
 #include <main.hpp>
 #include <tempsensor.hpp>
 
@@ -36,15 +36,14 @@ DallasTemperature mySensors(&myOneWire);
 TempSensor myTempSensor;
 
 void TempSensor::setup() {
-#if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("TSEN: Looking for temp sensors." CR));
 #endif
   mySensors.begin();
 
   if (mySensors.getDS18Count()) {
     Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d bit" CR),
-               mySensors.getDS18Count(),
-               myAdvancedConfig.getTempSensorResolution());
+               mySensors.getDS18Count(), myConfig.getTempSensorResolution());
   } else {
     Log.warning(F("TSEN: No temp sensors found" CR));
   }
@@ -64,7 +63,7 @@ void TempSensor::readSensor(bool useGyro) {
     // accurate so we will use this for processing.
     _temperatureC = myGyro.getInitialSensorTempC();
     _hasSensor = true;
-#if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR),
                 _temperatureC);
 #endif
@@ -73,7 +72,7 @@ void TempSensor::readSensor(bool useGyro) {
 
   // If we dont have sensors just return 0
   if (!mySensors.getDS18Count()) {
-#if !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.notice(F("TSEN: No temperature sensors found. Skipping read." CR));
 #endif
     _temperatureC = -273;
@@ -81,14 +80,14 @@ void TempSensor::readSensor(bool useGyro) {
   }
 
   // Read the sensors
-  mySensors.setResolution(myAdvancedConfig.getTempSensorResolution());
+  mySensors.setResolution(myConfig.getTempSensorResolution());
   mySensors.requestTemperatures();
 
   if (mySensors.getDS18Count() >= 1) {
     _temperatureC = mySensors.getTempCByIndex(0);
     _hasSensor = true;
 
-#if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.verbose(F("TSEN: Reciving temp value for DS18B20 sensor %F C." CR),
                 _temperatureC);
 #endif

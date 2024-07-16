@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Magnus
+Copyright (c) 2022-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,10 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
+#include <battery.hpp>
+#include <utils.hpp>
+#include <log.hpp>
+#include <history.hpp>
 #include <helper.hpp>
 
 BatteryVoltage myBatteryVoltage;
@@ -119,14 +123,14 @@ test(helper_writeErrorLog) { // Include for code coverage
   assertEqual(1,1);
 }
 
-/*test(helper_floatHistory) { // TODO: Issues with opening the file system on WOKWI
-  LittleFS.begin(true);
+test(helper_floatHistory) { 
+  LittleFS.begin();
 
   FloatHistoryLog hist("/history.log");
   hist.addEntry(1.0);
   hist.addEntry(1.0);
   float f = hist.getAverage();
   assertEqual(f, 1.0);
-}*/
+}
 
 // EOF

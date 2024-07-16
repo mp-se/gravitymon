@@ -1,26 +1,6 @@
 Q & A
 #####
 
-User interface does not render correctly
-----------------------------------------
-
-Since the user interface is built using bootstrap v5 the device requires access to the internet 
-to download required javascript and css files. 
-
-Due to size it would not be possible to store these
-on the device. Make sure the device can access: https://cdn.jsdelivr.net/npm/bootstrap
-
-Data is not populated in the fields
-------------------------------------
-
-The user interface uses JQuery to fetch data from the device. This javascript library needs to be downloaded 
-from the internet.  
-
-Due to size it would not be possible to store these on the device. Make sure the 
-device can access: https://code.jquery.com
-
-Also ensure that any security tools does not block the execution of these features.
-
 My device is no going in to sleep after fully charged
 -----------------------------------------------------
 - Calibrate the device in the web interface

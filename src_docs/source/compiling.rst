@@ -10,7 +10,13 @@ I use the following tools in order to build and manage the software:
 * Visual Studio Code
 * PlatformIO
 * Git for Windows
-* VSCode plugin: Minify (used to minimise the html files)
+* Python3 (for building docs)
+
+.. note::
+
+  From v2 the User Interface is built in VueJS and stored in a separate project (mp-se/gravitymon-ui). The github build 
+  scripts will automatically fetch the latest version from that repository.
+
 
 Code Formatting
 ===============
@@ -20,7 +26,8 @@ I use pre-commit and their cpp style checks to validate the code. Plugin definti
 
 .. note::
 
-  There is not yet any automatic checks since this does not work on Windows. It works if running under WSL2 with Ubuntu.
+  There is not yet any automatic checks since this does not work on Windows. It works if running under WSL2 
+  with Ubuntu or on MacOS.
 
 
 Targets 
@@ -37,8 +44,8 @@ In the platformio config there are 3 targets defined
 * gravity32lite-release: Version for ESP32 lite (Floaty hardware).
 
 .. warning::
-  The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes. 
-  So only enable enough debugging to troubleshoot your changes.
+  The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the 
+  serial port can cause corruption and crashes. So only enable enough debugging to troubleshoot your changes.
 
 Serial debugging on battery
 ===========================
@@ -69,6 +76,8 @@ Source structure
 
    * - path
      - content
+   * - /.github
+     - Automated github action workflows
    * - /bin
      - Contains compiled binaries
    * - /data
@@ -76,9 +85,7 @@ Source structure
    * - /doc
      - Various external documents used as input
    * - /html
-     - Source for html files
-   * - /img
-     - Images uses in README.md
+     - Copy of gravitymon-ui (User Interface) build
    * - /lib
      - External libraries used when compiling
    * - /script
@@ -101,21 +108,23 @@ This is a list of C++ defines that is used to enable/disable functions in the co
 
    * - define
      - description
-   * - ACTIVATE_OTA
-     - Enables the OTA functionallity in the code
-   * - SKIP_SLEEPMODE
-     - The device never goes into sleep mode, useful when developing.
-   * - xxx_DISABLE_LOGGING
-     - Done include verbose logging in the corresponding class. Excessive logging may crash device.
-   * - USE_LITTLEFS
-     - Use the new filesystem in Ardurino
    * - USER_SSID
      - If defined the device will always use this SSID
    * - USER_SSID_PWD
      - Password to the SSID
+   * - LOG_LEVEL
+     - Defines the logging level used 4=INFO, 5=DEBUG, 6=VERBOSE
    * - CFG_APPVER
      - Defines the version of the compiled software
+   * - CFG_GITREV
+     - Contains the last 6 digits of the git revision
    * - USE_SERIAL_PINS
      - Will send the serial console to the TX/RX pins on an ESP32 target so that debugging can be done when on battery
    * - FLOATY
      - Build for the ESP32lite FLOATY hardware option (no DS18B20 and no battery monitor)
+   * - ENABLE_REMOTE_UI_DEVELOPMENT
+     - When enabled this will enable the UI project to interact with a device without any security issues, should not be enabled for production builds
+   * - SKIP_SLEEPMODE
+     - The device never goes into sleep mode, useful when developing
+   * - COLLECT_PERFDATA
+     - Used to send performance data to an influx database for analysis (development)

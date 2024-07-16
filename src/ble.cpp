@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(ESP32) && !defined(ESP32S2)
-
 #include <ble.hpp>
 #include <string>
+
+#if defined(ENABLE_BLE)
+
+#include <log.hpp>
 
 // Tilt UUID variants and data format, based on tilt-sim
 //
@@ -42,7 +44,9 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
   bool isRead() { return _isRead; }
 
   void onRead(NimBLECharacteristic* pCharacteristic) {
-    // Log.info(F("BLE : Remote reading data" CR));
+#if LOG_LEVEL == 6
+    Log.verbose(F("BLE : Remote reading data" CR));
+#endif
     _isRead = true;
   }
 };
@@ -162,6 +166,58 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   _advertising->stop();
 }
 
+void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
+                                     float angle) {
+  Log.info(F("Starting custom beacon data transmission" CR));
+
+  _advertising->stop();
+
+  uint16_t g = gravity * 10000;
+  uint16_t t = tempC * 1000;
+  uint16_t b = battery * 1000;
+  uint16_t a = angle * 100;
+  uint32_t chipId = 0;
+
+  for (int i = 0; i < 17; i = i + 8) {
+    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+  }
+
+  std::string mf = "";
+
+  mf += static_cast<char>(0x4C);  // Manuf ID (Apple)
+  mf += static_cast<char>(0x00);
+  mf += static_cast<char>(0x03);  // SubType (standards is 0x02)
+  mf += static_cast<char>(0x15);  // SubType Length
+  mf += "GRAVMON.";
+  mf += static_cast<char>(((chipId & 0xFF000000) >> 24));  // Chipid
+  mf += static_cast<char>(((chipId & 0xFF0000) >> 16));
+  mf += static_cast<char>(((chipId & 0xFF00) >> 8));
+  mf += static_cast<char>((chipId & 0xFF));
+  mf += static_cast<char>((a >> 8));  // Angle (angle*100)
+  mf += static_cast<char>((a & 0xFF));
+  mf += static_cast<char>((b >> 8));  // Battery (batt_v*1000)
+  mf += static_cast<char>((b & 0xFF));
+  mf += static_cast<char>((g >> 8));  // Gravity (gravity_sg*10000)
+  mf += static_cast<char>((g & 0xFF));
+  mf += static_cast<char>((t >> 8));  // Temperature (temp_c*1000)
+  mf += static_cast<char>((t & 0xFF));
+  mf += static_cast<char>(0x00);  // Signal
+
+#if LOG_LEVEL == 6
+  dumpPayload(mf.c_str(), mf.length());
+#endif
+
+  BLEAdvertisementData advData = BLEAdvertisementData();
+  advData.setFlags(0x04);
+  advData.setManufacturerData(mf);
+  _advertising->setAdvertisementData(advData);
+
+  _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
+  _advertising->start();
+  delay(_beaconTime);
+  _advertising->stop();
+}
+
 void BleSender::sendGravitymonData(String payload) {
   Log.info(F("BLE : Updating data for gravitymon data transmission" CR));
 
@@ -195,6 +251,13 @@ void BleSender::sendGravitymonData(String payload) {
   _advertising->start();
 }
 
+void BleSender::dumpPayload(const char* p, int len) {
+  for (int i = 0; i < len; i++) {
+    EspSerial.printf("%X%X ", (*(p + i) & 0xf0) >> 4, (*(p + i) & 0x0f));
+  }
+  EspSerial.println();
+}
+
 bool BleSender::isGravitymonDataSent() { return myCharCallbacks.isRead(); }
 
-#endif  // ESP32 && !ESP32S2
+#endif  // ENABLE_BLE

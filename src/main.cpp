@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,23 @@ SOFTWARE.
 #include <ble.hpp>
 #undef LOG_LEVEL_ERROR
 #undef LOG_LEVEL_INFO
+#include <battery.hpp>
 #include <calc.hpp>
 #include <config.hpp>
 #include <gyro.hpp>
 #include <helper.hpp>
+#include <history.hpp>
+#include <led.hpp>
+#include <log.hpp>
 #include <main.hpp>
+#include <ota.hpp>
+#include <perf.hpp>
 #include <pushtarget.hpp>
 #include <serialws.hpp>
 #include <tempsensor.hpp>
+#include <utils.hpp>
 #include <webserver.hpp>
-#include <wifi.hpp>
+#include <wificonnection.hpp>
 
 #if defined(ACTIVATE_GCOV)
 extern "C" {
@@ -41,11 +48,26 @@ extern "C" {
 }
 #endif
 
+const char* CFG_APPNAME = "gravitymon";
+const char* CFG_FILENAME = "/gravitymon2.json";
+const char* CFG_AP_SSID = "GravityMon";
+const char* CFG_AP_PASS = "password";
+
+#if !defined(USER_SSID)
+#define USER_SSID ""
+#define USER_PASS ""
+#endif
+
 // #define FORCE_GRAVITY_MODE
 SerialDebug mySerial;
+GravmonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
+WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
+                      USER_SSID, USER_PASS);
+OtaUpdate myOta(&myConfig, CFG_APPVER);
 BatteryVoltage myBatteryVoltage;
+GravmonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
-#if defined(ESP32) && !defined(ESP32S2)
+#if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
 
@@ -65,100 +87,15 @@ uint32_t stableGyroMillis;  // Used to calculate the total time since last
 
 RunMode runMode = RunMode::gravityMode;
 
-void checkSleepMode(float angle, float volt) {
-#if defined(SKIP_SLEEPMODE)
-  runMode = RunMode::configurationMode;
-  Log.verbose(F("MAIN: Skipping sleep mode (SKIP_SLEEPMODE is defined)." CR));
-  return;
-#endif
-
-#if defined(FORCE_GRAVITY_MODE)
-  Log.notice(F("MAIN: Forcing device into gravity mode for debugging" CR));
-  runMode = RunMode::gravityMode;
-  return;
-#endif
-
-  if (!myConfig.hasGyroCalibration()) {
-    // Will not enter sleep mode if: no calibration data
-#if !defined(MAIN_DISABLE_LOGGING)
-    Log.notice(
-        F("MAIN: Missing calibration data, so forcing webserver to be "
-          "active." CR));
-#endif
-    runMode = RunMode::configurationMode;
-  } else if (!myGyro.hasValue() || !myGyro.isConnected()) {
-    runMode = RunMode::configurationMode;
-  } else if (sleepModeAlwaysSkip) {
-    // Check if the flag from the UI has been set, the we force configuration
-    // mode.
-#if !defined(MAIN_DISABLE_LOGGING)
-    Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
-#endif
-    runMode = RunMode::configurationMode;
-  } else if ((volt < myConfig.getVoltageConfig() &&
-              (angle > 85 && angle < 95)) ||
-             (volt > myConfig.getVoltageConfig())) {
-    runMode = RunMode::configurationMode;
-  } else if (angle < 5 && myConfig.isStorageSleep()) {
-    runMode = RunMode::storageMode;
-  } else {
-    runMode = RunMode::gravityMode;
-  }
-
-  switch (runMode) {
-    case RunMode::configurationMode:
-#if !defined(MAIN_DISABLE_LOGGING)
-      Log.notice(F("MAIN: run mode CONFIG (angle=%F volt=%F)." CR), angle,
-                 volt);
-#endif
-      break;
-    case RunMode::wifiSetupMode:
-      break;
-    case RunMode::gravityMode:
-#if !defined(MAIN_DISABLE_LOGGING)
-      Log.notice(F("MAIN: run mode GRAVITY (angle=%F volt=%F)." CR), angle,
-                 volt);
-#endif
-      break;
-    case RunMode::storageMode:
-#if !defined(MAIN_DISABLE_LOGGING)
-      Log.notice(F("MAIN: run mode STORAGE (angle=%F)." CR), angle);
-#endif
-      break;
-  }
-
-  // If we are in storage mode, just go back to sleep
-  if (runMode == RunMode::storageMode) {
-    Log.notice(
-        F("Main: Storage mode entered, going to sleep for maximum time." CR));
-#if defined(ESP8266)
-    ESP.deepSleep(0);  // indefinite sleep
-#else
-    ESP.deepSleep(0);  // indefinite sleep
-#endif
-  }
-}
+void checkSleepMode(float angle, float volt);
 
 void setup() {
-  LOG_PERF_START("run-time");
-  LOG_PERF_START("main-setup");
+  PERF_BEGIN("run-time");
+  PERF_BEGIN("main-setup");
   runtimeMillis = millis();
 
   // Main startup
-#if defined(ESP8266)
-  Log.notice(F("Main: Started setup for %s." CR),
-             String(ESP.getChipId(), HEX).c_str());
-#else  // defined (ESP32)
-  char buf[20];
-  uint32_t chipId = 0;
-  for (int i = 0; i < 17; i = i + 8) {
-    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
-  }
-  snprintf(&buf[0], sizeof(buf), "%6x", chipId);
-  Log.notice(F("Main: Started setup for %s." CR), &buf[0]);
-  ledOff();
-
-#endif
+  Log.notice(F("Main: Started setup for %s." CR), myConfig.getID());
   printBuildOptions();
   detectChipRevision();
 
@@ -170,13 +107,14 @@ void setup() {
   runGpioHardwareTests();
 #endif
 
-  LOG_PERF_START("main-config-load");
+  PERF_BEGIN("main-config-load");
   myConfig.checkFileSystem();
   myWifi.init();  // double reset check
   checkResetReason();
+  myConfig.migrateSettings();
+  myConfig.migrateHwSettings();
   myConfig.loadFile();
-  myAdvancedConfig.loadFile();
-  LOG_PERF_STOP("main-config-load");
+  PERF_END("main-config-load");
 
   // For restoring ispindel backup to test migration
   // LittleFS.rename("/ispindel.json", "/config.json");
@@ -184,6 +122,11 @@ void setup() {
   sleepModeAlwaysSkip = checkPinConnected();
   if (sleepModeAlwaysSkip) {
     Log.notice(F("Main: Forcing config mode since D7/D8 are connected." CR));
+  }
+
+  // TODO: Remove the file from the old wifi manager if that exist.
+  if (LittleFS.exists("/drd.dat")) {
+    LittleFS.remove("/drd.dat");
   }
 
   // Setup watchdog
@@ -212,18 +155,24 @@ void setup() {
   // Do this setup for all modes exect wifi setup
   switch (runMode) {
     case RunMode::wifiSetupMode:
-      myWifi.startPortal();
+      ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
+                             // error
+      myWifi.startAP();
       break;
 
     default:
-      if (myGyro.setup()) {
-        LOG_PERF_START("main-gyro-read");
-        myGyro.read();
-        LOG_PERF_STOP("main-gyro-read");
-      } else {
-        Log.notice(
-            F("Main: Failed to connect to the gyro, software will not be able "
+      if (!myConfig.isGyroDisabled()) {
+        if (myGyro.setup()) {
+          PERF_BEGIN("main-gyro-read");
+          myGyro.read();
+          PERF_END("main-gyro-read");
+        } else {
+          Log.notice(F(
+              "Main: Failed to connect to the gyro, software will not be able "
               "to detect angles." CR));
+        }
+      } else {
+        Log.notice(F("Main: Gyro is disabled in configuration." CR));
       }
 
       myBatteryVoltage.read();
@@ -241,14 +190,18 @@ void setup() {
 #endif
 
       if (needWifi) {
-        LOG_PERF_START("main-wifi-connect");
-        myWifi.connect();
-        LOG_PERF_STOP("main-wifi-connect");
+        PERF_BEGIN("main-wifi-connect");
+        if (myConfig.isWifiDirect() && runMode == RunMode::gravityMode) {
+          myWifi.connect(true);
+        } else {
+          myWifi.connect();
+        }
+        PERF_END("main-wifi-connect");
       }
 
-      LOG_PERF_START("main-temp-setup");
+      PERF_BEGIN("main-temp-setup");
       myTempSensor.setup();
-      LOG_PERF_STOP("main-temp-setup");
+      PERF_END("main-temp-setup");
       break;
   }
 
@@ -258,16 +211,14 @@ void setup() {
       if (myWifi.isConnected()) {
         Log.notice(F("Main: Activating web server." CR));
         ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
-
-#if defined(ACTIVATE_OTA)
-        LOG_PERF_START("main-wifi-ota");
-        if (myWifi.checkFirmwareVersion()) myWifi.updateFirmware();
-        LOG_PERF_STOP("main-wifi-ota");
-#endif
-        myWebServerHandler
-            .setupWebServer();  // Takes less than 4ms, so skip this measurement
-        mySerialWebSocket.begin(myWebServerHandler.getWebServer(), &Serial);
-        mySerial.begin(&mySerialWebSocket);
+        PERF_BEGIN("main-wifi-ota");
+        if (myOta.checkFirmwareVersion()) myOta.updateFirmware();
+        PERF_END("main-wifi-ota");
+        case RunMode::wifiSetupMode:
+          myWebServer.setupWebServer();  // Takes less than 4ms, so skip
+                                         // this measurement
+          mySerialWebSocket.begin(myWebServer.getWebServer(), &Serial);
+          mySerial.begin(&mySerialWebSocket);
       } else {
         ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
                                // error
@@ -277,10 +228,12 @@ void setup() {
       break;
 
     default:
+      ledOn(
+          LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
       break;
   }
 
-  LOG_PERF_STOP("main-setup");
+  PERF_END("main-setup");
   Log.notice(F("Main: Setup completed." CR));
   pushMillis = stableGyroMillis =
       millis();  // Dont include time for wifi connection
@@ -291,7 +244,7 @@ void setup() {
 bool loopReadGravity() {
   float angle = 0;
 
-#if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("Main: Entering main loopGravity." CR));
 #endif
 
@@ -304,20 +257,19 @@ bool loopReadGravity() {
     angle = myGyro.getAngle();    // Gyro angle
     stableGyroMillis = millis();  // Reset timer
 
-    LOG_PERF_START("loop-temp-read");
+    PERF_BEGIN("loop-temp-read");
     myTempSensor.readSensor(myConfig.isGyroTemp());
     float tempC = myTempSensor.getTempC();
-    LOG_PERF_STOP("loop-temp-read");
+    PERF_END("loop-temp-read");
 
     float gravitySG = calculateGravity(angle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
-        gravitySG, tempC, myAdvancedConfig.getDefaultCalibrationTemp());
+        gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
 
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
     }
-
-#if LOG_LEVEL == 6 && !defined(MAIN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
                   "corr_gravity=%F." CR),
                 angle, tempC, gravitySG, corrGravitySG);
@@ -326,7 +278,7 @@ bool loopReadGravity() {
     bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
                         (myConfig.getSleepInterval() * 1000));
 
-    if (myAdvancedConfig.isIgnoreLowAnges() &&
+    if (myConfig.isIgnoreLowAnges() &&
         (angle < myConfig.getFormulaData().a[0])) {
       Log.warning(
           F("Main: Angle is lower than water, so we regard this as faulty and "
@@ -336,7 +288,7 @@ bool loopReadGravity() {
 
     if (pushExpired || runMode == RunMode::gravityMode) {
       pushMillis = millis();
-      LOG_PERF_START("loop-push");
+      PERF_BEGIN("loop-push");
 
 #if defined(ESP32) && !defined(ESP32S2)
       if (myConfig.isBleActive()) {
@@ -344,25 +296,32 @@ bool loopReadGravity() {
 
         switch (myConfig.getBleFormat()) {
           case BleFormat::BLE_TILT: {
-            String color = myConfig.getBleColor();
+            String color = myConfig.getBleTiltColor();
             myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
                                      false);
           } break;
           case BleFormat::BLE_TILT_PRO: {
-            String color = myConfig.getBleColor();
+            String color = myConfig.getBleTiltColor();
             myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
                                      true);
           } break;
+          case BleFormat::BLE_GRAVITYMON_IBEACON: {
+            myBleSender.sendCustomBeaconData(myBatteryVoltage.getVoltage(),
+                                             tempC, gravitySG, angle);
+          } break;
+
           case BleFormat::BLE_GRAVITYMON_EDDYSTONE: {
             myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
                                       gravitySG, angle);
           } break;
           case BleFormat::BLE_GRAVITYMON_SERVICE: {
             TemplatingEngine engine;
-            engine.initialize(angle, gravitySG, corrGravitySG, tempC,
-                              (millis() - runtimeMillis) / 1000,
-                              myBatteryVoltage.getVoltage());
-            String payload = engine.create(TemplatingEngine::TEMPLATE_BLE);
+            GravmonPush push(&myConfig);
+            push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG,
+                                     tempC, (millis() - runtimeMillis) / 1000,
+                                     myBatteryVoltage.getVoltage());
+            String tpl = push.getTemplate(GravmonPush::TEMPLATE_BLE);
+            String payload = engine.create(tpl.c_str());
             myBleSender.sendGravitymonData(payload);
           } break;
         }
@@ -371,9 +330,31 @@ bool loopReadGravity() {
 
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.
-        PushTarget push;
-        push.sendAll(angle, gravitySG, corrGravitySG, tempC,
-                     (millis() - runtimeMillis) / 1000);
+        if (myConfig.isWifiDirect() && runMode == RunMode::gravityMode) {
+          Log.notice(F(
+              "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
+
+          TemplatingEngine engine;
+          GravmonPush push(&myConfig);
+          push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG,
+                                   tempC, (millis() - runtimeMillis) / 1000,
+                                   myBatteryVoltage.getVoltage());
+          String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP1,
+                                        true);  // Use default post template
+          String payload = engine.create(tpl.c_str());
+          myConfig.setTargetHttpPost(
+              "http://192.168.4.1/post");  // Default URL for Gravitymon Gateway
+                                           // v0.3+
+          myConfig.setHeader1HttpPost("Content-Type: application/json");
+          myConfig.setHeader2HttpPost("");
+          push.sendHttpPost(payload);
+        } else {
+          Log.notice(F("Main: Sending data to all defined push targets." CR));
+
+          GravmonPush push(&myConfig);
+          push.sendAll(angle, gravitySG, corrGravitySG, tempC,
+                       (millis() - runtimeMillis) / 1000);
+        }
       }
 
 #if defined(ESP32) && !defined(ESP32S2)
@@ -391,11 +372,11 @@ bool loopReadGravity() {
       }
 #endif  // ESP32 && !ESP32S2
 
-      LOG_PERF_STOP("loop-push");
+      PERF_END("loop-push");
 
       // Send stats to influx after each push run.
       if (runMode == RunMode::configurationMode) {
-        LOG_PERF_PUSH();
+        PERF_PUSH();
       }
     }
     return true;
@@ -413,11 +394,15 @@ void loopGravityOnInterval() {
     loopReadGravity();
     loopMillis = millis();
     // printHeap("MAIN");
-    LOG_PERF_START("loop-gyro-read");
-    myGyro.read();
-    LOG_PERF_STOP("loop-gyro-read");
+    if (!myConfig.isGyroDisabled()) {
+      PERF_BEGIN("loop-gyro-read");
+      myGyro.read();
+      PERF_END("loop-gyro-read");
+    }
     myBatteryVoltage.read();
-    checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+
+    if (runMode != RunMode::wifiSetupMode)
+      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
   }
 }
 
@@ -438,10 +423,10 @@ void goToSleep(int sleepInterval) {
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
   LittleFS.end();
   myGyro.enterSleep();
-  LOG_PERF_STOP("run-time");
-  LOG_PERF_PUSH();
+  PERF_END("run-time");
+  PERF_PUSH();
 
-  if (myAdvancedConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
+  if (myConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
     sleepInterval = 3600;
   }
 
@@ -455,8 +440,9 @@ void loop() {
       // This point is never reached, just here to remove warning.
       break;
 
+    case RunMode::wifiSetupMode:
     case RunMode::configurationMode:
-      myWebServerHandler.loop();
+      myWebServer.loop();
       myWifi.loop();
       loopGravityOnInterval();
       delay(1);
@@ -493,15 +479,88 @@ void loop() {
         goToSleep(60);
       }
 
-      LOG_PERF_START("loop-gyro-read");
-      myGyro.read();
-      LOG_PERF_STOP("loop-gyro-read");
+      if (!myConfig.isGyroDisabled()) {
+        PERF_BEGIN("loop-gyro-read");
+        myGyro.read();
+        PERF_END("loop-gyro-read");
+      }
       myWifi.loop();
       break;
+  }
+}
 
-    case RunMode::wifiSetupMode:
-      myWifi.loop();
+void checkSleepMode(float angle, float volt) {
+#if defined(SKIP_SLEEPMODE)
+  runMode = RunMode::configurationMode;
+  Log.verbose(F("MAIN: Skipping sleep mode (SKIP_SLEEPMODE is defined)." CR));
+  return;
+#endif
+
+#if defined(FORCE_GRAVITY_MODE)
+  Log.notice(F("MAIN: Forcing device into gravity mode for debugging" CR));
+  runMode = RunMode::gravityMode;
+  return;
+#endif
+
+  if (!myConfig.hasGyroCalibration() && !myConfig.isGyroDisabled()) {
+    // Will not enter sleep mode if: no calibration data
+#if LOG_LEVEL == 6
+    Log.notice(
+        F("MAIN: Missing calibration data, so forcing webserver to be "
+          "active." CR));
+#endif
+    runMode = RunMode::configurationMode;
+  } else if (!myConfig.isGyroDisabled() &&
+             (!myGyro.hasValue() || !myGyro.isConnected())) {
+    runMode = RunMode::configurationMode;
+  } else if (sleepModeAlwaysSkip) {
+    // Check if the flag from the UI has been set, the we force configuration
+    // mode.
+#if LOG_LEVEL == 6
+    Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
+#endif
+    runMode = RunMode::configurationMode;
+  } else if ((volt < myConfig.getVoltageConfig() &&
+              (angle > 85 && angle < 95)) ||
+             (volt > myConfig.getVoltageConfig())) {
+    runMode = RunMode::configurationMode;
+  } else if (angle < 5 && myConfig.isStorageSleep()) {
+    runMode = RunMode::storageMode;
+  } else {
+    runMode = RunMode::gravityMode;
+  }
+
+  switch (runMode) {
+    case RunMode::configurationMode:
+#if LOG_LEVEL == 6
+      Log.notice(F("MAIN: run mode CONFIG (angle=%F volt=%F)." CR), angle,
+                 volt);
+#endif
       break;
+    case RunMode::wifiSetupMode:
+      break;
+    case RunMode::gravityMode:
+#if LOG_LEVEL == 6
+      Log.notice(F("MAIN: run mode GRAVITY (angle=%F volt=%F)." CR), angle,
+                 volt);
+#endif
+      break;
+    case RunMode::storageMode:
+#if LOG_LEVEL == 6
+      Log.notice(F("MAIN: run mode STORAGE (angle=%F)." CR), angle);
+#endif
+      break;
+  }
+
+  // If we are in storage mode, just go back to sleep
+  if (runMode == RunMode::storageMode) {
+    Log.notice(
+        F("Main: Storage mode entered, going to sleep for maximum time." CR));
+#if defined(ESP8266)
+    ESP.deepSleep(0);  // indefinite sleep
+#else
+    ESP.deepSleep(0);  // indefinite sleep
+#endif
   }
 }
 

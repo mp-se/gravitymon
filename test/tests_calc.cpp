@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Magnus
+Copyright (c) 2022-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -54,10 +54,10 @@ test(calc_createFormula3) {
   RawFormulaData fd = {
       {25.0, 30.0, 35.0, 45.0, 55.0, 0.0, 0.0, 0.0, 0.0, 0.0},
       {1.0, 1.1, 1.2, 1.3, 1.4, 0.0, 0.0, 0.0, 0.0, 0.0}};
-  float f = myAdvancedConfig.getMaxFormulaCreationDeviation(); 
-  myAdvancedConfig.setMaxFormulaCreationDeviation(10); // Change threashold to pass
+  float f = myConfig.getMaxFormulaCreationDeviation(); 
+  myConfig.setMaxFormulaCreationDeviation(10); // Change threashold to pass
   int i = createFormula(fd, &buffer[0], sizeof(buffer), 3);
-  myAdvancedConfig.setMaxFormulaCreationDeviation(f); // Restore to default for next test
+  myConfig.setMaxFormulaCreationDeviation(f); // Restore to default for next test
   assertEqual(i, 0);
   assertEqual(&buffer[0], "0.00001140*tilt^3+-0.00161278*tilt^2+0.08512845*tilt+-0.30122180");
 }

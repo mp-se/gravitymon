@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,6 @@ SOFTWARE.
 
 #define I2CDEV_IMPLEMENTATION I2CDEV_ARDUINO_WIRE
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
-
-#include <MPU6050.h>
 
 #include <config.hpp>
 
@@ -67,6 +65,7 @@ class GyroSensor {
   bool setup();
   bool read();
   void calibrateSensor();
+  uint8_t getGyroID();
 
   const RawGyroData &getLastGyroData() { return _lastGyroData; }
   float getAngle() { return _angle; }

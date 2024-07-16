@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +23,13 @@ SOFTWARE.
  */
 #include <battery.hpp>
 #include <config.hpp>
-#include <helper.hpp>
+#include <main.hpp>
 
 BatteryVoltage::BatteryVoltage() {
 #if defined(ESP8266)
-  pinMode(PIN_VOLT, INPUT);
+  pinMode(myConfig.getVoltagePin(), INPUT);
 #else
-  pinMode(PIN_VOLT, INPUT_PULLDOWN);
+  pinMode(myConfig.getVoltagePin(), INPUT_PULLDOWN);
 #endif
 }
 
@@ -37,7 +37,7 @@ void BatteryVoltage::read() {
   // The analog pin can only handle 3.3V maximum voltage so we need to reduce
   // the voltage (from max 5V)
   float factor = myConfig.getVoltageFactor();  // Default value is 1.63
-  int v = analogRead(PIN_VOLT);
+  int v = analogRead(myConfig.getVoltagePin());
 
   // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
@@ -47,7 +47,7 @@ void BatteryVoltage::read() {
 #else  // defined (ESP32)
   _batteryLevel = ((3.3 / 4095) * v) * factor;
 #endif
-#if LOG_LEVEL == 6 && !defined(HELPER_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
       factor, v, _batteryLevel);

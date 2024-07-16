@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,8 @@ SOFTWARE.
 #include <tinyexpr.h>
 
 #include <calc.hpp>
-#include <main.hpp>
+#include <log.hpp>
+#include <utils.hpp>
 
 int createFormula(RawFormulaData &fd, char *formulaBuffer,
                   int formulaBufferSize, int order) {
@@ -42,7 +43,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
     }
   }
 
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(
       F("CALC: Trying to create formula using order = %d, found %d angles" CR),
       order, noAngles);
@@ -58,7 +59,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
 
     // Returned value is 0 if no error
     if (ret == 0) {
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
       Log.verbose(F("CALC: Finshied processing data points, order = %d." CR),
                   order);
 #endif
@@ -80,7 +81,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
                  coeffs[1]);
       }
 
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
       Log.verbose(F("CALC: Formula: %s" CR), formulaBuffer);
 #endif
 
@@ -93,7 +94,7 @@ int createFormula(RawFormulaData &fd, char *formulaBuffer,
         double dev = (g - fd.g[i]) < 0 ? (fd.g[i] - g) : (g - fd.g[i]);
 
         // If the deviation is more than 2 degress we mark it as failed.
-        if (dev * 1000 > myAdvancedConfig.getMaxFormulaCreationDeviation()) {
+        if (dev * 1000 > myConfig.getMaxFormulaCreationDeviation()) {
           writeErrorLog(
               "CALC: Validation failed on angle %.2f, deviation too large %.4f "
               "SG, formula order %d",
@@ -119,13 +120,13 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
   const char *formula = myConfig.getGravityFormula();
 
   if (tempFormula != 0) {
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     Log.verbose(F("CALC: Using temporary formula." CR));
 #endif
     formula = tempFormula;
   }
 
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("CALC: Calculating gravity for angle %F, temp %F." CR), angle,
               temp);
   Log.verbose(F("CALC: Formula %s." CR), formula);
@@ -144,7 +145,7 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
     double g = te_eval(expr);
     te_free(expr);
 
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     char s[20];
     snprintf(&s[0], sizeof(s), "%.8f", g);
     Log.verbose(F("CALC: Calculated gravity is %s." CR), &s[0]);
@@ -162,7 +163,7 @@ double calculateGravity(double angle, double temp, const char *tempFormula) {
 // Source: https://homebrewacademy.com/hydrometer-temperature-correction/
 double gravityTemperatureCorrectionC(double gravitySG, double tempC,
                                      double calTempC) {
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("CALC: Adjusting gravity based on temperature, gravity %F, "
                 "temp %F, calTemp %F." CR),
               gravitySG, tempC, calTempC);
@@ -187,7 +188,7 @@ double gravityTemperatureCorrectionC(double gravitySG, double tempC,
     double g = te_eval(expr);
     te_free(expr);
 
-#if LOG_LEVEL == 6 && !defined(CALC_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
     char s[80];
     snprintf(&s[0], sizeof(s), "Corrected gravity=%.8f, input gravity=%.8f", g,
              gravitySG);

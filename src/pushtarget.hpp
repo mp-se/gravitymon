@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,46 +24,71 @@ SOFTWARE.
 #ifndef SRC_PUSHTARGET_HPP_
 #define SRC_PUSHTARGET_HPP_
 
+#include <basepush.hpp>
 #include <templating.hpp>
 
-#if defined(ESP8266)
-#include <ESP8266HTTPClient.h>
-#include <WiFiClientSecure.h>
-#else  // defined (ESP32)
-#include <HTTPClient.h>
-#endif
+constexpr auto TPL_MDNS = "${mdns}";
+constexpr auto TPL_ID = "${id}";
+constexpr auto TPL_TOKEN = "${token}";
+constexpr auto TPL_TOKEN2 = "${token2}";
+constexpr auto TPL_SLEEP_INTERVAL = "${sleep-interval}";
+constexpr auto TPL_TEMP = "${temp}";
+constexpr auto TPL_TEMP_C = "${temp-c}";
+constexpr auto TPL_TEMP_F = "${temp-f}";
+constexpr auto TPL_TEMP_UNITS = "${temp-unit}";  // C or F
+constexpr auto TPL_BATTERY = "${battery}";
+constexpr auto TPL_BATTERY_PERCENT = "${battery-percent}";
+constexpr auto TPL_RSSI = "${rssi}";
+constexpr auto TPL_RUN_TIME = "${run-time}";
+constexpr auto TPL_ANGLE = "${angle}";
+constexpr auto TPL_TILT = "${tilt}";  // same as angle
+constexpr auto TPL_GRAVITY = "${gravity}";
+constexpr auto TPL_GRAVITY_G = "${gravity-sg}";
+constexpr auto TPL_GRAVITY_P = "${gravity-plato}";
+constexpr auto TPL_GRAVITY_CORR = "${corr-gravity}";
+constexpr auto TPL_GRAVITY_CORR_G = "${corr-gravity-sg}";
+constexpr auto TPL_GRAVITY_CORR_P = "${corr-gravity-plato}";
+constexpr auto TPL_GRAVITY_UNIT = "${gravity-unit}";  // G or P
+constexpr auto TPL_APP_VER = "${app-ver}";
+constexpr auto TPL_APP_BUILD = "${app-build}";
 
-class PushTarget {
+constexpr auto TPL_FNAME_POST = "/http-1.tpl";
+constexpr auto TPL_FNAME_POST2 = "/http-2.tpl";
+constexpr auto TPL_FNAME_GET = "/http-3.tpl";
+constexpr auto TPL_FNAME_INFLUXDB = "/influxdb.tpl";
+constexpr auto TPL_FNAME_MQTT = "/mqtt.tpl";
+
+extern const char iSpindleFormat[] PROGMEM;
+extern const char iHttpGetFormat[] PROGMEM;
+extern const char influxDbFormat[] PROGMEM;
+extern const char mqttFormat[] PROGMEM;
+
+class GravmonPush : public BasePush {
  private:
-  WiFiClient _wifi;
-  WiFiClientSecure _wifiSecure;
-  HTTPClient _http;
-  HTTPClient _httpSecure;
-  int _lastCode = 0;
-  bool _lastSuccess = false;
-
-  void sendHttpPost(TemplatingEngine& engine, bool isSecure, int index);
-  void sendHttpGet(TemplatingEngine& engine, bool isSecure);
-  void addHttpHeader(HTTPClient& http, String header);
-  void probeMaxFragement(String& serverPath);
+  GravmonConfig* _gravmonConfig;
+  String _baseTemplate;
 
  public:
+  explicit GravmonPush(GravmonConfig* gravmonConfig);
+
+  enum Templates {
+    TEMPLATE_HTTP1 = 0,
+    TEMPLATE_HTTP2 = 1,
+    TEMPLATE_HTTP3 = 2,
+    TEMPLATE_INFLUX = 3,
+    TEMPLATE_MQTT = 4,
+    TEMPLATE_BLE = 5
+  };
+
   void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
                float runTime);
 
-  void sendHttp1(TemplatingEngine& engine, bool isSecure) {
-    sendHttpPost(engine, isSecure, 0);
-  }
-  void sendHttp2(TemplatingEngine& engine, bool isSecure) {
-    sendHttpPost(engine, isSecure, 1);
-  }
-  void sendHttp3(TemplatingEngine& engine, bool isSecure) {
-    sendHttpGet(engine, isSecure);
-  }
-  void sendInfluxDb2(TemplatingEngine& engine, bool isSecure);
-  void sendMqtt(TemplatingEngine& engine, bool isSecure,
-                bool skipHomeAssistantRegistration = true);
-  int getLastCode() { return _lastCode; }
+  const char* getTemplate(Templates t, bool useDefaultTemplate = false);
+  void clearTemplate() { _baseTemplate.clear(); }
+  void setupTemplateEngine(TemplatingEngine& engine, float angle,
+                           float gravitySG, float corrGravitySG, float tempC,
+                           float runTime, float voltage);
+  int getLastCode() { return _lastResponseCode; }
   bool getLastSuccess() { return _lastSuccess; }
 };
 

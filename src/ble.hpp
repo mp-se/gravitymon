@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,12 @@ SOFTWARE.
 #ifndef SRC_BLE_HPP_
 #define SRC_BLE_HPP_
 
-#if defined(ESP32) && !defined(ESP32S2)
+#include <main.hpp>
 
-#include <Arduino.h>
+#if defined(ENABLE_BLE)
+
 #include <NimBLEBeacon.h>
 #include <NimBLEDevice.h>
-
-#include <helper.hpp>
 
 class BleSender {
  private:
@@ -42,6 +41,8 @@ class BleSender {
   bool _initFlag = false;
   int _beaconTime = 1000;
 
+  void dumpPayload(const char* payload, int len);
+
  public:
   BleSender() {}
 
@@ -50,11 +51,13 @@ class BleSender {
   // Beacons
   void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
   void sendEddystone(float battery, float tempC, float gravity, float angle);
+  void sendCustomBeaconData(float battery, float tempC, float gravity,
+                            float angle);
 
   // Use GATT
   void sendGravitymonData(String payload);
   bool isGravitymonDataSent();
 };
 
-#endif  // ESP32 && !ESP32S2
+#endif  // ENABLE_BLE
 #endif  // SRC_BLE_HPP_
