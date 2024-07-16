@@ -330,9 +330,9 @@ Push - Settings
 
   This WIFI Password will be used during gravity mode to send data to the GravityMon Gateway.
 
-* **Enable WIFI Direct:** 
+* **Use WIFI Direct in gravity mode:** 
 
-  Enabling this feature will disable all other push target settings and data will be sent to the gateway in a pre-defined format (Currently the iSpindle format).
+  Enabling this feature will disable all other push target settings and data will be sent to the gateway in a pre-defined format (iSpindle format) when in `gravity monitoring` mode.
 
 * **Estimated battery life:** 
 
