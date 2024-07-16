@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Licence" href="license.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Q &amp; A - GravityMon v1.4.0</title>
+        <title>Q &amp; A - GravityMon v2.0.0-alfa1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v1.4.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v2.0.0-alfa1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.0.0-alfa1</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -164,11 +164,9 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -202,21 +200,6 @@
         <article role="main">
           <div class="section" id="q-a">
 <h1>Q &amp; A<a class="headerlink" href="#q-a" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="user-interface-does-not-render-correctly">
-<h2>User interface does not render correctly<a class="headerlink" href="#user-interface-does-not-render-correctly" title="Permalink to this headline">¶</a></h2>
-<p>Since the user interface is built using bootstrap v5 the device requires access to the internet
-to download required javascript and css files.</p>
-<p>Due to size it would not be possible to store these
-on the device. Make sure the device can access: <a class="reference external" href="https://cdn.jsdelivr.net/npm/bootstrap">https://cdn.jsdelivr.net/npm/bootstrap</a></p>
-</div>
-<div class="section" id="data-is-not-populated-in-the-fields">
-<h2>Data is not populated in the fields<a class="headerlink" href="#data-is-not-populated-in-the-fields" title="Permalink to this headline">¶</a></h2>
-<p>The user interface uses JQuery to fetch data from the device. This javascript library needs to be downloaded
-from the internet.</p>
-<p>Due to size it would not be possible to store these on the device. Make sure the
-device can access: <a class="reference external" href="https://code.jquery.com">https://code.jquery.com</a></p>
-<p>Also ensure that any security tools does not block the execution of these features.</p>
-</div>
 <div class="section" id="my-device-is-no-going-in-to-sleep-after-fully-charged">
 <h2>My device is no going in to sleep after fully charged<a class="headerlink" href="#my-device-is-no-going-in-to-sleep-after-fully-charged" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -375,7 +358,7 @@ to memory leaks.</p>
         </div>
 
         <div class="related-information">
-              Copyright &#169; 2021-2023, Magnus Persson |
+              Copyright &#169; 2021-2024, Magnus Persson |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
         </div>
@@ -395,8 +378,6 @@ to memory leaks.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Q &amp; A</a><ul>
-<li><a class="reference internal" href="#user-interface-does-not-render-correctly">User interface does not render correctly</a></li>
-<li><a class="reference internal" href="#data-is-not-populated-in-the-fields">Data is not populated in the fields</a></li>
 <li><a class="reference internal" href="#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
 <li><a class="reference internal" href="#what-does-the-flashing-led-mean">What does the flashing led mean?</a></li>
 <li><a class="reference internal" href="#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>

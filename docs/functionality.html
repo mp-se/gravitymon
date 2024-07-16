@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Releases" href="releases.html" /><link rel="prev" title="Welcome to GravityMon" href="index.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Functionality - GravityMon v1.4.0</title>
+        <title>Functionality - GravityMon v2.0.0-alfa1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v1.4.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v2.0.0-alfa1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.0.0-alfa1</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -164,11 +164,9 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -211,7 +209,7 @@ angle/tile, temperature, calculates gravity and pushes the data to defined endpo
 <p>In <code class="docutils literal notranslate"><span class="pre">configuration</span> <span class="pre">mode</span></code> the device is always active and the webserver is active. Here you can view the
 angle/tilt values, change configuration, update the gravity formula. When in this mode you can also interact
 with the device via an REST API so data can be pushed to the device via scripts (see API section for more information).</p>
-<a class="reference internal image-reference" href="_images/index.png"><img alt="UI example" src="_images/index.png" style="width: 700px;"/></a>
+<a class="reference internal image-reference" href="_images/ui-home.png"><img alt="UI example" src="_images/ui-home.png" style="width: 700px;"/></a>
 <p>You can force the device into <code class="docutils literal notranslate"><span class="pre">configuration</span> <span class="pre">mode</span></code> while measuring gravity. This is useful when calibrating
 the device so you don’t needs to wait for the device to wake up and push the data. The entire calibration
 sequence can be handled via the web interface without need for additional software tools.</p>
@@ -259,6 +257,11 @@ more data to be transmitted.</p>
 <li><p>Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.</p></li>
 </ul>
 </li>
+<li><p><strong>WIFI Direct to GravityMon Gateway</strong></p>
+<p>This works in combination with the GravityMon Gatewat that will act as an Access Point (AP) and receive data from GravityMon and then forward
+it to the right destination. The Gatewway works with both BLE and WIFI. This works only in gravity mode and will force the device to connect to the closest
+defined AP with the best reception.</p>
+</li>
 <li><p><strong>Create gravity formulas on the device</strong></p>
 <p>Another big difference is that this software can create the gravity formula in the device, just enter the
 angle/gravity data that you have collected. You will also see a graph simulating how the formula would work.</p>
@@ -269,7 +272,7 @@ is needed to get an accurate formula.</p>
 <p>In order to make it easier to support more targets there is a built in format editor that can be used to
 customize the data that is to be sent. This way you can easily adapt the software to new targets without coding.
 If you have a good template please share it on the github repository and I will add it to the documentation
-for other users to enjoy. See the <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a> for more information. See <a class="reference internal" href="services.html#services"><span class="std std-ref">Service Integration</span></a> for a list of
+for other users to enjoy. See the <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a> for more information. See <a class="reference internal" href="services.html#services"><span class="std std-ref">Service Integration</span></a> for a list of
 services currently validated.</p>
 </li>
 <li><p><strong>Validation of common configuration errors</strong></p>
@@ -452,7 +455,7 @@ temperature would reduce the total runtime with 25%. Sending data over http take
         </div>
 
         <div class="related-information">
-              Copyright &#169; 2021-2023, Magnus Persson |
+              Copyright &#169; 2021-2024, Magnus Persson |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
         </div>

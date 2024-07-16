@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionality" href="functionality.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>GravityMon v1.4.0</title>
+        <title>GravityMon v2.0.0-alfa1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">GravityMon v1.4.0</div></a>
+      <a href="#"><div class="brand">GravityMon v2.0.0-alfa1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.0.0-alfa1</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -164,11 +164,9 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -204,7 +202,7 @@
 <h1>Welcome to GravityMon<a class="headerlink" href="#welcome-to-gravitymon" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v1.4.0</strong>. Last updated 2024-02-17</p>
+<p>This documentation reflects <strong>v2.0.0 beta 1</strong>. Last updated 2024-07-13</p>
 </div>
 <div class="section" id="what-is-gravitymon">
 <h2>What is GravityMon?<a class="headerlink" href="#what-is-gravitymon" title="Permalink to this headline">¶</a></h2>
@@ -232,11 +230,6 @@ information on this topic and function please visit <a class="reference external
 The software is provided as-is. I will however try my best to fix issues that might occur.</p>
 <p>I have tested this software on 40+ brews with good results.</p>
 </div>
-</div>
-<div class="section" id="user-interface-overview">
-<h2>User interface overview<a class="headerlink" href="#user-interface-overview" title="Permalink to this headline">¶</a></h2>
-<p>This animation shows how the features of the user interface. It’s for an older version but the main features are the same.</p>
-<a class="reference internal image-reference" href="_images/gravitymon.gif"><img alt="User Inteface Walkthrough" src="_images/gravitymon.gif" style="width: 800px;"/></a>
 </div>
 <div class="section" id="other-resouces">
 <h2>Other resouces<a class="headerlink" href="#other-resouces" title="Permalink to this headline">¶</a></h2>
@@ -266,9 +259,6 @@ the following libraries and without these this would have been much more difficu
 <li><p><a class="reference external" href="https://github.com/graphitemaster/incbin">https://github.com/graphitemaster/incbin</a></p>
 <p>Include binary files into the code, used to service html files.</p>
 </li>
-<li><p><a class="reference external" href="https://github.com/khoih-prog/ESP_WiFiManager">https://github.com/khoih-prog/ESP_WiFiManager</a></p>
-<p>Configure wifi settings.</p>
-</li>
 <li><p><a class="reference external" href="https://github.com/thijse/Arduino-Log">https://github.com/thijse/Arduino-Log</a></p>
 <p>Logging library for handling different loglevels and configure what sent over the serial.</p>
 </li>
@@ -293,9 +283,6 @@ the following libraries and without these this would have been much more difficu
 <li><p><a class="reference external" href="https://getbootstrap.com/">https://getbootstrap.com/</a></p>
 <p>CSS templates for the web page.</p>
 </li>
-<li><p><a class="reference external" href="https://github.com/lorol/LITTLEFS">https://github.com/lorol/LITTLEFS</a></p>
-<p>LittleFS library for ESP32 framework 1.x</p>
-</li>
 <li><p><a class="reference external" href="https://github.com/h2zero/NimBLE-Arduino">https://github.com/h2zero/NimBLE-Arduino</a></p>
 <p>Bluetooth library for ESP32 framework 1.x</p>
 </li>
@@ -313,6 +300,10 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v2-0-0-beta1">v2.0.0-beta1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v2-0-0-alfa4">v2.0.0-alfa4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v2-0-0-alfa3">v2.0.0-alfa3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v2-0-0-alfa1">v2.0.0-alfa1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-4-1">v1.4.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-4-0">v1.4.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v1-3-1">v1.3.1</a></li>
@@ -333,8 +324,7 @@ the following libraries and without these this would have been much more difficu
 </li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-1-flash-the-device">Step 1 - Flash the device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#step-2-setup-wifi">Step 2 - Setup WIFI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#step-3-configuration">Step 3 - Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#step-2-setup-wifi-configuration">Step 2 - Setup WIFI &amp; Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#step-4-completed">Step 4 - Completed</a></li>
 </ul>
 </li>
@@ -351,10 +341,14 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#status">Status</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#id1">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#home-page">Home page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#device">Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#gravity">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#push-targets">Push targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#other">Other</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp8266">iSpindle based on esp8266</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp32">iSpindle based on esp32</a></li>
@@ -362,7 +356,6 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#hardware-extensions">Hardware extensions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewfather">Brewfather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#fermentrack">Fermentrack</a></li>
@@ -376,28 +369,6 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewpiless">Brewpiless</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewblox">BrewBlox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#bierbot-bricks">BierBot Bricks</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="advanced.html#format-editor">Format editor</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-config">GET: /api/config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-device">GET: /api/device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-status">GET: /api/status</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-config-formula">GET: /api/config/formula</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-config-advanced">GET: /api/config/advanced</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-advanced">POST: /api/config/advanced</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-clearwifi">GET: /api/clearwifi</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-factory">GET: /api/factory</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#get-api-test-push">GET: /api/test/push</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-device">POST: /api/config/device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-push">POST: /api/config/push</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-gravity">POST: /api/config/gravity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-hardware">POST: /api/config/hardware</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#post-api-config-formula">POST: /api/config/formula</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#calling-the-api-s-from-python">Calling the API’s from Python</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a><ul>
@@ -423,8 +394,6 @@ the following libraries and without these this would have been much more difficu
 </li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#user-interface-does-not-render-correctly">User interface does not render correctly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#data-is-not-populated-in-the-fields">Data is not populated in the fields</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#what-does-the-flashing-led-mean">What does the flashing led mean?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
@@ -468,7 +437,7 @@ the following libraries and without these this would have been much more difficu
         </div>
 
         <div class="related-information">
-              Copyright &#169; 2021-2023, Magnus Persson |
+              Copyright &#169; 2021-2024, Magnus Persson |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
         </div>
@@ -489,7 +458,6 @@ the following libraries and without these this would have been much more difficu
             <ul>
 <li><a class="reference internal" href="#">Welcome to GravityMon</a><ul>
 <li><a class="reference internal" href="#what-is-gravitymon">What is GravityMon?</a></li>
-<li><a class="reference internal" href="#user-interface-overview">User interface overview</a></li>
 <li><a class="reference internal" href="#other-resouces">Other resouces</a></li>
 <li><a class="reference internal" href="#software-architecture">Software architecture</a></li>
 <li><a class="reference internal" href="#credits-to">Credits to</a><ul>

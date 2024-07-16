@@ -15,7 +15,7 @@ The main features
   angle/tilt values, change configuration, update the gravity formula. When in this mode you can also interact 
   with the device via an REST API so data can be pushed to the device via scripts (see API section for more information).
 
-  .. image:: images/index.png
+  .. image:: images/ui-home.png
     :width: 700
     :alt: UI example
 
@@ -70,6 +70,12 @@ The main features
   - Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.
   - Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.
 
+* **WIFI Direct to GravityMon Gateway**
+
+  This works in combination with the GravityMon Gatewat that will act as an Access Point (AP) and receive data from GravityMon and then forward 
+  it to the right destination. The Gatewway works with both BLE and WIFI. This works only in gravity mode and will force the device to connect to the closest
+  defined AP with the best reception.
+
 * **Create gravity formulas on the device**
 
   Another big difference is that this software can create the gravity formula in the device, just enter the 
@@ -83,7 +89,7 @@ The main features
   In order to make it easier to support more targets there is a built in format editor that can be used to 
   customize the data that is to be sent. This way you can easily adapt the software to new targets without coding. 
   If you have a good template please share it on the github repository and I will add it to the documentation 
-  for other users to enjoy. See the :ref:`format-editor` for more information. See :ref:`services` for a list of
+  for other users to enjoy. See the :ref:`format-template` for more information. See :ref:`services` for a list of
   services currently validated.
 
 * **Validation of common configuration errors**

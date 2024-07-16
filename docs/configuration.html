@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Hardware" href="hardware.html" /><link rel="prev" title="Software Installation" href="installation.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Format Templates" href="format-template.html" /><link rel="prev" title="Software Installation" href="installation.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Configuration - GravityMon v1.4.0</title>
+        <title>Configuration - GravityMon v2.0.0-alfa1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v1.4.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v2.0.0-alfa1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.0.0-alfa1</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -164,11 +164,9 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -220,13 +218,14 @@ reset button on the esp a 3 times, each attempt must be within 3 seconds.</p>
 <p>If the LED is solid on show white color then it detected a double reset and has entered WIFI setup mode, in
 this case just press reset twice again.</p>
 </div>
-<div class="section" id="status">
-<h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<p>From v2 the WIFI setup is built into the UI so everything can now be changed from one User Interface.</p>
+<div class="section" id="home-page">
+<h2>Home page<a class="headerlink" href="#home-page" title="Permalink to this headline">¶</a></h2>
 <p>URL: (<a class="reference external" href="http://gravmon.local">http://gravmon.local</a>)</p>
-<a class="reference internal image-reference" href="_images/index.png"><img alt="Index page" src="_images/index.png" style="width: 800px;"/></a>
+<a class="reference internal image-reference" href="_images/ui-home.png"><img alt="Home page" src="_images/ui-home.png" style="width: 800px;"/></a>
 <p>Configuration is accessed by entering the URL for the device, this will be the mDNS name <em>device.local</em> or the IP address. The following chapter assumes the device name is <em>gravmon</em>.</p>
-<p>If the device is not fully configured or there are some hardware issues then these will be displayed on the top of the screen. There are also
-links to where the settings can be changed.</p>
+<p>If the device is not fully configured or there are some hardware issues then these will be visible on the main page. If there are things to adress this will
+be indicated in the meny using a red dot.</p>
 <p>The main page shows the device readings; gravity, angle, temperature and battery charge. If the checkbox is active then the device will never go into sleep mode. This is useful if
 you are collecting angle/tilt for calibration. If this is unchecked the device will change mode as explained before.</p>
 <p>You can also view the average time a gravity measurement takes. Under optimal setting this should be around 1.5 - 2.0 seconds. If this is higher than 2 seconds this is most likely connected to slow wifi
@@ -235,202 +234,22 @@ connection. It will show 0 if data has not been collected yet.</p>
 <p class="admonition-title">Tip</p>
 <p>If you are connected to the device via a serial console (speed: 115200) you can see the connection sequence and get the Unique ID and IP address from there.</p>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>The button <cite>view error log</cite> will show the last error messages on the device. This can be useful for checking errors without
-the need to connect to the serial port or to check what errors has occurred while in <cite>gravity mode</cite>. From v1.1 it will also detect
-any abnormal restarts or crashes and record these in the logfile (this applies to esp8266 only).</p>
 </div>
-</div>
-<div class="section" id="id1">
-<h2>Configuration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>URL: (<a class="reference external" href="http://gravmon.local/config">http://gravmon.local/config</a>)</p>
-<div class="section" id="device-setting">
-<h3>Device Setting<a class="headerlink" href="#device-setting" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/config1.png"><img alt="Device Settings" src="_images/config1.png" style="width: 800px;"/></a>
+<div class="section" id="device">
+<h2>Device<a class="headerlink" href="#device" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="device-settings">
+<h3>Device - Settings<a class="headerlink" href="#device-settings" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-device-settings.png"><img alt="Device Settings" src="_images/ui-device-settings.png" style="width: 800px;"/></a>
 <ul>
-<li><p><strong>Device name:</strong></p>
+<li><p><strong>MDNS:</strong></p>
 <p>This is unique name for the device. It will be used in pushing data as well as mDNS name on the network (&lt;name&gt;.local).
 The limitation is 63 chars but using long names might break endpoints that data is sent to if they have other limitations.</p>
 </li>
 <li><p><strong>Temperature format:</strong></p>
 <p>Choose between Celsius and Fahrenheit when displaying temperature.</p>
 </li>
-<li><p><strong>Interval:</strong></p>
-<p>This defines how long the device should be sleeping between the readings when in <cite>gravity monitoring</cite> mode. You will also see
-the values in minutes/seconds to easier set the interval. 900s is a recommended interval.  The sleep interval can
-be set between 10 - 3600 seconds (60 minutes).</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>A low value such as 30s will give a lifespan of 1-2 weeks and 300s (5 min) would last for 3+ weeks. This assumes that
-there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain.
-The device will show the estimated lifespan based on the average connection time, if no data exist it will not be shown.</p>
-</div>
-</li>
-<li><p><strong>Calibration values:</strong></p>
-<p>These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The device will <strong>not</strong> go into <cite>gravity monitoring</cite> mode unless calibrated</p>
-</div>
-</li>
-<li><p><strong>Factory default</strong></p>
-<p>This function will reset all settings to factory default. Use with caution!</p>
-</li>
-<li><p><strong>WIFI settings</strong></p>
-<p>Here you can set the wifi settings, for security reasons its not possible to see the current passwords.</p>
-</li>
-<li><p><strong>Restart</strong></p>
-<p>Restarts the device, similar to pressing the reset button</p>
-</li>
-</ul>
-</div>
-<div class="section" id="push-settings">
-<h3>Push Settings<a class="headerlink" href="#push-settings" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/config2.png"><img alt="Push Settings" src="_images/config2.png" style="width: 800px;"/></a>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When enabling SSL this will not validate the root CA of the remote service, this is a design decision based on two aspects. Enabling CA validation will take 3-4s extra on each connection which means way less
-battery life, so the decision is to prioritize battery life over security. The data transmitted is not really that sensitive anyway so I believe this is a good balance.</p>
-</div>
-<ul>
-<li><p><strong>HTTP 1 (POST):</strong></p>
-<p>Endpoint to send data via http. Default format used Format used <a class="reference internal" href="data.html#data-formats-ispindle"><span class="std std-ref">HTTP Post, iSpindle format</span></a>. You can customize the format using <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
-<p>If you add the prefix <cite>https://</cite> then the device will use SSL when sending data.</p>
-</li>
-<li><p><strong>HTTP 2 (POST):</strong></p>
-<p>Endpoint to send data via http. Default format used <a class="reference internal" href="data.html#data-formats-ispindle"><span class="std std-ref">HTTP Post, iSpindle format</span></a>. You can customize the format using <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
-<p>If you add the prefix <cite>https://</cite> then the device will use SSL when sending data.</p>
-</li>
-<li><p><strong>Token:</strong></p>
-<p>The token is included in the iSpindle JSON format and will be used for both HTTP targets. If you
-need to have 2 different tokens please use the <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a> to customize the data format.</p>
-</li>
-<li><p><strong>HTTP 3 (GET):</strong></p>
-<p>Endpoint to send data via http. This is using an HTTP GET request instead of a post. This means that the values are appended to the URL like; <a class="reference external" href="http://endpoint?param=value&amp;param2=value2">http://endpoint?param=value&amp;param2=value2</a>. You can customize the format using <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
-<p>If you add the prefix <cite>https://</cite> then the device will use SSL when sending data.</p>
-</li>
-<li><p><strong>Token 2:</strong></p>
-<p>The token is included in the default format for the HTTP GET url but can be used for any of the formats. For HTTP GET use can use this for an authorization token with for instance ubidots or blynk http api.</p>
-</li>
-<li><p><strong>HTTP Headers</strong></p>
-<a class="reference internal image-reference" href="_images/config-popup1.png"><img alt="HTTP Headers" src="_images/config-popup1.png" style="width: 300px;"/></a>
-<p>You can define 2 http headers per push target. This is available via a pop-up window but don’t forget
-to press the save buttons on the post section to save the values. One common header is content type which is the
-default setting for http targets.</p>
-<p>The input must have the format <strong>‘&lt;header&gt;: &lt;value&gt;’</strong> for it to work. The UI will accept any value so errors
-will not show until the device tries to push data.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
-<span class="n">X</span><span class="o">-</span><span class="n">Auth</span><span class="o">-</span><span class="n">Token</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">api</span><span class="o">-</span><span class="n">token</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>Mozilla has a good guide on what headers are valid; <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers">HTTP Headers</a></p>
-</li>
-</ul>
-</div>
-<div class="section" id="push-settings-2">
-<h3>Push Settings (2)<a class="headerlink" href="#push-settings-2" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/config2b.png"><img alt="Push Settings" src="_images/config2b.png" style="width: 800px;"/></a>
-<ul>
-<li><p><strong>Influx DB v2 URL:</strong></p>
-<p>Endpoint to send data via http to InfluxDB. Format used <a class="reference internal" href="data.html#data-formats-influxdb2"><span class="std std-ref">HTTP Get</span></a>. You can customize the format using <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
-<p>SSL is not supported for this target. Raise a issue on github if this is wanted.</p>
-</li>
-<li><p><strong>Influx DB v2 Organisation:</strong></p>
-<p>Name of organisation in Influx.</p>
-</li>
-<li><p><strong>Influx DB v2 Bucket:</strong></p>
-<p>Token for bucket. Don’t use the bucket name.</p>
-</li>
-<li><p><strong>Influx DB v2 Token:</strong></p>
-<p>Token with write access to bucket.</p>
-</li>
-<li><p><strong>MQTT server:</strong></p>
-<p>IP or name of server to send data to. Default format used <a class="reference internal" href="data.html#data-formats-mqtt"><span class="std std-ref">MQTT</span></a>. You can customize the format using <a class="reference internal" href="advanced.html#format-editor"><span class="std std-ref">Format editor</span></a>.</p>
-</li>
-<li><p><strong>MQTT Port:</strong></p>
-<p>Which port should be used for communication, default is 1883 (standard port). For SSL use 8883 (any port over 8000 is treated as SSL).</p>
-</li>
-<li><p><strong>MQTT user:</strong></p>
-<p>Username or blank if anonymous is accepted</p>
-</li>
-<li><p><strong>MQTT password:</strong></p>
-<p>Password or blank if anonymous is accepted</p>
-</li>
-</ul>
-</div>
-<div class="section" id="gravity-settings">
-<h3>Gravity Settings<a class="headerlink" href="#gravity-settings" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/config3.png"><img alt="Gravity Settings" src="_images/config3.png" style="width: 800px;"/></a>
-<ul>
 <li><p><strong>Gravity format:</strong></p>
 <p>Gravity format can be either <cite>SG</cite> or <cite>Plato</cite>. The device will use SG Internally and convert to Plato when displaying or sending data.</p>
-</li>
-<li><p><strong>Gravity formula:</strong></p>
-<p>Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use
-the feature to create the formula by supplying the raw data. See <a class="reference internal" href="formula.html#create-formula"><span class="std std-ref">Create formula</span></a></p>
-<p>The gravity formula accepts to parameters, <strong>tilt</strong> for the angle or <strong>temp</strong> for temperature (temperature inserted into the formula
-will be in celsius). I would recommend to use the formula calculation feature instead since this is much easier.</p>
-</li>
-<li><p><strong>Temperature correct gravity:</strong></p>
-<p>Will apply a temperature calibration formula to the gravity as a second step after gravity has been calculated. It’s also possible to
-build this into the gravity formula.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This formula assumes that the calibration has been done at 20°C / 68°F.</p>
-<p>Formula used in temperature correction. The calibration temperature can be changed under advanced settings.</p>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gravity</span><span class="o">*</span><span class="p">((</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">temp</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span>
-<span class="p">(</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">cal</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">3</span><span class="p">))</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Use default formula:</strong></p>
-<p>If you dont need high accuracy then you can use the default formula. This is estimated based on values from several
-devices and assume that the water angle is 25 degrees. Accuracy will depend on your build and weight but based on the
-data it will be +/- 2%. If you send in your calibration data I can include this and perhaps improve the formula.</p>
-</li>
-</ul>
-</div>
-<div class="section" id="hardware-settings">
-<h3>Hardware Settings<a class="headerlink" href="#hardware-settings" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/config4.png"><img alt="Hardware Settings" src="_images/config4.png" style="width: 800px;"/></a>
-<ul>
-<li><p><strong>Voltage factor:</strong></p>
-<p>Factor used to calculate the battery voltage. If you get a too low/high voltage you can adjust this value.</p>
-</li>
-<li><p><strong>Config voltage:</strong></p>
-<p>Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers.
-If you don’t what the device to go into configuration mode when charging, set this to 6V. This was added since different batteries have different
-voltages when fully charged.</p>
-</li>
-<li><p><strong>Temperature correction:</strong></p>
-<p>This value will be added to the temperature reading (negative value will reduce temperature reading). This is applied
-when the device starts. So changing this will not take affect until the device is restarted.</p>
-</li>
-<li><p><strong>Gyro Temperature:</strong></p>
-<p>Enable this feature will use the temp sensor i the gyro instead of the DS18B20, the benefit is shorter run time and
-longer battery life (this is an experimental feature). The value used is the first temperature reading from when the
-device is activated, since the gyro should be cool this is reflecting the surrounding temperature. After it has
-been running the value would be totally off.</p>
-</li>
-<li><p><strong>Enable storage mode when placed on cap</strong></p>
-<p>When place on the cap (&lt;5 degree tilt) the device will go into deep sleep forever (until reset). In order to wake it
-up you need to do a reset. One option is to attach a magnetic reed switch (default open) to the reset pin and use a
-magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm
-long encapsulated in a small glass tube. See hardware section for more information, <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
-</li>
-<li><p><strong>Bluetooth format: (Only ESP32)</strong></p>
-<p>Choose the bluetooth transmission to use.</p>
-<ul class="simple">
-<li><p><strong>TILT</strong>: Standard tilt data transmission. Data: Gravity and Temperature</p></li>
-<li><p><strong>TILT PRO</strong>: Higher accuracy tilt data transmission. Data: Gravity and Temperature</p></li>
-<li><p><strong>GM SERVICE</strong>: Client can read standard iSpindle JSON payload, require connection with device.</p></li>
-<li><p><strong>GM EDDYSTONE</strong>: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle</p></li>
-</ul>
-</li>
-<li><p><strong>TILT Bluetooth color: (Only ESP32)</strong></p>
-<p>Select the TILT color that will be used to transmit data. Only valid if TILT format is chosen above.</p>
 </li>
 <li><p><strong>OTA URL:</strong></p>
 <p>Should point to a URL where the firmware.bin file + version.json file are located. For an ESP32 target the firmware should be named firmware32.bin.</p>
@@ -443,39 +262,37 @@ code the update will be done during startup.</p>
 </pre></div>
 </div>
 </li>
-<li><p><strong>Upload Firmware</strong></p>
-<p>This option gives you the possibility to install an new version of the firmware (or any firmware that uses the standard flash layout).</p>
+<li><p><strong>Dark Mode:</strong></p>
+<p>Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.</p>
+</li>
+<li><p><strong>Factory default</strong></p>
+<p>This function will reset all settings to factory default. Use with caution!</p>
+</li>
+<li><p><strong>Restart</strong></p>
+<p>Restarts the device, similar to pressing the reset button</p>
 </li>
 </ul>
-<a class="reference internal image-reference" href="_images/firmware.png"><img alt="Update firmware" src="_images/firmware.png" style="width: 600px;"/></a>
 </div>
-<div class="section" id="advanced-settings">
-<h3>Advanced Settings<a class="headerlink" href="#advanced-settings" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/config5.png"><img alt="Advanced Settings" src="_images/config5.png" style="width: 800px;"/></a>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Change these parameters with caution. The wrong values might cause the device to become unresponsive.</p>
-</div>
+<div class="section" id="device-hardware">
+<h3>Device - Hardware<a class="headerlink" href="#device-hardware" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-device-hardware.png"><img alt="Device Hardware" src="_images/ui-device-hardware.png" style="width: 800px;"/></a>
 <ul>
-<li><p><strong>Gyro reads:</strong></p>
-<p>This defines how many gyro reads will be done before an angle is calculated. More reads will give better accuracy and also allow detection of
-movement. Too many reads will take time and affect battery life. 50 takes about 800 ms to execute.</p>
+<li><p><strong>Voltage factor:</strong></p>
+<p>Factor used to calculate the battery voltage. If you get a too low/high voltage you can adjust this value.</p>
 </li>
-<li><p><strong>Gyro moving threshold:</strong></p>
-<p>This is the max amount of deviation allowed for a stable reading.</p>
+<li><p><strong>Config voltage:</strong></p>
+<p>Defines the level of voltage when the device should enter config mode due to charging. This might vary between different battery manufacturers.
+If you don’t what the device to go into configuration mode when charging, set this to 6V. This was added since different batteries have different
+voltages when fully charged.</p>
 </li>
-<li><p><strong>Formula deviation:</strong></p>
-<p>This is the maximum deviation on the formula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied
-data and of the deviation on any point is bigger the formula will be rejected.</p>
-</li>
-<li><p><strong>Ignore angles below water:</strong></p>
-<p>If this option is checked any angles below that of SG 1 will be discarded as invalid and never sent to any server. Default = off.</p>
+<li><p><strong>Storage sleep</strong></p>
+<p>When place on the cap (&lt;5 degree tilt) the device will go into deep sleep forever (until reset). In order to wake it
+up you need to do a reset. One option is to attach a magnetic reed switch (default open) to the reset pin and use a
+magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm
+long encapsulated in a small glass tube. See hardware section for more information, <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
 </li>
 <li><p><strong>Battery saving:</strong></p>
 <p>If this option is checked the sleep interval will be changed to 1 hour when battery drops below 20%. Default = on. This setting is set to off for Floaty builds.</p>
-</li>
-<li><p><strong>Gravity calibration temp</strong></p>
-<p>This option allows you to set the correction temperature used in the automatic temperature gravity adjustment formula. Standard is 20C.</p>
 </li>
 <li><p><strong>DS18B20 Resolution:</strong></p>
 <p>Define the resolution used on the temp sensor. 9 bits is default and will give an accuracy of 0.5C and and provide longest batterylife. See data below from the datasheet.</p>
@@ -486,22 +303,319 @@ data and of the deviation on any point is bigger the formula will be rejected.</
 <li><p>12 bits = 0.0625°C, up to 850 ms reading</p></li>
 </ul>
 </li>
-<li><p><strong>Wifi connect timeout:</strong></p>
-<p>This is the amount of time allowed for a wifi connect.</p>
+<li><p><strong>Temperature sensor adjustment:</strong></p>
+<p>This value will be added to the temperature reading (negative value will reduce temperature reading). This is applied
+when the device starts. So changing this will not take affect until the device is restarted.</p>
 </li>
-<li><p><strong>Wifi portal timeout:</strong></p>
-<p>If the wifi portal is triggered (can be triggered by tapping the reset button 2-3 times within 3 seconds) then this is the amount of time allowed before it exists again.</p>
+<li><p><strong>Gyro Temperature:</strong></p>
+<p>Enable this feature will use the temp sensor i the gyro instead of the DS18B20, the benefit is shorter run time and
+longer battery life (this is an experimental feature). The value used is the first temperature reading from when the
+device is activated, since the gyro should be cool this is reflecting the surrounding temperature. After it has
+been running the value would be totally off.</p>
 </li>
-<li><p><strong>Skip Interval (…):</strong></p>
-<p>These options allow the user to have variable push intervals for the different endpoints. 0 means that every wakeup will send data to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped.</p>
-<p>If the sleep interval is 300s and MQTT is set to 0 and HTTP1 is set to 2 then MQTT will be sent every 300s while HTTP1 would be sent 900s. This is great if you want to send data to a local mqtt server often but brewfather will only
-accept data every 15 min.</p>
+<li><p><strong>Calibration values:</strong></p>
+<p>These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The device will <strong>not</strong> go into <cite>gravity monitoring</cite> mode unless calibrated</p>
+</div>
 </li>
 </ul>
 </div>
-<div class="section" id="backup-and-restore">
-<h3>Backup and Restore<a class="headerlink" href="#backup-and-restore" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/backup.png"><img alt="Backup and Restore" src="_images/backup.png" style="width: 800px;"/></a>
+<div class="section" id="device-wifi">
+<h3>Device - WIFI<a class="headerlink" href="#device-wifi" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-device-wifi.png"><img alt="Device WIFI" src="_images/ui-device-wifi.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>SSID #1:</strong></p>
+<p>Select the desired primary SSID to use.</p>
+</li>
+<li><p><strong>Password #1:</strong></p>
+<p>Enter the primary password.</p>
+</li>
+<li><p><strong>SSID #2:</strong></p>
+<p>Select the desired secondary SSID to use (optional).</p>
+</li>
+<li><p><strong>Password #2:</strong></p>
+<p>Enter the secondary password (optional).</p>
+</li>
+<li><p><strong>Portal timeout:</strong></p>
+<p>If the wifi portal is triggered (can be triggered by tapping the reset button 2-3 times within 3 seconds) then this is the amount of time allowed before it exists again.</p>
+</li>
+<li><p><strong>Connect timeout:</strong></p>
+<p>This is the amount of time allowed for a wifi connect.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="gravity">
+<h2>Gravity<a class="headerlink" href="#gravity" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="gravity-settings">
+<h3>Gravity - Settings<a class="headerlink" href="#gravity-settings" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-gravity-settings.png"><img alt="Gravity Settings" src="_images/ui-gravity-settings.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Temperature adjust gravity:</strong></p>
+<p>Will apply a temperature calibration formula to the gravity as a second step after gravity has been calculated. It’s also possible to
+build this into the gravity formula.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This formula assumes that the calibration has been done at 20°C / 68°F.</p>
+<p>Formula used in temperature correction. The calibration temperature can be changed under advanced settings.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gravity</span><span class="o">*</span><span class="p">((</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">temp</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">temp</span><span class="o">^</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span>
+<span class="p">(</span><span class="mf">1.00130346</span><span class="o">-</span><span class="mf">0.000134722124</span><span class="o">*</span><span class="n">cal</span><span class="o">+</span><span class="mf">0.00000204052596</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.00000000232820948</span><span class="o">*</span><span class="n">cal</span><span class="o">^</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Gravity calibration temp</strong></p>
+<p>This option allows you to set the correction temperature used in the automatic temperature gravity adjustment formula. Standard is 20C.</p>
+</li>
+<li><p><strong>Ignore low angles:</strong></p>
+<p>If this option is checked any angles below that of SG 1 will be discarded as invalid and never sent to any server. Default = off.</p>
+</li>
+<li><p><strong>Gyro reads:</strong></p>
+<p>This defines how many gyro reads will be done before an angle is calculated. More reads will give better accuracy and also allow detection of
+movement. Too many reads will take time and affect battery life. 50 takes about 800 ms to execute.</p>
+</li>
+<li><p><strong>Gyro moving threshold:</strong></p>
+<p>This is the max amount of deviation allowed for a stable reading.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="gravity-formula">
+<h3>Gravity - Formula<a class="headerlink" href="#gravity-formula" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula.png"><img alt="Gravity Formula" src="_images/ui-gravity-formula.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Gravity formula:</strong></p>
+<p>Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use
+the feature to create the formula by supplying the raw data.</p>
+<p>The gravity formula accepts two parameters, <strong>tilt</strong> for the angle or <strong>temp</strong> for temperature (temperature inserted into the formula
+will be in celsius). I would recommend to use the formula calculation feature instead since this is much easier.</p>
+</li>
+<li><p><strong>Data for gravity calculation:</strong></p>
+<p>Enter your gravity data SG + Angle. You can enter up to 10 datapoints. Order does not matter and values with zero as angle will be ignored.</p>
+</li>
+<li><p><strong>Max allowed deviation:</strong></p>
+<p>This is the maximum deviation on the formula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied
+data and of the deviation on any point is bigger the formula will be rejected.</p>
+</li>
+<li><p><strong>Calculate new formula:</strong></p>
+<p>When you submit the values the device will try create a formula with increasing level of complexity. It will start
+with a order 2 formula and then try 3 and 4.</p>
+<p>Once the formula has been created it will validate the formula against the supplied angles/gravity and if there is a too
+high difference, it will fail. You can adjust the max allowed deviation if you have issues.</p>
+<p>Under the Support / Error Log you will also find hints to what problem the formula creator encountered. Here is an example:</p>
+<p><cite>CALC: Validation failed on angle 33.430000, deviation too large 5.86, formula order 4</cite></p>
+<p><cite>CALC: Validation failed on angle 33.430000, deviation too large 3.14, formula order 2</cite></p>
+<p>This means that the angle 33.43 had a deviation of 5.8 SG and since the default threshold is 3, it will fail. You
+can also see that it has failed on that point in both a order 2 and 4 formula.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="gravity-analysis">
+<h3>Gravity - Analysis<a class="headerlink" href="#gravity-analysis" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-gravity-analysis.png"><img alt="Gravity Analysis" src="_images/ui-gravity-analysis.png" style="width: 800px;"/></a>
+<p>Here you can see a graph over the entered values and also how that aligns with the current formula. This can allow you to spot any
+values that might be invalid.</p>
+</div>
+</div>
+<div class="section" id="push-targets">
+<h2>Push targets<a class="headerlink" href="#push-targets" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="push-settings">
+<h3>Push - Settings<a class="headerlink" href="#push-settings" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-push-settings.png"><img alt="Push Settings" src="_images/ui-push-settings.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Token 1:</strong></p>
+<p>The token is included in the iSpindle JSON format and will be used for both HTTP targets. If you
+need to have 2 different tokens you can customize the data format.</p>
+</li>
+<li><p><strong>Token 2:</strong></p>
+<p>The token is included in the default format for the HTTP GET url but can be used for any of the formats.
+For HTTP GET use can use this for an authorization token with ubidots api.</p>
+</li>
+<li><p><strong>Sleep Interval:</strong></p>
+<p>This defines how long the device should be sleeping between the readings when in <cite>gravity monitoring</cite> mode. You will also see
+the values in minutes/seconds to easier set the interval. 900s is a recommended interval.  The sleep interval can
+be set between 10 - 3600 seconds (60 minutes).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A low value such as 30s will give a lifespan of 1-2 weeks and 300s (5 min) would last for 3+ weeks. This assumes that
+there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain.
+The device will show the estimated lifespan based on the average connection time, if no data exist it will not be shown.</p>
+</div>
+</li>
+<li><p><strong>WIFI Direct SSID:</strong></p>
+<p>This WIFI SSID will be used during gravity mode to send data to the GravityMon Gateway.</p>
+</li>
+<li><p><strong>WIFI Direct Password:</strong></p>
+<p>This WIFI Password will be used during gravity mode to send data to the GravityMon Gateway.</p>
+</li>
+<li><p><strong>Enable WIFI Direct:</strong></p>
+<p>Enabling this feature will disable all other push target settings and data will be sent to the gateway in a pre-defined format (Currently the iSpindle format).</p>
+</li>
+<li><p><strong>Estimated battery life:</strong></p>
+<p>Based on the hardware and the historical execution time the device will estimate how long it can run on a full battery
+with the current interval.</p>
+</li>
+<li><p><strong>Push timeout:</strong></p>
+<p>How long the device will wait for a connection accept from the remote service.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="push-http-post">
+<h3>Push - HTTP Post<a class="headerlink" href="#push-http-post" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-push-post.png"><img alt="Push using HTTP Post" src="_images/ui-push-post.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>HTTP URL:</strong></p>
+<p>Endpoint to send data via http. Default format used is <a class="reference internal" href="data.html#data-formats-ispindle"><span class="std std-ref">HTTP Post, iSpindle format</span></a>. You can customize the format below.</p>
+<p>If you add the prefix <cite>https://</cite> then the device will use SSL when sending data.</p>
+</li>
+<li><p><strong>HTTP Headers</strong></p>
+<p>You can define 2 http headers. Enter a value or just select one from the list.</p>
+<p>The input must have the format <strong>‘&lt;header&gt;: &lt;value&gt;’</strong> for it to work. The UI will accept any value so errors
+will not show until the device tries to push data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Auth</span><span class="o">-</span><span class="n">Token</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">api</span><span class="o">-</span><span class="n">token</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Mozilla has a good guide on what headers are valid; <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers">HTTP Headers</a></p>
+</li>
+<li><p><strong>Skip Interval:</strong></p>
+<p>These options allow the user to have variable push intervals for the different endpoints. 0 means that every wakeup will send data
+to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped for this target.</p>
+</li>
+<li><p><strong>Data format:</strong></p>
+<p>Here you can customize the data format used when sending data to the server. You can either enter your own formula or choose one
+from the list. For more information on this topic, see <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you right click in this field a list of available variables will be shown.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="push-http-get">
+<h3>Push - HTTP Get<a class="headerlink" href="#push-http-get" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-push-get.png"><img alt="Push using HTTP Get" src="_images/ui-push-get.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>HTTP URL:</strong></p>
+<p>Endpoint to send data via http. You can customize the format below.</p>
+<p>If you add the prefix <cite>https://</cite> then the device will use SSL when sending data.</p>
+</li>
+<li><p><strong>HTTP Headers</strong></p>
+<p>You can define 2 http headers. Enter a value or just select one from the list.</p>
+<p>The input must have the format <strong>‘&lt;header&gt;: &lt;value&gt;’</strong> for it to work. The UI will accept any value so errors
+will not show until the device tries to push data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Auth</span><span class="o">-</span><span class="n">Token</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">api</span><span class="o">-</span><span class="n">token</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Mozilla has a good guide on what headers are valid; <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers">HTTP Headers</a></p>
+</li>
+<li><p><strong>Skip Interval:</strong></p>
+<p>These options allow the user to have variable push intervals for the different endpoints. 0 means that every wakeup will send data
+to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped for this target.</p>
+</li>
+<li><p><strong>Data format:</strong></p>
+<p>Here you can customize the data format used when sending data to the server. You can either enter your own formula or choose one
+from the list. For more information on this topic, see <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you right click in this field a list of available variables will be shown.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="push-influxdb-v2">
+<h3>Push - InfluxDB v2<a class="headerlink" href="#push-influxdb-v2" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-push-influx.png"><img alt="Push using InfluxDB v2" src="_images/ui-push-influx.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Server:</strong></p>
+<p>Endpoint to send data via http to InfluxDB. Format used <a class="reference internal" href="data.html#data-formats-influxdb2"><span class="std std-ref">HTTP Get</span></a>. You can customize the format using <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a>.</p>
+<p>SSL is not supported for this target. Raise a issue on github if this is wanted.</p>
+</li>
+<li><p><strong>Organisation:</strong></p>
+<p>Name of organisation in Influx.</p>
+</li>
+<li><p><strong>Bucket:</strong></p>
+<p>Token for bucket. Don’t use the bucket name.</p>
+</li>
+<li><p><strong>Authentication Token:</strong></p>
+<p>Token with write access to bucket.</p>
+</li>
+<li><p><strong>Skip Interval:</strong></p>
+<p>These options allow the user to have variable push intervals for the different endpoints. 0 means that every wakeup will send data
+to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped for this target.</p>
+</li>
+<li><p><strong>Data format:</strong></p>
+<p>Here you can customize the data format used when sending data to the server. You can either enter your own formula or choose one
+from the list. For more information on this topic, see <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you right click in this field a list of available variables will be shown.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="push-mqtt">
+<h3>Push - MQTT<a class="headerlink" href="#push-mqtt" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-push-mqtt.png"><img alt="Push using MQTT" src="_images/ui-push-mqtt.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Server:</strong></p>
+<p>IP or name of server to send data to. Default format used <a class="reference internal" href="data.html#data-formats-mqtt"><span class="std std-ref">MQTT</span></a>. You can customize the format using <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a>.</p>
+</li>
+<li><p><strong>Port:</strong></p>
+<p>Which port should be used for communication, default is 1883 (standard port). For SSL use 8883 (any port over 8000 is treated as SSL).</p>
+</li>
+<li><p><strong>User name:</strong></p>
+<p>Username or blank if anonymous is accepted</p>
+</li>
+<li><p><strong>Password:</strong></p>
+<p>Password or blank if anonymous is accepted</p>
+</li>
+<li><p><strong>Skip Interval:</strong></p>
+<p>These options allow the user to have variable push intervals for the different endpoints. 0 means that every wakeup will send data
+to that endpoint. If you enter another number then that defines how many sleep cycles will be skipped for this target.</p>
+</li>
+<li><p><strong>Data format:</strong></p>
+<p>Here you can customize the data format used when sending data to the server. You can either enter your own formula or choose one
+from the list. For more information on this topic, see <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you right click in this field a list of available variables will be shown.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="push-bluetooth">
+<h3>Push - Bluetooth<a class="headerlink" href="#push-bluetooth" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-push-ble.png"><img alt="Push using Bluetooth" src="_images/ui-push-ble.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>TILT color: (Only ESP32)</strong></p>
+<p>Select the TILT color that will be used to transmit data. Only valid if TILT format is chosen above.</p>
+</li>
+<li><p><strong>Bluetooth data format: (Only ESP32)</strong></p>
+<p>Choose the bluetooth transmission to use.</p>
+<ul class="simple">
+<li><p><strong>TILT iBeacon</strong>: Standard tilt data transmission. Data: Gravity and Temperature</p></li>
+<li><p><strong>TILT PRO iBeacon</strong>: Higher accuracy tilt data transmission. Data: Gravity and Temperature</p></li>
+<li><p><strong>GM iBeacon</strong>: Higher accuracy. Data: Gravity, Temperature, ID, Angle</p></li>
+<li><p><strong>GM SERVICE</strong>: Client can read standard iSpindle JSON payload, require connection with device.</p></li>
+<li><p><strong>GM EDDYSTONE</strong>: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="other">
+<h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="other-serial">
+<h3>Other - Serial<a class="headerlink" href="#other-serial" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-other-serial.png"><img alt="Serial console" src="_images/ui-other-serial.png" style="width: 800px;"/></a>
+<p>Connects to the device and shows the serial output, useful for debugging.</p>
+</div>
+<div class="section" id="other-backup">
+<h3>Other - Backup<a class="headerlink" href="#other-backup" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-other-backup.png"><img alt="Backup &amp; Restore" src="_images/ui-other-backup.png" style="width: 800px;"/></a>
 <p>Here you can download a file with all of the device settings and also restore data if needed. Each file is unique for a device which is determined by the field “id”.
 Modifying this field will allow you to create a template that can be used on any device. This field is stored in more than one place of the file and all needs to be
 changed for this to work.</p>
@@ -511,6 +625,41 @@ changed for this to work.</p>
 <p>The gravity formula will be recreated if calibration points are available on the device, so the formula might be different than what is in the file.</p>
 </div>
 </div>
+<div class="section" id="other-firmware">
+<h3>Other - Firmware<a class="headerlink" href="#other-firmware" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-other-firmware.png"><img alt="Firmware update" src="_images/ui-other-firmware.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Upload Firmware</strong></p>
+<p>This option gives you the possibility to install an new version of the firmware (or any firmware that uses the standard flash layout).</p>
+</li>
+</ul>
+</div>
+<div class="section" id="other-support">
+<h3>Other - Support<a class="headerlink" href="#other-support" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-other-logs.png"><img alt="Support" src="_images/ui-other-logs.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>View device logs</strong></p>
+<p>Shows the log entires stored on the device, can also be used to delete the current logs.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="other-tools">
+<h3>Other - Tools<a class="headerlink" href="#other-tools" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-other-tools.png"><img alt="Tools" src="_images/ui-other-tools.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Calculate voltage factor</strong></p>
+<p>Can be used to calculate a new voltage factor based on measured voltage and current readings.</p>
+</li>
+<li><p><strong>List files</strong></p>
+<p>Shows the files on the device and allows a user to show the contents of those files.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="other-about">
+<h3>Other - About<a class="headerlink" href="#other-about" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-other-about.png"><img alt="About" src="_images/ui-other-about.png" style="width: 800px;"/></a>
+<p>Shows information about the software</p>
+</div>
 </div>
 </div>
 
@@ -519,12 +668,12 @@ changed for this to work.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="hardware.html">
+          <a class="next-page" href="format-template.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Hardware</div>
+                <div class="title">Format Templates</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -542,7 +691,7 @@ changed for this to work.</p>
         </div>
 
         <div class="related-information">
-              Copyright &#169; 2021-2023, Magnus Persson |
+              Copyright &#169; 2021-2024, Magnus Persson |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
         </div>
@@ -562,15 +711,35 @@ changed for this to work.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Configuration</a><ul>
-<li><a class="reference internal" href="#status">Status</a></li>
-<li><a class="reference internal" href="#id1">Configuration</a><ul>
-<li><a class="reference internal" href="#device-setting">Device Setting</a></li>
-<li><a class="reference internal" href="#push-settings">Push Settings</a></li>
-<li><a class="reference internal" href="#push-settings-2">Push Settings (2)</a></li>
-<li><a class="reference internal" href="#gravity-settings">Gravity Settings</a></li>
-<li><a class="reference internal" href="#hardware-settings">Hardware Settings</a></li>
-<li><a class="reference internal" href="#advanced-settings">Advanced Settings</a></li>
-<li><a class="reference internal" href="#backup-and-restore">Backup and Restore</a></li>
+<li><a class="reference internal" href="#home-page">Home page</a></li>
+<li><a class="reference internal" href="#device">Device</a><ul>
+<li><a class="reference internal" href="#device-settings">Device - Settings</a></li>
+<li><a class="reference internal" href="#device-hardware">Device - Hardware</a></li>
+<li><a class="reference internal" href="#device-wifi">Device - WIFI</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gravity">Gravity</a><ul>
+<li><a class="reference internal" href="#gravity-settings">Gravity - Settings</a></li>
+<li><a class="reference internal" href="#gravity-formula">Gravity - Formula</a></li>
+<li><a class="reference internal" href="#gravity-analysis">Gravity - Analysis</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#push-targets">Push targets</a><ul>
+<li><a class="reference internal" href="#push-settings">Push - Settings</a></li>
+<li><a class="reference internal" href="#push-http-post">Push - HTTP Post</a></li>
+<li><a class="reference internal" href="#push-http-get">Push - HTTP Get</a></li>
+<li><a class="reference internal" href="#push-influxdb-v2">Push - InfluxDB v2</a></li>
+<li><a class="reference internal" href="#push-mqtt">Push - MQTT</a></li>
+<li><a class="reference internal" href="#push-bluetooth">Push - Bluetooth</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other">Other</a><ul>
+<li><a class="reference internal" href="#other-serial">Other - Serial</a></li>
+<li><a class="reference internal" href="#other-backup">Other - Backup</a></li>
+<li><a class="reference internal" href="#other-firmware">Other - Firmware</a></li>
+<li><a class="reference internal" href="#other-support">Other - Support</a></li>
+<li><a class="reference internal" href="#other-tools">Other - Tools</a></li>
+<li><a class="reference internal" href="#other-about">Other - About</a></li>
 </ul>
 </li>
 </ul>

@@ -3,6 +3,66 @@
 Releases 
 ########
 
+v2.0.0-beta1
+============
+
+Issues adressed
++++++++++++++++
+* Fixed issue with post options not being converted correcly when doing upgrade
+* Remove old data file for the wifi manager to clean up filesystem
+* Added WIFI Direct Connect option with GravityMon Gateway, I hope this will help with wifi connection issues in my steel fermenter and force a connect to the designated AP. Wifi Direct will send the data via http 
+  to the Gateway and then forward this to the correct endpoint. 
+
+Known Issues
+++++++++++++
+* Wire (Gyro communication), does not work properly on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
+  https://github.com/espressif/arduino-esp32/issues/8056
+* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32 (Manually edit the pins_arduino.h for esp32s3 will fix the issue, #define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT)
+
+New Features
+++++++++++++
+* Added option for wifi direct when in gravity mode, wifi direct allows direct access to device without going through AP. This feature is inteded to be used with the gravitymon gateway.
+
+v2.0.0-alfa4
+============
+
+Issues adressed
++++++++++++++++
+* Fixed led indicator when going into wifi mode
+* Turning off led when going to sleep mode or doing reset
+* Fixed push format updates
+* Enabled file upload / delete features (Tools)
+* Updated build workflows
+* Updated libraires due to security vulnerability
+* Added default format for influxdb
+* Fixed broken backup feature
+* Fixed broken influx token parameter
+* Fixed restore of format templates
+* Added message for http error 422
+
+v2.0.0-alfa3
+============
+
+Issues adressed
+++++++++++++++++
+* Fixed broken test function
+* Fixed fault error message when checking status of push test
+* Added line breaks to format editor for easier editing
+* Added check if device is responding and notify user when there is an issue
+
+v2.0.0-alfa1
+============
+
+Features
+++++++++
+* Redesign of user interface using VueJS as the base (UI moved to separate github project mp-se/gravitymon-ui) 
+* Added authorization for API access (currently basic and not really secure)
+* Redesigned REST-API to function better with VueJS
+* Updated documentation to match new version (Still some more work needed)
+* Updated API tests to match new API (Still some more work needed)
+* Moved WIFI configuration to the main application (Removed WiFi Manager)
+* Added additional BLE options for ESP32 builds
+
 v1.4.1
 ======
 

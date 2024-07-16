@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Software Installation" href="installation.html" /><link rel="prev" title="Releases" href="releases.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Getting started - GravityMon v1.4.0</title>
+        <title>Getting started - GravityMon v2.0.0-alfa1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v1.4.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v2.0.0-alfa1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.0.0-alfa1</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -164,11 +164,9 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -210,25 +208,18 @@ more information.</p>
 <p>The first step is to flash the firmware, I recommend using Brewflasher as the easy option. Detailed
 instructions can be found here <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Software Installation</span></a></p>
 </div>
-<div class="section" id="step-2-setup-wifi">
-<h2>Step 2 - Setup WIFI<a class="headerlink" href="#step-2-setup-wifi" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-2-setup-wifi-configuration">
+<h2>Step 2 - Setup WIFI &amp; Configuration<a class="headerlink" href="#step-2-setup-wifi-configuration" title="Permalink to this headline">¶</a></h2>
 <p>When the device starts up the first time it will first start an WIFI access point so that the WIFI Settings
-can be configured. The instructions for that can be found here <a class="reference internal" href="installation.html#setup-wifi"><span class="std std-ref">WIFI compatibility</span></a></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Since the user interface is built using modern frameworks the device requires access to the internet
-for the UI to render and data to be populated. The sites that are needed are; <a class="reference external" href="https://cdn.jsdelivr.net/npm/bootstrap">https://cdn.jsdelivr.net/npm/bootstrap</a>
-and <a class="reference external" href="https://code.jquery.com">https://code.jquery.com</a></p>
-</div>
-</div>
-<div class="section" id="step-3-configuration">
-<h2>Step 3 - Configuration<a class="headerlink" href="#step-3-configuration" title="Permalink to this headline">¶</a></h2>
-<p>Once the device can connect to WIFI it will go into <cite>configuration mode</cite> and start a web server for
-doing the initial configuration. In order to access the device you will need to find its name or ip address.</p>
+can be configured. The wifi settings can be found under the Device - WIFI menu.</p>
+<p>The user interface does no longer require internet access for most functions, the exception is the graphs which
+require access to chartjs in order to render properly. This is due to lack of memory on the device.</p>
+<p>The device will go into <cite>configuration mode</cite> and start a web server for doing the initial configuration.
+In order to access the device you will need to find its name or ip address.</p>
 <p>It will broadcast a name like gravitymonXXXXXX.local over mDNS. Where the XXXXXX is the unique device id. You can
 find the name via an mDNS browser, check your router or connect the device to a serial monitor. On windows mDNS
 might not work so then use the IP address instead. Once connected you will meet a web interface that looks like this.</p>
-<a class="reference internal image-reference" href="_images/index.png"><img alt="Index page" src="_images/index.png" style="width: 800px;"/></a>
+<a class="reference internal image-reference" href="_images/ui-home.png"><img alt="Index page" src="_images/ui-home.png" style="width: 800px;"/></a>
 <p>In order for the software to work properly there are a few steps that needs to be configured. When you open up the
 index page a selftest will be run and common issues will be shown for your action.</p>
 <div class="section" id="configuration-device-settings-device-name">
@@ -304,7 +295,7 @@ Its recommended to attach the device to power when you have it in <cite>configur
         </div>
 
         <div class="related-information">
-              Copyright &#169; 2021-2023, Magnus Persson |
+              Copyright &#169; 2021-2024, Magnus Persson |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
         </div>
@@ -325,8 +316,7 @@ Its recommended to attach the device to power when you have it in <cite>configur
             <ul>
 <li><a class="reference internal" href="#">Getting started</a><ul>
 <li><a class="reference internal" href="#step-1-flash-the-device">Step 1 - Flash the device</a></li>
-<li><a class="reference internal" href="#step-2-setup-wifi">Step 2 - Setup WIFI</a></li>
-<li><a class="reference internal" href="#step-3-configuration">Step 3 - Configuration</a><ul>
+<li><a class="reference internal" href="#step-2-setup-wifi-configuration">Step 2 - Setup WIFI &amp; Configuration</a><ul>
 <li><a class="reference internal" href="#configuration-device-settings-device-name">Configuration - Device Settings - Device Name</a></li>
 <li><a class="reference internal" href="#configuration-device-settings-gyro-calibration">Configuration - Device Settings - Gyro Calibration</a></li>
 <li><a class="reference internal" href="#configuration-push-settings">Configuration - Push Settings</a></li>

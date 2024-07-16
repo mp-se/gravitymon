@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="Data Formats" href="data.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Compiling the software - GravityMon v1.4.0</title>
+        <title>Compiling the software - GravityMon v2.0.0-alfa1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v1.4.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v2.0.0-alfa1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v1.4.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.0.0-alfa1</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -164,11 +164,9 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="formula.html">Create formula</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">REST API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -209,8 +207,13 @@
 <li><p>Visual Studio Code</p></li>
 <li><p>PlatformIO</p></li>
 <li><p>Git for Windows</p></li>
-<li><p>VSCode plugin: Minify (used to minimise the html files)</p></li>
+<li><p>Python3 (for building docs)</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>From v2 the User Interface is built in VueJS and stored in a separate project (mp-se/gravitymon-ui). The github build
+scripts will automatically fetch the latest version from that repository.</p>
+</div>
 </div>
 <div class="section" id="code-formatting">
 <h2>Code Formatting<a class="headerlink" href="#code-formatting" title="Permalink to this headline">¶</a></h2>
@@ -218,7 +221,8 @@
 <p><a class="reference external" href="https://www.pre-commit.com">Pre-Commit</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>There is not yet any automatic checks since this does not work on Windows. It works if running under WSL2 with Ubuntu.</p>
+<p>There is not yet any automatic checks since this does not work on Windows. It works if running under WSL2
+with Ubuntu or on MacOS.</p>
 </div>
 </div>
 <div class="section" id="targets">
@@ -236,8 +240,8 @@
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the serial port can cause corruption and crashes.
-So only enable enough debugging to troubleshoot your changes.</p>
+<p>The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the
+serial port can cause corruption and crashes. So only enable enough debugging to troubleshoot your changes.</p>
 </div>
 </div>
 <div class="section" id="serial-debugging-on-battery">
@@ -264,20 +268,20 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>/bin</p></td>
+<tr class="row-even"><td><p>/.github</p></td>
+<td><p>Automated github action workflows</p></td>
+</tr>
+<tr class="row-odd"><td><p>/bin</p></td>
 <td><p>Contains compiled binaries</p></td>
 </tr>
-<tr class="row-odd"><td><p>/data</p></td>
+<tr class="row-even"><td><p>/data</p></td>
 <td><p>Directory for flashing device filesystem</p></td>
 </tr>
-<tr class="row-even"><td><p>/doc</p></td>
+<tr class="row-odd"><td><p>/doc</p></td>
 <td><p>Various external documents used as input</p></td>
 </tr>
-<tr class="row-odd"><td><p>/html</p></td>
-<td><p>Source for html files</p></td>
-</tr>
-<tr class="row-even"><td><p>/img</p></td>
-<td><p>Images uses in README.md</p></td>
+<tr class="row-even"><td><p>/html</p></td>
+<td><p>Copy of gravitymon-ui (User Interface) build</p></td>
 </tr>
 <tr class="row-odd"><td><p>/lib</p></td>
 <td><p>External libraries used when compiling</p></td>
@@ -312,32 +316,35 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>ACTIVATE_OTA</p></td>
-<td><p>Enables the OTA functionallity in the code</p></td>
-</tr>
-<tr class="row-odd"><td><p>SKIP_SLEEPMODE</p></td>
-<td><p>The device never goes into sleep mode, useful when developing.</p></td>
-</tr>
-<tr class="row-even"><td><p>xxx_DISABLE_LOGGING</p></td>
-<td><p>Done include verbose logging in the corresponding class. Excessive logging may crash device.</p></td>
-</tr>
-<tr class="row-odd"><td><p>USE_LITTLEFS</p></td>
-<td><p>Use the new filesystem in Ardurino</p></td>
-</tr>
 <tr class="row-even"><td><p>USER_SSID</p></td>
 <td><p>If defined the device will always use this SSID</p></td>
 </tr>
 <tr class="row-odd"><td><p>USER_SSID_PWD</p></td>
 <td><p>Password to the SSID</p></td>
 </tr>
-<tr class="row-even"><td><p>CFG_APPVER</p></td>
+<tr class="row-even"><td><p>LOG_LEVEL</p></td>
+<td><p>Defines the logging level used 4=INFO, 5=DEBUG, 6=VERBOSE</p></td>
+</tr>
+<tr class="row-odd"><td><p>CFG_APPVER</p></td>
 <td><p>Defines the version of the compiled software</p></td>
+</tr>
+<tr class="row-even"><td><p>CFG_GITREV</p></td>
+<td><p>Contains the last 6 digits of the git revision</p></td>
 </tr>
 <tr class="row-odd"><td><p>USE_SERIAL_PINS</p></td>
 <td><p>Will send the serial console to the TX/RX pins on an ESP32 target so that debugging can be done when on battery</p></td>
 </tr>
 <tr class="row-even"><td><p>FLOATY</p></td>
 <td><p>Build for the ESP32lite FLOATY hardware option (no DS18B20 and no battery monitor)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENABLE_REMOTE_UI_DEVELOPMENT</p></td>
+<td><p>When enabled this will enable the UI project to interact with a device without any security issues, should not be enabled for production builds</p></td>
+</tr>
+<tr class="row-even"><td><p>SKIP_SLEEPMODE</p></td>
+<td><p>The device never goes into sleep mode, useful when developing</p></td>
+</tr>
+<tr class="row-odd"><td><p>COLLECT_PERFDATA</p></td>
+<td><p>Used to send performance data to an influx database for analysis (development)</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -372,7 +379,7 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
         </div>
 
         <div class="related-information">
-              Copyright &#169; 2021-2023, Magnus Persson |
+              Copyright &#169; 2021-2024, Magnus Persson |
           Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
           <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
         </div>

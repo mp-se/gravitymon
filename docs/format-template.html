@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Licence" href="license.html" /><link rel="prev" title="Compiling the software" href="compiling.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Hardware" href="hardware.html" /><link rel="prev" title="Configuration" href="configuration.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Contributing - GravityMon v2.0.0-alfa1</title>
+        <title>Format Templates - GravityMon v2.0.0-alfa1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -164,12 +164,12 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
 </ul>
@@ -192,37 +192,139 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <div class="section" id="contributing">
-<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
-<p>Anyone is welcome to contribute to this project or create their own variant of it. I would appreciate a PR if your feature would be of benefit other users.</p>
-<p>In order to keep the source code in good condition I use <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to validate and format the code using their standards for C++/C.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you are using Windows as a base platform I would suggest that you install pre-commit under wsl (Windows Subsystem for Windows) and run it from there, I have found
-that this approach works fine.</p>
+          <div class="section" id="format-templates">
+<span id="format-template"></span><h1>Format Templates<a class="headerlink" href="#format-templates" title="Permalink to this headline">¶</a></h1>
+<p>To reduce the need for adding custom endpoints for various services there is an built in format editor that allows the user to customize the format being sent to the push target.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If format templates are large this feature can be slow on a small device such as the esp8266.</p>
 </div>
-<p>The following command will run pre-commit on all the source files. Assuming you are in the project directory.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">run</span> <span class="o">--</span><span class="n">files</span> <span class="n">src</span><span class="o">/*</span>
-</pre></div>
+<p>You enter the format data in the text field and the preview button will show an example on what the
+output would look like. If the data cannot be formatted in json it will just be displayed as a text.</p>
+<p>You can also select a template from the list and copy that to the current endpoint.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you save a blank string the default template will be loaded.</p>
 </div>
-<div class="section" id="design-goals">
-<h2>Design goals<a class="headerlink" href="#design-goals" title="Permalink to this headline">¶</a></h2>
-<p>My goals with this software has been the following:</p>
-<ul class="simple">
-<li><p>Create an open software for the excellent iSpindle hardware platform that is open and available for anyone.</p></li>
-<li><p>Add user requested features that have not made it into the iSpindle project.</p></li>
-<li><p>Focus on long battery life and stability.</p></li>
-<li><p>Explore new technologies and create the next generation gravity monitoring for home brewers.</p></li>
-</ul>
-<p>I will do my best to assist users and respond to new features, pr and suggestions. But keep in mind I’m doing this on my spare time.</p>
-<p>Regards, Magnus</p>
-</div>
+<p>These are the format keys available for use in the format.</p>
+<div class="table-wrapper"><table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Format template keywords</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 30%"/>
+<col style="width: 50%"/>
+<col style="width: 20%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>key</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>${mdns}</p></td>
+<td><p>Name of the device</p></td>
+<td><p>gravmon2</p></td>
+</tr>
+<tr class="row-odd"><td><p>${token}</p></td>
+<td><p>Token</p></td>
+<td><p>any value</p></td>
+</tr>
+<tr class="row-even"><td><p>${token2}</p></td>
+<td><p>Token 2</p></td>
+<td><p>any value</p></td>
+</tr>
+<tr class="row-odd"><td><p>${id}</p></td>
+<td><p>Unique id of the device</p></td>
+<td><p>e422a3</p></td>
+</tr>
+<tr class="row-even"><td><p>${sleep-interval}</p></td>
+<td><p>Seconds between data is pushed</p></td>
+<td><p>900</p></td>
+</tr>
+<tr class="row-odd"><td><p>${temp}</p></td>
+<td><p>Temperature in format configured on device, two decimals</p></td>
+<td><p>21.23</p></td>
+</tr>
+<tr class="row-even"><td><p>${temp-c}</p></td>
+<td><p>Temperature in C, two decimals</p></td>
+<td><p>21.23</p></td>
+</tr>
+<tr class="row-odd"><td><p>${temp-f}</p></td>
+<td><p>Temperature in F, two decimals</p></td>
+<td><p>58.02</p></td>
+</tr>
+<tr class="row-even"><td><p>${temp-unit}</p></td>
+<td><p>Temperature format <cite>C</cite> or <cite>F</cite></p></td>
+<td><p>C</p></td>
+</tr>
+<tr class="row-odd"><td><p>${battery}</p></td>
+<td><p>Battery voltage, two decimals</p></td>
+<td><p>3.89</p></td>
+</tr>
+<tr class="row-even"><td><p>${battery-percent}</p></td>
+<td><p>Battery percentage</p></td>
+<td><p>20</p></td>
+</tr>
+<tr class="row-odd"><td><p>${rssi}</p></td>
+<td><p>Wifi signal strength</p></td>
+<td><p>-75</p></td>
+</tr>
+<tr class="row-even"><td><p>${run-time}</p></td>
+<td><p>How long the last measurement took, two decimals</p></td>
+<td><p>3.87</p></td>
+</tr>
+<tr class="row-odd"><td><p>${angle}</p></td>
+<td><p>Angle of the gyro, tree decimals</p></td>
+<td><p>28.673</p></td>
+</tr>
+<tr class="row-even"><td><p>${tilt}</p></td>
+<td><p>Same as angle.</p></td>
+<td><p>28.673</p></td>
+</tr>
+<tr class="row-odd"><td><p>${gravity}</p></td>
+<td><p>Calculated gravity, 4 decimals for SG and 2 for Plato.</p></td>
+<td><p>1.0456</p></td>
+</tr>
+<tr class="row-even"><td><p>${gravity-sg}</p></td>
+<td><p>Calculated gravity in SG, 4 decimals</p></td>
+<td><p>1.0456</p></td>
+</tr>
+<tr class="row-odd"><td><p>${gravity-plato}</p></td>
+<td><p>Calculated gravity in Plato, 2 decimals</p></td>
+<td><p>8.52</p></td>
+</tr>
+<tr class="row-even"><td><p>${corr-gravity}</p></td>
+<td><p>Temperature corrected gravity, 4 decimals for SG and 2 for Plato.</p></td>
+<td><p>1.0456</p></td>
+</tr>
+<tr class="row-odd"><td><p>${corr-gravity-sg}</p></td>
+<td><p>Temperature corrected gravity in SG, 4 decimals</p></td>
+<td><p>1.0456</p></td>
+</tr>
+<tr class="row-even"><td><p>${corr-gravity-plato}</p></td>
+<td><p>Temperature corrected gravity in Plato, 2 decimals</p></td>
+<td><p>8.52</p></td>
+</tr>
+<tr class="row-odd"><td><p>${gravity-unit}</p></td>
+<td><p>Gravity format, <cite>G</cite> or <cite>P</cite></p></td>
+<td><p>G</p></td>
+</tr>
+<tr class="row-even"><td><p>${app-ver}</p></td>
+<td><p>Software version</p></td>
+<td><p>1.3.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>${app-build}</p></td>
+<td><p>Software revision (git hash)</p></td>
+<td><p>..e456743</p></td>
+</tr>
+</tbody>
+</table></div>
 </div>
 
         </article>
@@ -230,23 +332,23 @@ that this approach works fine.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="license.html">
+          <a class="next-page" href="hardware.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Licence</div>
+                <div class="title">Hardware</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="compiling.html">
+          <a class="prev-page" href="configuration.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Compiling the software</div>
+                <div class="title">Configuration</div>
                 
               </div>
             </a>
@@ -260,27 +362,8 @@ that this approach works fine.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            Contents
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Contributing</a><ul>
-<li><a class="reference internal" href="#design-goals">Design goals</a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
