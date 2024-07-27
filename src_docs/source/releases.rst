@@ -3,6 +3,13 @@
 Releases 
 ########
 
+v2.0.0-beta2
+============
+
+Issues adressed
++++++++++++++++
+* Force gravity mode toggle on main page does not reflect the real state of the flag when other views have been used.
+
 v2.0.0-beta1
 ============
 
