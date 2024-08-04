@@ -98,7 +98,7 @@ Device - Hardware
 Device - WIFI
 +++++++++++++
 
-.. image:: images/ui-device-wifi.png
+.. image:: images/gw/ui-device-wifi.png
   :width: 800
   :alt: Device WIFI
 
@@ -162,27 +162,6 @@ Push - MQTT
 
 See GravityMon configuration.
 
-
-Push - Bluetooth
-++++++++++++++++
-
-.. image:: images/ui-push-ble.png
-  :width: 800
-  :alt: Push using Bluetooth
-
-* **TILT color: (Only ESP32)**
-
-  Select the TILT color that will be used to transmit data. Only valid if TILT format is chosen above.
-
-* **Bluetooth data format: (Only ESP32)**
-
-  Choose the bluetooth transmission to use.
-
-  - **TILT iBeacon**: Standard tilt data transmission. Data: Gravity and Temperature   
-  - **TILT PRO iBeacon**: Higher accuracy tilt data transmission. Data: Gravity and Temperature   
-  - **GM iBeacon**: Higher accuracy. Data: Gravity, Temperature, ID, Angle
-  - **GM SERVICE**: Client can read standard iSpindle JSON payload, require connection with device.
-  - **GM EDDYSTONE**: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle 
 
 Other
 =====
