@@ -7,8 +7,13 @@ Gateway
 
   This documentation reflects **v0.4.0 beta 1**. Last updated 2024-08-02
 
+GravityMon Gateway is an separate project that can act as a proxy between your GravityMon devices and services. It can:
 
-GravityMon gateway is an addon device that can recieve the new BLE broadcast options as well as handle the Wifi Direct feature introduced in v2.0.
+* Receive the new GravityMon 2.0 BLE formats and transform these to HTTP Post/Get, InfluxDB or MQTT requests
+* Receive data via direct WiFi connection (Direct connection between the device and the gateway) and relay this data to defined endpoints. 
+
+Hardware 
+========
 
 The main supported hardware is ESP32s3 PRO with a TFT 
 
@@ -24,7 +29,9 @@ Most of the UI is copied from GravityMon with a few alterations so the documenta
 
 .. note::
 
-  GravityMon gateway does not support the TILT options, if you want to use these I recommend Tiltbridge that has a lot of good features for that.
+  GravityMon Gateway does not support the TILT options, if you want to use these I recommend Tiltbridge that has a lot of good 
+  features for that. The main reason is that these formats have very little data and would require a lot of work to make the gateway
+  add the missing information. Tiltbridge already has this support built in so it makes little sense to replicate that work.
 
 
 Home page 
