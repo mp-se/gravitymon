@@ -9,6 +9,12 @@ v2.0.0-beta2
 Issues adressed
 +++++++++++++++
 * Force gravity mode toggle on main page does not reflect the real state of the flag when other views have been used.
+* Updated user interface with project name and device name for easier identification.
+* Removed BLE GravityMon Service option since this is not really performing well.
+
+Known Issues
+++++++++++++
+* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32 (Manually edit the pins_arduino.h for esp32s3 will fix the issue, #define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT)
 
 v2.0.0-beta1
 ============
@@ -19,12 +25,6 @@ Issues adressed
 * Remove old data file for the wifi manager to clean up filesystem
 * Added WIFI Direct Connect option with GravityMon Gateway, I hope this will help with wifi connection issues in my steel fermenter and force a connect to the designated AP. Wifi Direct will send the data via http 
   to the Gateway and then forward this to the correct endpoint. 
-
-Known Issues
-++++++++++++
-* Wire (Gyro communication), does not work properly on ESP32C3 boards, timeout error. Problem resides in esp-idf framework. 
-  https://github.com/espressif/arduino-esp32/issues/8056
-* RGB led on ESP32S3 does not work due to bug in Arduino for ESP32 (Manually edit the pins_arduino.h for esp32s3 will fix the issue, #define RGB_BUILTIN LED_BUILTIN+SOC_GPIO_PIN_COUNT)
 
 New Features
 ++++++++++++
