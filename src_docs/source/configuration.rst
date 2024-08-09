@@ -526,7 +526,6 @@ Push - Bluetooth
   - **TILT iBeacon**: Standard tilt data transmission. Data: Gravity and Temperature   
   - **TILT PRO iBeacon**: Higher accuracy tilt data transmission. Data: Gravity and Temperature   
   - **GM iBeacon**: Higher accuracy. Data: Gravity, Temperature, ID, Angle
-  - **GM SERVICE**: Client can read standard iSpindle JSON payload, require connection with device.
   - **GM EDDYSTONE**: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle 
 
 Other

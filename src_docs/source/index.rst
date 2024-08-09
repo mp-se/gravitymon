@@ -7,7 +7,7 @@ Welcome to GravityMon
 #####################
 
 .. note::
-  This documentation reflects **v2.0.0 beta 1**. Last updated 2024-07-13
+  This documentation reflects **v2.0.0 beta 2**. Last updated 2024-07-13
 
   Link to `previous documentation here <https://mp-se.github.io/gravitymon/v1.4/>`_ 
 
@@ -138,6 +138,7 @@ the following libraries and without these this would have been much more difficu
    hardware
    services
    data
+   gateway
    compiling
    contributing
    license
