@@ -1,0 +1,453 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Compiling the software" href="compiling.html" /><link rel="prev" title="Data Formats" href="data.html" />
+
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+        <title>Gateway - GravityMon v2.0.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">GravityMon v2.0.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">GravityMon v2.0.0</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Gateway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="q_and_a.html">Q &amp; A</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="gateway">
+<span id="id1"></span><h1>Gateway<a class="headerlink" href="#gateway" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This documentation reflects <strong>v0.4.0 beta 1</strong>. Last updated 2024-08-02</p>
+</div>
+<p>GravityMon Gateway is an separate project that can act as a proxy between your GravityMon devices and services. It can:</p>
+<ul class="simple">
+<li><p>Receive the new GravityMon 2.0 BLE formats and transform these to HTTP Post/Get, InfluxDB or MQTT requests</p></li>
+<li><p>Receive data via direct WiFi connection (Direct connection between the device and the gateway) and relay this data to defined endpoints.</p></li>
+</ul>
+<div class="section" id="hardware">
+<h2>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h2>
+<p>The main supported hardware is ESP32s3 PRO with a TFT</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.wemos.cc/en/latest/s3/s3_pro.html">Lolin ESP32s3 PRO</a></p></li>
+<li><p><a class="reference external" href="https://www.wemos.cc/en/latest/d1_mini_shield/tft_2_4.html">Lolin TFT</a></p></li>
+<li><p>Cable to connect the display with the ESP</p></li>
+</ul>
+<p>There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board does not have BLE 5 support.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mp-se/gravitymon-gateway/releases">Releases for GravityMon Gateway</a></p></li>
+</ul>
+<p>Most of the UI is copied from GravityMon with a few alterations so the documentation here will only point out the differences.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GravityMon Gateway does not support the TILT options, if you want to use these I recommend Tiltbridge that has a lot of good
+features for that. The main reason is that these formats have very little data and would require a lot of work to make the gateway
+add the missing information. Tiltbridge already has this support built in so it makes little sense to replicate that work.</p>
+</div>
+</div>
+<div class="section" id="home-page">
+<h2>Home page<a class="headerlink" href="#home-page" title="Permalink to this headline">¶</a></h2>
+<p>URL: (<a class="reference external" href="http://gravmon-gw.local">http://gravmon-gw.local</a>)</p>
+<a class="reference internal image-reference" href="_images/ui-home1.png"><img alt="Home page" src="_images/ui-home1.png" style="width: 800px;"/></a>
+<p>The main page shows the device settings as well as the latest readings from connected devices.</p>
+</div>
+<div class="section" id="device">
+<h2>Device<a class="headerlink" href="#device" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="device-settings">
+<h3>Device - Settings<a class="headerlink" href="#device-settings" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-device-settings1.png"><img alt="Device Settings" src="_images/ui-device-settings1.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>MDNS:</strong></p>
+<p>This is unique name for the device. It will be used in pushing data as well as mDNS name on the network (&lt;name&gt;.local).
+The limitation is 63 chars but using long names might break endpoints that data is sent to if they have other limitations.</p>
+</li>
+<li><p><strong>Temperature format:</strong></p>
+<p>Choose between Celsius and Fahrenheit when displaying temperature.</p>
+</li>
+<li><p><strong>Gravity format:</strong></p>
+<p>Gravity format can be either <cite>SG</cite> or <cite>Plato</cite>. The device will use SG Internally and convert to Plato when displaying or sending data.</p>
+</li>
+<li><p><strong>Dark Mode:</strong></p>
+<p>Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.</p>
+</li>
+<li><p><strong>Factory default</strong></p>
+<p>This function will reset all settings to factory default. Use with caution!</p>
+</li>
+<li><p><strong>Restart</strong></p>
+<p>Restarts the device, similar to pressing the reset button</p>
+</li>
+</ul>
+</div>
+<div class="section" id="device-hardware">
+<h3>Device - Hardware<a class="headerlink" href="#device-hardware" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-device-hardware1.png"><img alt="Device Hardware" src="_images/ui-device-hardware1.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Scan mode:</strong></p>
+<p>Determine if the BLE scan will be done in active or passive mode.</p>
+</li>
+<li><p><strong>Scan time:</strong></p>
+<p>Time the BLE scan cycle. Don’t use too long time since this will impact the updates on readings and display.</p>
+</li>
+<li><p><strong>Time zone:</strong></p>
+<p>Select the timezone so that date / time will be correcly displayed. This is not an extensive list of all timezones so let me know if you are missing one.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="device-wifi">
+<h3>Device - WIFI<a class="headerlink" href="#device-wifi" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-device-wifi1.png"><img alt="Device WIFI" src="_images/ui-device-wifi1.png" style="width: 800px;"/></a>
+<p>Most of these settings are the same as for GravityMon with the following expections.</p>
+<ul>
+<li><p><strong>Direct SSID:</strong></p>
+<p>Name of the SSID that GravityMon devices will use in Wifi Direct mode.</p>
+</li>
+<li><p><strong>Direct Password:</strong></p>
+<p>Enter the SSID password.</p>
+</li>
+<li><p><strong>Generate:</strong></p>
+<p>Will create an SSID and Password</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="push-targets">
+<h2>Push targets<a class="headerlink" href="#push-targets" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="push-settings">
+<h3>Push - Settings<a class="headerlink" href="#push-settings" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-push-settings1.png"><img alt="Push Settings" src="_images/ui-push-settings1.png" style="width: 800px;"/></a>
+<ul>
+<li><p><strong>Token:</strong></p>
+<p>If the incoming payload does not contain the token this value will be added to the outgoing payload.</p>
+</li>
+<li><p><strong>Push timeout:</strong></p>
+<p>How long the device will wait for a connection accept from the remote service.</p>
+</li>
+<li><p><strong>Push minium resend time:</strong></p>
+<p>This the minimum time before an update can be sent. Some remote services do not want to have updates too often.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="push-http-post">
+<h3>Push - HTTP Post<a class="headerlink" href="#push-http-post" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+<div class="section" id="push-http-get">
+<h3>Push - HTTP Get<a class="headerlink" href="#push-http-get" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+<div class="section" id="push-influxdb-v2">
+<h3>Push - InfluxDB v2<a class="headerlink" href="#push-influxdb-v2" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+<div class="section" id="push-mqtt">
+<h3>Push - MQTT<a class="headerlink" href="#push-mqtt" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+</div>
+<div class="section" id="other">
+<h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="other-serial">
+<h3>Other - Serial<a class="headerlink" href="#other-serial" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+<div class="section" id="other-backup">
+<h3>Other - Backup<a class="headerlink" href="#other-backup" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+<div class="section" id="other-firmware">
+<h3>Other - Firmware<a class="headerlink" href="#other-firmware" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+<div class="section" id="other-support">
+<h3>Other - Support<a class="headerlink" href="#other-support" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+<div class="section" id="other-tools">
+<h3>Other - Tools<a class="headerlink" href="#other-tools" title="Permalink to this headline">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</div>
+<div class="section" id="other-about">
+<h3>Other - About<a class="headerlink" href="#other-about" title="Permalink to this headline">¶</a></h3>
+<p>Shows information about the software</p>
+</div>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="compiling.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Compiling the software</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="data.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Data Formats</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021-2024, Magnus Persson |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Gateway</a><ul>
+<li><a class="reference internal" href="#hardware">Hardware</a></li>
+<li><a class="reference internal" href="#home-page">Home page</a></li>
+<li><a class="reference internal" href="#device">Device</a><ul>
+<li><a class="reference internal" href="#device-settings">Device - Settings</a></li>
+<li><a class="reference internal" href="#device-hardware">Device - Hardware</a></li>
+<li><a class="reference internal" href="#device-wifi">Device - WIFI</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#push-targets">Push targets</a><ul>
+<li><a class="reference internal" href="#push-settings">Push - Settings</a></li>
+<li><a class="reference internal" href="#push-http-post">Push - HTTP Post</a></li>
+<li><a class="reference internal" href="#push-http-get">Push - HTTP Get</a></li>
+<li><a class="reference internal" href="#push-influxdb-v2">Push - InfluxDB v2</a></li>
+<li><a class="reference internal" href="#push-mqtt">Push - MQTT</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other">Other</a><ul>
+<li><a class="reference internal" href="#other-serial">Other - Serial</a></li>
+<li><a class="reference internal" href="#other-backup">Other - Backup</a></li>
+<li><a class="reference internal" href="#other-firmware">Other - Firmware</a></li>
+<li><a class="reference internal" href="#other-support">Other - Support</a></li>
+<li><a class="reference internal" href="#other-tools">Other - Tools</a></li>
+<li><a class="reference internal" href="#other-about">Other - About</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    </body>
+</html>
