@@ -5,7 +5,7 @@ Gateway
 
 .. note::
 
-  This documentation reflects **v0.4.0 beta 1**. Last updated 2024-08-02
+  This documentation reflects **v0.4.0 beta 1**. Last updated 2024-08-10
 
 GravityMon Gateway is an separate project that can act as a proxy between your GravityMon devices and services. It can:
 
@@ -24,6 +24,11 @@ The main supported hardware is ESP32s3 PRO with a TFT
 There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board does not have BLE 5 support.
 
 * `Releases for GravityMon Gateway <https://github.com/mp-se/gravitymon-gateway/releases>`_ 
+
+3d printable cases for the build
+
+* `Thorraks Tiltbridge case for D32 PRO <https://www.printables.com/model/141680-tiltbridge-case-d32-pro-w-tft>`_ 
+* `Modified Tiltbridge case for D32 s3 PRO <https://www.printables.com/model/939801-case-for-esp32-s3-pro-w-tft>`_ 
 
 Most of the UI is copied from GravityMon with a few alterations so the documentation here will only point out the differences.
 
