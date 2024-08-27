@@ -35,24 +35,6 @@ SOFTWARE.
 // Tilt data format is described here. Only SG and Temp is transmitted over BLE.
 // https://kvurd.com/blog/tilt-hydrometer-ibeacon-data-format/
 
-class CharacteristicCallbacks : public NimBLECharacteristicCallbacks {
- private:
-  volatile bool _isRead = false;
-
- public:
-  void clearReadFlag() { _isRead = false; }
-  bool isRead() { return _isRead; }
-
-  void onRead(NimBLECharacteristic* pCharacteristic) {
-#if LOG_LEVEL == 6
-    Log.verbose(F("BLE : Remote reading data" CR));
-#endif
-    _isRead = true;
-  }
-};
-
-static CharacteristicCallbacks myCharCallbacks;
-
 void BleSender::init() {
   if (_initFlag) return;
 
@@ -218,46 +200,11 @@ void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
   _advertising->stop();
 }
 
-void BleSender::sendGravitymonData(String payload) {
-  Log.info(F("BLE : Updating data for gravitymon data transmission" CR));
-
-  _advertising->stop();
-
-  if (!_server) {
-    Log.info(
-        F("BLE : Creating BLE server for gravitymon data transmission" CR));
-
-    _server = BLEDevice::createServer();
-    _service = _server->createService(BLEUUID("180a"));
-    _characteristic = _service->createCharacteristic(
-        BLEUUID("2ac4"), NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::BROADCAST);
-    _characteristic->setCallbacks(&myCharCallbacks);
-    _service->start();
-    _advertising->addServiceUUID(BLEUUID("180a"));
-    _advertising->setName("gravitymon");
-    _advertising->setScanResponse(false);
-    _advertising->setMinPreferred(0x06);
-    _advertising->setMaxPreferred(0x12);
-  }
-
-  myCharCallbacks.clearReadFlag();
-
-  if (payload.length() > 510) {
-    writeErrorLog("BLE : Payload is to long for sending over BLE");
-    payload = "{\"error\":\"payload to long\"}";
-  }
-
-  _characteristic->setValue(payload);
-  _advertising->start();
-}
-
 void BleSender::dumpPayload(const char* p, int len) {
   for (int i = 0; i < len; i++) {
     EspSerial.printf("%X%X ", (*(p + i) & 0xf0) >> 4, (*(p + i) & 0x0f));
   }
   EspSerial.println();
 }
-
-bool BleSender::isGravitymonDataSent() { return myCharCallbacks.isRead(); }
 
 #endif  // ENABLE_BLE

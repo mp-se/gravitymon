@@ -53,10 +53,6 @@ class BleSender {
   void sendEddystone(float battery, float tempC, float gravity, float angle);
   void sendCustomBeaconData(float battery, float tempC, float gravity,
                             float angle);
-
-  // Use GATT
-  void sendGravitymonData(String payload);
-  bool isGravitymonDataSent();
 };
 
 #endif  // ENABLE_BLE

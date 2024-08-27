@@ -320,16 +320,6 @@ bool loopReadGravity() {
             myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
                                       gravitySG, angle);
           } break;
-          case BleFormat::BLE_GRAVITYMON_SERVICE: {
-            TemplatingEngine engine;
-            GravmonPush push(&myConfig);
-            push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG,
-                                     tempC, (millis() - runtimeMillis) / 1000,
-                                     myBatteryVoltage.getVoltage());
-            String tpl = push.getTemplate(GravmonPush::TEMPLATE_BLE);
-            String payload = engine.create(tpl.c_str());
-            myBleSender.sendGravitymonData(payload);
-          } break;
         }
       }
 #endif  // ESP32 && !ESP32S2
@@ -362,22 +352,6 @@ bool loopReadGravity() {
                        (millis() - runtimeMillis) / 1000);
         }
       }
-
-#if defined(ESP32) && !defined(ESP32S2)
-      if (myConfig.getBleFormat() == BleFormat::BLE_GRAVITYMON_SERVICE) {
-        Log.notice(F("Main: Waiting for ble service to be read." CR));
-        int i = 0;
-        while (!myBleSender.isGravitymonDataSent() && i < 10) {
-          delay(500);
-          EspSerial.print(".");
-          i++;
-        }
-        EspSerial.print(CR);
-        if (myBleSender.isGravitymonDataSent())
-          Log.notice(F("Main: Ble service was read by client." CR));
-      }
-#endif  // ESP32 && !ESP32S2
-
       PERF_END("loop-push");
 
       // Send stats to influx after each push run.
