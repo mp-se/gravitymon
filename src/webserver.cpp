@@ -37,12 +37,6 @@ SOFTWARE.
 #include <tempsensor.hpp>
 #include <webserver.hpp>
 
-#if defined(ACTIVATE_GCOV)
-extern "C" {
-#include <gcov_public.h>
-}
-#endif
-
 #if !defined(ESP8266)
 #include <esp_int_wdt.h>
 #include <esp_task_wdt.h>

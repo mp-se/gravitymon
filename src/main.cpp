@@ -42,12 +42,6 @@ SOFTWARE.
 #include <webserver.hpp>
 #include <wificonnection.hpp>
 
-#if defined(ACTIVATE_GCOV)
-extern "C" {
-#include <gcov_public.h>
-}
-#endif
-
 const char* CFG_APPNAME = "gravitymon";
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";

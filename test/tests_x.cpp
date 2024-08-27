@@ -25,18 +25,9 @@ SOFTWARE.
 #include <Arduino.h>
 #include <main.hpp>
 
-#if defined( ACTIVATE_GCOV )
-extern "C" {
-#include <gcov_public.h>
-}
-#endif
-
 // This should be the last test and its used to dump the gcov data to serial. Uncomment __gcov_exit() to dump coverage data.
 
 test(test_exit) {
-#if defined( ACTIVATE_GCOV )
-  __gcov_exit();
-#endif
 }
 
 // EOF

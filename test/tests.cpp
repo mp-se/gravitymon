@@ -24,11 +24,6 @@ SOFTWARE.
 #include <Arduino.h>
 #include <main.hpp>
 #include <helper.hpp>
-#if defined( ACTIVATE_GCOV )
-extern "C" {
-#include <gcov_public.h>
-}
-#endif
 #include <AUnit.h>
 
 using aunit::Printer;
