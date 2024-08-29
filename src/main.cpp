@@ -42,12 +42,6 @@ SOFTWARE.
 #include <webserver.hpp>
 #include <wificonnection.hpp>
 
-#if defined(ACTIVATE_GCOV)
-extern "C" {
-#include <gcov_public.h>
-}
-#endif
-
 const char* CFG_APPNAME = "gravitymon";
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";
@@ -75,7 +69,7 @@ BleSender myBleSender;
 #ifdef DEACTIVATE_SLEEPMODE
 const int interval = 1000;  // ms, time to wait between changes to output
 #else
-int interval = 200;    // ms, time to wait between changes to output
+int interval = 200;  // ms, time to wait between changes to output
 #endif
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
@@ -155,8 +149,11 @@ void setup() {
   // Do this setup for all modes exect wifi setup
   switch (runMode) {
     case RunMode::wifiSetupMode:
+#if !defined(ESP32C3)
+      // We cant use LED on ESP32C3 since that pin is connected to GYRO
       ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
                              // error
+#endif
       myWifi.startAP();
       break;
 
@@ -210,7 +207,10 @@ void setup() {
     case RunMode::configurationMode:
       if (myWifi.isConnected()) {
         Log.notice(F("Main: Activating web server." CR));
+#if !defined(ESP32C3)
+        // We cant use LED on ESP32C3 since that pin is connected to GYRO
         ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
+#endif
         PERF_BEGIN("main-wifi-ota");
         if (myOta.checkFirmwareVersion()) myOta.updateFirmware();
         PERF_END("main-wifi-ota");
@@ -220,16 +220,22 @@ void setup() {
           mySerialWebSocket.begin(myWebServer.getWebServer(), &Serial);
           mySerial.begin(&mySerialWebSocket);
       } else {
+#if !defined(ESP32C3)
+        // We cant use LED on ESP32C3 since that pin is connected to GYRO
         ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
-                               // error
+#endif
+            // error
       }
 
       interval = 1000;  // Change interval from 200ms to 1s
       break;
 
     default:
+#if !defined(ESP32C3)
+      // We cant use LED on ESP32C3 since that pin is connected to GYRO
       ledOn(
           LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
+#endif
       break;
   }
 
@@ -314,16 +320,6 @@ bool loopReadGravity() {
             myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
                                       gravitySG, angle);
           } break;
-          case BleFormat::BLE_GRAVITYMON_SERVICE: {
-            TemplatingEngine engine;
-            GravmonPush push(&myConfig);
-            push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG,
-                                     tempC, (millis() - runtimeMillis) / 1000,
-                                     myBatteryVoltage.getVoltage());
-            String tpl = push.getTemplate(GravmonPush::TEMPLATE_BLE);
-            String payload = engine.create(tpl.c_str());
-            myBleSender.sendGravitymonData(payload);
-          } break;
         }
       }
 #endif  // ESP32 && !ESP32S2
@@ -356,22 +352,6 @@ bool loopReadGravity() {
                        (millis() - runtimeMillis) / 1000);
         }
       }
-
-#if defined(ESP32) && !defined(ESP32S2)
-      if (myConfig.getBleFormat() == BleFormat::BLE_GRAVITYMON_SERVICE) {
-        Log.notice(F("Main: Waiting for ble service to be read." CR));
-        int i = 0;
-        while (!myBleSender.isGravitymonDataSent() && i < 10) {
-          delay(500);
-          EspSerial.print(".");
-          i++;
-        }
-        EspSerial.print(CR);
-        if (myBleSender.isGravitymonDataSent())
-          Log.notice(F("Main: Ble service was read by client." CR));
-      }
-#endif  // ESP32 && !ESP32S2
-
       PERF_END("loop-push");
 
       // Send stats to influx after each push run.
