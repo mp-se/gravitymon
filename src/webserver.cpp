@@ -297,8 +297,8 @@ void GravmonWebServer::webHandleSleepmode(AsyncWebServerRequest *request,
     return;
   }
 
-  PERF_BEGIN("webserver-api-config-sleepmode");
-  Log.notice(F("WEB : webServer callback for /api/config/sleepmode." CR));
+  PERF_BEGIN("webserver-api-sleepmode");
+  Log.notice(F("WEB : webServer callback for /api/sleepmode." CR));
   JsonObject obj = json.as<JsonObject>();
   sleepModeAlwaysSkip = obj[PARAM_SLEEP_MODE].as<bool>();
 
@@ -308,7 +308,7 @@ void GravmonWebServer::webHandleSleepmode(AsyncWebServerRequest *request,
   obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
   response->setLength();
   request->send(response);
-  PERF_END("webserver-api-config-sleepmode");
+  PERF_END("webserver-api-sleepmode");
 }
 
 void GravmonWebServer::webHandleFormulaCreate(AsyncWebServerRequest *request) {
