@@ -18,7 +18,7 @@ jobs:
       - name: Checkout UI
         run: |
           echo "Checkout UI"
-          git clone https://github.com/mp-se/gravitymon-ui/tree/vite gravitymon-ui 
+          git clone -b vite https://github.com/mp-se/gravitymon-ui gravitymon-ui 
           cp gravitymon-ui/dist/assets/style.css.gz html/app.css.gz
           cp gravitymon-ui/dist/assets/index.js.gz html/app.js.gz
         
