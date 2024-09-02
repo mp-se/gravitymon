@@ -3,6 +3,18 @@
 Releases 
 ########
 
+v2.0.0-beta3
+============
+
+Issues adressed
++++++++++++++++
+* Force gravity mode did not work.
+* Moved UI over to VITE build and lint.
+* Refactor some of the UI to make it easier to maintain.
+* Added feature to force device to search for the stronget AP.
+* Fixed the issue with gyro not working on c3 board (had to disable LED since it collides with gyro).
+* Removed unused code.
+
 v2.0.0-beta2
 ============
 
