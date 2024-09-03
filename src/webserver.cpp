@@ -150,8 +150,8 @@ void GravmonWebServer::webHandleFactoryDefaults(
   LittleFS.remove(TPL_FNAME_INFLUXDB);
   LittleFS.remove(TPL_FNAME_MQTT);
   LittleFS.end();
-  Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
 
+  Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
   AsyncJsonResponse *response =
       new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
   JsonObject obj = response->getRoot().as<JsonObject>();
@@ -159,8 +159,10 @@ void GravmonWebServer::webHandleFactoryDefaults(
   obj[PARAM_MESSAGE] = "Factory reset completed, rebooting";
   response->setLength();
   request->send(response);
-  delay(500);
-  ESP_RESET();
+
+  Log.notice(F("WEB : Scheduling reboot." CR));
+  _rebootTimer = millis();
+  _rebootTask = true;
 }
 
 void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
