@@ -3,6 +3,13 @@
 Releases 
 ########
 
+v2.0.0
+======
+
+Issues adressed
++++++++++++++++
+* Temp sensor not always beeing detected, Switch to OnewireNG which seams to fix the problem
+
 v2.0.0-beta3
 ============
 
