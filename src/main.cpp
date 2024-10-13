@@ -149,7 +149,7 @@ void setup() {
   // Do this setup for all modes exect wifi setup
   switch (runMode) {
     case RunMode::wifiSetupMode:
-#if !defined(ESP32C3)
+#if !defined(ESP32C3) && !defined(ESP8266)
       // We cant use LED on ESP32C3 since that pin is connected to GYRO
       ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
                              // error
@@ -207,7 +207,7 @@ void setup() {
     case RunMode::configurationMode:
       if (myWifi.isConnected()) {
         Log.notice(F("Main: Activating web server." CR));
-#if !defined(ESP32C3)
+#if !defined(ESP32C3) && !defined(ESP8266)
         // We cant use LED on ESP32C3 since that pin is connected to GYRO
         ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
 #endif
@@ -220,7 +220,7 @@ void setup() {
           mySerialWebSocket.begin(myWebServer.getWebServer(), &Serial);
           mySerial.begin(&mySerialWebSocket);
       } else {
-#if !defined(ESP32C3)
+#if !defined(ESP32C3) && !defined(ESP8266)
         // We cant use LED on ESP32C3 since that pin is connected to GYRO
         ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
 #endif
@@ -231,7 +231,7 @@ void setup() {
       break;
 
     default:
-#if !defined(ESP32C3)
+#if !defined(ESP32C3) && !defined(ESP8266)
       // We cant use LED on ESP32C3 since that pin is connected to GYRO
       ledOn(
           LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
