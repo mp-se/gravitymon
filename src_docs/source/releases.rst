@@ -3,6 +3,11 @@
 Releases 
 ########
 
+v2.0.1
+======
+
+* Disable LED on esp8266 since it interfear with gyro communication.
+
 v2.0.0
 ======
 
