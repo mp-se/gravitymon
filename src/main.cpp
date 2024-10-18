@@ -218,7 +218,7 @@ void setup() {
       } else {
         // We cant use LED on ESP32C3 since that pin is connected to GYRO
         ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
-            // error
+                               // error
       }
 
       interval = 1000;  // Change interval from 200ms to 1s

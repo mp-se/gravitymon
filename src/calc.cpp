@@ -21,100 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <curveFitting.h>
 #include <tinyexpr.h>
 
 #include <calc.hpp>
 #include <log.hpp>
 #include <utils.hpp>
-
-int createFormula(RawFormulaData &fd, char *formulaBuffer,
-                  int formulaBufferSize, int order) {
-  int noAngles = 0;
-  RawFormulaData fd2;
-
-  // Check how many valid values we have got and make sure we have a full
-  // series.
-  for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
-    if (fd.a[i]) {
-      fd2.a[noAngles] = fd.a[i];
-      fd2.g[noAngles] = fd.g[i];
-      noAngles++;
-    }
-  }
-
-#if LOG_LEVEL == 6
-  Log.verbose(
-      F("CALC: Trying to create formula using order = %d, found %d angles" CR),
-      order, noAngles);
-#endif
-
-  if (noAngles < 3) {
-    writeErrorLog("CALC: Not enough values for deriving formula");
-    return ERR_FORMULA_NOTENOUGHVALUES;
-  } else {
-    double coeffs[order + 1];
-    int ret = fitCurve(order, noAngles, fd2.a, fd2.g,
-                       sizeof(coeffs) / sizeof(double), coeffs);
-
-    // Returned value is 0 if no error
-    if (ret == 0) {
-#if LOG_LEVEL == 6
-      Log.verbose(F("CALC: Finshied processing data points, order = %d." CR),
-                  order);
-#endif
-
-      // Print the formula based on 'order'
-      if (order == 4) {
-        snprintf(formulaBuffer, formulaBufferSize,
-                 "%.8f*tilt^4+%.8f*tilt^3+%.8f*tilt^2+%.8f*tilt+%.8f",
-                 coeffs[0], coeffs[1], coeffs[2], coeffs[3], coeffs[4]);
-      } else if (order == 3) {
-        snprintf(formulaBuffer, formulaBufferSize,
-                 "%.8f*tilt^3+%.8f*tilt^2+%.8f*tilt+%.8f", coeffs[0], coeffs[1],
-                 coeffs[2], coeffs[3]);
-      } else if (order == 2) {
-        snprintf(formulaBuffer, formulaBufferSize, "%.8f*tilt^2+%.8f*tilt+%.8f",
-                 coeffs[0], coeffs[1], coeffs[2]);
-      } else {  // order == 1
-        snprintf(formulaBuffer, formulaBufferSize, "%.8f*tilt+%.8f", coeffs[0],
-                 coeffs[1]);
-      }
-
-#if LOG_LEVEL == 6
-      Log.verbose(F("CALC: Formula: %s" CR), formulaBuffer);
-#endif
-
-      bool valid = true;
-
-      for (int i = 0; i < 5; i++) {
-        if (fd.a[i] == 0 && valid) break;
-
-        double g = calculateGravity(fd.a[i], 0, formulaBuffer);
-        double dev = (g - fd.g[i]) < 0 ? (fd.g[i] - g) : (g - fd.g[i]);
-
-        // If the deviation is more than 2 degress we mark it as failed.
-        if (dev * 1000 > myConfig.getMaxFormulaCreationDeviation()) {
-          writeErrorLog(
-              "CALC: Validation failed on angle %.2f, deviation too large %.4f "
-              "SG, formula order %d",
-              fd.a[i], dev * 1000, order);
-          valid = false;
-        }
-      }
-
-      if (!valid) {
-        return ERR_FORMULA_UNABLETOFFIND;
-      }
-
-      Log.info(F("CALC: Found formula '%s'." CR), formulaBuffer);
-      return 0;
-    }
-  }
-
-  writeErrorLog("CALC: Internal error finding formula.");
-  return ERR_FORMULA_INTERNAL;
-}
 
 double calculateGravity(double angle, double temp, const char *tempFormula) {
   const char *formula = myConfig.getGravityFormula();

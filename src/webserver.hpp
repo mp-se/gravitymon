@@ -45,7 +45,6 @@ class GravmonWebServer : public BaseWebServer {
   void webHandleConfigFormatWrite(AsyncWebServerRequest *request,
                                   JsonVariant &json);
   void webHandleSleepmode(AsyncWebServerRequest *request, JsonVariant &json);
-  void webHandleFormulaCreate(AsyncWebServerRequest *request);
   void webHandleTestPush(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPushStatus(AsyncWebServerRequest *request);
   void webHandleCalibrate(AsyncWebServerRequest *request);

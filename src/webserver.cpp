@@ -307,78 +307,6 @@ void GravmonWebServer::webHandleSleepmode(AsyncWebServerRequest *request,
   PERF_END("webserver-api-sleepmode");
 }
 
-void GravmonWebServer::webHandleFormulaCreate(AsyncWebServerRequest *request) {
-  if (!isAuthenticated(request)) {
-    return;
-  }
-
-  PERF_BEGIN("webserver-api-formula-create");
-  Log.notice(F("WEB : webServer callback for /api/formula." CR));
-
-  int e, createErr;
-  char buf[100];
-  RawFormulaData fd = myConfig.getFormulaData();
-
-  e = createFormula(fd, &buf[0], sizeof(buf), 2);
-
-  if (e) {
-    // If we fail with order=2 try with 3
-    Log.warning(F("WEB : Failed to find formula with order 3." CR), e);
-    e = createFormula(fd, &buf[0], sizeof(buf), 3);
-  }
-
-  if (e) {
-    // If we fail with order=3 try with 4
-    Log.warning(F("WEB : Failed to find formula with order 4." CR), e);
-    e = createFormula(fd, &buf[0], sizeof(buf), 4);
-  }
-
-  if (e) {
-    // If we fail with order=4 then we mark it as failed
-    Log.error(
-        F("WEB : Unable to find formula based on provided values err=%d." CR),
-        e);
-    createErr = e;
-  } else {
-    // Save the formula as succesful
-    Log.info(F("WEB : Found valid formula: '%s'" CR), &buf[0]);
-    myConfig.setGravityFormula(buf);
-    myConfig.saveFile();
-    createErr = 0;
-  }
-
-  AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
-  JsonObject obj = response->getRoot().as<JsonObject>();
-
-  obj[PARAM_SUCCESS] = createErr ? false : true;
-  obj[PARAM_GRAVITY_FORMULA] = "";
-  obj[PARAM_MESSAGE] = "";
-
-  switch (createErr) {
-    case ERR_FORMULA_INTERNAL:
-      obj[PARAM_MESSAGE] = "Internal error creating formula.";
-      break;
-    case ERR_FORMULA_NOTENOUGHVALUES:
-      obj[PARAM_MESSAGE] =
-          "Not enough values to create formula, need at least 3 angles.";
-      break;
-    case ERR_FORMULA_UNABLETOFFIND:
-      obj[PARAM_MESSAGE] =
-          "Unable to find an accurate formula based on input, check error log "
-          "and graph below.";
-      break;
-    default:
-      obj[PARAM_GRAVITY_FORMULA] = myConfig.getGravityFormula();
-      obj[PARAM_MESSAGE] = "New formula created based on the entered values.";
-      break;
-  }
-
-  response->setLength();
-  request->send(response);
-  PERF_END("webserver-api-formula-create");
-}
-
 void GravmonWebServer::webHandleConfigFormatWrite(
     AsyncWebServerRequest *request, JsonVariant &json) {
   if (!isAuthenticated(request)) {
@@ -614,9 +542,6 @@ bool GravmonWebServer::setupWebServer() {
   _server->addHandler(handler);
   _server->on("/api/config", HTTP_GET,
               std::bind(&GravmonWebServer::webHandleConfigRead, this,
-                        std::placeholders::_1));
-  _server->on("/api/formula", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleFormulaCreate, this,
                         std::placeholders::_1));
   _server->on("/api/calibrate/status", HTTP_GET,
               std::bind(&GravmonWebServer::webHandleCalibrateStatus, this,

@@ -75,7 +75,7 @@ void GravmonConfig::createJson(JsonObject& doc) {
   doc[PARAM_GYRO_READ_COUNT] = this->getGyroReadCount();
   // doc[PARAM_GYRO_READ_DELAY] = this->getGyroReadDelay();
   doc[PARAM_GYRO_MOVING_THREASHOLD] = this->getGyroSensorMovingThreashold();
-  doc[PARAM_FORMULA_DEVIATION] = this->getMaxFormulaCreationDeviation();
+  doc[PARAM_FORMULA_DEVIATION] = serialized(String(this->getMaxFormulaCreationDeviation(), DECIMALS_TILT));
   doc[PARAM_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
   doc[PARAM_PUSH_INTERVAL_POST] = this->getPushIntervalPost();
   doc[PARAM_PUSH_INTERVAL_POST2] = this->getPushIntervalPost2();
