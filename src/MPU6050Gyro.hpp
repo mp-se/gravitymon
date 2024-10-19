@@ -34,6 +34,7 @@ class MPU6050Gyro : public GyroSensor {
                   const int delayTime = 1);
 
  public:
+  bool isOnline();
   bool setup();
   void calibrateSensor();
   String getGyroFamily();

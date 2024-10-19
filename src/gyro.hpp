@@ -24,9 +24,6 @@ SOFTWARE.
 #ifndef SRC_GYRO_HPP_
 #define SRC_GYRO_HPP_
 
-#define I2CDEV_IMPLEMENTATION I2CDEV_ARDUINO_WIRE
-// #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
-
 #include <config.hpp>
 
 struct RawGyroDataL {  // Used for average multiple readings
@@ -74,6 +71,7 @@ public:
   bool hasValue() { return _validValue; }
 
 //virtual to be implemented by gyro
+  virtual bool isOnline() = 0;
   virtual bool setup() = 0;
   virtual void calibrateSensor() = 0;
   virtual String getGyroFamily() = 0;

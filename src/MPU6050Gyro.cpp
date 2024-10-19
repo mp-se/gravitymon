@@ -34,67 +34,32 @@ MPU6050 accelgyro;
 #define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
                             // calibration
 
-bool MPU6050Gyro::setup() {
-  int clock = 400000;
-#if defined(FLOATY)
-  pinMode(PIN_VCC, OUTPUT);
-  pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
-  digitalWrite(PIN_VCC, HIGH);
-  digitalWrite(PIN_GND, LOW);
-  delay(10);  // Wait for the pins to settle or we will fail to connect
-#else
-#endif
-  /* For testing pin config of new boards with led.
-  pinMode(PIN_SDA, OUTPUT);
-  pinMode(PIN_SCL, OUTPUT);
-  for(int i = 0, j = LOW, k = LOW; i < 100; i++) {
-
-    digitalWrite(PIN_SDA, k);
-    digitalWrite(PIN_SCL, j);
-    k = !k;
-    delay(300);
-    digitalWrite(PIN_SDA, k);
-    k = !k;
-    j = !j;
-    delay(300);
-  }*/
-
-#if LOG_LEVEL == 6
-  Log.verbose(F("GYRO: Setting up hardware." CR));
-#endif
-  Wire.begin(PIN_SDA, PIN_SCL);
-  Wire.setClock(clock);  // 400kHz I2C clock.
-
+bool MPU6050Gyro::isOnline() {
   uint8_t id = accelgyro.getDeviceID();
+  return id == 0x34 || id == 0x38;
+}
 
-  if (id != 0x34 && id != 0x38) {  // Allow both MPU6050 and MPU6500
-    writeErrorLog("GYRO: Failed to connect to gyro, is it connected?");
-    _sensorConnected = false;
-  } else {
-#if LOG_LEVEL == 6
-    Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
-#endif
-    accelgyro.initialize();
-    _sensorConnected = true;
+bool MPU6050Gyro::setup() {
+  accelgyro.initialize();
+  _sensorConnected = true;
 
-    // Configure the sensor
-    accelgyro.setTempSensorEnabled(true);
-    accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
+  // Configure the sensor
+  accelgyro.setTempSensorEnabled(true);
+  accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
 #if defined(GYRO_USE_INTERRUPT)
-    // Alternative method to read data, let the MPU signal when sampling is
-    // done.
-    accelgyro.setRate(17);
-    accelgyro.setInterruptDrive(1);
-    accelgyro.setInterruptMode(1);
-    accelgyro.setInterruptLatch(0);
-    accelgyro.setIntDataReadyEnabled(true);
+  // Alternative method to read data, let the MPU signal when sampling is
+  // done.
+  accelgyro.setRate(17);
+  accelgyro.setInterruptDrive(1);
+  accelgyro.setInterruptMode(1);
+  accelgyro.setInterruptLatch(0);
+  accelgyro.setIntDataReadyEnabled(true);
 #endif
 
-    // Once we have calibration values stored we just apply them from the
-    // config.
-    _calibrationOffset = myConfig.getGyroCalibration();
-    applyCalibration();
-  }
+  // Once we have calibration values stored we just apply them from the
+  // config.
+  _calibrationOffset = myConfig.getGyroCalibration();
+  applyCalibration();
   return _sensorConnected;
 }
 

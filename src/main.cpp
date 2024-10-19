@@ -27,6 +27,7 @@ SOFTWARE.
 #include <battery.hpp>
 #include <calc.hpp>
 #include <config.hpp>
+#include <Wire.h>
 #include <gyro.hpp>
 #include <helper.hpp>
 #include <history.hpp>
@@ -82,6 +83,7 @@ uint32_t stableGyroMillis;  // Used to calculate the total time since last
 RunMode runMode = RunMode::gravityMode;
 
 void checkSleepMode(float angle, float volt);
+bool runGyroSetup();
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -157,7 +159,7 @@ void setup() {
 
     default:
       if (!myConfig.isGyroDisabled()) {
-        if (myGyro->setup()) {
+        if (runGyroSetup()) {
           PERF_BEGIN("main-gyro-read");
           myGyro->read();
           PERF_END("main-gyro-read");
@@ -534,6 +536,45 @@ void checkSleepMode(float angle, float volt) {
     ESP.deepSleep(0);  // indefinite sleep
 #endif
   }
+}
+
+bool runGyroSetup(){
+#if defined(FLOATY)
+  pinMode(PIN_VCC, OUTPUT);
+  pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
+  digitalWrite(PIN_VCC, HIGH);
+  digitalWrite(PIN_GND, LOW);
+  delay(10);  // Wait for the pins to settle or we will fail to connect
+#endif
+  /* For testing pin config of new boards with led.
+  pinMode(PIN_SDA, OUTPUT);
+  pinMode(PIN_SCL, OUTPUT);
+  for(int i = 0, j = LOW, k = LOW; i < 100; i++) {
+
+    digitalWrite(PIN_SDA, k);
+    digitalWrite(PIN_SCL, j);
+    k = !k;
+    delay(300);
+    digitalWrite(PIN_SDA, k);
+    k = !k;
+    j = !j;
+    delay(300);
+  }*/
+
+#if LOG_LEVEL == 6
+  Log.verbose(F("GYRO: Setting up hardware." CR));
+#endif
+  Wire.begin(PIN_SDA, PIN_SCL);
+  Wire.setClock(400000);  // 400kHz I2C clock.
+  if (mpuGyro.isOnline()) {
+#if LOG_LEVEL == 6
+    Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
+#endif
+  } else {
+    writeErrorLog("GYRO: Failed to connect to gyro, is it connected?");
+    return false;
+  }
+  return myGyro->setup();
 }
 
 // EOF
