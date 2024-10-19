@@ -26,7 +26,7 @@ SOFTWARE.
 #include <log.hpp>
 #include <main.hpp>
 
-ICM42670pGyro mpuGyro;
+ICM42670pGyro icmGyro;
 
 #define ICM42670_PRIMARY_ADDRESS 0x68
 #define ICM42670_SECONDARY_ADDRESS 0x69
@@ -34,16 +34,16 @@ ICM42670pGyro mpuGyro;
 #define ICM42670_WHOAMI_VALUE 0x67
 #define ICM42670_FLUSH_REGISTER 0x75
 #define ICM42670_FLUSH_VALUE 0x67
-#define ICM42670_PWR_MGMT0_REGISTER 0x75
+#define ICM42670_PWR_MGMT0_REGISTER 0x1F
 
 bool ICM42670pGyro::isOnline()
 {
-  if (I2Cdev::readByte(ICM42670_PRIMARY_ADDRESS, ICM42670_WHOAMI_REGISTER, buffer) == 0 && buffer[0] == ICM42670_WHOAMI_VALUE)
+  if (I2Cdev::readByte(ICM42670_PRIMARY_ADDRESS, ICM42670_WHOAMI_REGISTER, buffer) == 1 && buffer[0] == ICM42670_WHOAMI_VALUE)
   {
     addr = ICM42670_PRIMARY_ADDRESS;
     return true;
   }
-  if (I2Cdev::readByte(ICM42670_SECONDARY_ADDRESS, ICM42670_WHOAMI_REGISTER, buffer) == 0 && buffer[0] == ICM42670_WHOAMI_VALUE)
+  if (I2Cdev::readByte(ICM42670_SECONDARY_ADDRESS, ICM42670_WHOAMI_REGISTER, buffer) == 1 && buffer[0] == ICM42670_WHOAMI_VALUE)
   {
     addr = ICM42670_SECONDARY_ADDRESS;
     return true;
@@ -53,7 +53,7 @@ bool ICM42670pGyro::isOnline()
 
 bool ICM42670pGyro::setup()
 {
-  // if (I2Cdev::readByte(addr, ICM42670_PWR_MGMT0_REGISTER, buffer)==0 && buffer[0] == 0x)
+  // if (I2Cdev::readByte(addr, ICM42670_PWR_MGMT0_REGISTER, buffer)==1 && buffer[0] == 0x)
   // {
   // }
   // else
@@ -100,7 +100,7 @@ void ICM42670pGyro::readSensor(RawGyroData &raw, const int noIterations,
   for (int cnt = 0; cnt < noIterations; cnt++)
   {
     // INT_STATUS_DRDY
-    while (I2Cdev::readByte(addr, 0x36, buffer) == 0 && buffer[0] == 0)
+    while (I2Cdev::readByte(addr, 0x36, buffer) == 0 || buffer[0] == 0)
     {
     }
 
@@ -133,12 +133,12 @@ void ICM42670pGyro::readSensor(RawGyroData &raw, const int noIterations,
 
 void ICM42670pGyro::applyCalibration()
 {
-  //don't for now, these should be properly factory calibrated, any slight error during calibration will introduce more error
+  // don't for now, these should be properly factory calibrated, any slight error during calibration will introduce more error
 }
 
 void ICM42670pGyro::calibrateSensor()
 {
-  //don't for now, these should be properly factory calibrated, any slight error during calibration will introduce more error
+  // don't for now, these should be properly factory calibrated, any slight error during calibration will introduce more error
 }
 
 void ICM42670pGyro::debug()
