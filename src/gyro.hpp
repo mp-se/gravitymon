@@ -79,6 +79,7 @@ public:
 };
 
 #include <MPU6050Gyro.hpp>
+#include <ICM42670pGyro.hpp>
 
 extern GyroSensor* myGyro;
 

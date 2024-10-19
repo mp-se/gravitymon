@@ -80,9 +80,20 @@ bool GyroSensor::read() {
 
   if (!_sensorConnected) return false;
 
+#if LOG_LEVEL == 6
+  Log.verbose(F("GYRO: Reading sensor with %d iterations %d us delay." CR),
+              noIterations, delayTime);
+#endif
+
   readSensor(_lastGyroData, myConfig.getGyroReadCount(),
              myConfig.getGyroReadDelay());  // Last param is unused if
                                             // GYRO_USE_INTERRUPT is defined.
+             
+#if LOG_LEVEL == 6
+  Log.verbose(F("GYRO: Average\t%d\t%d\t%d\t%d\t%d\t%d\t%d." CR), _lastGyroData.ax,
+              _lastGyroData.ay, _lastGyroData.az, _lastGyroData.gx, _lastGyroData.gy,
+              _lastGyroData.gz, _lastGyroData.temp);
+#endif
 
   // If the sensor is unstable we return false to signal we dont have valid
   // value

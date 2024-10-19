@@ -23,7 +23,7 @@ SOFTWARE.
  */
 #include <MPU6050.h>
 
-#include <gyro.hpp>
+#include <MPU6050Gyro.hpp>
 #include <log.hpp>
 #include <main.hpp>
 
@@ -64,24 +64,12 @@ bool MPU6050Gyro::setup() {
 }
 
 void MPU6050Gyro::enterSleep() {
-#if LOG_LEVEL == 6
-  Log.verbose(F("GYRO: Setting up hardware." CR));
-#endif
-#if defined(FLOATY)
-  digitalWrite(PIN_VCC, LOW);
-#else
   accelgyro.setSleepEnabled(true);
-#endif
 }
 
 void MPU6050Gyro::readSensor(RawGyroData &raw, const int noIterations,
                             const int delayTime) {
   RawGyroDataL average = {0, 0, 0, 0, 0, 0};
-
-#if LOG_LEVEL == 6
-  Log.verbose(F("GYRO: Reading sensor with %d iterations %d us delay." CR),
-              noIterations, delayTime);
-#endif
 
   // Set some initial values
 #if defined(GYRO_SHOW_MINMAX)
@@ -142,21 +130,11 @@ void MPU6050Gyro::readSensor(RawGyroData &raw, const int noIterations,
   raw.gz = average.gz / noIterations;
   raw.temp = average.temp / noIterations;
 
-#if LOG_LEVEL == 6
-#if defined(GYRO_SHOW_MINMAX)
+#if defined(GYRO_SHOW_MINMAX) && LOG_LEVEL == 6
   Log.verbose(F("GYRO: Min    \t%d\t%d\t%d\t%d\t%d\t%d\t%d." CR), min.ax,
               min.ay, min.az, min.gx, min.gy, min.gz, min.temp);
   Log.verbose(F("GYRO: Max    \t%d\t%d\t%d\t%d\t%d\t%d\t%d." CR), max.ax,
               max.ay, max.az, max.gx, max.gy, max.gz, max.temp);
-#endif
-  Log.verbose(F("GYRO: Average\t%d\t%d\t%d\t%d\t%d\t%d\t%d." CR), raw.ax,
-              raw.ay, raw.az, raw.gx, raw.gy, raw.gz, raw.temp);
-  // Log.verbose(F("GYRO: Result \t%d\t%d\t%d\t%d\t%d\t%d." CR),
-  // average.ax/noIterations, average.ay/noIterations, average.az/noIterations,
-  //                                                             average.gx/noIterations,
-  //                                                             average.gy/noIterations,
-  //                                                             average.gz/noIterations
-  //                                                             );
 #endif
 }
 

@@ -84,6 +84,7 @@ RunMode runMode = RunMode::gravityMode;
 
 void checkSleepMode(float angle, float volt);
 bool runGyroSetup();
+void runGyroSleep();
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -396,7 +397,7 @@ void goToSleep(int sleepInterval) {
              sleepInterval,
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
   LittleFS.end();
-  myGyro->enterSleep();
+  runGyroSleep();
   PERF_END("run-time");
   PERF_PUSH();
 
@@ -538,7 +539,7 @@ void checkSleepMode(float angle, float volt) {
   }
 }
 
-bool runGyroSetup(){
+bool runGyroSetup() {
 #if defined(FLOATY)
   pinMode(PIN_VCC, OUTPUT);
   pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
@@ -565,8 +566,13 @@ bool runGyroSetup(){
   Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
   Wire.begin(PIN_SDA, PIN_SCL);
-  Wire.setClock(400000);  // 400kHz I2C clock.
-  if (mpuGyro.isOnline()) {
+  Wire.setClock(400000); // 400kHz I2C clock.
+  if (icmGyro.isOnline()) {
+    myGyro = &icmGyro;
+#if LOG_LEVEL == 6
+    Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
+#endif
+  } else if (mpuGyro.isOnline()) {
 #if LOG_LEVEL == 6
     Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
 #endif
@@ -575,6 +581,17 @@ bool runGyroSetup(){
     return false;
   }
   return myGyro->setup();
+}
+
+void runGyroSleep() {
+#if LOG_LEVEL == 6
+  Log.verbose(F("GYRO: Setting up hardware." CR));
+#endif
+#if defined(FLOATY)
+  digitalWrite(PIN_VCC, LOW);
+#else
+  myGyro->enterSleep();
+#endif
 }
 
 // EOF
