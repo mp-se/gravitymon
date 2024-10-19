@@ -157,9 +157,9 @@ void setup() {
 
     default:
       if (!myConfig.isGyroDisabled()) {
-        if (myGyro.setup()) {
+        if (myGyro->setup()) {
           PERF_BEGIN("main-gyro-read");
-          myGyro.read();
+          myGyro->read();
           PERF_END("main-gyro-read");
         } else {
           Log.notice(F(
@@ -171,9 +171,9 @@ void setup() {
       }
 
       myBatteryVoltage.read();
-      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      checkSleepMode(myGyro->getAngle(), myBatteryVoltage.getVoltage());
       Log.notice(F("Main: Battery %F V, Gyro=%F, Run-mode=%d." CR),
-                 myBatteryVoltage.getVoltage(), myGyro.getAngle(), runMode);
+                 myBatteryVoltage.getVoltage(), myGyro->getAngle(), runMode);
 
 #if defined(ESP32)
       if (!myConfig.isWifiPushActive() && runMode == RunMode::gravityMode) {
@@ -251,8 +251,8 @@ bool loopReadGravity() {
   // If we dont get any readings we just skip this and try again the next
   // interval.
   //
-  if (myGyro.hasValue()) {
-    angle = myGyro.getAngle();    // Gyro angle
+  if (myGyro->hasValue()) {
+    angle = myGyro->getAngle();    // Gyro angle
     stableGyroMillis = millis();  // Reset timer
 
     PERF_BEGIN("loop-temp-read");
@@ -368,13 +368,13 @@ void loopGravityOnInterval() {
     // printHeap("MAIN");
     if (!myConfig.isGyroDisabled()) {
       PERF_BEGIN("loop-gyro-read");
-      myGyro.read();
+      myGyro->read();
       PERF_END("loop-gyro-read");
     }
     myBatteryVoltage.read();
 
     if (runMode != RunMode::wifiSetupMode)
-      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      checkSleepMode(myGyro->getAngle(), myBatteryVoltage.getVoltage());
   }
 }
 
@@ -394,7 +394,7 @@ void goToSleep(int sleepInterval) {
              sleepInterval,
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
   LittleFS.end();
-  myGyro.enterSleep();
+  myGyro->enterSleep();
   PERF_END("run-time");
   PERF_PUSH();
 
@@ -453,7 +453,7 @@ void loop() {
 
       if (!myConfig.isGyroDisabled()) {
         PERF_BEGIN("loop-gyro-read");
-        myGyro.read();
+        myGyro->read();
         PERF_END("loop-gyro-read");
       }
       myWifi.loop();
@@ -483,7 +483,7 @@ void checkSleepMode(float angle, float volt) {
 #endif
     runMode = RunMode::configurationMode;
   } else if (!myConfig.isGyroDisabled() &&
-             (!myGyro.hasValue() || !myGyro.isConnected())) {
+             (!myGyro->hasValue() || !myGyro->isConnected())) {
     runMode = RunMode::configurationMode;
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration

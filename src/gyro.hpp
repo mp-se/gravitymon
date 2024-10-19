@@ -44,39 +44,45 @@ struct RawGyroDataL {  // Used for average multiple readings
 #define INVALID_TEMPERATURE -273
 
 class GyroSensor {
- private:
+private:
+  RawGyroData _lastGyroData;
+
+protected:
   bool _sensorConnected = false;
   bool _validValue = false;
   float _angle = 0;
   float _sensorTemp = 0;
   float _initialSensorTemp = INVALID_TEMPERATURE;
   RawGyroData _calibrationOffset;
-  RawGyroData _lastGyroData;
 
-  void debug();
-  void applyCalibration();
   void dumpCalibration();
-  void readSensor(RawGyroData &raw, const int noIterations = 100,
-                  const int delayTime = 1);
   bool isSensorMoving(RawGyroData &raw);
   float calculateAngle(RawGyroData &raw);
 
- public:
-  bool setup();
-  bool read();
-  void calibrateSensor();
-  uint8_t getGyroID();
+//virtual to be implemented by gyro
+  virtual void debug() = 0;
+  virtual void applyCalibration() = 0;
+  virtual void readSensor(RawGyroData &raw, const int noIterations = 100,
+                  const int delayTime = 1) = 0;
 
-  const RawGyroData &getLastGyroData() { return _lastGyroData; }
+public:
+  bool read();
   float getAngle() { return _angle; }
   float getSensorTempC() { return _sensorTemp; }
   float getInitialSensorTempC() { return _initialSensorTemp; }
   bool isConnected() { return _sensorConnected; }
   bool hasValue() { return _validValue; }
-  void enterSleep();
+
+//virtual to be implemented by gyro
+  virtual bool setup() = 0;
+  virtual void calibrateSensor() = 0;
+  virtual String getGyroFamily() = 0;
+  virtual void enterSleep() = 0;
 };
 
-extern GyroSensor myGyro;
+#include <MPU6050Gyro.hpp>
+
+extern GyroSensor* myGyro;
 
 #endif  // SRC_GYRO_HPP_
 
