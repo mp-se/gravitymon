@@ -65,25 +65,29 @@ bool ICM42670pGyro::setup()
   {
     return false;
   }
+  configStart = millis();
   delayMicroseconds(200); // mandatory per datasheet
+  // Original setup:
+  // GYRO=250dps GYRO=800Hz
+  // I2Cdev::writeByte(addr, 0x20, 0x66)
+  // ACCEL=2g ACCEL=800Hz
+  // I2Cdev::writeByte(addr, 0x21, 0x66)
+  // TEMP=4HzBW
+  // I2Cdev::writeByte(addr, 0x22, 0x70)
+  // GYRO=16HzBW
+  // I2Cdev::writeByte(addr, 0x23, 0x37)
+  // ACCEL=16HzBW
+  // I2Cdev::writeByte(addr, 0x24, 0x47)
+  uint8_t config[5] = {0x66, 0x66, 0x70, 0x37, 0x47};
   if (
-      // GYRO=250dps GYRO=800Hz
-      !I2Cdev::writeByte(addr, 0x20, 0x66)
-      // ACCEL=2g ACCEL=800Hz
-      | !I2Cdev::writeByte(addr, 0x21, 0x66)
-      // TEMP=4HzBW
-      // | !I2Cdev::writeByte(addr, 0x22, 0x70)
-      // GYRO=16HzBW
-      | !I2Cdev::writeByte(addr, 0x23, 0x37)
-      // ACCEL=16HzBW
-      | !I2Cdev::writeByte(addr, 0x24, 0x47))
+      !I2Cdev::writeBytes(addr, 0x20, 5, config))
   {
     return false;
   }
 
   _sensorConnected = true;
-  _calibrationOffset = myConfig.getGyroCalibration();
-  applyCalibration();
+  // _calibrationOffset = myConfig.getGyroCalibration();
+  // applyCalibration();
   return true;
 }
 
@@ -96,6 +100,13 @@ void ICM42670pGyro::readSensor(RawGyroData &raw, const int noIterations,
                                const int delayTime)
 {
   RawGyroDataL average = {0, 0, 0, 0, 0, 0};
+
+  auto end = millis();
+  auto dur = end - configStart;
+  if (dur < 45)
+  {
+    delay(45 - dur);
+  }
 
   for (int cnt = 0; cnt < noIterations; cnt++)
   {

@@ -30,6 +30,7 @@ class ICM42670pGyro : public GyroSensor {
  private:
   uint8_t addr = 0;
   uint8_t buffer[14] = {0};
+  unsigned long configStart = 0;
   void debug();
   void applyCalibration();
   void readSensor(RawGyroData &raw, const int noIterations = 100,
