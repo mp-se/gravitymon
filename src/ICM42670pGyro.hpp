@@ -26,17 +26,21 @@ SOFTWARE.
 
 #include <gyro.hpp>
 
-class ICM42670pGyro : public GyroSensor {
- private:
+class ICM42670pGyro : public GyroSensor
+{
+private:
   uint8_t addr = 0;
-  uint8_t buffer[14] = {0};
+  uint8_t buffer[16] = {0};
   unsigned long configStart = 0;
   void debug();
   void applyCalibration();
-  void readSensor(RawGyroData &raw, const int noIterations = 100,
-                  const int delayTime = 1);
+  GyroResultData readSensor();
+  bool writeMBank1(uint8_t reg, uint8_t value);
+  bool writeMBank1AndVerify(uint8_t reg, uint8_t value);
+  bool readMBank1(uint8_t reg);
+  uint8_t ReadFIFOPackets(const uint16_t &count, RawGyroDataL &data);
 
- public:
+public:
   bool isOnline();
   bool setup();
   void calibrateSensor();
@@ -46,6 +50,6 @@ class ICM42670pGyro : public GyroSensor {
 
 extern ICM42670pGyro icmGyro;
 
-#endif  // SRC_ICMGYRO_HPP_
+#endif // SRC_ICMGYRO_HPP_
 
 // EOF

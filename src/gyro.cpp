@@ -29,7 +29,7 @@ SOFTWARE.
 
 GyroSensor* myGyro = &mpuGyro;
 
-float GyroSensor::calculateAngle(RawGyroData &raw) {
+float GyroSensor::calculateAngleRaw(RawGyroData &raw) {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Calculating the angle." CR));
 #endif
@@ -43,11 +43,7 @@ float GyroSensor::calculateAngle(RawGyroData &raw) {
         ay = (static_cast<float>(raw.ay)) / 16384,
         az = (static_cast<float>(raw.az)) / 16384;
 
-  // Source: https://www.nxp.com/docs/en/application-note/AN3461.pdf
-  float vY = (acos(abs(ay) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 / PI);
-  // float vZ = (acos(abs(az) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 /
-  // PI); float vX = (acos(abs(ax) / sqrt(ax * ax + ay * ay + az * az)) * 180.0
-  // / PI);
+  float vY = calculateAngle(ax, ay, az);
 #if LOG_LEVEL == 6
   // Log.notice(F("GYRO: angleX= %F." CR), vX);
   Log.notice(F("GYRO: angleY= %F." CR), vY);
@@ -56,7 +52,16 @@ float GyroSensor::calculateAngle(RawGyroData &raw) {
   return vY;
 }
 
-bool GyroSensor::isSensorMoving(RawGyroData &raw) {
+float GyroSensor::calculateAngle(float ax, float ay, float az) {
+  // Source: https://www.nxp.com/docs/en/application-note/AN3461.pdf
+  float vY = (acos(abs(ay) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 / PI);
+  // float vZ = (acos(abs(az) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 /
+  // PI); float vX = (acos(abs(ax) / sqrt(ax * ax + ay * ay + az * az)) * 180.0
+  // / PI);
+  return vY;
+}
+
+bool GyroSensor::isSensorMovingRaw(RawGyroData &raw) {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Checking for sensor movement." CR));
 #endif
@@ -73,6 +78,14 @@ bool GyroSensor::isSensorMoving(RawGyroData &raw) {
   return false;
 }
 
+bool GyroSensor::isSensorMoving(int16_t gx, int16_t gy, int16_t gz) {
+  int x = abs(gx), y = abs(gy), z = abs(gz);
+  int threashold = myConfig.getGyroSensorMovingThreashold();
+    // Log.notice(F("GYRO: Movement (%d)\t%d\t%d\t%d." CR), threashold, x,
+    //            y, z);
+  return x > threashold || y > threashold || z > threashold;
+}
+
 bool GyroSensor::read() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Getting new gyro position." CR));
@@ -85,10 +98,8 @@ bool GyroSensor::read() {
               noIterations, delayTime);
 #endif
 
-  readSensor(_lastGyroData, myConfig.getGyroReadCount(),
-             myConfig.getGyroReadDelay());  // Last param is unused if
-                                            // GYRO_USE_INTERRUPT is defined.
-             
+  auto result = readSensor();
+
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Average\t%d\t%d\t%d\t%d\t%d\t%d\t%d." CR), _lastGyroData.ax,
               _lastGyroData.ay, _lastGyroData.az, _lastGyroData.gx, _lastGyroData.gy,
@@ -97,21 +108,21 @@ bool GyroSensor::read() {
 
   // If the sensor is unstable we return false to signal we dont have valid
   // value
-  if (isSensorMoving(_lastGyroData)) {
-#if LOG_LEVEL == 6
-    Log.notice(F("GYRO: Sensor is moving." CR));
-#endif
-    _validValue = false;
-  } else {
+  if (result.isValid) {
     _validValue = true;
-    _angle = calculateAngle(_lastGyroData);
+    _angle = result.angle;
 #if LOG_LEVEL == 6
     Log.verbose(F("GYRO: Sensor values %d,%d,%d\t%F" CR), _lastGyroData.ax,
                 _lastGyroData.ay, _lastGyroData.az, _angle);
 #endif
+  } else {
+#if LOG_LEVEL == 6
+    Log.notice(F("GYRO: Sensor is moving." CR));
+#endif
+    _validValue = false;
   }
 
-  _sensorTemp = (static_cast<float>(_lastGyroData.temp)) / 340 + 36.53;
+  _sensorTemp = result.temp;
 
   // The first read value is close to the DS18 value according to my tests, if
   // more reads are done then the gyro temp will increase to much

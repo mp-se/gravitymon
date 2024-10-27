@@ -67,8 +67,11 @@ void MPU6050Gyro::enterSleep() {
   accelgyro.setSleepEnabled(true);
 }
 
-void MPU6050Gyro::readSensor(RawGyroData &raw, const int noIterations,
-                            const int delayTime) {
+GyroResultData MPU6050Gyro::readSensor() {
+  int noIterations = myConfig.getGyroReadCount();
+#if !defined(GYRO_USE_INTERRUPT)
+  int delayTime = myConfig.getGyroReadDelay();
+#endif
   RawGyroDataL average = {0, 0, 0, 0, 0, 0};
 
   // Set some initial values
@@ -136,6 +139,14 @@ void MPU6050Gyro::readSensor(RawGyroData &raw, const int noIterations,
   Log.verbose(F("GYRO: Max    \t%d\t%d\t%d\t%d\t%d\t%d\t%d." CR), max.ax,
               max.ay, max.az, max.gx, max.gy, max.gz, max.temp);
 #endif
+  GyroResultData result;
+  result.isValid = !isSensorMovingRaw(raw);
+  if (result.isValid)
+  {
+    result.angle = calculateAngleRaw(raw);
+  }
+  result.temp = (static_cast<float>(raw.temp)) / 340 + 36.53;
+  return result;
 }
 
 void MPU6050Gyro::applyCalibration() {

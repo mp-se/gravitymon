@@ -28,10 +28,10 @@ SOFTWARE.
 
 class MPU6050Gyro : public GyroSensor {
  private:
+  RawGyroData raw;
   void debug();
   void applyCalibration();
-  void readSensor(RawGyroData &raw, const int noIterations = 100,
-                  const int delayTime = 1);
+  GyroResultData readSensor();
 
  public:
   bool isOnline();

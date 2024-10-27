@@ -28,6 +28,11 @@ SOFTWARE.
 
 ICM42670pGyro icmGyro;
 
+#define USE_FIFO_MODE true
+
+#define INT16_FROM_BUFFER(high, low) (int16_t)((((int16_t)buffer[high]) << 8) | buffer[low])
+#define UINT16_FROM_BUFFER(high, low) (uint16_t)((((uint16_t)buffer[high]) << 8) | buffer[low])
+
 #define ICM42670_PRIMARY_ADDRESS 0x68
 #define ICM42670_SECONDARY_ADDRESS 0x69
 #define ICM42670_WHOAMI_REGISTER 0x75
@@ -51,15 +56,166 @@ bool ICM42670pGyro::isOnline()
   return false;
 }
 
+bool ICM42670pGyro::writeMBank1(uint8_t reg, uint8_t value)
+{
+  bool status = true;
+  status &= I2Cdev::writeByte(addr, 0x79, 0);
+  status &= I2Cdev::writeByte(addr, 0x7A, reg);
+  status &= I2Cdev::writeByte(addr, 0x7B, value);
+  delayMicroseconds(10);
+  return status;
+}
+
+bool ICM42670pGyro::readMBank1(uint8_t reg)
+{
+  bool status = true;
+  status &= I2Cdev::writeByte(addr, 0x7C, 0);
+  status &= I2Cdev::writeByte(addr, 0x7D, reg);
+  delayMicroseconds(10);
+  status &= I2Cdev::readByte(addr, 0x7E, buffer);
+  delayMicroseconds(10);
+  return status;
+}
+
+bool ICM42670pGyro::writeMBank1AndVerify(uint8_t reg, uint8_t value)
+{
+  int i = 0;
+  buffer[0] = 0;
+  while (i < 5)
+  {
+    auto status = true;
+    status &= writeMBank1(reg, value);
+    status &= readMBank1(reg);
+    if (!status || buffer[0] != value)
+    {
+      // the only reason this occurs is if the IC is still booting after reset or poweron
+      // and comms are up but the ic is not actually running correctly
+      // only way to fix is no comms for 1s and try again
+      delay(1000);
+      i++;
+    }
+    else
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+uint8_t getNextPowerOf2(int n)
+{
+  int k = 0;
+  while (n > (1 << k) && k < 8)
+    k++;
+  return k;
+}
+
+uint8_t getDecimationValue(uint8_t p)
+{
+  // 0 = /1
+  // 8 = /2
+  // 9 = /4
+  //...
+  // 15 = /256
+  if (p == 0)
+  {
+    return 0;
+  }
+  return min(7 + p, 15);
+}
+
 bool ICM42670pGyro::setup()
 {
-  // if (I2Cdev::readByte(addr, ICM42670_PWR_MGMT0_REGISTER, buffer)==1 && buffer[0] == 0x)
-  // {
-  // }
-  // else
-  // {
-  //   I2Cdev::writeByte(addr, ICM42670_FLUSH_REGISTER, ICM42670_FLUSH_VALUE)
-  // }
+#if LOG_LEVEL == 6
+  Log.verbose(F("ICM : Starting ICM setup" CR));
+#endif
+#if USE_FIFO_MODE
+  if (I2Cdev::readByte(addr, ICM42670_PWR_MGMT0_REGISTER, buffer) == 1 && buffer[0] == 0x0F)
+  {
+    // ICM is already configured = OK
+#if LOG_LEVEL == 6
+    Log.info(F("ICM : Setup OK" CR));
+#endif
+    _sensorConnected = true;
+    return true;
+  }
+  else
+  {
+    // first time setup or comm faillure
+    // start oscillator
+    if (!I2Cdev::writeByte(addr, 0x1F, 0x10))
+    {
+      Log.error(F("ICM : Start OSC failed" CR));
+      return false;
+    }
+    // wait until oscillator is ok, this takes only 1 or 2 comms
+    while (I2Cdev::readByte(addr, 0x00, buffer) && buffer[0] == 0)
+    {
+    }
+    // disable apex
+    if (!writeMBank1AndVerify(0x06, 0x40))
+    {
+      Log.error(F("ICM : Disable APEX failed" CR));
+      return false;
+    }
+    // calculate the Hz/fifo
+    auto sleep = myConfig.getSleepInterval();
+    // 80ms 2.25kB 2250B / 16B - 2 = 138 available packets
+    // 80m * 138=11s recording time without decimation
+    // select best decimation:
+    auto decimation = sleep / 11;
+    // round up to nearest possible value
+    auto power = getNextPowerOf2(decimation);
+    // get actual reg value
+    auto reg = getDecimationValue(power);
+#if LOG_LEVEL == 6
+    Log.verbose(F("ICM : Configuring decimation for %d" CR), sleep);
+    Log.verbose(F("ICM : decimation= %d" CR), decimation);
+    Log.verbose(F("ICM : power= %d" CR), power);
+    Log.verbose(F("ICM : reg= %d" CR), reg);
+#endif
+    // set fifo rate lower
+    if (!writeMBank1AndVerify(0x66, reg))
+    {
+      Log.error(F("ICM : Fifo rate set failed" CR));
+      return false;
+    }
+    // enable gyro+accel to go to fifo
+    if (!writeMBank1AndVerify(0x01, 0x03))
+    {
+      Log.error(F("ICM : Fifo output set failed" CR));
+      return false;
+    }
+    delayMicroseconds(10);
+    // disable watermark
+    I2Cdev::writeByte(addr, 0x29, 255);
+    I2Cdev::writeByte(addr, 0x2A, 255);
+    // set INTF_CONFIG0
+    if (!I2Cdev::writeByte(addr, 0x35, 0x70))
+    {
+      Log.error(F("ICM : Set INTF_CONFIG0 failed" CR));
+      return false;
+    }
+    // enable sensors
+    if (!I2Cdev::writeByte(addr, 0x1F, 0x0F))
+    {
+      Log.error(F("ICM : Sensor enable failed" CR));
+      return false;
+    }
+    delayMicroseconds(200); // mandatory per datasheet
+    // accel + gyro config @12.5 Hz
+    uint8_t config[5] = {0x6C, 0x6C, 0x70, 0x37, 0x47};
+    if (!I2Cdev::writeBytes(addr, 0x20, 5, config))
+    {
+      Log.error(F("ICM : Sensor config failed" CR));
+    }
+    // enable fifo
+    if (!I2Cdev::writeByte(addr, 0x28, 0x00))
+    {
+      Log.error(F("ICM : Fifo enable failed" CR));
+    }
+  }
+#else
   // GYRO=LN ACCEL=LN
   if (!I2Cdev::writeByte(addr, ICM42670_PWR_MGMT0_REGISTER, 0x0F))
   {
@@ -84,8 +240,10 @@ bool ICM42670pGyro::setup()
   {
     return false;
   }
+#endif
 
   _sensorConnected = true;
+  // we will not do calibration for now
   // _calibrationOffset = myConfig.getGyroCalibration();
   // applyCalibration();
   return true;
@@ -93,14 +251,80 @@ bool ICM42670pGyro::setup()
 
 void ICM42670pGyro::enterSleep()
 {
+#if !USE_FIFO_MODE
   I2Cdev::writeByte(addr, ICM42670_PWR_MGMT0_REGISTER, 0x00);
+#endif
 }
 
-void ICM42670pGyro::readSensor(RawGyroData &raw, const int noIterations,
-                               const int delayTime)
+uint8_t ICM42670pGyro::ReadFIFOPackets(const uint16_t &count, RawGyroDataL &data)
+{
+  uint8_t success = 0;
+  Wire.beginTransmission(addr);
+  Wire.write(0x3F);
+  if (Wire.endTransmission() == 0)
+  {
+    uint8_t req = 0;
+    uint16_t total = 0;
+    while (count > total)
+    {
+      req = (uint8_t)min(count - total, 8);
+      if (Wire.requestFrom(addr, (size_t)(req * 16), (req == (count - total))) == req * 16)
+      {
+        while (Wire.available() >= 16)
+        {
+          Wire.readBytes(buffer, 16);
+
+          if ((buffer[0] & 0b11111100) == 0b01101000 && !isSensorMoving(INT16_FROM_BUFFER(7, 8), INT16_FROM_BUFFER(9, 10), INT16_FROM_BUFFER(11, 12)))
+          {
+            data.ax += INT16_FROM_BUFFER(1, 2);
+            data.ay += INT16_FROM_BUFFER(3, 4);
+            data.az += INT16_FROM_BUFFER(5, 6);
+            data.temp += (int8_t)buffer[13];
+            success++;
+          }
+        }
+      }
+      total += req;
+    }
+  }
+  return success;
+}
+
+GyroResultData ICM42670pGyro::readSensor()
 {
   RawGyroDataL average = {0, 0, 0, 0, 0, 0};
 
+#if USE_FIFO_MODE
+  buffer[0] = 0;
+  buffer[1] = 0;
+  I2Cdev::readBytes(addr, 0x3D, 2, buffer);
+  uint16_t count = UINT16_FROM_BUFFER(0, 1);
+  count = min(count, (uint16_t)138);
+#if LOG_LEVEL == 6
+  Log.verbose(F("ICM : available packets= %d" CR), count);
+#endif
+  uint16_t valid = ReadFIFOPackets(count, average);
+
+  GyroResultData result = {false, 0, 0};
+  if (valid)
+  {
+    average.ax /= valid;
+    average.ay /= valid;
+    average.az /= valid;
+    float ax = (static_cast<float>(average.ax)) / 16384,
+          ay = (static_cast<float>(average.ay)) / 16384,
+          az = (static_cast<float>(average.az)) / 16384;
+    result.isValid = true;
+    if (result.isValid)
+    {
+      result.angle = calculateAngle(ax, ay, az);
+    }
+    result.temp = (static_cast<float>(average.temp)) / valid / 2 + 25;
+  }
+  return result;
+#else
+  int noIterations = myConfig.getGyroReadCount();
+  RawGyroData raw;
   auto end = millis();
   auto dur = end - configStart;
   if (dur < 45)
@@ -140,6 +364,15 @@ void ICM42670pGyro::readSensor(RawGyroData &raw, const int noIterations,
   raw.gy = average.gy / noIterations;
   raw.gz = average.gz / noIterations;
   raw.temp = average.temp / noIterations;
+  GyroResultData result;
+  result.isValid = !isSensorMovingRaw(raw);
+  if (result.isValid)
+  {
+    result.angle = calculateAngleRaw(raw);
+  }
+  result.temp = (static_cast<float>(raw.temp)) / 340 + 36.53;
+  return result;
+#endif
 }
 
 void ICM42670pGyro::applyCalibration()

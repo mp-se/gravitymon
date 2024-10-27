@@ -41,9 +41,6 @@ struct RawGyroDataL {  // Used for average multiple readings
 #define INVALID_TEMPERATURE -273
 
 class GyroSensor {
-private:
-  RawGyroData _lastGyroData;
-
 protected:
   bool _sensorConnected = false;
   bool _validValue = false;
@@ -53,14 +50,15 @@ protected:
   RawGyroData _calibrationOffset;
 
   void dumpCalibration();
-  bool isSensorMoving(RawGyroData &raw);
-  float calculateAngle(RawGyroData &raw);
+  bool isSensorMoving(int16_t gx, int16_t gy, int16_t gz);
+  bool isSensorMovingRaw(RawGyroData &raw);
+  float calculateAngle(float ax, float ay, float az);
+  float calculateAngleRaw(RawGyroData &raw);
 
 //virtual to be implemented by gyro
   virtual void debug() = 0;
   virtual void applyCalibration() = 0;
-  virtual void readSensor(RawGyroData &raw, const int noIterations = 100,
-                  const int delayTime = 1) = 0;
+  virtual GyroResultData readSensor() = 0;
 
 public:
   bool read();
