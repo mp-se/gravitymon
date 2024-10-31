@@ -303,23 +303,26 @@ GyroResultData ICM42670pGyro::readSensor()
 #if LOG_LEVEL == 6
   Log.verbose(F("ICM : available packets= %d" CR), count);
 #endif
-  uint16_t valid = ReadFIFOPackets(count, average);
-
-  GyroResultData result = {false, 0, 0};
-  if (valid)
+  GyroResultData result = {false, _angle, _sensorTemp};
+  if (count > 0)
   {
-    average.ax /= valid;
-    average.ay /= valid;
-    average.az /= valid;
-    float ax = (static_cast<float>(average.ax)) / 16384,
-          ay = (static_cast<float>(average.ay)) / 16384,
-          az = (static_cast<float>(average.az)) / 16384;
-    result.isValid = true;
-    if (result.isValid)
+    uint16_t valid = ReadFIFOPackets(count, average);
+
+    if (valid)
     {
-      result.angle = calculateAngle(ax, ay, az);
+      average.ax /= valid;
+      average.ay /= valid;
+      average.az /= valid;
+      float ax = (static_cast<float>(average.ax)) / 16384,
+            ay = (static_cast<float>(average.ay)) / 16384,
+            az = (static_cast<float>(average.az)) / 16384;
+      result.isValid = true;
+      if (result.isValid)
+      {
+        result.angle = calculateAngle(ax, ay, az);
+      }
+      result.temp = (static_cast<float>(average.temp)) / valid / 2 + 25;
     }
-    result.temp = (static_cast<float>(average.temp)) / valid / 2 + 25;
   }
   return result;
 #else
@@ -383,6 +386,16 @@ void ICM42670pGyro::applyCalibration()
 void ICM42670pGyro::calibrateSensor()
 {
   // don't for now, these should be properly factory calibrated, any slight error during calibration will introduce more error
+  // fake calibration to get rid of error
+  _calibrationOffset.ax = 1;
+  _calibrationOffset.ay = 0;
+  _calibrationOffset.az = 0;
+  _calibrationOffset.gx = 0;
+  _calibrationOffset.gy = 0;
+  _calibrationOffset.gz = 0;
+
+  myConfig.setGyroCalibration(_calibrationOffset);
+  myConfig.saveFile();
 }
 
 void ICM42670pGyro::debug()

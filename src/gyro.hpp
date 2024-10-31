@@ -45,7 +45,7 @@ protected:
   bool _sensorConnected = false;
   bool _validValue = false;
   float _angle = 0;
-  float _sensorTemp = 0;
+  float _sensorTemp = INVALID_TEMPERATURE;
   float _initialSensorTemp = INVALID_TEMPERATURE;
   RawGyroData _calibrationOffset;
 
