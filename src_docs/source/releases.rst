@@ -22,6 +22,11 @@ New features
   Update the formula deviation (default 3) to a value according to your selected gravity format eg. SG = 0.003
 
 
+Bugs fixed
+++++++++++
+* UI no shows clearly when gyro is moving and average is not calculated
+
+
 v2.0.1
 ======
 
