@@ -214,11 +214,7 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_HARDWARE] = "ispindel";
 #endif
 
-  if (myGyro.isConnected()) {
-    obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
-  } else {
-    obj[PARAM_ANGLE] = -1;  // Indicate that there is no connection to gyro
-  }
+  obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
 
   if (myConfig.isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
@@ -275,6 +271,7 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
       strlen(myConfig.getGravityFormula()) > 0 ? true : false;
   self[PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
   self[PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
+  self[PARAM_SELF_GYRO_MOVING] = myGyro.isGyroMoving();
   self[PARAM_SELF_PUSH_TARGET] =
       myConfig.isBleActive() || myConfig.hasTargetHttpPost() ||
               myConfig.hasTargetHttpPost() || myConfig.hasTargetHttpGet() ||
