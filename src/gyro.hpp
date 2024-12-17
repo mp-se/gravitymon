@@ -52,6 +52,7 @@ class GyroSensor {
   float _initialSensorTemp = INVALID_TEMPERATURE;
   RawGyroData _calibrationOffset;
   RawGyroData _lastGyroData;
+  bool _sensorMoving = false;
 
   void debug();
   void applyCalibration();
@@ -66,6 +67,7 @@ class GyroSensor {
   bool read();
   void calibrateSensor();
   uint8_t getGyroID();
+  bool isSensorMoving() { return _sensorMoving; }
 
   const RawGyroData &getLastGyroData() { return _lastGyroData; }
   float getAngle() { return _angle; }
