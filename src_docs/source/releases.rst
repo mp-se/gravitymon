@@ -21,10 +21,13 @@ New features
 .. note::
   Update the formula deviation (default 3) to a value according to your selected gravity format eg. SG = 0.003
 
+* Added option to set Retain flag for MQTT integration.
+* Corrected docs on home assistant auto registration option.
 
 Bugs fixed
 ++++++++++
 * UI no shows clearly when gyro is moving and average is not calculated
+* Fixed broken link to removing old iSpindle configuration.
 
 
 v2.0.1

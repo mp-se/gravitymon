@@ -231,12 +231,12 @@ template will create two sensors and update the values for them.
 
 .. warning::
 
-   The registration will occur when you save the format template. If Home Assistant 
-   is restarted then the device will disappear. The first method is the most persistent one. 
+   The registration will be sent on every push so the downside is that this will consume more time thus reducing battery life.   
 
 .. warning::
-  This will only work on 1.1+ since the the memory allocation on previous versions are not enough to handle this large payload.
-  Earlier version can handle 2 of the values.
+
+  This method is not recommended for an ESP8266 since the low RAM memory will not be enough and there is a high probability that the device
+  will crash insted. 
 
 ::
 
