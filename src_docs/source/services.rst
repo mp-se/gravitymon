@@ -236,7 +236,7 @@ template will create two sensors and update the values for them.
 .. warning::
 
   This method is not recommended for an ESP8266 since the low RAM memory will not be enough and there is a high probability that the device
-  will crash insted. 
+  will crash insted. Testing shows that more than 1000 characters of data will likley crash the device. 
 
 ::
 
