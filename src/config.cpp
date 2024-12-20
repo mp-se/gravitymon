@@ -189,6 +189,8 @@ void GravmonConfig::parseJson(JsonObject& doc) {
     setIgnoreLowAnges(doc[PARAM_IGNORE_LOW_ANGLES].as<bool>());
   if (!doc[PARAM_BATTERY_SAVING].isNull())
     setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
+
+  setRetainEnabledMqtt(false); // Force flag to be off
 }
 
 void GravmonConfig::migrateSettings() {
