@@ -45,8 +45,8 @@ test(template_applyTemplate1) {
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
-  String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id +
-             "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.20, "
+  String v = "{\"name\": \"gravitymon\", \"ID\": \"" + id +
+             "\", \"token\": \"\", \"interval\": 900, \"temperature\": 21.20, "
              "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.000, "
              "\"battery\": 3.88"
              ", \"RSSI\": " + rssi + ", \"corr-gravity\": 1.2230, \"gravity-unit\": "
@@ -64,8 +64,8 @@ test(template_applyTemplate2) {
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
-  String v = "{\"name\" : \"gravitymon\", \"ID\": \"" + id +
-             "\", \"token\" : \"\", \"interval\": 900, \"temperature\": 21.20, "
+  String v = "{\"name\": \"gravitymon\", \"ID\": \"" + id +
+             "\", \"token\": \"\", \"interval\": 900, \"temperature\": 21.20, "
              "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.000, "
              "\"battery\": 3.88"
              ", \"RSSI\": " + rssi + ", \"corr-gravity\": 1.2230, \"gravity-unit\": "
