@@ -171,8 +171,7 @@ GravmonPush::GravmonPush(GravmonConfig* gravmonConfig)
 void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
                           float tempC, float runTime) {
   printHeap("PUSH");
-  _http.setReuse(true);
-  _httpSecure.setReuse(true);
+  _http->setReuse(true);
 
   TemplatingEngine engine;
   setupTemplateEngine(engine, angle, gravitySG, corrGravitySG, tempC, runTime,
@@ -221,7 +220,6 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     PERF_END("push-mqtt");
   }
 
-  engine.freeMemory();
   intDelay.save();
 }
 

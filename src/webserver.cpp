@@ -253,9 +253,10 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
 
-  FloatHistoryLog runLog(RUNTIME_FILENAME);
+  HistoryLog runLog(RUNTIME_FILENAME);
   obj[PARAM_RUNTIME_AVERAGE] = serialized(String(
-      runLog.getAverage() ? runLog.getAverage() / 1000 : 0, DECIMALS_RUNTIME));
+      runLog.getAverage()._runTime ? runLog.getAverage()._runTime / 1000 : 0,
+      DECIMALS_RUNTIME));
 
   JsonObject self = obj.createNestedObject(PARAM_SELF);
   float v = myBatteryVoltage.getVoltage();
@@ -635,7 +636,6 @@ void GravmonWebServer::loop() {
       _pushTestEnabled = true;
     }
 
-    engine.freeMemory();
     push.clearTemplate();
     _pushTestLastSuccess = push.getLastSuccess();
     _pushTestLastCode = push.getLastCode();
