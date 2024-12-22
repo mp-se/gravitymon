@@ -109,8 +109,9 @@ class GravmonConfig : public BaseConfig {
 
   // Gyro calibration and formula calculation data
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
-  RawFormulaData _formulaData = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }};
+  RawFormulaData _formulaData = {
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
   float _maxFormulaCreationDeviation = 3;  // SG
   float _defaultCalibrationTemp = 20.0;    // C

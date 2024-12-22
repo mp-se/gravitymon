@@ -75,7 +75,8 @@ void GravmonConfig::createJson(JsonObject& doc) {
   doc[PARAM_GYRO_READ_COUNT] = this->getGyroReadCount();
   // doc[PARAM_GYRO_READ_DELAY] = this->getGyroReadDelay();
   doc[PARAM_GYRO_MOVING_THREASHOLD] = this->getGyroSensorMovingThreashold();
-  doc[PARAM_FORMULA_DEVIATION] = serialized(String(this->getMaxFormulaCreationDeviation(), DECIMALS_TILT));
+  doc[PARAM_FORMULA_DEVIATION] =
+      serialized(String(this->getMaxFormulaCreationDeviation(), DECIMALS_TILT));
   doc[PARAM_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
   doc[PARAM_PUSH_INTERVAL_POST] = this->getPushIntervalPost();
   doc[PARAM_PUSH_INTERVAL_POST2] = this->getPushIntervalPost2();
@@ -189,8 +190,6 @@ void GravmonConfig::parseJson(JsonObject& doc) {
     setIgnoreLowAnges(doc[PARAM_IGNORE_LOW_ANGLES].as<bool>());
   if (!doc[PARAM_BATTERY_SAVING].isNull())
     setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
-
-  setRetainEnabledMqtt(false); // Force flag to be off
 }
 
 void GravmonConfig::migrateSettings() {
