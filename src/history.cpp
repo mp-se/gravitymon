@@ -24,37 +24,50 @@ SOFTWARE.
 #include <LittleFS.h>
 
 #include <history.hpp>
+#include <log.hpp>
 
-FloatHistoryLog::FloatHistoryLog(String fName) {
+HistoryLog::HistoryLog(String fName) {
   _fName = fName;
 
   File runFile = LittleFS.open(_fName, "r");
   if (runFile) {
     for (int i = 0; i < 10; i++) {
-      _runTime[i] = runFile.readStringUntil('\n').toFloat();
-      if (_runTime[i]) {
-        _average += _runTime[i];
+      String s = runFile.readStringUntil('\n');
+
+      sscanf(s.c_str(), "%f;%f;%d", &_log[i]._runTime, &_log[i]._gravity, &_log[i]._sleepTime);
+
+      Log.notice(F("HIST: Parsed %F, %F, %d (%s)." CR), _log[i]._runTime,
+                 _log[i]._gravity, _log[i]._sleepTime, s.c_str());
+
+      if (_log[i]._runTime) {
+        _average._runTime += _log[i]._runTime;
+        _average._gravity += _log[i]._gravity;
+        _average._sleepTime += _log[i]._sleepTime;
         _count++;
       }
     }
     runFile.close();
-    _average = _average / _count;
+    _average._runTime = _average._runTime / _count;
+    _average._gravity = _average._gravity / _count;
+    _average._sleepTime = _average._sleepTime / _count;
   }
 }
 
-void FloatHistoryLog::addEntry(float time) {
+void HistoryLog::addLog(float runTime, float gravity, int sleepTime) {
   for (int i = (10 - 1); i > 0; i--) {
-    _runTime[i] = _runTime[i - 1];
+    _log[i] = _log[i - 1];
   }
-  _runTime[0] = time;
+  _log[0]._runTime = runTime;
+  _log[0]._gravity = gravity;
+  _log[0]._sleepTime = sleepTime;
   save();
 }
 
-void FloatHistoryLog::save() {
+void HistoryLog::save() {
   File runFile = LittleFS.open(_fName, "w");
   if (runFile) {
     for (int i = 0; i < 10; i++) {
-      runFile.println(_runTime[i], 2);
+      runFile.printf("%.4f;%.5f;%d\n", _log[i]._runTime, _log[i]._gravity, _log[i]._sleepTime);
     }
     runFile.close();
   }
