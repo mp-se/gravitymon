@@ -184,7 +184,11 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     PERF_BEGIN("push-http");
     String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP1);
     String doc = engine.create(tpl.c_str());
-    sendHttpPost(doc);
+
+    if(myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      sendHttpPost(doc);
     PERF_END("push-http");
   }
 
@@ -192,7 +196,11 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     PERF_BEGIN("push-http2");
     String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP2);
     String doc = engine.create(tpl.c_str());
-    sendHttpPost2(doc);
+
+    if(myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      sendHttpPost2(doc);
     PERF_END("push-http2");
   }
 
@@ -200,7 +208,11 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     PERF_BEGIN("push-http3");
     String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP3);
     String doc = engine.create(tpl.c_str());
-    sendHttpGet(doc);
+
+    if(myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      sendHttpGet(doc);
     PERF_END("push-http3");
   }
 
@@ -208,7 +220,11 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     PERF_BEGIN("push-influxdb2");
     String tpl = getTemplate(GravmonPush::TEMPLATE_INFLUX);
     String doc = engine.create(tpl.c_str());
-    sendInfluxDb2(doc);
+
+    if(myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      sendInfluxDb2(doc);
     PERF_END("push-influxdb2");
   }
 
@@ -216,7 +232,11 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     PERF_BEGIN("push-mqtt");
     String tpl = getTemplate(GravmonPush::TEMPLATE_MQTT);
     String doc = engine.create(tpl.c_str());
-    sendMqtt(doc);
+
+    if(myConfig.isMqttSSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      sendMqtt(doc);
     PERF_END("push-mqtt");
   }
 
