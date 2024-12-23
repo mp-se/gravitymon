@@ -345,6 +345,7 @@ bool loopReadGravity() {
 
           // Only log when in gravity mode
           if (!skipRunTimeLog && runMode == RunMode::gravityMode) {
+            Log.notice(F("Main: Updating history log with, runtime, gravity and interval." CR));
             float runtime = (millis() - runtimeMillis);
             HistoryLog runLog(RUNTIME_FILENAME);
             runLog.addLog(runtime, gravitySG, myConfig.getSleepInterval());

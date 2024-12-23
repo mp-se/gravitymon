@@ -55,7 +55,7 @@ void GravmonWebServer::webHandleConfigRead(AsyncWebServerRequest *request) {
   PERF_BEGIN("webserver-api-config-read");
   Log.notice(F("WEB : webServer callback for /api/config(read)." CR));
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_L);
+      new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   myConfig.createJson(obj);
   response->setLength();
@@ -78,7 +78,7 @@ void GravmonWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
   myBatteryVoltage.read();
 
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Configuration updated";
@@ -96,7 +96,7 @@ void GravmonWebServer::webHandleCalibrate(AsyncWebServerRequest *request) {
   Log.notice(F("WEB : webServer callback for /api/calibrate." CR));
   _sensorCalibrationTask = true;
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Scheduled device calibration";
@@ -114,7 +114,7 @@ void GravmonWebServer::webHandleCalibrateStatus(
   PERF_BEGIN("webserver-api-calibrate-status");
   Log.notice(F("WEB : webServer callback for /api/calibrate/status." CR));
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   obj[PARAM_STATUS] = static_cast<bool>(_sensorCalibrationTask);
   obj[PARAM_SUCCESS] = false;
@@ -153,7 +153,7 @@ void GravmonWebServer::webHandleFactoryDefaults(
 
   Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Factory reset completed, rebooting";
@@ -178,7 +178,7 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   }
 
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_L);
+      new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
 
   double angle = 0;  // Indicate we have no valid gyro value
@@ -296,7 +296,7 @@ void GravmonWebServer::webHandleSleepmode(AsyncWebServerRequest *request,
   sleepModeAlwaysSkip = obj[PARAM_SLEEP_MODE].as<bool>();
 
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
   response->setLength();
@@ -334,7 +334,7 @@ void GravmonWebServer::webHandleConfigFormatWrite(
   }
 
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = success > 0 ? true : false;
   obj[PARAM_MESSAGE] = success > 0 ? "Format template stored"
@@ -359,7 +359,7 @@ void GravmonWebServer::webHandleTestPush(AsyncWebServerRequest *request,
   _pushTestLastSuccess = false;
   _pushTestLastCode = 0;
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Scheduled test for " + _pushTestTarget;
@@ -372,7 +372,7 @@ void GravmonWebServer::webHandleTestPushStatus(AsyncWebServerRequest *request) {
   PERF_BEGIN("webserver-api-test-push-status");
   Log.notice(F("WEB : webServer callback for /api/test/push/status." CR));
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   String s;
 
@@ -427,7 +427,7 @@ void GravmonWebServer::webHandleHardwareScan(AsyncWebServerRequest *request) {
   _hardwareScanTask = true;
   _hardwareScanData = "";
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_S);
+      new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Scheduled hardware scanning";
@@ -445,7 +445,7 @@ void GravmonWebServer::webHandleHardwareScanStatus(
 
   if (_hardwareScanTask || !_hardwareScanData.length()) {
     AsyncJsonResponse *response =
-        new AsyncJsonResponse(false, JSON_BUFFER_SIZE_L);
+        new AsyncJsonResponse(false);
     JsonObject obj = response->getRoot().as<JsonObject>();
     obj[PARAM_STATUS] = static_cast<bool>(_hardwareScanTask);
     obj[PARAM_SUCCESS] = false;
@@ -481,7 +481,7 @@ void GravmonWebServer::webHandleConfigFormatRead(
   Log.notice(F("WEB : webServer callback for /api/config/format(read)." CR));
 
   AsyncJsonResponse *response =
-      new AsyncJsonResponse(false, JSON_BUFFER_SIZE_XL);
+      new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   String s;
 
@@ -525,24 +525,21 @@ bool GravmonWebServer::setupWebServer() {
   handler = new AsyncCallbackJsonWebHandler(
       "/api/format",
       std::bind(&GravmonWebServer::webHandleConfigFormatWrite, this,
-                std::placeholders::_1, std::placeholders::_2),
-      JSON_BUFFER_SIZE_L);
+                std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
   handler = new AsyncCallbackJsonWebHandler(
       "/api/sleepmode",
       std::bind(&GravmonWebServer::webHandleSleepmode, this,
-                std::placeholders::_1, std::placeholders::_2),
-      JSON_BUFFER_SIZE_S);
-  _server->addHandler(handler);
-  handler = new AsyncCallbackJsonWebHandler(
-      "/api/config",
-      std::bind(&GravmonWebServer::webHandleConfigWrite, this,
-                std::placeholders::_1, std::placeholders::_2),
-      JSON_BUFFER_SIZE_L);
+                std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
   _server->on("/api/config", HTTP_GET,
               std::bind(&GravmonWebServer::webHandleConfigRead, this,
                         std::placeholders::_1));
+  handler = new AsyncCallbackJsonWebHandler(
+      "/api/config",
+      std::bind(&GravmonWebServer::webHandleConfigWrite, this,
+                std::placeholders::_1, std::placeholders::_2));
+  _server->addHandler(handler);
   _server->on("/api/calibrate/status", HTTP_GET,
               std::bind(&GravmonWebServer::webHandleCalibrateStatus, this,
                         std::placeholders::_1));
@@ -567,8 +564,7 @@ bool GravmonWebServer::setupWebServer() {
   handler = new AsyncCallbackJsonWebHandler(
       "/api/push",
       std::bind(&GravmonWebServer::webHandleTestPush, this,
-                std::placeholders::_1, std::placeholders::_2),
-      JSON_BUFFER_SIZE_S);
+                std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
 
   Log.notice(F("WEB : Web server started." CR));
@@ -611,31 +607,47 @@ void GravmonWebServer::loop() {
         myConfig.hasTargetHttpPost()) {
       String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP1);
       String doc = engine.create(tpl.c_str());
-      push.sendHttpPost(doc);
+
+      if(myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest())
+        Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+      else
+        push.sendHttpPost(doc);
       _pushTestEnabled = true;
     } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST2) &&
                myConfig.hasTargetHttpPost2()) {
       String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP2);
       String doc = engine.create(tpl.c_str());
-      push.sendHttpPost2(doc);
+      if(myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest())
+        Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+      else
+        push.sendHttpPost2(doc);
       _pushTestEnabled = true;
     } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_GET) &&
                myConfig.hasTargetHttpGet()) {
       String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP3);
       String doc = engine.create(tpl.c_str());
-      push.sendHttpGet(doc);
+      if(myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest())
+        Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+      else
+        push.sendHttpGet(doc);
       _pushTestEnabled = true;
     } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_INFLUXDB) &&
                myConfig.hasTargetInfluxDb2()) {
       String tpl = push.getTemplate(GravmonPush::TEMPLATE_INFLUX);
       String doc = engine.create(tpl.c_str());
-      push.sendInfluxDb2(doc);
+      if(myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest())
+        Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+      else
+        push.sendInfluxDb2(doc);
       _pushTestEnabled = true;
     } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_MQTT) &&
                myConfig.hasTargetMqtt()) {
       String tpl = push.getTemplate(GravmonPush::TEMPLATE_MQTT);
       String doc = engine.create(tpl.c_str());
-      push.sendMqtt(doc);
+      if(myConfig.isMqttSSL() && myConfig.isSkipSslOnTest())
+        Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+      else
+        push.sendMqtt(doc);
       _pushTestEnabled = true;
     }
 
@@ -654,7 +666,7 @@ void GravmonWebServer::loop() {
   }
 
   if (_hardwareScanTask) {
-    DynamicJsonDocument doc(JSON_BUFFER_SIZE_L);
+    JsonDocument doc;
     JsonObject obj = doc.createNestedObject();
     obj[PARAM_STATUS] = false;
     obj[PARAM_SUCCESS] = true;

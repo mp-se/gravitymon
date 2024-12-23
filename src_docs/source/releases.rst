@@ -21,8 +21,9 @@ New features
 .. note::
   Update the formula deviation (default 3) to a value according to your selected gravity format eg. SG = 0.003
 
-* Added option to set Retain flag for MQTT integration.
 * Added warning when mqtt payload exceeds 700 bytes
+* Optimized code to reduce memory usage to allow for larger payloads when pushing data
+* Update dependant libraries to latest version (Json 7, AsyncWebServer, EspFwk)
 
 Bugs fixed
 ++++++++++
@@ -30,6 +31,7 @@ Bugs fixed
 * Fixed broken link to removing old iSpindle configuration.
 * Fixed limitation that lowest plato was 1 (now 0)
 * Corrected docs on home assistant auto registration option.
+* Skip SSL when in config mode flag now works correctly
 
 v2.0.1
 ======

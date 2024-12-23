@@ -28,7 +28,7 @@ SOFTWARE.
 #include <resources.hpp>
 
 GravmonConfig::GravmonConfig(String baseMDNS, String fileName)
-    : BaseConfig(baseMDNS, fileName, JSON_BUFFER_SIZE_XL) {}
+    : BaseConfig(baseMDNS, fileName) {}
 
 void GravmonConfig::createJson(JsonObject& doc) {
   // Call base class functions
@@ -57,7 +57,7 @@ void GravmonConfig::createJson(JsonObject& doc) {
   doc[PARAM_SKIP_SSL_ON_TEST] = isSkipSslOnTest();
   doc[PARAM_VOLTAGE_PIN] = getVoltagePin();
 
-  JsonObject cal = doc.createNestedObject(PARAM_GYRO_CALIBRATION);
+  JsonObject cal = doc[PARAM_GYRO_CALIBRATION].to<JsonObject>();
   cal["ax"] = _gyroCalibration.ax;
   cal["ay"] = _gyroCalibration.ay;
   cal["az"] = _gyroCalibration.az;
@@ -65,11 +65,10 @@ void GravmonConfig::createJson(JsonObject& doc) {
   cal["gy"] = _gyroCalibration.gy;
   cal["gz"] = _gyroCalibration.gz;
 
-  JsonArray fdArray = doc.createNestedArray(PARAM_FORMULA_DATA);
+  JsonArray fdArray = doc[PARAM_FORMULA_DATA].to<JsonArray>();
   for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
-    JsonObject fd = fdArray.createNestedObject();
-    fd["a"] = serialized(String(_formulaData.a[i], DECIMALS_TILT));
-    fd["g"] = serialized(String(_formulaData.g[i], DECIMALS_SG));
+    fdArray[i]["a"] = serialized(String(_formulaData.a[i], DECIMALS_TILT));
+    fdArray[i]["g"] = serialized(String(_formulaData.g[i], DECIMALS_SG));
   }
 
   doc[PARAM_GYRO_READ_COUNT] = this->getGyroReadCount();
@@ -206,8 +205,8 @@ void GravmonConfig::migrateSettings() {
     return;
   }
 
-  DynamicJsonDocument doc(JSON_BUFFER_SIZE_L);
-  DynamicJsonDocument doc2(JSON_BUFFER_SIZE_L);
+  JsonDocument doc;
+  JsonDocument doc2;
 
   DeserializationError err = deserializeJson(doc, configFile);
   configFile.close();
@@ -218,7 +217,7 @@ void GravmonConfig::migrateSettings() {
   }
 
   JsonObject obj = doc.as<JsonObject>();
-  JsonObject obj2 = doc2.createNestedObject();
+  JsonObject obj2 = doc2.as<JsonObject>();
 
   serializeJson(obj, EspSerial);
   EspSerial.print(CR);
@@ -231,12 +230,11 @@ void GravmonConfig::migrateSettings() {
 
   obj2[PARAM_BLE_TILT_COLOR] = obj["ble"];
 
-  JsonArray fdArray = obj2.createNestedArray(PARAM_FORMULA_DATA);
+  JsonArray fdArray = obj2[PARAM_FORMULA_DATA].to<JsonArray>();
   for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
-    JsonObject fd = fdArray.createNestedObject();
     String num(i + 1);
-    fd["a"] = obj["formula-calculation-data"]["a" + num];
-    fd["g"] = obj["formula-calculation-data"]["g" + num];
+    fdArray[i]["a"] = obj["formula-calculation-data"]["a" + num];
+    fdArray[i]["g"] = obj["formula-calculation-data"]["g" + num];
   }
 
   obj2[PARAM_HTTP_POST_TARGET] = obj["http-push"];
@@ -285,8 +283,8 @@ void GravmonConfig::migrateHwSettings() {
     return;
   }
 
-  DynamicJsonDocument doc(JSON_BUFFER_SIZE_L);
-  DynamicJsonDocument doc2(JSON_BUFFER_SIZE_L);
+  JsonDocument doc;
+  JsonDocument doc2;
 
   DeserializationError err = deserializeJson(doc, configFile);
   configFile.close();
@@ -297,7 +295,7 @@ void GravmonConfig::migrateHwSettings() {
   }
 
   JsonObject obj = doc.as<JsonObject>();
-  JsonObject obj2 = doc2.createNestedObject();
+  JsonObject obj2 = doc2.as<JsonObject>();
 
   serializeJson(obj, EspSerial);
   EspSerial.print(CR);
