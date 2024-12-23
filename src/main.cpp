@@ -343,7 +343,8 @@ bool loopReadGravity() {
           push.sendAll(angle, gravitySG, corrGravitySG, tempC,
                        (millis() - runtimeMillis) / 1000);
 
-          if (!skipRunTimeLog) {
+          // Only log when in gravity mode
+          if (!skipRunTimeLog && runMode == RunMode::gravityMode) {
             float runtime = (millis() - runtimeMillis);
             HistoryLog runLog(RUNTIME_FILENAME);
             runLog.addLog(runtime, gravitySG, myConfig.getSleepInterval());
