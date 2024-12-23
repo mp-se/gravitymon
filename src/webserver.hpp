@@ -38,6 +38,8 @@ class GravmonWebServer : public BaseWebServer {
   int _pushTestLastCode;
   bool _pushTestLastSuccess, _pushTestEnabled;
 
+  float _averageRunTime = 0;
+
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);

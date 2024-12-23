@@ -253,9 +253,8 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
 
-  HistoryLog runLog(RUNTIME_FILENAME);
   obj[PARAM_RUNTIME_AVERAGE] = serialized(String(
-      runLog.getAverage()._runTime ? runLog.getAverage()._runTime / 1000 : 0,
+      _averageRunTime ? _averageRunTime / 1000 : 0,
       DECIMALS_RUNTIME));
 
   JsonObject self = obj.createNestedObject(PARAM_SELF);
@@ -513,6 +512,9 @@ bool GravmonWebServer::setupWebServer() {
   BaseWebServer::setupWebServer();
   MDNS.addService("gravitymon", "tcp", 80);
 
+  HistoryLog runLog(RUNTIME_FILENAME);
+  _averageRunTime = runLog.getAverage()._runTime; 
+
   // Static content
   Log.notice(F("WEB : Setting up handlers for gravmon web server." CR));
 
@@ -599,6 +601,7 @@ void GravmonWebServer::loop() {
     Log.notice(F("WEB : Running scheduled push test for %s" CR),
                _pushTestTarget.c_str());
 
+    printHeap("TEST");
     TemplatingEngine engine;
     GravmonPush push(&myConfig);
     push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG, tempC,
@@ -636,6 +639,7 @@ void GravmonWebServer::loop() {
       _pushTestEnabled = true;
     }
 
+    engine.freeMemory();
     push.clearTemplate();
     _pushTestLastSuccess = push.getLastSuccess();
     _pushTestLastCode = push.getLastCode();

@@ -36,8 +36,8 @@ HistoryLog::HistoryLog(String fName) {
 
       sscanf(s.c_str(), "%f;%f;%d", &_log[i]._runTime, &_log[i]._gravity, &_log[i]._sleepTime);
 
-      Log.notice(F("HIST: Parsed %F, %F, %d (%s)." CR), _log[i]._runTime,
-                 _log[i]._gravity, _log[i]._sleepTime, s.c_str());
+      // Log.notice(F("HIST: Parsed %F, %F, %d (%s)." CR), _log[i]._runTime,
+      //            _log[i]._gravity, _log[i]._sleepTime, s.c_str());
 
       if (_log[i]._runTime) {
         _average._runTime += _log[i]._runTime;
