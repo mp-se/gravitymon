@@ -141,7 +141,7 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   const NimBLEBeacon::BeaconData& beaconData = beacon.getData();
   // advData.setManufacturerData(beacon.getData());
   advData.setManufacturerData(
-      std::string(reinterpret_cast<char*>(&beaconData), sizeof(beaconData)));
+      std::string(reinterpret_cast<const char*>(&beaconData), sizeof(beaconData)));
 
   _advertising->setAdvertisementData(advData);
   // _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);

@@ -710,23 +710,20 @@ void GravmonWebServer::loop() {
       j++;
     }
 
-    // TODO: Test the gyro
-    JsonObject gyro = obj[PARAM_GYRO].as<JsonObject>();
+    // Test the gyro
     switch (myGyro.getGyroID()) {
       case 0x34:
-        gyro[PARAM_FAMILY] = "MPU6050";
+        obj[PARAM_GYRO][PARAM_FAMILY] = "MPU6050";
         break;
       case 0x38:
-        gyro[PARAM_FAMILY] = "MPU6500";
+        obj[PARAM_GYRO][PARAM_FAMILY] = "MPU6500";
         break;
       default:
-        gyro[PARAM_FAMILY] = "0x" + String(myGyro.getGyroID(), 16);
+        obj[PARAM_GYRO][PARAM_FAMILY] = "0x" + String(myGyro.getGyroID(), 16);
         break;
     }
 
-    // TODO: Test GPIO
-
-    JsonObject cpu = obj[PARAM_CHIP].as<JsonObject>();
+    JsonObject cpu = obj[PARAM_CHIP].to<JsonObject>();
 
 #if defined(ESP8266)
     cpu[PARAM_FAMILY] = "ESP8266";
@@ -737,7 +734,7 @@ void GravmonWebServer::loop() {
     cpu[PARAM_REVISION] = chip_info.revision;
     cpu[PARAM_CORES] = chip_info.cores;
 
-    JsonArray feature = cpu.createNestedArray(PARAM_FEATURES);
+    JsonArray feature = cpu[PARAM_FEATURES].to<JsonArray>();
 
     if (chip_info.features & CHIP_FEATURE_EMB_FLASH)
       feature.add("embedded flash");
