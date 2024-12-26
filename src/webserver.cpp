@@ -250,22 +250,21 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_RUNTIME_AVERAGE] = serialized(
       String(_averageRunTime ? _averageRunTime / 1000 : 0, DECIMALS_RUNTIME));
 
-  JsonObject self = obj.createNestedObject(PARAM_SELF);
   float v = myBatteryVoltage.getVoltage();
 
 #if defined(ESP32LITE)
-  self[PARAM_SELF_BATTERY_LEVEL] = true;  // No hardware support for these
-  self[PARAM_SELF_TEMP_CONNECTED] = true;
+  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = true;  // No hardware support for these
+  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = true;
 #else
-  self[PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
-  self[PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
+  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
+  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
 #endif
-  self[PARAM_SELF_GRAVITY_FORMULA] =
+  obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
       strlen(myConfig.getGravityFormula()) > 0 ? true : false;
-  self[PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
-  self[PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
-  self[PARAM_SELF_GYRO_MOVING] = myGyro.isSensorMoving();
-  self[PARAM_SELF_PUSH_TARGET] =
+  obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
+  obj[PARAM_SELF][PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
+  obj[PARAM_SELF][PARAM_SELF_GYRO_MOVING] = myGyro.isSensorMoving();
+  obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
       myConfig.isBleActive() || myConfig.hasTargetHttpPost() ||
               myConfig.hasTargetHttpPost() || myConfig.hasTargetHttpGet() ||
               myConfig.hasTargetMqtt() || myConfig.hasTargetInfluxDb2()
@@ -656,18 +655,16 @@ void GravmonWebServer::loop() {
 
   if (_hardwareScanTask) {
     JsonDocument doc;
-    JsonObject obj = doc.createNestedObject();
+    JsonObject obj = doc.to<JsonObject>();
     obj[PARAM_STATUS] = false;
     obj[PARAM_SUCCESS] = true;
     obj[PARAM_MESSAGE] = "";
     Log.notice(F("WEB : Scanning hardware." CR));
 
-    // Scan the i2c bus for devices
-    // Wire.begin(PIN_SDA, PIN_SCL); // Should already have been done in
-    // gyro.cpp
-    JsonArray i2c = obj.createNestedArray(PARAM_I2C);
+    // Scan the i2c bus for devices, initialized in gyro.cpp
+    JsonArray i2c = obj[PARAM_I2C].to<JsonArray>();
 
-    for (int i = 1; i < 127; i++) {
+    for (int i = 1, j = 0; i < 127; i++) {
       // The i2c_scanner uses the return value of
       // the Write.endTransmisstion to see if
       // a device did acknowledge to the address.
@@ -675,44 +672,46 @@ void GravmonWebServer::loop() {
       int err = Wire.endTransmission();
 
       if (err == 0) {
-        JsonObject sensor = i2c.createNestedObject();
-        sensor[PARAM_ADRESS] = "0x" + String(i, 16);
+        Log.notice(F("WEB : Found device at 0x%02X." CR), i);
+        i2c[j][PARAM_ADRESS] = "0x" + String(i, 16);
+        j++;
       }
     }
 
     // Scan onewire
-    JsonArray onew = obj.createNestedArray(PARAM_ONEWIRE);
+    JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
 
-    for (int i = 0; i < mySensors.getDS18Count(); i++) {
+    for (int i = 0, j = 0; i < mySensors.getDS18Count(); i++) {
       DeviceAddress adr;
-      JsonObject sensor = onew.createNestedObject();
       mySensors.getAddress(&adr[0], i);
-      sensor[PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
+      Log.notice(F("WEB : Found onewire device %d." CR), i);
+      onew[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
                              String(adr[2], 16) + String(adr[3], 16) +
                              String(adr[4], 16) + String(adr[5], 16) +
                              String(adr[6], 16) + String(adr[7], 16);
       switch (adr[0]) {
         case DS18S20MODEL:
-          sensor[PARAM_FAMILY] = "DS18S20";
+          onew[j][PARAM_FAMILY] = "DS18S20";
           break;
         case DS18B20MODEL:
-          sensor[PARAM_FAMILY] = "DS18B20";
+          onew[j][PARAM_FAMILY] = "DS18B20";
           break;
         case DS1822MODEL:
-          sensor[PARAM_FAMILY] = "DS1822";
+          onew[j][PARAM_FAMILY] = "DS1822";
           break;
         case DS1825MODEL:
-          sensor[PARAM_FAMILY] = "DS1825";
+          onew[j][PARAM_FAMILY] = "DS1825";
           break;
         case DS28EA00MODEL:
-          sensor[PARAM_FAMILY] = "DS28EA00";
+          onew[j][PARAM_FAMILY] = "DS28EA00";
           break;
       }
-      sensor[PARAM_RESOLUTION] = mySensors.getResolution();
+      onew[j][PARAM_RESOLUTION] = mySensors.getResolution();
+      j++;
     }
 
     // TODO: Test the gyro
-    JsonObject gyro = obj.createNestedObject(PARAM_GYRO);
+    JsonObject gyro = obj[PARAM_GYRO].as<JsonObject>();
     switch (myGyro.getGyroID()) {
       case 0x34:
         gyro[PARAM_FAMILY] = "MPU6050";
@@ -727,7 +726,7 @@ void GravmonWebServer::loop() {
 
     // TODO: Test GPIO
 
-    JsonObject cpu = obj.createNestedObject(PARAM_CHIP);
+    JsonObject cpu = obj[PARAM_CHIP].as<JsonObject>();
 
 #if defined(ESP8266)
     cpu[PARAM_FAMILY] = "ESP8266";
