@@ -138,10 +138,13 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
 
   BLEAdvertisementData advData = BLEAdvertisementData();
   advData.setFlags(0x04);
-  advData.setManufacturerData(beacon.getData());
+  const NimBLEBeacon::BeaconData &beaconData = beacon.getData();
+  // advData.setManufacturerData(beacon.getData());
+  advData.setManufacturerData(std::string((char*) &beaconData, sizeof(beaconData)));
 
   _advertising->setAdvertisementData(advData);
-  _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
+  // _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
+  _advertising->setConnectableMode(BLE_GAP_CONN_MODE_NON);
 
   _advertising->start();
   delay(_beaconTime);
@@ -194,7 +197,8 @@ void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
   advData.setManufacturerData(mf);
   _advertising->setAdvertisementData(advData);
 
-  _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
+  // _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
+  _advertising->setConnectableMode(BLE_GAP_CONN_MODE_NON);
   _advertising->start();
   delay(_beaconTime);
   _advertising->stop();
