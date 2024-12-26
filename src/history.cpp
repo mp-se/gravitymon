@@ -23,6 +23,7 @@ SOFTWARE.
  */
 #include <LittleFS.h>
 
+#include <cstdio>
 #include <history.hpp>
 #include <log.hpp>
 
@@ -34,7 +35,8 @@ HistoryLog::HistoryLog(String fName) {
     for (int i = 0; i < 10; i++) {
       String s = runFile.readStringUntil('\n');
 
-      sscanf(s.c_str(), "%f;%f;%d", &_log[i]._runTime, &_log[i]._gravity, &_log[i]._sleepTime);
+      sscanf(s.c_str(), "%f;%f;%d", &_log[i]._runTime, &_log[i]._gravity,
+             &_log[i]._sleepTime);
 
       // Log.notice(F("HIST: Parsed %F, %F, %d (%s)." CR), _log[i]._runTime,
       //            _log[i]._gravity, _log[i]._sleepTime, s.c_str());
@@ -67,7 +69,8 @@ void HistoryLog::save() {
   File runFile = LittleFS.open(_fName, "w");
   if (runFile) {
     for (int i = 0; i < 10; i++) {
-      runFile.printf("%.4f;%.5f;%d\n", _log[i]._runTime, _log[i]._gravity, _log[i]._sleepTime);
+      runFile.printf("%.4f;%.5f;%d\n", _log[i]._runTime, _log[i]._gravity,
+                     _log[i]._sleepTime);
     }
     runFile.close();
   }

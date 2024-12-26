@@ -24,6 +24,7 @@ SOFTWARE.
 #include <tinyexpr.h>
 
 #include <calc.hpp>
+#include <cstdio>
 #include <log.hpp>
 #include <utils.hpp>
 

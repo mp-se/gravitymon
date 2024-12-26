@@ -273,7 +273,7 @@ bool loopReadGravity() {
                 angle, tempC, gravitySG, corrGravitySG);
 #endif
 
-    bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
+    bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
                         (myConfig.getSleepInterval() * 1000));
 
     if (myConfig.isIgnoreLowAnges() &&
@@ -345,7 +345,9 @@ bool loopReadGravity() {
 
           // Only log when in gravity mode
           if (!skipRunTimeLog && runMode == RunMode::gravityMode) {
-            Log.notice(F("Main: Updating history log with, runtime, gravity and interval." CR));
+            Log.notice(
+                F("Main: Updating history log with, runtime, gravity and "
+                  "interval." CR));
             float runtime = (millis() - runtimeMillis);
             HistoryLog runLog(RUNTIME_FILENAME);
             runLog.addLog(runtime, gravitySG, myConfig.getSleepInterval());
@@ -370,7 +372,7 @@ bool loopReadGravity() {
 // Wrapper for loopGravity that only calls every 200ms so that we dont overload
 // this.
 void loopGravityOnInterval() {
-  if (abs((int32_t)(millis() - loopMillis)) > interval) {
+  if (abs(static_cast<int32_t>((millis() - loopMillis))) > interval) {
     loopReadGravity();
     loopMillis = millis();
     // printHeap("MAIN");

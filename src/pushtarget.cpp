@@ -29,12 +29,12 @@ SOFTWARE.
 
 #include <battery.hpp>
 #include <config.hpp>
+#include <cstdio>
 #include <helper.hpp>
 #include <main.hpp>
 #include <perf.hpp>
 #include <pushtarget.hpp>
 #include <templating.hpp>
-
 constexpr auto PUSHINT_FILENAME = "/push.dat";
 
 // Use iSpindle format for compatibility, HTTP POST
@@ -185,7 +185,8 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP1);
     String doc = engine.create(tpl.c_str());
 
-    if(myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+    if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest() &&
+        runMode != RunMode::gravityMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpPost(doc);
@@ -197,7 +198,8 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP2);
     String doc = engine.create(tpl.c_str());
 
-    if(myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+    if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest() &&
+        runMode != RunMode::gravityMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpPost2(doc);
@@ -209,7 +211,8 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP3);
     String doc = engine.create(tpl.c_str());
 
-    if(myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+    if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest() &&
+        runMode != RunMode::gravityMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpGet(doc);
@@ -221,7 +224,8 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String tpl = getTemplate(GravmonPush::TEMPLATE_INFLUX);
     String doc = engine.create(tpl.c_str());
 
-    if(myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+    if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest() &&
+        runMode != RunMode::gravityMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendInfluxDb2(doc);
@@ -233,7 +237,8 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String tpl = getTemplate(GravmonPush::TEMPLATE_MQTT);
     String doc = engine.create(tpl.c_str());
 
-    if(myConfig.isMqttSSL() && myConfig.isSkipSslOnTest() && runMode != RunMode::gravityMode)
+    if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest() &&
+        runMode != RunMode::gravityMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendMqtt(doc);
