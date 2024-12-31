@@ -21,7 +21,7 @@ New features
 .. note::
   Update the formula deviation (default 3) to a value according to your selected gravity format eg. SG = 0.003
 
-* Added warning when mqtt payload exceeds 700 bytes
+* Added warning when mqtt payload exceeds 700 bytes to avoid crashes
 * Optimized code to reduce memory usage to allow for larger payloads when pushing data
 * Update dependant libraries to latest version (Json 7, AsyncWebServer, EspFwk)
 
