@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -116,6 +116,7 @@ void GravmonWebServer::webHandleCalibrateStatus(
   obj[PARAM_SUCCESS] = false;
   obj[PARAM_MESSAGE] = "Calibration running";
 
+#if defined(GRAVITYMON)
   if (!_sensorCalibrationTask) {
     if (myGyro.isConnected()) {
       obj[PARAM_SUCCESS] = true;
@@ -125,6 +126,7 @@ void GravmonWebServer::webHandleCalibrateStatus(
       obj[PARAM_MESSAGE] = "Calibration failed, no gyro connected";
     }
   }
+#endif
 
   response->setLength();
   request->send(response);
@@ -140,7 +142,9 @@ void GravmonWebServer::webHandleFactoryDefaults(
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
   myConfig.saveFileWifiOnly();
   LittleFS.remove(ERR_FILENAME);
+#if defined(GRAVITYMON)
   LittleFS.remove(RUNTIME_FILENAME);
+#endif  // GRAVITYMON
   LittleFS.remove(TPL_FNAME_POST);
   LittleFS.remove(TPL_FNAME_POST2);
   LittleFS.remove(TPL_FNAME_INFLUXDB);
@@ -175,6 +179,7 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
 
+#if defined(GRAVITYMON)
   double angle = 0;  // Indicate we have no valid gyro value
 
   if (myGyro.hasValue()) angle = myGyro.getAngle();
@@ -182,31 +187,7 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   double tempC = myTempSensor.getTempC();
   double gravity = calculateGravity(angle, tempC);
 
-  obj[PARAM_ID] = myConfig.getID();
-  obj[PARAM_TEMP_FORMAT] = String(myConfig.getTempFormat());
   obj[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
-  obj[PARAM_APP_VER] = CFG_APPVER;
-  obj[PARAM_APP_BUILD] = CFG_GITREV;
-  obj[PARAM_MDNS] = myConfig.getMDNS();
-#if defined(ESP8266)
-  obj[PARAM_PLATFORM] = "esp8266";
-  obj[PARAM_HARDWARE] = "ispindel";
-#elif defined(ESP32C3)
-  obj[PARAM_PLATFORM] = "esp32c3";
-  obj[PARAM_HARDWARE] = "ispindel";
-#elif defined(ESP32S2)
-  obj[PARAM_PLATFORM] = "esp32s2";
-  obj[PARAM_HARDWARE] = "ispindel";
-#elif defined(ESP32S3)
-  obj[PARAM_PLATFORM] = "esp32s3";
-  obj[PARAM_HARDWARE] = "ispindel";
-#elif defined(ESP32LITE)
-  obj[PARAM_PLATFORM] = "esp32lite";
-  obj[PARAM_HARDWARE] = "floaty";
-#else  // esp32 mini
-  obj[PARAM_PLATFORM] = "esp32";
-  obj[PARAM_HARDWARE] = "ispindel";
-#endif
 
   obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
 
@@ -226,50 +207,89 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   } else {
     obj[PARAM_TEMP] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
   }
+  obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
+
+#if defined(ESP8266)
+  obj[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
+#else
+  obj[PARAM_ISPINDEL_CONFIG] = false;
+#endif
+
+  obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
+
+#if defined(ESP32LITE)
+  obj[PARAM_HARDWARE] = "floaty";
+#else
+  obj[PARAM_HARDWARE] = "ispindel";
+#endif
+
+#endif  // GRAVITYMON
+
+  obj[PARAM_ID] = myConfig.getID();
+  obj[PARAM_TEMP_FORMAT] = String(myConfig.getTempFormat());
+  obj[PARAM_APP_VER] = CFG_APPVER;
+  obj[PARAM_APP_BUILD] = CFG_GITREV;
+  obj[PARAM_MDNS] = myConfig.getMDNS();
+#if defined(ESP8266)
+  obj[PARAM_PLATFORM] = "esp8266";
+#elif defined(ESP32C3)
+  obj[PARAM_PLATFORM] = "esp32c3";
+#elif defined(ESP32S2)
+  obj[PARAM_PLATFORM] = "esp32s2";
+#elif defined(ESP32S3)
+  obj[PARAM_PLATFORM] = "esp32s3";
+#elif defined(ESP32LITE)
+  obj[PARAM_PLATFORM] = "esp32lite";
+#else  // esp32 mini
+  obj[PARAM_PLATFORM] = "esp32";
+#endif
 
   obj[PARAM_BATTERY] =
       serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
-  obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
   obj[PARAM_RSSI] = WiFi.RSSI();
   obj[PARAM_SSID] = WiFi.SSID();
 
 #if defined(ESP8266)
-  obj[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
   obj[PARAM_TOTAL_HEAP] = 81920;
   obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
   obj[PARAM_IP] = WiFi.localIP().toString();
 #else
-  obj[PARAM_ISPINDEL_CONFIG] = false;
   obj[PARAM_TOTAL_HEAP] = ESP.getHeapSize();
   obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
   obj[PARAM_IP] = WiFi.localIP().toString();
 #endif
   obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
-  obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
 
   obj[PARAM_RUNTIME_AVERAGE] = serialized(
       String(_averageRunTime ? _averageRunTime / 1000 : 0, DECIMALS_RUNTIME));
 
   float v = myBatteryVoltage.getVoltage();
 
-#if defined(ESP32LITE)
-  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = true;  // No hardware support for these
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = true;
-#else
   obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
-#endif
-  obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
-      strlen(myConfig.getGravityFormula()) > 0 ? true : false;
-  obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
-  obj[PARAM_SELF][PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
-  obj[PARAM_SELF][PARAM_SELF_GYRO_MOVING] = myGyro.isSensorMoving();
   obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
       myConfig.isBleActive() || myConfig.hasTargetHttpPost() ||
               myConfig.hasTargetHttpPost() || myConfig.hasTargetHttpGet() ||
               myConfig.hasTargetMqtt() || myConfig.hasTargetInfluxDb2()
           ? true
           : false;
+
+#if defined(GRAVITYMON)
+  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
+
+#if defined(ESP32LITE)
+  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] =
+      true;  // No hardware support for these
+  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = true;
+#else
+  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
+#endif
+
+  obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
+      strlen(myConfig.getGravityFormula()) > 0 ? true : false;
+  obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
+  obj[PARAM_SELF][PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
+  obj[PARAM_SELF][PARAM_SELF_GYRO_MOVING] = myGyro.isSensorMoving();
+#endif  // GRAVITYMON
 
   response->setLength();
   request->send(response);
@@ -472,10 +492,10 @@ void GravmonWebServer::webHandleConfigFormatRead(
 
   s = readFile(TPL_FNAME_POST);
   obj[PARAM_FORMAT_POST] =
-      s.length() ? urlencode(s) : urlencode(String(&iSpindleFormat[0]));
+      s.length() ? urlencode(s) : urlencode(String(&iHttpPostFormat[0]));
   s = readFile(TPL_FNAME_POST2);
   obj[PARAM_FORMAT_POST2] =
-      s.length() ? urlencode(s) : urlencode(String(&iSpindleFormat[0]));
+      s.length() ? urlencode(s) : urlencode(String(&iHttpPostFormat[0]));
   s = readFile(TPL_FNAME_GET);
   obj[PARAM_FORMAT_GET] =
       s.length() ? urlencode(s) : urlencode(String(&iHttpGetFormat[0]));
@@ -497,8 +517,10 @@ bool GravmonWebServer::setupWebServer() {
   BaseWebServer::setupWebServer();
   MDNS.addService("gravitymon", "tcp", 80);
 
+#if defined(GRAVITYMON)
   HistoryLog runLog(RUNTIME_FILENAME);
   _averageRunTime = runLog.getAverage()._runTime;
+#endif  // GRAVITYMON
 
   // Static content
   Log.notice(F("WEB : Setting up handlers for gravmon web server." CR));
@@ -561,30 +583,35 @@ void GravmonWebServer::loop() {
   BaseWebServer::loop();
 
   if (_sensorCalibrationTask) {
+#if defined(GRAVITYMON)
     if (myGyro.isConnected()) {
       myGyro.calibrateSensor();
     } else {
       Log.error(F("WEB : No gyro connected, skipping calibration" CR));
     }
+#endif  // GRAVITYMON
 
     _sensorCalibrationTask = false;
   }
 
   if (_pushTestTask) {
+#if defined(GRAVITYMON)
     float angle = myGyro.getAngle();
     float tempC = myTempSensor.getTempC();
     float gravitySG = calculateGravity(angle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
         gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
+#endif  // GRAVITYMON
 
     Log.notice(F("WEB : Running scheduled push test for %s" CR),
                _pushTestTarget.c_str());
 
-    printHeap("TEST");
     TemplatingEngine engine;
     GravmonPush push(&myConfig);
+#if defined(GRAVITYMON)
     push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG, tempC,
                              1.0, myBatteryVoltage.getVoltage());
+#endif  // GRAVITYMON
 
     if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST) &&
         myConfig.hasTargetHttpPost()) {
@@ -679,6 +706,7 @@ void GravmonWebServer::loop() {
     }
 
     // Scan onewire
+#if defined(GRAVITYMON)
     JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
 
     for (int i = 0, j = 0; i < mySensors.getDS18Count(); i++) {
@@ -686,9 +714,9 @@ void GravmonWebServer::loop() {
       mySensors.getAddress(&adr[0], i);
       Log.notice(F("WEB : Found onewire device %d." CR), i);
       onew[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
-                             String(adr[2], 16) + String(adr[3], 16) +
-                             String(adr[4], 16) + String(adr[5], 16) +
-                             String(adr[6], 16) + String(adr[7], 16);
+                              String(adr[2], 16) + String(adr[3], 16) +
+                              String(adr[4], 16) + String(adr[5], 16) +
+                              String(adr[6], 16) + String(adr[7], 16);
       switch (adr[0]) {
         case DS18S20MODEL:
           onew[j][PARAM_FAMILY] = "DS18S20";
@@ -722,6 +750,7 @@ void GravmonWebServer::loop() {
         obj[PARAM_GYRO][PARAM_FAMILY] = "0x" + String(myGyro.getGyroID(), 16);
         break;
     }
+#endif  // GRAVITYMON
 
     JsonObject cpu = obj[PARAM_CHIP].to<JsonObject>();
 

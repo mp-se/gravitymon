@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +30,15 @@ SOFTWARE.
 
 enum BleFormat {
   BLE_DISABLED = 0,
+#if defined(GRAVITYMON)
   BLE_TILT = 1,
   BLE_TILT_PRO = 2,
   BLE_GRAVITYMON_EDDYSTONE = 4,
   BLE_GRAVITYMON_IBEACON = 5
+#endif  // GRAVITYMON
 };
 
+#if defined(GRAVITYMON)
 // Used for holding sensordata or sensoroffsets
 struct RawGyroData {
   int16_t ax;  // Raw Acceleration
@@ -56,7 +59,7 @@ struct RawFormulaData {
   double a[FORMULA_DATA_SIZE];
   double g[FORMULA_DATA_SIZE];
 };
-
+#endif  // GRAVITYMON
 class GravmonConfig : public BaseConfig {
  private:
   int _configVersion = 2;
@@ -78,25 +81,16 @@ class GravmonConfig : public BaseConfig {
   float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;
   int _sleepInterval = 900;
+
+#if defined(GRAVITYMON)
+
 #if defined(FLOATY)
   bool _gyroTemp = true;
 #else
   bool _gyroTemp = false;
 #endif
   bool _storageSleep = false;
-#if defined(ESP8266)
-  bool _skipSslOnTest = true;
-#else
-  bool _skipSslOnTest = false;
-#endif
   bool _gyroDisabled = false;
-  int _voltagePin = PIN_VOLT;
-
-  bool _wifiDirect = false;
-
-  // Push target settings
-  String _token = "";
-  String _token2 = "";
 
   // Gravity and temperature calculations
   String _gravityFormula = "";
@@ -105,7 +99,6 @@ class GravmonConfig : public BaseConfig {
 
   // BLE (ESP32 only)
   String _bleTiltColor;
-  BleFormat _bleFormat = BleFormat::BLE_DISABLED;
 
   // Gyro calibration and formula calculation data
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
@@ -119,6 +112,23 @@ class GravmonConfig : public BaseConfig {
   int _tempSensorResolution = 9;  // bits
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
+
+#endif  // GRAVITYMON
+
+  BleFormat _bleFormat = BleFormat::BLE_DISABLED;
+  int _voltagePin = PIN_VOLT;
+#if defined(ESP8266)
+  bool _skipSslOnTest = true;
+#else
+  bool _skipSslOnTest = false;
+#endif
+
+  bool _wifiDirect = false;
+
+  // Push target settings
+  String _token = "";
+  String _token2 = "";
+
   int _pushIntervalPost = 0;
   int _pushIntervalPost2 = 0;
   int _pushIntervalGet = 0;
@@ -138,6 +148,7 @@ class GravmonConfig : public BaseConfig {
   GravmonConfig(String baseMDNS, String fileName);
   int getConfigVersion() { return _configVersion; }
 
+#if defined(GRAVITYMON)
   const bool isGyroTemp() { return _gyroTemp; }
   void setGyroTemp(bool b) {
 #if defined(FLOATY)
@@ -146,12 +157,6 @@ class GravmonConfig : public BaseConfig {
     _gyroTemp = b;
     _saveNeeded = true;
 #endif
-  }
-
-  const bool isWifiDirect() { return _wifiDirect; }
-  void setWifiDirect(bool b) {
-    _wifiDirect = b;
-    _saveNeeded = true;
   }
 
   const bool isStorageSleep() { return _storageSleep; }
@@ -166,71 +171,8 @@ class GravmonConfig : public BaseConfig {
     _saveNeeded = true;
   }
 
-  // Token parameter
-  const char* getToken() { return _token.c_str(); }
-  void setToken(String s) {
-    _token = s;
-    _saveNeeded = true;
-  }
-  const char* getToken2() { return _token2.c_str(); }
-  void setToken2(String s) {
-    _token2 = s;
-    _saveNeeded = true;
-  }
-
-  int getSleepInterval() { return _sleepInterval; }
-  void setSleepInterval(int v) {
-    _sleepInterval = v;
-    _saveNeeded = true;
-  }
-  void setSleepInterval(String s) {
-    _sleepInterval = s.toInt();
-    _saveNeeded = true;
-  }
-
-  int getVoltagePin() {
-#if defined(ESP32LITE)  // Can only be configured for the floaty hardware
-    return _voltagePin;
-#else
-    return PIN_VOLT;
-#endif
-  }
   void setVoltagePin(int v) {
     _voltagePin = v;
-    _saveNeeded = true;
-  }
-
-  float getVoltageFactor() { return _voltageFactor; }
-  void setVoltageFactor(float f) {
-    _voltageFactor = f;
-    _saveNeeded = true;
-  }
-  void setVoltageFactor(String s) {
-    _voltageFactor = s.toFloat();
-    _saveNeeded = true;
-  }
-
-  float getVoltageConfig() { return _voltageConfig; }
-  void setVoltageConfig(float f) {
-    _voltageConfig = f;
-    _saveNeeded = true;
-  }
-  void setVoltageConfig(String s) {
-    _voltageConfig = s.toFloat();
-    _saveNeeded = true;
-  }
-
-  float getTempSensorAdjC() { return _tempSensorAdjC; }
-  void setTempSensorAdjC(float f) {
-    _tempSensorAdjC = f;
-    _saveNeeded = true;
-  }
-  void setTempSensorAdjC(String s, float adjustC = 0) {
-    _tempSensorAdjC = s.toFloat() + adjustC;
-    _saveNeeded = true;
-  }
-  void setTempSensorAdjF(String s, float adjustF = 0) {
-    _tempSensorAdjC = convertFtoC(s.toFloat() + adjustF);
     _saveNeeded = true;
   }
 
@@ -259,23 +201,6 @@ class GravmonConfig : public BaseConfig {
   const char* getBleTiltColor() { return _bleTiltColor.c_str(); }
   void setBleTiltColor(String c) {
     _bleTiltColor = c;
-    _saveNeeded = true;
-  }
-  bool isBleActive() { return (_bleFormat != BleFormat::BLE_DISABLED); }
-  bool isWifiPushActive() {
-    return (hasTargetHttpPost() || hasTargetHttpPost2() || hasTargetHttpGet() ||
-            hasTargetInfluxDb2() || hasTargetMqtt())
-               ? true
-               : false;
-  }
-
-  const BleFormat getBleFormat() { return _bleFormat; }
-  void setBleFormat(int b) {
-    _bleFormat = (BleFormat)b;
-    _saveNeeded = true;
-  }
-  void setBleFormat(BleFormat b) {
-    _bleFormat = b;
     _saveNeeded = true;
   }
 
@@ -336,6 +261,101 @@ class GravmonConfig : public BaseConfig {
     _gyroReadDelay = d;
     _saveNeeded = true;
   }
+#endif  // GRAVITYMON
+
+  bool isSkipSslOnTest() { return _skipSslOnTest; }
+  void setSkipSslOnTest(bool b) {
+    _skipSslOnTest = b;
+    _saveNeeded = true;
+  }
+
+  int getVoltagePin() {
+#if defined(ESP32LITE)  // Can only be configured for the floaty hardware
+    return _voltagePin;
+#else
+    return PIN_VOLT;
+#endif
+  }
+
+  const bool isWifiDirect() { return _wifiDirect; }
+  void setWifiDirect(bool b) {
+    _wifiDirect = b;
+    _saveNeeded = true;
+  }
+
+  const char* getToken() { return _token.c_str(); }
+  void setToken(String s) {
+    _token = s;
+    _saveNeeded = true;
+  }
+  const char* getToken2() { return _token2.c_str(); }
+  void setToken2(String s) {
+    _token2 = s;
+    _saveNeeded = true;
+  }
+
+  int getSleepInterval() { return _sleepInterval; }
+  void setSleepInterval(int v) {
+    _sleepInterval = v;
+    _saveNeeded = true;
+  }
+  void setSleepInterval(String s) {
+    _sleepInterval = s.toInt();
+    _saveNeeded = true;
+  }
+
+  float getVoltageFactor() { return _voltageFactor; }
+  void setVoltageFactor(float f) {
+    _voltageFactor = f;
+    _saveNeeded = true;
+  }
+  void setVoltageFactor(String s) {
+    _voltageFactor = s.toFloat();
+    _saveNeeded = true;
+  }
+
+  float getVoltageConfig() { return _voltageConfig; }
+  void setVoltageConfig(float f) {
+    _voltageConfig = f;
+    _saveNeeded = true;
+  }
+  void setVoltageConfig(String s) {
+    _voltageConfig = s.toFloat();
+    _saveNeeded = true;
+  }
+
+  float getTempSensorAdjC() { return _tempSensorAdjC; }
+  void setTempSensorAdjC(float f) {
+    _tempSensorAdjC = f;
+    _saveNeeded = true;
+  }
+  void setTempSensorAdjC(String s, float adjustC = 0) {
+    _tempSensorAdjC = s.toFloat() + adjustC;
+    _saveNeeded = true;
+  }
+  void setTempSensorAdjF(String s, float adjustF = 0) {
+    _tempSensorAdjC = convertFtoC(s.toFloat() + adjustF);
+    _saveNeeded = true;
+  }
+
+  bool isWifiPushActive() {
+    return (hasTargetHttpPost() || hasTargetHttpPost2() || hasTargetHttpGet() ||
+            hasTargetInfluxDb2() || hasTargetMqtt())
+               ? true
+               : false;
+  }
+
+  bool isBleActive() { return (_bleFormat != BleFormat::BLE_DISABLED); }
+
+  const BleFormat getBleFormat() { return _bleFormat; }
+  void setBleFormat(int b) {
+    _bleFormat = (BleFormat)b;
+    _saveNeeded = true;
+  }
+  void setBleFormat(BleFormat b) {
+    _bleFormat = b;
+    _saveNeeded = true;
+  }
 
   int getPushIntervalPost() { return _pushIntervalPost; }
   void setPushIntervalPost(int t) {
@@ -372,12 +392,6 @@ class GravmonConfig : public BaseConfig {
             _pushIntervalInflux + _pushIntervalMqtt) == 0
                ? false
                : true;
-  }
-
-  bool isSkipSslOnTest() { return _skipSslOnTest; }
-  void setSkipSslOnTest(bool b) {
-    _skipSslOnTest = b;
-    _saveNeeded = true;
   }
 
   const bool isIgnoreLowAnges() { return _ignoreLowAnges; }

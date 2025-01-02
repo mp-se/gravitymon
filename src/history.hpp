@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@ SOFTWARE.
  */
 #ifndef SRC_HISTORY_HPP_
 #define SRC_HISTORY_HPP_
+
+#if defined(GRAVITYMON)
 
 #include <Arduino.h>
 
@@ -49,6 +51,8 @@ class HistoryLog {
   void addLog(float runTime, float gravity, int sleepTime);
   const LogEntry& getAverage() { return _average; }
 };
+
+#endif  // GRAVITYMON
 
 #endif  // SRC_HISTORY_HPP_
 

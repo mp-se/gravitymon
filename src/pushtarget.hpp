@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,8 @@ constexpr auto TPL_BATTERY = "${battery}";
 constexpr auto TPL_BATTERY_PERCENT = "${battery-percent}";
 constexpr auto TPL_RSSI = "${rssi}";
 constexpr auto TPL_RUN_TIME = "${run-time}";
+
+#if defined(GRAVITYMON)
 constexpr auto TPL_ANGLE = "${angle}";
 constexpr auto TPL_TILT = "${tilt}";  // same as angle
 constexpr auto TPL_GRAVITY = "${gravity}";
@@ -49,6 +51,8 @@ constexpr auto TPL_GRAVITY_CORR = "${corr-gravity}";
 constexpr auto TPL_GRAVITY_CORR_G = "${corr-gravity-sg}";
 constexpr auto TPL_GRAVITY_CORR_P = "${corr-gravity-plato}";
 constexpr auto TPL_GRAVITY_UNIT = "${gravity-unit}";  // G or P
+#endif                                                // GRAVITYMON
+
 constexpr auto TPL_APP_VER = "${app-ver}";
 constexpr auto TPL_APP_BUILD = "${app-build}";
 
@@ -58,7 +62,7 @@ constexpr auto TPL_FNAME_GET = "/http-3.tpl";
 constexpr auto TPL_FNAME_INFLUXDB = "/influxdb.tpl";
 constexpr auto TPL_FNAME_MQTT = "/mqtt.tpl";
 
-extern const char iSpindleFormat[] PROGMEM;
+extern const char iHttpPostFormat[] PROGMEM;
 extern const char iHttpGetFormat[] PROGMEM;
 extern const char influxDbFormat[] PROGMEM;
 extern const char mqttFormat[] PROGMEM;
@@ -76,8 +80,8 @@ class GravmonPush : public BasePush {
     TEMPLATE_HTTP2 = 1,
     TEMPLATE_HTTP3 = 2,
     TEMPLATE_INFLUX = 3,
-    TEMPLATE_MQTT = 4,
-    TEMPLATE_BLE = 5
+    TEMPLATE_MQTT = 4
+    // TEMPLATE_BLE = 5
   };
 
   void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
@@ -85,11 +89,14 @@ class GravmonPush : public BasePush {
 
   const char* getTemplate(Templates t, bool useDefaultTemplate = false);
   void clearTemplate() { _baseTemplate.clear(); }
+  int getLastCode() { return _lastResponseCode; }
+  bool getLastSuccess() { return _lastSuccess; }
+
+#if defined(GRAVITYMON)
   void setupTemplateEngine(TemplatingEngine& engine, float angle,
                            float gravitySG, float corrGravitySG, float tempC,
                            float runTime, float voltage);
-  int getLastCode() { return _lastResponseCode; }
-  bool getLastSuccess() { return _lastSuccess; }
+#endif  // GRAVITYMON
 };
 
 class PushIntervalTracker {

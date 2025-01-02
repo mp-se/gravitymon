@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ SOFTWARE.
 #include <ble.hpp>
 #include <string>
 
-#if defined(ENABLE_BLE)
+#if defined(ENABLE_BLE) && defined(GRAVITYMON)
 
 #include <log.hpp>
 
@@ -140,8 +140,8 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   advData.setFlags(0x04);
   const NimBLEBeacon::BeaconData& beaconData = beacon.getData();
   // advData.setManufacturerData(beacon.getData());
-  advData.setManufacturerData(
-      std::string(reinterpret_cast<const char*>(&beaconData), sizeof(beaconData)));
+  advData.setManufacturerData(std::string(
+      reinterpret_cast<const char*>(&beaconData), sizeof(beaconData)));
 
   _advertising->setAdvertisementData(advData);
   // _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
@@ -212,4 +212,4 @@ void BleSender::dumpPayload(const char* p, int len) {
   EspSerial.println();
 }
 
-#endif  // ENABLE_BLE
+#endif  // ENABLE_BLE && GRAVITYMON

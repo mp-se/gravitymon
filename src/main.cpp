@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,10 +42,18 @@ SOFTWARE.
 #include <webserver.hpp>
 #include <wificonnection.hpp>
 
+#if defined(GRAVITYMON)
 const char* CFG_APPNAME = "gravitymon";
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";
 const char* CFG_AP_PASS = "password";
+#elif defined(PRESSUREMON)
+const char* CFG_APPNAME = "pressuremon";
+const char* CFG_FILENAME = "/pressuremon2.json";
+const char* CFG_AP_SSID = "PressureMon";
+const char* CFG_AP_PASS = "password";
+#undef ENABLE_BLE  // Temporary
+#endif             // GRAVITYMON
 
 #if !defined(USER_SSID)
 #define USER_SSID ""
@@ -79,7 +87,7 @@ uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 uint32_t stableGyroMillis;  // Used to calculate the total time since last
                             // stable gyro reading
 bool skipRunTimeLog = false;
-RunMode runMode = RunMode::gravityMode;
+RunMode runMode = RunMode::measurementMode;
 
 void checkSleepMode(float angle, float volt);
 
@@ -144,7 +152,7 @@ void setup() {
   }
 
   bool needWifi = true;  // Under ESP32 we dont need wifi if only BLE is active
-                         // in gravityMode
+                         // in measurementMode
 
   // Do this setup for all modes exect wifi setup
   switch (runMode) {
@@ -156,6 +164,7 @@ void setup() {
       break;
 
     default:
+#if defined(GRAVITYMON)
       if (!myConfig.isGyroDisabled()) {
         if (myGyro.setup()) {
           PERF_BEGIN("main-gyro-read");
@@ -169,14 +178,14 @@ void setup() {
       } else {
         Log.notice(F("Main: Gyro is disabled in configuration." CR));
       }
-
       myBatteryVoltage.read();
       checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
       Log.notice(F("Main: Battery %F V, Gyro=%F, Run-mode=%d." CR),
                  myBatteryVoltage.getVoltage(), myGyro.getAngle(), runMode);
+#endif  // GRAVITYMON
 
 #if defined(ESP32)
-      if (!myConfig.isWifiPushActive() && runMode == RunMode::gravityMode) {
+      if (!myConfig.isWifiPushActive() && runMode == RunMode::measurementMode) {
         Log.notice(
             F("Main: Wifi is not needed in gravity mode, skipping "
               "connection." CR));
@@ -186,7 +195,7 @@ void setup() {
 
       if (needWifi) {
         PERF_BEGIN("main-wifi-connect");
-        if (myConfig.isWifiDirect() && runMode == RunMode::gravityMode) {
+        if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
           myWifi.connect(true);
         } else {
           myWifi.connect();
@@ -194,9 +203,11 @@ void setup() {
         PERF_END("main-wifi-connect");
       }
 
+#if defined(GRAVITYMON)
       PERF_BEGIN("main-temp-setup");
       myTempSensor.setup();
       PERF_END("main-temp-setup");
+#endif  // GRAVITYMON
       break;
   }
 
@@ -239,6 +250,7 @@ void setup() {
 
 // Main loop that does gravity readings and push data to targets
 // Return true if gravity reading was successful
+#if defined(GRAVITYMON)
 bool loopReadGravity() {
   float angle = 0;
 
@@ -284,7 +296,7 @@ bool loopReadGravity() {
       pushExpired = false;
     }
 
-    if (pushExpired || runMode == RunMode::gravityMode) {
+    if (pushExpired || runMode == RunMode::measurementMode) {
       pushMillis = millis();
       PERF_BEGIN("loop-push");
 
@@ -318,7 +330,7 @@ bool loopReadGravity() {
 
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.
-        if (myConfig.isWifiDirect() && runMode == RunMode::gravityMode) {
+        if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
           Log.notice(F(
               "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
 
@@ -344,7 +356,7 @@ bool loopReadGravity() {
                        (millis() - runtimeMillis) / 1000);
 
           // Only log when in gravity mode
-          if (!skipRunTimeLog && runMode == RunMode::gravityMode) {
+          if (!skipRunTimeLog && runMode == RunMode::measurementMode) {
             Log.notice(
                 F("Main: Updating history log with, runtime, gravity and "
                   "interval." CR));
@@ -387,6 +399,7 @@ void loopGravityOnInterval() {
       checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
   }
 }
+#endif  // GRAVITYMON
 
 void goToSleep(int sleepInterval) {
   float volt = myBatteryVoltage.getVoltage();
@@ -397,7 +410,9 @@ void goToSleep(int sleepInterval) {
              sleepInterval,
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
   LittleFS.end();
+#if defined(GRAVITYMON)
   myGyro.enterSleep();
+#endif  // GRAVITYMON
   PERF_END("run-time");
   PERF_PUSH();
 
@@ -419,14 +434,16 @@ void loop() {
     case RunMode::configurationMode:
       myWebServer.loop();
       myWifi.loop();
+#if defined(GRAVITYMON)
       loopGravityOnInterval();
       delay(1);
+#endif  // GRAVITYMON
 
       // If we switched mode, dont include this in the log.
       if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
       break;
 
-    case RunMode::gravityMode:
+    case RunMode::measurementMode:
       // If we didnt get a wifi connection, we enter sleep for a short time to
       // conserve battery.
       if (!myWifi.isConnected() &&
@@ -438,10 +455,12 @@ void loop() {
         goToSleep(60);
       }
 
+#if defined(GRAVITYMON)
       if (loopReadGravity()) {
         myWifi.stopDoubleReset();
         goToSleep(myConfig.getSleepInterval());
       }
+#endif  // GRAVITYMON
 
       // If the sensor is moving and we are not getting a clear reading, we
       // enter sleep for a short time to conserve battery.
@@ -454,16 +473,19 @@ void loop() {
         goToSleep(60);
       }
 
+#if defined(GRAVITYMON)
       if (!myConfig.isGyroDisabled()) {
         PERF_BEGIN("loop-gyro-read");
         myGyro.read();
         PERF_END("loop-gyro-read");
       }
+#endif  // GRAVITYMON
       myWifi.loop();
       break;
   }
 }
 
+#if defined(GRAVITYMON)
 void checkSleepMode(float angle, float volt) {
 #if defined(SKIP_SLEEPMODE)
   runMode = RunMode::configurationMode;
@@ -473,7 +495,7 @@ void checkSleepMode(float angle, float volt) {
 
 #if defined(FORCE_GRAVITY_MODE)
   Log.notice(F("MAIN: Forcing device into gravity mode for debugging" CR));
-  runMode = RunMode::gravityMode;
+  runMode = RunMode::measurementMode;
   return;
 #endif
 
@@ -502,7 +524,7 @@ void checkSleepMode(float angle, float volt) {
   } else if (angle < 5 && myConfig.isStorageSleep()) {
     runMode = RunMode::storageMode;
   } else {
-    runMode = RunMode::gravityMode;
+    runMode = RunMode::measurementMode;
   }
 
   switch (runMode) {
@@ -514,7 +536,7 @@ void checkSleepMode(float angle, float volt) {
       break;
     case RunMode::wifiSetupMode:
       break;
-    case RunMode::gravityMode:
+    case RunMode::measurementMode:
 #if LOG_LEVEL == 6
       Log.notice(F("MAIN: run mode GRAVITY (angle=%F volt=%F)." CR), angle,
                  volt);
@@ -538,5 +560,6 @@ void checkSleepMode(float angle, float volt) {
 #endif
   }
 }
+#endif  // GRAVITYMON
 
 // EOF

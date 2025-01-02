@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ void write_bytes(int fd, char* buf, int n) { EspSerial.print(*buf); }
 }
 
 void runGpioHardwareTests() {
-#if defined(RUN_HARDWARE_TEST)
+#if defined(RUN_HARDWARE_TEST) && defined(GRAVITYMON)
   int max = 10;
 
   Log.notice(F("HELP: Configuring GPIO for output." CR));
@@ -97,7 +97,7 @@ void runGpioHardwareTests() {
 
   Log.notice(F("HELP: Tests finished, enter waiting for reset." CR));
   while (true) delay(sleep);
-#endif
+#endif  // RUN_HARDWARE_TEST && GRAVITYMON
 }
 
 bool checkPinConnected() {

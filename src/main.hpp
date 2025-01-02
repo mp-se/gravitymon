@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,13 +29,14 @@ SOFTWARE.
 #include <espframework.hpp>
 
 enum RunMode {
-  gravityMode = 0,
+  measurementMode = 0,
   configurationMode = 1,
   wifiSetupMode = 2,
   storageMode = 3
 };
 extern RunMode runMode;
 
+#if defined(GRAVITYMON)
 #if defined(ESP8266)
 // Hardware config for ESP8266-d1, iSpindel hardware
 // ------------------------------------------------------
@@ -108,6 +109,21 @@ extern RunMode runMode;
 #define PIN_VOLT PIN_A0
 #define ENABLE_BLE
 #endif
+#endif  // GRAVITYMON
+
+#if defined(PRESSUREMON)
+#if defined(ESP32S3)
+// Hardware config for ESP32-s3-mini, pressuremon hardware
+// ------------------------------------------------------
+#define PIN_SDA A17
+#define PIN_SCL A15
+#define PIN_CFG1 A10
+#define PIN_CFG2 A9
+#define PIN_DS A12
+#define PIN_VOLT A1
+// #define ENABLE_BLE
+#endif
+#endif  // PRESSUREMON
 
 constexpr auto DECIMALS_SG = 4;
 constexpr auto DECIMALS_PLATO = 2;

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@ SOFTWARE.
  */
 #ifndef SRC_GYRO_HPP_
 #define SRC_GYRO_HPP_
+
+#if defined(GRAVITYMON)
 
 #define I2CDEV_IMPLEMENTATION I2CDEV_ARDUINO_WIRE
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
@@ -79,6 +81,8 @@ class GyroSensor {
 };
 
 extern GyroSensor myGyro;
+
+#endif  // GRAVITYMON
 
 #endif  // SRC_GYRO_HPP_
 

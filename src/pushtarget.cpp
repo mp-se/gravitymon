@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,8 +37,9 @@ SOFTWARE.
 #include <templating.hpp>
 constexpr auto PUSHINT_FILENAME = "/push.dat";
 
+#if defined(GRAVITYMON)
 // Use iSpindle format for compatibility, HTTP POST
-const char iSpindleFormat[] PROGMEM =
+const char iHttpPostFormat[] PROGMEM =
     "{"
     "\"name\": \"${mdns}\", "
     "\"ID\": \"${id}\", "
@@ -55,22 +56,22 @@ const char iSpindleFormat[] PROGMEM =
     "\"run-time\": ${run-time} "
     "}";
 
-const char bleFormat[] PROGMEM =
-    "{"
-    "\"name\":\"${mdns}\","
-    "\"ID\":\"${id}\","
-    "\"token\":\"${token}\","
-    "\"interval\":${sleep-interval},"
-    "\"temperature\":${temp},"
-    "\"temp_units\":\"${temp-unit}\","
-    "\"gravity\":${gravity},"
-    "\"angle\":${angle},"
-    "\"battery\":${battery},"
-    "\"RSSI\":0,"
-    "\"corr-gravity\":${corr-gravity},"
-    "\"gravity-unit\":\"${gravity-unit}\","
-    "\"run-time\":${run-time}"
-    "}";
+// const char bleFormat[] PROGMEM =
+//     "{"
+//     "\"name\":\"${mdns}\","
+//     "\"ID\":\"${id}\","
+//     "\"token\":\"${token}\","
+//     "\"interval\":${sleep-interval},"
+//     "\"temperature\":${temp},"
+//     "\"temp_units\":\"${temp-unit}\","
+//     "\"gravity\":${gravity},"
+//     "\"angle\":${angle},"
+//     "\"battery\":${battery},"
+//     "\"RSSI\":0,"
+//     "\"corr-gravity\":${corr-gravity},"
+//     "\"gravity-unit\":\"${gravity-unit}\","
+//     "\"run-time\":${run-time}"
+//     "}";
 
 // Format for an HTTP GET
 const char iHttpGetFormat[] PROGMEM =
@@ -103,6 +104,14 @@ const char mqttFormat[] PROGMEM =
     "ispindel/${mdns}/gravity:${gravity}|"
     "ispindel/${mdns}/interval:${sleep-interval}|"
     "ispindel/${mdns}/RSSI:${rssi}|";
+#endif  // GRAVITYMON
+
+#if defined(PRESSUREMON)
+const char iHttpPostFormat[] PROGMEM = "";
+const char iHttpGetFormat[] PROGMEM = "";
+const char influxDbFormat[] PROGMEM = "";
+const char mqttFormat[] PROGMEM = "";
+#endif
 
 void PushIntervalTracker::update(const int index, const int defaultValue) {
   if (_counters[index] <= 0)
@@ -174,8 +183,10 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
   _http->setReuse(true);
 
   TemplatingEngine engine;
+#if defined(GRAVITYMON)
   setupTemplateEngine(engine, angle, gravitySG, corrGravitySG, tempC, runTime,
                       myBatteryVoltage.getVoltage());
+#endif  // GRAVITYMON
 
   PushIntervalTracker intDelay;
   intDelay.load();
@@ -186,7 +197,7 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpPost(doc);
@@ -199,7 +210,7 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpPost2(doc);
@@ -212,7 +223,7 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpGet(doc);
@@ -225,7 +236,7 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendInfluxDb2(doc);
@@ -238,7 +249,7 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendMqtt(doc);
@@ -255,11 +266,11 @@ const char* GravmonPush::getTemplate(Templates t, bool useDefaultTemplate) {
   // Load templates from memory
   switch (t) {
     case TEMPLATE_HTTP1:
-      _baseTemplate = String(iSpindleFormat);
+      _baseTemplate = String(iHttpPostFormat);
       fname = TPL_FNAME_POST;
       break;
     case TEMPLATE_HTTP2:
-      _baseTemplate = String(iSpindleFormat);
+      _baseTemplate = String(iHttpPostFormat);
       fname = TPL_FNAME_POST2;
       break;
     case TEMPLATE_HTTP3:
@@ -274,11 +285,12 @@ const char* GravmonPush::getTemplate(Templates t, bool useDefaultTemplate) {
       _baseTemplate = String(mqttFormat);
       fname = TPL_FNAME_MQTT;
       break;
-    case TEMPLATE_BLE:
-      _baseTemplate = String(bleFormat);
-      fname =
-          "/dummy";  // this file should not exist, use standard template only
-      break;
+      // case TEMPLATE_BLE:
+      //   _baseTemplate = String(bleFormat);
+      //   fname =
+      //       "/dummy";  // this file should not exist, use standard template
+      //       only
+      //   break;
   }
 
   if (!useDefaultTemplate) {
@@ -300,6 +312,7 @@ const char* GravmonPush::getTemplate(Templates t, bool useDefaultTemplate) {
   return _baseTemplate.c_str();
 }
 
+#if defined(GRAVITYMON)
 void GravmonPush::setupTemplateEngine(TemplatingEngine& engine, float angle,
                                       float gravitySG, float corrGravitySG,
                                       float tempC, float runTime,
@@ -384,5 +397,6 @@ void GravmonPush::setupTemplateEngine(TemplatingEngine& engine, float angle,
   dumpAll();
 #endif
 }
+#endif  // GRAVITYMON
 
 // EOF

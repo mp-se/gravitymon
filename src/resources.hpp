@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the = "Software"), to deal
@@ -25,6 +25,35 @@ SOFTWARE.
 #define SRC_RESOURCES_HPP_
 
 // Common strings used in json formats.
+#if defined(GRAVITYMON)
+constexpr auto PARAM_GRAVITY_FORMULA = "gravity_formula";
+constexpr auto PARAM_GRAVITY_FORMAT = "gravity_format";
+constexpr auto PARAM_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
+constexpr auto PARAM_GYRO_CALIBRATION = "gyro_calibration_data";
+constexpr auto PARAM_GYRO_TEMP = "gyro_temp";
+constexpr auto PARAM_GYRO_DISABLED = "gyro_disabled";
+constexpr auto PARAM_STORAGE_SLEEP = "storage_sleep";
+constexpr auto PARAM_FORMULA_DATA = "formula_calculation_data";
+constexpr auto PARAM_GRAVITY = "gravity";
+constexpr auto PARAM_BLE_TILT_COLOR = "ble_tilt_color";
+constexpr auto PARAM_ISPINDEL_CONFIG = "ispindel_config";
+constexpr auto PARAM_GRAVITYMON1_CONFIG = "gravitymon1_config";
+constexpr auto PARAM_GYRO_READ_COUNT = "gyro_read_count";
+constexpr auto PARAM_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
+constexpr auto PARAM_FORMULA_DEVIATION = "formula_max_deviation";
+constexpr auto PARAM_FORMULA_CALIBRATION_TEMP = "formula_calibration_temp";
+constexpr auto PARAM_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
+constexpr auto PARAM_SELF_GYRO_CONNECTED = "gyro_connected";
+constexpr auto PARAM_SELF_GYRO_MOVING = "gyro_moving";
+constexpr auto PARAM_SELF_GYRO_CALIBRATION = "gyro_calibration";
+constexpr auto PARAM_SELF_GRAVITY_FORMULA = "gravity_formula";
+constexpr auto PARAM_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
+constexpr auto PARAM_GYRO = "gyro";
+constexpr auto PARAM_ONEWIRE = "onewire";
+constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
+#endif  // GRAVITYMON
+
+constexpr auto PARAM_SLEEP_MODE = "sleep_mode";
 constexpr auto PARAM_CONFIG_VER = "config_version";
 constexpr auto PARAM_HARDWARE = "hardware";
 constexpr auto PARAM_RUNTIME_AVERAGE = "runtime_average";
@@ -33,33 +62,15 @@ constexpr auto PARAM_USE_WIFI_DIRECT = "use_wifi_direct";
 constexpr auto PARAM_SLEEP_INTERVAL = "sleep_interval";
 constexpr auto PARAM_VOLTAGE_FACTOR = "voltage_factor";
 constexpr auto PARAM_VOLTAGE_CONFIG = "voltage_config";
-constexpr auto PARAM_GRAVITY_FORMULA = "gravity_formula";
-constexpr auto PARAM_GRAVITY_FORMAT = "gravity_format";
-constexpr auto PARAM_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto PARAM_TEMP_ADJ = "temp_adjustment_value";
-constexpr auto PARAM_GYRO_CALIBRATION = "gyro_calibration_data";
-constexpr auto PARAM_GYRO_TEMP = "gyro_temp";
-constexpr auto PARAM_GYRO_DISABLED = "gyro_disabled";
-constexpr auto PARAM_STORAGE_SLEEP = "storage_sleep";
 constexpr auto PARAM_VOLTAGE_PIN = "voltage_pin";
-constexpr auto PARAM_FORMULA_DATA = "formula_calculation_data";
 constexpr auto PARAM_APP_VER = "app_ver";
 constexpr auto PARAM_APP_BUILD = "app_build";
 constexpr auto PARAM_ANGLE = "angle";
-constexpr auto PARAM_GRAVITY = "gravity";
 constexpr auto PARAM_TEMP = "temp";
 constexpr auto PARAM_BATTERY = "battery";
-constexpr auto PARAM_SLEEP_MODE = "sleep_mode";
 constexpr auto PARAM_PLATFORM = "platform";
-constexpr auto PARAM_BLE_TILT_COLOR = "ble_tilt_color";
 constexpr auto PARAM_BLE_FORMAT = "ble_format";
-constexpr auto PARAM_ISPINDEL_CONFIG = "ispindel_config";
-constexpr auto PARAM_GRAVITYMON1_CONFIG = "gravitymon1_config";
-constexpr auto PARAM_GYRO_READ_COUNT = "gyro_read_count";
-constexpr auto PARAM_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
-constexpr auto PARAM_FORMULA_DEVIATION = "formula_max_deviation";
-constexpr auto PARAM_FORMULA_CALIBRATION_TEMP = "formula_calibration_temp";
-constexpr auto PARAM_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
 constexpr auto PARAM_PUSH_INTERVAL_POST = "http_post_int";
 constexpr auto PARAM_PUSH_INTERVAL_POST2 = "http_post2_int";
 constexpr auto PARAM_PUSH_INTERVAL_GET = "http_get_int";
@@ -76,24 +87,16 @@ constexpr auto PARAM_PUSH_FORMAT = "push_format";
 constexpr auto PARAM_PUSH_RETURN_CODE = "push_return_code";
 constexpr auto PARAM_PUSH_ENABLED = "push_enabled";
 constexpr auto PARAM_SELF = "self_check";
-constexpr auto PARAM_SELF_GYRO_CONNECTED = "gyro_connected";
-constexpr auto PARAM_SELF_GYRO_MOVING = "gyro_moving";
-constexpr auto PARAM_SELF_GYRO_CALIBRATION = "gyro_calibration";
-constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
-constexpr auto PARAM_SELF_GRAVITY_FORMULA = "gravity_formula";
 constexpr auto PARAM_SELF_BATTERY_LEVEL = "battery_level";
 constexpr auto PARAM_SELF_PUSH_TARGET = "push_targets";
 constexpr auto PARAM_TOTAL_HEAP = "total_heap";
 constexpr auto PARAM_FREE_HEAP = "free_heap";
 constexpr auto PARAM_IP = "ip";
-constexpr auto PARAM_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
 constexpr auto PARAM_WIFI_SETUP = "wifi_setup";
 constexpr auto PARAM_I2C = "i2c";
-constexpr auto PARAM_ONEWIRE = "onewire";
 constexpr auto PARAM_ADRESS = "adress";
 constexpr auto PARAM_RESOLUTION = "resolution";
 constexpr auto PARAM_FAMILY = "family";
-constexpr auto PARAM_GYRO = "gyro";
 constexpr auto PARAM_CHIP = "chip";
 constexpr auto PARAM_REVISION = "revision";
 constexpr auto PARAM_CORES = "cores";

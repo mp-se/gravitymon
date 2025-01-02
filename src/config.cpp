@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,25 +37,16 @@ void GravmonConfig::createJson(JsonObject& doc) {
   createJsonOta(doc);
   createJsonPush(doc);
 
+#if defined(GRAVITYMON)
   doc[PARAM_BLE_TILT_COLOR] = getBleTiltColor();
-  doc[PARAM_BLE_FORMAT] = getBleFormat();
-  doc[PARAM_USE_WIFI_DIRECT] = isWifiDirect();
-  doc[PARAM_TOKEN] = getToken();
-  doc[PARAM_TOKEN2] = getToken2();
-  doc[PARAM_SLEEP_INTERVAL] = getSleepInterval();
-  doc[PARAM_VOLTAGE_FACTOR] =
-      serialized(String(getVoltageFactor(), DECIMALS_BATTERY));
-  doc[PARAM_VOLTAGE_CONFIG] =
-      serialized(String(getVoltageConfig(), DECIMALS_BATTERY));
   doc[PARAM_GRAVITY_FORMULA] = getGravityFormula();
   doc[PARAM_GRAVITY_FORMAT] = String(getGravityFormat());
-  doc[PARAM_TEMP_ADJ] = serialized(String(getTempSensorAdjC(), DECIMALS_TEMP));
-  doc[PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
   doc[PARAM_GYRO_TEMP] = isGyroTemp();
   doc[PARAM_GYRO_DISABLED] = isGyroDisabled();
   doc[PARAM_STORAGE_SLEEP] = isStorageSleep();
   doc[PARAM_SKIP_SSL_ON_TEST] = isSkipSslOnTest();
   doc[PARAM_VOLTAGE_PIN] = getVoltagePin();
+  doc[PARAM_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
 
   JsonObject cal = doc[PARAM_GYRO_CALIBRATION].to<JsonObject>();
   cal["ax"] = _gyroCalibration.ax;
@@ -77,13 +68,27 @@ void GravmonConfig::createJson(JsonObject& doc) {
   doc[PARAM_FORMULA_DEVIATION] =
       serialized(String(this->getMaxFormulaCreationDeviation(), DECIMALS_TILT));
   doc[PARAM_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
+
+  doc[PARAM_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
+  doc[PARAM_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
+
+#endif  // GRAVITYMON
+  doc[PARAM_BLE_FORMAT] = getBleFormat();
+  doc[PARAM_USE_WIFI_DIRECT] = isWifiDirect();
+  doc[PARAM_TOKEN] = getToken();
+  doc[PARAM_TOKEN2] = getToken2();
+  doc[PARAM_SLEEP_INTERVAL] = getSleepInterval();
+  doc[PARAM_VOLTAGE_FACTOR] =
+      serialized(String(getVoltageFactor(), DECIMALS_BATTERY));
+  doc[PARAM_VOLTAGE_CONFIG] =
+      serialized(String(getVoltageConfig(), DECIMALS_BATTERY));
+  doc[PARAM_TEMP_ADJ] = serialized(String(getTempSensorAdjC(), DECIMALS_TEMP));
+
   doc[PARAM_PUSH_INTERVAL_POST] = this->getPushIntervalPost();
   doc[PARAM_PUSH_INTERVAL_POST2] = this->getPushIntervalPost2();
   doc[PARAM_PUSH_INTERVAL_GET] = this->getPushIntervalGet();
   doc[PARAM_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
   doc[PARAM_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
-  doc[PARAM_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
-  doc[PARAM_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
   doc[PARAM_BATTERY_SAVING] = this->isBatterySaving();
 }
 
@@ -94,23 +99,10 @@ void GravmonConfig::parseJson(JsonObject& doc) {
   parseJsonOta(doc);
   parseJsonPush(doc);
 
+#if defined(GRAVITYMON)
   if (!doc[PARAM_BLE_TILT_COLOR].isNull())
     setBleTiltColor(doc[PARAM_BLE_TILT_COLOR]);
-  if (!doc[PARAM_BLE_FORMAT].isNull())
-    setBleFormat(doc[PARAM_BLE_FORMAT].as<int>());
 
-  if (!doc[PARAM_USE_WIFI_DIRECT].isNull())
-    setWifiDirect(doc[PARAM_USE_WIFI_DIRECT]);
-
-  if (!doc[PARAM_TOKEN].isNull()) setToken(doc[PARAM_TOKEN]);
-  if (!doc[PARAM_TOKEN2].isNull()) setToken2(doc[PARAM_TOKEN2]);
-
-  if (!doc[PARAM_SLEEP_INTERVAL].isNull())
-    setSleepInterval(doc[PARAM_SLEEP_INTERVAL].as<int>());
-  if (!doc[PARAM_VOLTAGE_FACTOR].isNull())
-    setVoltageFactor(doc[PARAM_VOLTAGE_FACTOR].as<float>());
-  if (!doc[PARAM_VOLTAGE_CONFIG].isNull())
-    setVoltageConfig(doc[PARAM_VOLTAGE_CONFIG].as<float>());
   if (!doc[PARAM_GRAVITY_FORMULA].isNull())
     setGravityFormula(doc[PARAM_GRAVITY_FORMULA]);
   if (!doc[PARAM_GRAVITY_TEMP_ADJ].isNull())
@@ -125,8 +117,7 @@ void GravmonConfig::parseJson(JsonObject& doc) {
   }
   if (!doc[PARAM_GYRO_DISABLED].isNull())
     setGyroDisabled(doc[PARAM_GYRO_DISABLED].as<bool>());
-  if (!doc[PARAM_TEMP_ADJ].isNull())
-    setTempSensorAdjC(doc[PARAM_TEMP_ADJ].as<float>());
+
   if (!doc[PARAM_SKIP_SSL_ON_TEST].isNull())
     setSkipSslOnTest(doc[PARAM_SKIP_SSL_ON_TEST].as<bool>());
   if (!doc[PARAM_VOLTAGE_PIN].isNull())
@@ -173,6 +164,29 @@ void GravmonConfig::parseJson(JsonObject& doc) {
   if (!doc[PARAM_FORMULA_CALIBRATION_TEMP].isNull())
     this->SetDefaultCalibrationTemp(
         doc[PARAM_FORMULA_CALIBRATION_TEMP].as<float>());
+  if (!doc[PARAM_TEMPSENSOR_RESOLUTION].isNull())
+    this->setTempSensorResolution(doc[PARAM_TEMPSENSOR_RESOLUTION].as<int>());
+  if (!doc[PARAM_IGNORE_LOW_ANGLES].isNull())
+    setIgnoreLowAnges(doc[PARAM_IGNORE_LOW_ANGLES].as<bool>());
+#endif  // GRAVITYMON
+
+  if (!doc[PARAM_BLE_FORMAT].isNull())
+    setBleFormat(doc[PARAM_BLE_FORMAT].as<int>());
+  if (!doc[PARAM_USE_WIFI_DIRECT].isNull())
+    setWifiDirect(doc[PARAM_USE_WIFI_DIRECT]);
+
+  if (!doc[PARAM_TOKEN].isNull()) setToken(doc[PARAM_TOKEN]);
+  if (!doc[PARAM_TOKEN2].isNull()) setToken2(doc[PARAM_TOKEN2]);
+
+  if (!doc[PARAM_SLEEP_INTERVAL].isNull())
+    setSleepInterval(doc[PARAM_SLEEP_INTERVAL].as<int>());
+  if (!doc[PARAM_VOLTAGE_FACTOR].isNull())
+    setVoltageFactor(doc[PARAM_VOLTAGE_FACTOR].as<float>());
+  if (!doc[PARAM_VOLTAGE_CONFIG].isNull())
+    setVoltageConfig(doc[PARAM_VOLTAGE_CONFIG].as<float>());
+  if (!doc[PARAM_TEMP_ADJ].isNull())
+    setTempSensorAdjC(doc[PARAM_TEMP_ADJ].as<float>());
+
   if (!doc[PARAM_PUSH_INTERVAL_POST].isNull())
     this->setPushIntervalPost(doc[PARAM_PUSH_INTERVAL_POST].as<int>());
   if (!doc[PARAM_PUSH_INTERVAL_POST2].isNull())
@@ -183,15 +197,12 @@ void GravmonConfig::parseJson(JsonObject& doc) {
     this->setPushIntervalInflux(doc[PARAM_PUSH_INTERVAL_INFLUX].as<int>());
   if (!doc[PARAM_PUSH_INTERVAL_MQTT].isNull())
     this->setPushIntervalMqtt(doc[PARAM_PUSH_INTERVAL_MQTT].as<int>());
-  if (!doc[PARAM_TEMPSENSOR_RESOLUTION].isNull())
-    this->setTempSensorResolution(doc[PARAM_TEMPSENSOR_RESOLUTION].as<int>());
-  if (!doc[PARAM_IGNORE_LOW_ANGLES].isNull())
-    setIgnoreLowAnges(doc[PARAM_IGNORE_LOW_ANGLES].as<bool>());
   if (!doc[PARAM_BATTERY_SAVING].isNull())
     setBatterySaving(doc[PARAM_BATTERY_SAVING].as<bool>());
 }
 
 void GravmonConfig::migrateSettings() {
+#if defined(GRAVITYMON)
   constexpr auto CFG_FILENAME_OLD = "/gravitymon.json";
 
   if (!LittleFS.exists(CFG_FILENAME_OLD)) {
@@ -267,9 +278,11 @@ void GravmonConfig::migrateSettings() {
   }
 
   Log.notice(F("CFG : Migrated old config /gravitymon.json." CR));
+#endif  // GRAVITYMON
 }
 
 void GravmonConfig::migrateHwSettings() {
+#if defined(GRAVITYMON)
   constexpr auto CFG_FILENAME_HW_OLD = "/hardware.json";
 
   if (!LittleFS.exists(CFG_FILENAME_HW_OLD)) {
@@ -318,6 +331,7 @@ void GravmonConfig::migrateHwSettings() {
   }
 
   Log.notice(F("CFG : Migrated old hw config /hardware.json." CR));
+#endif  // GRAVITYMON
 }
 
 // EOF
