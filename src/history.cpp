@@ -21,8 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(GRAVITYMON)
-
 #include <LittleFS.h>
 
 #include <cstdio>
@@ -37,29 +35,29 @@ HistoryLog::HistoryLog(String fName) {
     for (int i = 0; i < 10; i++) {
       String s = runFile.readStringUntil('\n');
 
-      sscanf(s.c_str(), "%f;%f;%d", &_log[i]._runTime, &_log[i]._gravity,
+      sscanf(s.c_str(), "%f;%f;%d", &_log[i]._runTime, &_log[i]._measurement,
              &_log[i]._sleepTime);
 
       if (_log[i]._runTime) {
         _average._runTime += _log[i]._runTime;
-        _average._gravity += _log[i]._gravity;
+        _average._measurement += _log[i]._measurement;
         _average._sleepTime += _log[i]._sleepTime;
         _count++;
       }
     }
     runFile.close();
     _average._runTime = _average._runTime / _count;
-    _average._gravity = _average._gravity / _count;
+    _average._measurement = _average._measurement / _count;
     _average._sleepTime = _average._sleepTime / _count;
   }
 }
 
-void HistoryLog::addLog(float runTime, float gravity, int sleepTime) {
+void HistoryLog::addLog(float runTime, float measurement, int sleepTime) {
   for (int i = (10 - 1); i > 0; i--) {
     _log[i] = _log[i - 1];
   }
   _log[0]._runTime = runTime;
-  _log[0]._gravity = gravity;
+  _log[0]._measurement = measurement;
   _log[0]._sleepTime = sleepTime;
   save();
 }
@@ -68,13 +66,11 @@ void HistoryLog::save() {
   File runFile = LittleFS.open(_fName, "w");
   if (runFile) {
     for (int i = 0; i < 10; i++) {
-      runFile.printf("%.4f;%.5f;%d\n", _log[i]._runTime, _log[i]._gravity,
+      runFile.printf("%.4f;%.5f;%d\n", _log[i]._runTime, _log[i]._measurement,
                      _log[i]._sleepTime);
     }
     runFile.close();
   }
 }
-
-#endif  // GRAVITYMON
 
 // EOF

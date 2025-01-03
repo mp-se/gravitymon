@@ -24,8 +24,6 @@ SOFTWARE.
 #ifndef SRC_HISTORY_HPP_
 #define SRC_HISTORY_HPP_
 
-#if defined(GRAVITYMON)
-
 #include <Arduino.h>
 
 constexpr auto RUNTIME_FILENAME = "/runtime.log";
@@ -34,7 +32,7 @@ class HistoryLog {
  public:
   struct LogEntry {
     float _runTime;
-    float _gravity;
+    float _measurement;
     int _sleepTime;
   };
 
@@ -48,11 +46,9 @@ class HistoryLog {
 
  public:
   explicit HistoryLog(String fName);
-  void addLog(float runTime, float gravity, int sleepTime);
+  void addLog(float runTime, float measurement, int sleepTime);
   const LogEntry& getAverage() { return _average; }
 };
-
-#endif  // GRAVITYMON
 
 #endif  // SRC_HISTORY_HPP_
 
