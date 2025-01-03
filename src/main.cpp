@@ -84,12 +84,13 @@ bool sleepModeAlwaysSkip =
 uint32_t loopMillis = 0;  // Used for main loop to run the code every _interval_
 uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
-uint32_t stableGyroMillis;  // Used to calculate the total time since last
-                            // stable gyro reading
 bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
 
-void checkSleepMode(float angle, float volt);
+#if defined(GRAVITYMON)
+uint32_t stableGyroMillis;  // Used to calculate the total time since last
+                            // stable gyro reading
+#endif // GRAVITYMON
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -127,9 +128,9 @@ void setup() {
   }
 
   // TODO: Remove the file from the old wifi manager if that exist.
-  if (LittleFS.exists("/drd.dat")) {
+  /*if (LittleFS.exists("/drd.dat")) {
     LittleFS.remove("/drd.dat");
-  }
+  }*/
 
   // Setup watchdog
 #if defined(ESP8266)
@@ -179,9 +180,16 @@ void setup() {
         Log.notice(F("Main: Gyro is disabled in configuration." CR));
       }
       myBatteryVoltage.read();
-      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      checkSleepModeGravity(myGyro.getAngle(), myBatteryVoltage.getVoltage());
       Log.notice(F("Main: Battery %F V, Gyro=%F, Run-mode=%d." CR),
                  myBatteryVoltage.getVoltage(), myGyro.getAngle(), runMode);
+#elif defined(PRESSUREMON)
+      // TODO: Setup pressure sensor 
+
+      myBatteryVoltage.read();
+      checkSleepModePressure(myBatteryVoltage.getVoltage());
+      Log.notice(F("Main: Battery %F V, Run-mode=%d." CR),
+                 myBatteryVoltage.getVoltage(), runMode);
 #endif  // GRAVITYMON
 
 #if defined(ESP32)
@@ -207,7 +215,8 @@ void setup() {
       PERF_BEGIN("main-temp-setup");
       myTempSensor.setup();
       PERF_END("main-temp-setup");
-#endif  // GRAVITYMON
+#elif defined(PRESSUREMON)
+#endif 
       break;
   }
 
@@ -244,13 +253,15 @@ void setup() {
 
   PERF_END("main-setup");
   Log.notice(F("Main: Setup completed." CR));
+#if defined(GRAVITYMON)
   pushMillis = stableGyroMillis =
       millis();  // Dont include time for wifi connection
+#endif // GRAVITYMON
 }
 
+#if defined(GRAVITYMON)
 // Main loop that does gravity readings and push data to targets
 // Return true if gravity reading was successful
-#if defined(GRAVITYMON)
 bool loopReadGravity() {
   float angle = 0;
 
@@ -387,7 +398,6 @@ void loopGravityOnInterval() {
   if (abs(static_cast<int32_t>((millis() - loopMillis))) > interval) {
     loopReadGravity();
     loopMillis = millis();
-    // printHeap("MAIN");
     if (!myConfig.isGyroDisabled()) {
       PERF_BEGIN("loop-gyro-read");
       myGyro.read();
@@ -396,10 +406,30 @@ void loopGravityOnInterval() {
     myBatteryVoltage.read();
 
     if (runMode != RunMode::wifiSetupMode)
-      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      checkSleepModeGravity(myGyro.getAngle(), myBatteryVoltage.getVoltage());
   }
 }
-#endif  // GRAVITYMON
+#elif defined(PRESSUREMON)
+bool loopReadPressure() {
+}
+void loopPressureOnInterval() {
+  if (abs(static_cast<int32_t>((millis() - loopMillis))) > interval) {
+    loopReadPressure();
+    loopMillis = millis();
+
+    /* TODO read pressure sensor
+    if (!myConfig.isGyroDisabled()) {
+      PERF_BEGIN("loop-gyro-read");
+      myGyro.read();
+      PERF_END("loop-gyro-read");
+    }*/
+
+    myBatteryVoltage.read();
+    if (runMode != RunMode::wifiSetupMode)
+      checkSleepModePressure(myBatteryVoltage.getVoltage());
+  }
+}
+#endif
 
 void goToSleep(int sleepInterval) {
   float volt = myBatteryVoltage.getVoltage();
@@ -426,9 +456,11 @@ void goToSleep(int sleepInterval) {
 
 void loop() {
   switch (runMode) {
+#if defined(GRAVITYMON)
     case RunMode::storageMode:
       // This point is never reached, just here to remove warning.
       break;
+#endif // GRAVITYMON
 
     case RunMode::wifiSetupMode:
     case RunMode::configurationMode:
@@ -437,7 +469,10 @@ void loop() {
 #if defined(GRAVITYMON)
       loopGravityOnInterval();
       delay(1);
-#endif  // GRAVITYMON
+#elif defined(PRESSUREMON)
+      loopPressureOnInterval();
+      delay(1);
+#endif 
 
       // If we switched mode, dont include this in the log.
       if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
@@ -460,7 +495,6 @@ void loop() {
         myWifi.stopDoubleReset();
         goToSleep(myConfig.getSleepInterval());
       }
-#endif  // GRAVITYMON
 
       // If the sensor is moving and we are not getting a clear reading, we
       // enter sleep for a short time to conserve battery.
@@ -473,20 +507,24 @@ void loop() {
         goToSleep(60);
       }
 
-#if defined(GRAVITYMON)
       if (!myConfig.isGyroDisabled()) {
         PERF_BEGIN("loop-gyro-read");
         myGyro.read();
         PERF_END("loop-gyro-read");
       }
-#endif  // GRAVITYMON
+#elif defined(PRESSUREMON)
+      if (loopReadPressure()) {
+        myWifi.stopDoubleReset();
+        goToSleep(myConfig.getSleepInterval());
+      }
+#endif 
       myWifi.loop();
       break;
   }
 }
 
 #if defined(GRAVITYMON)
-void checkSleepMode(float angle, float volt) {
+void checkSleepModeGravity(float angle, float volt) {
 #if defined(SKIP_SLEEPMODE)
   runMode = RunMode::configurationMode;
   Log.verbose(F("MAIN: Skipping sleep mode (SKIP_SLEEPMODE is defined)." CR));
@@ -560,6 +598,60 @@ void checkSleepMode(float angle, float volt) {
 #endif
   }
 }
-#endif  // GRAVITYMON
+#elif defined(PRESSUREMON)
+void checkSleepModePressure(float volt) {
+#if defined(SKIP_SLEEPMODE)
+  runMode = RunMode::configurationMode;
+  Log.verbose(F("MAIN: Skipping sleep mode (SKIP_SLEEPMODE is defined)." CR));
+  return;
+#endif
+
+#if defined(FORCE_PRESSIRE_MODE)
+  Log.notice(F("MAIN: Forcing device into pressure mode for debugging" CR));
+  runMode = RunMode::measurementMode;
+  return;
+#endif
+
+/*  TODO: Will need this once we have selected pressure sensor   
+
+  if (!myConfig.hasGyroCalibration() && !myConfig.isGyroDisabled()) {
+    // Will not enter sleep mode if: no calibration data
+#if LOG_LEVEL == 6
+    Log.notice(
+        F("MAIN: Missing calibration data, so forcing webserver to be "
+          "active." CR));
+#endif
+    runMode = RunMode::configurationMode;
+  } else*/ if (sleepModeAlwaysSkip) {
+    // Check if the flag from the UI has been set, the we force configuration
+    // mode.
+#if LOG_LEVEL == 6
+    Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
+#endif
+    runMode = RunMode::configurationMode;
+  } else if (volt < myConfig.getVoltageConfig() ||
+             (volt > myConfig.getVoltageConfig())) {
+    runMode = RunMode::configurationMode;
+  } else {
+    runMode = RunMode::measurementMode;
+  }
+
+  switch (runMode) {
+    case RunMode::configurationMode:
+#if LOG_LEVEL == 6
+      Log.notice(F("MAIN: run mode CONFIG (volt=%F)." CR), volt);
+#endif
+      break;
+    case RunMode::wifiSetupMode:
+      break;
+    case RunMode::measurementMode:
+#if LOG_LEVEL == 6
+      Log.notice(F("MAIN: run mode PRESSURE (volt=%F)." CR), volt);
+#endif
+      break;
+  }
+}
+#endif 
+
 
 // EOF

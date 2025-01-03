@@ -32,11 +32,15 @@ enum RunMode {
   measurementMode = 0,
   configurationMode = 1,
   wifiSetupMode = 2,
+#if defined(GRAVITYMON)
   storageMode = 3
+#endif // GRAVITYMON
 };
 extern RunMode runMode;
 
 #if defined(GRAVITYMON)
+void checkSleepModeGravity(float angle, float volt);
+
 #if defined(ESP8266)
 // Hardware config for ESP8266-d1, iSpindel hardware
 // ------------------------------------------------------
@@ -112,6 +116,8 @@ extern RunMode runMode;
 #endif  // GRAVITYMON
 
 #if defined(PRESSUREMON)
+void checkSleepModePressure(float volt);
+
 #if defined(ESP32S3)
 // Hardware config for ESP32-s3-mini, pressuremon hardware
 // ------------------------------------------------------
@@ -130,6 +136,7 @@ constexpr auto DECIMALS_PLATO = 2;
 constexpr auto DECIMALS_TEMP = 2;
 constexpr auto DECIMALS_RUNTIME = 2;
 constexpr auto DECIMALS_TILT = 3;
+constexpr auto DECIMALS_PRESSURE = 3;
 constexpr auto DECIMALS_BATTERY = 2;
 
 #endif  // SRC_MAIN_HPP_
