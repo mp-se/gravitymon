@@ -30,7 +30,6 @@ bool checkPinConnected();
 // Show build options
 void printBuildOptions();
 void detectChipRevision();
-void runGpioHardwareTests();
 
 #endif  // SRC_HELPER_HPP_
 

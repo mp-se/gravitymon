@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #include <battery.hpp>
-#include <config.hpp>
-#include <main.hpp>
 
 BatteryVoltage::BatteryVoltage() {
 #if defined(ESP8266)

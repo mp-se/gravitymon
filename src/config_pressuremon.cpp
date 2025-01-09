@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2022-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,55 +21,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <Ticker.h>
-
-#include <helper.hpp>
-#include <log.hpp>
-#include <main.hpp>
-
-extern "C" {
-void write_bytes(int fd, char* buf, int n) { EspSerial.print(*buf); }
-}
-
-bool checkPinConnected() {
-#if defined(ESP8266)
-  pinMode(PIN_CFG1, INPUT);
-#else
-  pinMode(PIN_CFG1, INPUT_PULLDOWN);
-#endif
-  pinMode(PIN_CFG2, OUTPUT);
-  delay(5);
-  digitalWrite(PIN_CFG2, 1);
-  delay(5);
-  int i = digitalRead(PIN_CFG1);
-  digitalWrite(PIN_CFG2, 0);
-  return i == LOW ? false : true;
-}
-
-void printBuildOptions() {
-  Log.notice(F("Build options: %s (%s) LOGLEVEL %d "
-#if defined(GRAVITYMON)
-               "GRAVITYMON "
-#endif
 #if defined(PRESSUREMON)
-               "PRESSUREMON "
-#endif
-#if defined(ESP8266)
-               "ESP8266 "
-#else
-               "ESP32 "
-#endif
-#if defined(FLOATY)
-               "FLOATY "
-#endif
-#ifdef SKIP_SLEEPMODE
-               "SKIP_SLEEP "
-#endif
-#ifdef COLLECT_PERFDATA
-               "PERFDATA "
-#endif
-               CR),
-             CFG_APPVER, CFG_GITREV, LOG_LEVEL);
+
+#include <config_pressuremon.hpp>
+
+PressuremonConfig::PressuremonConfig(String baseMDNS, String fileName)
+    : BrewingConfig(baseMDNS, fileName) {}
+
+void PressuremonConfig::createJson(JsonObject& doc) {
+  BrewingConfig::createJson(doc);
+
+  doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
 }
+
+void PressuremonConfig::parseJson(JsonObject& doc) {
+  BrewingConfig::parseJson(doc);
+
+  if (!doc[CONFIG_BATTERY_SAVING].isNull())
+    setBatterySaving(doc[CONFIG_BATTERY_SAVING].as<bool>());
+}
+
+#endif  // PRESSUREMON
 
 // EOF

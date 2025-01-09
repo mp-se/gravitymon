@@ -25,6 +25,7 @@ SOFTWARE.
 #define SRC_PUSHTARGET_HPP_
 
 #include <basepush.hpp>
+#include <config.hpp>
 #include <templating.hpp>
 
 constexpr auto TPL_MDNS = "${mdns}";
@@ -41,18 +42,6 @@ constexpr auto TPL_BATTERY_PERCENT = "${battery-percent}";
 constexpr auto TPL_RSSI = "${rssi}";
 constexpr auto TPL_RUN_TIME = "${run-time}";
 
-#if defined(GRAVITYMON)
-constexpr auto TPL_ANGLE = "${angle}";
-constexpr auto TPL_TILT = "${tilt}";  // same as angle
-constexpr auto TPL_GRAVITY = "${gravity}";
-constexpr auto TPL_GRAVITY_G = "${gravity-sg}";
-constexpr auto TPL_GRAVITY_P = "${gravity-plato}";
-constexpr auto TPL_GRAVITY_CORR = "${corr-gravity}";
-constexpr auto TPL_GRAVITY_CORR_G = "${corr-gravity-sg}";
-constexpr auto TPL_GRAVITY_CORR_P = "${corr-gravity-plato}";
-constexpr auto TPL_GRAVITY_UNIT = "${gravity-unit}";  // G or P
-#endif                                                // GRAVITYMON
-
 constexpr auto TPL_APP_VER = "${app-ver}";
 constexpr auto TPL_APP_BUILD = "${app-build}";
 
@@ -67,13 +56,13 @@ extern const char iHttpGetFormat[] PROGMEM;
 extern const char influxDbFormat[] PROGMEM;
 extern const char mqttFormat[] PROGMEM;
 
-class GravmonPush : public BasePush {
+class BrewingPush : public BasePush {
  private:
-  GravmonConfig* _gravmonConfig;
+  BrewingConfig* _BrewingConfig;
   String _baseTemplate;
 
  public:
-  explicit GravmonPush(GravmonConfig* gravmonConfig);
+  explicit BrewingPush(BrewingConfig* BrewingConfig);
 
   enum Templates {
     TEMPLATE_HTTP1 = 0,
@@ -81,22 +70,13 @@ class GravmonPush : public BasePush {
     TEMPLATE_HTTP3 = 2,
     TEMPLATE_INFLUX = 3,
     TEMPLATE_MQTT = 4
-    // TEMPLATE_BLE = 5
   };
 
-  void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
-               float runTime);
-
+  void sendAll(TemplatingEngine& engine);
   const char* getTemplate(Templates t, bool useDefaultTemplate = false);
   void clearTemplate() { _baseTemplate.clear(); }
   int getLastCode() { return _lastResponseCode; }
   bool getLastSuccess() { return _lastSuccess; }
-
-#if defined(GRAVITYMON)
-  void setupTemplateEngine(TemplatingEngine& engine, float angle,
-                           float gravitySG, float corrGravitySG, float tempC,
-                           float runTime, float voltage);
-#endif  // GRAVITYMON
 };
 
 class PushIntervalTracker {

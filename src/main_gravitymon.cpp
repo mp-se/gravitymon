@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,39 +21,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <ble.hpp>
-#undef LOG_LEVEL_ERROR
-#undef LOG_LEVEL_INFO
-#include <battery.hpp>
-#include <calc.hpp>
-#include <config.hpp>
-#include <gyro.hpp>
-#include <helper.hpp>
-#include <history.hpp>
+#if defined(GRAVITYMON)
+
+#include <main.hpp>
+#include <main_gravitymon.hpp>
+
+// EspFramework
+#include <wificonnection.hpp>
+#include <serialws.hpp>
 #include <led.hpp>
 #include <log.hpp>
-#include <main.hpp>
 #include <ota.hpp>
 #include <perf.hpp>
-#include <pushtarget.hpp>
-#include <serialws.hpp>
-#include <tempsensor.hpp>
-#include <utils.hpp>
-#include <webserver.hpp>
-#include <wificonnection.hpp>
 
-#if defined(GRAVITYMON)
+// Common
+#include <config.hpp>
+#include <battery.hpp>
+#include <webserver.hpp>
+#include <helper.hpp>
+#include <utils.hpp>
+#include <history.hpp>
+#include <pushtarget.hpp>
+
+// Gravitymon specific
+#include <calc.hpp>
+#include <gyro.hpp>
+#include <tempsensor.hpp>
+#include <ble.hpp>
+
 const char* CFG_APPNAME = "gravitymon";
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";
 const char* CFG_AP_PASS = "password";
-#elif defined(PRESSUREMON)
-const char* CFG_APPNAME = "pressuremon";
-const char* CFG_FILENAME = "/pressuremon2.json";
-const char* CFG_AP_SSID = "PressureMon";
-const char* CFG_AP_PASS = "password";
-#undef ENABLE_BLE  // Temporary
-#endif             // GRAVITYMON
 
 #if !defined(USER_SSID)
 #define USER_SSID ""
@@ -62,12 +61,12 @@ const char* CFG_AP_PASS = "password";
 
 // #define FORCE_GRAVITY_MODE
 SerialDebug mySerial;
-GravmonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
+GravitymonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
                       USER_SSID, USER_PASS);
 OtaUpdate myOta(&myConfig, CFG_APPVER);
 BatteryVoltage myBatteryVoltage;
-GravmonWebServer myWebServer(&myConfig);
+BrewingWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
@@ -84,13 +83,12 @@ bool sleepModeAlwaysSkip =
 uint32_t loopMillis = 0;  // Used for main loop to run the code every _interval_
 uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
+uint32_t stableGyroMillis;  // Used to calculate the total time since last
+                            // stable gyro reading
 bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
 
-#if defined(GRAVITYMON)
-uint32_t stableGyroMillis;  // Used to calculate the total time since last
-                            // stable gyro reading
-#endif // GRAVITYMON
+void checkSleepMode(float angle, float volt);
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -128,9 +126,9 @@ void setup() {
   }
 
   // TODO: Remove the file from the old wifi manager if that exist.
-  /*if (LittleFS.exists("/drd.dat")) {
+  if (LittleFS.exists("/drd.dat")) {
     LittleFS.remove("/drd.dat");
-  }*/
+  }
 
   // Setup watchdog
 #if defined(ESP8266)
@@ -165,7 +163,6 @@ void setup() {
       break;
 
     default:
-#if defined(GRAVITYMON)
       if (!myConfig.isGyroDisabled()) {
         if (myGyro.setup()) {
           PERF_BEGIN("main-gyro-read");
@@ -179,18 +176,11 @@ void setup() {
       } else {
         Log.notice(F("Main: Gyro is disabled in configuration." CR));
       }
-      myBatteryVoltage.read();
-      checkSleepModeGravity(myGyro.getAngle(), myBatteryVoltage.getVoltage());
-      Log.notice(F("Main: Battery %F V, Gyro=%F, Run-mode=%d." CR),
-                 myBatteryVoltage.getVoltage(), myGyro.getAngle(), runMode);
-#elif defined(PRESSUREMON)
-      // TODO: Setup pressure sensor 
 
       myBatteryVoltage.read();
-      checkSleepModePressure(myBatteryVoltage.getVoltage());
-      Log.notice(F("Main: Battery %F V, Run-mode=%d." CR),
-                 myBatteryVoltage.getVoltage(), runMode);
-#endif  // GRAVITYMON
+      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      Log.notice(F("Main: Battery %F V, Gyro=%F, Run-mode=%d." CR),
+                 myBatteryVoltage.getVoltage(), myGyro.getAngle(), runMode);
 
 #if defined(ESP32)
       if (!myConfig.isWifiPushActive() && runMode == RunMode::measurementMode) {
@@ -211,12 +201,9 @@ void setup() {
         PERF_END("main-wifi-connect");
       }
 
-#if defined(GRAVITYMON)
       PERF_BEGIN("main-temp-setup");
       myTempSensor.setup();
       PERF_END("main-temp-setup");
-#elif defined(PRESSUREMON)
-#endif 
       break;
   }
 
@@ -231,8 +218,8 @@ void setup() {
         if (myOta.checkFirmwareVersion()) myOta.updateFirmware();
         PERF_END("main-wifi-ota");
         case RunMode::wifiSetupMode:
-          myWebServer.setupWebServer();  // Takes less than 4ms, so skip
-                                         // this measurement
+          myWebServer.setupWebServer("gravitymon");  // Takes less than 4ms, so
+                                                     // skip this measurement
           mySerialWebSocket.begin(myWebServer.getWebServer(), &Serial);
           mySerial.begin(&mySerialWebSocket);
       } else {
@@ -253,13 +240,10 @@ void setup() {
 
   PERF_END("main-setup");
   Log.notice(F("Main: Setup completed." CR));
-#if defined(GRAVITYMON)
   pushMillis = stableGyroMillis =
       millis();  // Dont include time for wifi connection
-#endif // GRAVITYMON
 }
 
-#if defined(GRAVITYMON)
 // Main loop that does gravity readings and push data to targets
 // Return true if gravity reading was successful
 bool loopReadGravity() {
@@ -315,23 +299,23 @@ bool loopReadGravity() {
       if (myConfig.isBleActive()) {
         myBleSender.init();
 
-        switch (myConfig.getBleFormat()) {
-          case BleFormat::BLE_TILT: {
+        switch (myConfig.getGravitymonBleFormat()) {
+          case GravitymonBleFormat::BLE_TILT: {
             String color = myConfig.getBleTiltColor();
             myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
                                      false);
           } break;
-          case BleFormat::BLE_TILT_PRO: {
+          case GravitymonBleFormat::BLE_TILT_PRO: {
             String color = myConfig.getBleTiltColor();
             myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
                                      true);
           } break;
-          case BleFormat::BLE_GRAVITYMON_IBEACON: {
+          case GravitymonBleFormat::BLE_GRAVITYMON_IBEACON: {
             myBleSender.sendCustomBeaconData(myBatteryVoltage.getVoltage(),
                                              tempC, gravitySG, angle);
           } break;
 
-          case BleFormat::BLE_GRAVITYMON_EDDYSTONE: {
+          case GravitymonBleFormat::BLE_GRAVITYMON_EDDYSTONE: {
             myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
                                       gravitySG, angle);
           } break;
@@ -346,11 +330,11 @@ bool loopReadGravity() {
               "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
 
           TemplatingEngine engine;
-          GravmonPush push(&myConfig);
-          push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG,
-                                   tempC, (millis() - runtimeMillis) / 1000,
-                                   myBatteryVoltage.getVoltage());
-          String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP1,
+          BrewingPush push(&myConfig);
+          setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG,
+                                     tempC, (millis() - runtimeMillis) / 1000,
+                                     myBatteryVoltage.getVoltage());
+          String tpl = push.getTemplate(BrewingPush::TEMPLATE_HTTP1,
                                         true);  // Use default post template
           String payload = engine.create(tpl.c_str());
           myConfig.setTargetHttpPost(
@@ -362,9 +346,13 @@ bool loopReadGravity() {
         } else {
           Log.notice(F("Main: Sending data to all defined push targets." CR));
 
-          GravmonPush push(&myConfig);
-          push.sendAll(angle, gravitySG, corrGravitySG, tempC,
-                       (millis() - runtimeMillis) / 1000);
+          TemplatingEngine engine;
+          BrewingPush push(&myConfig);
+
+          setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG,
+                                     tempC, (millis() - runtimeMillis) / 1000,
+                                     myBatteryVoltage.getVoltage());
+          push.sendAll(engine);
 
           // Only log when in gravity mode
           if (!skipRunTimeLog && runMode == RunMode::measurementMode) {
@@ -398,6 +386,7 @@ void loopGravityOnInterval() {
   if (abs(static_cast<int32_t>((millis() - loopMillis))) > interval) {
     loopReadGravity();
     loopMillis = millis();
+    // printHeap("MAIN");
     if (!myConfig.isGyroDisabled()) {
       PERF_BEGIN("loop-gyro-read");
       myGyro.read();
@@ -406,30 +395,9 @@ void loopGravityOnInterval() {
     myBatteryVoltage.read();
 
     if (runMode != RunMode::wifiSetupMode)
-      checkSleepModeGravity(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
   }
 }
-#elif defined(PRESSUREMON)
-bool loopReadPressure() {
-}
-void loopPressureOnInterval() {
-  if (abs(static_cast<int32_t>((millis() - loopMillis))) > interval) {
-    loopReadPressure();
-    loopMillis = millis();
-
-    /* TODO read pressure sensor
-    if (!myConfig.isGyroDisabled()) {
-      PERF_BEGIN("loop-gyro-read");
-      myGyro.read();
-      PERF_END("loop-gyro-read");
-    }*/
-
-    myBatteryVoltage.read();
-    if (runMode != RunMode::wifiSetupMode)
-      checkSleepModePressure(myBatteryVoltage.getVoltage());
-  }
-}
-#endif
 
 void goToSleep(int sleepInterval) {
   float volt = myBatteryVoltage.getVoltage();
@@ -440,9 +408,7 @@ void goToSleep(int sleepInterval) {
              sleepInterval,
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
   LittleFS.end();
-#if defined(GRAVITYMON)
   myGyro.enterSleep();
-#endif  // GRAVITYMON
   PERF_END("run-time");
   PERF_PUSH();
 
@@ -456,23 +422,16 @@ void goToSleep(int sleepInterval) {
 
 void loop() {
   switch (runMode) {
-#if defined(GRAVITYMON)
     case RunMode::storageMode:
       // This point is never reached, just here to remove warning.
       break;
-#endif // GRAVITYMON
 
     case RunMode::wifiSetupMode:
     case RunMode::configurationMode:
       myWebServer.loop();
       myWifi.loop();
-#if defined(GRAVITYMON)
       loopGravityOnInterval();
       delay(1);
-#elif defined(PRESSUREMON)
-      loopPressureOnInterval();
-      delay(1);
-#endif 
 
       // If we switched mode, dont include this in the log.
       if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
@@ -490,7 +449,6 @@ void loop() {
         goToSleep(60);
       }
 
-#if defined(GRAVITYMON)
       if (loopReadGravity()) {
         myWifi.stopDoubleReset();
         goToSleep(myConfig.getSleepInterval());
@@ -512,19 +470,12 @@ void loop() {
         myGyro.read();
         PERF_END("loop-gyro-read");
       }
-#elif defined(PRESSUREMON)
-      if (loopReadPressure()) {
-        myWifi.stopDoubleReset();
-        goToSleep(myConfig.getSleepInterval());
-      }
-#endif 
       myWifi.loop();
       break;
   }
 }
 
-#if defined(GRAVITYMON)
-void checkSleepModeGravity(float angle, float volt) {
+void checkSleepMode(float angle, float volt) {
 #if defined(SKIP_SLEEPMODE)
   runMode = RunMode::configurationMode;
   Log.verbose(F("MAIN: Skipping sleep mode (SKIP_SLEEPMODE is defined)." CR));
@@ -598,60 +549,76 @@ void checkSleepModeGravity(float angle, float volt) {
 #endif
   }
 }
-#elif defined(PRESSUREMON)
-void checkSleepModePressure(float volt) {
-#if defined(SKIP_SLEEPMODE)
-  runMode = RunMode::configurationMode;
-  Log.verbose(F("MAIN: Skipping sleep mode (SKIP_SLEEPMODE is defined)." CR));
-  return;
-#endif
 
-#if defined(FORCE_PRESSIRE_MODE)
-  Log.notice(F("MAIN: Forcing device into pressure mode for debugging" CR));
-  runMode = RunMode::measurementMode;
-  return;
-#endif
+void runGpioHardwareTests() {
+#if defined(RUN_HARDWARE_TEST)
+  int max = 10;
 
-/*  TODO: Will need this once we have selected pressure sensor   
+  Log.notice(F("Main: Configuring GPIO for output." CR));
+  pinMode(PIN_SDA, OUTPUT);
+  pinMode(PIN_SCL, OUTPUT);
+  pinMode(PIN_CFG1, OUTPUT);
+  pinMode(PIN_CFG2, OUTPUT);
+  pinMode(PIN_DS, OUTPUT);
+  pinMode(PIN_VOLT, OUTPUT);
+  delay(100);
+  digitalWrite(PIN_SDA, LOW);
+  digitalWrite(PIN_SCL, LOW);
+  digitalWrite(PIN_CFG1, LOW);
+  digitalWrite(PIN_CFG2, LOW);
+  digitalWrite(PIN_DS, LOW);
+  digitalWrite(PIN_VOLT, LOW);
+  delay(100);
 
-  if (!myConfig.hasGyroCalibration() && !myConfig.isGyroDisabled()) {
-    // Will not enter sleep mode if: no calibration data
-#if LOG_LEVEL == 6
-    Log.notice(
-        F("MAIN: Missing calibration data, so forcing webserver to be "
-          "active." CR));
-#endif
-    runMode = RunMode::configurationMode;
-  } else*/ if (sleepModeAlwaysSkip) {
-    // Check if the flag from the UI has been set, the we force configuration
-    // mode.
-#if LOG_LEVEL == 6
-    Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
-#endif
-    runMode = RunMode::configurationMode;
-  } else if (volt < myConfig.getVoltageConfig() ||
-             (volt > myConfig.getVoltageConfig())) {
-    runMode = RunMode::configurationMode;
-  } else {
-    runMode = RunMode::measurementMode;
+  int sleep = 700;
+
+  Log.notice(F("Main: Testing SDA." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_SDA, i % 2);
+    delay(sleep);
   }
+  digitalWrite(PIN_SDA, LOW);
 
-  switch (runMode) {
-    case RunMode::configurationMode:
-#if LOG_LEVEL == 6
-      Log.notice(F("MAIN: run mode CONFIG (volt=%F)." CR), volt);
-#endif
-      break;
-    case RunMode::wifiSetupMode:
-      break;
-    case RunMode::measurementMode:
-#if LOG_LEVEL == 6
-      Log.notice(F("MAIN: run mode PRESSURE (volt=%F)." CR), volt);
-#endif
-      break;
+  Log.notice(F("Main: Testing SCL." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_SCL, i % 2);
+    delay(sleep);
   }
+  digitalWrite(PIN_SCL, LOW);
+
+  Log.notice(F("Main: Testing CFG1." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_CFG1, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_CFG1, LOW);
+
+  Log.notice(F("Main: Testing CFG2." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_CFG2, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_CFG2, LOW);
+
+  Log.notice(F("Main: Testing DS." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_DS, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_DS, LOW);
+
+  Log.notice(F("Main: Testing VOLT." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_VOLT, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_VOLT, LOW);
+
+  Log.notice(F("Main: Tests finished, enter waiting for reset." CR));
+  while (true) delay(sleep);
+#endif  // RUN_HARDWARE_TEST
 }
-#endif 
 
+#endif  // GRAVITYMON
 
 // EOF

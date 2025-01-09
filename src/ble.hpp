@@ -24,36 +24,6 @@ SOFTWARE.
 #ifndef SRC_BLE_HPP_
 #define SRC_BLE_HPP_
 
-#include <main.hpp>
+#include <ble_gravitymon.hpp>
 
-#if defined(ENABLE_BLE) && defined(GRAVITYMON)
-
-#include <NimBLEBeacon.h>
-#include <NimBLEDevice.h>
-
-class BleSender {
- private:
-  BLEServer* _server = nullptr;
-  BLEAdvertising* _advertising = nullptr;
-  BLEService* _service = nullptr;
-  BLECharacteristic* _characteristic = nullptr;
-  BLEUUID _uuid;
-  bool _initFlag = false;
-  int _beaconTime = 1000;
-
-  void dumpPayload(const char* payload, int len);
-
- public:
-  BleSender() {}
-
-  void init();
-
-  // Beacons
-  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendEddystone(float battery, float tempC, float gravity, float angle);
-  void sendCustomBeaconData(float battery, float tempC, float gravity,
-                            float angle);
-};
-
-#endif  // ENABLE_BLE && GRAVITYMON
 #endif  // SRC_BLE_HPP_

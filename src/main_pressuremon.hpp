@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2025 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_CONFIG_HPP_
-#define SRC_CONFIG_HPP_
+#ifndef SRC_MAIN_PRESSUREMON_HPP_
+#define SRC_MAIN_PRESSUREMON_HPP_
 
-#include <config_brewing.hpp>
-#include <config_gravitymon.hpp>
-#include <config_pressuremon.hpp>
+#if defined(PRESSUREMON)
 
-#endif  // SRC_CONFIG_HPP_
+#include <main.hpp>
+#include <templating.hpp>
+
+enum RunMode {
+  measurementMode = 0,
+  configurationMode = 1,
+  wifiSetupMode = 2,
+};
+
+void setupTemplateEnginePressure(TemplatingEngine& engine);
+
+#if defined(ESP32S3)
+// Hardware config for ESP32-s3-mini, pressuremon hardware
+// ------------------------------------------------------
+#define PIN_SDA A17
+#define PIN_SCL A15
+#define PIN_CFG1 A10
+#define PIN_CFG2 A9
+#define PIN_DS A12
+#define PIN_VOLT A1
+#endif
+
+#endif  // PRESSUREMON
+
+#endif  // SRC_MAIN_PRESSUREMON_HPP_

@@ -24,6 +24,8 @@ SOFTWARE.
 #ifndef SRC_BATTERY_HPP_
 #define SRC_BATTERY_HPP_
 
+#include <config.hpp>
+
 class BatteryVoltage {
  private:
   float _batteryLevel = 0;
