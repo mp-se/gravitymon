@@ -33,6 +33,7 @@ SOFTWARE.
 #include <log.hpp>
 #include <ota.hpp>
 #include <perf.hpp>
+#include <looptimer.hpp>
 
 // Common
 #include <config.hpp>
@@ -73,15 +74,9 @@ BleSender myBleSender;
 #endif
 
 // Define constats for this program
-#ifdef DEACTIVATE_SLEEPMODE
-const int interval = 1000;  // ms, time to wait between changes to output
-#else
-int interval = 200;  // ms, time to wait between changes to output
-#endif
+LoopTimer timerLoop(200);
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
-uint32_t loopMillis = 0;  // Used for main loop to run the code every _interval_
-uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
@@ -216,7 +211,7 @@ void setup() {
                                // error
       }
 
-      interval = 1000;  // Change interval from 200ms to 1s
+      // interval = 1000;  // Change interval from 200ms to 1s
       break;
 
     default:
@@ -233,9 +228,9 @@ void setup() {
 bool loopReadPressure() { return false; }
 
 void loopPressureOnInterval() {
-  if (abs(static_cast<int32_t>((millis() - loopMillis))) > interval) {
+  if (timerLoop.hasExipred()) {
     loopReadPressure();
-    loopMillis = millis();
+    timerLoop.reset();
 
     /* TODO read pressure sensor
     if (!myConfig.isGyroDisabled()) {
