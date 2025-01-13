@@ -26,16 +26,10 @@ SOFTWARE.
 
 #include <config.hpp>
 
-constexpr auto ERR_FORMULA_NOTENOUGHVALUES = -1;
-constexpr auto ERR_FORMULA_INTERNAL = -2;
-constexpr auto ERR_FORMULA_UNABLETOFFIND = -3;
-
 double calculateGravity(double angle, double tempC,
                         const char *tempFormula = 0);
 double gravityTemperatureCorrectionC(double gravity, double tempC,
                                      double calTempC);
-int createFormula(RawFormulaData &fd, char *formulaBuffer,
-                  int formulaBufferSize, int order);
 
 #endif  // SRC_CALC_HPP_
 

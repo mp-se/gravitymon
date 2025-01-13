@@ -231,14 +231,15 @@ bool GyroSensor::isSensorMoving(RawGyroData &raw) {
 
   int x = abs(raw.gx), y = abs(raw.gy), z = abs(raw.gz);
   int threashold = myConfig.getGyroSensorMovingThreashold();
+  _sensorMoving = false;
 
   if (x > threashold || y > threashold || z > threashold) {
     Log.notice(F("GYRO: Movement detected (%d)\t%d\t%d\t%d." CR), threashold, x,
                y, z);
-    return true;
+    _sensorMoving = true;
   }
 
-  return false;
+  return _sensorMoving;
 }
 
 bool GyroSensor::read() {

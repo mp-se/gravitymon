@@ -27,7 +27,7 @@ SOFTWARE.
 
 test(json_FormattingString) {
   String out;
-  DynamicJsonDocument doc(500);
+  JsonDocument doc;
 
   doc["key-string"] = "string-1";
   serializeJson(doc, out);
@@ -37,7 +37,7 @@ test(json_FormattingString) {
 
 test(json_FormattingString2) {
   String in = "{\"key-string\":\"string-1\"}";
-  DynamicJsonDocument doc(500);
+  JsonDocument doc;
 
   deserializeJson(doc, in);
   String val = doc["key-string"];
@@ -46,7 +46,7 @@ test(json_FormattingString2) {
 
 test(json_FormattingFloat) {
   String out;
-  DynamicJsonDocument doc(500);
+  JsonDocument doc;
 
   doc["key-float"] = 1.1234;
   serializeJson(doc, out);
@@ -56,7 +56,7 @@ test(json_FormattingFloat) {
 
 test(json_FormattingFloat2) {
   String in = "{\"key-float\":1.1234}";
-  DynamicJsonDocument doc(500);
+  JsonDocument doc;
 
   deserializeJson(doc, in);
   float val = doc["key-float"];

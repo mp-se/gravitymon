@@ -78,7 +78,7 @@ uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 uint32_t stableGyroMillis;  // Used to calculate the total time since last
                             // stable gyro reading
-
+bool skipRunTimeLog = false;
 RunMode runMode = RunMode::gravityMode;
 
 void checkSleepMode(float angle, float volt);
@@ -218,7 +218,7 @@ void setup() {
       } else {
         // We cant use LED on ESP32C3 since that pin is connected to GYRO
         ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
-            // error
+                               // error
       }
 
       interval = 1000;  // Change interval from 200ms to 1s
@@ -273,7 +273,7 @@ bool loopReadGravity() {
                 angle, tempC, gravitySG, corrGravitySG);
 #endif
 
-    bool pushExpired = (abs((int32_t)(millis() - pushMillis)) >
+    bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
                         (myConfig.getSleepInterval() * 1000));
 
     if (myConfig.isIgnoreLowAnges() &&
@@ -342,6 +342,16 @@ bool loopReadGravity() {
           GravmonPush push(&myConfig);
           push.sendAll(angle, gravitySG, corrGravitySG, tempC,
                        (millis() - runtimeMillis) / 1000);
+
+          // Only log when in gravity mode
+          if (!skipRunTimeLog && runMode == RunMode::gravityMode) {
+            Log.notice(
+                F("Main: Updating history log with, runtime, gravity and "
+                  "interval." CR));
+            float runtime = (millis() - runtimeMillis);
+            HistoryLog runLog(RUNTIME_FILENAME);
+            runLog.addLog(runtime, gravitySG, myConfig.getSleepInterval());
+          }
         }
       }
       PERF_END("loop-push");
@@ -362,7 +372,7 @@ bool loopReadGravity() {
 // Wrapper for loopGravity that only calls every 200ms so that we dont overload
 // this.
 void loopGravityOnInterval() {
-  if (abs((int32_t)(millis() - loopMillis)) > interval) {
+  if (abs(static_cast<int32_t>((millis() - loopMillis))) > interval) {
     loopReadGravity();
     loopMillis = millis();
     // printHeap("MAIN");
@@ -378,16 +388,9 @@ void loopGravityOnInterval() {
   }
 }
 
-bool skipRunTimeLog = false;
-
 void goToSleep(int sleepInterval) {
   float volt = myBatteryVoltage.getVoltage();
   float runtime = (millis() - runtimeMillis);
-
-  if (!skipRunTimeLog) {
-    FloatHistoryLog runLog(RUNTIME_FILENAME);
-    runLog.addEntry(runtime);
-  }
 
   Log.notice(F("MAIN: Entering deep sleep for %ds, run time %Fs, "
                "battery=%FV." CR),

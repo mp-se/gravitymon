@@ -28,18 +28,26 @@ SOFTWARE.
 
 constexpr auto RUNTIME_FILENAME = "/runtime.log";
 
-class FloatHistoryLog {
+class HistoryLog {
+ public:
+  struct LogEntry {
+    float _runTime;
+    float _gravity;
+    int _sleepTime;
+  };
+
  private:
   String _fName;
-  float _average = 0;
-  float _runTime[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  LogEntry _average = {0, 0, 0};
+  LogEntry _log[10] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                       {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
   int _count = 0;
   void save();
 
  public:
-  explicit FloatHistoryLog(String fName);
-  void addEntry(float time);
-  float getAverage() { return _average; }
+  explicit HistoryLog(String fName);
+  void addLog(float runTime, float gravity, int sleepTime);
+  const LogEntry& getAverage() { return _average; }
 };
 
 #endif  // SRC_HISTORY_HPP_

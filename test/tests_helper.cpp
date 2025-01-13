@@ -123,13 +123,13 @@ test(helper_writeErrorLog) { // Include for code coverage
   assertEqual(1,1);
 }
 
-test(helper_floatHistory) { 
+test(helper_history) { 
   LittleFS.begin();
 
-  FloatHistoryLog hist("/history.log");
-  hist.addEntry(1.0);
-  hist.addEntry(1.0);
-  float f = hist.getAverage();
+  HistoryLog hist("/history.log");
+  hist.addLog(1.0, 2.0, 300);
+  hist.addLog(1.0, 2.1, 600);
+  float f = hist.getAverage()._runTime;
   assertEqual(f, 1.0);
 }
 

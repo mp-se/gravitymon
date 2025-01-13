@@ -77,6 +77,7 @@ constexpr auto PARAM_PUSH_RETURN_CODE = "push_return_code";
 constexpr auto PARAM_PUSH_ENABLED = "push_enabled";
 constexpr auto PARAM_SELF = "self_check";
 constexpr auto PARAM_SELF_GYRO_CONNECTED = "gyro_connected";
+constexpr auto PARAM_SELF_GYRO_MOVING = "gyro_moving";
 constexpr auto PARAM_SELF_GYRO_CALIBRATION = "gyro_calibration";
 constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
 constexpr auto PARAM_SELF_GRAVITY_FORMULA = "gravity_formula";

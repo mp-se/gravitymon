@@ -50,7 +50,7 @@ struct RawGyroData {
 };
 
 // Used for holding formulaData (used for calculating formula on device)
-#define FORMULA_DATA_SIZE 10
+#define FORMULA_DATA_SIZE 20
 
 struct RawFormulaData {
   double a[FORMULA_DATA_SIZE];
@@ -109,10 +109,11 @@ class GravmonConfig : public BaseConfig {
 
   // Gyro calibration and formula calculation data
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
-  RawFormulaData _formulaData = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+  RawFormulaData _formulaData = {
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-  float _maxFormulaCreationDeviation = 3;  // SG
+  float _maxFormulaCreationDeviation = 0.01;  // SG
   float _defaultCalibrationTemp = 20.0;    // C
   int _gyroSensorMovingThreashold = 500;
   int _tempSensorResolution = 9;  // bits
