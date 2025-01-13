@@ -113,7 +113,7 @@ class GravmonConfig : public BaseConfig {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
-  float _maxFormulaCreationDeviation = 3;  // SG
+  float _maxFormulaCreationDeviation = 0.01;  // SG
   float _defaultCalibrationTemp = 20.0;    // C
   int _gyroSensorMovingThreashold = 500;
   int _tempSensorResolution = 9;  // bits
