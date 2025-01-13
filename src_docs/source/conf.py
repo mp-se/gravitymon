@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'GravityMon'
-copyright = '2021-2024, Magnus Persson'
+copyright = '2021-2025, Magnus Persson'
 author = 'Magnus Persson'
 
 # The full version, including alpha/beta/rc tags
