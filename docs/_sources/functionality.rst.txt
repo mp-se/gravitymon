@@ -81,8 +81,9 @@ The main features
   Another big difference is that this software can create the gravity formula in the device, just enter the 
   angle/gravity data that you have collected. You will also see a graph simulating how the formula would work. 
 
-  Currently the device can handle 10 data points which should be enough to get a accurate formula. At least 3 data points 
-  is needed to get an accurate formula.
+  Currently the device can handle 20 data points which should be enough to get a accurate formula. 
+
+  You can also analyse how the formula compares to your raw data and formulas of different complexities.
 
 * **Customize the data format being sent to push targets**
 

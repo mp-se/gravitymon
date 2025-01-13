@@ -246,48 +246,53 @@ Gravity - Formula
 
 * **Gravity formula:**
 
-  Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use 
-  the feature to create the formula by supplying the raw data. 
+  Gravity formula is syntax is the same as in the iSpindle, but the formula needs to be in SG since this is the internal format used. When choosing plato 
+  the SG value will be converted and presented as Plato. On this page to create the formula by supplying the raw data. If you use the internal formula
+  creator then you can enter data in plato and conversion will be handled in the device, the output formula will always be in SG.
 
   The gravity formula accepts two parameters, **tilt** for the angle or **temp** for temperature (temperature inserted into the formula 
   will be in celsius). I would recommend to use the formula calculation feature instead since this is much easier.
 
 * **Data for gravity calculation:**
 
-  Enter your gravity data SG + Angle. You can enter up to 10 datapoints. Order does not matter and values with zero as angle will be ignored.
+  Enter your gravity data SG + Angle. You can enter up to 20 datapoints. Order does not matter and values with zero as angle will be ignored.
 
 * **Max allowed deviation:**
 
   This is the maximum deviation on the formula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied 
-  data and of the deviation on any point is bigger the formula will be rejected.
+  data and of the deviation on any point is bigger the formula will be rejected. Example for SG can be 0.02 points or 0.5 for Plato. Setting a higher values
+  will allow you to see more options.
 
-* **Calculate new formula:**
+* **Calculate formula:**
 
-  When you submit the values the device will try create a formula with increasing level of complexity. It will start
-  with a order 2 formula and then try 3 and 4.
-
-  Once the formula has been created it will validate the formula against the supplied angles/gravity and if there is a too
-  high difference, it will fail. You can adjust the max allowed deviation if you have issues. 
-
-  Under the Support / Error Log you will also find hints to what problem the formula creator encountered. Here is an example:
-
-  `CALC: Validation failed on angle 33.430000, deviation too large 5.86, formula order 4`
-
-  `CALC: Validation failed on angle 33.430000, deviation too large 3.14, formula order 2`
-
-  This means that the angle 33.43 had a deviation of 5.8 SG and since the default threshold is 3, it will fail. You 
-  can also see that it has failed on that point in both a order 2 and 4 formula.
+  When you submit the values the device will create formulas for order 1 to 4 and show those that are within the accepted deviation. You can also see 
+  how the formula performs in relation to your datapoints and what the deviation is per angle. The more data points you have the better the graph.
 
 
-Gravity - Analysis
-++++++++++++++++++
-
-.. image:: images/ui-gravity-analysis.png
+.. image:: images/ui-gravity-formula-current.png
   :width: 800
-  :alt: Gravity Analysis
+  :alt: Gravity Current
 
-Here you can see a graph over the entered values and also how that aligns with the current formula. This can allow you to spot any
-values that might be invalid.
+Here a graph is shown with your current formula compared with the entered data points. 
+
+
+.. image:: images/ui-gravity-formula-formula.png
+  :width: 800
+  :alt: Gravity Formula 
+
+Here you can see the generated formulas. A drop down selector is available on the top to make it easy to select the formula you want.
+
+.. image:: images/ui-gravity-formula-table.png
+  :width: 800
+  :alt: Gravity Table
+
+Table with calculated values per angle that has been used and the deviation from the entered data.
+
+.. image:: images/ui-gravity-formula-graph.png
+  :width: 800
+  :alt: Gravity Graph
+
+Here a graph is shown with the created formulas. You can deselect a formula by selecting the color in the legend. 
 
 
 Push targets

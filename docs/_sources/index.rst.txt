@@ -93,17 +93,13 @@ the following libraries and without these this would have been much more difficu
 
   Json parser/creator used in configuration files and API's
 
-* https://github.com/PaulStoffregen/OneWire
+* https://github.com/pstolarz/OneWireNg
 
   Communication library used for interacting with temperature sensor.
 
 * https://github.com/milesburton/Arduino-Temperature-Control-Library
 
   Interaction with the DS18B20 sensor
-
-* https://github.com/Rotario/arduinoCurveFitting
-
-  Create the gravity formula.
 
 * https://github.com/256dpi/arduino-mqtt
 

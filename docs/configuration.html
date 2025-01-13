@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Format Templates" href="format-template.html" /><link rel="prev" title="Software Installation" href="installation.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Configuration - GravityMon v2.0.0</title>
+        <title>Configuration - GravityMon v2.1.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v2.0.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v2.1.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -149,7 +149,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v2.0.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.1.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -387,36 +387,33 @@ movement. Too many reads will take time and affect battery life. 50 takes about 
 <a class="reference internal image-reference" href="_images/ui-gravity-formula.png"><img alt="Gravity Formula" src="_images/ui-gravity-formula.png" style="width: 800px;"/></a>
 <ul>
 <li><p><strong>Gravity formula:</strong></p>
-<p>Gravity formula is compatible with standard iSpindle formulas so any existing calculation option can be used. You can also use
-the feature to create the formula by supplying the raw data.</p>
+<p>Gravity formula is syntax is the same as in the iSpindle, but the formula needs to be in SG since this is the internal format used. When choosing plato
+the SG value will be converted and presented as Plato. On this page to create the formula by supplying the raw data. If you use the internal formula
+creator then you can enter data in plato and conversion will be handled in the device, the output formula will always be in SG.</p>
 <p>The gravity formula accepts two parameters, <strong>tilt</strong> for the angle or <strong>temp</strong> for temperature (temperature inserted into the formula
 will be in celsius). I would recommend to use the formula calculation feature instead since this is much easier.</p>
 </li>
 <li><p><strong>Data for gravity calculation:</strong></p>
-<p>Enter your gravity data SG + Angle. You can enter up to 10 datapoints. Order does not matter and values with zero as angle will be ignored.</p>
+<p>Enter your gravity data SG + Angle. You can enter up to 20 datapoints. Order does not matter and values with zero as angle will be ignored.</p>
 </li>
 <li><p><strong>Max allowed deviation:</strong></p>
 <p>This is the maximum deviation on the formula allowed for it to be accepted. Once the formula has been derived it will be validated against the supplied
-data and of the deviation on any point is bigger the formula will be rejected.</p>
+data and of the deviation on any point is bigger the formula will be rejected. Example for SG can be 0.02 points or 0.5 for Plato. Setting a higher values
+will allow you to see more options.</p>
 </li>
-<li><p><strong>Calculate new formula:</strong></p>
-<p>When you submit the values the device will try create a formula with increasing level of complexity. It will start
-with a order 2 formula and then try 3 and 4.</p>
-<p>Once the formula has been created it will validate the formula against the supplied angles/gravity and if there is a too
-high difference, it will fail. You can adjust the max allowed deviation if you have issues.</p>
-<p>Under the Support / Error Log you will also find hints to what problem the formula creator encountered. Here is an example:</p>
-<p><cite>CALC: Validation failed on angle 33.430000, deviation too large 5.86, formula order 4</cite></p>
-<p><cite>CALC: Validation failed on angle 33.430000, deviation too large 3.14, formula order 2</cite></p>
-<p>This means that the angle 33.43 had a deviation of 5.8 SG and since the default threshold is 3, it will fail. You
-can also see that it has failed on that point in both a order 2 and 4 formula.</p>
+<li><p><strong>Calculate formula:</strong></p>
+<p>When you submit the values the device will create formulas for order 1 to 4 and show those that are within the accepted deviation. You can also see
+how the formula performs in relation to your datapoints and what the deviation is per angle. The more data points you have the better the graph.</p>
 </li>
 </ul>
-</div>
-<div class="section" id="gravity-analysis">
-<h3>Gravity - Analysis<a class="headerlink" href="#gravity-analysis" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/ui-gravity-analysis.png"><img alt="Gravity Analysis" src="_images/ui-gravity-analysis.png" style="width: 800px;"/></a>
-<p>Here you can see a graph over the entered values and also how that aligns with the current formula. This can allow you to spot any
-values that might be invalid.</p>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula-current.png"><img alt="Gravity Current" src="_images/ui-gravity-formula-current.png" style="width: 800px;"/></a>
+<p>Here a graph is shown with your current formula compared with the entered data points.</p>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula-formula.png"><img alt="Gravity Formula" src="_images/ui-gravity-formula-formula.png" style="width: 800px;"/></a>
+<p>Here you can see the generated formulas. A drop down selector is available on the top to make it easy to select the formula you want.</p>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula-table.png"><img alt="Gravity Table" src="_images/ui-gravity-formula-table.png" style="width: 800px;"/></a>
+<p>Table with calculated values per angle that has been used and the deviation from the entered data.</p>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula-graph.png"><img alt="Gravity Graph" src="_images/ui-gravity-formula-graph.png" style="width: 800px;"/></a>
+<p>Here a graph is shown with the created formulas. You can deselect a formula by selecting the color in the legend.</p>
 </div>
 </div>
 <div class="section" id="push-targets">
@@ -721,7 +718,6 @@ changed for this to work.</p>
 <li><a class="reference internal" href="#gravity">Gravity</a><ul>
 <li><a class="reference internal" href="#gravity-settings">Gravity - Settings</a></li>
 <li><a class="reference internal" href="#gravity-formula">Gravity - Formula</a></li>
-<li><a class="reference internal" href="#gravity-analysis">Gravity - Analysis</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#push-targets">Push targets</a><ul>

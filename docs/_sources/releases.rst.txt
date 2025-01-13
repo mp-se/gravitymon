@@ -3,10 +3,40 @@
 Releases 
 ########
 
+v2.1.0
+======
+
+New features
+++++++++++++
+* Updated formula creator.
+
+  * Allow user more choice when it comes to selecting the order and varifying result.
+  * Will now correctly handle Plato data as input
+  * Formula will still be created for SG since this is the internal format used by Gravitymon
+  * Moved formula creation from device code to UI code to allow for more flexible formula creation. 
+  * Removed dependant library and API.
+
+* Extended formula points from 10 to 20
+
+.. note::
+  Update the formula deviation (default 3) to a value according to your selected gravity format eg. SG = 0.003
+
+* Added warning when mqtt payload exceeds 700 bytes to avoid crashes
+* Optimized code to reduce memory usage to allow for larger payloads when pushing data
+* Update dependant libraries to latest version (Json 7, AsyncWebServer, EspFwk)
+
+Bugs fixed
+++++++++++
+* UI no shows clearly when gyro is moving and average is not calculated
+* Fixed broken link to removing old iSpindle configuration.
+* Fixed limitation that lowest plato was 1 (now 0)
+* Corrected docs on home assistant auto registration option.
+* Skip SSL when in config mode flag now works correctly
+
 v2.0.1
 ======
 
-* Disable LED on esp8266 since it interfear with gyro communication.
+* Disable LED on esp8266 since it might collide with gyro communication.
 
 v2.0.0
 ======
