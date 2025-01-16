@@ -61,6 +61,17 @@ Here is an image of where I added the resistor for the voltage divider.
   :width: 500
   :alt: Esp32c3 adding resistor as voltage dividier.
 
+
+Olimex ESP32-C3-DevKit-Lipo
+++++++++++++
+
+This Model is supported by gravitymon. It is tested with the GY-521 only! So the temperature also gets measured by the gyro.
+To have battery voltage monitoring, solder the bridges 'PAT_PWR_E1' and 'BAT_SENS_E1' at the bottom side together, to measure the voltage with pin 3.
+The LiPo/LiIon-battery gets connected to the 2.00 mm pitch connector ontop of the board. 
+
+Gyro gets connected to 3,3V, GND and SDA to PIN 1 and SCL to PIN 0 of the olimex board.
+
+
 ESP32s2 mini
 ++++++++++++
 
