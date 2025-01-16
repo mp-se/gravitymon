@@ -64,8 +64,11 @@ bool GyroSensor::setup() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
-  Wire.begin(PIN_SDA, PIN_SCL);
+  Wire.setPins(PIN_SDA, PIN_SCL);
   Wire.setClock(clock);  // 400kHz I2C clock.
+
+  delay(1000);
+  Wire.begin();
 
   uint8_t id = accelgyro.getDeviceID();
 
