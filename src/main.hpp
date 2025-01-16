@@ -122,7 +122,7 @@ extern RunMode runMode;
 // ------------------------------------------------------
 #define PIN_SCL 0
 #define PIN_SDA 1
-#define PIN_DS 5
+#define PIN_DS 5 // implemetation with DS18 not tested
 #define PIN_VOLT 3
 #define PIN_CFG1 4
 #define PIN_CFG2 20
