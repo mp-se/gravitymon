@@ -117,15 +117,15 @@ extern RunMode runMode;
 #define PIN_VCC A5
 #define PIN_GND A18
 #define ENABLE_BLE
-#elif defined(ESP32C3_OLIMEX)
+#elif defined(OLIMEX_ESP32_C3_DEVKIT_LIPO)
 // Hardware config for ESP32C3 from Olimex with build in Charger (ESP32-C3-DevKit-Lipo)
 // ------------------------------------------------------
-#define PIN_SCL 0
-#define PIN_SDA 1
-#define PIN_DS 5 // implemetation with DS18 not tested
-#define PIN_VOLT 3
-#define PIN_CFG1 4
-#define PIN_CFG2 20
+#define PIN_SCL GPIO0
+#define PIN_SDA GPIO1
+#define PIN_DS GPIO5 // implemetation with DS18 not tested
+#define PIN_VOLT GPIO3
+#define PIN_CFG1 GPIO4
+#define PIN_CFG2 GPIO20
 #define ENABLE_BLE
 
 #else
