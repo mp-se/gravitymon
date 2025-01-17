@@ -1,0 +1,1 @@
+Folder for adding variants (pins_arduino.h) files to arduino. Create a catalogue for the variant.
