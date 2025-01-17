@@ -38,7 +38,6 @@ In the platformio config there are 3 targets defined
 * gravity-release; Standard release
 * gravity32-release: Version for ESP32 mini.
 * gravity32c3-release: Version for ESP32 C3 mini v2.1+.
-* gravity32c3v1-release: Version for ESP32 C3 mini v1.0.
 * gravity32s2-release: Version for ESP32 S2 mini.
 * gravity32s3-release: Version for ESP32 S3 mini.
 * gravity32lite-release: Version for ESP32 lite (Floaty hardware).
