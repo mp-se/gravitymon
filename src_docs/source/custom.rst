@@ -1,4 +1,4 @@
-.. _custom:
+.. _custom-boards:
 
 Custom boards
 #############
