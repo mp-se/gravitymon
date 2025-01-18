@@ -57,7 +57,7 @@ SerialDebug mySerial;
 GravmonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
                       USER_SSID, USER_PASS);
-OtaUpdate myOta(&myConfig, CFG_APPVER);
+OtaUpdate myOta(&myConfig, CFG_APPVER, CFG_FILENAMEBIN);
 BatteryVoltage myBatteryVoltage;
 GravmonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;

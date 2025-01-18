@@ -46,6 +46,7 @@ extern RunMode runMode;
   #define PIN_CFG2 D7
   #define PIN_DS D6
   #define PIN_VOLT PIN_A0
+  #define CFG_FILENAMEBIN "firmware.bin"
 
 #elif defined(WEMOS_D1_MINI32)
   // Hardware config for ESP32-d1-mini, iSpindel hardware
@@ -57,6 +58,7 @@ extern RunMode runMode;
   #define PIN_CFG2 D7
   #define PIN_VOLT PIN_A0
   #define ENABLE_BLE
+  #define CFG_FILENAMEBIN "firmware32.bin"
 
 #elif defined(LOLIN_C3_MINI)
 // Hardware config for ESP32-c3-mini, iSpindel hardware
@@ -69,17 +71,12 @@ extern RunMode runMode;
   #define PIN_SDA 7
   #define PIN_SCL 6
 #endif  // JTAG_DEBUG
+#define PIN_DS A0
+#define PIN_VOLT A3
 
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
-
-#if defined(ESP32C3_REV1)
-  #define PIN_DS A3
-  #define PIN_VOLT A0
-#else
-  #define PIN_DS A0
-  #define PIN_VOLT A3
-#endif
+#define CFG_FILENAMEBIN "firmware32c3.bin"
 
 #define ENABLE_BLE
 
@@ -92,6 +89,7 @@ extern RunMode runMode;
 #define PIN_CFG2 A10
 #define PIN_DS A8
 #define PIN_VOLT A2
+#define CFG_FILENAMEBIN "firmware32s2.bin"
 
 #elif defined(LOLIN_S3_MINI)
 // Hardware config for ESP32-s3-mini, iSpindel hardware
@@ -102,6 +100,7 @@ extern RunMode runMode;
 #define PIN_CFG2 A9
 #define PIN_DS A12
 #define PIN_VOLT A1
+#define CFG_FILENAMEBIN "firmware32s3.bin"
 
 #define ENABLE_BLE
 
@@ -116,6 +115,7 @@ extern RunMode runMode;
 #define PIN_CFG2 A13
 #define PIN_VCC A5
 #define PIN_GND A18
+#define CFG_FILENAMEBIN "firmware32lite.bin"
 
 #define ENABLE_BLE
 
