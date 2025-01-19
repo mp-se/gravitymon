@@ -61,7 +61,6 @@ Here is an image of where I added the resistor for the voltage divider.
   :width: 500
   :alt: Esp32c3 adding resistor as voltage dividier.
 
-
 ESP32s2 mini
 ++++++++++++
 
