@@ -30,21 +30,20 @@ SOFTWARE.
 GyroSensor myGyro;
 MPU6050 accelgyro;
 
-#define GYRO_USE_INTERRUPT // Use interrupt to detect when new sample is ready
-#define GYRO_SHOW_MINMAX   // Will calculate the min/max values when doing
-                           // calibration
+#define GYRO_USE_INTERRUPT  // Use interrupt to detect when new sample is ready
+#define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
+                            // calibration
 
 uint8_t GyroSensor::getGyroID() { return accelgyro.getDeviceID(); }
 
-bool GyroSensor::setup()
-{
+bool GyroSensor::setup() {
   int clock = 400000;
 #if defined(FLOATY)
   pinMode(PIN_VCC, OUTPUT);
   pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
   digitalWrite(PIN_VCC, HIGH);
   digitalWrite(PIN_GND, LOW);
-  delay(10); // Wait for the pins to settle or we will fail to connect
+  delay(10);  // Wait for the pins to settle or we will fail to connect
 #else
 #endif
   /* For testing pin config of new boards with led.
@@ -66,17 +65,14 @@ bool GyroSensor::setup()
   Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
   Wire.begin(PIN_SDA, PIN_SCL);
-  Wire.setClock(clock); // 400kHz I2C clock.
+  Wire.setClock(clock);  // 400kHz I2C clock.
 
   uint8_t id = accelgyro.getDeviceID();
 
-  if (id != 0x34 && id != 0x38)
-  { // Allow both MPU6050 and MPU6500
+  if (id != 0x34 && id != 0x38) {  // Allow both MPU6050 and MPU6500
     writeErrorLog("GYRO: Failed to connect to gyro, is it connected?");
     _sensorConnected = false;
-  }
-  else
-  {
+  } else {
 #if LOG_LEVEL == 6
     Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
 #endif
@@ -104,8 +100,7 @@ bool GyroSensor::setup()
   return _sensorConnected;
 }
 
-void GyroSensor::enterSleep()
-{
+void GyroSensor::enterSleep() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
@@ -117,8 +112,7 @@ void GyroSensor::enterSleep()
 }
 
 void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
-                            const int delayTime)
-{
+                            const int delayTime) {
   RawGyroDataL average = {0, 0, 0, 0, 0, 0};
 
 #if LOG_LEVEL == 6
@@ -134,11 +128,9 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
   min.temp = accelgyro.getTemperature();
   max = min;
 #endif
-  for (int cnt = 0; cnt < noIterations; cnt++)
-  {
+  for (int cnt = 0; cnt < noIterations; cnt++) {
 #if defined(GYRO_USE_INTERRUPT)
-    while (accelgyro.getIntDataReadyStatus() == 0)
-    {
+    while (accelgyro.getIntDataReadyStatus() == 0) {
       delayMicroseconds(1);
     }
 #endif
@@ -156,36 +148,22 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
 
     // Log what the minium value is
 #if defined(GYRO_SHOW_MINMAX)
-    if (raw.ax < min.ax)
-      min.ax = raw.ax;
-    if (raw.ay < min.ay)
-      min.ay = raw.ay;
-    if (raw.az < min.az)
-      min.az = raw.az;
-    if (raw.gx < min.gx)
-      min.gx = raw.gx;
-    if (raw.gy < min.gy)
-      min.gy = raw.gy;
-    if (raw.gz < min.gz)
-      min.gz = raw.gz;
-    if (raw.temp < min.temp)
-      min.temp = raw.temp;
+    if (raw.ax < min.ax) min.ax = raw.ax;
+    if (raw.ay < min.ay) min.ay = raw.ay;
+    if (raw.az < min.az) min.az = raw.az;
+    if (raw.gx < min.gx) min.gx = raw.gx;
+    if (raw.gy < min.gy) min.gy = raw.gy;
+    if (raw.gz < min.gz) min.gz = raw.gz;
+    if (raw.temp < min.temp) min.temp = raw.temp;
 
     // Log what the maximum value is
-    if (raw.ax > max.ax)
-      max.ax = raw.ax;
-    if (raw.ay > max.ay)
-      max.ay = raw.ay;
-    if (raw.az > max.az)
-      max.az = raw.az;
-    if (raw.gx > max.gx)
-      max.gx = raw.gx;
-    if (raw.gy > max.gy)
-      max.gy = raw.gy;
-    if (raw.gz > max.gz)
-      max.gz = raw.gz;
-    if (raw.temp > max.temp)
-      max.temp = raw.temp;
+    if (raw.ax > max.ax) max.ax = raw.ax;
+    if (raw.ay > max.ay) max.ay = raw.ay;
+    if (raw.az > max.az) max.az = raw.az;
+    if (raw.gx > max.gx) max.gx = raw.gx;
+    if (raw.gy > max.gy) max.gy = raw.gy;
+    if (raw.gz > max.gz) max.gz = raw.gz;
+    if (raw.temp > max.temp) max.temp = raw.temp;
 #endif
 
 #if !defined(GYRO_USE_INTERRUPT)
@@ -219,8 +197,7 @@ void GyroSensor::readSensor(RawGyroData &raw, const int noIterations,
 #endif
 }
 
-float GyroSensor::calculateAngle(RawGyroData &raw)
-{
+float GyroSensor::calculateAngle(RawGyroData &raw) {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Calculating the angle." CR));
 #endif
@@ -247,8 +224,7 @@ float GyroSensor::calculateAngle(RawGyroData &raw)
   return vY;
 }
 
-bool GyroSensor::isSensorMoving(RawGyroData &raw)
-{
+bool GyroSensor::isSensorMoving(RawGyroData &raw) {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Checking for sensor movement." CR));
 #endif
@@ -257,8 +233,7 @@ bool GyroSensor::isSensorMoving(RawGyroData &raw)
   int threashold = myConfig.getGyroSensorMovingThreashold();
   _sensorMoving = false;
 
-  if (x > threashold || y > threashold || z > threashold)
-  {
+  if (x > threashold || y > threashold || z > threashold) {
     Log.notice(F("GYRO: Movement detected (%d)\t%d\t%d\t%d." CR), threashold, x,
                y, z);
     _sensorMoving = true;
@@ -267,30 +242,25 @@ bool GyroSensor::isSensorMoving(RawGyroData &raw)
   return _sensorMoving;
 }
 
-bool GyroSensor::read()
-{
+bool GyroSensor::read() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Getting new gyro position." CR));
 #endif
 
-  if (!_sensorConnected)
-    return false;
+  if (!_sensorConnected) return false;
 
   readSensor(_lastGyroData, myConfig.getGyroReadCount(),
-             myConfig.getGyroReadDelay()); // Last param is unused if
-                                           // GYRO_USE_INTERRUPT is defined.
+             myConfig.getGyroReadDelay());  // Last param is unused if
+                                            // GYRO_USE_INTERRUPT is defined.
 
   // If the sensor is unstable we return false to signal we dont have valid
   // value
-  if (isSensorMoving(_lastGyroData))
-  {
+  if (isSensorMoving(_lastGyroData)) {
 #if LOG_LEVEL == 6
     Log.notice(F("GYRO: Sensor is moving." CR));
 #endif
     _validValue = false;
-  }
-  else
-  {
+  } else {
     _validValue = true;
     _angle = calculateAngle(_lastGyroData);
 #if LOG_LEVEL == 6
@@ -309,8 +279,7 @@ bool GyroSensor::read()
   return _validValue;
 }
 
-void GyroSensor::dumpCalibration()
-{
+void GyroSensor::dumpCalibration() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Accel offset\t%d\t%d\t%d" CR), _calibrationOffset.ax,
               _calibrationOffset.ay, _calibrationOffset.az);
@@ -319,16 +288,14 @@ void GyroSensor::dumpCalibration()
 #endif
 }
 
-void GyroSensor::applyCalibration()
-{
+void GyroSensor::applyCalibration() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Applying calibration offsets to sensor." CR));
 #endif
 
   if ((_calibrationOffset.ax + _calibrationOffset.ay + _calibrationOffset.az +
        _calibrationOffset.gx + _calibrationOffset.gy + _calibrationOffset.gz) ==
-      0)
-  {
+      0) {
     writeErrorLog(
         "GYRO: No valid calibration values, please calibrate the device.");
     return;
@@ -342,8 +309,7 @@ void GyroSensor::applyCalibration()
   accelgyro.setZGyroOffset(_calibrationOffset.gz);
 }
 
-void GyroSensor::calibrateSensor()
-{
+void GyroSensor::calibrateSensor() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Calibrating sensor" CR));
 #endif
@@ -351,7 +317,7 @@ void GyroSensor::calibrateSensor()
   // EspSerial.print( CR );
 
   accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
-  accelgyro.CalibrateAccel(6); // 6 = 600 readings
+  accelgyro.CalibrateAccel(6);  // 6 = 600 readings
   accelgyro.CalibrateGyro(6);
 
   accelgyro.PrintActiveOffsets();
@@ -368,8 +334,7 @@ void GyroSensor::calibrateSensor()
   myConfig.saveFile();
 }
 
-void GyroSensor::debug()
-{
+void GyroSensor::debug() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Debug - Clock src   %d." CR),
               accelgyro.getClockSource());
@@ -401,20 +366,19 @@ void GyroSensor::debug()
   Log.verbose(F("GYRO: Debug - Gyr FactZ   %d." CR),
               accelgyro.getGyroZSelfTestFactoryTrim());
 
-  switch (accelgyro.getFullScaleAccelRange())
-  {
-  case 0:
-    Log.verbose(F("GYRO: Debug - Accel range +/- 2g." CR));
-    break;
-  case 1:
-    Log.verbose(F("GYRO: Debug - Accel range +/- 4g." CR));
-    break;
-  case 2:
-    Log.verbose(F("GYRO: Debug - Accel range +/- 8g." CR));
-    break;
-  case 3:
-    Log.verbose(F("GYRO: Debug - Accel range +/- 16g." CR));
-    break;
+  switch (accelgyro.getFullScaleAccelRange()) {
+    case 0:
+      Log.verbose(F("GYRO: Debug - Accel range +/- 2g." CR));
+      break;
+    case 1:
+      Log.verbose(F("GYRO: Debug - Accel range +/- 4g." CR));
+      break;
+    case 2:
+      Log.verbose(F("GYRO: Debug - Accel range +/- 8g." CR));
+      break;
+    case 3:
+      Log.verbose(F("GYRO: Debug - Accel range +/- 16g." CR));
+      break;
   }
 
   Log.verbose(F("GYRO: Debug - Acc OffX    %d\t%d." CR),
