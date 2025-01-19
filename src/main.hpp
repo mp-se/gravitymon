@@ -119,6 +119,19 @@ extern RunMode runMode;
 
 #define ENABLE_BLE
 
+#elif defined(OLIMEX_ESP32_C3_DEVKIT_LIPO)
+// Hardware config for ESP32C3 from Olimex with build in Charger (ESP32-C3-DevKit-Lipo)
+// ------------------------------------------------------
+#define PIN_SCL GPIO0
+#define PIN_SDA GPIO1
+#define PIN_DS GPIO5 // implemetation with DS18 not tested
+#define PIN_VOLT GPIO3
+#define PIN_CFG1 GPIO4
+#define PIN_CFG2 GPIO20
+#define CFG_FILENAMEBIN "custom-olimex_esp32_c3_devkit_lipo.bin"
+
+#define ENABLE_BLE
+
 #else
   #warning "Unknown board type"
 #endif
