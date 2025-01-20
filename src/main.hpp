@@ -132,6 +132,20 @@ extern RunMode runMode;
 
 #define ENABLE_BLE
 
+#elif defined(SUPER_MINI_ESP32C3)
+// Hardware config for SUPER_MINI_ESP32C3, iSpindel hardware
+// ------------------------------------------------------
+#define PIN_SDA 7
+#define PIN_SCL 6
+#define PIN_DS A0
+#define PIN_VOLT A3
+
+#define PIN_CFG1 A5
+#define PIN_CFG2 A4
+#define CFG_FILENAMEBIN "custom-super_mini_esp32c3.bin"
+
+// #define ENABLE_BLE
+
 #else
   #warning "Unknown board type"
 #endif
