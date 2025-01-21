@@ -8,6 +8,15 @@ I'm not a hardware designer so I would recommend the following resources for mor
 * `Cherry Philip Hardware design <https://github.com/cherryphilip74/iSpindel-PCB>`_
 * `OpenSource Distilling <https://www.opensourcedistilling.com/ispindel>`_
 
+Custom boards
+=============
+
+Besides the standard boards listed here (which are tested and verified by me) there is also a possibility 
+to add custom boards which are included in the builds and made available through this gihub repository. 
+A list of these boards can be found here :ref:`custom-boards`. I cannot take full responsibility for these 
+builds since I dont have access to these boards for testing.
+
+
 iSpindle based on esp8266
 =========================
 

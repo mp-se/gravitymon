@@ -65,7 +65,7 @@ SerialDebug mySerial;
 GravitymonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
                       USER_SSID, USER_PASS);
-OtaUpdate myOta(&myConfig, CFG_APPVER);
+OtaUpdate myOta(&myConfig, CFG_APPVER, CFG_FILENAMEBIN);
 BatteryVoltage myBatteryVoltage;
 BrewingWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
@@ -288,7 +288,7 @@ bool loopReadGravity() {
       pushMillis = millis();
       PERF_BEGIN("loop-push");
 
-#if defined(ESP32) && !defined(ESP32S2)
+#if defined(ENABLE_BLE)
       if (myConfig.isBleActive()) {
         myBleSender.init();
 
@@ -314,7 +314,7 @@ bool loopReadGravity() {
           } break;
         }
       }
-#endif  // ESP32 && !ESP32S2
+#endif // ENABLE_BLE
 
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.

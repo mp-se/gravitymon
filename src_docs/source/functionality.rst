@@ -203,6 +203,11 @@ The main features
   If the battery voltage drops below 20%, then the device will enter battery savings mode 
   and change the sleep interval to 1 hour.
 
+* **Custom board support**
+
+  There are lots of boards out there that can support a gravitymonitor and now there is a possibility to 
+  add custom builds for boards that I dont have access to, in sense a community approach where everyone can 
+  add new boards that can be supported. See: :ref:`custom-boards` 
 
 Battery life
 ------------
