@@ -27,7 +27,15 @@ BatteryVoltage::BatteryVoltage() {
 #if defined(ESP8266)
   pinMode(myConfig.getVoltagePin(), INPUT);
 #else
-  pinMode(myConfig.getVoltagePin(), INPUT_PULLDOWN);
+  pinMode(myConfig.getVoltagePin(), INPUT);
+  analogReadResolution(SOC_ADC_MAX_BITWIDTH);
+  // Max input values per board (2.5V is the a good setting)
+  // ESP32: 2450mV
+  // ESP32-S2: 2500mV
+  // ESP32-S3: 3100mV
+  // ESP32-C3: 2500mV
+  // ESP32-C6: 3300mV  
+  analogSetAttenuation(ADC_11db); 
 #endif
 }
 
@@ -43,7 +51,7 @@ void BatteryVoltage::read() {
 #if defined(ESP8266)
   _batteryLevel = ((3.3 / 1023) * v) * factor;
 #else  // defined (ESP32)
-  _batteryLevel = ((3.3 / 4095) * v) * factor;
+  _batteryLevel = ((2.2 / ((1 << SOC_ADC_MAX_BITWIDTH)-1)) * v) * factor;
 #endif
 #if LOG_LEVEL == 6
   Log.verbose(
