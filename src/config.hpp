@@ -65,15 +65,15 @@ class GravmonConfig : public BaseConfig {
 #if defined(ESP8266)
   float _voltageFactor = 1.59;
 #elif defined(ESP32C3)
-  float _voltageFactor = 1.3;
+  float _voltageFactor = 2.55;
 #elif defined(ESP32S2)
-  float _voltageFactor = 0.59;
+  float _voltageFactor = 2.45;
 #elif defined(ESP32S3)
-  float _voltageFactor = 1.54;
+  float _voltageFactor = 3.00;
 #elif defined(ESP32LITE)
-  float _voltageFactor = 1.59;
+  float _voltageFactor = 2.45;
 #else  // ESP32
-  float _voltageFactor = 1.3;
+  float _voltageFactor = 2.45;
 #endif
   float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;

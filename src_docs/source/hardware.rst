@@ -51,8 +51,8 @@ Gravitymon supports a number of ESP32 boards that offers bluetooth support.
 It's possible to use this PCB and mount an ESP32 mini on top of that (c3 or s2 are prefered). The esp32 d1 mini is a larger formfactor and can be hard to fit into the tube.
 
 .. note::
-  You need to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor for a voltage divider 
-  which the esp32 does not have. So in order to get a valid voltage (less than 3.2V) on the A0 pin this is needed. Once the modification is done you might
+  You need to add a resistor between A0 (Analog PIN) and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider 
+  which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog pin this is needed. Once the modification is done you might
   need to adjust the voltage factor so the battery reading is correct. 
 
 ESP32c3 mini
