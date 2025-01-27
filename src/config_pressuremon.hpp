@@ -30,26 +30,99 @@ SOFTWARE.
 
 enum PressuremonBleFormat { BLE_DISABLED = 0 };
 
+enum PressureSensorType {
+  SensorNone = 0,
+  
+  SensorXidibeiXDB401_I2C_KPa_100 = 1,  // 0-0.1 MPa
+  SensorXidibeiXDB401_I2C_KPa_200 = 2,  // 0-0.2 MPa
+  SensorXidibeiXDB401_I2C_KPa_300 = 3,  // 0-0.3 MPa
+  SensorXidibeiXDB401_I2C_KPa_400 = 4,  // 0-0.4 MPa
+  SensorXidibeiXDB401_I2C_KPa_500 = 5,  // 0-0.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_600 = 6,  // 0-0.6 MPa
+  SensorXidibeiXDB401_I2C_KPa_700 = 7,  // 0-0.7 MPa
+  SensorXidibeiXDB401_I2C_KPa_800 = 8,  // 0-0.8 MPa
+  SensorXidibeiXDB401_I2C_KPa_900 = 9,  // 0-0.9 MPa
+  SensorXidibeiXDB401_I2C_KPa_1000 = 10,  // 0-1 MPa
+
+  SensorXidibeiXDB401_Analog_KPa_100 = 21,  // 0-01 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_200 = 22,  // 0-02 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_300 = 23,  // 0-03 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_400 = 24,  // 0-04 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_500 = 25,  // 0-05 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_600 = 26,  // 0-06 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_700 = 27,  // 0-07 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_800 = 28,  // 0-08 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_900 = 29,  // 0-09 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_Analog_KPa_1000 = 30,  // 0-1 MPa, 3.3V, 0.2 -> 2.4V
+};
+
+constexpr auto MAX_SENSOR_DEVICES = 2;
+
+constexpr auto CONFIG_SENSOR_TYPE = "sensor_type";
+constexpr auto CONFIG_SENSOR1_TYPE = "sensor1_type";
+constexpr auto CONFIG_PRESSURE_ADJUSTMENT = "pressure_adjustment";
+constexpr auto CONFIG_PRESSURE1_ADJUSTMENT = "pressure1_adjustment";
+constexpr auto CONFIG_TEMPERATURE_ADJUSTMENT = "temp_adjustment";
+constexpr auto CONFIG_TEMPERATURE1_ADJUSTMENT = "temp1_adjustment";
+
+constexpr auto CONFIG_PRESSURE_UNIT = "pressure_unit";
+
 class PressuremonConfig : public BrewingConfig {
  private:
-  PressuremonBleFormat _pressuremonBleFormat =
-      PressuremonBleFormat::BLE_DISABLED;
+  PressuremonBleFormat _pressuremonBleFormat = PressuremonBleFormat::BLE_DISABLED;
+  PressureSensorType _pressureSensor[MAX_SENSOR_DEVICES] = { PressureSensorType::SensorNone, PressureSensorType::SensorNone };
+
+  float _pressureSensorCorrection[MAX_SENSOR_DEVICES] = {0, 0};
+  float _temperatureSensorCorrection[MAX_SENSOR_DEVICES] = {0, 0};
+
   bool _batterySaving = true;
 
-  char _pressureFormat = 'B';
+  String _pressureUnit = "PSI";
 
  public:
   PressuremonConfig(String baseMDNS, String fileName);
 
-  bool isPressureBar() { return _pressureFormat == 'B'; }
-  bool isPressureHpa() { return _pressureFormat == 'H'; }
-  bool isPressurePsi() { return _pressureFormat == 'P'; }
+  bool isPressureBar() { return _pressureUnit == "BAR"; }
+  bool isPressureKpa() { return _pressureUnit == "KPA"; }
+  bool isPressurePsi() { return _pressureUnit == "PSI"; }
+
+  const char* getPressureUnit() { return _pressureUnit.c_str(); }
+  void setPressureUnit(String s) {
+    _pressureUnit = s;
+    _saveNeeded = true;
+  }
+
+  PressureSensorType getPressureSensorType(int idx) {
+    return _pressureSensor[idx];
+  }
+  int getPressureSensorTypeAsInt(int idx) {
+    return static_cast<int>(_pressureSensor[idx]);
+  }
+  void setPressureSensorType(PressureSensorType s, int idx) {
+    _pressureSensor[idx] = s;
+    _saveNeeded = true;
+  }
+  void setPressureSensorType(int s, int idx) {
+    setPressureSensorType((PressureSensorType)s, idx);
+  }
+
+  float getPressureSensorCorrection(int idx) { return _pressureSensorCorrection[idx]; }
+  void setPressureSensorCorrection(float v, int idx) {
+    _pressureSensorCorrection[idx] = v;
+    _saveNeeded = true;
+  }
+
+  float getTemperatureSensorCorrection(int idx) { return _temperatureSensorCorrection[idx]; }
+  void setTemperatureSensorCorrection(float v, int idx) {
+    _temperatureSensorCorrection[idx] = v;
+    _saveNeeded = true;
+  }
 
   bool isBleActive() {
     return (_pressuremonBleFormat != PressuremonBleFormat::BLE_DISABLED);
   }
 
-  const PressuremonBleFormat getGravitymonBleFormat() {
+  const PressuremonBleFormat getPressuremonBleFormat() {
     return _pressuremonBleFormat;
   }
   void setPressuremonBleFormat(int b) {

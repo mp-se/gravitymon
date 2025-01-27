@@ -31,7 +31,17 @@ PressuremonConfig::PressuremonConfig(String baseMDNS, String fileName)
 void PressuremonConfig::createJson(JsonObject& doc) {
   BrewingConfig::createJson(doc);
 
-  doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
+  doc[CONFIG_BATTERY_SAVING] = isBatterySaving();
+
+  doc[CONFIG_PRESSURE_UNIT] = getPressureUnit();
+  doc[CONFIG_BLE_FORMAT] = getPressuremonBleFormat();
+
+  doc[CONFIG_SENSOR_TYPE] = getPressureSensorTypeAsInt(0);
+  doc[CONFIG_SENSOR1_TYPE] = getPressureSensorTypeAsInt(1);
+  doc[CONFIG_PRESSURE_ADJUSTMENT] = getPressureSensorCorrection(0);
+  doc[CONFIG_PRESSURE1_ADJUSTMENT] = getPressureSensorCorrection(1);
+  doc[CONFIG_TEMPERATURE_ADJUSTMENT] = getTemperatureSensorCorrection(0);
+  doc[CONFIG_TEMPERATURE1_ADJUSTMENT] = getTemperatureSensorCorrection(1);
 }
 
 void PressuremonConfig::parseJson(JsonObject& doc) {
@@ -39,6 +49,27 @@ void PressuremonConfig::parseJson(JsonObject& doc) {
 
   if (!doc[CONFIG_BATTERY_SAVING].isNull())
     setBatterySaving(doc[CONFIG_BATTERY_SAVING].as<bool>());
+
+  if (!doc[CONFIG_PRESSURE_UNIT].isNull())
+    setPressureUnit(doc[CONFIG_PRESSURE_UNIT].as<String>());
+
+  if (!doc[CONFIG_BLE_FORMAT].isNull())
+    setPressuremonBleFormat(doc[CONFIG_BLE_FORMAT].as<int>());
+
+  if (!doc[CONFIG_SENSOR_TYPE].isNull())
+    setPressureSensorType(doc[CONFIG_SENSOR_TYPE].as<int>(), 0);
+  if (!doc[CONFIG_SENSOR1_TYPE].isNull())
+    setPressureSensorType(doc[CONFIG_SENSOR1_TYPE].as<int>(), 1);
+
+  if (!doc[CONFIG_PRESSURE_ADJUSTMENT].isNull())
+    setPressureSensorCorrection(doc[CONFIG_PRESSURE_ADJUSTMENT].as<float>(), 0);
+  if (!doc[CONFIG_PRESSURE1_ADJUSTMENT].isNull())
+    setPressureSensorCorrection(doc[CONFIG_PRESSURE1_ADJUSTMENT].as<float>(), 1);
+
+  if (!doc[CONFIG_TEMPERATURE_ADJUSTMENT].isNull())
+    setTemperatureSensorCorrection(doc[CONFIG_TEMPERATURE_ADJUSTMENT].as<float>(), 0);
+  if (!doc[CONFIG_TEMPERATURE1_ADJUSTMENT].isNull())
+    setTemperatureSensorCorrection(doc[CONFIG_TEMPERATURE1_ADJUSTMENT].as<float>(), 1);
 }
 
 #endif  // PRESSUREMON
