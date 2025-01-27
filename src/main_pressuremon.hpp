@@ -35,7 +35,13 @@ enum RunMode {
   wifiSetupMode = 2,
 };
 
-void setupTemplateEnginePressure(TemplatingEngine& engine);
+void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi, float pressurePsi1, 
+                                float tempC, float temp1C, float runTime, float voltage);
+
+float convertPsiPressureToBar(float psi);
+float convertPsiPressureToKPa(float psi);
+float convertPaPressureToPsi(float pa);
+float convertPaPressureToBar(float pa);
 
 #if defined(ESP32S3)
 // Hardware config for ESP32-s3-mini, pressuremon hardware
