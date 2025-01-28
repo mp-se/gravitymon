@@ -64,12 +64,15 @@ void PressuremonConfig::parseJson(JsonObject& doc) {
   if (!doc[CONFIG_PRESSURE_ADJUSTMENT].isNull())
     setPressureSensorCorrection(doc[CONFIG_PRESSURE_ADJUSTMENT].as<float>(), 0);
   if (!doc[CONFIG_PRESSURE1_ADJUSTMENT].isNull())
-    setPressureSensorCorrection(doc[CONFIG_PRESSURE1_ADJUSTMENT].as<float>(), 1);
+    setPressureSensorCorrection(doc[CONFIG_PRESSURE1_ADJUSTMENT].as<float>(),
+                                1);
 
   if (!doc[CONFIG_TEMPERATURE_ADJUSTMENT].isNull())
-    setTemperatureSensorCorrection(doc[CONFIG_TEMPERATURE_ADJUSTMENT].as<float>(), 0);
+    setTemperatureSensorCorrection(
+        doc[CONFIG_TEMPERATURE_ADJUSTMENT].as<float>(), 0);
   if (!doc[CONFIG_TEMPERATURE1_ADJUSTMENT].isNull())
-    setTemperatureSensorCorrection(doc[CONFIG_TEMPERATURE1_ADJUSTMENT].as<float>(), 1);
+    setTemperatureSensorCorrection(
+        doc[CONFIG_TEMPERATURE1_ADJUSTMENT].as<float>(), 1);
 }
 
 #endif  // PRESSUREMON

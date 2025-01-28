@@ -596,7 +596,7 @@ void BrewingWebServer::loop() {
     // Scan the i2c bus for devices, initialized in gyro.cpp
     JsonArray i2c = obj[PARAM_I2C].to<JsonArray>();
 
-    for (int i = 1, j = 0; i < 127; i++) {
+    for (int i = 1, j = 0; i < 128; i++) {
       // The i2c_scanner uses the return value of
       // the Write.endTransmisstion to see if
       // a device did acknowledge to the address.

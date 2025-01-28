@@ -32,29 +32,41 @@ enum PressuremonBleFormat { BLE_DISABLED = 0 };
 
 enum PressureSensorType {
   SensorNone = 0,
-  
-  SensorXidibeiXDB401_I2C_KPa_100 = 1,  // 0-0.1 MPa
-  SensorXidibeiXDB401_I2C_KPa_200 = 2,  // 0-0.2 MPa
-  SensorXidibeiXDB401_I2C_KPa_300 = 3,  // 0-0.3 MPa
-  SensorXidibeiXDB401_I2C_KPa_400 = 4,  // 0-0.4 MPa
-  SensorXidibeiXDB401_I2C_KPa_500 = 5,  // 0-0.5 MPa
-  SensorXidibeiXDB401_I2C_KPa_600 = 6,  // 0-0.6 MPa
-  SensorXidibeiXDB401_I2C_KPa_700 = 7,  // 0-0.7 MPa
-  SensorXidibeiXDB401_I2C_KPa_800 = 8,  // 0-0.8 MPa
-  SensorXidibeiXDB401_I2C_KPa_900 = 9,  // 0-0.9 MPa
-  SensorXidibeiXDB401_I2C_KPa_1000 = 10,  // 0-1 MPa
 
-  SensorXidibeiXDB401_Analog_KPa_100 = 21,  // 0-01 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_200 = 22,  // 0-02 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_300 = 23,  // 0-03 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_400 = 24,  // 0-04 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_500 = 25,  // 0-05 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_600 = 26,  // 0-06 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_700 = 27,  // 0-07 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_800 = 28,  // 0-08 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_900 = 29,  // 0-09 MPa, 3.3V, 0.2 -> 2.4V
-  SensorXidibeiXDB401_Analog_KPa_1000 = 30,  // 0-1 MPa, 3.3V, 0.2 -> 2.4V
+  SensorXidibeiXDB401_I2C_KPa_200 = 1,    // 0-0.2 MPa
+  SensorXidibeiXDB401_I2C_KPa_400 = 2,    // 0-0.4 MPa
+  SensorXidibeiXDB401_I2C_KPa_500 = 3,    // 0-0.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_600 = 4,    // 0-0.6 MPa
+  SensorXidibeiXDB401_I2C_KPa_800 = 5,    // 0-0.8 MPa
+  SensorXidibeiXDB401_I2C_KPa_1000 = 6,   // 0-1 MPa
+  SensorXidibeiXDB401_I2C_KPa_1200 = 7,   // 0-1.2 MPa
+  SensorXidibeiXDB401_I2C_KPa_1500 = 8,   // 0-1.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_1600 = 9,   // 0-1.6 MPa
+  SensorXidibeiXDB401_I2C_KPa_2000 = 10,  // 0-2 MPa
+  SensorXidibeiXDB401_I2C_KPa_2500 = 11,  // 0-2.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_3000 = 12,  // 0-3 MPa
+  SensorXidibeiXDB401_I2C_KPa_3500 = 13,  // 0-3.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_4000 = 15,  // 0-4 MPa
+
+  SensorXidibeiXDB401_Analog_KPa_200 = 101,   // 0-0.2 MPa
+  SensorXidibeiXDB401_Analog_KPa_400 = 102,   // 0-0.4 MPa
+  SensorXidibeiXDB401_Analog_KPa_500 = 103,   // 0-0.5 MPa
+  SensorXidibeiXDB401_Analog_KPa_600 = 104,   // 0-0.6 MPa
+  SensorXidibeiXDB401_Analog_KPa_800 = 105,   // 0-0.8 MPa
+  SensorXidibeiXDB401_Analog_KPa_1000 = 106,  // 0-1 MPa
+  SensorXidibeiXDB401_Analog_KPa_1200 = 107,  // 0-1.2 MPa
+  SensorXidibeiXDB401_Analog_KPa_1500 = 108,  // 0-1.5 MPa
+  SensorXidibeiXDB401_Analog_KPa_1600 = 109,  // 0-1.6 MPa
+  SensorXidibeiXDB401_Analog_KPa_2000 = 110,  // 0-2 MPa
+  SensorXidibeiXDB401_Analog_KPa_2500 = 111,  // 0-2.5 MPa
+  SensorXidibeiXDB401_Analog_KPa_3000 = 112,  // 0-3 MPa
+  SensorXidibeiXDB401_Analog_KPa_3500 = 113,  // 0-3.5 MPa
+  SensorXidibeiXDB401_Analog_KPa_4000 = 115,  // 0-4 MPa
 };
+
+constexpr auto PRESSURE_KPA = "kPa";
+constexpr auto PRESSURE_BAR = "Bar";
+constexpr auto PRESSURE_PSI = "PSI";
 
 constexpr auto MAX_SENSOR_DEVICES = 2;
 
@@ -69,22 +81,24 @@ constexpr auto CONFIG_PRESSURE_UNIT = "pressure_unit";
 
 class PressuremonConfig : public BrewingConfig {
  private:
-  PressuremonBleFormat _pressuremonBleFormat = PressuremonBleFormat::BLE_DISABLED;
-  PressureSensorType _pressureSensor[MAX_SENSOR_DEVICES] = { PressureSensorType::SensorNone, PressureSensorType::SensorNone };
+  PressuremonBleFormat _pressuremonBleFormat =
+      PressuremonBleFormat::BLE_DISABLED;
+  PressureSensorType _pressureSensor[MAX_SENSOR_DEVICES] = {
+      PressureSensorType::SensorNone, PressureSensorType::SensorNone};
 
   float _pressureSensorCorrection[MAX_SENSOR_DEVICES] = {0, 0};
   float _temperatureSensorCorrection[MAX_SENSOR_DEVICES] = {0, 0};
 
   bool _batterySaving = true;
 
-  String _pressureUnit = "PSI";
+  String _pressureUnit = PRESSURE_PSI;
 
  public:
   PressuremonConfig(String baseMDNS, String fileName);
 
-  bool isPressureBar() { return _pressureUnit == "BAR"; }
-  bool isPressureKpa() { return _pressureUnit == "KPA"; }
-  bool isPressurePsi() { return _pressureUnit == "PSI"; }
+  bool isPressureBar() { return _pressureUnit == PRESSURE_BAR; }
+  bool isPressureKpa() { return _pressureUnit == PRESSURE_KPA; }
+  bool isPressurePsi() { return _pressureUnit == PRESSURE_PSI; }
 
   const char* getPressureUnit() { return _pressureUnit.c_str(); }
   void setPressureUnit(String s) {
@@ -106,13 +120,17 @@ class PressuremonConfig : public BrewingConfig {
     setPressureSensorType((PressureSensorType)s, idx);
   }
 
-  float getPressureSensorCorrection(int idx) { return _pressureSensorCorrection[idx]; }
+  float getPressureSensorCorrection(int idx) {
+    return _pressureSensorCorrection[idx];
+  }
   void setPressureSensorCorrection(float v, int idx) {
     _pressureSensorCorrection[idx] = v;
     _saveNeeded = true;
   }
 
-  float getTemperatureSensorCorrection(int idx) { return _temperatureSensorCorrection[idx]; }
+  float getTemperatureSensorCorrection(int idx) {
+    return _temperatureSensorCorrection[idx];
+  }
   void setTemperatureSensorCorrection(float v, int idx) {
     _temperatureSensorCorrection[idx] = v;
     _saveNeeded = true;

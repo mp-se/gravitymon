@@ -42,7 +42,7 @@ const char iHttpPostFormat[] PROGMEM =
     "\"run-time\": ${run-time} "
     "}";
 
-const char iHttpGetFormat[] PROGMEM = 
+const char iHttpGetFormat[] PROGMEM =
     "?name=${mdns}"
     "&id=${id}"
     "&token=${token2}"
@@ -57,7 +57,7 @@ const char iHttpGetFormat[] PROGMEM =
     "&rssi=${rssi}"
     "&run-time=${run-time}";
 
-const char influxDbFormat[] PROGMEM = 
+const char influxDbFormat[] PROGMEM =
     "measurement,host=${mdns},"
     "device=${id},"
     "temp-format=${temp-unit},"
@@ -69,7 +69,7 @@ const char influxDbFormat[] PROGMEM =
     "battery=${battery},"
     "rssi=${rssi}\n";
 
-const char mqttFormat[] PROGMEM = 
+const char mqttFormat[] PROGMEM =
     "pressuremon/${mdns}/temperature:${temp}|"
     // "pressuremon/${mdns}/temperature1:${temp1}|"
     "pressuremon/${mdns}/temp_unit:${temp-unit}|"
@@ -93,8 +93,9 @@ constexpr auto TPL_PRESSURE_KPA = "${pressure-kpa}";
 constexpr auto TPL_PRESSURE1_KPA = "${pressure1-kpa}";
 constexpr auto TPL_PRESSURE_UNIT = "${pressure-unit}";  // PSI, BAR, KPA
 
-void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi, float pressurePsi1, 
-                                float tempC, float temp1C, float runTime, float voltage)  {
+void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
+                                 float pressurePsi1, float tempC, float temp1C,
+                                 float runTime, float voltage) {
   // Names
   engine.setVal(TPL_MDNS, myConfig.getMDNS());
   engine.setVal(TPL_ID, myConfig.getID());
@@ -153,17 +154,25 @@ void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi, fl
 
   engine.setVal(TPL_PRESSURE_PSI, pressurePsi, DECIMALS_PRESSURE);
   engine.setVal(TPL_PRESSURE1_PSI, pressurePsi1, DECIMALS_PRESSURE);
-  engine.setVal(TPL_PRESSURE_BAR, convertPsiPressureToBar(pressurePsi), DECIMALS_PRESSURE);
-  engine.setVal(TPL_PRESSURE1_BAR, convertPsiPressureToBar(pressurePsi1), DECIMALS_PRESSURE);
-  engine.setVal(TPL_PRESSURE_KPA, convertPsiPressureToKPa(pressurePsi), DECIMALS_PRESSURE);
-  engine.setVal(TPL_PRESSURE_KPA, convertPsiPressureToKPa(pressurePsi1), DECIMALS_PRESSURE);
+  engine.setVal(TPL_PRESSURE_BAR, convertPsiPressureToBar(pressurePsi),
+                DECIMALS_PRESSURE);
+  engine.setVal(TPL_PRESSURE1_BAR, convertPsiPressureToBar(pressurePsi1),
+                DECIMALS_PRESSURE);
+  engine.setVal(TPL_PRESSURE_KPA, convertPsiPressureToKPa(pressurePsi),
+                DECIMALS_PRESSURE);
+  engine.setVal(TPL_PRESSURE_KPA, convertPsiPressureToKPa(pressurePsi1),
+                DECIMALS_PRESSURE);
 
   if (myConfig.isPressureBar()) {
-    engine.setVal(TPL_PRESSURE, convertPsiPressureToBar(pressurePsi), DECIMALS_PRESSURE);
-    engine.setVal(TPL_PRESSURE1, convertPsiPressureToBar(pressurePsi1), DECIMALS_PRESSURE);
+    engine.setVal(TPL_PRESSURE, convertPsiPressureToBar(pressurePsi),
+                  DECIMALS_PRESSURE);
+    engine.setVal(TPL_PRESSURE1, convertPsiPressureToBar(pressurePsi1),
+                  DECIMALS_PRESSURE);
   } else if (myConfig.isPressureKpa()) {
-    engine.setVal(TPL_PRESSURE, convertPsiPressureToKPa(pressurePsi), DECIMALS_PRESSURE);
-    engine.setVal(TPL_PRESSURE1, convertPsiPressureToKPa(pressurePsi1), DECIMALS_PRESSURE);
+    engine.setVal(TPL_PRESSURE, convertPsiPressureToKPa(pressurePsi),
+                  DECIMALS_PRESSURE);
+    engine.setVal(TPL_PRESSURE1, convertPsiPressureToKPa(pressurePsi1),
+                  DECIMALS_PRESSURE);
   } else {
     engine.setVal(TPL_PRESSURE, pressurePsi, DECIMALS_PRESSURE);
     engine.setVal(TPL_PRESSURE1, pressurePsi1, DECIMALS_PRESSURE);

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2025 Magnus
+Copyright (c) 2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,24 +25,25 @@ SOFTWARE.
 
 #include <main.hpp>
 #include <main_pressuremon.hpp>
+#include <pressure.hpp>
 
 // EspFramework
-#include <wificonnection.hpp>
-#include <serialws.hpp>
 #include <led.hpp>
 #include <log.hpp>
+#include <looptimer.hpp>
 #include <ota.hpp>
 #include <perf.hpp>
-#include <looptimer.hpp>
+#include <serialws.hpp>
+#include <wificonnection.hpp>
 
 // Common
-#include <config.hpp>
 #include <battery.hpp>
-#include <webserver.hpp>
+#include <config.hpp>
 #include <helper.hpp>
-#include <utils.hpp>
 #include <history.hpp>
 #include <pushtarget.hpp>
+#include <utils.hpp>
+#include <webserver.hpp>
 
 // Pressuremon specific
 #include <ble.hpp>
@@ -77,7 +78,7 @@ BleSender myBleSender;
 LoopTimer timerLoop(200);
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
-uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
+uint32_t runtimeMillis;  // Used to calculate the total time since start/wakeup
 bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
 
@@ -93,20 +94,24 @@ void setup() {
   printBuildOptions();
   detectChipRevision();
 
-#if defined(RUN_HARDWARE_TEST)
-  Log.notice(
-      F("Main: Entering harware pin test, ensure that LED are connected to all "
-        "relevant pints." CR));
-  delay(2000);
-  runGpioHardwareTests();
-#endif
-
   PERF_BEGIN("main-config-load");
   myConfig.checkFileSystem();
-  myWifi.init();  // double reset check
+  myWifi.init(); 
   checkResetReason();
   myConfig.loadFile();
   PERF_END("main-config-load");
+
+  int clock = 400000;
+
+  Log.notice(F("Main: OneWire SDA=%d, SCL=%d." CR), PIN_SDA, PIN_SCL);
+  Wire.setPins(PIN_SDA, PIN_SCL);
+  Wire.begin();
+  Wire.setClock(clock);
+
+  Log.notice(F("Main: OneWire1 SDA=%d, SCL=%d." CR), PIN_SDA1, PIN_SCL1);
+  Wire1.setPins(PIN_SDA1, PIN_SCL1);
+  Wire1.begin();
+  Wire1.setClock(clock);
 
   sleepModeAlwaysSkip = checkPinConnected();
   if (sleepModeAlwaysSkip) {
@@ -138,26 +143,14 @@ void setup() {
       break;
 
     default:
-      /*
-      if (!myConfig.isGyroDisabled()) {
-        if (myGyro.setup()) {
-          PERF_BEGIN("main-gyro-read");
-          myGyro.read();
-          PERF_END("main-gyro-read");
-        } else {
-          Log.notice(F(
-              "Main: Failed to connect to the gyro, software will not be able "
-              "to detect angles." CR));
-        }
-      } else {
-        Log.notice(F("Main: Gyro is disabled in configuration." CR));
-      }
-      myBatteryVoltage.read();
-      checkSleepModeGravity(myGyro.getAngle(), myBatteryVoltage.getVoltage());
-      Log.notice(F("Main: Battery %F V, Gyro=%F, Run-mode=%d." CR),
-                 myBatteryVoltage.getVoltage(), myGyro.getAngle(), runMode);*/
+      PERF_BEGIN("main-sensor-read");
+      myPressureSensor[0].setup(0, &Wire);
+      myPressureSensor[1].setup(1, &Wire1);
+      PERF_END("main-sensor-read");
 
-      // TODO: Setup pressure sensor
+      if(!myPressureSensor[0].isActive() && !myPressureSensor[1].isActive()) {
+        Log.error(F("Main: No sensors are active, stopping." CR));
+      }
 
       myBatteryVoltage.read();
       checkSleepModePressure(myBatteryVoltage.getVoltage());
@@ -180,13 +173,6 @@ void setup() {
         }
         PERF_END("main-wifi-connect");
       }
-
-      /*
-      PERF_BEGIN("main-temp-setup");
-      myTempSensor.setup();
-      PERF_END("main-temp-setup");*/
-
-      // TODO Setup pressure sensor
       break;
   }
 
@@ -232,12 +218,10 @@ void loopPressureOnInterval() {
     loopReadPressure();
     timerLoop.reset();
 
-    /* TODO read pressure sensor
-    if (!myConfig.isGyroDisabled()) {
-      PERF_BEGIN("loop-gyro-read");
-      myGyro.read();
-      PERF_END("loop-gyro-read");
-    }*/
+    PERF_BEGIN("loop-sensor-read");
+    myPressureSensor[0].read();
+    myPressureSensor[1].read();
+    PERF_END("loop-sensor-read");
 
     myBatteryVoltage.read();
     if (runMode != RunMode::wifiSetupMode)
@@ -313,17 +297,6 @@ void checkSleepModePressure(float volt) {
   return;
 #endif
 
-  /*  TODO: Will need this once we have selected pressure sensor
-
-    if (!myConfig.hasGyroCalibration() && !myConfig.isGyroDisabled()) {
-      // Will not enter sleep mode if: no calibration data
-  #if LOG_LEVEL == 6
-      Log.notice(
-          F("MAIN: Missing calibration data, so forcing webserver to be "
-            "active." CR));
-  #endif
-      runMode = RunMode::configurationMode;
-    } else*/
   if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration
     // mode.
@@ -353,7 +326,6 @@ void checkSleepModePressure(float volt) {
       break;
   }
 }
-
 
 float convertPsiPressureToBar(float psi) { return psi * 0.0689475729; }
 
