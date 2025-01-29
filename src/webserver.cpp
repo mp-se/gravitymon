@@ -70,6 +70,8 @@ void BrewingWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
   myConfig.saveFile();
   myBatteryVoltage.read();
 
+  doWebConfigWrite();
+
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;

@@ -61,7 +61,6 @@ void runGpioHardwareTests();
 #define PIN_CFG1 D8
 #define PIN_CFG2 D7
 #define PIN_VOLT PIN_A0
-#define ENABLE_BLE
 #define CFG_FILENAMEBIN "firmware32.bin"
 
 #elif defined(LOLIN_C3_MINI)
@@ -77,12 +76,9 @@ void runGpioHardwareTests();
 #endif  // JTAG_DEBUG
 #define PIN_DS A0
 #define PIN_VOLT A3
-
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
 #define CFG_FILENAMEBIN "firmware32c3.bin"
-
-#define ENABLE_BLE
 
 #elif defined(LOLIN_S2_MINI)
 // Hardware config for ESP32-s2-mini, iSpindel hardware

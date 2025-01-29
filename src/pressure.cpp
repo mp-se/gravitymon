@@ -257,14 +257,14 @@ bool PressureSensor::read() {
     return false;
 
   if (isActive()) {
-    return _impl->readSensor();
+    return _impl->read();
   }
 
   Log.error(F("PRES: Sensor not created (%d)" CR), _idx);
   return false;
 }
 bool PressureSensor::isActive() {
-  return _impl == nullptr ? false : _impl->isSensorActive();
+  return _impl == nullptr ? false : _impl->isActive();
 }
 
 float PressureSensor::getPressurePsi(bool doCorrection) {
@@ -281,7 +281,7 @@ float PressureSensor::getAnalogVoltage() {
 
 void PressureSensor::calibrate() {
   if (isActive()) {
-    _impl->calibrateSensor();
+    _impl->calibrate();
   }
 }
 

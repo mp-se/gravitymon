@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include <Arduino.h>
 #include <Wire.h>
+
 #include <config.hpp>
 #include <log.hpp>
 #include <memory>
@@ -36,14 +37,14 @@ class PressureSensorInterface {
  public:
   PressureSensorInterface() = default;
 
-  virtual bool readSensor();
+  virtual bool read();
 
-  virtual bool isSensorActive();
+  virtual bool isActive();
 
   virtual float getPressurePsi(bool doCorrection = true);
   virtual float getTemperatureC();
 
-  virtual void calibrateSensor();
+  virtual void calibrate();
 
   virtual float getAnalogVoltage();
 };

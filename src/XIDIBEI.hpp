@@ -41,7 +41,7 @@ class XIDIBEI {
   bool begin();
   // Pressure is returned in kPA
   // Temperature is in degrees C
-  bool readSensor(float &pressure, float &temperature);
+  bool read(float &pressure, float &temperature);
 
  private:
   TwoWire *_wire;

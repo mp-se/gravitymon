@@ -94,8 +94,14 @@ constexpr auto TPL_PRESSURE1_KPA = "${pressure1-kpa}";
 constexpr auto TPL_PRESSURE_UNIT = "${pressure-unit}";  // PSI, BAR, KPA
 
 void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
-                                 float pressurePsi1, float tempC, float temp1C,
+                                 float pressurePsi1, float tempC, float tempC1,
                                  float runTime, float voltage) {
+  // Set values so that the payload is not invalid
+  if (isnan(pressurePsi)) pressurePsi = 0;
+  if (isnan(pressurePsi1)) pressurePsi1 = 0;
+  if (isnan(tempC)) tempC = 0;
+  if (isnan(tempC1)) tempC1 = 0;
+
   // Names
   engine.setVal(TPL_MDNS, myConfig.getMDNS());
   engine.setVal(TPL_ID, myConfig.getID());
@@ -105,16 +111,16 @@ void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
   // Temperature
   if (myConfig.isTempFormatC()) {
     engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
-    engine.setVal(TPL_TEMP1, temp1C, DECIMALS_TEMP);
+    engine.setVal(TPL_TEMP1, tempC1, DECIMALS_TEMP);
   } else {
     engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
-    engine.setVal(TPL_TEMP1, convertCtoF(temp1C), DECIMALS_TEMP);
+    engine.setVal(TPL_TEMP1, convertCtoF(tempC1), DECIMALS_TEMP);
   }
 
   engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP1_C, temp1C, DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP1_F, convertCtoF(temp1C), DECIMALS_TEMP);
+  engine.setVal(TPL_TEMP1_C, tempC1, DECIMALS_TEMP);
+  engine.setVal(TPL_TEMP1_F, convertCtoF(tempC1), DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
 
   // Battery & Timer

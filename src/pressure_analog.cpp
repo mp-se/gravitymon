@@ -29,6 +29,8 @@ SOFTWARE.
 
 std::unique_ptr<ADS1115_WE> AnalogPressureSensor::_adcSensor;
 
+constexpr auto XIDIBEI_ANALOG_CALIBRATION_COUNT = 10;
+
 bool AnalogPressureSensor::setup(float minV, float maxV, float minKpa,
                                  float maxKpa, int adcChannel, TwoWire *wire,
                                  uint8_t idx) {
@@ -141,20 +143,20 @@ void AnalogPressureSensor::selectChannel() {
   }
 }
 
-void AnalogPressureSensor::calibrateSensor() {
+void AnalogPressureSensor::calibrate() {
   Log.notice(F("PRES: Starting auto calibration (%d)." CR), _idx);
   float zero = 0;
 
-  for (int i = 0; i < 10; i++) {
-    readSensor();
+  for (int i = 0; i < XIDIBEI_ANALOG_CALIBRATION_COUNT; i++) {
+    read();
     float f = getPressurePsi(false);
     Log.notice(F("PRES: Step %d, Pressure = %F (%d)." CR), i + 1, f, _idx);
     zero += f;
     delay(500);
   }
 
-  Log.notice(F("PRES: Measured difference %F (%d)." CR), zero / 10, _idx);
-  myConfig.setPressureSensorCorrection(zero / 10, _idx);
+  Log.notice(F("PRES: Measured difference %F (%d)." CR), zero / XIDIBEI_ANALOG_CALIBRATION_COUNT, _idx);
+  myConfig.setPressureSensorCorrection(zero / XIDIBEI_ANALOG_CALIBRATION_COUNT, _idx);
   myConfig.saveFile();
   _pressureCorrection = myConfig.getPressureSensorCorrection(_idx);
 }
@@ -171,7 +173,7 @@ float mapFloat(float x, float in_min, float in_max, float out_min,
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-bool AnalogPressureSensor::readSensor() {
+bool AnalogPressureSensor::read() {
   // Returns temperature in C and pressure in kPa
   selectChannel();
   _voltage = _adcSensor->getResult_mV();
@@ -179,6 +181,13 @@ bool AnalogPressureSensor::readSensor() {
   float pressure =
       mapFloat(_voltage, _minV * 1000, _maxV * 1000, _minKpa, _maxKpa);
   _pressure = convertPaPressureToPsi(pressure * 1000);
+
+  if(_pressure < 0 || _pressure > _maxPressure) {
+    Log.warning(F("PRES: Read pressure is invalid and out of range %F (%d)." CR), _pressure, _idx);
+    _pressure = NAN;
+    return false;
+  }
+
   return true;
 }
 

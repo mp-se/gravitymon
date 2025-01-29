@@ -75,10 +75,11 @@ BleSender myBleSender;
 #endif
 
 // Define constats for this program
-LoopTimer timerLoop(200);
+LoopTimer timerLoop(1000);
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
-uint32_t runtimeMillis;  // Used to calculate the total time since start/wakeup
+uint32_t pushMillis = 0;  // Used to control how often we will send push data
+uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
 
@@ -96,7 +97,7 @@ void setup() {
 
   PERF_BEGIN("main-config-load");
   myConfig.checkFileSystem();
-  myWifi.init(); 
+  myWifi.init();
   checkResetReason();
   myConfig.loadFile();
   PERF_END("main-config-load");
@@ -148,7 +149,7 @@ void setup() {
       myPressureSensor[1].setup(1, &Wire1);
       PERF_END("main-sensor-read");
 
-      if(!myPressureSensor[0].isActive() && !myPressureSensor[1].isActive()) {
+      if (!myPressureSensor[0].isActive() && !myPressureSensor[1].isActive()) {
         Log.error(F("Main: No sensors are active, stopping." CR));
       }
 
@@ -209,19 +210,134 @@ void setup() {
 
   PERF_END("main-setup");
   Log.notice(F("Main: Setup completed." CR));
+  pushMillis = millis();  // Dont include time for wifi connection
 }
 
-bool loopReadPressure() { return false; }
+bool loopReadPressure() {
+#if LOG_LEVEL == 6
+  Log.verbose(F("Main: Entering main loopReadPressure." CR));
+#endif
+
+  // Process the sensor values and push data to targets.
+  // ------------------------------------------------------------------------------------------------
+  // If we dont get any readings we just skip this and try again the next
+  // interval.
+  //
+
+  myPressureSensor[0].read();
+  myPressureSensor[1].read();
+
+  float pressure, pressure1, temp, temp1;
+
+  pressure = myPressureSensor[0].getPressurePsi();
+  pressure1 = myPressureSensor[1].getPressurePsi();
+
+  temp = myPressureSensor[0].getTemperatureC();
+  temp1 = myPressureSensor[1].getTemperatureC();
+
+#if LOG_LEVEL == 6
+  Log.verbose(F("Main: Sensor values pressure=%F PSI, pressure1=%F PSI, "
+                "temp=%FC, temp1=%FC." CR),
+              pressure, pressure1, temp, temp1);
+#endif
+
+  if(isnan(pressure) && isnan(pressure1)) {
+    Log.warning(F("Main: No valid pressure readings, skipping push." CR));
+    return false;
+  }
+
+  bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
+                      (myConfig.getSleepInterval() * 1000));
+
+  if (pushExpired || runMode == RunMode::measurementMode) {
+    pushMillis = millis();
+    PERF_BEGIN("loop-push");
+
+#if defined(ENABLE_BLE)
+    if (myConfig.isBleActive()) {
+      myBleSender.init();
+
+      // TODO: Add BLE Support
+
+      switch (myConfig.getGravitymonBleFormat()) {
+        case GravitymonBleFormat::BLE_TILT: {
+          String color = myConfig.getBleTiltColor();
+          myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG, false);
+        } break;
+        case GravitymonBleFormat::BLE_TILT_PRO: {
+          String color = myConfig.getBleTiltColor();
+          myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG, true);
+        } break;
+        case GravitymonBleFormat::BLE_GRAVITYMON_IBEACON: {
+          myBleSender.sendCustomBeaconData(myBatteryVoltage.getVoltage(), tempC,
+                                           gravitySG, angle);
+        } break;
+
+        case GravitymonBleFormat::BLE_GRAVITYMON_EDDYSTONE: {
+          myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
+                                    gravitySG, angle);
+        } break;
+      }
+    }
+#endif  // ENABLE_BLE
+
+    if (myWifi.isConnected()) {  // no need to try if there is no wifi
+                                 // connection.
+      if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
+        Log.notice(
+            F("Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
+
+        TemplatingEngine engine;
+        BrewingPush push(&myConfig);
+
+        setupTemplateEnginePressure(engine, pressure, pressure1, temp, temp1,
+                                    (millis() - runtimeMillis) / 1000,
+                                    myBatteryVoltage.getVoltage());
+        String tpl = push.getTemplate(BrewingPush::TEMPLATE_HTTP1,
+                                      true);  // Use default post template
+        String payload = engine.create(tpl.c_str());
+        myConfig.setTargetHttpPost(
+            "http://192.168.4.1/post");  // Default URL for Gravitymon Gateway
+                                         // v0.3+
+        myConfig.setHeader1HttpPost("Content-Type: application/json");
+        myConfig.setHeader2HttpPost("");
+        push.sendHttpPost(payload);
+      } else {
+        Log.notice(F("Main: Sending data to all defined push targets." CR));
+
+        TemplatingEngine engine;
+        BrewingPush push(&myConfig);
+
+        setupTemplateEnginePressure(engine, pressure, pressure1, temp, temp1,
+                                    (millis() - runtimeMillis) / 1000,
+                                    myBatteryVoltage.getVoltage());
+        push.sendAll(engine);
+
+        // Only log when in gravity mode
+        if (!skipRunTimeLog && runMode == RunMode::measurementMode) {
+          Log.notice(
+              F("Main: Updating history log with, runtime and "
+                "interval." CR));
+          float runtime = (millis() - runtimeMillis);
+          HistoryLog runLog(RUNTIME_FILENAME);
+          runLog.addLog(runtime, 0, myConfig.getSleepInterval()); // Dont store the readings in history log, no need for them
+        }
+      }
+    }
+    PERF_END("loop-push");
+
+    // Send stats to influx after each push run.
+    if (runMode == RunMode::configurationMode) {
+      PERF_PUSH();
+    }
+  }
+  return true;
+}
 
 void loopPressureOnInterval() {
   if (timerLoop.hasExipred()) {
     loopReadPressure();
     timerLoop.reset();
-
-    PERF_BEGIN("loop-sensor-read");
-    myPressureSensor[0].read();
-    myPressureSensor[1].read();
-    PERF_END("loop-sensor-read");
 
     myBatteryVoltage.read();
     if (runMode != RunMode::wifiSetupMode)
