@@ -97,6 +97,7 @@ class BrewingWebServer : public BaseWebServer {
   void doTaskHardwareScanning(JsonObject &obj);
 
   void doWebStatus(JsonObject &obj);
+  void doWebConfigWrite();
   void doWebCalibrateStatus(JsonObject &obj);
 
  public:

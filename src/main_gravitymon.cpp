@@ -27,28 +27,28 @@ SOFTWARE.
 #include <main_gravitymon.hpp>
 
 // EspFramework
-#include <wificonnection.hpp>
-#include <serialws.hpp>
 #include <led.hpp>
 #include <log.hpp>
+#include <looptimer.hpp>
 #include <ota.hpp>
 #include <perf.hpp>
-#include <looptimer.hpp>
+#include <serialws.hpp>
+#include <wificonnection.hpp>
 
 // Common
-#include <config.hpp>
 #include <battery.hpp>
-#include <webserver.hpp>
+#include <config.hpp>
 #include <helper.hpp>
-#include <utils.hpp>
 #include <history.hpp>
 #include <pushtarget.hpp>
+#include <utils.hpp>
+#include <webserver.hpp>
 
 // Gravitymon specific
+#include <ble.hpp>
 #include <calc.hpp>
 #include <gyro.hpp>
 #include <tempsensor.hpp>
-#include <ble.hpp>
 
 const char* CFG_APPNAME = "gravitymon";
 const char* CFG_FILENAME = "/gravitymon2.json";
@@ -314,7 +314,7 @@ bool loopReadGravity() {
           } break;
         }
       }
-#endif // ENABLE_BLE
+#endif  // ENABLE_BLE
 
       if (myWifi.isConnected()) {  // no need to try if there is no wifi
                                    // connection.

@@ -23,19 +23,146 @@ SOFTWARE.
  */
 #if defined(PRESSUREMON)
 
+#include <battery.hpp>
 #include <config.hpp>
+#include <pressure.hpp>
 #include <webserver.hpp>
 
-void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {}
+constexpr auto PARAM_PRESSURE = "pressure";
+constexpr auto PARAM_PRESSURE1 = "pressure1";
+constexpr auto PARAM_TEMP = "temp";
+constexpr auto PARAM_TEMP1 = "temp1";
+constexpr auto PARAM_SELF_SENSOR_CONNECTED = "sensor_connected";
+constexpr auto PARAM_SELF_SENSOR_CONFIGURED = "sensor_configured";
+constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
 
-void BrewingWebServer::doWebStatus(JsonObject &obj) {}
+void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
+  if (myPressureSensor[0].isActive() || myPressureSensor[1].isActive()) {
+    obj[PARAM_SUCCESS] = true;
+    obj[PARAM_MESSAGE] = "Calibration completed";
+  } else {
+    obj[PARAM_SUCCESS] = false;
+    obj[PARAM_MESSAGE] = "Calibration failed, no sensors connected";
+  }
+}
 
-void BrewingWebServer::doTaskSensorCalibration() {}
+void BrewingWebServer::doWebConfigWrite() {
+  Log.notice(
+      F("WEB : Configuring pressure sensors after configuration update" CR));
+
+  myPressureSensor[0].setup(0, &Wire);
+  myPressureSensor[1].setup(1, &Wire1);
+}
+
+void BrewingWebServer::doWebStatus(JsonObject &obj) {
+  float pressure, pressure1, temp, temp1;
+
+  // myPressureSensor[0].read(); // Do this in the main loop every second
+  // myPressureSensor[1].read();
+
+  pressure = myPressureSensor[0].getPressurePsi();
+  pressure1 = myPressureSensor[1].getPressurePsi();
+
+  temp = myPressureSensor[0].getTemperatureC();
+  temp1 = myPressureSensor[1].getTemperatureC();
+
+  if (!isnan(pressure)) {
+    if (myConfig.isPressureBar()) {
+      pressure = convertPsiPressureToBar(pressure);
+    } else if (myConfig.isPressureKpa()) {
+      pressure = convertPsiPressureToKPa(pressure);
+    }
+
+    obj[PARAM_PRESSURE] = pressure;
+  }
+
+  if (!isnan(pressure1)) {
+    if (myConfig.isPressureBar()) {
+      pressure = convertPsiPressureToBar(pressure1);
+    } else if (myConfig.isPressureKpa()) {
+      pressure = convertPsiPressureToKPa(pressure1);
+    }
+
+    obj[PARAM_PRESSURE1] = pressure1;
+  }
+
+  if (!isnan(temp)) {
+    if (myConfig.isTempUnitF()) {
+      temp = convertCtoF(temp);
+    }
+
+    obj[PARAM_TEMP] = temp;
+  }
+
+  if (!isnan(temp1)) {
+    if (myConfig.isTempUnitF()) {
+      temp1 = convertCtoF(temp1);
+    }
+
+    obj[PARAM_TEMP1] = temp1;
+  }
+
+  obj[CONFIG_PRESSURE_UNIT] = myConfig.getPressureUnit();
+  obj[PARAM_TEMP_UNIT] = String(myConfig.getTempUnit());
+
+  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = !isnan(temp) || !isnan(temp1);
+  obj[PARAM_SELF][PARAM_SELF_SENSOR_CONNECTED] =
+      !isnan(pressure) || !isnan(pressure1);
+  obj[PARAM_SELF][PARAM_SELF_SENSOR_CONFIGURED] =
+      myConfig.getPressureSensorType(0) != PressureSensorType::SensorNone &&
+      myConfig.getPressureSensorType(1) != PressureSensorType::SensorNone;
+  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = true;  // TODO; Fix this!
+}
+
+void BrewingWebServer::doTaskSensorCalibration() {
+  if (myPressureSensor[0].isActive()) {
+    myPressureSensor[0].calibrate();
+  } else {
+    Log.warning(
+        F("WEB : First sensor not connnected, skipping calibration" CR));
+  }
+
+  if (myPressureSensor[1].isActive()) {
+    myPressureSensor[1].calibrate();
+  } else {
+    Log.warning(
+        F("WEB : Second sensor not connnected, skipping calibration" CR));
+  }
+}
 
 void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
-                                           BrewingPush &push) {}
+                                           BrewingPush &push) {
+  float pressure, pressure1, temp, temp1;
 
-void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {}
+  pressure = myPressureSensor[0].getPressurePsi();
+  pressure1 = myPressureSensor[1].getPressurePsi();
+
+  temp = myPressureSensor[0].getTemperatureC();
+  temp1 = myPressureSensor[1].getTemperatureC();
+
+  setupTemplateEnginePressure(engine, pressure, pressure1, temp, temp1, 1.0,
+                              myBatteryVoltage.getVoltage());
+}
+
+constexpr auto PARAM_I2C_1 = "i2c_1";
+
+void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
+  JsonArray i2c1 = obj[PARAM_I2C_1].to<JsonArray>();
+
+  for (int i = 1, j = 0; i < 128; i++) {
+    // The i2c_scanner uses the return value of
+    // the Write.endTransmisstion to see if
+    // a device did acknowledge to the address.
+    Wire1.beginTransmission(i);
+    int err = Wire1.endTransmission();
+
+    if (err == 0) {
+      Log.notice(F("WEB : Found device at 0x%02X." CR), i);
+      i2c1[j][PARAM_ADRESS] = "0x" + String(i, 16);
+      j++;
+    }
+  }
+}
 
 #endif  // PRESSUREMON
 

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,42 +21,49 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_MAIN_PRESSUREMON_HPP_
-#define SRC_MAIN_PRESSUREMON_HPP_
+#ifndef SRC_PRESSURE_ANALOG_HPP_
+#define SRC_PRESSURE_ANALOG_HPP_
 
 #if defined(PRESSUREMON)
 
-#include <main.hpp>
-#include <templating.hpp>
+#include <ADS1115_WE.h>
 
-enum RunMode {
-  measurementMode = 0,
-  configurationMode = 1,
-  wifiSetupMode = 2,
+#include <memory>
+#include <pressure.hpp>
+
+constexpr auto ADC_I2C_ADDRESS = 0x48;
+
+class AnalogPressureSensor : public PressureSensorInterface {
+ private:
+  static std::unique_ptr<ADS1115_WE> _adcSensor;
+  uint8_t _idx;
+  float _pressureCorrection = 0;
+  float _pressure, _voltage, _maxPressure;
+  float _minV, _maxV, _minKpa, _maxKpa;
+  int _adcChannel;
+  bool _sensorActive = false;
+
+  void adcSetup();
+  void selectChannel();
+
+ public:
+  AnalogPressureSensor() {}
+
+  bool setup(float minV, float maxV, float minKpa, float maxKpa,
+             int _adcChannel, TwoWire *wire, uint8_t idx);
+  bool read();
+  bool isActive() { return _sensorActive; }
+
+  float getPressurePsi(bool doCorrection = true);
+  float getTemperatureC();
+
+  void calibrate();
+
+  float getAnalogVoltage() { return _voltage; }
 };
-
-void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
-                                 float pressurePsi1, float tempC, float temp1C,
-                                 float runTime, float voltage);
-
-float convertPsiPressureToBar(float psi);
-float convertPsiPressureToKPa(float psi);
-float convertPaPressureToPsi(float pa);
-float convertPaPressureToBar(float pa);
-
-#if defined(ESP32S3)
-// Hardware config for ESP32-s3-mini, pressuremon hardware
-// ------------------------------------------------------
-#define PIN_SDA SDA
-#define PIN_SCL SCL
-#define PIN_SDA1 A17
-#define PIN_SCL1 A15
-
-#define PIN_CFG1 A10
-#define PIN_CFG2 A9
-#define PIN_VOLT A1
-#endif
 
 #endif  // PRESSUREMON
 
-#endif  // SRC_MAIN_PRESSUREMON_HPP_
+#endif  // SRC_PRESSURE_ANALOG_HPP_
+
+// EOF

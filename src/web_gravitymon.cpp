@@ -51,6 +51,8 @@ void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
   }
 }
 
+void BrewingWebServer::doWebConfigWrite() {}
+
 void BrewingWebServer::doWebStatus(JsonObject &obj) {
   double angle = 0;  // Indicate we have no valid gyro value
 
