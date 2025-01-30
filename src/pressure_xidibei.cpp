@@ -51,13 +51,13 @@ void XIDIBEIPressureSensor::calibrate() {
   for (int i = 0; i < XIDIBEI_IIC_CALIBRATION_COUNT; i++) {
     read(false);
     float f = getPressurePsi(false);
-    Log.notice(F("PRES: Step %d, Pressure = %F (%d)." CR), i + 1, f, _idx);
     zero += f;
+    Log.notice(F("PRES: Step %d, Pressure = %F, sum %F (%d)." CR), i + 1, f, zero, _idx);
     delay(500);
   }
 
-  Log.notice(F("PRES: Measured difference %F (%d)." CR),
-             zero / XIDIBEI_IIC_CALIBRATION_COUNT, _idx);
+  Log.notice(F("PRES: Measured difference, ave %F, sum %F (%d)." CR),
+             zero / XIDIBEI_IIC_CALIBRATION_COUNT, zero, _idx);
   myConfig.setPressureSensorCorrection(-(zero / XIDIBEI_IIC_CALIBRATION_COUNT),
                                        _idx);
   myConfig.saveFile();
@@ -81,7 +81,7 @@ bool XIDIBEIPressureSensor::read(bool validate) {
   _pressure = convertPaPressureToPsi(pressure * 1000);
 
   if(validate) {
-    if(_pressure < -_pressureCorrection || _pressure > _maxPressure) {
+    if(_pressure > _maxPressure) {
       Log.warning(F("PRES: Read pressure is invalid and out of range %F (%d)." CR), _pressure, _idx);
       _pressure = NAN;
       return false;

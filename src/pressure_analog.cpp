@@ -183,7 +183,7 @@ bool AnalogPressureSensor::read(bool validate) {
   _pressure = convertPaPressureToPsi(pressure * 1000);
 
   if(validate) {
-    if(_pressure < -_pressureCorrection || _pressure > _maxPressure) {
+    if(_pressure > _maxPressure) {
       Log.warning(F("PRES: Read pressure is invalid and out of range %F (%d)." CR), _pressure, _idx);
       _pressure = NAN;
       return false;
