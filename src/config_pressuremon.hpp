@@ -46,7 +46,7 @@ enum PressureSensorType {
   SensorXidibeiXDB401_I2C_KPa_2500 = 11,  // 0-2.5 MPa
   SensorXidibeiXDB401_I2C_KPa_3000 = 12,  // 0-3 MPa
   SensorXidibeiXDB401_I2C_KPa_3500 = 13,  // 0-3.5 MPa
-  SensorXidibeiXDB401_I2C_KPa_4000 = 15,  // 0-4 MPa
+  SensorXidibeiXDB401_I2C_KPa_4000 = 14,  // 0-4 MPa
 
   SensorXidibeiXDB401_Analog_KPa_200 = 101,   // 0-0.2 MPa
   SensorXidibeiXDB401_Analog_KPa_400 = 102,   // 0-0.4 MPa
@@ -61,7 +61,7 @@ enum PressureSensorType {
   SensorXidibeiXDB401_Analog_KPa_2500 = 111,  // 0-2.5 MPa
   SensorXidibeiXDB401_Analog_KPa_3000 = 112,  // 0-3 MPa
   SensorXidibeiXDB401_Analog_KPa_3500 = 113,  // 0-3.5 MPa
-  SensorXidibeiXDB401_Analog_KPa_4000 = 115,  // 0-4 MPa
+  SensorXidibeiXDB401_Analog_KPa_4000 = 114,  // 0-4 MPa
 };
 
 constexpr auto PRESSURE_KPA = "kPa";

@@ -51,7 +51,7 @@ class AnalogPressureSensor : public PressureSensorInterface {
 
   bool setup(float minV, float maxV, float minKpa, float maxKpa,
              int _adcChannel, TwoWire *wire, uint8_t idx);
-  bool read();
+  bool read(bool validate = true);
   bool isActive() { return _sensorActive; }
 
   float getPressurePsi(bool doCorrection = true);

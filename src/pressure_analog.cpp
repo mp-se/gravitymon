@@ -156,7 +156,7 @@ void AnalogPressureSensor::calibrate() {
   }
 
   Log.notice(F("PRES: Measured difference %F (%d)." CR), zero / XIDIBEI_ANALOG_CALIBRATION_COUNT, _idx);
-  myConfig.setPressureSensorCorrection(zero / XIDIBEI_ANALOG_CALIBRATION_COUNT, _idx);
+  myConfig.setPressureSensorCorrection(-(zero / XIDIBEI_ANALOG_CALIBRATION_COUNT), _idx);
   myConfig.saveFile();
   _pressureCorrection = myConfig.getPressureSensorCorrection(_idx);
 }
@@ -164,7 +164,7 @@ void AnalogPressureSensor::calibrate() {
 float AnalogPressureSensor::getTemperatureC() { return NAN; }
 
 float AnalogPressureSensor::getPressurePsi(bool doCorrection) {
-  if (doCorrection) return _pressure - _pressureCorrection;
+  if (doCorrection) return _pressure + _pressureCorrection;
   return _pressure;
 }
 
@@ -173,7 +173,7 @@ float mapFloat(float x, float in_min, float in_max, float out_min,
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-bool AnalogPressureSensor::read() {
+bool AnalogPressureSensor::read(bool validate) {
   // Returns temperature in C and pressure in kPa
   selectChannel();
   _voltage = _adcSensor->getResult_mV();
@@ -182,10 +182,12 @@ bool AnalogPressureSensor::read() {
       mapFloat(_voltage, _minV * 1000, _maxV * 1000, _minKpa, _maxKpa);
   _pressure = convertPaPressureToPsi(pressure * 1000);
 
-  if(_pressure < 0 || _pressure > _maxPressure) {
-    Log.warning(F("PRES: Read pressure is invalid and out of range %F (%d)." CR), _pressure, _idx);
-    _pressure = NAN;
-    return false;
+  if(validate) {
+    if(_pressure < -_pressureCorrection || _pressure > _maxPressure) {
+      Log.warning(F("PRES: Read pressure is invalid and out of range %F (%d)." CR), _pressure, _idx);
+      _pressure = NAN;
+      return false;
+    }
   }
 
   return true;

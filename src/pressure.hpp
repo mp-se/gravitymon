@@ -37,7 +37,7 @@ class PressureSensorInterface {
  public:
   PressureSensorInterface() = default;
 
-  virtual bool read();
+  virtual bool read(bool validate = true);
 
   virtual bool isActive();
 

@@ -38,10 +38,10 @@ void PressuremonConfig::createJson(JsonObject& doc) {
 
   doc[CONFIG_SENSOR_TYPE] = getPressureSensorTypeAsInt(0);
   doc[CONFIG_SENSOR1_TYPE] = getPressureSensorTypeAsInt(1);
-  doc[CONFIG_PRESSURE_ADJUSTMENT] = getPressureSensorCorrection(0);
-  doc[CONFIG_PRESSURE1_ADJUSTMENT] = getPressureSensorCorrection(1);
-  doc[CONFIG_TEMPERATURE_ADJUSTMENT] = getTemperatureSensorCorrection(0);
-  doc[CONFIG_TEMPERATURE1_ADJUSTMENT] = getTemperatureSensorCorrection(1);
+  doc[CONFIG_PRESSURE_ADJUSTMENT] = serialized(String(getPressureSensorCorrection(0), DECIMALS_PRESSURE)); 
+  doc[CONFIG_PRESSURE1_ADJUSTMENT] = serialized(String(getPressureSensorCorrection(1), DECIMALS_PRESSURE));
+  doc[CONFIG_TEMPERATURE_ADJUSTMENT] = serialized(String(getTemperatureSensorCorrection(0), DECIMALS_TEMP)); 
+  doc[CONFIG_TEMPERATURE1_ADJUSTMENT] = serialized(String(getTemperatureSensorCorrection(1), DECIMALS_TEMP));
 }
 
 void PressuremonConfig::parseJson(JsonObject& doc) {

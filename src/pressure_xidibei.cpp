@@ -49,7 +49,7 @@ void XIDIBEIPressureSensor::calibrate() {
   float zero = 0;
 
   for (int i = 0; i < XIDIBEI_IIC_CALIBRATION_COUNT; i++) {
-    read();
+    read(false);
     float f = getPressurePsi(false);
     Log.notice(F("PRES: Step %d, Pressure = %F (%d)." CR), i + 1, f, _idx);
     zero += f;
@@ -58,7 +58,7 @@ void XIDIBEIPressureSensor::calibrate() {
 
   Log.notice(F("PRES: Measured difference %F (%d)." CR),
              zero / XIDIBEI_IIC_CALIBRATION_COUNT, _idx);
-  myConfig.setPressureSensorCorrection(zero / XIDIBEI_IIC_CALIBRATION_COUNT,
+  myConfig.setPressureSensorCorrection(-(zero / XIDIBEI_IIC_CALIBRATION_COUNT),
                                        _idx);
   myConfig.saveFile();
   _pressureCorrection = myConfig.getPressureSensorCorrection(_idx);
@@ -69,21 +69,23 @@ float XIDIBEIPressureSensor::getTemperatureC() {
 }
 
 float XIDIBEIPressureSensor::getPressurePsi(bool doCorrection) {
-  if (doCorrection) return _pressure - _pressureCorrection;
+  if (doCorrection) return _pressure + _pressureCorrection;
   return _pressure;
 }
 
-bool XIDIBEIPressureSensor::read() {
+bool XIDIBEIPressureSensor::read(bool validate) {
   float pressure;
 
   // Returns temperature in C and pressure in kPa
-  bool b = _xidibeiSensor->read(_temperature, pressure);
+  bool b = _xidibeiSensor->read(pressure, _temperature);
   _pressure = convertPaPressureToPsi(pressure * 1000);
 
-  if(_pressure < 0 || _pressure > _maxPressure) {
-    Log.warning(F("PRES: Read pressure is invalid and out of range %F (%d)." CR), _pressure, _idx);
-    _pressure = NAN;
-    return false;
+  if(validate) {
+    if(_pressure < -_pressureCorrection || _pressure > _maxPressure) {
+      Log.warning(F("PRES: Read pressure is invalid and out of range %F (%d)." CR), _pressure, _idx);
+      _pressure = NAN;
+      return false;
+    }
   }
 
   return b;

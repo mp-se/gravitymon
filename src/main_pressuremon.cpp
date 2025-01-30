@@ -86,6 +86,8 @@ RunMode runMode = RunMode::measurementMode;
 void checkSleepModePressure(float volt);
 
 void setup() {
+  delay(2000);
+
   PERF_BEGIN("run-time");
   PERF_BEGIN("main-setup");
   runtimeMillis = millis();
@@ -109,10 +111,10 @@ void setup() {
   Wire.begin();
   Wire.setClock(clock);
 
-  Log.notice(F("Main: OneWire1 SDA=%d, SCL=%d." CR), PIN_SDA1, PIN_SCL1);
-  Wire1.setPins(PIN_SDA1, PIN_SCL1);
-  Wire1.begin();
-  Wire1.setClock(clock);
+  // Log.notice(F("Main: OneWire1 SDA=%d, SCL=%d." CR), PIN_SDA1, PIN_SCL1);
+  // Wire1.setPins(PIN_SDA1, PIN_SCL1);
+  // Wire1.begin();
+  // Wire1.setClock(clock);
 
   sleepModeAlwaysSkip = checkPinConnected();
   if (sleepModeAlwaysSkip) {
@@ -144,9 +146,10 @@ void setup() {
       break;
 
     default:
+      Log.notice(F("Main: Setting up pressure sensors." CR));
       PERF_BEGIN("main-sensor-read");
       myPressureSensor[0].setup(0, &Wire);
-      myPressureSensor[1].setup(1, &Wire1);
+      // myPressureSensor[1].setup(1, &Wire1);
       PERF_END("main-sensor-read");
 
       if (!myPressureSensor[0].isActive() && !myPressureSensor[1].isActive()) {
@@ -225,20 +228,25 @@ bool loopReadPressure() {
   //
 
   myPressureSensor[0].read();
-  myPressureSensor[1].read();
+  // myPressureSensor[1].read();
 
   float pressure, pressure1, temp, temp1;
 
   pressure = myPressureSensor[0].getPressurePsi();
-  pressure1 = myPressureSensor[1].getPressurePsi();
+  // pressure1 = myPressureSensor[1].getPressurePsi();
+  pressure1 = NAN;
 
   temp = myPressureSensor[0].getTemperatureC();
-  temp1 = myPressureSensor[1].getTemperatureC();
+  // temp1 = myPressureSensor[1].getTemperatureC();
+  temp1 = NAN;
 
 #if LOG_LEVEL == 6
-  Log.verbose(F("Main: Sensor values pressure=%F PSI, pressure1=%F PSI, "
-                "temp=%FC, temp1=%FC." CR),
-              pressure, pressure1, temp, temp1);
+  Log.verbose(F("Main: Sensor values pressure=%F PSI, "
+                "temp=%FC." CR),
+              pressure, temp);
+  // Log.verbose(F("Main: Sensor values pressure=%F PSI, pressure1=%F PSI, "
+  //               "temp=%FC, temp1=%FC." CR),
+  //             pressure, pressure1, temp, temp1);
 #endif
 
   if(isnan(pressure) && isnan(pressure1)) {
