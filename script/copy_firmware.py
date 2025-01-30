@@ -78,6 +78,17 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
+    elif name == "pressure32s3-release" :
+        target = dir + "/bin/firmware32s3.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32s3.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
     else:
         board = env.BoardConfig().get_brief_data()['id']
         print("Custom board detected: " + board)
