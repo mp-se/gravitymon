@@ -56,6 +56,32 @@ float convertPaPressureToBar(float pa);
 #define PIN_CFG2 A9
 #define PIN_VOLT A1
 #define PIN_DS A3
+
+#elif defined(ESP32S2)
+// Hardware config for ESP32-s2-mini, pressuremon hardware
+// ------------------------------------------------------
+#define PIN_SDA SDA
+#define PIN_SCL SCL
+#define PIN_SDA1 A17
+#define PIN_SCL1 A15
+
+#define PIN_CFG1 A10
+#define PIN_CFG2 A11
+#define PIN_VOLT A2
+#define PIN_DS A4
+
+#elif defined(ESP32C3)
+// Hardware config for ESP32-c3-mini, pressuremon hardware
+// ------------------------------------------------------
+#define PIN_SDA SDA
+#define PIN_SCL SCL
+#define PIN_SDA1 6
+#define PIN_SCL1 7
+
+#define PIN_CFG1 A4
+#define PIN_CFG2 A3
+#define PIN_VOLT A3
+#define PIN_DS A2
 #endif
 
 #endif  // PRESSUREMON
