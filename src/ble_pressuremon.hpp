@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
+#ifndef SRC_BLE_PRESSUREMON_HPP_
+#define SRC_BLE_PRESSUREMON_HPP_
 
-#include <ble_gravitymon.hpp>
-#include <ble_pressuremon.hpp>
+#if defined(ENABLE_BLE) && defined(PRESSUREMON)
 
-#endif  // SRC_BLE_HPP_
+#include <NimBLEBeacon.h>
+#include <NimBLEDevice.h>
+
+class BleSender {
+ private:
+  BLEServer* _server = nullptr;
+  BLEAdvertising* _advertising = nullptr;
+  BLEService* _service = nullptr;
+  BLECharacteristic* _characteristic = nullptr;
+  BLEUUID _uuid;
+  bool _initFlag = false;
+  int _beaconTime = 1000;
+
+  void dumpPayload(const char* payload, int len);
+
+ public:
+  BleSender() {}
+
+  void init();
+
+  // Beacons
+  void sendEddystone(float battery, float tempC, float pressurePsi, float pressurePsi1);
+  void sendCustomBeaconData(float battery, float tempC, float pressurePsi,
+                            float pressurePsi1);
+};
+
+#endif  // ENABLE_BLE && PRESSUREMON
+
+#endif  // SRC_BLE_PRESSUREMON_HPP_

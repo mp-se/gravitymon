@@ -28,7 +28,11 @@ SOFTWARE.
 
 #include <config_brewing.hpp>
 
-enum PressuremonBleFormat { BLE_DISABLED = 0 };
+enum PressuremonBleFormat { 
+  BLE_DISABLED = 0,
+  BLE_PRESSUREMON_EDDYSTONE = 1,
+  BLE_PRESSUREMON_IBEACON = 2
+ };
 
 enum PressureSensorType {
   SensorNone = 0,

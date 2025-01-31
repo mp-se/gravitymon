@@ -237,13 +237,13 @@ bool loopReadPressure() {
   myTempSensor.readSensor(false);
 
   // float pressure, pressure1, temp, temp1;
-  float pressure, pressure1, temp;
+  float pressurePsi, pressurePsi1, tempC;
 
-  pressure = myPressureSensor[0].getPressurePsi();
+  pressurePsi = myPressureSensor[0].getPressurePsi();
   // pressure1 = myPressureSensor[1].getPressurePsi();
-  pressure1 = NAN;
+  pressurePsi1 = NAN;
 
-  temp = myTempSensor.getTempC();
+  tempC = myTempSensor.getTempC();
   // temp = myPressureSensor[0].getTemperatureC();
   // temp1 = myPressureSensor[1].getTemperatureC();
   // temp1 = NAN;
@@ -257,7 +257,7 @@ bool loopReadPressure() {
   //             pressure, pressure1, temp, temp1);
 #endif
 
-  if(isnan(pressure) && isnan(pressure1)) {
+  if(isnan(pressurePsi) && isnan(pressurePsi1)) {
     Log.warning(F("Main: No valid pressure readings, skipping push." CR));
     return false;
   }
@@ -273,25 +273,15 @@ bool loopReadPressure() {
     if (myConfig.isBleActive()) {
       myBleSender.init();
 
-      // TODO: Add BLE Support
-
-      switch (myConfig.getGravitymonBleFormat()) {
-        case GravitymonBleFormat::BLE_TILT: {
-          String color = myConfig.getBleTiltColor();
-          myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG, false);
-        } break;
-        case GravitymonBleFormat::BLE_TILT_PRO: {
-          String color = myConfig.getBleTiltColor();
-          myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG, true);
-        } break;
-        case GravitymonBleFormat::BLE_GRAVITYMON_IBEACON: {
+      switch (myConfig.getPressuremonBleFormat()) {
+        case PressuremonBleFormat::BLE_PRESSUREMON_IBEACON: {
           myBleSender.sendCustomBeaconData(myBatteryVoltage.getVoltage(), tempC,
-                                           gravitySG, angle);
+                                           pressurePsi, pressurePsi1);
         } break;
 
-        case GravitymonBleFormat::BLE_GRAVITYMON_EDDYSTONE: {
+        case PressuremonBleFormat::BLE_PRESSUREMON_EDDYSTONE: {
           myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
-                                    gravitySG, angle);
+                                    pressurePsi, pressurePsi1);
         } break;
       }
     }
@@ -306,7 +296,7 @@ bool loopReadPressure() {
         TemplatingEngine engine;
         BrewingPush push(&myConfig);
 
-        setupTemplateEnginePressure(engine, pressure, pressure1, temp,
+        setupTemplateEnginePressure(engine, pressurePsi, pressurePsi1, tempC,
                                     (millis() - runtimeMillis) / 1000,
                                     myBatteryVoltage.getVoltage());
         String tpl = push.getTemplate(BrewingPush::TEMPLATE_HTTP1,
@@ -324,7 +314,7 @@ bool loopReadPressure() {
         TemplatingEngine engine;
         BrewingPush push(&myConfig);
 
-        setupTemplateEnginePressure(engine, pressure, pressure1, temp,
+        setupTemplateEnginePressure(engine, pressurePsi, pressurePsi1, tempC,
                                     (millis() - runtimeMillis) / 1000,
                                     myBatteryVoltage.getVoltage());
         push.sendAll(engine);
