@@ -26,7 +26,6 @@ SOFTWARE.
 #include <calc.hpp>
 #include <config.hpp>
 #include <gyro.hpp>
-#include <tempsensor.hpp>
 #include <webserver.hpp>
 
 constexpr auto PARAM_ANGLE = "angle";
@@ -38,7 +37,6 @@ constexpr auto PARAM_SELF_GYRO_MOVING = "gyro_moving";
 constexpr auto PARAM_SELF_GYRO_CALIBRATION = "gyro_calibration";
 constexpr auto PARAM_SELF_GRAVITY_FORMULA = "gravity_formula";
 constexpr auto PARAM_GYRO = "gyro";
-constexpr auto PARAM_ONEWIRE = "onewire";
 constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
 
 void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
