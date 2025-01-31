@@ -36,7 +36,7 @@ enum RunMode {
 };
 
 void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
-                                 float pressurePsi1, float tempC, float temp1C,
+                                 float pressurePsi1, float tempC,
                                  float runTime, float voltage);
 
 float convertPsiPressureToBar(float psi);
@@ -55,6 +55,7 @@ float convertPaPressureToBar(float pa);
 #define PIN_CFG1 A10
 #define PIN_CFG2 A9
 #define PIN_VOLT A1
+#define PIN_DS A3
 #endif
 
 #endif  // PRESSUREMON

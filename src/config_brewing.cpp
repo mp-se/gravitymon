@@ -49,6 +49,8 @@ void BrewingConfig::createJson(JsonObject& doc) {
   doc[CONFIG_PUSH_INTERVAL_GET] = this->getPushIntervalGet();
   doc[CONFIG_PUSH_INTERVAL_INFLUX] = this->getPushIntervalInflux();
   doc[CONFIG_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
+
+  doc[CONFIG_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
 }
 
 void BrewingConfig::parseJson(JsonObject& doc) {
@@ -87,6 +89,9 @@ void BrewingConfig::parseJson(JsonObject& doc) {
     this->setPushIntervalInflux(doc[CONFIG_PUSH_INTERVAL_INFLUX].as<int>());
   if (!doc[CONFIG_PUSH_INTERVAL_MQTT].isNull())
     this->setPushIntervalMqtt(doc[CONFIG_PUSH_INTERVAL_MQTT].as<int>());
+
+  if (!doc[CONFIG_TEMPSENSOR_RESOLUTION].isNull())
+    this->setTempSensorResolution(doc[CONFIG_TEMPSENSOR_RESOLUTION].as<int>());
 }
 
 // EOF

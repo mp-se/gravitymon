@@ -46,6 +46,7 @@ constexpr auto CONFIG_PUSH_INTERVAL_INFLUX = "influxdb2_int";
 constexpr auto CONFIG_PUSH_INTERVAL_MQTT = "mqtt_int";
 constexpr auto CONFIG_IGNORE_LOW_ANGLES = "ignore_low_angles";
 constexpr auto CONFIG_BATTERY_SAVING = "battery_saving";
+constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
 
 class BrewingConfig : public BaseConfig {
  private:
@@ -84,6 +85,8 @@ class BrewingConfig : public BaseConfig {
   int _pushIntervalGet = 0;
   int _pushIntervalInflux = 0;
   int _pushIntervalMqtt = 0;
+
+  int _tempSensorResolution = 9;  // bits
 
  public:
   BrewingConfig(String baseMDNS, String fileName);
@@ -158,6 +161,12 @@ class BrewingConfig : public BaseConfig {
   const bool isSkipSslOnTest() { return _skipSslOnTest; }
   void setSkipSslOnTest(bool b) {
     _skipSslOnTest = b;
+    _saveNeeded = true;
+  }
+
+  int getTempSensorResolution() { return _tempSensorResolution; }
+  void setTempSensorResolution(int t) {
+    if (t >= 9 && t <= 12) _tempSensorResolution = t;
     _saveNeeded = true;
   }
 

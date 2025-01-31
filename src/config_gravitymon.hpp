@@ -42,7 +42,6 @@ constexpr auto CONFIG_GYRO_READ_COUNT = "gyro_read_count";
 constexpr auto CONFIG_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
 constexpr auto CONFIG_FORMULA_DEVIATION = "formula_max_deviation";
 constexpr auto CONFIG_FORMULA_CALIBRATION_TEMP = "formula_calibration_temp";
-constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
 
 enum GravitymonBleFormat {
   BLE_DISABLED = 0,
@@ -102,7 +101,6 @@ class GravitymonConfig : public BrewingConfig {
   float _defaultCalibrationTemp = 20.0;       // C
 
   int _gyroSensorMovingThreashold = 500;
-  int _tempSensorResolution = 9;  // bits
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
 
@@ -184,12 +182,6 @@ class GravitymonConfig : public BrewingConfig {
   }
   void setMaxFormulaCreationDeviation(float f) {
     _maxFormulaCreationDeviation = f;
-    _saveNeeded = true;
-  }
-
-  int getTempSensorResolution() { return _tempSensorResolution; }
-  void setTempSensorResolution(int t) {
-    if (t >= 9 && t <= 12) _tempSensorResolution = t;
     _saveNeeded = true;
   }
 

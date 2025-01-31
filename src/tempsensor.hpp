@@ -24,7 +24,7 @@ SOFTWARE.
 #ifndef SRC_TEMPSENSOR_HPP_
 #define SRC_TEMPSENSOR_HPP_
 
-#if defined(GRAVITYMON)
+#if defined(GRAVITYMON) || defined(PRESSUREMON)
 
 #include <DallasTemperature.h>
 
@@ -44,8 +44,8 @@ class TempSensor {
 extern TempSensor myTempSensor;
 extern DallasTemperature mySensors;
 
-#endif  // GRAVITYMON
+#endif  // GRAVITYMON || PRESSUREMON
 
-#endif  // SRC_TEMPSENSOR_HPP_
+#endif  // SRC_TEMPSENSOR_HPP_ 
 
 // EOF

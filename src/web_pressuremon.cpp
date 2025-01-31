@@ -27,11 +27,12 @@ SOFTWARE.
 #include <config.hpp>
 #include <pressure.hpp>
 #include <webserver.hpp>
+#include <tempsensor.hpp>
 
 constexpr auto PARAM_PRESSURE = "pressure";
 constexpr auto PARAM_PRESSURE1 = "pressure1";
 constexpr auto PARAM_TEMP = "temp";
-constexpr auto PARAM_TEMP1 = "temp1";
+// constexpr auto PARAM_TEMP1 = "temp1";
 constexpr auto PARAM_SELF_SENSOR_CONNECTED = "sensor_connected";
 constexpr auto PARAM_SELF_SENSOR_CONFIGURED = "sensor_configured";
 constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
@@ -55,15 +56,17 @@ void BrewingWebServer::doWebConfigWrite() {
 }
 
 void BrewingWebServer::doWebStatus(JsonObject &obj) {
-  float pressure, pressure1, temp, temp1;
+  // float pressure, pressure1, temp, temp1;
+  float pressure, pressure1, temp;
 
   pressure = myPressureSensor[0].getPressurePsi();
   // pressure1 = myPressureSensor[1].getPressurePsi();
   pressure1 = NAN;
 
-  temp = myPressureSensor[0].getTemperatureC();
+  temp = myTempSensor.getTempC();
+  // temp = myPressureSensor[0].getTemperatureC();
   // temp1 = myPressureSensor[1].getTemperatureC();
-  temp1 = NAN;
+  // temp1 = NAN;
 
   if (!isnan(pressure)) {
     if (myConfig.isPressureBar()) {
@@ -85,26 +88,27 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
     obj[PARAM_PRESSURE1] = pressure1;
   }
 
-  if (!isnan(temp)) {
-    if (myConfig.isTempUnitF()) {
-      temp = convertCtoF(temp);
-    }
-
-    obj[PARAM_TEMP] = temp;
+  // if (!isnan(temp)) {
+  if (myConfig.isTempUnitF()) {
+    temp = convertCtoF(temp);
   }
 
-  if (!isnan(temp1)) {
-    if (myConfig.isTempUnitF()) {
-      temp1 = convertCtoF(temp1);
-    }
+  obj[PARAM_TEMP] = temp;
+  // }
 
-    obj[PARAM_TEMP1] = temp1;
-  }
+  // if (!isnan(temp1)) {
+  //   if (myConfig.isTempUnitF()) {
+  //     temp1 = convertCtoF(temp1);
+  //   }
+
+  //   obj[PARAM_TEMP1] = temp1;
+  // }
 
   obj[CONFIG_PRESSURE_UNIT] = myConfig.getPressureUnit();
   obj[PARAM_TEMP_UNIT] = String(myConfig.getTempUnit());
 
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = !isnan(temp) || !isnan(temp1);
+  // obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = !isnan(temp) || !isnan(temp1);
+  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
   obj[PARAM_SELF][PARAM_SELF_SENSOR_CONNECTED] =
       !isnan(pressure) || !isnan(pressure1);
   obj[PARAM_SELF][PARAM_SELF_SENSOR_CONFIGURED] =
@@ -131,21 +135,23 @@ void BrewingWebServer::doTaskSensorCalibration() {
 
 void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
                                            BrewingPush &push) {
-  float pressure, pressure1, temp, temp1;
+  // float pressure, pressure1, temp, temp1;
+  float pressure, pressure1, temp;
 
   pressure = myPressureSensor[0].getPressurePsi();
   // pressure1 = myPressureSensor[1].getPressurePsi();
   pressure1 = NAN;
 
-  temp = myPressureSensor[0].getTemperatureC();
+  temp = myTempSensor.getTempC();
+  // temp = myPressureSensor[0].getTemperatureC();
   // temp1 = myPressureSensor[1].getTemperatureC();
-  temp1 = NAN;
+  // temp1 = NAN;
 
-  setupTemplateEnginePressure(engine, pressure, pressure1, temp, temp1, 1.0,
+  setupTemplateEnginePressure(engine, pressure, pressure1, temp,1.0,
                               myBatteryVoltage.getVoltage());
 }
 
-constexpr auto PARAM_I2C_1 = "i2c_1";
+// constexpr auto PARAM_I2C_1 = "i2c_1";
 
 void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
   // JsonArray i2c1 = obj[PARAM_I2C_1].to<JsonArray>();

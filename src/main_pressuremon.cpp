@@ -47,6 +47,7 @@ SOFTWARE.
 
 // Pressuremon specific
 #include <ble.hpp>
+#include <tempsensor.hpp>
 
 const char* CFG_APPNAME = "pressuremon";
 const char* CFG_FILENAME = "/pressuremon2.json";
@@ -177,6 +178,10 @@ void setup() {
         }
         PERF_END("main-wifi-connect");
       }
+
+      PERF_BEGIN("main-temp-setup");
+      myTempSensor.setup();
+      PERF_END("main-temp-setup");
       break;
   }
 
@@ -229,16 +234,19 @@ bool loopReadPressure() {
 
   myPressureSensor[0].read();
   // myPressureSensor[1].read();
+  myTempSensor.readSensor(false);
 
-  float pressure, pressure1, temp, temp1;
+  // float pressure, pressure1, temp, temp1;
+  float pressure, pressure1, temp;
 
   pressure = myPressureSensor[0].getPressurePsi();
   // pressure1 = myPressureSensor[1].getPressurePsi();
   pressure1 = NAN;
 
-  temp = myPressureSensor[0].getTemperatureC();
+  temp = myTempSensor.getTempC();
+  // temp = myPressureSensor[0].getTemperatureC();
   // temp1 = myPressureSensor[1].getTemperatureC();
-  temp1 = NAN;
+  // temp1 = NAN;
 
 #if LOG_LEVEL == 6
   Log.verbose(F("Main: Sensor values pressure=%F PSI, "
@@ -298,7 +306,7 @@ bool loopReadPressure() {
         TemplatingEngine engine;
         BrewingPush push(&myConfig);
 
-        setupTemplateEnginePressure(engine, pressure, pressure1, temp, temp1,
+        setupTemplateEnginePressure(engine, pressure, pressure1, temp,
                                     (millis() - runtimeMillis) / 1000,
                                     myBatteryVoltage.getVoltage());
         String tpl = push.getTemplate(BrewingPush::TEMPLATE_HTTP1,
@@ -316,7 +324,7 @@ bool loopReadPressure() {
         TemplatingEngine engine;
         BrewingPush push(&myConfig);
 
-        setupTemplateEnginePressure(engine, pressure, pressure1, temp, temp1,
+        setupTemplateEnginePressure(engine, pressure, pressure1, temp,
                                     (millis() - runtimeMillis) / 1000,
                                     myBatteryVoltage.getVoltage());
         push.sendAll(engine);
