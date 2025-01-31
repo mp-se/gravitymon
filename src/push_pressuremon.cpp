@@ -33,7 +33,7 @@ const char iHttpPostFormat[] PROGMEM =
     "\"interval\": ${sleep-interval}, "
     "\"temperature\": ${temp}, "
     // "\"temperature1\": ${temp1}, "
-    "\"temp_unit\": \"${temp-unit}\", "
+    "\"temperature-unit\": \"${temp-unit}\", "
     "\"pressure\": ${pressure}, "
     // "\"pressure1\": ${pressure1}, "
     "\"pressure-unit\": \"${pressure-unit}\", "
@@ -49,7 +49,7 @@ const char iHttpGetFormat[] PROGMEM =
     "&interval=${sleep-interval}"
     "&temperature=${temp}"
     // "&temperature1=${temp1}"
-    "&temp-unit=${temp-unit}"
+    "&temperature-unit=${temp-unit}"
     "&pressure=${pressure}"
     // "&pressure1=${pressure1}"
     "&pressure-unit=${pressure-unit}"
@@ -60,7 +60,7 @@ const char iHttpGetFormat[] PROGMEM =
 const char influxDbFormat[] PROGMEM =
     "measurement,host=${mdns},"
     "device=${id},"
-    "temp-format=${temp-unit},"
+    "temperature-unit=${temp-unit},"
     "pressure-unit=${pressure-unit} "
     "pressure=${pressure},"
     // "pressure1=${pressure1},"
@@ -72,11 +72,11 @@ const char influxDbFormat[] PROGMEM =
 const char mqttFormat[] PROGMEM =
     "pressuremon/${mdns}/temperature:${temp}|"
     // "pressuremon/${mdns}/temperature1:${temp1}|"
-    "pressuremon/${mdns}/temp_unit:${temp-unit}|"
+    "pressuremon/${mdns}/temperature-unit:${temp-unit}|"
     "pressuremon/${mdns}/battery:${battery}|"
     "pressuremon/${mdns}/pressure:${pressure}|"
     // "pressuremon/${mdns}/pressure1:${pressure1}|"
-    "pressuremon/${mdns}/pressure_unit:${pressure-unit}|"
+    "pressuremon/${mdns}/pressure-unit:${pressure-unit}|"
     "pressuremon/${mdns}/interval:${sleep-interval}|"
     "pressuremon/${mdns}/RSSI:${rssi}|";
 
