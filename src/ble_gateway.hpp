@@ -155,8 +155,6 @@ class BleScanner {
 
   void processGravitymonEddystoneBeacon(NimBLEAddress address,
                                         const std::vector<uint8_t> &payload);
-  void processGravitymonExtBeacon(NimBLEAddress address,
-                                  const std::string &payload);
 
   TiltData &getTiltData(TiltColor col) { return _tilt[col]; }
   int findGravitymonId(String id) {

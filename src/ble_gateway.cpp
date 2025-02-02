@@ -72,18 +72,7 @@ void BleDeviceCallbacks::onResult(
       Log.notice(F("BLE : Processing gravitymon eddy stone beacon" CR));
       bleScanner.processGravitymonEddystoneBeacon(
           advertisedDevice->getAddress(), advertisedDevice->getPayload());
-    } else if (advertisedDevice->getServiceData(NimBLEUUID(SERV2_UUID)) ==
-               "gravitymon_ext") {
-      Log.notice(F("BLE : Processing gravitymon extended beacon" CR));
-      bleScanner.processGravitymonExtBeacon(
-          advertisedDevice->getAddress(),
-          advertisedDevice->getServiceData(NimBLEUUID(SERV_UUID)));
-    }
-    // else {
-    //   Log.notice(
-    //       F("BLE : Processing gravitymon device (connect with device)" CR));
-    //   bleScanner.processGravitymonDevice(advertisedDevice->getAddress());
-    // }
+    } 
 
     return;
   }
@@ -197,43 +186,6 @@ void BleScanner::processGravitymonEddystoneBeacon(
 
     data.address = address;
     data.type = "EddyStone";
-    data.setUpdated();
-  } else {
-    Log.error(F("BLE : Max devices reached - no more devices available." CR));
-  }
-}
-
-void BleScanner::processGravitymonExtBeacon(NimBLEAddress address,
-                                            const std::string& payload) {
-  // Log.notice(F("BLE : Advertised gravitymon ext device: %s" CR),
-  //            address.toString().c_str());
-
-  JsonDocument in;
-  DeserializationError err = deserializeJson(in, payload.c_str());
-
-  if (err) {
-    Log.error(F("BLE : Failed to parse advertisement json %d" CR), err);
-    return;
-  }
-
-  int idx = findGravitymonId(in[PARAM_BLE_ID].as<String>());
-  if (idx >= 0) {
-    GravitymonData& data = getGravitymonData(idx);
-    data.tempC = in[PARAM_BLE_TEMP_UNITS].as<String>() == "C"
-                     ? in[PARAM_BLE_TEMP].as<float>()
-                     : convertFtoC(in[PARAM_BLE_TEMP].as<float>());
-    data.gravity = in[PARAM_BLE_GRAVITY].as<float>();
-    data.angle = in[PARAM_BLE_ANGLE].as<float>();
-    data.battery = in[PARAM_BLE_BATTERY].as<int>();
-    data.id = in[PARAM_BLE_ID].as<String>();
-
-    data.rssi = in[PARAM_BLE_RSSI].as<int>();
-    data.name = in[PARAM_BLE_NAME].as<String>();
-    data.token = in[PARAM_BLE_TOKEN].as<String>();
-    data.interval = in[PARAM_BLE_INTERVAL].as<int>();
-
-    data.address = address;
-    data.type = "ExtBeacon";
     data.setUpdated();
   } else {
     Log.error(F("BLE : Max devices reached - no more devices available." CR));
