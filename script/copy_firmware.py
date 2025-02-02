@@ -116,6 +116,41 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
+    # Gateway
+
+    elif name == "gateway32pro-release" :
+        target = dir + "/bin/firmware32pro.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32pro.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+    elif name == "gateway32s3pro-release" :
+        target = dir + "/bin/firmware32s3pro.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32s3pro.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+    elif name == "gateway32s3wave-release" :
+        target = dir + "/bin/firmware32s3wave.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32s3wave.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
     # Custom boards
 
     else:

@@ -40,7 +40,11 @@ void setupTemplateEngineGravityGatwway(TemplatingEngine& engine, float angle, fl
                                              const char* name);
 
 // Defines that needs to be there for the common base but not used in the gateway
+#if defined(LOLIN_D32_PRO)
 #define PIN_VOLT T0
+#elif defined(LOLIN_S3_PRO)
+#define PIN_VOLT A3
+#endif
 
 #endif  // GATEWAY
 
