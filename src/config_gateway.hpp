@@ -21,15 +21,83 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_CONFIG_GATWWAY_HPP_
-#define SRC_CONFIG_GATWWAY_HPP_
+#ifndef SRC_CONFIG_GATEWAY_HPP_
+#define SRC_CONFIG_GATEWAY_HPP_
 
 #if defined(GATEWAY)
 
-// TODO: Merge in the code from gravitymon gateway to share the same code base
+#include <config_brewing.hpp>
+
+constexpr auto CONFIG_GRAVITY_FORMAT = "gravity_format";
+constexpr auto CONFIG_BLE_ACTIVE_SCAN = "ble_active_scan";
+constexpr auto CONFIG_BLE_SCAN_TIME = "ble_scan_time";
+constexpr auto CONFIG_PUSH_RESEND_TIME = "push_resend_time";
+constexpr auto CONFIG_TIMEZONE = "timezone";
+
+class GravmonGatewayConfig : public BrewingConfig {
+ private:
+  char _gravityFormat = 'G';
+
+  String _timezone = "";
+  bool _bleActiveScan = false;
+  int _bleScanTime = 5;
+  int _pushResendTime = 300;
+
+ public:
+  GravmonGatewayConfig(String baseMDNS, String fileName);
+
+  const char* getTimezone() { return _timezone.c_str(); }
+  void setTimezone(String s) {
+    _timezone = s;
+    _saveNeeded = true;
+  }
+
+  bool isBleActive() { return false; } // Needed for common base but not used in gateway
+
+  int getBleScanTime() { return _bleScanTime; }
+  void setBleScanTime(int v) {
+    _bleScanTime = v;
+    _saveNeeded = true;
+  }
+
+  int getPushResendTime() { return _pushResendTime; }
+  void setPushResendTime(int t) {
+    _pushResendTime = t;
+    _saveNeeded = true;
+  }
+
+  bool getBleActiveScan() { return _bleActiveScan; }
+  void setBleActiveScan(bool b) {
+    _bleActiveScan = b;
+    _saveNeeded = true;
+  }
+
+  char getGravityFormat() { return _gravityFormat; }
+  void setGravityFormat(char c) {
+    if (c == 'G' || c == 'P') {
+      _gravityFormat = c;
+      _saveNeeded = true;
+    }
+  }
+  bool isGravitySG() { return _gravityFormat == 'G'; }
+  bool isGravityPlato() { return _gravityFormat == 'P'; }
+
+  bool isWifiPushActive() {
+    return (hasTargetHttpPost() || hasTargetHttpPost2() || hasTargetHttpGet() ||
+            hasTargetInfluxDb2() || hasTargetMqtt())
+               ? true
+               : false;
+  }
+
+  // IO functions
+  void createJson(JsonObject& doc);
+  void parseJson(JsonObject& doc);
+};
+
+extern GravmonGatewayConfig myConfig;
 
 #endif  // GATEWAY
 
-#endif  // SRC_CONFIG_GATWWAY_HPP_
+#endif  // SRC_CONFIG_GATEWAY_HPP_
 
 // EOF

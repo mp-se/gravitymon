@@ -92,23 +92,25 @@ class BrewingWebServer : public BaseWebServer {
   String readFile(String fname);
   bool writeFile(String fname, String data);
 
-  void doTaskSensorCalibration();
-  void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push);
-  void doTaskHardwareScanning(JsonObject &obj);
+  virtual void doTaskSensorCalibration();
+  virtual void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push);
+  virtual void doTaskHardwareScanning(JsonObject &obj);
 
-  void doWebStatus(JsonObject &obj);
-  void doWebConfigWrite();
-  void doWebCalibrateStatus(JsonObject &obj);
+  virtual void doWebStatus(JsonObject &obj);
+  virtual void doWebConfigWrite();
+  virtual void doWebCalibrateStatus(JsonObject &obj);
 
  public:
   explicit BrewingWebServer(WebConfig *config);
 
-  bool setupWebServer(const char *serviceName);
-  void loop();
+  virtual bool setupWebServer(const char *serviceName);
+  virtual void loop();
 };
 
+#if defined(GRAVITYMON) || defined(PRESSUREMON)
 // Global instance created
 extern BrewingWebServer myWebServer;
+#endif // GRAVITYMON || PRESSUREMON
 
 #endif  // SRC_WEBSERVER_HPP_
 

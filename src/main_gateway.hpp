@@ -26,7 +26,21 @@ SOFTWARE.
 
 #if defined(GATEWAY)
 
-// TODO: Merge in the code from gravitymon gateway to share the same code base
+#include <templating.hpp>
+
+enum RunMode {
+  measurementMode = 0,
+  wifiSetupMode = 1,
+};
+
+void setupTemplateEngineGravityGatwway(TemplatingEngine& engine, float angle, float gravitySG,
+                                             float tempC, float voltage,
+                                             int interval, const char* id,
+                                             const char* token,
+                                             const char* name);
+
+// Defines that needs to be there for the common base but not used in the gateway
+#define PIN_VOLT T0
 
 #endif  // GATEWAY
 

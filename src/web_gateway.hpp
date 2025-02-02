@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2025 Magnus
+Copyright (c) 2024-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_CONFIG_HPP_
-#define SRC_CONFIG_HPP_
+#ifndef SRC_WEB_GATEWAY_HPP_
+#define SRC_WEB_GATEWAY_HPP_
 
-#include <config_brewing.hpp>
-#include <config_gravitymon.hpp>
-#include <config_pressuremon.hpp>
-#include <config_gateway.hpp>
+#include <webserver.hpp>
+#include <ble.hpp>
 
-#endif  // SRC_CONFIG_HPP_
+class GatewayWebServer : public BrewingWebServer {
+ private:
+
+  GravitymonData _gravitymon[NO_GRAVITYMON];
+
+ public:
+  explicit GatewayWebServer(WebConfig *config);
+
+  void webHandleRemotePost(AsyncWebServerRequest *request, JsonVariant &json);
+
+  int findGravitymonId(String id) {
+    for (int i = 0; i < NO_GRAVITYMON; i++)
+      if (_gravitymon[i].id == id || _gravitymon[i].id == "") return i;
+    return -1;
+  }
+  GravitymonData &getGravitymonData(int idx) { return _gravitymon[idx]; }
+
+  void doWebStatus(JsonObject &obj);
+  bool setupWebServer(const char *serviceName);
+};
+
+// Global instance created
+extern GatewayWebServer myWebServer;
+
+#endif  // SRC_WEB_GATEWAY_HPP_
+
+// EOF

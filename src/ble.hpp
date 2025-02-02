@@ -26,5 +26,6 @@ SOFTWARE.
 
 #include <ble_gravitymon.hpp>
 #include <ble_pressuremon.hpp>
+#include <ble_gateway.hpp>
 
 #endif  // SRC_BLE_HPP_

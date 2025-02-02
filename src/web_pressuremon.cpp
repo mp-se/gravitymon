@@ -36,6 +36,7 @@ constexpr auto PARAM_TEMP = "temp";
 constexpr auto PARAM_SELF_SENSOR_CONNECTED = "sensor_connected";
 constexpr auto PARAM_SELF_SENSOR_CONFIGURED = "sensor_configured";
 constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
+constexpr auto PARAM_ONEWIRE = "onewire";
 
 void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
   if (myPressureSensor[0].isActive() || myPressureSensor[1].isActive()) {
@@ -169,6 +170,37 @@ void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
   //     j++;
   //   }
   // }
+
+  JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
+
+  for (int i = 0, j = 0; i < mySensors.getDS18Count(); i++) {
+    DeviceAddress adr;
+    mySensors.getAddress(&adr[0], i);
+    Log.notice(F("WEB : Found onewire device %d." CR), i);
+    onew[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
+                            String(adr[2], 16) + String(adr[3], 16) +
+                            String(adr[4], 16) + String(adr[5], 16) +
+                            String(adr[6], 16) + String(adr[7], 16);
+    switch (adr[0]) {
+      case DS18S20MODEL:
+        onew[j][PARAM_FAMILY] = "DS18S20";
+        break;
+      case DS18B20MODEL:
+        onew[j][PARAM_FAMILY] = "DS18B20";
+        break;
+      case DS1822MODEL:
+        onew[j][PARAM_FAMILY] = "DS1822";
+        break;
+      case DS1825MODEL:
+        onew[j][PARAM_FAMILY] = "DS1825";
+        break;
+      case DS28EA00MODEL:
+        onew[j][PARAM_FAMILY] = "DS28EA00";
+        break;
+    }
+    onew[j][PARAM_RESOLUTION] = mySensors.getResolution();
+    j++;
+  }  
 }
 
 #endif  // PRESSUREMON

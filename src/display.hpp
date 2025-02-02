@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,24 +21,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_MAIN_HPP_
-#define SRC_MAIN_HPP_
+#ifndef SRC_DISPLAY_HPP_
+#define SRC_DISPLAY_HPP_
 
-#include <stdlib.h>
+#if defined(GATEWAY)
 
-#include <espframework.hpp>
-#include <main_gravitymon.hpp>
-#include <main_pressuremon.hpp>
-#include <main_gateway.hpp>
+#include <config.hpp>
+#include <main.hpp>
 
-extern RunMode runMode;
+#if defined(ENABLE_TFT)
+#include "TFT_eSPI.h"
+#endif
 
-constexpr auto DECIMALS_SG = 4;
-constexpr auto DECIMALS_PLATO = 2;
-constexpr auto DECIMALS_TEMP = 2;
-constexpr auto DECIMALS_RUNTIME = 2;
-constexpr auto DECIMALS_TILT = 3;
-constexpr auto DECIMALS_PRESSURE = 3;
-constexpr auto DECIMALS_BATTERY = 2;
+enum FontSize { FONT_9 = 9, FONT_12 = 12, FONT_18 = 18, FONT_24 = 24 };
 
-#endif  // SRC_MAIN_HPP_
+class Display {
+ private:
+#if defined(ENABLE_TFT)
+  TFT_eSPI* _tft = NULL;
+#endif
+  FontSize _fontSize = FontSize::FONT_9;
+
+ public:
+  Display();
+  void setup();
+  // void loop();
+
+  void clear();
+  void setFont(FontSize f);
+  void printLine(int l, const String& text);
+  void printLineCentered(int l, const String& text);
+};
+
+extern Display myDisplay;
+
+#endif  // GATEWAY
+
+#endif  // SRC_DISPLAY_HPP_
+
+// EOF

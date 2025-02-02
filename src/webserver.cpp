@@ -36,12 +36,10 @@ SOFTWARE.
 #include <esp_task_wdt.h>
 #endif
 
-#include <tempsensor.hpp>
+// #include <tempsensor.hpp>
 
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
-
-constexpr auto PARAM_ONEWIRE = "onewire";
 
 BrewingWebServer::BrewingWebServer(WebConfig *config) : BaseWebServer(config) {}
 
@@ -614,37 +612,6 @@ void BrewingWebServer::loop() {
         i2c[j][PARAM_ADRESS] = "0x" + String(i, 16);
         j++;
       }
-    }
-
-    JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
-
-    for (int i = 0, j = 0; i < mySensors.getDS18Count(); i++) {
-      DeviceAddress adr;
-      mySensors.getAddress(&adr[0], i);
-      Log.notice(F("WEB : Found onewire device %d." CR), i);
-      onew[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
-                              String(adr[2], 16) + String(adr[3], 16) +
-                              String(adr[4], 16) + String(adr[5], 16) +
-                              String(adr[6], 16) + String(adr[7], 16);
-      switch (adr[0]) {
-        case DS18S20MODEL:
-          onew[j][PARAM_FAMILY] = "DS18S20";
-          break;
-        case DS18B20MODEL:
-          onew[j][PARAM_FAMILY] = "DS18B20";
-          break;
-        case DS1822MODEL:
-          onew[j][PARAM_FAMILY] = "DS1822";
-          break;
-        case DS1825MODEL:
-          onew[j][PARAM_FAMILY] = "DS1825";
-          break;
-        case DS28EA00MODEL:
-          onew[j][PARAM_FAMILY] = "DS28EA00";
-          break;
-      }
-      onew[j][PARAM_RESOLUTION] = mySensors.getResolution();
-      j++;
     }
 
     JsonObject cpu = obj[PARAM_CHIP].to<JsonObject>();

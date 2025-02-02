@@ -23,7 +23,44 @@ SOFTWARE.
  */
 #if defined(GATEWAY)
 
-// TODO: Merge in the code from gravitymon gateway to share the same code base
+#include <config.hpp>
+#include <main.hpp>
+
+GravmonGatewayConfig::GravmonGatewayConfig(String baseMDNS, String fileName)
+    : BrewingConfig(baseMDNS, fileName) {}
+
+void GravmonGatewayConfig::createJson(JsonObject& doc) {
+  // Call base class functions
+  createJsonBase(doc);
+  createJsonWifi(doc);
+  createJsonPush(doc);
+
+  doc[CONFIG_GRAVITY_FORMAT] = String(getGravityFormat());
+  doc[CONFIG_TIMEZONE] = getTimezone();
+  doc[CONFIG_BLE_ACTIVE_SCAN] = getBleActiveScan();
+  doc[CONFIG_BLE_SCAN_TIME] = getBleScanTime();
+  doc[CONFIG_PUSH_RESEND_TIME] = getPushResendTime();
+}
+
+void GravmonGatewayConfig::parseJson(JsonObject& doc) {
+  // Call base class functions
+  parseJsonBase(doc);
+  parseJsonWifi(doc);
+  parseJsonPush(doc);
+
+  if (!doc[CONFIG_GRAVITY_FORMAT].isNull()) {
+    String s = doc[CONFIG_GRAVITY_FORMAT];
+    setGravityFormat(s.charAt(0));
+  }
+
+  if (!doc[CONFIG_TIMEZONE].isNull()) setTimezone(doc[CONFIG_TIMEZONE]);
+  if (!doc[CONFIG_BLE_ACTIVE_SCAN].isNull())
+    setBleActiveScan(doc[CONFIG_BLE_ACTIVE_SCAN].as<bool>());
+  if (!doc[CONFIG_BLE_SCAN_TIME].isNull())
+    setBleScanTime(doc[CONFIG_BLE_SCAN_TIME].as<int>());
+  if (!doc[CONFIG_PUSH_RESEND_TIME].isNull())
+    setPushResendTime(doc[CONFIG_PUSH_RESEND_TIME].as<int>());
+}
 
 #endif  // GATEWAY
 
