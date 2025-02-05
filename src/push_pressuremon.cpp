@@ -25,7 +25,7 @@ SOFTWARE.
 
 #include <pushtarget.hpp>
 
-const char iHttpPostFormat[] PROGMEM =
+const char iPressureHttpPostFormat[] PROGMEM =
     "{"
     "\"name\": \"${mdns}\", "
     "\"ID\": \"${id}\", "
@@ -42,7 +42,7 @@ const char iHttpPostFormat[] PROGMEM =
     "\"run-time\": ${run-time} "
     "}";
 
-const char iHttpGetFormat[] PROGMEM =
+const char iPressureHttpGetFormat[] PROGMEM =
     "?name=${mdns}"
     "&id=${id}"
     "&token=${token2}"
@@ -57,7 +57,7 @@ const char iHttpGetFormat[] PROGMEM =
     "&rssi=${rssi}"
     "&run-time=${run-time}";
 
-const char influxDbFormat[] PROGMEM =
+const char iPressureInfluxDbFormat[] PROGMEM =
     "measurement,host=${mdns},"
     "device=${id},"
     "temperature-unit=${temp-unit},"
@@ -69,7 +69,7 @@ const char influxDbFormat[] PROGMEM =
     "battery=${battery},"
     "rssi=${rssi}\n";
 
-const char mqttFormat[] PROGMEM =
+const char iPressureMqttFormat[] PROGMEM =
     "pressuremon/${mdns}/temperature:${temp}|"
     // "pressuremon/${mdns}/temperature1:${temp1}|"
     "pressuremon/${mdns}/temperature-unit:${temp-unit}|"
@@ -80,18 +80,10 @@ const char mqttFormat[] PROGMEM =
     "pressuremon/${mdns}/interval:${sleep-interval}|"
     "pressuremon/${mdns}/RSSI:${rssi}|";
 
-// constexpr auto TPL_TEMP1 = "${temp1}";
-// constexpr auto TPL_TEMP1_C = "${temp1-c}";
-// constexpr auto TPL_TEMP1_F = "${temp1-f}";
-constexpr auto TPL_PRESSURE = "${pressure}";
-constexpr auto TPL_PRESSURE1 = "${pressure1}";
-constexpr auto TPL_PRESSURE_PSI = "${pressure-psi}";
-constexpr auto TPL_PRESSURE1_PSI = "${pressure1-psi}";
-constexpr auto TPL_PRESSURE_BAR = "${pressure-bar}";
-constexpr auto TPL_PRESSURE1_BAR = "${pressure1-bar}";
-constexpr auto TPL_PRESSURE_KPA = "${pressure-kpa}";
-constexpr auto TPL_PRESSURE1_KPA = "${pressure1-kpa}";
-constexpr auto TPL_PRESSURE_UNIT = "${pressure-unit}";  // PSI, BAR, KPA
+const char iGravityHttpPostFormat[] PROGMEM = "";
+const char iGravityHttpGetFormat[] PROGMEM = "";
+const char iGravityInfluxDbFormat[] PROGMEM = "";
+const char iGravityMqttFormat[] PROGMEM = "";
 
 void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
                                  float pressurePsi1, float tempC,

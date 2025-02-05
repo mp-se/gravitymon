@@ -7,4 +7,8 @@ env.Append(
     CPPDEFINES=[(board.upper(), 1)],
 )
 
+env.Append(
+    CPPDEFINES=[("BOARD", env.StringifyMacro(board.upper()))],
+)
+
 # print(env.get("CPPDEFINES"))

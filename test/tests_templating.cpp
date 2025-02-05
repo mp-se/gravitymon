@@ -40,7 +40,7 @@ test(template_applyTemplate1) {
   BrewingPush p(&cfg);
   myConfig.setMDNS("gravitymon");
 
-  String t = p.getTemplate(BrewingPush::TEMPLATE_HTTP1);
+  String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
   setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
@@ -59,7 +59,7 @@ test(template_applyTemplate2) {
   BrewingPush p(&cfg);
   myConfig.setMDNS("gravitymon");
 
-  String t = p.getTemplate(BrewingPush::TEMPLATE_HTTP2);
+  String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
   setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
@@ -78,7 +78,7 @@ test(template_applyTemplate3) {
   BrewingPush p(&cfg);
   myConfig.setMDNS("gravitymon");
 
-  String t = p.getTemplate(BrewingPush::TEMPLATE_HTTP3);
+  String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
   setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
@@ -95,7 +95,7 @@ test(template_applyTemplate4) {
   BrewingPush p(&cfg);
   myConfig.setMDNS("gravitymon");
 
-  String t = p.getTemplate(BrewingPush::TEMPLATE_INFLUX);
+  String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
   setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
@@ -113,7 +113,7 @@ test(template_applyTemplate5) {
   BrewingPush p(&cfg);
   myConfig.setMDNS("gravitymon");
 
-  String t = p.getTemplate(BrewingPush::TEMPLATE_MQTT);
+  String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
   setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String rssi = String(WiFi.RSSI());

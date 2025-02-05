@@ -33,7 +33,7 @@ enum RunMode {
   wifiSetupMode = 1,
 };
 
-void setupTemplateEngineGravityGatwway(TemplatingEngine& engine, float angle, float gravitySG,
+void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle, float gravitySG,
                                              float tempC, float voltage,
                                              int interval, const char* id,
                                              const char* token,
@@ -42,7 +42,7 @@ void setupTemplateEngineGravityGatwway(TemplatingEngine& engine, float angle, fl
 // Defines that needs to be there for the common base but not used in the gateway
 #if defined(LOLIN_D32_PRO)
 #define PIN_VOLT T0
-#elif defined(LOLIN_S3_PRO)
+#elif defined(LOLIN_S3)
 #define PIN_VOLT A3
 #endif
 

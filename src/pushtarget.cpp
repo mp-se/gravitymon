@@ -101,7 +101,7 @@ BrewingPush::BrewingPush(BrewingConfig* BrewingConfig)
   _BrewingConfig = BrewingConfig;
 }
 
-void BrewingPush::sendAll(TemplatingEngine& engine) {
+void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
   printHeap("PUSH");
   _http->setReuse(true);
 
@@ -110,7 +110,13 @@ void BrewingPush::sendAll(TemplatingEngine& engine) {
 
   if (myConfig.hasTargetHttpPost() && intDelay.useHttp1()) {
     PERF_BEGIN("push-http");
-    String tpl = getTemplate(BrewingPush::TEMPLATE_HTTP1);
+    String tpl;
+    
+    if(type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
+    else  
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP1);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest() &&
@@ -123,7 +129,13 @@ void BrewingPush::sendAll(TemplatingEngine& engine) {
 
   if (myConfig.hasTargetHttpPost2() && intDelay.useHttp2()) {
     PERF_BEGIN("push-http2");
-    String tpl = getTemplate(BrewingPush::TEMPLATE_HTTP2);
+    String tpl;
+    
+    if(type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
+    else  
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP2);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest() &&
@@ -136,7 +148,13 @@ void BrewingPush::sendAll(TemplatingEngine& engine) {
 
   if (myConfig.hasTargetHttpGet() && intDelay.useHttp3()) {
     PERF_BEGIN("push-http3");
-    String tpl = getTemplate(BrewingPush::TEMPLATE_HTTP3);
+    String tpl;
+    
+    if(type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
+    else  
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP3);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest() &&
@@ -149,7 +167,13 @@ void BrewingPush::sendAll(TemplatingEngine& engine) {
 
   if (myConfig.hasTargetInfluxDb2() && intDelay.useInflux()) {
     PERF_BEGIN("push-influxdb2");
-    String tpl = getTemplate(BrewingPush::TEMPLATE_INFLUX);
+    String tpl;
+    
+    if(type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
+    else  
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_INFLUX);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest() &&
@@ -162,7 +186,13 @@ void BrewingPush::sendAll(TemplatingEngine& engine) {
 
   if (myConfig.hasTargetMqtt() && intDelay.useMqtt()) {
     PERF_BEGIN("push-mqtt");
-    String tpl = getTemplate(BrewingPush::TEMPLATE_MQTT);
+    String tpl;
+    
+    if(type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
+    else  
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_MQTT);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest() &&
@@ -182,25 +212,46 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
 
   // Load templates from memory
   switch (t) {
-    case TEMPLATE_HTTP1:
-      _baseTemplate = String(iHttpPostFormat);
-      fname = TPL_FNAME_POST;
+    case GRAVITY_TEMPLATE_HTTP1:
+      _baseTemplate = String(iGravityHttpPostFormat);
+      fname = TPL_GRAVITY_FNAME_POST;
       break;
-    case TEMPLATE_HTTP2:
-      _baseTemplate = String(iHttpPostFormat);
-      fname = TPL_FNAME_POST2;
+    case GRAVITY_TEMPLATE_HTTP2:
+      _baseTemplate = String(iGravityHttpPostFormat);
+      fname = TPL_GRAVITY_FNAME_POST2;
       break;
-    case TEMPLATE_HTTP3:
-      _baseTemplate = String(iHttpGetFormat);
-      fname = TPL_FNAME_GET;
+    case GRAVITY_TEMPLATE_HTTP3:
+      _baseTemplate = String(iGravityHttpGetFormat);
+      fname = TPL_GRAVITY_FNAME_GET;
       break;
-    case TEMPLATE_INFLUX:
-      _baseTemplate = String(influxDbFormat);
-      fname = TPL_FNAME_INFLUXDB;
+    case GRAVITY_TEMPLATE_INFLUX:
+      _baseTemplate = String(iGravityInfluxDbFormat);
+      fname = TPL_GRAVITY_FNAME_INFLUXDB;
       break;
-    case TEMPLATE_MQTT:
-      _baseTemplate = String(mqttFormat);
-      fname = TPL_FNAME_MQTT;
+    case GRAVITY_TEMPLATE_MQTT:
+      _baseTemplate = String(iGravityMqttFormat);
+      fname = TPL_GRAVITY_FNAME_MQTT;
+      break;
+
+    case PRESSURE_TEMPLATE_HTTP1:
+      _baseTemplate = String(iPressureHttpPostFormat);
+      fname = TPL_PRESSURE_FNAME_POST;
+      break;
+    case PRESSURE_TEMPLATE_HTTP2:
+      _baseTemplate = String(iPressureHttpPostFormat);
+      fname = TPL_PRESSURE_FNAME_POST2;
+      break;
+    case PRESSURE_TEMPLATE_HTTP3:
+      _baseTemplate = String(iPressureHttpGetFormat);
+      fname = TPL_PRESSURE_FNAME_GET;
+      break;
+    case PRESSURE_TEMPLATE_INFLUX:
+      _baseTemplate = String(iPressureInfluxDbFormat);
+      fname = TPL_PRESSURE_FNAME_INFLUXDB;
+      break;
+    case PRESSURE_TEMPLATE_MQTT:
+      _baseTemplate = String(iPressureMqttFormat);
+      fname = TPL_PRESSURE_FNAME_MQTT;
       break;
   }
 

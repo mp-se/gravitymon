@@ -88,6 +88,17 @@ void setup() {
   printBuildOptions();
   detectChipRevision();
 
+  delay(2000);
+
+  Log.notice(F("Main: TOUCH_CS %d." CR), TOUCH_CS);
+  Log.notice(F("Main: TFT_BL %d." CR), TFT_BL);
+  Log.notice(F("Main: TFT_DC %d." CR), TFT_DC);
+  Log.notice(F("Main: TFT_MISO %d." CR), TFT_MISO);
+  Log.notice(F("Main: TFT_MOSI %d." CR), TFT_MOSI);
+  Log.notice(F("Main: TFT_SCLK %d." CR), TFT_SCLK);
+  Log.notice(F("Main: TFT_RST %d." CR), TFT_RST);
+  Log.notice(F("Main: TFT_CS %d." CR), TFT_CS);
+
   Log.notice(F("Main: Initialize display." CR));
   myDisplay.setup();
   myDisplay.setFont(FontSize::FONT_12);
@@ -304,10 +315,9 @@ void controller() {
       TemplatingEngine engine;
       BrewingPush push(&myConfig);
 
-      setupTemplateEngineGravityGatwway(engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
+      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
                    gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
-      push.sendAll(engine);
-
+      push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
 
       gmd.setPushed();
     }
@@ -328,9 +338,9 @@ void controller() {
       TemplatingEngine engine;
       BrewingPush push(&myConfig);
 
-      setupTemplateEngineGravityGatwway(engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
+      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
                    gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
-      push.sendAll(engine);
+      push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
 
       gmd.setPushed();
     }

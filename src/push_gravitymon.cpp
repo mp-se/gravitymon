@@ -32,7 +32,7 @@ SOFTWARE.
 #endif
 
 // Use iSpindle format for compatibility, HTTP POST
-const char iHttpPostFormat[] PROGMEM =
+const char iGravityHttpPostFormat[] PROGMEM =
     "{"
     "\"name\": \"${mdns}\", "
     "\"ID\": \"${id}\", "
@@ -50,7 +50,7 @@ const char iHttpPostFormat[] PROGMEM =
     "}";
 
 // Format for an HTTP GET
-const char iHttpGetFormat[] PROGMEM =
+const char iGravityHttpGetFormat[] PROGMEM =
     "?name=${mdns}"
     "&id=${id}"
     "&token=${token2}"
@@ -65,14 +65,14 @@ const char iHttpGetFormat[] PROGMEM =
     "&gravity-unit=${gravity-unit}"
     "&run-time=${run-time}";
 
-const char influxDbFormat[] PROGMEM =
+const char iGravityInfluxDbFormat[] PROGMEM =
     "measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-"
     "format=${gravity-unit} "
     "gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${"
     "temp},battery=${battery},"
     "rssi=${rssi}\n";
 
-const char mqttFormat[] PROGMEM =
+const char iGravityMqttFormat[] PROGMEM =
     "ispindel/${mdns}/tilt:${angle}|"
     "ispindel/${mdns}/temperature:${temp}|"
     "ispindel/${mdns}/temp_units:${temp-unit}|"
@@ -81,15 +81,10 @@ const char mqttFormat[] PROGMEM =
     "ispindel/${mdns}/interval:${sleep-interval}|"
     "ispindel/${mdns}/RSSI:${rssi}|";
 
-constexpr auto TPL_ANGLE = "${angle}";
-constexpr auto TPL_TILT = "${tilt}";  // same as angle
-constexpr auto TPL_GRAVITY = "${gravity}";
-constexpr auto TPL_GRAVITY_G = "${gravity-sg}";
-constexpr auto TPL_GRAVITY_P = "${gravity-plato}";
-constexpr auto TPL_GRAVITY_CORR = "${corr-gravity}";
-constexpr auto TPL_GRAVITY_CORR_G = "${corr-gravity-sg}";
-constexpr auto TPL_GRAVITY_CORR_P = "${corr-gravity-plato}";
-constexpr auto TPL_GRAVITY_UNIT = "${gravity-unit}";  // G or P
+const char iPressureHttpPostFormat[] PROGMEM = "";
+const char iPressureHttpGetFormat[] PROGMEM = "";
+const char iPressureInfluxDbFormat[] PROGMEM = "";
+const char iPressureMqttFormat[] PROGMEM = "";
 
 void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
                                 float gravitySG, float corrGravitySG,

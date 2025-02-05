@@ -36,6 +36,7 @@ constexpr auto PARAM_BATTERY = "battery";
 constexpr auto PARAM_APP_VER = "app_ver";
 constexpr auto PARAM_APP_BUILD = "app_build";
 constexpr auto PARAM_PLATFORM = "platform";
+constexpr auto PARAM_BOARD = "board";
 constexpr auto PARAM_SELF = "self_check";
 constexpr auto PARAM_SELF_BATTERY_LEVEL = "battery_level";
 constexpr auto PARAM_SELF_PUSH_TARGET = "push_targets";
@@ -77,8 +78,11 @@ class BrewingWebServer : public BaseWebServer {
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
-  void webHandleConfigFormatRead(AsyncWebServerRequest *request);
-  void webHandleConfigFormatWrite(AsyncWebServerRequest *request,
+  void webHandleConfigFormatGravityRead(AsyncWebServerRequest *request);
+  void webHandleConfigFormatGravityWrite(AsyncWebServerRequest *request,
+                                  JsonVariant &json);
+  void webHandleConfigFormatPressureRead(AsyncWebServerRequest *request);
+  void webHandleConfigFormatPressureWrite(AsyncWebServerRequest *request,
                                   JsonVariant &json);
   void webHandleSleepmode(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPush(AsyncWebServerRequest *request, JsonVariant &json);
