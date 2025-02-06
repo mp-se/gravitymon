@@ -44,7 +44,7 @@ float convertPsiPressureToKPa(float psi);
 float convertPaPressureToPsi(float pa);
 float convertPaPressureToBar(float pa);
 
-#if defined(ESP32S3)
+#if defined(LOLIN_S3_MINI)
 // Hardware config for ESP32-s3-mini, pressuremon hardware
 // ------------------------------------------------------
 #define PIN_SDA SDA
@@ -57,7 +57,7 @@ float convertPaPressureToBar(float pa);
 #define PIN_VOLT A1
 #define PIN_DS A3
 
-#elif defined(ESP32S2)
+#elif defined(LOLIN_S2_MINI)
 // Hardware config for ESP32-s2-mini, pressuremon hardware
 // ------------------------------------------------------
 #define PIN_SDA SDA
@@ -70,7 +70,7 @@ float convertPaPressureToBar(float pa);
 #define PIN_VOLT A2
 #define PIN_DS A4
 
-#elif defined(ESP32C3)
+#elif defined(LOLIN_C3_MINI)
 // Hardware config for ESP32-c3-mini, pressuremon hardware
 // ------------------------------------------------------
 #define PIN_SDA SDA
@@ -82,6 +82,32 @@ float convertPaPressureToBar(float pa);
 #define PIN_CFG2 A3
 #define PIN_VOLT A3
 #define PIN_DS A2
+
+#elif defined(LOLIN_D32_PRO)
+// Hardware config for ESP32 pro, pressuremon hardware
+// ------------------------------------------------------
+#define PIN_SDA SDA
+#define PIN_SCL SCL
+#define PIN_SDA1 MISO
+#define PIN_SCL1 SCK
+
+#define PIN_CFG1 DAC1
+#define PIN_CFG2 DAC2
+#define PIN_VOLT A7
+#define PIN_DS 5 // SS PIN
+
+#elif defined(LOLIN_S3_PRO)
+// Hardware config for ESP32-s3 pro, pressuremon hardware
+// ------------------------------------------------------
+#define PIN_SDA SDA
+#define PIN_SCL SCL
+#define PIN_SDA1 8
+#define PIN_SCL1 3
+
+#define PIN_CFG1 17
+#define PIN_CFG2 18
+#define PIN_VOLT 3
+#define PIN_DS 1
 #endif
 
 #endif  // PRESSUREMON
