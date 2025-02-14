@@ -75,13 +75,13 @@ float convertPaPressureToBar(float pa);
 // ------------------------------------------------------
 #define PIN_SDA SDA
 #define PIN_SCL SCL
-#define PIN_SDA1 6
-#define PIN_SCL1 7
+#define PIN_SDA1 SCK
+#define PIN_SCL1 2
 
-#define PIN_CFG1 A4
-#define PIN_CFG2 A3
-#define PIN_VOLT A3
-#define PIN_DS A2
+#define PIN_CFG1 3
+#define PIN_CFG2 4
+#define PIN_VOLT 7
+#define PIN_DS 5
 
 #elif defined(LOLIN_D32_PRO)
 // Hardware config for ESP32 pro, pressuremon hardware
