@@ -133,10 +133,50 @@ class GravitymonData {
   uint32_t getPushAge() { return (millis() - timePushed) / 1000; }
 };
 
+class PressuremonData {
+ public:
+  // Data points
+  float tempC = 0;
+  float pressure = 0;
+  float pressure1 = 0;
+  float battery = 0;
+  int txPower = 0;
+  int rssi = 0;
+  String id = "";
+  String name = "";
+  String token = "";
+  int interval = 0;
+
+  // Internal stuff
+  NimBLEAddress address;
+  String type = "";
+  String data = "";
+  bool updated = false;
+  struct tm timeinfoUpdated;
+  uint32_t timeUpdated = 0;
+  uint32_t timePushed = 0;
+
+  void setUpdated() {
+    updated = true;
+    timeUpdated = millis();
+    getLocalTime(&timeinfoUpdated);
+  }
+
+  void setPushed() {
+    updated = false;
+    timePushed = millis();
+  }
+
+  uint32_t getUpdateAge() { return (millis() - timeUpdated) / 1000; }
+  uint32_t getPushAge() { return (millis() - timePushed) / 1000; }
+};
+
 const auto NO_TILT_COLORS =
     8;  // Number of tilt devices that can be managed (one per color)
 const auto NO_GRAVITYMON =
     8;  // Number of gravitymon devices that can be handled
+const auto NO_PRESSUREMON =
+    8;  // Number of pressuremon devices that can be handled
 
 class BleScanner {
  public:
@@ -150,19 +190,32 @@ class BleScanner {
 
   TiltColor proccesTiltBeacon(const std::string &advertStringHex,
                               const int8_t &currentRSSI);
+
   void proccesGravitymonBeacon(const std::string &advertStringHex,
                                NimBLEAddress address);
-
   void processGravitymonEddystoneBeacon(NimBLEAddress address,
                                         const std::vector<uint8_t> &payload);
 
+  void proccesPressuremonBeacon(const std::string &advertStringHex,
+                                NimBLEAddress address);
+  void processPressuremonEddystoneBeacon(NimBLEAddress address,
+                                         const std::vector<uint8_t> &payload);
+
   TiltData &getTiltData(TiltColor col) { return _tilt[col]; }
+
   int findGravitymonId(String id) {
     for (int i = 0; i < NO_GRAVITYMON; i++)
       if (_gravitymon[i].id == id || _gravitymon[i].id == "") return i;
     return -1;
   }
   GravitymonData &getGravitymonData(int idx) { return _gravitymon[idx]; }
+
+  int findPressuremonId(String id) {
+    for (int i = 0; i < NO_PRESSUREMON; i++)
+      if (_pressuremon[i].id == id || _pressuremon[i].id == "") return i;
+    return -1;
+  }
+  PressuremonData &getPressuremonData(int idx) { return _pressuremon[idx]; }
 
   const char *getTiltColorAsString(TiltColor col);
 
@@ -175,11 +228,9 @@ class BleScanner {
   BleDeviceCallbacks *_deviceCallbacks = nullptr;
   BleClientCallbacks *_clientCallbacks = nullptr;
 
-  // Tilt related data
   TiltData _tilt[NO_TILT_COLORS];
-
-  // Gravitymon related data
   GravitymonData _gravitymon[NO_GRAVITYMON];
+  PressuremonData _pressuremon[NO_PRESSUREMON];
 
   TiltColor uuidToTiltColor(std::string uuid);
 };

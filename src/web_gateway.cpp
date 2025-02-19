@@ -105,6 +105,8 @@ void GatewayWebServer::webHandleRemotePost(
   Log.notice(F("WEB : webServer callback for /post." CR));
   JsonObject obj = json.as<JsonObject>();
 
+  // TODO: Add support for pressure data as well.
+
   /* Expected format
   {
     "name": "gravitymon-gwfa413c",

@@ -31,6 +31,7 @@ class GatewayWebServer : public BrewingWebServer {
  private:
 
   GravitymonData _gravitymon[NO_GRAVITYMON];
+  PressuremonData _pressuremon[NO_PRESSUREMON];
 
  public:
   explicit GatewayWebServer(WebConfig *config);
@@ -43,6 +44,13 @@ class GatewayWebServer : public BrewingWebServer {
     return -1;
   }
   GravitymonData &getGravitymonData(int idx) { return _gravitymon[idx]; }
+
+  int findPRessuremonId(String id) {
+    for (int i = 0; i < NO_PRESSUREMON; i++)
+      if (_pressuremon[i].id == id || _pressuremon[i].id == "") return i;
+    return -1;
+  }
+  PressuremonData &getPressuremonData(int idx) { return _pressuremon[idx]; }
 
   void doWebStatus(JsonObject &obj);
   bool setupWebServer(const char *serviceName);
