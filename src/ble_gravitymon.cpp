@@ -40,20 +40,14 @@ void BleSender::init() {
   BLEDevice::init("gravitymon");
   _advertising = BLEDevice::getAdvertising();
 
-#if defined(ESP32C3_REV1)
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P6);
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P6);
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P6);
-#else
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P9);
-#endif
 
   _initFlag = true;
 }
 
-void BleSender::sendEddystone(float battery, float tempC, float gravity,
+void BleSender::sendEddystoneData(float battery, float tempC, float gravity,
                               float angle) {
   Log.info(F("Starting eddystone data transmission" CR));
 
@@ -195,6 +189,7 @@ void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
   BLEAdvertisementData advData = BLEAdvertisementData();
   advData.setFlags(0x04);
   advData.setManufacturerData(mf);
+  //_advertising->setName("gravitymon");
   _advertising->setAdvertisementData(advData);
 
   // _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);

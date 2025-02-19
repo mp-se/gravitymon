@@ -309,7 +309,7 @@ bool loopReadGravity() {
           } break;
 
           case GravitymonBleFormat::BLE_GRAVITYMON_EDDYSTONE: {
-            myBleSender.sendEddystone(myBatteryVoltage.getVoltage(), tempC,
+            myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), tempC,
                                       gravitySG, angle);
           } break;
         }

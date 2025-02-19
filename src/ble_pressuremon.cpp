@@ -30,23 +30,17 @@ SOFTWARE.
 void BleSender::init() {
   if (_initFlag) return;
 
-  BLEDevice::init("gravitymon");
+  BLEDevice::init("pressuremon");
   _advertising = BLEDevice::getAdvertising();
 
-#if defined(ESP32C3_REV1)
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P6);
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P6);
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P6);
-#else
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P9);
-#endif
 
   _initFlag = true;
 }
 
-void BleSender::sendEddystone(float battery, float tempC, float pressurePsi,
+void BleSender::sendEddystoneData(float battery, float tempC, float pressurePsi,
                               float pressurePsi1) {
   Log.info(F("Starting eddystone data transmission" CR));
 
@@ -153,4 +147,4 @@ void BleSender::dumpPayload(const char* p, int len) {
   EspSerial.println();
 }
 
-#endif  // ENABLE_BLE && GRAVITYMON
+#endif  // ENABLE_BLE && PRESSUREMON
