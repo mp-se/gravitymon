@@ -92,7 +92,6 @@ void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
   if (isnan(pressurePsi)) pressurePsi = 0;
   if (isnan(pressurePsi1)) pressurePsi1 = 0;
   if (isnan(tempC)) tempC = 0;
-  // if (isnan(tempC1)) tempC1 = 0;
 
   // Names
   engine.setVal(TPL_MDNS, myConfig.getMDNS());
@@ -103,16 +102,12 @@ void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
   // Temperature
   if (myConfig.isTempFormatC()) {
     engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
-    // engine.setVal(TPL_TEMP1, tempC1, DECIMALS_TEMP);
   } else {
     engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
-    // engine.setVal(TPL_TEMP1, convertCtoF(tempC1), DECIMALS_TEMP);
   }
 
   engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
-  // engine.setVal(TPL_TEMP1_C, tempC1, DECIMALS_TEMP);
-  // engine.setVal(TPL_TEMP1_F, convertCtoF(tempC1), DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
 
   // Battery & Timer
