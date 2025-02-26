@@ -48,7 +48,7 @@ void BleSender::init() {
 }
 
 void BleSender::sendEddystoneData(float battery, float tempC, float gravity,
-                              float angle) {
+                                  float angle) {
   Log.info(F("Starting eddystone data transmission" CR));
 
   char beacon_data[25];
@@ -189,10 +189,8 @@ void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
   BLEAdvertisementData advData = BLEAdvertisementData();
   advData.setFlags(0x04);
   advData.setManufacturerData(mf);
-  //_advertising->setName("gravitymon");
   _advertising->setAdvertisementData(advData);
 
-  // _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
   _advertising->setConnectableMode(BLE_GAP_CONN_MODE_NON);
   _advertising->start();
   delay(_beaconTime);

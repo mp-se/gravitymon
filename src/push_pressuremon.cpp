@@ -28,7 +28,7 @@ SOFTWARE.
 const char iPressureHttpPostFormat[] PROGMEM =
     "{"
     "\"name\": \"${mdns}\", "
-    "\"ID\": \"${id}\", "
+    "\"id\": \"${id}\", "
     "\"token\": \"${token}\", "
     "\"interval\": ${sleep-interval}, "
     "\"temperature\": ${temp}, "

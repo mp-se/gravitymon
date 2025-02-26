@@ -279,10 +279,10 @@ bool loopReadPressure() {
                                            pressurePsi, pressurePsi1);
         } break;
 
-        case PressuremonBleFormat::BLE_PRESSUREMON_EDDYSTONE: {
-          myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), tempC,
-                                    pressurePsi, pressurePsi1);
-        } break;
+        // case PressuremonBleFormat::BLE_PRESSUREMON_EDDYSTONE: {
+        //   myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), tempC,
+        //                             pressurePsi, pressurePsi1);
+        // } break;
       }
     }
 #endif  // ENABLE_BLE

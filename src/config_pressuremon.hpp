@@ -31,7 +31,7 @@ SOFTWARE.
 enum PressuremonBleFormat { 
   BLE_DISABLED = 0,
   BLE_PRESSUREMON_IBEACON = 1,
-  BLE_PRESSUREMON_EDDYSTONE = 2
+  // BLE_PRESSUREMON_EDDYSTONE = 2
  };
 
 enum PressureSensorType {
@@ -78,8 +78,6 @@ constexpr auto CONFIG_SENSOR_TYPE = "sensor_type";
 constexpr auto CONFIG_SENSOR1_TYPE = "sensor1_type";
 constexpr auto CONFIG_PRESSURE_ADJUSTMENT = "pressure_adjustment";
 constexpr auto CONFIG_PRESSURE1_ADJUSTMENT = "pressure1_adjustment";
-// constexpr auto CONFIG_TEMPERATURE_ADJUSTMENT = "temp_adjustment";
-// constexpr auto CONFIG_TEMPERATURE1_ADJUSTMENT = "temp1_adjustment";
 
 constexpr auto CONFIG_PRESSURE_UNIT = "pressure_unit";
 
@@ -91,7 +89,6 @@ class PressuremonConfig : public BrewingConfig {
       PressureSensorType::SensorNone, PressureSensorType::SensorNone};
 
   float _pressureSensorCorrection[MAX_SENSOR_DEVICES] = {0, 0};
-  // float _temperatureSensorCorrection[MAX_SENSOR_DEVICES] = {0, 0};
 
   bool _batterySaving = true;
 
@@ -135,13 +132,6 @@ class PressuremonConfig : public BrewingConfig {
   float getTemperatureSensorCorrection(int idx) {
     return 0;
   }
-  // float getTemperatureSensorCorrection(int idx) {
-  //   return _temperatureSensorCorrection[idx];
-  // }
-  // void setTemperatureSensorCorrection(float v, int idx) {
-  //   _temperatureSensorCorrection[idx] = v;
-  //   _saveNeeded = true;
-  // }
 
   bool isBleActive() {
     return (_pressuremonBleFormat != PressuremonBleFormat::BLE_DISABLED);

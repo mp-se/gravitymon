@@ -47,7 +47,8 @@ class BleSender {
   void init();
 
   // Beacons
-  void sendEddystoneData(float battery, float tempC, float pressurePsi, float pressurePsi1);
+  /*void sendEddystoneData(float battery, float tempC, float pressurePsi,
+                         float pressurePsi1);*/
   void sendCustomBeaconData(float battery, float tempC, float pressurePsi,
                             float pressurePsi1);
 };

@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <queue>
 #include <string>
+#include <vector>
 
 constexpr auto PARAM_BLE_ID = "ID";
 constexpr auto PARAM_BLE_TEMP = "temp";
@@ -48,10 +49,6 @@ constexpr auto PARAM_BLE_TEMP_UNITS = "temp_units";
 
 class BleDeviceCallbacks : public NimBLEScanCallbacks {
   void onResult(const NimBLEAdvertisedDevice *advertisedDevice) override;
-};
-
-class BleClientCallbacks : public NimBLEClientCallbacks {
-  void onConnect(NimBLEClient *pClient) override;
 };
 
 enum TiltColor {
@@ -171,12 +168,39 @@ class PressuremonData {
   uint32_t getPushAge() { return (millis() - timePushed) / 1000; }
 };
 
+class ChamberData {
+ public:
+  // Data points
+  float chamberTempC = 0;
+  float beerTempC = 0;
+  int txPower = 0;
+  int rssi = 0;
+  String id = "";
+
+  // Internal stuff
+  NimBLEAddress address;
+  String type = "";
+  String data = "";
+  bool updated = false;
+  struct tm timeinfoUpdated;
+  uint32_t timeUpdated = 0;
+
+  void setUpdated() {
+    updated = true;
+    timeUpdated = millis();
+    getLocalTime(&timeinfoUpdated);
+  }
+
+  uint32_t getUpdateAge() { return (millis() - timeUpdated) / 1000; }
+};
+
 const auto NO_TILT_COLORS =
     8;  // Number of tilt devices that can be managed (one per color)
 const auto NO_GRAVITYMON =
     8;  // Number of gravitymon devices that can be handled
 const auto NO_PRESSUREMON =
-    8;  // Number of pressuremon devices that can be handled
+    8;                      // Number of pressuremon devices that can be handled
+const auto NO_CHAMBER = 8;  // Number of chamber devices that can be handled
 
 class BleScanner {
  public:
@@ -201,6 +225,9 @@ class BleScanner {
   void processPressuremonEddystoneBeacon(NimBLEAddress address,
                                          const std::vector<uint8_t> &payload);
 
+  void proccesChamberBeacon(const std::string &advertStringHex,
+                            NimBLEAddress address);
+
   TiltData &getTiltData(TiltColor col) { return _tilt[col]; }
 
   int findGravitymonId(String id) {
@@ -217,6 +244,13 @@ class BleScanner {
   }
   PressuremonData &getPressuremonData(int idx) { return _pressuremon[idx]; }
 
+  int findChamberId(String id) {
+    for (int i = 0; i < NO_CHAMBER; i++)
+      if (_chamber[i].id == id || _chamber[i].id == "") return i;
+    return -1;
+  }
+  ChamberData &getChamberData(int idx) { return _chamber[idx]; }
+
   const char *getTiltColorAsString(TiltColor col);
 
  private:
@@ -226,11 +260,11 @@ class BleScanner {
   BLEScan *_bleScan = nullptr;
 
   BleDeviceCallbacks *_deviceCallbacks = nullptr;
-  BleClientCallbacks *_clientCallbacks = nullptr;
 
   TiltData _tilt[NO_TILT_COLORS];
   GravitymonData _gravitymon[NO_GRAVITYMON];
   PressuremonData _pressuremon[NO_PRESSUREMON];
+  ChamberData _chamber[NO_CHAMBER];
 
   TiltColor uuidToTiltColor(std::string uuid);
 };

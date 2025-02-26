@@ -40,14 +40,14 @@ void BleSender::init() {
   _initFlag = true;
 }
 
-void BleSender::sendEddystoneData(float battery, float tempC, float pressurePsi,
-                              float pressurePsi1) {
+/*void BleSender::sendEddystoneData(float battery, float tempC, float pressurePsi,
+                                  float pressurePsi1) {
   Log.info(F("Starting eddystone data transmission" CR));
 
   char beacon_data[25];
 
-  uint16_t p = pressurePsi * 10000;
-  uint16_t p1 = pressurePsi1 * 10000;
+  uint16_t p = pressurePsi * 100;
+  uint16_t p1 = pressurePsi1 * 100;
   uint16_t t = tempC * 1000;
   uint16_t b = battery * 1000;
   uint32_t chipId = 0;
@@ -85,16 +85,16 @@ void BleSender::sendEddystoneData(float battery, float tempC, float pressurePsi,
   _advertising->start();
   delay(_beaconTime);
   _advertising->stop();
-}
+}*/
 
-void BleSender::sendCustomBeaconData(float battery, float tempC, float pressurePsi,
-                                     float pressurePsi1) {
+void BleSender::sendCustomBeaconData(float battery, float tempC,
+                                     float pressurePsi, float pressurePsi1) {
   Log.info(F("Starting custom beacon data transmission" CR));
 
   _advertising->stop();
 
-  uint16_t p = pressurePsi * 10000;
-  uint16_t p1 = pressurePsi1 * 10000;
+  uint16_t p = pressurePsi * 100;
+  uint16_t p1 = pressurePsi1 * 100;
   uint16_t t = tempC * 1000;
   uint16_t b = battery * 1000;
   uint32_t chipId = 0;

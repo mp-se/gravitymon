@@ -40,8 +40,6 @@ void PressuremonConfig::createJson(JsonObject& doc) {
   doc[CONFIG_SENSOR1_TYPE] = getPressureSensorTypeAsInt(1);
   doc[CONFIG_PRESSURE_ADJUSTMENT] = serialized(String(getPressureSensorCorrection(0), DECIMALS_PRESSURE)); 
   doc[CONFIG_PRESSURE1_ADJUSTMENT] = serialized(String(getPressureSensorCorrection(1), DECIMALS_PRESSURE));
-  // doc[CONFIG_TEMPERATURE_ADJUSTMENT] = serialized(String(getTemperatureSensorCorrection(0), DECIMALS_TEMP)); 
-  // doc[CONFIG_TEMPERATURE1_ADJUSTMENT] = serialized(String(getTemperatureSensorCorrection(1), DECIMALS_TEMP));
 }
 
 void PressuremonConfig::parseJson(JsonObject& doc) {
@@ -66,13 +64,6 @@ void PressuremonConfig::parseJson(JsonObject& doc) {
   if (!doc[CONFIG_PRESSURE1_ADJUSTMENT].isNull())
     setPressureSensorCorrection(doc[CONFIG_PRESSURE1_ADJUSTMENT].as<float>(),
                                 1);
-
-  // if (!doc[CONFIG_TEMPERATURE_ADJUSTMENT].isNull())
-  //   setTemperatureSensorCorrection(
-  //       doc[CONFIG_TEMPERATURE_ADJUSTMENT].as<float>(), 0);
-  // if (!doc[CONFIG_TEMPERATURE1_ADJUSTMENT].isNull())
-  //   setTemperatureSensorCorrection(
-  //       doc[CONFIG_TEMPERATURE1_ADJUSTMENT].as<float>(), 1);
 }
 
 #endif  // PRESSUREMON
