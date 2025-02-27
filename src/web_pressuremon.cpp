@@ -26,8 +26,8 @@ SOFTWARE.
 #include <battery.hpp>
 #include <config.hpp>
 #include <pressure.hpp>
-#include <webserver.hpp>
 #include <tempsensor.hpp>
+#include <webserver.hpp>
 
 constexpr auto PARAM_PRESSURE = "pressure";
 constexpr auto PARAM_PRESSURE1 = "pressure1";
@@ -95,20 +95,10 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
   }
 
   obj[PARAM_TEMP] = temp;
-  // }
-
-  // if (!isnan(temp1)) {
-  //   if (myConfig.isTempUnitF()) {
-  //     temp1 = convertCtoF(temp1);
-  //   }
-
-  //   obj[PARAM_TEMP1] = temp1;
-  // }
 
   obj[CONFIG_PRESSURE_UNIT] = myConfig.getPressureUnit();
   obj[PARAM_TEMP_UNIT] = String(myConfig.getTempUnit());
 
-  // obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = !isnan(temp) || !isnan(temp1);
   obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
   obj[PARAM_SELF][PARAM_SELF_SENSOR_CONNECTED] =
       !isnan(pressure) || !isnan(pressure1);
@@ -125,13 +115,6 @@ void BrewingWebServer::doTaskSensorCalibration() {
     Log.warning(
         F("WEB : First sensor not connnected, skipping calibration" CR));
   }
-
-  // if (myPressureSensor[1].isActive()) {
-  //   myPressureSensor[1].calibrate();
-  // } else {
-  //   Log.warning(
-  //       F("WEB : Second sensor not connnected, skipping calibration" CR));
-  // }
 }
 
 void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
@@ -144,12 +127,63 @@ void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
   pressure1 = NAN;
 
   temp = myTempSensor.getTempC();
-  // temp = myPressureSensor[0].getTemperatureC();
-  // temp1 = myPressureSensor[1].getTemperatureC();
-  // temp1 = NAN;
 
-  setupTemplateEnginePressure(engine, pressure, pressure1, temp,1.0,
+  setupTemplateEnginePressure(engine, pressure, pressure1, temp, 1.0,
                               myBatteryVoltage.getVoltage());
+
+  Log.notice(F("WEB : Running scheduled push test for %s" CR),
+             _pushTestTarget.c_str());
+
+  if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST) &&
+      myConfig.hasTargetHttpPost()) {
+    String tpl = push.getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP1);
+    String doc = engine.create(tpl.c_str());
+
+    if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest())
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      push.sendHttpPost(doc);
+    _pushTestEnabled = true;
+  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST2) &&
+             myConfig.hasTargetHttpPost2()) {
+    String tpl = push.getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP2);
+    String doc = engine.create(tpl.c_str());
+    if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest())
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      push.sendHttpPost2(doc);
+    _pushTestEnabled = true;
+  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_GET) &&
+             myConfig.hasTargetHttpGet()) {
+    String tpl = push.getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP3);
+    String doc = engine.create(tpl.c_str());
+    if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest())
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      push.sendHttpGet(doc);
+    _pushTestEnabled = true;
+  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_INFLUXDB) &&
+             myConfig.hasTargetInfluxDb2()) {
+    String tpl = push.getTemplate(BrewingPush::PRESSURE_TEMPLATE_INFLUX);
+    String doc = engine.create(tpl.c_str());
+    if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest())
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      push.sendInfluxDb2(doc);
+    _pushTestEnabled = true;
+  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_MQTT) &&
+             myConfig.hasTargetMqtt()) {
+    String tpl = push.getTemplate(BrewingPush::PRESSURE_TEMPLATE_MQTT);
+    String doc = engine.create(tpl.c_str());
+    if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest())
+      Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
+    else
+      push.sendMqtt(doc);
+    _pushTestEnabled = true;
+  }
+
+  engine.freeMemory();
+  push.clearTemplate();
 }
 
 // constexpr auto PARAM_I2C_1 = "i2c_1";
@@ -200,7 +234,7 @@ void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
     }
     onew[j][PARAM_RESOLUTION] = mySensors.getResolution();
     j++;
-  }  
+  }
 }
 
 #endif  // PRESSUREMON

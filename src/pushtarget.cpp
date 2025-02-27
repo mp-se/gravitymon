@@ -111,10 +111,10 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
   if (myConfig.hasTargetHttpPost() && intDelay.useHttp1()) {
     PERF_BEGIN("push-http");
     String tpl;
-    
-    if(type == MeasurementType::GRAVITY)
+
+    if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
-    else  
+    else
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP1);
 
     String doc = engine.create(tpl.c_str());
@@ -130,10 +130,10 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
   if (myConfig.hasTargetHttpPost2() && intDelay.useHttp2()) {
     PERF_BEGIN("push-http2");
     String tpl;
-    
-    if(type == MeasurementType::GRAVITY)
+
+    if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
-    else  
+    else
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP2);
 
     String doc = engine.create(tpl.c_str());
@@ -149,10 +149,10 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
   if (myConfig.hasTargetHttpGet() && intDelay.useHttp3()) {
     PERF_BEGIN("push-http3");
     String tpl;
-    
-    if(type == MeasurementType::GRAVITY)
+
+    if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
-    else  
+    else
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP3);
 
     String doc = engine.create(tpl.c_str());
@@ -168,10 +168,10 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
   if (myConfig.hasTargetInfluxDb2() && intDelay.useInflux()) {
     PERF_BEGIN("push-influxdb2");
     String tpl;
-    
-    if(type == MeasurementType::GRAVITY)
+
+    if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
-    else  
+    else
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_INFLUX);
 
     String doc = engine.create(tpl.c_str());
@@ -187,10 +187,10 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
   if (myConfig.hasTargetMqtt() && intDelay.useMqtt()) {
     PERF_BEGIN("push-mqtt");
     String tpl;
-    
-    if(type == MeasurementType::GRAVITY)
+
+    if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
-    else  
+    else
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_MQTT);
 
     String doc = engine.create(tpl.c_str());

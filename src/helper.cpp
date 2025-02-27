@@ -33,11 +33,11 @@ void write_bytes(int fd, char* buf, int n) { EspSerial.print(*buf); }
 
 bool checkPinConnected() {
 #if defined(PIN_CFG1) && defined(PIN_CFG2)
-  #if defined(ESP8266)
+#if defined(ESP8266)
   pinMode(PIN_CFG1, INPUT);
-  #else
+#else
   pinMode(PIN_CFG1, INPUT_PULLDOWN);
-  #endif
+#endif
   pinMode(PIN_CFG2, OUTPUT);
   delay(5);
   digitalWrite(PIN_CFG2, 1);

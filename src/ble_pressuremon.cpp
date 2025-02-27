@@ -40,9 +40,9 @@ void BleSender::init() {
   _initFlag = true;
 }
 
-/*void BleSender::sendEddystoneData(float battery, float tempC, float pressurePsi,
-                                  float pressurePsi1) {
-  Log.info(F("Starting eddystone data transmission" CR));
+/*void BleSender::sendEddystoneData(float battery, float tempC, float
+pressurePsi, float pressurePsi1) { Log.info(F("Starting eddystone data
+transmission" CR));
 
   char beacon_data[25];
 

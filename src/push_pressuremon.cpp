@@ -86,8 +86,8 @@ const char iGravityInfluxDbFormat[] PROGMEM = "";
 const char iGravityMqttFormat[] PROGMEM = "";
 
 void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
-                                 float pressurePsi1, float tempC,
-                                 float runTime, float voltage) {
+                                 float pressurePsi1, float tempC, float runTime,
+                                 float voltage) {
   // Set values so that the payload is not invalid
   if (isnan(pressurePsi)) pressurePsi = 0;
   if (isnan(pressurePsi1)) pressurePsi1 = 0;

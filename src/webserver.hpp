@@ -80,10 +80,10 @@ class BrewingWebServer : public BaseWebServer {
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleConfigFormatGravityRead(AsyncWebServerRequest *request);
   void webHandleConfigFormatGravityWrite(AsyncWebServerRequest *request,
-                                  JsonVariant &json);
+                                         JsonVariant &json);
   void webHandleConfigFormatPressureRead(AsyncWebServerRequest *request);
   void webHandleConfigFormatPressureWrite(AsyncWebServerRequest *request,
-                                  JsonVariant &json);
+                                          JsonVariant &json);
   void webHandleSleepmode(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPush(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPushStatus(AsyncWebServerRequest *request);
@@ -114,7 +114,7 @@ class BrewingWebServer : public BaseWebServer {
 #if defined(GRAVITYMON) || defined(PRESSUREMON)
 // Global instance created
 extern BrewingWebServer myWebServer;
-#endif // GRAVITYMON || PRESSUREMON
+#endif  // GRAVITYMON || PRESSUREMON
 
 #endif  // SRC_WEBSERVER_HPP_
 

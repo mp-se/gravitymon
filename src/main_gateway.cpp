@@ -38,9 +38,9 @@ SOFTWARE.
 #if defined(ENABLE_SD_CARD)
 #include <sd.h>
 #endif
-#include <uptime.hpp>
-#include <cstdio>
 #include <battery.hpp>
+#include <cstdio>
+#include <uptime.hpp>
 
 constexpr auto CFG_APPNAME = "gravitymon-gw";
 constexpr auto CFG_FILENAME = "/gravitymon-gw.json";
@@ -65,10 +65,11 @@ WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
 GatewayWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 Display myDisplay;
-BatteryVoltage myBatteryVoltage; // Needs to be defined but not used in gateway
+BatteryVoltage myBatteryVoltage;  // Needs to be defined but not used in gateway
 
 // Define constats for this program
-bool sleepModeAlwaysSkip = false; // Needs to be defined but not used in gateway
+bool sleepModeAlwaysSkip =
+    false;                // Needs to be defined but not used in gateway
 int interval = 1000;      // ms, time to wait between changes to output
 uint32_t loopMillis = 0;  // Used for main loop to run the code every _interval_
 RunMode runMode = RunMode::measurementMode;
@@ -161,8 +162,9 @@ void setup() {
 
         case RunMode::wifiSetupMode:
           Log.notice(F("Main: Initializing the web server." CR));
-          myWebServer.setupWebServer("gravitymon-gateway");  // Takes less than 4ms, so skip
-                                         // this measurement
+          myWebServer.setupWebServer(
+              "gravitymon-gateway");  // Takes less than 4ms, so skip
+                                      // this measurement
           mySerialWebSocket.begin(myWebServer.getWebServer(), &Serial);
           mySerial.begin(&mySerialWebSocket);
       } else {
@@ -253,22 +255,24 @@ void loop() {
   }
 }
 
-void addGravityLogEntry(const char* id, tm timeinfo, float gravitySG, float tempC) {
+void addGravityLogEntry(const char* id, tm timeinfo, float gravitySG,
+                        float tempC) {
   float temp = myConfig.isTempFormatF() ? convertCtoF(tempC) : tempC;
   float gravity =
       myConfig.isGravityPlato() ? convertToPlato(gravitySG) : gravitySG;
 
   snprintf(&logEntryList[logIndex].s[0], sizeof(LogEntry::s),
            "%02d:%02d G %s %.3F%s %.1F%s", timeinfo.tm_hour, timeinfo.tm_min,
-           id, gravity, myConfig.isGravitySG() ? "SG" : "P",
-           temp, myConfig.isTempFormatC() ? "C" : "F");
+           id, gravity, myConfig.isGravitySG() ? "SG" : "P", temp,
+           myConfig.isTempFormatC() ? "C" : "F");
 
   if (++logIndex >= maxLogEntries) logIndex = 0;
 
   logUpdated = true;
 }
 
-void addPressureLogEntry(const char* id, tm timeinfo, float pressurePSI, float pressure1PSI, float tempC) {
+void addPressureLogEntry(const char* id, tm timeinfo, float pressurePSI,
+                         float pressure1PSI, float tempC) {
   float temp = myConfig.isTempFormatF() ? convertCtoF(tempC) : tempC;
 
   // TODO FIX correct pressure conversion based on current setting
@@ -277,21 +281,24 @@ void addPressureLogEntry(const char* id, tm timeinfo, float pressurePSI, float p
 
   snprintf(&logEntryList[logIndex].s[0], sizeof(LogEntry::s),
            "%02d:%02d P %s %.3F%s %.1F%s", timeinfo.tm_hour, timeinfo.tm_min,
-           id, pressure, "PSI",
-           temp, myConfig.isTempFormatC() ? "C" : "F");
+           id, pressure, "PSI", temp, myConfig.isTempFormatC() ? "C" : "F");
 
   if (++logIndex >= maxLogEntries) logIndex = 0;
 
   logUpdated = true;
 }
 
-void addChamberLogEntry(const char* id, tm timeinfo, float chamberTempC, float beerTempC) {
-  float chamberTemp = myConfig.isTempFormatF() ? convertCtoF(chamberTempC) : chamberTempC;
-  float beerTemp = myConfig.isTempFormatF() ? convertCtoF(beerTempC) : beerTempC;
-  
+void addChamberLogEntry(const char* id, tm timeinfo, float chamberTempC,
+                        float beerTempC) {
+  float chamberTemp =
+      myConfig.isTempFormatF() ? convertCtoF(chamberTempC) : chamberTempC;
+  float beerTemp =
+      myConfig.isTempFormatF() ? convertCtoF(beerTempC) : beerTempC;
+
   snprintf(&logEntryList[logIndex].s[0], sizeof(LogEntry::s),
            "%02d:%02d C %s %.1F%s %.1F%s", timeinfo.tm_hour, timeinfo.tm_min,
-           id, chamberTemp, myConfig.isTempFormatC() ? "C" : "F", beerTemp, myConfig.isTempFormatC() ? "C" : "F");
+           id, chamberTemp, myConfig.isTempFormatC() ? "C" : "F", beerTemp,
+           myConfig.isTempFormatC() ? "C" : "F");
 
   if (++logIndex >= maxLogEntries) logIndex = 0;
 
@@ -315,7 +322,7 @@ void controller() {
 
     if (td.updated && (td.getPushAge() > myConfig.getPushResendTime())) {
       addGravityLogEntry(bleScanner.getTiltColorAsString((TiltColor)i),
-                  td.timeinfoUpdated, td.gravity, convertFtoC(td.tempF));
+                         td.timeinfoUpdated, td.gravity, convertFtoC(td.tempF));
 
       Log.notice(F("Main: Type=%s, Gravity=%F, Temp=%F." CR),
                  bleScanner.getTiltColorAsString((TiltColor)i), td.gravity,
@@ -337,17 +344,20 @@ void controller() {
     GravitymonData& gmd = bleScanner.getGravitymonData(i);
 
     if (gmd.updated && (gmd.getPushAge() > myConfig.getPushResendTime())) {
-      addGravityLogEntry(gmd.id.c_str(), gmd.timeinfoUpdated, gmd.gravity, gmd.tempC);
+      addGravityLogEntry(gmd.id.c_str(), gmd.timeinfoUpdated, gmd.gravity,
+                         gmd.tempC);
 
-      Log.notice(F("Main: Gravitymon Type=%s, Angle=%F Gravity=%F, Temp=%F, Battery=%F, "
+      Log.notice(F("Main: Gravitymon Type=%s, Angle=%F Gravity=%F, Temp=%F, "
+                   "Battery=%F, "
                    "Id=%s." CR),
                  gmd.type.c_str(), gmd.angle, gmd.gravity, gmd.tempC,
                  gmd.battery, gmd.id.c_str());
 
       TemplatingEngine engine;
 
-      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
-                   gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
+      setupTemplateEngineGravityGateway(
+          engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
+          gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
       push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
 
       gmd.setPushed();
@@ -359,17 +369,20 @@ void controller() {
     GravitymonData& gmd = myWebServer.getGravitymonData(i);
 
     if (gmd.updated && (gmd.getPushAge() > myConfig.getPushResendTime())) {
-      addGravityLogEntry(gmd.id.c_str(), gmd.timeinfoUpdated, gmd.gravity, gmd.tempC);
+      addGravityLogEntry(gmd.id.c_str(), gmd.timeinfoUpdated, gmd.gravity,
+                         gmd.tempC);
 
-      Log.notice(F("Main: Gravitymon Type=%s, Angle=%F Gravity=%F, Temp=%F, Battery=%F, "
+      Log.notice(F("Main: Gravitymon Type=%s, Angle=%F Gravity=%F, Temp=%F, "
+                   "Battery=%F, "
                    "Id=%s." CR),
                  gmd.type.c_str(), gmd.angle, gmd.gravity, gmd.tempC,
                  gmd.battery, gmd.id.c_str());
 
       TemplatingEngine engine;
 
-      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
-                   gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
+      setupTemplateEngineGravityGateway(
+          engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
+          gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
       push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
 
       gmd.setPushed();
@@ -381,9 +394,11 @@ void controller() {
     PressuremonData& pmd = bleScanner.getPressuremonData(i);
 
     if (pmd.updated && (pmd.getPushAge() > myConfig.getPushResendTime())) {
-      addPressureLogEntry(pmd.id.c_str(), pmd.timeinfoUpdated, pmd.pressure, pmd.pressure1, pmd.tempC);
+      addPressureLogEntry(pmd.id.c_str(), pmd.timeinfoUpdated, pmd.pressure,
+                          pmd.pressure1, pmd.tempC);
 
-      Log.notice(F("Main: Pressuremon Type=%s, Pressure=%F Pressure1=%F, Temp=%F, Battery=%F, "
+      Log.notice(F("Main: Pressuremon Type=%s, Pressure=%F Pressure1=%F, "
+                   "Temp=%F, Battery=%F, "
                    "Id=%s." CR),
                  pmd.type.c_str(), pmd.pressure, pmd.pressure1, pmd.tempC,
                  pmd.battery, pmd.id.c_str());
@@ -391,10 +406,11 @@ void controller() {
       TemplatingEngine engine;
 
       /* TODO: FIX PUSH OF PRESSURE DATA
-  
-      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
-                   gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
-      push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);*/
+
+      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity,
+      gmd.tempC, gmd.battery, gmd.interval, gmd.id.c_str(), gmd.token.c_str(),
+      gmd.name.c_str()); push.sendAll(engine,
+      BrewingPush::MeasurementType::GRAVITY);*/
 
       pmd.setPushed();
     }
@@ -405,9 +421,11 @@ void controller() {
     PressuremonData& pmd = myWebServer.getPressuremonData(i);
 
     if (pmd.updated && (pmd.getPushAge() > myConfig.getPushResendTime())) {
-      addPressureLogEntry(pmd.id.c_str(), pmd.timeinfoUpdated, pmd.pressure, pmd.pressure1, pmd.tempC);
+      addPressureLogEntry(pmd.id.c_str(), pmd.timeinfoUpdated, pmd.pressure,
+                          pmd.pressure1, pmd.tempC);
 
-      Log.notice(F("Main: Pressuremon Type=%s, Pressure=%F Pressure1=%F, Temp=%F, Battery=%F, "
+      Log.notice(F("Main: Pressuremon Type=%s, Pressure=%F Pressure1=%F, "
+                   "Temp=%F, Battery=%F, "
                    "Id=%s." CR),
                  pmd.type.c_str(), pmd.pressure, pmd.pressure1, pmd.tempC,
                  pmd.battery, pmd.id.c_str());
@@ -416,24 +434,27 @@ void controller() {
 
       /* TODO: FIX PUSH OF PRESSURE DATA
 
-      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
-                   gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
-      push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);*/
+      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity,
+      gmd.tempC, gmd.battery, gmd.interval, gmd.id.c_str(), gmd.token.c_str(),
+      gmd.name.c_str()); push.sendAll(engine,
+      BrewingPush::MeasurementType::GRAVITY);*/
 
       pmd.setPushed();
     }
-  }  
+  }
 
   // Process chamber from BLE
   for (int i = 0; i < NO_CHAMBER; i++) {
     ChamberData& cmd = bleScanner.getChamberData(i);
 
     if (cmd.updated) {
-        addChamberLogEntry(cmd.id.c_str(), cmd.timeinfoUpdated, cmd.chamberTempC, cmd.beerTempC);
+      addChamberLogEntry(cmd.id.c_str(), cmd.timeinfoUpdated, cmd.chamberTempC,
+                         cmd.beerTempC);
 
       Log.notice(F("Main: Chamber Type=%s, ChamberTemp=%F BeerTemp=%F, "
                    "Id=%s." CR),
-                   cmd.type.c_str(), cmd.chamberTempC, cmd.beerTempC, cmd.id.c_str());
+                 cmd.type.c_str(), cmd.chamberTempC, cmd.beerTempC,
+                 cmd.id.c_str());
 
       // Just display the data, not pushing this
     }

@@ -36,8 +36,8 @@ enum RunMode {
 };
 
 void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
-                                 float pressurePsi1, float tempC,
-                                 float runTime, float voltage);
+                                 float pressurePsi1, float tempC, float runTime,
+                                 float voltage);
 
 float convertPsiPressureToBar(float psi);
 float convertPsiPressureToKPa(float psi);

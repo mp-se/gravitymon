@@ -257,7 +257,7 @@ bool loopReadPressure() {
   //             pressure, pressure1, temp, temp1);
 #endif
 
-  if(isnan(pressurePsi) && isnan(pressurePsi1)) {
+  if (isnan(pressurePsi) && isnan(pressurePsi1)) {
     Log.warning(F("Main: No valid pressure readings, skipping push." CR));
     return false;
   }
@@ -279,10 +279,11 @@ bool loopReadPressure() {
                                            pressurePsi, pressurePsi1);
         } break;
 
-        // case PressuremonBleFormat::BLE_PRESSUREMON_EDDYSTONE: {
-        //   myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), tempC,
-        //                             pressurePsi, pressurePsi1);
-        // } break;
+          // case PressuremonBleFormat::BLE_PRESSUREMON_EDDYSTONE: {
+          //   myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(),
+          //   tempC,
+          //                             pressurePsi, pressurePsi1);
+          // } break;
       }
     }
 #endif  // ENABLE_BLE
@@ -326,7 +327,10 @@ bool loopReadPressure() {
                 "interval." CR));
           float runtime = (millis() - runtimeMillis);
           HistoryLog runLog(RUNTIME_FILENAME);
-          runLog.addLog(runtime, 0, myConfig.getSleepInterval()); // Dont store the readings in history log, no need for them
+          runLog.addLog(
+              runtime, 0,
+              myConfig.getSleepInterval());  // Dont store the readings in
+                                             // history log, no need for them
         }
       }
     }

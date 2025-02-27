@@ -33,7 +33,7 @@ SOFTWARE.
 
 #if defined(GRAVITYMON)
 #include <gyro.hpp>
-#endif // GRAVITYMON
+#endif  // GRAVITYMON
 
 OneWire myOneWire(PIN_DS);
 DallasTemperature mySensors(&myOneWire);
@@ -75,7 +75,7 @@ void TempSensor::readSensor(bool useGyro) {
 #endif
     return;
   }
-#endif // GRAVITYMON
+#endif  // GRAVITYMON
 
   // If we dont have sensors just return 0
   if (!mySensors.getDS18Count()) {

@@ -405,7 +405,7 @@ SOFTWARE.
 
 #endif  // LOAD_GFXFF
 
-#endif // GATEWAY
+#endif  // GATEWAY
 
 #endif  // SRC_FONTS_HPP_
 

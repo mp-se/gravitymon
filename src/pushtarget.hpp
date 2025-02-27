@@ -107,8 +107,8 @@ class BrewingPush : public BasePush {
   };
 
   enum MeasurementType {
-      GRAVITY = 0,
-      PRESSURE = 1,
+    GRAVITY = 0,
+    PRESSURE = 1,
   };
 
   void sendAll(TemplatingEngine& engine, MeasurementType type);

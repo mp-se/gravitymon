@@ -100,6 +100,6 @@ void Display::clear() {}
 
 #endif
 
-#endif // GATEWAY
+#endif  // GATEWAY
 
 // EOF

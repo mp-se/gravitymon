@@ -45,13 +45,17 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {}
 
 void BrewingWebServer::doTaskSensorCalibration() {}
 
-void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push) {}
+void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
+                                           BrewingPush &push) {
+  // TODO Add support for push test related to gateway
+}
 
 void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {}
 
 // Methods specific for GatewayWebServer
 
-GatewayWebServer::GatewayWebServer(WebConfig *config) : BrewingWebServer(config) {}
+GatewayWebServer::GatewayWebServer(WebConfig *config)
+    : BrewingWebServer(config) {}
 
 void GatewayWebServer::doWebStatus(JsonObject &obj) {
   obj[CONFIG_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
@@ -100,12 +104,12 @@ bool GatewayWebServer::setupWebServer(const char *serviceName) {
   return b;
 }
 
-void GatewayWebServer::webHandleRemotePost(
-  AsyncWebServerRequest *request, JsonVariant &json) {
+void GatewayWebServer::webHandleRemotePost(AsyncWebServerRequest *request,
+                                           JsonVariant &json) {
   Log.notice(F("WEB : webServer callback for /post." CR));
   JsonObject obj = json.as<JsonObject>();
 
-  // TODO: Add support for pressure data as well.
+  // TODO: Add support for pressure JSON data as well.
 
   /* Expected format
   {

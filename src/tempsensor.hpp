@@ -46,6 +46,6 @@ extern DallasTemperature mySensors;
 
 #endif  // GRAVITYMON || PRESSUREMON
 
-#endif  // SRC_TEMPSENSOR_HPP_ 
+#endif  // SRC_TEMPSENSOR_HPP_
 
 // EOF

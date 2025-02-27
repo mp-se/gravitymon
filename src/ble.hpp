@@ -24,8 +24,8 @@ SOFTWARE.
 #ifndef SRC_BLE_HPP_
 #define SRC_BLE_HPP_
 
+#include <ble_gateway.hpp>
 #include <ble_gravitymon.hpp>
 #include <ble_pressuremon.hpp>
-#include <ble_gateway.hpp>
 
 #endif  // SRC_BLE_HPP_

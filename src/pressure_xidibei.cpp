@@ -52,7 +52,8 @@ void XIDIBEIPressureSensor::calibrate() {
     read(false);
     float f = getPressurePsi(false);
     zero += f;
-    Log.notice(F("PRES: Step %d, Pressure = %F, sum %F (%d)." CR), i + 1, f, zero, _idx);
+    Log.notice(F("PRES: Step %d, Pressure = %F, sum %F (%d)." CR), i + 1, f,
+               zero, _idx);
     delay(500);
   }
 
@@ -80,9 +81,11 @@ bool XIDIBEIPressureSensor::read(bool validate) {
   bool b = _xidibeiSensor->read(pressure, _temperature);
   _pressure = convertPaPressureToPsi(pressure * 1000);
 
-  if(validate) {
-    if(_pressure > _maxPressure) {
-      Log.warning(F("PRES: Read pressure is invalid and out of range %F (%d)." CR), _pressure, _idx);
+  if (validate) {
+    if (_pressure > _maxPressure) {
+      Log.warning(
+          F("PRES: Read pressure is invalid and out of range %F (%d)." CR),
+          _pressure, _idx);
       _pressure = NAN;
       return false;
     }

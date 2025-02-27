@@ -24,12 +24,13 @@ SOFTWARE.
 #ifndef SRC_WEB_GATEWAY_HPP_
 #define SRC_WEB_GATEWAY_HPP_
 
-#include <webserver.hpp>
+#if defined(GATEWAY)
+
 #include <ble.hpp>
+#include <webserver.hpp>
 
 class GatewayWebServer : public BrewingWebServer {
  private:
-
   GravitymonData _gravitymon[NO_GRAVITYMON];
   PressuremonData _pressuremon[NO_PRESSUREMON];
 
@@ -58,6 +59,8 @@ class GatewayWebServer : public BrewingWebServer {
 
 // Global instance created
 extern GatewayWebServer myWebServer;
+
+#endif  // GATEWAY
 
 #endif  // SRC_WEB_GATEWAY_HPP_
 

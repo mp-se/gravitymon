@@ -29,7 +29,7 @@ BatteryVoltage::BatteryVoltage() {
 #else
   pinMode(myConfig.getVoltagePin(), INPUT);
   analogReadResolution(SOC_ADC_MAX_BITWIDTH);
-  analogSetAttenuation(ADC_11db); 
+  analogSetAttenuation(ADC_11db);
 #endif
 }
 
@@ -47,20 +47,20 @@ void BatteryVoltage::read() {
   // ESP32-S2: 2500mV
   // ESP32-S3: 3100mV
   // ESP32-C3: 2500mV
-  // ESP32-C6: 3300mV 
+  // ESP32-C6: 3300mV
 
 #if defined(ESP8266)
   _batteryLevel = ((3.3 / 1023) * v) * factor;
 #elif defined(ESP32S2)
-  _batteryLevel = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH)-1)) * v) * factor;
+  _batteryLevel = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32S3)
-  _batteryLevel = ((3.1 / ((1 << SOC_ADC_MAX_BITWIDTH)-1)) * v) * factor;
+  _batteryLevel = ((3.1 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32C3)
-  _batteryLevel = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH)-1)) * v) * factor;
+  _batteryLevel = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32LITE)
-  _batteryLevel = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH)-1)) * v) * factor;
+  _batteryLevel = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32)
-  _batteryLevel = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH)-1)) * v) * factor;
+  _batteryLevel = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #endif
 
 #if LOG_LEVEL == 6

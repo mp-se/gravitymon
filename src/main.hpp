@@ -27,9 +27,9 @@ SOFTWARE.
 #include <stdlib.h>
 
 #include <espframework.hpp>
+#include <main_gateway.hpp>
 #include <main_gravitymon.hpp>
 #include <main_pressuremon.hpp>
-#include <main_gateway.hpp>
 
 extern RunMode runMode;
 

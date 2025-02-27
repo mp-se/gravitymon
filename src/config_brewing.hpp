@@ -60,7 +60,7 @@ class BrewingConfig : public BaseConfig {
   float _voltageFactor = 3.05;
 #elif defined(ESP32)
   float _voltageFactor = 2.45;
-#else  
+#else
 #error "Unknown platform"
 #endif
 

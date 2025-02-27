@@ -163,26 +163,31 @@ void BrewingWebServer::webHandleConfigFormatGravityWrite(
   }
 
   PERF_BEGIN("webserver-api-config-format-gravity-write");
-  Log.notice(F("WEB : webServer callback for /api/config/format(gravity-post)." CR));
+  Log.notice(
+      F("WEB : webServer callback for /api/config/format(gravity-post)." CR));
 
   JsonObject obj = json.as<JsonObject>();
   int success = 0;
 
   if (!obj[PARAM_FORMAT_POST].isNull()) {
-    success += writeFile(TPL_GRAVITY_FNAME_POST, obj[PARAM_FORMAT_POST]) ? 1 : 0;
+    success +=
+        writeFile(TPL_GRAVITY_FNAME_POST, obj[PARAM_FORMAT_POST]) ? 1 : 0;
   }
   if (!obj[PARAM_FORMAT_POST2].isNull()) {
-    success += writeFile(TPL_GRAVITY_FNAME_POST2, obj[PARAM_FORMAT_POST2]) ? 1 : 0;
+    success +=
+        writeFile(TPL_GRAVITY_FNAME_POST2, obj[PARAM_FORMAT_POST2]) ? 1 : 0;
   }
   if (!obj[PARAM_FORMAT_GET].isNull()) {
     success += writeFile(TPL_GRAVITY_FNAME_GET, obj[PARAM_FORMAT_GET]) ? 1 : 0;
   }
   if (!obj[PARAM_FORMAT_INFLUXDB].isNull()) {
-    success +=
-        writeFile(TPL_GRAVITY_FNAME_INFLUXDB, obj[PARAM_FORMAT_INFLUXDB]) ? 1 : 0;
+    success += writeFile(TPL_GRAVITY_FNAME_INFLUXDB, obj[PARAM_FORMAT_INFLUXDB])
+                   ? 1
+                   : 0;
   }
   if (!obj[PARAM_FORMAT_MQTT].isNull()) {
-    success += writeFile(TPL_GRAVITY_FNAME_MQTT, obj[PARAM_FORMAT_MQTT]) ? 1 : 0;
+    success +=
+        writeFile(TPL_GRAVITY_FNAME_MQTT, obj[PARAM_FORMAT_MQTT]) ? 1 : 0;
   }
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
@@ -202,26 +207,31 @@ void BrewingWebServer::webHandleConfigFormatPressureWrite(
   }
 
   PERF_BEGIN("webserver-api-config-format-pressure-write");
-  Log.notice(F("WEB : webServer callback for /api/config/format(pressure-post)." CR));
+  Log.notice(
+      F("WEB : webServer callback for /api/config/format(pressure-post)." CR));
 
   JsonObject obj = json.as<JsonObject>();
   int success = 0;
 
   if (!obj[PARAM_FORMAT_POST].isNull()) {
-    success += writeFile(TPL_PRESSURE_FNAME_POST, obj[PARAM_FORMAT_POST]) ? 1 : 0;
+    success +=
+        writeFile(TPL_PRESSURE_FNAME_POST, obj[PARAM_FORMAT_POST]) ? 1 : 0;
   }
   if (!obj[PARAM_FORMAT_POST2].isNull()) {
-    success += writeFile(TPL_PRESSURE_FNAME_POST2, obj[PARAM_FORMAT_POST2]) ? 1 : 0;
+    success +=
+        writeFile(TPL_PRESSURE_FNAME_POST2, obj[PARAM_FORMAT_POST2]) ? 1 : 0;
   }
   if (!obj[PARAM_FORMAT_GET].isNull()) {
     success += writeFile(TPL_PRESSURE_FNAME_GET, obj[PARAM_FORMAT_GET]) ? 1 : 0;
   }
   if (!obj[PARAM_FORMAT_INFLUXDB].isNull()) {
     success +=
-        writeFile(TPL_PRESSURE_FNAME_INFLUXDB, obj[PARAM_FORMAT_INFLUXDB]) ? 1 : 0;
+        writeFile(TPL_PRESSURE_FNAME_INFLUXDB, obj[PARAM_FORMAT_INFLUXDB]) ? 1
+                                                                           : 0;
   }
   if (!obj[PARAM_FORMAT_MQTT].isNull()) {
-    success += writeFile(TPL_PRESSURE_FNAME_MQTT, obj[PARAM_FORMAT_MQTT]) ? 1 : 0;
+    success +=
+        writeFile(TPL_PRESSURE_FNAME_MQTT, obj[PARAM_FORMAT_MQTT]) ? 1 : 0;
   }
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
@@ -364,7 +374,8 @@ void BrewingWebServer::webHandleConfigFormatGravityRead(
   }
 
   PERF_BEGIN("webserver-api-config-format-gravity-read");
-  Log.notice(F("WEB : webServer callback for /api/config/format(gravity-read)." CR));
+  Log.notice(
+      F("WEB : webServer callback for /api/config/format(gravity-read)." CR));
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
@@ -398,24 +409,28 @@ void BrewingWebServer::webHandleConfigFormatPressureRead(
   }
 
   PERF_BEGIN("webserver-api-config-format-pressure-read");
-  Log.notice(F("WEB : webServer callback for /api/config/format(pressure-read)." CR));
+  Log.notice(
+      F("WEB : webServer callback for /api/config/format(pressure-read)." CR));
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   String s;
 
   s = readFile(TPL_PRESSURE_FNAME_POST);
-  obj[PARAM_FORMAT_POST] =
-      s.length() ? urlencode(s) : urlencode(String(&iPressureHttpPostFormat[0]));
+  obj[PARAM_FORMAT_POST] = s.length()
+                               ? urlencode(s)
+                               : urlencode(String(&iPressureHttpPostFormat[0]));
   s = readFile(TPL_PRESSURE_FNAME_POST2);
   obj[PARAM_FORMAT_POST2] =
-      s.length() ? urlencode(s) : urlencode(String(&iPressureHttpPostFormat[0]));
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iPressureHttpPostFormat[0]));
   s = readFile(TPL_PRESSURE_FNAME_GET);
   obj[PARAM_FORMAT_GET] =
       s.length() ? urlencode(s) : urlencode(String(&iPressureHttpGetFormat[0]));
   s = readFile(TPL_PRESSURE_FNAME_INFLUXDB);
   obj[PARAM_FORMAT_INFLUXDB] =
-      s.length() ? urlencode(s) : urlencode(String(&iPressureInfluxDbFormat[0]));
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iPressureInfluxDbFormat[0]));
   s = readFile(TPL_PRESSURE_FNAME_MQTT);
   obj[PARAM_FORMAT_MQTT] =
       s.length() ? urlencode(s) : urlencode(String(&iPressureMqttFormat[0]));
@@ -459,7 +474,7 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
 #elif defined(ESP32)
   obj[PARAM_PLATFORM] = "esp32";
 #else  // esp32 miniz
-  #error "Unknown target platform";
+#error "Unknown target platform";
 #endif
 
 #if defined(BOARD)
@@ -539,16 +554,16 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
 
   AsyncCallbackJsonWebHandler *handler;
   _server->on("/api/format2", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleConfigFormatPressureRead, this,
-                        std::placeholders::_1));
+              std::bind(&BrewingWebServer::webHandleConfigFormatPressureRead,
+                        this, std::placeholders::_1));
   handler = new AsyncCallbackJsonWebHandler(
       "/api/format2",
       std::bind(&BrewingWebServer::webHandleConfigFormatPressureWrite, this,
                 std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
   _server->on("/api/format", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleConfigFormatGravityRead, this,
-                        std::placeholders::_1));
+              std::bind(&BrewingWebServer::webHandleConfigFormatGravityRead,
+                        this, std::placeholders::_1));
   handler = new AsyncCallbackJsonWebHandler(
       "/api/format",
       std::bind(&BrewingWebServer::webHandleConfigFormatGravityWrite, this,
@@ -613,64 +628,6 @@ void BrewingWebServer::loop() {
 
     doTaskPushTestSetup(engine, push);
 
-    Log.notice(F("WEB : Running scheduled push test for %s" CR),
-               _pushTestTarget.c_str());
-
-    if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST) &&
-        myConfig.hasTargetHttpPost()) {
-      String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
-      String doc = engine.create(tpl.c_str());
-
-      if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendHttpPost(doc);
-      _pushTestEnabled = true;
-    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST2) &&
-               myConfig.hasTargetHttpPost2()) {
-      String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
-      String doc = engine.create(tpl.c_str());
-      if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendHttpPost2(doc);
-      _pushTestEnabled = true;
-    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_GET) &&
-               myConfig.hasTargetHttpGet()) {
-      String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
-      String doc = engine.create(tpl.c_str());
-      if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendHttpGet(doc);
-      _pushTestEnabled = true;
-    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_INFLUXDB) &&
-               myConfig.hasTargetInfluxDb2()) {
-      String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
-      String doc = engine.create(tpl.c_str());
-      if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendInfluxDb2(doc);
-      _pushTestEnabled = true;
-    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_MQTT) &&
-               myConfig.hasTargetMqtt()) {
-      String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
-      String doc = engine.create(tpl.c_str());
-      if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendMqtt(doc);
-      _pushTestEnabled = true;
-    }
-
-    engine.freeMemory();
-    push.clearTemplate();
     _pushTestLastSuccess = push.getLastSuccess();
     _pushTestLastCode = push.getLastCode();
     if (_pushTestEnabled)

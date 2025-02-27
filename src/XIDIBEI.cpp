@@ -39,7 +39,7 @@ bool XIDIBEI::begin() {
   _wire->beginTransmission(XIDIBEI_I2C_ADDRESS);
   uint8_t ret = _wire->endTransmission();
   Log.verbose(F("XIDI: Checking senor at %x returned %d." CR),
-             XIDIBEI_I2C_ADDRESS, ret);
+              XIDIBEI_I2C_ADDRESS, ret);
   return ret != 0 ? false : true;
 }
 
@@ -111,16 +111,17 @@ bool XIDIBEI::read(float &pressure, float &temperature) {
   temperatureData[1] = _wire->read();  // Low bits
 
   int32_t rawPressure = static_cast<uint32_t>(pressureData[0]) << 16 |
-                         static_cast<uint32_t>(pressureData[1]) << 8 |
-                         static_cast<uint32_t>(pressureData[2]);
+                        static_cast<uint32_t>(pressureData[1]) << 8 |
+                        static_cast<uint32_t>(pressureData[2]);
   int16_t rawTemperature = static_cast<uint16_t>(temperatureData[0]) << 8 |
-                            static_cast<uint16_t>(temperatureData[1]);
+                           static_cast<uint16_t>(temperatureData[1]);
 
   Log.verbose(F("Raw Pressure: %x, Raw Temperature %x." CR), rawPressure,
-             rawTemperature);
+              rawTemperature);
 
   // Convert from 24bit signed to 32bit signed
-  rawPressure = rawPressure & 0x00800000 ? rawPressure |= 0xFF000000 : rawPressure; 
+  rawPressure =
+      rawPressure & 0x00800000 ? rawPressure |= 0xFF000000 : rawPressure;
 
   pressure = static_cast<float>(rawPressure) / 0x800000;
   temperature = static_cast<float>(rawTemperature) / 0x100;
@@ -128,7 +129,7 @@ bool XIDIBEI::read(float &pressure, float &temperature) {
   pressure = pressure * _maxPressure;
 
   Log.verbose(F("XIDI: Pressure: %F, Temperature %F." CR), pressure,
-             temperature);
+              temperature);
   return true;
 }
 

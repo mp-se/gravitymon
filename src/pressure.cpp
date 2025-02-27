@@ -253,8 +253,7 @@ float PressureSensor::getTemperature() {
 }
 
 bool PressureSensor::read() {
-  if(_impl == nullptr)
-    return false;
+  if (_impl == nullptr) return false;
 
   if (isActive()) {
     return _impl->read();

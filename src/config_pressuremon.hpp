@@ -28,11 +28,11 @@ SOFTWARE.
 
 #include <config_brewing.hpp>
 
-enum PressuremonBleFormat { 
+enum PressuremonBleFormat {
   BLE_DISABLED = 0,
   BLE_PRESSUREMON_IBEACON = 1,
   // BLE_PRESSUREMON_EDDYSTONE = 2
- };
+};
 
 enum PressureSensorType {
   SensorNone = 0,
@@ -129,9 +129,7 @@ class PressuremonConfig : public BrewingConfig {
     _saveNeeded = true;
   }
 
-  float getTemperatureSensorCorrection(int idx) {
-    return 0;
-  }
+  float getTemperatureSensorCorrection(int idx) { return 0; }
 
   bool isBleActive() {
     return (_pressuremonBleFormat != PressuremonBleFormat::BLE_DISABLED);

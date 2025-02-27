@@ -25,8 +25,8 @@ SOFTWARE.
 #define SRC_CONFIG_HPP_
 
 #include <config_brewing.hpp>
+#include <config_gateway.hpp>
 #include <config_gravitymon.hpp>
 #include <config_pressuremon.hpp>
-#include <config_gateway.hpp>
 
 #endif  // SRC_CONFIG_HPP_

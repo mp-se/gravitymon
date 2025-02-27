@@ -23,9 +23,9 @@ SOFTWARE.
  */
 #if defined(GATEWAY)
 
-#include <pushtarget.hpp>
-
 #include <WiFi.h>
+
+#include <pushtarget.hpp>
 
 // Use iSpindle format for compatibility, HTTP POST
 const char iGravityHttpPostFormat[] PROGMEM =
@@ -82,14 +82,15 @@ const char iPressureHttpGetFormat[] PROGMEM = "";
 const char iPressureInfluxDbFormat[] PROGMEM = "";
 const char iPressureMqttFormat[] PROGMEM = "";
 
-void setupTemplateEngineGravityGateway(TemplatingEngine& engine,float angle, float gravitySG,
-                                             float tempC, float voltage,
-                                             int interval, const char* id,
-                                             const char* token,
-                                             const char* name) {
-// void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
-//                                 float gravitySG, float corrGravitySG,
-//                                 float tempC, float runTime, float voltage) {
+void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle,
+                                       float gravitySG, float tempC,
+                                       float voltage, int interval,
+                                       const char* id, const char* token,
+                                       const char* name) {
+  // void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
+  //                                 float gravitySG, float corrGravitySG,
+  //                                 float tempC, float runTime, float voltage)
+  //                                 {
 
   float runTime = 0, corrGravitySG = gravitySG;
 

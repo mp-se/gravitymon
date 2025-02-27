@@ -52,7 +52,9 @@ class GravmonGatewayConfig : public BrewingConfig {
     _saveNeeded = true;
   }
 
-  bool isBleActive() { return false; } // Needed for common base but not used in gateway
+  bool isBleActive() {
+    return false;
+  }  // Needed for common base but not used in gateway
 
   int getBleScanTime() { return _bleScanTime; }
   void setBleScanTime(int v) {
