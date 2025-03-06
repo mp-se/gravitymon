@@ -38,7 +38,7 @@ const char iPressureHttpPostFormat[] PROGMEM =
     // "\"pressure1\": ${pressure1}, "
     "\"pressure-unit\": \"${pressure-unit}\", "
     "\"battery\": ${battery}, "
-    "\"RSSI\": ${rssi}, "
+    "\"rssi\": ${rssi}, "
     "\"run-time\": ${run-time} "
     "}";
 
