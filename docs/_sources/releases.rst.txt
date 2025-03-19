@@ -3,14 +3,6 @@
 Releases 
 ########
 
-v2.2.0
-======
-
-.. note::
-  Only ESP32! The voltage divider for the battery voltage has been changed since there where issues with some ESP32 boards. 220k + 220k is now the recommended values.
-  When updating to this version you will need to recalculate the voltage factor if you are using an ESP32 board.
-
-
 v2.1.0
 ======
 

@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="Custom boards" href="custom.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="Gateway" href="gateway.html" />
 
     <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Compiling the software - GravityMon v2.1.0</title>
@@ -169,7 +169,6 @@
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom.html">Custom boards</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
@@ -235,6 +234,7 @@ with Ubuntu or on MacOS.</p>
 <li><p>gravity-release; Standard release</p></li>
 <li><p>gravity32-release: Version for ESP32 mini.</p></li>
 <li><p>gravity32c3-release: Version for ESP32 C3 mini v2.1+.</p></li>
+<li><p>gravity32c3v1-release: Version for ESP32 C3 mini v1.0.</p></li>
 <li><p>gravity32s2-release: Version for ESP32 S2 mini.</p></li>
 <li><p>gravity32s3-release: Version for ESP32 S3 mini.</p></li>
 <li><p>gravity32lite-release: Version for ESP32 lite (Floaty hardware).</p></li>
@@ -339,19 +339,13 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
 <td><p>Build for the ESP32lite FLOATY hardware option (no DS18B20 and no battery monitor)</p></td>
 </tr>
 <tr class="row-odd"><td><p>ENABLE_REMOTE_UI_DEVELOPMENT</p></td>
-<td><p>When enabled this will enable the UI project to interact with a device without any security issues, should not be enabled for production builds. Can also be changed via the user interface or rest api.</p></td>
+<td><p>When enabled this will enable the UI project to interact with a device without any security issues, should not be enabled for production builds</p></td>
 </tr>
 <tr class="row-even"><td><p>SKIP_SLEEPMODE</p></td>
 <td><p>The device never goes into sleep mode, useful when developing</p></td>
 </tr>
 <tr class="row-odd"><td><p>COLLECT_PERFDATA</p></td>
 <td><p>Used to send performance data to an influx database for analysis (development)</p></td>
-</tr>
-<tr class="row-even"><td><p>BOARD_ID</p></td>
-<td><p>A define will automatically be created with the board id (based on what is set in platformio.ini) so that pins can be configured correctly in main.hpp for that board. Example: for the d1_mini board a define called D1_MINI will be set.</p></td>
-</tr>
-<tr class="row-odd"><td><p>ESP8266, ESP32, ESP32S2, ESP32S3, ESP32C3</p></td>
-<td><p>These are set to configure the target platform both in gravitymon but also the underlying espframework.</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -372,14 +366,14 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="custom.html">
+          <a class="prev-page" href="gateway.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Custom boards</div>
+                <div class="title">Gateway</div>
                 
               </div>
             </a>
