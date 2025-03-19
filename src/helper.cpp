@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,76 @@ extern "C" {
 void write_bytes(int fd, char* buf, int n) { EspSerial.print(*buf); }
 }
 
+void runGpioHardwareTests() {
+#if defined(RUN_HARDWARE_TEST)
+  int max = 10;
+
+  Log.notice(F("HELP: Configuring GPIO for output." CR));
+  pinMode(PIN_SDA, OUTPUT);
+  pinMode(PIN_SCL, OUTPUT);
+  pinMode(PIN_CFG1, OUTPUT);
+  pinMode(PIN_CFG2, OUTPUT);
+  pinMode(PIN_DS, OUTPUT);
+  pinMode(PIN_VOLT, OUTPUT);
+  delay(100);
+  digitalWrite(PIN_SDA, LOW);
+  digitalWrite(PIN_SCL, LOW);
+  digitalWrite(PIN_CFG1, LOW);
+  digitalWrite(PIN_CFG2, LOW);
+  digitalWrite(PIN_DS, LOW);
+  digitalWrite(PIN_VOLT, LOW);
+  delay(100);
+
+  int sleep = 700;
+
+  Log.notice(F("HELP: Testing SDA." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_SDA, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_SDA, LOW);
+
+  Log.notice(F("HELP: Testing SCL." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_SCL, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_SCL, LOW);
+
+  Log.notice(F("HELP: Testing CFG1." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_CFG1, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_CFG1, LOW);
+
+  Log.notice(F("HELP: Testing CFG2." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_CFG2, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_CFG2, LOW);
+
+  Log.notice(F("HELP: Testing DS." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_DS, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_DS, LOW);
+
+  Log.notice(F("HELP: Testing VOLT." CR));
+  for (int i = 0; i < max; i++) {
+    digitalWrite(PIN_VOLT, i % 2);
+    delay(sleep);
+  }
+  digitalWrite(PIN_VOLT, LOW);
+
+  Log.notice(F("HELP: Tests finished, enter waiting for reset." CR));
+  while (true) delay(sleep);
+#endif
+}
+
 bool checkPinConnected() {
-#if defined(PIN_CFG1) && defined(PIN_CFG2)
 #if defined(ESP8266)
   pinMode(PIN_CFG1, INPUT);
 #else
@@ -45,25 +113,13 @@ bool checkPinConnected() {
   int i = digitalRead(PIN_CFG1);
   digitalWrite(PIN_CFG2, 0);
   return i == LOW ? false : true;
-#else
-  return false;
-#endif
 }
 
 void printBuildOptions() {
   Log.notice(F("Build options: %s (%s) LOGLEVEL %d "
-#if defined(GRAVITYMON)
-               "GRAVITYMON "
-#endif
-#if defined(PRESSUREMON)
-               "PRESSUREMON "
-#endif
 #if defined(ESP8266)
                "ESP8266 "
-#else
-               "ESP32 "
-#endif
-#if defined(FLOATY)
+#elif defined(ESP32LITE)
                "FLOATY "
 #endif
 #ifdef SKIP_SLEEPMODE

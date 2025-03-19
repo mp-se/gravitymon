@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(GRAVITYMON) || defined(PRESSUREMON)
-
 #include <OneWire.h>
 #include <Wire.h>
 
 #include <config.hpp>
+#include <gyro.hpp>
 #include <log.hpp>
 #include <main.hpp>
 #include <tempsensor.hpp>
-
-#if defined(GRAVITYMON)
-#include <gyro.hpp>
-#endif  // GRAVITYMON
 
 OneWire myOneWire(PIN_DS);
 DallasTemperature mySensors(&myOneWire);
@@ -63,7 +58,6 @@ void TempSensor::setup() {
 }
 
 void TempSensor::readSensor(bool useGyro) {
-#if defined(GRAVITYMON)
   if (useGyro) {
     // When using the gyro temperature only the first read value will be
     // accurate so we will use this for processing.
@@ -75,7 +69,6 @@ void TempSensor::readSensor(bool useGyro) {
 #endif
     return;
   }
-#endif  // GRAVITYMON
 
   // If we dont have sensors just return 0
   if (!mySensors.getDS18Count()) {
@@ -100,7 +93,5 @@ void TempSensor::readSensor(bool useGyro) {
 #endif
   }
 }
-
-#endif  // GRAVITYMON || PRESSUREMON
 
 // EOF

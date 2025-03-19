@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,12 @@ SOFTWARE.
 #ifndef SRC_CALC_HPP_
 #define SRC_CALC_HPP_
 
-#if defined(GRAVITYMON)
-
 #include <config.hpp>
 
 double calculateGravity(double angle, double tempC,
                         const char *tempFormula = 0);
 double gravityTemperatureCorrectionC(double gravity, double tempC,
                                      double calTempC);
-
-#endif  // GRAVITYMON
 
 #endif  // SRC_CALC_HPP_
 
