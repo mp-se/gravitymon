@@ -1,0 +1,67 @@
+/*
+MIT License
+
+Copyright (c) 2024-2025 Magnus
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+#ifndef SRC_WEB_GATEWAY_HPP_
+#define SRC_WEB_GATEWAY_HPP_
+
+#if defined(GATEWAY)
+
+#include <ble.hpp>
+#include <webserver.hpp>
+
+class GatewayWebServer : public BrewingWebServer {
+ private:
+  GravitymonData _gravitymon[NO_GRAVITYMON];
+  PressuremonData _pressuremon[NO_PRESSUREMON];
+
+ public:
+  explicit GatewayWebServer(WebConfig *config);
+
+  void webHandleRemotePost(AsyncWebServerRequest *request, JsonVariant &json);
+
+  int findGravitymonId(String id) {
+    for (int i = 0; i < NO_GRAVITYMON; i++)
+      if (_gravitymon[i].id == id || _gravitymon[i].id == "") return i;
+    return -1;
+  }
+  GravitymonData &getGravitymonData(int idx) { return _gravitymon[idx]; }
+
+  int findPRessuremonId(String id) {
+    for (int i = 0; i < NO_PRESSUREMON; i++)
+      if (_pressuremon[i].id == id || _pressuremon[i].id == "") return i;
+    return -1;
+  }
+  PressuremonData &getPressuremonData(int idx) { return _pressuremon[idx]; }
+
+  void doWebStatus(JsonObject &obj);
+  bool setupWebServer(const char *serviceName);
+};
+
+// Global instance created
+extern GatewayWebServer myWebServer;
+
+#endif  // GATEWAY
+
+#endif  // SRC_WEB_GATEWAY_HPP_
+
+// EOF

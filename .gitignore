@@ -2,14 +2,9 @@
 .vscode
 .env
 __pycache__
-_build
 env
-*.map
-src_docs/_build/*
 .env/*
 *.pyc
-*.json
-gcov/*.gcno
-gcov/*.gcov
-gcov/*.gcda
+src_docs/_build/*
 .DS_Store
+*.map

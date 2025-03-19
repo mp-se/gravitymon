@@ -25,7 +25,7 @@ SOFTWARE.
 
 #include <config.hpp>
 
-GravmonConfig myConfig("test", "test.cfg");
+GravitymonConfig myConfig("test", "test.cfg");
 
 test(config_defaultValues) {
   assertEqual(myConfig.getGravityFormat(), 'G');

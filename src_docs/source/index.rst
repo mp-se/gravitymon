@@ -135,6 +135,7 @@ the following libraries and without these this would have been much more difficu
    services
    data
    gateway
+   custom
    compiling
    contributing
    license
