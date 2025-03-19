@@ -2,9 +2,11 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="#" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Compiling the software" href="compiling.html" /><link rel="prev" title="Gateway" href="gateway.html" />
 
-    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/><title>Search - GravityMon v2.1.0</title><link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
+        <title>Custom boards - GravityMon v2.1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
@@ -132,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -149,14 +151,14 @@
   
   <span class="sidebar-brand-text">GravityMon v2.1.0</span>
   
-</a><form class="sidebar-search-container" method="get" action="#" role="search">
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
@@ -167,7 +169,7 @@
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom.html">Custom boards</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Custom boards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
@@ -192,31 +194,69 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          
-<noscript>
-<div class="admonition error">
-  <p class="admonition-title">Error</p>
-  <p>
-    Please activate JavaScript to enable the search functionality.
-  </p>
+          <div class="section" id="custom-boards">
+<span id="id1"></span><h1>Custom boards<a class="headerlink" href="#custom-boards" title="Permalink to this headline">¶</a></h1>
+<p>Its possible to add custom boards to the build process. These are the current ones supported and who has contributed:</p>
+<div class="table-wrapper"><table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Custom boards</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 40%"/>
+<col style="width: 30%"/>
+<col style="width: 30%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>boardid</p></th>
+<th class="head"><p>added in</p></th>
+<th class="head"><p>contributor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Olimex ESP32-C3-DevKit-Lipo</p></td>
+<td><p>2.1.0</p></td>
+<td><p>simonidelh</p></td>
+</tr>
+</tbody>
+</table></div>
+<div class="section" id="olimex-esp32-c3-devkit-lipo">
+<h2>Olimex ESP32-C3-DevKit-Lipo<a class="headerlink" href="#olimex-esp32-c3-devkit-lipo" title="Permalink to this headline">¶</a></h2>
+<p>This Model is supported by gravitymon. It is tested with the GY-521 only! So the temperature also gets measured by the gyro.
+To have battery voltage monitoring, solder the bridges ‘PAT_PWR_E1’ and ‘BAT_SENS_E1’ at the bottom side together, to measure the voltage with pin 3.
+The LiPo/LiIon-battery gets connected to the 2.00 mm pitch connector ontop of the board.</p>
+<p>Gyro gets connected to 3,3V, GND and SDA to PIN 1 and SCL to PIN 0 of the olimex board.</p>
 </div>
-</noscript>
-
-<div id="search-results"></div>
+</div>
 
         </article>
       </div>
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="compiling.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Compiling the software</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="gateway.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Gateway</div>
+                
+              </div>
+            </a>
         </div>
 
         <div class="related-information">
@@ -227,8 +267,27 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Custom boards</a><ul>
+<li><a class="reference internal" href="#olimex-esp32-c3-devkit-lipo">Olimex ESP32-C3-DevKit-Lipo</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
@@ -240,8 +299,5 @@
     <script src="_static/scripts/furo.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    
-<script src="_static/searchtools.js"></script>
-<script src="_static/language_data.js"></script>
-<script src="searchindex.js"></script></body>
+    </body>
 </html>

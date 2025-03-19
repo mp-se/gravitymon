@@ -169,6 +169,7 @@
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Custom boards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
@@ -201,6 +202,14 @@
         <article role="main">
           <div class="section" id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="v2-2-0">
+<h2>v2.2.0<a class="headerlink" href="#v2-2-0" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only ESP32! The voltage divider for the battery voltage has been changed since there where issues with some ESP32 boards. 220k + 220k is now the recommended values.
+When updating to this version you will need to recalculate the voltage factor if you are using an ESP32 board.</p>
+</div>
+</div>
 <div class="section" id="v2-1-0">
 <h2>v2.1.0<a class="headerlink" href="#v2-1-0" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="new-features">
@@ -753,6 +762,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
+<li><a class="reference internal" href="#v2-2-0">v2.2.0</a></li>
 <li><a class="reference internal" href="#v2-1-0">v2.1.0</a><ul>
 <li><a class="reference internal" href="#new-features">New features</a></li>
 <li><a class="reference internal" href="#bugs-fixed">Bugs fixed</a></li>

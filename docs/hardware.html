@@ -169,6 +169,7 @@
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Custom boards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
@@ -206,6 +207,13 @@
 <li><p><a class="reference external" href="https://github.com/cherryphilip74/iSpindel-PCB">Cherry Philip Hardware design</a></p></li>
 <li><p><a class="reference external" href="https://www.opensourcedistilling.com/ispindel">OpenSource Distilling</a></p></li>
 </ul>
+<div class="section" id="custom-boards">
+<h2>Custom boards<a class="headerlink" href="#custom-boards" title="Permalink to this headline">¶</a></h2>
+<p>Besides the standard boards listed here (which are tested and verified by me) there is also a possibility
+to add custom boards which are included in the builds and made available through this gihub repository.
+A list of these boards can be found here <a class="reference internal" href="custom.html#custom-boards"><span class="std std-ref">Custom boards</span></a>. I cannot take full responsibility for these
+builds since I dont have access to these boards for testing.</p>
+</div>
 <div class="section" id="ispindle-based-on-esp8266">
 <h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this headline">¶</a></h2>
 <p>There are lots of resouces out there on how to build the hardware for an iSpindle so I will not go into details on that part. I typically use one of the
@@ -229,8 +237,8 @@ excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip.
 <p>It’s possible to use this PCB and mount an ESP32 mini on top of that (c3 or s2 are prefered). The esp32 d1 mini is a larger formfactor and can be hard to fit into the tube.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You need to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor for a voltage divider
-which the esp32 does not have. So in order to get a valid voltage (less than 3.2V) on the A0 pin this is needed. Once the modification is done you might
+<p>You need to add a resistor between A0 (Analog PIN) and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider
+which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog pin this is needed. Once the modification is done you might
 need to adjust the voltage factor so the battery reading is correct.</p>
 </div>
 <div class="section" id="esp32c3-mini">
@@ -350,6 +358,7 @@ is connected to PIN 35 on the floaty. You might need to correct the voltage fact
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Hardware</a><ul>
+<li><a class="reference internal" href="#custom-boards">Custom boards</a></li>
 <li><a class="reference internal" href="#ispindle-based-on-esp8266">iSpindle based on esp8266</a><ul>
 <li><a class="reference internal" href="#schema-for-esp8266-build">Schema for esp8266 build</a></li>
 </ul>
