@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,43 @@ SOFTWARE.
 #define SRC_WEBSERVER_HPP_
 
 #include <basewebserver.hpp>
+#include <battery.hpp>
+#include <pushtarget.hpp>
+#include <templating.hpp>
 
-class GravmonWebServer : public BaseWebServer {
+constexpr auto PARAM_HARDWARE = "hardware";
+constexpr auto PARAM_RUNTIME_AVERAGE = "runtime_average";
+constexpr auto PARAM_SLEEP_MODE = "sleep_mode";
+constexpr auto PARAM_BATTERY = "battery";
+constexpr auto PARAM_APP_VER = "app_ver";
+constexpr auto PARAM_APP_BUILD = "app_build";
+constexpr auto PARAM_PLATFORM = "platform";
+constexpr auto PARAM_BOARD = "board";
+constexpr auto PARAM_SELF = "self_check";
+constexpr auto PARAM_SELF_BATTERY_LEVEL = "battery_level";
+constexpr auto PARAM_SELF_PUSH_TARGET = "push_targets";
+constexpr auto PARAM_TOTAL_HEAP = "total_heap";
+constexpr auto PARAM_FREE_HEAP = "free_heap";
+constexpr auto PARAM_IP = "ip";
+constexpr auto PARAM_WIFI_SETUP = "wifi_setup";
+constexpr auto PARAM_I2C = "i2c";
+constexpr auto PARAM_ADRESS = "adress";
+constexpr auto PARAM_RESOLUTION = "resolution";
+constexpr auto PARAM_FAMILY = "family";
+constexpr auto PARAM_CHIP = "chip";
+constexpr auto PARAM_REVISION = "revision";
+constexpr auto PARAM_CORES = "cores";
+constexpr auto PARAM_FEATURES = "features";
+constexpr auto PARAM_FORMAT_POST = "http_post_format";
+constexpr auto PARAM_FORMAT_POST2 = "http_post2_format";
+constexpr auto PARAM_FORMAT_GET = "http_get_format";
+constexpr auto PARAM_FORMAT_INFLUXDB = "influxdb2_format";
+constexpr auto PARAM_FORMAT_MQTT = "mqtt_format";
+constexpr auto PARAM_PUSH_FORMAT = "push_format";
+constexpr auto PARAM_PUSH_RETURN_CODE = "push_return_code";
+constexpr auto PARAM_PUSH_ENABLED = "push_enabled";
+
+class BrewingWebServer : public BaseWebServer {
  private:
   volatile bool _sensorCalibrationTask = false;
   volatile bool _pushTestTask = false;
@@ -43,9 +78,12 @@ class GravmonWebServer : public BaseWebServer {
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
-  void webHandleConfigFormatRead(AsyncWebServerRequest *request);
-  void webHandleConfigFormatWrite(AsyncWebServerRequest *request,
-                                  JsonVariant &json);
+  void webHandleConfigFormatGravityRead(AsyncWebServerRequest *request);
+  void webHandleConfigFormatGravityWrite(AsyncWebServerRequest *request,
+                                         JsonVariant &json);
+  void webHandleConfigFormatPressureRead(AsyncWebServerRequest *request);
+  void webHandleConfigFormatPressureWrite(AsyncWebServerRequest *request,
+                                          JsonVariant &json);
   void webHandleSleepmode(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPush(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPushStatus(AsyncWebServerRequest *request);
@@ -58,15 +96,25 @@ class GravmonWebServer : public BaseWebServer {
   String readFile(String fname);
   bool writeFile(String fname, String data);
 
- public:
-  explicit GravmonWebServer(WebConfig *config);
+  virtual void doTaskSensorCalibration();
+  virtual void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push);
+  virtual void doTaskHardwareScanning(JsonObject &obj);
 
-  bool setupWebServer();
-  void loop();
+  virtual void doWebStatus(JsonObject &obj);
+  virtual void doWebConfigWrite();
+  virtual void doWebCalibrateStatus(JsonObject &obj);
+
+ public:
+  explicit BrewingWebServer(WebConfig *config);
+
+  virtual bool setupWebServer(const char *serviceName);
+  virtual void loop();
 };
 
+#if defined(GRAVITYMON) || defined(PRESSUREMON)
 // Global instance created
-extern GravmonWebServer myWebServer;
+extern BrewingWebServer myWebServer;
+#endif  // GRAVITYMON || PRESSUREMON
 
 #endif  // SRC_WEBSERVER_HPP_
 

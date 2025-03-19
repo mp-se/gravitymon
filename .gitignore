@@ -7,3 +7,4 @@ env
 *.pyc
 src_docs/_build/*
 .DS_Store
+*.map

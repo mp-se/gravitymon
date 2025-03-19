@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@ SOFTWARE.
 #ifndef SRC_TEMPSENSOR_HPP_
 #define SRC_TEMPSENSOR_HPP_
 
+#if defined(GRAVITYMON) || defined(PRESSUREMON)
+
 #include <DallasTemperature.h>
 
 class TempSensor {
@@ -41,6 +43,8 @@ class TempSensor {
 
 extern TempSensor myTempSensor;
 extern DallasTemperature mySensors;
+
+#endif  // GRAVITYMON || PRESSUREMON
 
 #endif  // SRC_TEMPSENSOR_HPP_
 

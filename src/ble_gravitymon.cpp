@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <ble.hpp>
-#include <string>
+#if defined(ENABLE_BLE) && defined(GRAVITYMON)
 
-#if defined(ENABLE_BLE)
-
+#include <ble_gravitymon.hpp>
 #include <log.hpp>
+#include <string>
 
 // Tilt UUID variants and data format, based on tilt-sim
 //
@@ -41,21 +40,15 @@ void BleSender::init() {
   BLEDevice::init("gravitymon");
   _advertising = BLEDevice::getAdvertising();
 
-#if defined(ESP32C3_REV1)
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P6);
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P6);
-  esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P6);
-#else
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_ADV, ESP_PWR_LVL_P9);
   esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_SCAN, ESP_PWR_LVL_P9);
-#endif
 
   _initFlag = true;
 }
 
-void BleSender::sendEddystone(float battery, float tempC, float gravity,
-                              float angle) {
+void BleSender::sendEddystoneData(float battery, float tempC, float gravity,
+                                  float angle) {
   Log.info(F("Starting eddystone data transmission" CR));
 
   char beacon_data[25];
@@ -140,8 +133,8 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   advData.setFlags(0x04);
   const NimBLEBeacon::BeaconData& beaconData = beacon.getData();
   // advData.setManufacturerData(beacon.getData());
-  advData.setManufacturerData(
-      std::string(reinterpret_cast<const char*>(&beaconData), sizeof(beaconData)));
+  advData.setManufacturerData(std::string(
+      reinterpret_cast<const char*>(&beaconData), sizeof(beaconData)));
 
   _advertising->setAdvertisementData(advData);
   // _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
@@ -198,7 +191,6 @@ void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
   advData.setManufacturerData(mf);
   _advertising->setAdvertisementData(advData);
 
-  // _advertising->setAdvertisementType(BLE_GAP_CONN_MODE_NON);
   _advertising->setConnectableMode(BLE_GAP_CONN_MODE_NON);
   _advertising->start();
   delay(_beaconTime);
@@ -212,4 +204,4 @@ void BleSender::dumpPayload(const char* p, int len) {
   EspSerial.println();
 }
 
-#endif  // ENABLE_BLE
+#endif  // ENABLE_BLE && GRAVITYMON
