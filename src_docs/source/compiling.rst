@@ -38,6 +38,7 @@ In the platformio config there are 3 targets defined
 * gravity-release; Standard release
 * gravity32-release: Version for ESP32 mini.
 * gravity32c3-release: Version for ESP32 C3 mini v2.1+.
+* gravity32c3v1-release: Version for ESP32 C3 mini v1.0.
 * gravity32s2-release: Version for ESP32 S2 mini.
 * gravity32s3-release: Version for ESP32 S3 mini.
 * gravity32lite-release: Version for ESP32 lite (Floaty hardware).
@@ -122,13 +123,8 @@ This is a list of C++ defines that is used to enable/disable functions in the co
    * - FLOATY
      - Build for the ESP32lite FLOATY hardware option (no DS18B20 and no battery monitor)
    * - ENABLE_REMOTE_UI_DEVELOPMENT
-     - When enabled this will enable the UI project to interact with a device without any security issues, should not be enabled for production builds. Can also be changed via the user interface or rest api.
+     - When enabled this will enable the UI project to interact with a device without any security issues, should not be enabled for production builds
    * - SKIP_SLEEPMODE
      - The device never goes into sleep mode, useful when developing
    * - COLLECT_PERFDATA
      - Used to send performance data to an influx database for analysis (development)
-   * - BOARD_ID
-     - A define will automatically be created with the board id (based on what is set in platformio.ini) so that pins can be configured correctly in main.hpp for that board. Example: for the d1_mini board a define called D1_MINI will be set. 
-   * - ESP8266, ESP32, ESP32S2, ESP32S3, ESP32C3
-     - These are set to configure the target platform both in gravitymon but also the underlying espframework.  
-     

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,36 @@ SOFTWARE.
 #ifndef SRC_BLE_HPP_
 #define SRC_BLE_HPP_
 
-#include <ble_gateway.hpp>
-#include <ble_gravitymon.hpp>
-#include <ble_pressuremon.hpp>
+#include <main.hpp>
 
+#if defined(ENABLE_BLE)
+
+#include <NimBLEBeacon.h>
+#include <NimBLEDevice.h>
+
+class BleSender {
+ private:
+  BLEServer* _server = nullptr;
+  BLEAdvertising* _advertising = nullptr;
+  BLEService* _service = nullptr;
+  BLECharacteristic* _characteristic = nullptr;
+  BLEUUID _uuid;
+  bool _initFlag = false;
+  int _beaconTime = 1000;
+
+  void dumpPayload(const char* payload, int len);
+
+ public:
+  BleSender() {}
+
+  void init();
+
+  // Beacons
+  void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
+  void sendEddystone(float battery, float tempC, float gravity, float angle);
+  void sendCustomBeaconData(float battery, float tempC, float gravity,
+                            float angle);
+};
+
+#endif  // ENABLE_BLE
 #endif  // SRC_BLE_HPP_

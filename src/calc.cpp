@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(GRAVITYMON)
-
 #include <tinyexpr.h>
 
 #include <calc.hpp>
@@ -116,7 +114,5 @@ double gravityTemperatureCorrectionC(double gravitySG, double tempC,
       err);
   return gravitySG;
 }
-
-#endif  // GRAVITYMON
 
 // EOF

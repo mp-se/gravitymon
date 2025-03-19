@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2024 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@ SOFTWARE.
 #define SRC_PUSHTARGET_HPP_
 
 #include <basepush.hpp>
-#include <config.hpp>
 #include <templating.hpp>
 
 constexpr auto TPL_MDNS = "${mdns}";
@@ -41,7 +40,6 @@ constexpr auto TPL_BATTERY = "${battery}";
 constexpr auto TPL_BATTERY_PERCENT = "${battery-percent}";
 constexpr auto TPL_RSSI = "${rssi}";
 constexpr auto TPL_RUN_TIME = "${run-time}";
-constexpr auto TPL_APP_VER = "${app-ver}";
 constexpr auto TPL_ANGLE = "${angle}";
 constexpr auto TPL_TILT = "${tilt}";  // same as angle
 constexpr auto TPL_GRAVITY = "${gravity}";
@@ -51,69 +49,45 @@ constexpr auto TPL_GRAVITY_CORR = "${corr-gravity}";
 constexpr auto TPL_GRAVITY_CORR_G = "${corr-gravity-sg}";
 constexpr auto TPL_GRAVITY_CORR_P = "${corr-gravity-plato}";
 constexpr auto TPL_GRAVITY_UNIT = "${gravity-unit}";  // G or P
-constexpr auto TPL_PRESSURE = "${pressure}";
-constexpr auto TPL_PRESSURE1 = "${pressure1}";
-constexpr auto TPL_PRESSURE_PSI = "${pressure-psi}";
-constexpr auto TPL_PRESSURE1_PSI = "${pressure1-psi}";
-constexpr auto TPL_PRESSURE_BAR = "${pressure-bar}";
-constexpr auto TPL_PRESSURE1_BAR = "${pressure1-bar}";
-constexpr auto TPL_PRESSURE_KPA = "${pressure-kpa}";
-constexpr auto TPL_PRESSURE1_KPA = "${pressure1-kpa}";
-constexpr auto TPL_PRESSURE_UNIT = "${pressure-unit}";  // PSI, BAR, KPA
+constexpr auto TPL_APP_VER = "${app-ver}";
 constexpr auto TPL_APP_BUILD = "${app-build}";
 
-constexpr auto TPL_GRAVITY_FNAME_POST = "/http-1.tpl";
-constexpr auto TPL_GRAVITY_FNAME_POST2 = "/http-2.tpl";
-constexpr auto TPL_GRAVITY_FNAME_GET = "/http-3.tpl";
-constexpr auto TPL_GRAVITY_FNAME_INFLUXDB = "/influxdb.tpl";
-constexpr auto TPL_GRAVITY_FNAME_MQTT = "/mqtt.tpl";
+constexpr auto TPL_FNAME_POST = "/http-1.tpl";
+constexpr auto TPL_FNAME_POST2 = "/http-2.tpl";
+constexpr auto TPL_FNAME_GET = "/http-3.tpl";
+constexpr auto TPL_FNAME_INFLUXDB = "/influxdb.tpl";
+constexpr auto TPL_FNAME_MQTT = "/mqtt.tpl";
 
-constexpr auto TPL_PRESSURE_FNAME_POST = "/http-p1.tpl";
-constexpr auto TPL_PRESSURE_FNAME_POST2 = "/http-p2.tpl";
-constexpr auto TPL_PRESSURE_FNAME_GET = "/http-p3.tpl";
-constexpr auto TPL_PRESSURE_FNAME_INFLUXDB = "/influxdb-p.tpl";
-constexpr auto TPL_PRESSURE_FNAME_MQTT = "/mqtt-p.tpl";
+extern const char iSpindleFormat[] PROGMEM;
+extern const char iHttpGetFormat[] PROGMEM;
+extern const char influxDbFormat[] PROGMEM;
+extern const char mqttFormat[] PROGMEM;
 
-extern const char iGravityHttpPostFormat[] PROGMEM;
-extern const char iGravityHttpGetFormat[] PROGMEM;
-extern const char iGravityInfluxDbFormat[] PROGMEM;
-extern const char iGravityMqttFormat[] PROGMEM;
-
-extern const char iPressureHttpPostFormat[] PROGMEM;
-extern const char iPressureHttpGetFormat[] PROGMEM;
-extern const char iPressureInfluxDbFormat[] PROGMEM;
-extern const char iPressureMqttFormat[] PROGMEM;
-
-class BrewingPush : public BasePush {
+class GravmonPush : public BasePush {
  private:
-  BrewingConfig* _BrewingConfig;
+  GravmonConfig* _gravmonConfig;
   String _baseTemplate;
 
  public:
-  explicit BrewingPush(BrewingConfig* BrewingConfig);
+  explicit GravmonPush(GravmonConfig* gravmonConfig);
 
   enum Templates {
-    GRAVITY_TEMPLATE_HTTP1 = 0,
-    GRAVITY_TEMPLATE_HTTP2 = 1,
-    GRAVITY_TEMPLATE_HTTP3 = 2,
-    GRAVITY_TEMPLATE_INFLUX = 3,
-    GRAVITY_TEMPLATE_MQTT = 4,
-
-    PRESSURE_TEMPLATE_HTTP1 = 10,
-    PRESSURE_TEMPLATE_HTTP2 = 11,
-    PRESSURE_TEMPLATE_HTTP3 = 12,
-    PRESSURE_TEMPLATE_INFLUX = 13,
-    PRESSURE_TEMPLATE_MQTT = 14,
+    TEMPLATE_HTTP1 = 0,
+    TEMPLATE_HTTP2 = 1,
+    TEMPLATE_HTTP3 = 2,
+    TEMPLATE_INFLUX = 3,
+    TEMPLATE_MQTT = 4,
+    TEMPLATE_BLE = 5
   };
 
-  enum MeasurementType {
-    GRAVITY = 0,
-    PRESSURE = 1,
-  };
+  void sendAll(float angle, float gravitySG, float corrGravitySG, float tempC,
+               float runTime);
 
-  void sendAll(TemplatingEngine& engine, MeasurementType type);
   const char* getTemplate(Templates t, bool useDefaultTemplate = false);
   void clearTemplate() { _baseTemplate.clear(); }
+  void setupTemplateEngine(TemplatingEngine& engine, float angle,
+                           float gravitySG, float corrGravitySG, float tempC,
+                           float runTime, float voltage);
   int getLastCode() { return _lastResponseCode; }
   bool getLastSuccess() { return _lastSuccess; }
 };
