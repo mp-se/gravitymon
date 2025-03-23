@@ -107,7 +107,7 @@ void runGpioHardwareTests();
 // ------------------------------------------------------
 #define PIN_SDA A17
 #define PIN_SCL A19
-#define PIN_DS A3
+#define PIN_DS A12
 #define PIN_VOLT A7
 #define PIN_CFG1 A14
 #define PIN_CFG2 A13
