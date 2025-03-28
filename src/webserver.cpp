@@ -276,8 +276,10 @@ void BrewingWebServer::webHandleTestPushStatus(AsyncWebServerRequest *request) {
 
   if (_pushTestTask)
     s = "Running push tests for " + _pushTestTarget;
-  else if (!_pushTestTask && _pushTestLastSuccess == 0)
+  else if (!_pushTestTask && _pushTestLastCode == 0)
     s = "No push test has been started";
+  else if (!_pushTestTask && _pushTestLastCode < 0)
+    s = "Push test has failed";
   else
     s = "Push test for " + _pushTestTarget + " is complete";
 
