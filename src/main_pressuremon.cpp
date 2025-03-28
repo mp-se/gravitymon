@@ -63,6 +63,8 @@ const char* CFG_AP_PASS = "password";
 #error "This target is not supported for Pressuremon"
 #endif
 
+// #define FORCE_PRESSURE_MODE
+
 SerialDebug mySerial;
 PressuremonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
@@ -87,7 +89,8 @@ RunMode runMode = RunMode::measurementMode;
 void checkSleepModePressure(float volt);
 
 void setup() {
-  delay(2000);
+  pinMode(PIN_PWR, OUTPUT); 
+  delay(5);
 
   PERF_BEGIN("run-time");
   PERF_BEGIN("main-setup");
@@ -107,6 +110,10 @@ void setup() {
   myConfig.loadFile();
   PERF_END("main-config-load");
 
+  gpio_hold_dis((gpio_num_t) PIN_PWR);
+  digitalWrite(PIN_PWR, HIGH); // Power to sensors = On
+  delay(100); // Wait for pin to settle and power to stabilize
+
   int clock = 400000;
 
   Log.notice(F("Main: OneWire SDA=%d, SCL=%d." CR), PIN_SDA, PIN_SCL);
@@ -118,10 +125,6 @@ void setup() {
   // Wire1.setPins(PIN_SDA1, PIN_SCL1);
   // Wire1.begin();
   // Wire1.setClock(clock);
-
-  pinMode(PIN_PWR, OUTPUT);
-  delay(5);
-  digitalWrite(PIN_PWR, HIGH);
 
   /*sleepModeAlwaysSkip = checkPinConnected();
   if (sleepModeAlwaysSkip) {
@@ -366,6 +369,8 @@ void goToSleep(int sleepInterval) {
   float runtime = (millis() - runtimeMillis);
 
   digitalWrite(PIN_PWR, LOW);
+  gpio_hold_en((gpio_num_t) PIN_PWR);
+  gpio_deep_sleep_hold_en();
 
   Log.notice(F("MAIN: Entering deep sleep for %ds, run time %Fs, "
                "battery=%FV." CR),
@@ -426,7 +431,7 @@ void checkSleepModePressure(float volt) {
   return;
 #endif
 
-#if defined(FORCE_PRESSIRE_MODE)
+#if defined(FORCE_PRESSURE_MODE)
   Log.notice(F("MAIN: Forcing device into pressure mode for debugging" CR));
   runMode = RunMode::measurementMode;
   return;
