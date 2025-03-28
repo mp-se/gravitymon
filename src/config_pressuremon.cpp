@@ -28,7 +28,7 @@ SOFTWARE.
 PressuremonConfig::PressuremonConfig(String baseMDNS, String fileName)
     : BrewingConfig(baseMDNS, fileName) {
 #if defined(ESP32C3)
-  setVoltageConfig(4.20);  // Override default voltage for C3 pico board
+  setVoltageConfig(2.32);  // Override default voltage for C3 pico board
 #endif
 }
 
