@@ -96,6 +96,18 @@ void setup() {
   PERF_BEGIN("main-setup");
   runtimeMillis = millis();
 
+#if defined(ESPFWK_USE_SERIAL_PINS)
+  // Serial pints used for serial output
+  mySerial.setup(115200L, TX, RX);
+  Log.notice(F("Main: Using serial pins as output." CR));
+#else
+  // Serial pints used to force config mode
+sleepModeAlwaysSkip = checkPinConnected();
+  if (sleepModeAlwaysSkip) {
+    Log.notice(F("Main: Forcing config mode since TX/RX are connected." CR));
+  }
+#endif
+
   // Main startup
   Log.notice(F("Main: Started setup for %s." CR), myConfig.getID());
   printBuildOptions();
@@ -125,11 +137,6 @@ void setup() {
   // Wire1.setPins(PIN_SDA1, PIN_SCL1);
   // Wire1.begin();
   // Wire1.setClock(clock);
-
-  /*sleepModeAlwaysSkip = checkPinConnected();
-  if (sleepModeAlwaysSkip) {
-    Log.notice(F("Main: Forcing config mode since D7/D8 are connected." CR));
-  }*/
 
   // No stored config, move to portal
   if (!myWifi.hasConfig()) {

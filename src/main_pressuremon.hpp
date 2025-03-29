@@ -76,6 +76,8 @@ float convertPaPressureToBar(float pa);
 #define PIN_VOLT 3
 #define PIN_DS 5
 #define PIN_PWR 4
+#define PIN_CFG1 TX 
+#define PIN_CFG2 RX 
 #endif
 
 #endif  // PRESSUREMON
