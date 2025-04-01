@@ -124,7 +124,7 @@ sleepModeAlwaysSkip = checkPinConnected();
 
   gpio_hold_dis((gpio_num_t) PIN_PWR);
   digitalWrite(PIN_PWR, HIGH); // Power to sensors = On
-  delay(100); // Wait for pin to settle and power to stabilize
+  delay(200); // Wait for pin to settle and power to stabilize
 
   int clock = 400000;
 
