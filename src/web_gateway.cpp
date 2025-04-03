@@ -28,6 +28,7 @@ SOFTWARE.
 #include <ble.hpp>
 #include <config.hpp>
 #include <web_gateway.hpp>
+#include <uptime.hpp>
 
 constexpr auto PARAM_GRAVITY_DEVICE = "gravity_device";
 constexpr auto PARAM_DEVICE = "device";
@@ -36,12 +37,17 @@ constexpr auto PARAM_GRAVITY = "gravity";
 constexpr auto PARAM_TEMP = "temp";
 constexpr auto PARAM_UPDATE_TIME = "update_time";
 constexpr auto PARAM_PUSH_TIME = "push_time";
+constexpr auto PARAM_UPTIME_SECONDS = "uptime_seconds";
+constexpr auto PARAM_UPTIME_MINUTES = "uptime_minutes";
+constexpr auto PARAM_UPTIME_HOURS = "uptime_hours";
+constexpr auto PARAM_UPTIME_DAYS = "uptime_days";
 
 void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {}
 
 void BrewingWebServer::doWebConfigWrite() {}
 
-void BrewingWebServer::doWebStatus(JsonObject &obj) {}
+void BrewingWebServer::doWebStatus(JsonObject &obj) {
+}
 
 void BrewingWebServer::doTaskSensorCalibration() {}
 
@@ -91,6 +97,11 @@ void GatewayWebServer::doWebStatus(JsonObject &obj) {
       j++;
     }
   }
+
+  obj[PARAM_UPTIME_SECONDS] = myUptime.getSeconds();
+  obj[PARAM_UPTIME_MINUTES] = myUptime.getMinutes();
+  obj[PARAM_UPTIME_HOURS] = myUptime.getHours();
+  obj[PARAM_UPTIME_DAYS] = myUptime.getDays();
 }
 
 bool GatewayWebServer::setupWebServer(const char *serviceName) {
