@@ -78,6 +78,20 @@ float convertPaPressureToBar(float pa);
 #define PIN_PWR 4
 #define PIN_CFG1 TX 
 #define PIN_CFG2 RX 
+
+#elif defined(D1_MINI)
+// Hardware config for ESP8266-d1-mini, only for unit tests
+// --------------------------------------------------------
+#define PIN_SDA 8
+#define PIN_SCL 10
+#define PIN_SDA1 1
+#define PIN_SCL1 2
+#define PIN_VOLT 3
+#define PIN_DS 5
+#define PIN_PWR 4
+#define PIN_CFG1 TX 
+#define PIN_CFG2 RX 
+
 #endif
 
 #endif  // PRESSUREMON

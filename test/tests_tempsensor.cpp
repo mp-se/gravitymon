@@ -27,6 +27,7 @@ SOFTWARE.
 
 test(temp_readSensor) {
   myTempSensor.setup();
+  myTempSensor.readSensor();
   myTempSensor.getTempC();
   assertEqual(myTempSensor.isSensorAttached(), true);
 }

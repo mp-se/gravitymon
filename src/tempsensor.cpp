@@ -33,7 +33,7 @@ SOFTWARE.
 
 #if defined(GRAVITYMON)
 #include <gyro.hpp>
-#endif  // GRAVITYMON
+#endif // GRAVITYMON
 
 OneWire myOneWire(PIN_DS);
 DallasTemperature mySensors(&myOneWire);

@@ -35,6 +35,7 @@ SOFTWARE.
 
 BrewingConfig cfg("", "");
 
+#if defined(GRAVITYMON)
 test(template_applyTemplate1) {
   TemplatingEngine e;
   BrewingPush p(&cfg);
@@ -159,5 +160,6 @@ test(template_applyTemplate7) {
   String v = "4.20-100";
   assertEqual(s, v);
 }
+#endif // GRAVITYMON
 
 // EOF
