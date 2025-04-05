@@ -41,7 +41,8 @@ test(config_advDefaultValues) {
   assertEqual(myConfig.getGyroReadCount(), 50);
   assertEqual(myConfig.getGyroReadDelay(), 3150);
   assertEqual(myConfig.getGyroSensorMovingThreashold(), 500);
-  assertEqual(myConfig.getMaxFormulaCreationDeviation(), 3.0);
+  uint16_t v1 = myConfig.getMaxFormulaCreationDeviation() * 100;
+  assertEqual(v1, 1);
   assertEqual(myConfig.getPushIntervalPost(), 0);
   assertEqual(myConfig.getPushIntervalPost2(), 0);
   assertEqual(myConfig.getPushIntervalGet(), 0);
@@ -49,7 +50,7 @@ test(config_advDefaultValues) {
   assertEqual(myConfig.getPushIntervalInflux(), 0);
   assertEqual(myConfig.getPushTimeout(), 10);
   assertEqual(myConfig.getTempSensorResolution(), 9);
-  assertEqual(myConfig.getWifiConnectionTimeout(), 20);
+  assertEqual(myConfig.getWifiConnectionTimeout(), 30);
   assertEqual(myConfig.getWifiPortalTimeout(), 120);
   assertEqual(myConfig.isIgnoreLowAnges(), false);
 }
