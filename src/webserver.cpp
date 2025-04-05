@@ -509,7 +509,7 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
   obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
       myConfig.isBleActive() || myConfig.hasTargetHttpPost() ||
-              myConfig.hasTargetHttpPost() || myConfig.hasTargetHttpGet() ||
+              myConfig.hasTargetHttpPost2() || myConfig.hasTargetHttpGet() ||
               myConfig.hasTargetMqtt() || myConfig.hasTargetInfluxDb2()
           ? true
           : false;
