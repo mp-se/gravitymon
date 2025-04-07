@@ -473,14 +473,6 @@ void checkSleepModePressure(float volt) {
   }
 }
 
-float convertPsiPressureToBar(float psi) { return psi * 0.0689475729; }
-
-float convertPsiPressureToKPa(float psi) { return psi * 68.947572932 * 1000; }
-
-float convertPaPressureToPsi(float pa) { return pa * 0.000145038; }
-
-float convertPaPressureToBar(float pa) { return pa / 100000; }
-
 #endif  // PRESSUREMON
 
 // EOF
