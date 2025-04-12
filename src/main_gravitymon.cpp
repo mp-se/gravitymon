@@ -50,7 +50,6 @@ SOFTWARE.
 #include <gyro.hpp>
 #include <tempsensor.hpp>
 
-const char* CFG_APPNAME = "gravitymon";
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";
 const char* CFG_AP_PASS = "password";
@@ -154,6 +153,7 @@ void setup() {
       // We cant use LED on ESP32C3 since that pin is connected to GYRO
       ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
                              // error
+      myWifi.enableImprov(true);
       myWifi.startAP();
       break;
 

@@ -42,7 +42,6 @@ SOFTWARE.
 #include <cstdio>
 #include <uptime.hpp>
 
-constexpr auto CFG_APPNAME = "gravitymon-gw";
 constexpr auto CFG_FILENAME = "/gravitymon-gw.json";
 constexpr auto CFG_AP_SSID = "Gateway";
 constexpr auto CFG_AP_PASS = "password";
@@ -129,6 +128,7 @@ void setup() {
     case RunMode::wifiSetupMode:
       Log.notice(F("Main: Entering WIFI Setup." CR));
       myDisplay.printLineCentered(3, "Entering WIFI Setup");
+      myWifi.enableImprov(true);
       myWifi.startAP();
       break;
 

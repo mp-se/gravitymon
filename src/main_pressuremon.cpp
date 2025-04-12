@@ -49,7 +49,6 @@ SOFTWARE.
 #include <ble.hpp>
 #include <tempsensor.hpp>
 
-const char* CFG_APPNAME = "pressuremon";
 const char* CFG_FILENAME = "/pressuremon2.json";
 const char* CFG_AP_SSID = "PressureMon";
 const char* CFG_AP_PASS = "password";
@@ -159,6 +158,7 @@ sleepModeAlwaysSkip = checkPinConnected();
     case RunMode::wifiSetupMode:
       ledOn(LedColor::RED);  // Red or fast flashing to indicate connection
                              // error
+      myWifi.enableImprov(true);
       myWifi.startAP();
       break;
 
