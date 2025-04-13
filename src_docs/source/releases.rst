@@ -11,6 +11,17 @@ v2.2.0
   When updating to this version you will need to recalculate the voltage factor if you are using an ESP32 board.
 
 
+New features
+++++++++++++
+* Voltage reading on ESP32 boards have been changed to improve accuracy
+* Addes support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.
+* Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.
+
+Bugs fixed
+++++++++++
+* Fixed floaty build so it will start up correcly after upgrading to OneWireNG
+
+
 v2.1.0
 ======
 

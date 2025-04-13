@@ -19,6 +19,8 @@ Update the following part `"gravity": ${gravity-plato},` or `"name" : "${mdns}[S
 
 This makes use of the standard format template, no changes needed.
 
+:bdg-primary:`Endpoint: HTTP POST`
+
 .. code-block::
 
    http://log.brewfather.net/ispindel?id=<yourid>
@@ -31,6 +33,8 @@ Documentation on this can be found under `Brewfather iSpindle Endpoint <https://
 
 This option makes use of the http push endpoint with a custom format template. Just enter the http stream address found 
 on brewfather, not other settings are needed. The stream endpoint URL has the following format:
+
+:bdg-primary:`Endpoint: HTTP POST`
 
 .. code-block::
 
@@ -67,6 +71,8 @@ Fermentrack
 
 GravityMon can be installed and used as an iSpindle. Just register the device as an iSpindle and use the defined endpoint which normally is:
 
+:bdg-primary:`Endpoint: HTTP POST`
+
 .. code-block::
 
    http://myservername/ispindel
@@ -86,6 +92,8 @@ Swap the text <devicename> with the name you want to show in ubidots.
 
 Enter the following as URL:
 
+:bdg-primary:`Endpoint: HTTP POST`
+
 .. code-block::
 
    http://industrial.api.ubidots.com/api/v1.6/devices/<devicename>/?token=<api-token>
@@ -97,6 +105,8 @@ This is the less secure option.
 
 Enter the following as URL, use either standard or ssl.
    
+:bdg-primary:`Endpoint: HTTP POST`
+
 .. code-block::
 
    http://industrial.api.ubidots.com/api/v1.6/devices/<devicename>
@@ -158,6 +168,8 @@ first. This is the format needed to submit the data to the correct topics as nee
 many sensors / topics as you want. It's also possible that you will need to create a user and supply the 
 username / password to be able to publish messages on a topic.
 
+:bdg-primary:`Endpoint: MQTT`
+
 ::
 
    gravmon/${mdns}/gravity:${gravity}|
@@ -170,6 +182,8 @@ username / password to be able to publish messages on a topic.
 
 Replace the ${key} with data applicable to your device. Add this as an automation script (edit in yaml). 
 It should show up as an entity under the MQTT integration. If not, check the logfiles for any parsing errors. 
+
+:bdg-primary:`Endpoint: MQTT`
 
 ::
 
@@ -238,6 +252,8 @@ template will create two sensors and update the values for them.
   This method is not recommended for an ESP8266 since the low RAM memory will not be enough and there is a high probability that the device
   will crash insted. Testing shows that more than 1000 characters of data will likley crash the device. 
 
+:bdg-primary:`Endpoint: MQTT`
+
 ::
 
    gravmon/${mdns}/temperature:${temp}|
@@ -264,6 +280,8 @@ Brewer's friend is an all in one service that allows you to manage you recipes a
 You can find you API key when logged in to the service. Follow these `instructions <https://docs.brewersfriend.com/devices/ispindel>`_
 
 **Note there are different URLs if you are using plato or specific gravity!**
+
+:bdg-primary:`Endpoint: HTTP POST`
 
 .. code-block::
 
@@ -297,6 +315,8 @@ BrewSpy is a service that can show the history and manage the brew.
 
 You need to enter the Token found in brewspy. The field is found under the field for http configuration.
 
+:bdg-primary:`Endpoint: HTTP POST`
+
 .. code-block::
 
    http://brew-spy.com/api/ispindel
@@ -309,6 +329,8 @@ Thingspeak is an IoT platform for receiving data which can be visualized.
 
 In order to use this platform you need to create a channel (channel = device) and get the APIKEY for 
 writing to the channel. Each channel can handle up to 8 measurements. In the http field enter the following URL.
+
+:bdg-primary:`Endpoint: HTTP POST`
 
 .. code-block::
 
@@ -339,6 +361,8 @@ In order to use this platform you need to create a device which can be used to r
 unique token that is used to identify it. You need to use the HTTP GET option (http-3) on the device for this to work. Enter the 
 following URL in the UI. This will allow us to update several data points at once. I usually enter the token in the ``token2`` field 
 so the format template does not contain any sensitive data and it's easier to switch to another device. 
+
+:bdg-primary:`Endpoint: HTTP GET`
 
 .. code-block::
 
@@ -383,6 +407,8 @@ BrewPi Remix can recieve SG, Voltage and Temperature from Gravitymon.
 
 - In Gravitymon, add push settings in: Configuration --> Push settings --> HTTP 1 (POST)
 
+:bdg-primary:`Endpoint: HTTP POST`
+
 .. code-block::
 
    http://<ip-address-of-your-BrewPi>/brewpi-api.php
@@ -394,6 +420,8 @@ Brewpiless
 ++++++++++
 
 If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it's recommended to connect the device to your normal network. 
+
+:bdg-primary:`Endpoint: HTTP POST`
 
 The device need to have a name starting with iSpindle, for example `iSpindel000`. Set the URL for one of the http POST targets to `http://ip/gravity` where ip is the ip address of Brewpiless. 
 
@@ -407,6 +435,8 @@ for this target.
 This format template will post the expected json document on the topic, don't forget the `|` character at the end of the line which is needed to parse the payload. The first to words are the topic 
 name and after the first `:` this is the json payload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section 
 in the json document if you need other values as well.
+
+:bdg-primary:`Endpoint: MQTT`
 
 .. code-block::
 
@@ -439,6 +469,8 @@ For this service you need to change the following for it to work.
 - Set token to your ``API KEY``
 
 Enter the following URL for HTTP POST 1 target
+
+:bdg-primary:`Endpoint: HTTP POST`
 
 .. code-block::
 
