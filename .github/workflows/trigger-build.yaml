@@ -23,4 +23,5 @@ jobs:
             -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
             https://api.github.com/repos/mp-se/gravitymon-gateway/actions/workflows/pio-build.yaml/dispatches \
             -d '{"ref":"dev"}'
+
             
