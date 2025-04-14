@@ -26,7 +26,7 @@ SOFTWARE.
 #include <main.hpp>
 
 BatteryVoltage::BatteryVoltage() {
-#if defined(ESP8266)
+#if defined(ESP8266) || defined(ESP32S2)
   pinMode(myConfig.getVoltagePin(), INPUT);
 #else
   pinMode(myConfig.getVoltagePin(), INPUT_PULLDOWN);
@@ -44,6 +44,8 @@ void BatteryVoltage::read() {
 
 #if defined(ESP8266)
   _batteryLevel = ((3.3 / 1023) * v) * factor;
+#elif defined(ESP32S2)
+  _batteryLevel = ((2.5 / 8191) * v) * factor;
 #else  // defined (ESP32)
   _batteryLevel = ((3.3 / 4095) * v) * factor;
 #endif
@@ -53,5 +55,4 @@ void BatteryVoltage::read() {
       factor, v, _batteryLevel);
 #endif
 }
-
 // EOF
