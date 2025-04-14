@@ -33,15 +33,44 @@ constexpr auto CONFIG_BLE_ACTIVE_SCAN = "ble_active_scan";
 constexpr auto CONFIG_BLE_SCAN_TIME = "ble_scan_time";
 constexpr auto CONFIG_PUSH_RESEND_TIME = "push_resend_time";
 constexpr auto CONFIG_TIMEZONE = "timezone";
+constexpr auto CONFIG_PRESSURE_UNIT = "pressure_unit";
+
+constexpr auto CONFIG_HTTP_POST_GRAVITY_ENABLE = "http_post_gravity";
+constexpr auto CONFIG_HTTP_POST_PRESSURE_ENABLE = "http_post_pressure";
+constexpr auto CONFIG_HTTP_POST2_GRAVITY_ENABLE = "http_post2_gravity";
+constexpr auto CONFIG_HTTP_POST2_PRESSURE_ENABLE = "http_post2_pressure";
+constexpr auto CONFIG_HTTP_GET_GRAVITY_ENABLE = "http_get_gravity";
+constexpr auto CONFIG_HTTP_GET_PRESSURE_ENABLE = "http_get_pressure";
+constexpr auto CONFIG_INFLUXDB2_GRAVITY_ENABLE = "influxdb2_gravity";
+constexpr auto CONFIG_INFLUXDB2_PRESSURE_ENABLE = "influxdb2_pressure";
+constexpr auto CONFIG_MQTT_GRAVITY_ENABLE = "mqtt_gravity";
+constexpr auto CONFIG_MQTT_PRESSURE_ENABLE = "mqtt_pressure";
+
+constexpr auto PRESSURE_KPA = "kPa";
+constexpr auto PRESSURE_BAR = "Bar";
+constexpr auto PRESSURE_PSI = "PSI";
 
 class GravmonGatewayConfig : public BrewingConfig {
  private:
   char _gravityFormat = 'G';
 
-  String _timezone = "";
-  bool _bleActiveScan = false;
+  String _pressureUnit = PRESSURE_PSI;
+  String _timezone = "CET-1CEST,M3.5.0,M10.5.0/3";
+
   int _bleScanTime = 5;
   int _pushResendTime = 300;
+
+  bool _bleActiveScan = false;
+  bool _httpPostGravityEnable = true;
+  bool _httpPostPressureEnable = true;
+  bool _httpPost2GravityEnable = true;
+  bool _httpPost2PressureEnable = true;
+  bool _httpGetGravityEnable = true;
+  bool _httpGetPressureEnable = true;
+  bool _influxdb2GravityEnable = true;
+  bool _influxdb2PressureEnable = true;
+  bool _mqttGravityEnable = true;
+  bool _mqttPressureEnable = true;
 
  public:
   GravmonGatewayConfig(String baseMDNS, String fileName);
@@ -55,6 +84,76 @@ class GravmonGatewayConfig : public BrewingConfig {
   bool isBleActive() {
     return false;
   }  // Needed for common base but not used in gateway
+
+  bool isPressureBar() { return _pressureUnit == PRESSURE_BAR; }
+  bool isPressureKpa() { return _pressureUnit == PRESSURE_KPA; }
+  bool isPressurePsi() { return _pressureUnit == PRESSURE_PSI; }
+
+  const char* getPressureUnit() { return _pressureUnit.c_str(); }
+  void setPressureUnit(String s) {
+    _pressureUnit = s;
+    _saveNeeded = true;
+  }
+
+  bool isHttpPostGravityEnable() { return _httpPostGravityEnable; }
+  void setHttpPostGravityEnable(bool f) {
+    _httpPostGravityEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isHttpPostPressureEnable() { return _httpPostPressureEnable; }
+  void setHttpPostPressureEnable(bool f) {
+    _httpPostPressureEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isHttpPost2GravityEnable() { return _httpPost2GravityEnable; }
+  void setHttpPost2GravityEnable(bool f) {
+    _httpPost2GravityEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isHttpPost2PressureEnable() { return _httpPost2PressureEnable; }
+  void setHttpPost2PressureEnable(bool f) {
+    _httpPost2PressureEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isHttpGetGravityEnable() { return _httpGetGravityEnable; }
+  void setHttpGetGravityEnable(bool f) {
+    _httpGetGravityEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isHttpGetPressureEnable() { return _httpGetPressureEnable; }
+  void setHttpGetPressureEnable(bool f) {
+    _httpGetPressureEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isInfluxdb2GravityEnable() { return _influxdb2GravityEnable; }
+  void setInfluxdb2GravityEnable(bool f) {
+    _influxdb2GravityEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isInfluxdb2PressureEnable() { return _influxdb2PressureEnable; }
+  void setInfluxdb2PressureEnable(bool f) {
+    _influxdb2PressureEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isMqttGravityEnable() { return _mqttGravityEnable; }
+  void setMqttGravityEnable(bool f) {
+    _mqttGravityEnable = f;
+    _saveNeeded = true;
+  }
+
+  bool isMqttPressureEnable() { return _mqttPressureEnable; }
+  void setMqttPressureEnable(bool f) {
+    _mqttPressureEnable = f;
+    _saveNeeded = true;
+  }
 
   int getBleScanTime() { return _bleScanTime; }
   void setBleScanTime(int v) {

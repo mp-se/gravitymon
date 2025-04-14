@@ -405,12 +405,10 @@ void controller() {
 
       TemplatingEngine engine;
 
-      /* TODO: FIX PUSH OF PRESSURE DATA
-
-      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity,
-      gmd.tempC, gmd.battery, gmd.interval, gmd.id.c_str(), gmd.token.c_str(),
-      gmd.name.c_str()); push.sendAll(engine,
-      BrewingPush::MeasurementType::GRAVITY);*/
+      setupTemplateEnginePressureGateway(
+          engine, pmd.pressure, pmd.pressure1, pmd.tempC, pmd.battery,
+          pmd.interval, pmd.id.c_str(), pmd.token.c_str(), pmd.name.c_str());
+      push.sendAll(engine, BrewingPush::MeasurementType::PRESSURE);
 
       pmd.setPushed();
     }

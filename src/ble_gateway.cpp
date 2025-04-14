@@ -72,7 +72,7 @@ void BleDeviceCallbacks::onResult(
     }
 
     return;
-  } /*else if (advertisedDevice->getName() == "pressuremon") {
+  } else if (advertisedDevice->getName() == "pressuremon") {
     bool eddyStone = false;
 
     // Print out the advertised services
@@ -92,7 +92,7 @@ void BleDeviceCallbacks::onResult(
     }
 
     return;
-  }*/
+  }
 
   // Check if we have a gravmon iBeacon to process
 

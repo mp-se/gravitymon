@@ -24,6 +24,7 @@ SOFTWARE.
 #if defined(PRESSUREMON)
 
 #include <config.hpp>
+#include <helper.hpp>
 #include <memory>
 #include <pressure_analog.hpp>
 

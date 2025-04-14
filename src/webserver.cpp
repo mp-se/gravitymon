@@ -156,82 +156,70 @@ void BrewingWebServer::webHandleSleepmode(AsyncWebServerRequest *request,
   PERF_END("webserver-api-sleepmode");
 }
 
-void BrewingWebServer::webHandleConfigFormatGravityWrite(
+void BrewingWebServer::webHandleConfigFormatWrite(
     AsyncWebServerRequest *request, JsonVariant &json) {
   if (!isAuthenticated(request)) {
     return;
   }
 
-  PERF_BEGIN("webserver-api-config-format-gravity-write");
-  Log.notice(
-      F("WEB : webServer callback for /api/config/format(gravity-post)." CR));
+  PERF_BEGIN("webserver-api-config-format-write");
+  Log.notice(F("WEB : webServer callback for /api/config/format(write)." CR));
 
   JsonObject obj = json.as<JsonObject>();
   int success = 0;
 
-  if (!obj[PARAM_FORMAT_POST].isNull()) {
-    success +=
-        writeFile(TPL_GRAVITY_FNAME_POST, obj[PARAM_FORMAT_POST]) ? 1 : 0;
-  }
-  if (!obj[PARAM_FORMAT_POST2].isNull()) {
-    success +=
-        writeFile(TPL_GRAVITY_FNAME_POST2, obj[PARAM_FORMAT_POST2]) ? 1 : 0;
-  }
-  if (!obj[PARAM_FORMAT_GET].isNull()) {
-    success += writeFile(TPL_GRAVITY_FNAME_GET, obj[PARAM_FORMAT_GET]) ? 1 : 0;
-  }
-  if (!obj[PARAM_FORMAT_INFLUXDB].isNull()) {
-    success += writeFile(TPL_GRAVITY_FNAME_INFLUXDB, obj[PARAM_FORMAT_INFLUXDB])
+  if (!obj[PARAM_FORMAT_POST_GRAVITY].isNull()) {
+    success += writeFile(TPL_GRAVITY_FNAME_POST, obj[PARAM_FORMAT_POST_GRAVITY])
                    ? 1
                    : 0;
   }
-  if (!obj[PARAM_FORMAT_MQTT].isNull()) {
+  if (!obj[PARAM_FORMAT_POST2_GRAVITY].isNull()) {
     success +=
-        writeFile(TPL_GRAVITY_FNAME_MQTT, obj[PARAM_FORMAT_MQTT]) ? 1 : 0;
+        writeFile(TPL_GRAVITY_FNAME_POST2, obj[PARAM_FORMAT_POST2_GRAVITY]) ? 1
+                                                                            : 0;
+  }
+  if (!obj[PARAM_FORMAT_GET_GRAVITY].isNull()) {
+    success +=
+        writeFile(TPL_GRAVITY_FNAME_GET, obj[PARAM_FORMAT_GET_GRAVITY]) ? 1 : 0;
+  }
+  if (!obj[PARAM_FORMAT_INFLUXDB_GRAVITY].isNull()) {
+    success += writeFile(TPL_GRAVITY_FNAME_INFLUXDB,
+                         obj[PARAM_FORMAT_INFLUXDB_GRAVITY])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_MQTT_GRAVITY].isNull()) {
+    success += writeFile(TPL_GRAVITY_FNAME_MQTT, obj[PARAM_FORMAT_MQTT_GRAVITY])
+                   ? 1
+                   : 0;
   }
 
-  AsyncJsonResponse *response = new AsyncJsonResponse(false);
-  obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_SUCCESS] = success > 0 ? true : false;
-  obj[PARAM_MESSAGE] = success > 0 ? "Gravity template stored"
-                                   : "Failed to store gravity template";
-  response->setLength();
-  request->send(response);
-  PERF_END("webserver-api-config-format-gravity-write");
-}
-
-void BrewingWebServer::webHandleConfigFormatPressureWrite(
-    AsyncWebServerRequest *request, JsonVariant &json) {
-  if (!isAuthenticated(request)) {
-    return;
-  }
-
-  PERF_BEGIN("webserver-api-config-format-pressure-write");
-  Log.notice(
-      F("WEB : webServer callback for /api/config/format(pressure-post)." CR));
-
-  JsonObject obj = json.as<JsonObject>();
-  int success = 0;
-
-  if (!obj[PARAM_FORMAT_POST].isNull()) {
+  if (!obj[PARAM_FORMAT_POST_PRESSURE].isNull()) {
     success +=
-        writeFile(TPL_PRESSURE_FNAME_POST, obj[PARAM_FORMAT_POST]) ? 1 : 0;
+        writeFile(TPL_PRESSURE_FNAME_POST, obj[PARAM_FORMAT_POST_PRESSURE]) ? 1
+                                                                            : 0;
   }
-  if (!obj[PARAM_FORMAT_POST2].isNull()) {
+  if (!obj[PARAM_FORMAT_POST2_PRESSURE].isNull()) {
     success +=
-        writeFile(TPL_PRESSURE_FNAME_POST2, obj[PARAM_FORMAT_POST2]) ? 1 : 0;
+        writeFile(TPL_PRESSURE_FNAME_POST2, obj[PARAM_FORMAT_POST2_PRESSURE])
+            ? 1
+            : 0;
   }
-  if (!obj[PARAM_FORMAT_GET].isNull()) {
-    success += writeFile(TPL_PRESSURE_FNAME_GET, obj[PARAM_FORMAT_GET]) ? 1 : 0;
+  if (!obj[PARAM_FORMAT_GET_PRESSURE].isNull()) {
+    success += writeFile(TPL_PRESSURE_FNAME_GET, obj[PARAM_FORMAT_GET_PRESSURE])
+                   ? 1
+                   : 0;
   }
-  if (!obj[PARAM_FORMAT_INFLUXDB].isNull()) {
+  if (!obj[PARAM_FORMAT_INFLUXDB_PRESSURE].isNull()) {
+    success += writeFile(TPL_PRESSURE_FNAME_INFLUXDB,
+                         obj[PARAM_FORMAT_INFLUXDB_PRESSURE])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_MQTT_PRESSURE].isNull()) {
     success +=
-        writeFile(TPL_PRESSURE_FNAME_INFLUXDB, obj[PARAM_FORMAT_INFLUXDB]) ? 1
-                                                                           : 0;
-  }
-  if (!obj[PARAM_FORMAT_MQTT].isNull()) {
-    success +=
-        writeFile(TPL_PRESSURE_FNAME_MQTT, obj[PARAM_FORMAT_MQTT]) ? 1 : 0;
+        writeFile(TPL_PRESSURE_FNAME_MQTT, obj[PARAM_FORMAT_MQTT_PRESSURE]) ? 1
+                                                                            : 0;
   }
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
@@ -241,7 +229,7 @@ void BrewingWebServer::webHandleConfigFormatPressureWrite(
                                    : "Failed to store pressure template";
   response->setLength();
   request->send(response);
-  PERF_END("webserver-api-config-format-pressure-write");
+  PERF_END("webserver-api-config-format-write");
 }
 
 void BrewingWebServer::webHandleTestPush(AsyncWebServerRequest *request,
@@ -369,77 +357,61 @@ String BrewingWebServer::readFile(String fname) {
   return "";
 }
 
-void BrewingWebServer::webHandleConfigFormatGravityRead(
+void BrewingWebServer::webHandleConfigFormatRead(
     AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
   }
 
-  PERF_BEGIN("webserver-api-config-format-gravity-read");
-  Log.notice(
-      F("WEB : webServer callback for /api/config/format(gravity-read)." CR));
+  PERF_BEGIN("webserver-api-config-format-read");
+  Log.notice(F("WEB : webServer callback for /api/config/format(read)." CR));
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   String s;
 
+#if defined(GRAVITYMON) || defined(GATEWAY)
   s = readFile(TPL_GRAVITY_FNAME_POST);
-  obj[PARAM_FORMAT_POST] =
+  obj[PARAM_FORMAT_POST_GRAVITY] =
       s.length() ? urlencode(s) : urlencode(String(&iGravityHttpPostFormat[0]));
   s = readFile(TPL_GRAVITY_FNAME_POST2);
-  obj[PARAM_FORMAT_POST2] =
+  obj[PARAM_FORMAT_POST2_GRAVITY] =
       s.length() ? urlencode(s) : urlencode(String(&iGravityHttpPostFormat[0]));
   s = readFile(TPL_GRAVITY_FNAME_GET);
-  obj[PARAM_FORMAT_GET] =
+  obj[PARAM_FORMAT_GET_GRAVITY] =
       s.length() ? urlencode(s) : urlencode(String(&iGravityHttpGetFormat[0]));
   s = readFile(TPL_GRAVITY_FNAME_INFLUXDB);
-  obj[PARAM_FORMAT_INFLUXDB] =
+  obj[PARAM_FORMAT_INFLUXDB_GRAVITY] =
       s.length() ? urlencode(s) : urlencode(String(&iGravityInfluxDbFormat[0]));
   s = readFile(TPL_GRAVITY_FNAME_MQTT);
-  obj[PARAM_FORMAT_MQTT] =
+  obj[PARAM_FORMAT_MQTT_GRAVITY] =
       s.length() ? urlencode(s) : urlencode(String(&iGravityMqttFormat[0]));
+#endif
 
-  response->setLength();
-  request->send(response);
-  PERF_END("webserver-api-config-format-gravity-read");
-}
-
-void BrewingWebServer::webHandleConfigFormatPressureRead(
-    AsyncWebServerRequest *request) {
-  if (!isAuthenticated(request)) {
-    return;
-  }
-
-  PERF_BEGIN("webserver-api-config-format-pressure-read");
-  Log.notice(
-      F("WEB : webServer callback for /api/config/format(pressure-read)." CR));
-
-  AsyncJsonResponse *response = new AsyncJsonResponse(false);
-  JsonObject obj = response->getRoot().as<JsonObject>();
-  String s;
-
+#if defined(PRESSUREMON) || defined(GATEWAY)
   s = readFile(TPL_PRESSURE_FNAME_POST);
-  obj[PARAM_FORMAT_POST] = s.length()
-                               ? urlencode(s)
-                               : urlencode(String(&iPressureHttpPostFormat[0]));
+  obj[PARAM_FORMAT_POST_PRESSURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iPressureHttpPostFormat[0]));
   s = readFile(TPL_PRESSURE_FNAME_POST2);
-  obj[PARAM_FORMAT_POST2] =
+  obj[PARAM_FORMAT_POST2_PRESSURE] =
       s.length() ? urlencode(s)
                  : urlencode(String(&iPressureHttpPostFormat[0]));
   s = readFile(TPL_PRESSURE_FNAME_GET);
-  obj[PARAM_FORMAT_GET] =
+  obj[PARAM_FORMAT_GET_PRESSURE] =
       s.length() ? urlencode(s) : urlencode(String(&iPressureHttpGetFormat[0]));
   s = readFile(TPL_PRESSURE_FNAME_INFLUXDB);
-  obj[PARAM_FORMAT_INFLUXDB] =
+  obj[PARAM_FORMAT_INFLUXDB_PRESSURE] =
       s.length() ? urlencode(s)
                  : urlencode(String(&iPressureInfluxDbFormat[0]));
   s = readFile(TPL_PRESSURE_FNAME_MQTT);
-  obj[PARAM_FORMAT_MQTT] =
+  obj[PARAM_FORMAT_MQTT_PRESSURE] =
       s.length() ? urlencode(s) : urlencode(String(&iPressureMqttFormat[0]));
+#endif
 
   response->setLength();
   request->send(response);
-  PERF_END("webserver-api-config-format-pressure-read");
+  PERF_END("webserver-api-config-format-read");
 }
 
 void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
@@ -556,20 +528,12 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
   Log.notice(F("WEB : Setting up handlers for web server." CR));
 
   AsyncCallbackJsonWebHandler *handler;
-  _server->on("/api/format2", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleConfigFormatPressureRead,
-                        this, std::placeholders::_1));
-  handler = new AsyncCallbackJsonWebHandler(
-      "/api/format2",
-      std::bind(&BrewingWebServer::webHandleConfigFormatPressureWrite, this,
-                std::placeholders::_1, std::placeholders::_2));
-  _server->addHandler(handler);
   _server->on("/api/format", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleConfigFormatGravityRead,
-                        this, std::placeholders::_1));
+              std::bind(&BrewingWebServer::webHandleConfigFormatRead, this,
+                        std::placeholders::_1));
   handler = new AsyncCallbackJsonWebHandler(
       "/api/format",
-      std::bind(&BrewingWebServer::webHandleConfigFormatGravityWrite, this,
+      std::bind(&BrewingWebServer::webHandleConfigFormatWrite, this,
                 std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
   handler = new AsyncCallbackJsonWebHandler(

@@ -25,6 +25,7 @@ SOFTWARE.
 
 #include <battery.hpp>
 #include <config.hpp>
+#include <helper.hpp>
 #include <pressure.hpp>
 #include <tempsensor.hpp>
 #include <webserver.hpp>
@@ -77,7 +78,6 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
     }
 
     obj[PARAM_PRESSURE] = serialized(String(pressure, DECIMALS_PRESSURE));
-
   }
 
   if (!isnan(pressure1)) {
@@ -95,7 +95,7 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
     temp = convertCtoF(temp);
   }
 
-  obj[PARAM_TEMP] = serialized(String(temp, DECIMALS_TEMP));;
+  obj[PARAM_TEMP] = serialized(String(temp, DECIMALS_TEMP));
 
   obj[CONFIG_PRESSURE_UNIT] = myConfig.getPressureUnit();
   obj[PARAM_TEMP_UNIT] = String(myConfig.getTempUnit());

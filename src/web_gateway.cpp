@@ -27,8 +27,8 @@ SOFTWARE.
 
 #include <ble.hpp>
 #include <config.hpp>
-#include <web_gateway.hpp>
 #include <uptime.hpp>
+#include <web_gateway.hpp>
 
 constexpr auto PARAM_GRAVITY_DEVICE = "gravity_device";
 constexpr auto PARAM_DEVICE = "device";
@@ -46,8 +46,7 @@ void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {}
 
 void BrewingWebServer::doWebConfigWrite() {}
 
-void BrewingWebServer::doWebStatus(JsonObject &obj) {
-}
+void BrewingWebServer::doWebStatus(JsonObject &obj) {}
 
 void BrewingWebServer::doTaskSensorCalibration() {}
 

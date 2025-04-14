@@ -23,8 +23,9 @@ SOFTWARE.
  */
 #if defined(PRESSUREMON)
 
-#include <pushtarget.hpp>
+#include <helper.hpp>
 #include <pressure.hpp>
+#include <pushtarget.hpp>
 
 #if defined(ESP8266)
 #include <ESP8266WiFi.h>

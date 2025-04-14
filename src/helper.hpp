@@ -31,6 +31,11 @@ bool checkPinConnected();
 void printBuildOptions();
 void detectChipRevision();
 
+float convertPsiPressureToBar(float psi);
+float convertPsiPressureToKPa(float psi);
+float convertPaPressureToPsi(float pa);
+float convertPaPressureToBar(float pa);
+
 #endif  // SRC_HELPER_HPP_
 
 // EOF

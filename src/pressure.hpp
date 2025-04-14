@@ -33,11 +33,6 @@ SOFTWARE.
 #include <log.hpp>
 #include <memory>
 
-float convertPsiPressureToBar(float psi);
-float convertPsiPressureToKPa(float psi);
-float convertPaPressureToPsi(float pa);
-float convertPaPressureToBar(float pa);
-
 class PressureSensorInterface {
  public:
   PressureSensorInterface() = default;

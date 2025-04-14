@@ -52,12 +52,25 @@ constexpr auto PARAM_CHIP = "chip";
 constexpr auto PARAM_REVISION = "revision";
 constexpr auto PARAM_CORES = "cores";
 constexpr auto PARAM_FEATURES = "features";
-constexpr auto PARAM_FORMAT_POST = "http_post_format";
-constexpr auto PARAM_FORMAT_POST2 = "http_post2_format";
-constexpr auto PARAM_FORMAT_GET = "http_get_format";
-constexpr auto PARAM_FORMAT_INFLUXDB = "influxdb2_format";
-constexpr auto PARAM_FORMAT_MQTT = "mqtt_format";
+
+constexpr auto PARAM_FORMAT_POST_GRAVITY = "http_post_format_gravity";
+constexpr auto PARAM_FORMAT_POST2_GRAVITY = "http_post2_format_gravity";
+constexpr auto PARAM_FORMAT_GET_GRAVITY = "http_get_format_gravity";
+constexpr auto PARAM_FORMAT_INFLUXDB_GRAVITY = "influxdb2_format_gravity";
+constexpr auto PARAM_FORMAT_MQTT_GRAVITY = "mqtt_format_gravity";
+constexpr auto PARAM_FORMAT_POST_PRESSURE = "http_post_format_pressure";
+constexpr auto PARAM_FORMAT_POST2_PRESSURE = "http_post2_format_pressure";
+constexpr auto PARAM_FORMAT_GET_PRESSURE = "http_get_format_pressure";
+constexpr auto PARAM_FORMAT_INFLUXDB_PRESSURE = "influxdb2_format_pressure";
+constexpr auto PARAM_FORMAT_MQTT_PRESSURE = "mqtt_format_pressure";
+
 constexpr auto PARAM_PUSH_FORMAT = "push_format";
+constexpr auto PARAM_FORMAT_POST = "http_post";
+constexpr auto PARAM_FORMAT_POST2 = "http_post2";
+constexpr auto PARAM_FORMAT_GET = "http_get";
+constexpr auto PARAM_FORMAT_INFLUXDB = "influxdb2";
+constexpr auto PARAM_FORMAT_MQTT = "mqtt";
+
 constexpr auto PARAM_PUSH_RETURN_CODE = "push_return_code";
 constexpr auto PARAM_PUSH_ENABLED = "push_enabled";
 
@@ -78,12 +91,9 @@ class BrewingWebServer : public BaseWebServer {
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
-  void webHandleConfigFormatGravityRead(AsyncWebServerRequest *request);
-  void webHandleConfigFormatGravityWrite(AsyncWebServerRequest *request,
-                                         JsonVariant &json);
-  void webHandleConfigFormatPressureRead(AsyncWebServerRequest *request);
-  void webHandleConfigFormatPressureWrite(AsyncWebServerRequest *request,
-                                          JsonVariant &json);
+  void webHandleConfigFormatRead(AsyncWebServerRequest *request);
+  void webHandleConfigFormatWrite(AsyncWebServerRequest *request,
+                                  JsonVariant &json);
   void webHandleSleepmode(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPush(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleTestPushStatus(AsyncWebServerRequest *request);

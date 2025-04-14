@@ -40,6 +40,18 @@ void GravmonGatewayConfig::createJson(JsonObject& doc) {
   doc[CONFIG_BLE_ACTIVE_SCAN] = getBleActiveScan();
   doc[CONFIG_BLE_SCAN_TIME] = getBleScanTime();
   doc[CONFIG_PUSH_RESEND_TIME] = getPushResendTime();
+  doc[CONFIG_PRESSURE_UNIT] = getPressureUnit();
+
+  doc[CONFIG_HTTP_POST_GRAVITY_ENABLE] = isHttpPostGravityEnable();
+  doc[CONFIG_HTTP_POST_PRESSURE_ENABLE] = isHttpPostPressureEnable();
+  doc[CONFIG_HTTP_POST2_GRAVITY_ENABLE] = isHttpPost2GravityEnable();
+  doc[CONFIG_HTTP_POST2_PRESSURE_ENABLE] = isHttpPost2PressureEnable();
+  doc[CONFIG_HTTP_GET_GRAVITY_ENABLE] = isHttpGetGravityEnable();
+  doc[CONFIG_HTTP_GET_PRESSURE_ENABLE] = isHttpGetPressureEnable();
+  doc[CONFIG_INFLUXDB2_GRAVITY_ENABLE] = isInfluxdb2GravityEnable();
+  doc[CONFIG_INFLUXDB2_PRESSURE_ENABLE] = isInfluxdb2PressureEnable();
+  doc[CONFIG_MQTT_GRAVITY_ENABLE] = isMqttGravityEnable();
+  doc[CONFIG_MQTT_PRESSURE_ENABLE] = isMqttPressureEnable();
 }
 
 void GravmonGatewayConfig::parseJson(JsonObject& doc) {
@@ -60,6 +72,33 @@ void GravmonGatewayConfig::parseJson(JsonObject& doc) {
     setBleScanTime(doc[CONFIG_BLE_SCAN_TIME].as<int>());
   if (!doc[CONFIG_PUSH_RESEND_TIME].isNull())
     setPushResendTime(doc[CONFIG_PUSH_RESEND_TIME].as<int>());
+  if (!doc[CONFIG_PRESSURE_UNIT].isNull())
+    setPressureUnit(doc[CONFIG_PRESSURE_UNIT].as<String>());
+
+  if (!doc[CONFIG_HTTP_POST_GRAVITY_ENABLE].isNull())
+    setHttpPostGravityEnable(doc[CONFIG_HTTP_POST_GRAVITY_ENABLE].as<bool>());
+  if (!doc[CONFIG_HTTP_POST_PRESSURE_ENABLE].isNull())
+    setHttpPostPressureEnable(doc[CONFIG_HTTP_POST_PRESSURE_ENABLE].as<bool>());
+
+  if (!doc[CONFIG_HTTP_POST2_GRAVITY_ENABLE].isNull())
+    setHttpPost2GravityEnable(doc[CONFIG_HTTP_POST2_GRAVITY_ENABLE].as<bool>());
+  if (!doc[CONFIG_HTTP_POST2_PRESSURE_ENABLE].isNull())
+    setHttpPost2PressureEnable(
+        doc[CONFIG_HTTP_POST2_PRESSURE_ENABLE].as<bool>());
+
+  if (!doc[CONFIG_HTTP_GET_GRAVITY_ENABLE].isNull())
+    setHttpGetGravityEnable(doc[CONFIG_HTTP_GET_GRAVITY_ENABLE].as<bool>());
+  if (!doc[CONFIG_HTTP_GET_PRESSURE_ENABLE].isNull())
+    setHttpGetPressureEnable(doc[CONFIG_HTTP_GET_PRESSURE_ENABLE].as<bool>());
+  if (!doc[CONFIG_INFLUXDB2_GRAVITY_ENABLE].isNull())
+    setInfluxdb2GravityEnable(doc[CONFIG_INFLUXDB2_GRAVITY_ENABLE].as<bool>());
+  if (!doc[CONFIG_INFLUXDB2_PRESSURE_ENABLE].isNull())
+    setInfluxdb2PressureEnable(
+        doc[CONFIG_INFLUXDB2_PRESSURE_ENABLE].as<bool>());
+  if (!doc[CONFIG_MQTT_GRAVITY_ENABLE].isNull())
+    setMqttGravityEnable(doc[CONFIG_MQTT_GRAVITY_ENABLE].as<bool>());
+  if (!doc[CONFIG_MQTT_PRESSURE_ENABLE].isNull())
+    setMqttPressureEnable(doc[CONFIG_MQTT_PRESSURE_ENABLE].as<bool>());
 }
 
 #endif  // GATEWAY

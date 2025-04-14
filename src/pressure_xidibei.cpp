@@ -24,6 +24,7 @@ SOFTWARE.
 #if defined(PRESSUREMON)
 
 #include <config.hpp>
+#include <helper.hpp>
 #include <pressure_xidibei.hpp>
 
 constexpr auto XIDIBEI_IIC_CALIBRATION_COUNT = 5;

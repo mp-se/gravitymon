@@ -88,7 +88,7 @@ RunMode runMode = RunMode::measurementMode;
 void checkSleepModePressure(float volt);
 
 void setup() {
-  pinMode(PIN_PWR, OUTPUT); 
+  pinMode(PIN_PWR, OUTPUT);
   delay(5);
 
   PERF_BEGIN("run-time");
@@ -101,7 +101,7 @@ void setup() {
   Log.notice(F("Main: Using serial pins as output." CR));
 #else
   // Serial pints used to force config mode
-sleepModeAlwaysSkip = checkPinConnected();
+  sleepModeAlwaysSkip = checkPinConnected();
   if (sleepModeAlwaysSkip) {
     Log.notice(F("Main: Forcing config mode since TX/RX are connected." CR));
   }
@@ -121,9 +121,9 @@ sleepModeAlwaysSkip = checkPinConnected();
   myConfig.loadFile();
   PERF_END("main-config-load");
 
-  gpio_hold_dis((gpio_num_t) PIN_PWR);
-  digitalWrite(PIN_PWR, HIGH); // Power to sensors = On
-  delay(200); // Wait for pin to settle and power to stabilize
+  gpio_hold_dis((gpio_num_t)PIN_PWR);
+  digitalWrite(PIN_PWR, HIGH);  // Power to sensors = On
+  delay(200);                   // Wait for pin to settle and power to stabilize
 
   int clock = 400000;
 
@@ -267,7 +267,7 @@ bool loopReadPressure() {
 #if LOG_LEVEL == 6
   Log.verbose(F("Main: Sensor values pressure=%F PSI, "
                 "temp=%FC." CR),
-                pressurePsi, tempC);
+              pressurePsi, tempC);
   // Log.verbose(F("Main: Sensor values pressure=%F PSI, pressure1=%F PSI, "
   //               "temp=%FC, temp1=%FC." CR),
   //             pressure, pressure1, temp, temp1);
@@ -376,7 +376,7 @@ void goToSleep(int sleepInterval) {
   float runtime = (millis() - runtimeMillis);
 
   digitalWrite(PIN_PWR, LOW);
-  gpio_hold_en((gpio_num_t) PIN_PWR);
+  gpio_hold_en((gpio_num_t)PIN_PWR);
   gpio_deep_sleep_hold_en();
 
   Log.notice(F("MAIN: Entering deep sleep for %ds, run time %Fs, "
