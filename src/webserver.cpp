@@ -436,20 +436,7 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_MDNS] = myConfig.getMDNS();
 
   obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
-
-#if defined(ESP8266)
-  obj[PARAM_PLATFORM] = "esp8266";
-#elif defined(ESP32C3)
-  obj[PARAM_PLATFORM] = "esp32c3";
-#elif defined(ESP32S2)
-  obj[PARAM_PLATFORM] = "esp32s2";
-#elif defined(ESP32S3)
-  obj[PARAM_PLATFORM] = "esp32s3";
-#elif defined(ESP32)
-  obj[PARAM_PLATFORM] = "esp32";
-#else  // esp32 miniz
-#error "Unknown target platform";
-#endif
+  obj[PARAM_PLATFORM] = platform;
 
 #if defined(BOARD)
   String b(BOARD);

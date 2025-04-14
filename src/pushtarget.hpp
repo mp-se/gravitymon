@@ -28,6 +28,15 @@ SOFTWARE.
 #include <config.hpp>
 #include <templating.hpp>
 
+extern const char iPressureHttpPostFormat[] PROGMEM;
+extern const char iPressureHttpGetFormat[] PROGMEM;
+extern const char iPressureInfluxDbFormat[] PROGMEM;
+extern const char iPressureMqttFormat[] PROGMEM;
+extern const char iGravityHttpPostFormat[] PROGMEM;
+extern const char iGravityHttpGetFormat[] PROGMEM;
+extern const char iGravityInfluxDbFormat[] PROGMEM;
+extern const char iGravityMqttFormat[] PROGMEM;
+
 constexpr auto TPL_MDNS = "${mdns}";
 constexpr auto TPL_ID = "${id}";
 constexpr auto TPL_TOKEN = "${token}";

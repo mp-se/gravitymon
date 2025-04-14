@@ -33,66 +33,6 @@ SOFTWARE.
 #include <WiFi.h>
 #endif
 
-const char iPressureHttpPostFormat[] PROGMEM =
-    "{"
-    "\"name\": \"${mdns}\", "
-    "\"id\": \"${id}\", "
-    "\"token\": \"${token}\", "
-    "\"interval\": ${sleep-interval}, "
-    "\"temperature\": ${temp}, "
-    // "\"temperature1\": ${temp1}, "
-    "\"temperature-unit\": \"${temp-unit}\", "
-    "\"pressure\": ${pressure}, "
-    // "\"pressure1\": ${pressure1}, "
-    "\"pressure-unit\": \"${pressure-unit}\", "
-    "\"battery\": ${battery}, "
-    "\"rssi\": ${rssi}, "
-    "\"run-time\": ${run-time} "
-    "}";
-
-const char iPressureHttpGetFormat[] PROGMEM =
-    "?name=${mdns}"
-    "&id=${id}"
-    "&token=${token2}"
-    "&interval=${sleep-interval}"
-    "&temperature=${temp}"
-    // "&temperature1=${temp1}"
-    "&temperature-unit=${temp-unit}"
-    "&pressure=${pressure}"
-    // "&pressure1=${pressure1}"
-    "&pressure-unit=${pressure-unit}"
-    "&battery=${battery}"
-    "&rssi=${rssi}"
-    "&run-time=${run-time}";
-
-const char iPressureInfluxDbFormat[] PROGMEM =
-    "measurement,host=${mdns},"
-    "device=${id},"
-    "temperature-unit=${temp-unit},"
-    "pressure-unit=${pressure-unit} "
-    "pressure=${pressure},"
-    // "pressure1=${pressure1},"
-    "temp=${temp},"
-    // "temp1=${temp1},"
-    "battery=${battery},"
-    "rssi=${rssi}\n";
-
-const char iPressureMqttFormat[] PROGMEM =
-    "pressuremon/${mdns}/temperature:${temp}|"
-    // "pressuremon/${mdns}/temperature1:${temp1}|"
-    "pressuremon/${mdns}/temperature-unit:${temp-unit}|"
-    "pressuremon/${mdns}/battery:${battery}|"
-    "pressuremon/${mdns}/pressure:${pressure}|"
-    // "pressuremon/${mdns}/pressure1:${pressure1}|"
-    "pressuremon/${mdns}/pressure-unit:${pressure-unit}|"
-    "pressuremon/${mdns}/interval:${sleep-interval}|"
-    "pressuremon/${mdns}/RSSI:${rssi}|";
-
-const char iGravityHttpPostFormat[] PROGMEM = "";
-const char iGravityHttpGetFormat[] PROGMEM = "";
-const char iGravityInfluxDbFormat[] PROGMEM = "";
-const char iGravityMqttFormat[] PROGMEM = "";
-
 void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
                                  float pressurePsi1, float tempC, float runTime,
                                  float voltage) {

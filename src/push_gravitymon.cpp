@@ -31,61 +31,6 @@ SOFTWARE.
 #include <WiFi.h>
 #endif
 
-// Use iSpindle format for compatibility, HTTP POST
-const char iGravityHttpPostFormat[] PROGMEM =
-    "{"
-    "\"name\": \"${mdns}\", "
-    "\"ID\": \"${id}\", "
-    "\"token\": \"${token}\", "
-    "\"interval\": ${sleep-interval}, "
-    "\"temperature\": ${temp}, "
-    "\"temp_units\": \"${temp-unit}\", "
-    "\"gravity\": ${gravity}, "
-    "\"angle\": ${angle}, "
-    "\"battery\": ${battery}, "
-    "\"RSSI\": ${rssi}, "
-    "\"corr-gravity\": ${corr-gravity}, "
-    "\"gravity-unit\": \"${gravity-unit}\", "
-    "\"run-time\": ${run-time} "
-    "}";
-
-// Format for an HTTP GET
-const char iGravityHttpGetFormat[] PROGMEM =
-    "?name=${mdns}"
-    "&id=${id}"
-    "&token=${token2}"
-    "&interval=${sleep-interval}"
-    "&temperature=${temp}"
-    "&temp-units=${temp-unit}"
-    "&gravity=${gravity}"
-    "&angle=${angle}"
-    "&battery=${battery}"
-    "&rssi=${rssi}"
-    "&corr-gravity=${corr-gravity}"
-    "&gravity-unit=${gravity-unit}"
-    "&run-time=${run-time}";
-
-const char iGravityInfluxDbFormat[] PROGMEM =
-    "measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-"
-    "format=${gravity-unit} "
-    "gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${"
-    "temp},battery=${battery},"
-    "rssi=${rssi}\n";
-
-const char iGravityMqttFormat[] PROGMEM =
-    "ispindel/${mdns}/tilt:${angle}|"
-    "ispindel/${mdns}/temperature:${temp}|"
-    "ispindel/${mdns}/temp_units:${temp-unit}|"
-    "ispindel/${mdns}/battery:${battery}|"
-    "ispindel/${mdns}/gravity:${gravity}|"
-    "ispindel/${mdns}/interval:${sleep-interval}|"
-    "ispindel/${mdns}/RSSI:${rssi}|";
-
-const char iPressureHttpPostFormat[] PROGMEM = "";
-const char iPressureHttpGetFormat[] PROGMEM = "";
-const char iPressureInfluxDbFormat[] PROGMEM = "";
-const char iPressureMqttFormat[] PROGMEM = "";
-
 void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
                                 float gravitySG, float corrGravitySG,
                                 float tempC, float runTime, float voltage) {
