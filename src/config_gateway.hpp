@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <config_brewing.hpp>
 
-constexpr auto CONFIG_GRAVITY_FORMAT = "gravity_format";
+constexpr auto CONFIG_GRAVITY_UNIT = "gravity_unit";
 constexpr auto CONFIG_BLE_ACTIVE_SCAN = "ble_active_scan";
 constexpr auto CONFIG_BLE_SCAN_TIME = "ble_scan_time";
 constexpr auto CONFIG_PUSH_RESEND_TIME = "push_resend_time";
@@ -52,7 +52,7 @@ constexpr auto PRESSURE_PSI = "PSI";
 
 class GravmonGatewayConfig : public BrewingConfig {
  private:
-  char _gravityFormat = 'G';
+  char _gravityUnit = 'G';
 
   String _pressureUnit = PRESSURE_PSI;
   String _timezone = "CET-1CEST,M3.5.0,M10.5.0/3";
@@ -173,15 +173,15 @@ class GravmonGatewayConfig : public BrewingConfig {
     _saveNeeded = true;
   }
 
-  char getGravityFormat() { return _gravityFormat; }
-  void setGravityFormat(char c) {
+  char getGravityUnit() { return _gravityUnit; }
+  void setGravityUnit(char c) {
     if (c == 'G' || c == 'P') {
-      _gravityFormat = c;
+      _gravityUnit = c;
       _saveNeeded = true;
     }
   }
-  bool isGravitySG() { return _gravityFormat == 'G'; }
-  bool isGravityPlato() { return _gravityFormat == 'P'; }
+  bool isGravitySG() { return _gravityUnit == 'G'; }
+  bool isGravityPlato() { return _gravityUnit == 'P'; }
 
   bool isWifiPushActive() {
     return (hasTargetHttpPost() || hasTargetHttpPost2() || hasTargetHttpGet() ||

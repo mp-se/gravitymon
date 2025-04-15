@@ -29,7 +29,7 @@ SOFTWARE.
 #include <config_brewing.hpp>
 
 constexpr auto CONFIG_GRAVITY_FORMULA = "gravity_formula";
-constexpr auto CONFIG_GRAVITY_FORMAT = "gravity_format";
+constexpr auto CONFIG_GRAVITY_UNIT = "gravity_unit";
 constexpr auto CONFIG_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto CONFIG_GYRO_CALIBRATION = "gyro_calibration_data";
 constexpr auto CONFIG_GYRO_TEMP = "gyro_temp";
@@ -95,7 +95,7 @@ class GravitymonConfig : public BrewingConfig {
   bool _batterySaving = true;
 #endif
 
-  char _gravityFormat = 'G';
+  char _gravityUnit = 'G';
 
   float _maxFormulaCreationDeviation = 0.01;  // SG
   float _defaultCalibrationTemp = 20.0;       // C
@@ -141,15 +141,15 @@ class GravitymonConfig : public BrewingConfig {
     _saveNeeded = true;
   }
 
-  char getGravityFormat() { return _gravityFormat; }
-  void setGravityFormat(char c) {
+  char getGravityUnit() { return _gravityUnit; }
+  void setGravityUnit(char c) {
     if (c == 'G' || c == 'P') {
-      _gravityFormat = c;
+      _gravityUnit = c;
       _saveNeeded = true;
     }
   }
-  bool isGravitySG() { return _gravityFormat == 'G'; }
-  bool isGravityPlato() { return _gravityFormat == 'P'; }
+  bool isGravitySG() { return _gravityUnit == 'G'; }
+  bool isGravityPlato() { return _gravityUnit == 'P'; }
 
   const char* getBleTiltColor() { return _bleTiltColor.c_str(); }
   void setBleTiltColor(String c) {

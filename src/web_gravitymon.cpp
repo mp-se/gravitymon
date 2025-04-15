@@ -61,7 +61,7 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
   double tempC = myTempSensor.getTempC();
   double gravity = calculateGravity(angle, tempC);
 
-  obj[CONFIG_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
+  obj[CONFIG_GRAVITY_UNIT] = String(myConfig.getGravityUnit());
 
   obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
 

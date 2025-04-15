@@ -106,7 +106,7 @@ void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle,
   engine.setVal(TPL_GRAVITY_CORR_G, corrGravitySG, DECIMALS_SG);
   engine.setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG),
                 DECIMALS_PLATO);
-  engine.setVal(TPL_GRAVITY_UNIT, myConfig.getGravityFormat());
+  engine.setVal(TPL_GRAVITY_UNIT, myConfig.getGravityUnit());
 
   engine.setVal(TPL_APP_VER, CFG_APPVER);
   engine.setVal(TPL_APP_BUILD, CFG_GITREV);

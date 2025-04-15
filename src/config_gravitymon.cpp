@@ -33,7 +33,7 @@ void GravitymonConfig::createJson(JsonObject& doc) {
 
   doc[CONFIG_BLE_TILT_COLOR] = getBleTiltColor();
   doc[CONFIG_GRAVITY_FORMULA] = getGravityFormula();
-  doc[CONFIG_GRAVITY_FORMAT] = String(getGravityFormat());
+  doc[CONFIG_GRAVITY_UNIT] = String(getGravityUnit());
   doc[CONFIG_GYRO_TEMP] = isGyroTemp();
   doc[CONFIG_GYRO_DISABLED] = isGyroDisabled();
   doc[CONFIG_STORAGE_SLEEP] = isStorageSleep();
@@ -77,9 +77,13 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     setGyroTemp(doc[CONFIG_GYRO_TEMP].as<bool>());
   if (!doc[CONFIG_STORAGE_SLEEP].isNull())
     setStorageSleep(doc[CONFIG_STORAGE_SLEEP].as<bool>());
-  if (!doc[CONFIG_GRAVITY_FORMAT].isNull()) {
-    String s = doc[CONFIG_GRAVITY_FORMAT];
-    setGravityFormat(s.charAt(0));
+  if (!doc[CONFIG_GRAVITY_UNIT].isNull()) {
+    String s = doc[CONFIG_GRAVITY_UNIT];
+    setGravityUnit(s.charAt(0));
+  }
+  if (!doc["gravity_format"].isNull()) { // Legacy support for gravity_format
+    String s = doc["gravity_format"];
+    setGravityUnit(s.charAt(0));
   }
   if (!doc[CONFIG_GYRO_DISABLED].isNull())
     setGyroDisabled(doc[CONFIG_GYRO_DISABLED].as<bool>());

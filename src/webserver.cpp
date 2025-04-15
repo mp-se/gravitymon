@@ -430,7 +430,7 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   JsonObject obj = response->getRoot().as<JsonObject>();
 
   obj[PARAM_ID] = myConfig.getID();
-  obj[PARAM_TEMP_FORMAT] = String(myConfig.getTempFormat());
+  obj[PARAM_TEMP_UNIT] = String(myConfig.getTempUnit());
   obj[PARAM_APP_VER] = CFG_APPVER;
   obj[PARAM_APP_BUILD] = CFG_GITREV;
   obj[PARAM_MDNS] = myConfig.getMDNS();

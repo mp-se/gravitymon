@@ -31,9 +31,12 @@ SOFTWARE.
 #include <web_gateway.hpp>
 
 constexpr auto PARAM_GRAVITY_DEVICE = "gravity_device";
+constexpr auto PARAM_PRESSURE_DEVICE = "pressure_device";
 constexpr auto PARAM_DEVICE = "device";
 constexpr auto PARAM_ENDPOINT = "endpoint";
 constexpr auto PARAM_GRAVITY = "gravity";
+constexpr auto PARAM_PRESSURE = "pressure";
+constexpr auto PARAM_PRESSURE1 = "pressure1";
 constexpr auto PARAM_TEMP = "temp";
 constexpr auto PARAM_UPDATE_TIME = "update_time";
 constexpr auto PARAM_PUSH_TIME = "push_time";
@@ -63,14 +66,13 @@ GatewayWebServer::GatewayWebServer(WebConfig *config)
     : BrewingWebServer(config) {}
 
 void GatewayWebServer::doWebStatus(JsonObject &obj) {
-  obj[CONFIG_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
 
+  // Gravitymon devices
   JsonArray devices = obj[PARAM_GRAVITY_DEVICE].to<JsonArray>();
+  int j;
 
   // Get data from BLE
-  int j = 0;
-
-  for (int i = 0; i < NO_GRAVITYMON; i++) {
+  for (int i = 0, j = 0; i < NO_GRAVITYMON; i++) {
     GravitymonData gd = bleScanner.getGravitymonData(i);
     if (gd.id != "") {
       devices[j][PARAM_DEVICE] = gd.id;
@@ -97,6 +99,44 @@ void GatewayWebServer::doWebStatus(JsonObject &obj) {
     }
   }
 
+  // Pressuremon devices
+  devices = obj[PARAM_PRESSURE_DEVICE].to<JsonArray>();
+
+  j = 0;
+
+  // Get data from BLE
+  for (int i = 0; i < NO_PRESSUREMON; i++) {
+    PressuremonData pd = bleScanner.getPressuremonData(i);
+    if (pd.id != "") {
+      devices[j][PARAM_DEVICE] = pd.id;
+      devices[j][PARAM_PRESSURE] = pd.pressure;
+      devices[j][PARAM_PRESSURE1] = pd.pressure1;
+      devices[j][PARAM_TEMP] = pd.tempC;
+      devices[j][PARAM_UPDATE_TIME] = pd.getUpdateAge();
+      devices[j][PARAM_PUSH_TIME] = pd.getPushAge();
+      devices[j][PARAM_ENDPOINT] = "ble";
+      j++;
+    }
+  }
+
+  // Get data from WIFI
+  for (int i = 0; i < NO_PRESSUREMON; i++) {
+    PressuremonData pd = getPressuremonData(i);
+    if (pd.id != "") {
+      devices[j][PARAM_DEVICE] = pd.id;
+      devices[j][PARAM_PRESSURE] = pd.pressure;
+      devices[j][PARAM_PRESSURE1] = pd.pressure1;
+      devices[j][PARAM_TEMP] = pd.tempC;
+      devices[j][PARAM_UPDATE_TIME] = pd.getUpdateAge();
+      devices[j][PARAM_PUSH_TIME] = pd.getPushAge();
+      devices[j][PARAM_ENDPOINT] = "wifi";
+      j++;
+    }
+  }
+
+  // Add other params
+  obj[CONFIG_GRAVITY_UNIT] = String(myConfig.getGravityUnit());
+  obj[CONFIG_PRESSURE_UNIT] = myConfig.getPressureUnit();
   obj[PARAM_UPTIME_SECONDS] = myUptime.getSeconds();
   obj[PARAM_UPTIME_MINUTES] = myUptime.getMinutes();
   obj[PARAM_UPTIME_HOURS] = myUptime.getHours();

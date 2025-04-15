@@ -30,12 +30,14 @@ GravmonGatewayConfig::GravmonGatewayConfig(String baseMDNS, String fileName)
     : BrewingConfig(baseMDNS, fileName) {}
 
 void GravmonGatewayConfig::createJson(JsonObject& doc) {
+  BrewingConfig::createJson(doc);
+
   // Call base class functions
   createJsonBase(doc);
   createJsonWifi(doc);
   createJsonPush(doc);
 
-  doc[CONFIG_GRAVITY_FORMAT] = String(getGravityFormat());
+  doc[CONFIG_GRAVITY_UNIT] = String(getGravityUnit());
   doc[CONFIG_TIMEZONE] = getTimezone();
   doc[CONFIG_BLE_ACTIVE_SCAN] = getBleActiveScan();
   doc[CONFIG_BLE_SCAN_TIME] = getBleScanTime();
@@ -55,14 +57,20 @@ void GravmonGatewayConfig::createJson(JsonObject& doc) {
 }
 
 void GravmonGatewayConfig::parseJson(JsonObject& doc) {
+  BrewingConfig::parseJson(doc);
+
   // Call base class functions
   parseJsonBase(doc);
   parseJsonWifi(doc);
   parseJsonPush(doc);
 
-  if (!doc[CONFIG_GRAVITY_FORMAT].isNull()) {
-    String s = doc[CONFIG_GRAVITY_FORMAT];
-    setGravityFormat(s.charAt(0));
+  if (!doc[CONFIG_GRAVITY_UNIT].isNull()) {
+    String s = doc[CONFIG_GRAVITY_UNIT];
+    setGravityUnit(s.charAt(0));
+  }
+  if (!doc["gravity_format"].isNull()) { // Legacy support for gravity_format
+    String s = doc["gravity_format"];
+    setGravityUnit(s.charAt(0));
   }
 
   if (!doc[CONFIG_TIMEZONE].isNull()) setTimezone(doc[CONFIG_TIMEZONE]);
