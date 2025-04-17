@@ -29,6 +29,7 @@ SOFTWARE.
 #include <config_brewing.hpp>
 
 constexpr auto CONFIG_GRAVITY_UNIT = "gravity_unit";
+constexpr auto CONFIG_BLE_ENABLE = "ble_enable";
 constexpr auto CONFIG_BLE_ACTIVE_SCAN = "ble_active_scan";
 constexpr auto CONFIG_BLE_SCAN_TIME = "ble_scan_time";
 constexpr auto CONFIG_PUSH_RESEND_TIME = "push_resend_time";
@@ -60,6 +61,7 @@ class GravmonGatewayConfig : public BrewingConfig {
   int _bleScanTime = 5;
   int _pushResendTime = 300;
 
+  bool _bleEnable = true;
   bool _bleActiveScan = false;
   bool _httpPostGravityEnable = true;
   bool _httpPostPressureEnable = true;
@@ -82,8 +84,14 @@ class GravmonGatewayConfig : public BrewingConfig {
   }
 
   bool isBleActive() {
-    return false;
-  }  // Needed for common base but not used in gateway
+    return true;
+  }  // Used in common code for reporting if push targets are defined.
+
+  bool isBleEnable() { return _bleEnable; }
+  void setBleEnable(bool f) {
+    _bleEnable = f;
+    _saveNeeded = true;
+  }
 
   bool isPressureBar() { return _pressureUnit == PRESSURE_BAR; }
   bool isPressureKpa() { return _pressureUnit == PRESSURE_KPA; }

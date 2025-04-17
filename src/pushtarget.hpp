@@ -120,7 +120,10 @@ class BrewingPush : public BasePush {
     PRESSURE = 1,
   };
 
-  void sendAll(TemplatingEngine& engine, MeasurementType type);
+  void sendAll(TemplatingEngine& engine, MeasurementType type,
+               bool enableHttpPost = true, bool enableHttpPost2 = true,
+               bool enableHttpGet = true, bool enableInfluxdb2 = true,
+               bool enableMqtt = true);
   const char* getTemplate(Templates t, bool useDefaultTemplate = false);
   void clearTemplate() { _baseTemplate.clear(); }
   int getLastCode() { return _lastResponseCode; }

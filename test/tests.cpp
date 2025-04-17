@@ -54,6 +54,7 @@ Serial.println("Gateway - Unit Test Build");
   // TestRunner::exclude("tempsensor_*");
   // TestRunner::exclude("webserver_*");
   // TestRunner::exclude("wifi_*");
+  // TestRunner::exclude("measure_*");
 }
 
 void loop() {

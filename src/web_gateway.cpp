@@ -27,17 +27,22 @@ SOFTWARE.
 
 #include <ble.hpp>
 #include <config.hpp>
+#include <measurement.hpp>
 #include <uptime.hpp>
 #include <web_gateway.hpp>
 
 constexpr auto PARAM_GRAVITY_DEVICE = "gravity_device";
 constexpr auto PARAM_PRESSURE_DEVICE = "pressure_device";
+constexpr auto PARAM_TEMPERATURE_DEVICE = "temperature_device";
 constexpr auto PARAM_DEVICE = "device";
-constexpr auto PARAM_ENDPOINT = "endpoint";
+constexpr auto PARAM_TYPE = "type";
+constexpr auto PARAM_SOURCE = "source";
 constexpr auto PARAM_GRAVITY = "gravity";
 constexpr auto PARAM_PRESSURE = "pressure";
 constexpr auto PARAM_PRESSURE1 = "pressure1";
 constexpr auto PARAM_TEMP = "temp";
+constexpr auto PARAM_CHAMBER_TEMP = "chamber_temp";
+constexpr auto PARAM_BEER_TEMP = "beer_temp";
 constexpr auto PARAM_UPDATE_TIME = "update_time";
 constexpr auto PARAM_PUSH_TIME = "push_time";
 constexpr auto PARAM_UPTIME_SECONDS = "uptime_seconds";
@@ -66,71 +71,72 @@ GatewayWebServer::GatewayWebServer(WebConfig *config)
     : BrewingWebServer(config) {}
 
 void GatewayWebServer::doWebStatus(JsonObject &obj) {
+  JsonArray gravityDevices = obj[PARAM_GRAVITY_DEVICE].to<JsonArray>();
+  JsonArray pressureDevices = obj[PARAM_PRESSURE_DEVICE].to<JsonArray>();
+  JsonArray temperatureDevices = obj[PARAM_TEMPERATURE_DEVICE].to<JsonArray>();
+  int gravIdx = 0, pressIdx = 0, tempIdx = 0;
 
-  // Gravitymon devices
-  JsonArray devices = obj[PARAM_GRAVITY_DEVICE].to<JsonArray>();
-  int j;
+  for (int i = 0; i < myMeasurementList.size(); i++) {
+    MeasurementEntry *entry = myMeasurementList.getMeasurementEntry(i);
 
-  // Get data from BLE
-  for (int i = 0, j = 0; i < NO_GRAVITYMON; i++) {
-    GravitymonData gd = bleScanner.getGravitymonData(i);
-    if (gd.id != "") {
-      devices[j][PARAM_DEVICE] = gd.id;
-      devices[j][PARAM_GRAVITY] = gd.gravity;
-      devices[j][PARAM_TEMP] = gd.tempC;
-      devices[j][PARAM_UPDATE_TIME] = gd.getUpdateAge();
-      devices[j][PARAM_PUSH_TIME] = gd.getPushAge();
-      devices[j][PARAM_ENDPOINT] = "ble";
-      j++;
-    }
-  }
+    switch (entry->getType()) {
+      case MeasurementType::Gravitymon: {
+        Log.notice("Loop: Processing Gravitymon data %d." CR, i);
+        const GravityData *gd = entry->getGravityData();
 
-  // Get data from WIFI
-  for (int i = 0; i < NO_GRAVITYMON; i++) {
-    GravitymonData gd = getGravitymonData(i);
-    if (gd.id != "") {
-      devices[j][PARAM_DEVICE] = gd.id;
-      devices[j][PARAM_GRAVITY] = gd.gravity;
-      devices[j][PARAM_TEMP] = gd.tempC;
-      devices[j][PARAM_UPDATE_TIME] = gd.getUpdateAge();
-      devices[j][PARAM_PUSH_TIME] = gd.getPushAge();
-      devices[j][PARAM_ENDPOINT] = "wifi";
-      j++;
-    }
-  }
+        gravityDevices[gravIdx][PARAM_DEVICE] = gd->getId();
+        gravityDevices[gravIdx][PARAM_GRAVITY] = gd->getGravity();
+        gravityDevices[gravIdx][PARAM_TEMP] = gd->getTempC();
+        gravityDevices[gravIdx][PARAM_UPDATE_TIME] = entry->getUpdateAge();
+        gravityDevices[gravIdx][PARAM_PUSH_TIME] = entry->getPushAge();
+        gravityDevices[gravIdx][PARAM_SOURCE] = gd->getSourceAsString();
+        gravityDevices[gravIdx][PARAM_TYPE] = gd->getTypeAsString();
+        gravIdx++;
+      } break;
 
-  // Pressuremon devices
-  devices = obj[PARAM_PRESSURE_DEVICE].to<JsonArray>();
+      case MeasurementType::Pressuremon: {
+        Log.notice("Loop: Processing Pressuremon data %d." CR, i);
+        const PressureData *pd = entry->getPressureData();
 
-  j = 0;
+        pressureDevices[pressIdx][PARAM_DEVICE] = pd->getId();
+        pressureDevices[pressIdx][PARAM_PRESSURE] = pd->getPressure();
+        pressureDevices[pressIdx][PARAM_PRESSURE1] = pd->getPressure1();
+        pressureDevices[pressIdx][PARAM_TEMP] = pd->getTempC();
+        pressureDevices[pressIdx][PARAM_UPDATE_TIME] = entry->getUpdateAge();
+        pressureDevices[pressIdx][PARAM_PUSH_TIME] = entry->getPushAge();
+        pressureDevices[pressIdx][PARAM_SOURCE] = pd->getSourceAsString();
+        pressureDevices[pressIdx][PARAM_TYPE] = pd->getTypeAsString();
+        pressIdx++;
+      } break;
 
-  // Get data from BLE
-  for (int i = 0; i < NO_PRESSUREMON; i++) {
-    PressuremonData pd = bleScanner.getPressuremonData(i);
-    if (pd.id != "") {
-      devices[j][PARAM_DEVICE] = pd.id;
-      devices[j][PARAM_PRESSURE] = pd.pressure;
-      devices[j][PARAM_PRESSURE1] = pd.pressure1;
-      devices[j][PARAM_TEMP] = pd.tempC;
-      devices[j][PARAM_UPDATE_TIME] = pd.getUpdateAge();
-      devices[j][PARAM_PUSH_TIME] = pd.getPushAge();
-      devices[j][PARAM_ENDPOINT] = "ble";
-      j++;
-    }
-  }
+      case MeasurementType::Tilt:
+      case MeasurementType::TiltPro: {
+        Log.notice("Loop: Processing Tilt data %d." CR, i);
+        const TiltData *td = entry->getTiltData();
 
-  // Get data from WIFI
-  for (int i = 0; i < NO_PRESSUREMON; i++) {
-    PressuremonData pd = getPressuremonData(i);
-    if (pd.id != "") {
-      devices[j][PARAM_DEVICE] = pd.id;
-      devices[j][PARAM_PRESSURE] = pd.pressure;
-      devices[j][PARAM_PRESSURE1] = pd.pressure1;
-      devices[j][PARAM_TEMP] = pd.tempC;
-      devices[j][PARAM_UPDATE_TIME] = pd.getUpdateAge();
-      devices[j][PARAM_PUSH_TIME] = pd.getPushAge();
-      devices[j][PARAM_ENDPOINT] = "wifi";
-      j++;
+        gravityDevices[gravIdx][PARAM_DEVICE] = td->getId();
+        gravityDevices[gravIdx][PARAM_GRAVITY] = td->getGravity();
+        gravityDevices[gravIdx][PARAM_TEMP] = td->getTempC();
+        gravityDevices[gravIdx][PARAM_UPDATE_TIME] = entry->getUpdateAge();
+        gravityDevices[gravIdx][PARAM_PUSH_TIME] = entry->getPushAge();
+        gravityDevices[gravIdx][PARAM_SOURCE] = td->getSourceAsString();
+        gravityDevices[gravIdx][PARAM_TYPE] = td->getTypeAsString();
+        gravIdx++;
+      } break;
+
+      case MeasurementType::Chamber: {
+        Log.notice("Loop: Processing Tilt data %d." CR, i);
+        const ChamberData *cd = entry->getChamberData();
+
+        temperatureDevices[tempIdx][PARAM_DEVICE] = cd->getId();
+        temperatureDevices[tempIdx][PARAM_CHAMBER_TEMP] = cd->getChamberTempC();
+        temperatureDevices[tempIdx][PARAM_BEER_TEMP] = cd->getBeerTempC();
+        temperatureDevices[tempIdx][PARAM_UPDATE_TIME] = entry->getUpdateAge();
+        temperatureDevices[tempIdx][PARAM_PUSH_TIME] = entry->getPushAge();
+        temperatureDevices[tempIdx][PARAM_SOURCE] = cd->getSourceAsString();
+        temperatureDevices[tempIdx][PARAM_TYPE] = cd->getTypeAsString();
+        tempIdx++;
+      } break;
     }
   }
 
@@ -154,14 +160,35 @@ bool GatewayWebServer::setupWebServer(const char *serviceName) {
   return b;
 }
 
+constexpr auto GRAVMON_NAME = "name";
+constexpr auto GRAVMON_ID = "ID";
+constexpr auto GRAVMON_TOKEN = "token";
+constexpr auto GRAVMON_INTERVAL = "interval";
+constexpr auto GRAVMON_TEMPERATURE = "temperature";
+constexpr auto GRAVMON_TEMPERATURE_UNIT = "temp_units";
+constexpr auto GRAVMON_GRAVITY = "gravity";
+constexpr auto GRAVMON_ANGLE = "angle";
+constexpr auto GRAVMON_BATTERY = "battery";
+constexpr auto GRAVMON_RSSI = "RSSI";
+
+constexpr auto PRESSMON_NAME = "name";
+constexpr auto PRESSMON_ID = "id";
+constexpr auto PRESSMON_TOKEN = "token";
+constexpr auto PRESSMON_INTERVAL = "interval";
+constexpr auto PRESSMON_TEMPERATURE = "temperature";
+constexpr auto PRESSMON_TEMPERATURE_UNIT = "temperature-unit";
+constexpr auto PRESSMON_PRESSURE = "pressure";
+constexpr auto PRESSMON_PRESSURE1 = "pressure1";
+constexpr auto PRESSMON_PRESSURE_UNIT = "pressure-unit";
+constexpr auto PRESSMON_BATTERY = "battery";
+constexpr auto PRESSMON_RSSI = "rssi";
+
 void GatewayWebServer::webHandleRemotePost(AsyncWebServerRequest *request,
                                            JsonVariant &json) {
   Log.notice(F("WEB : webServer callback for /post." CR));
   JsonObject obj = json.as<JsonObject>();
 
-  // TODO: Add support for pressure JSON data as well.
-
-  /* Expected format
+  /* Expected gravitymon format.
   {
     "name": "gravitymon-gwfa413c",
     "ID": "fa413c",
@@ -175,55 +202,119 @@ void GatewayWebServer::webHandleRemotePost(AsyncWebServerRequest *request,
     "RSSI": -79
   }*/
 
-  String id = !obj[PARAM_BLE_ID].isNull() ? obj[PARAM_BLE_ID].as<String>() : "";
-  String token =
-      !obj[PARAM_BLE_TOKEN].isNull() ? obj[PARAM_BLE_TOKEN].as<String>() : "";
-  String name =
-      !obj[PARAM_BLE_NAME].isNull() ? obj[PARAM_BLE_NAME].as<String>() : "";
-  int interval =
-      !obj[PARAM_BLE_INTERVAL].isNull() ? obj[PARAM_BLE_INTERVAL].as<int>() : 0;
-  float temp = !obj[PARAM_BLE_TEMPERATURE].isNull()
-                   ? obj[PARAM_BLE_TEMPERATURE].as<float>()
-                   : 0.0;
-  String tempUnits = !obj[PARAM_BLE_TEMP_UNITS].isNull()
-                         ? obj[PARAM_BLE_TEMP_UNITS].as<String>()
-                         : "";
-  float gravity = !obj[PARAM_BLE_GRAVITY].isNull()
-                      ? obj[PARAM_BLE_GRAVITY].as<float>()
-                      : 0.0;
-  float angle =
-      !obj[PARAM_BLE_ANGLE].isNull() ? obj[PARAM_BLE_ANGLE].as<float>() : 0.0;
-  float battery = !obj[PARAM_BLE_BATTERY].isNull()
-                      ? obj[PARAM_BLE_BATTERY].as<float>()
-                      : 0.0;
-  int rssi = !obj[PARAM_BLE_RSSI].isNull() ? obj[PARAM_BLE_RSSI].as<int>() : 0;
+  /* Expected pressuremon format.
+  {
+    "name": "test",
+    "id": "e17d44",
+    "token": "",
+    "interval": 300,
+    "temperature": 22.3,
+    "temperature-unit": "C",
+    "pressure": 1.001,
+    "pressure-unit": "PSI",
+    "battery": 3.85,
+    "rssi": -76.2
+  }*/
 
-  int idx = findGravitymonId(id);
-  if (idx >= 0) {
-    GravitymonData &data = getGravitymonData(idx);
-    Log.info(F("Web : Received post from %s." CR), id.c_str());
-
-    if (tempUnits == "C")
-      data.tempC = temp;
-    else
-      data.tempC = convertFtoC(temp);
-    data.gravity = gravity;
-    data.angle = angle;
-    data.battery = battery;
-    data.id = id;
-    data.name = name;
-    data.interval = interval;
-    data.token = token;
-    data.rssi = rssi;
-    // data.address = "";
-    data.type = "Http";
-    data.setUpdated();
+  if (!obj[GRAVMON_GRAVITY].isNull() || !obj[PRESSMON_PRESSURE].isNull()) {
+    String json;
+    json.reserve(200);
+    serializeJson(obj, json);
+    _postData.push(json);
     request->send(200);
-  } else {
-    Log.error(F("Web : Max devices reached - no more devices available." CR));
+    return;
   }
 
   request->send(422);
+}
+
+void GatewayWebServer::loop() {
+  // Process data that was received in posts
+  while (!_postData.empty()) {
+    String data = _postData.front();
+
+    Serial.printf("Processing data: %s\n", data.c_str());
+
+    JsonDocument doc;
+    DeserializationError err = deserializeJson(doc, data);
+    JsonObject obj = doc.as<JsonObject>();
+
+    // Process gravitymon data
+    if (!obj[GRAVMON_GRAVITY].isNull()) {
+      String id = !obj[GRAVMON_ID].isNull() ? obj[GRAVMON_ID].as<String>() : "";
+      String token =
+          !obj[GRAVMON_TOKEN].isNull() ? obj[GRAVMON_TOKEN].as<String>() : "";
+      String name =
+          !obj[GRAVMON_NAME].isNull() ? obj[GRAVMON_NAME].as<String>() : "";
+      int interval =
+          !obj[GRAVMON_INTERVAL].isNull() ? obj[GRAVMON_INTERVAL].as<int>() : 0;
+      float temp = !obj[GRAVMON_TEMPERATURE].isNull()
+                       ? obj[GRAVMON_TEMPERATURE].as<float>()
+                       : 0.0;
+      String tempUnits = !obj[GRAVMON_TEMPERATURE_UNIT].isNull()
+                             ? obj[GRAVMON_TEMPERATURE_UNIT].as<String>()
+                             : "";
+      float gravity = !obj[GRAVMON_GRAVITY].isNull()
+                          ? obj[GRAVMON_GRAVITY].as<float>()
+                          : 0.0;
+      float angle =
+          !obj[GRAVMON_ANGLE].isNull() ? obj[GRAVMON_ANGLE].as<float>() : 0.0;
+      float battery = !obj[GRAVMON_BATTERY].isNull()
+                          ? obj[GRAVMON_BATTERY].as<float>()
+                          : 0.0;
+      int rssi = !obj[GRAVMON_RSSI].isNull() ? obj[GRAVMON_RSSI].as<int>() : 0;
+
+      std::unique_ptr<MeasurementBaseData> gravityData;
+      gravityData.reset(new GravityData(MeasurementSource::HttpPost, id, name,
+                                        token, temp, gravity, angle, battery, 0,
+                                        rssi, interval));
+
+      Log.info(F("WEB : Update data for gravitymon %s." CR),
+               gravityData->getId());
+      myMeasurementList.updateData(gravityData);
+    }
+
+    // Process pressuremon data
+    if (!obj[PRESSMON_PRESSURE].isNull()) {
+      String id =
+          !obj[PRESSMON_ID].isNull() ? obj[PRESSMON_ID].as<String>() : "";
+      String token =
+          !obj[PRESSMON_TOKEN].isNull() ? obj[PRESSMON_TOKEN].as<String>() : "";
+      String name =
+          !obj[PRESSMON_NAME].isNull() ? obj[PRESSMON_NAME].as<String>() : "";
+      int interval = !obj[PRESSMON_INTERVAL].isNull()
+                         ? obj[PRESSMON_INTERVAL].as<int>()
+                         : 0;
+      float temp = !obj[PRESSMON_TEMPERATURE].isNull()
+                       ? obj[PRESSMON_TEMPERATURE].as<float>()
+                       : 0.0;
+      String tempUnits = !obj[PRESSMON_PRESSURE_UNIT].isNull()
+                             ? obj[PRESSMON_PRESSURE_UNIT].as<String>()
+                             : "";
+      float pressure = !obj[PRESSMON_PRESSURE].isNull()
+                           ? obj[PRESSMON_PRESSURE].as<float>()
+                           : 0.0;
+      float pressure1 = !obj[PRESSMON_PRESSURE1].isNull()
+                            ? obj[PRESSMON_PRESSURE1].as<float>()
+                            : 0.0;
+      float battery = !obj[PRESSMON_BATTERY].isNull()
+                          ? obj[PRESSMON_BATTERY].as<float>()
+                          : 0.0;
+      int rssi =
+          !obj[PRESSMON_RSSI].isNull() ? obj[PRESSMON_RSSI].as<int>() : 0;
+
+      std::unique_ptr<MeasurementBaseData> pressureData;
+      pressureData.reset(new PressureData(MeasurementSource::HttpPost, id, name,
+                                          token, temp, pressure, pressure1,
+                                          battery, 0, rssi, interval));
+
+      Log.info(F("WEB : Update data for pressuremon %s." CR),
+               pressureData->getId());
+      myMeasurementList.updateData(pressureData);
+    }
+
+    _postData.pop();
+  }
 }
 
 #endif  // GATEWAY

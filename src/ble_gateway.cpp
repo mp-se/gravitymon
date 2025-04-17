@@ -158,23 +158,14 @@ void BleScanner::proccesGravitymonBeacon(const std::string &advertStringHex,
     char chip[20];
     snprintf(&chip[0], sizeof(chip), "%6x", chipId);
 
-    int idx = findGravitymonId(chip);
-    if (idx >= 0) {
-      GravitymonData &data = getGravitymonData(idx);
-      Log.info(F("BLE : Update gravitymon %s, %d." CR), chip, idx);
-      data.tempC = temp;
-      data.gravity = gravity;
-      data.angle = angle;
-      data.battery = battery;
-      data.id = chip;
-      data.address = address;
-      data.type = "Beacon";
-      data.setUpdated();
-    } else {
-      Log.error(
-          F("BLE : Max gravitymon devices reached - no more devices "
-            "available." CR));
-    }
+    std::unique_ptr<MeasurementBaseData> gravityData;
+    gravityData.reset(new GravityData(MeasurementSource::BleBeacon, chip, "",
+                                      "", temp, gravity, angle, battery, 0, 0,
+                                      0));
+
+    Log.info(F("BLE : Update data for gravitymon %s." CR),
+             gravityData->getId());
+    myMeasurementList.updateData(gravityData);
   }
 }
 
@@ -203,24 +194,13 @@ void BleScanner::processGravitymonEddystoneBeacon(
   char chip[20];
   snprintf(&chip[0], sizeof(chip), "%6x", chipId);
 
-  int idx = findGravitymonId(chip);
-  if (idx >= 0) {
-    GravitymonData &data = getGravitymonData(idx);
-    Log.info(F("BLE : Update gravitymon %s, %d." CR), chip, idx);
-    data.tempC = temp;
-    data.gravity = gravity;
-    data.angle = angle;
-    data.battery = battery;
-    data.id = chip;
+  std::unique_ptr<MeasurementBaseData> gravityData;
+  gravityData.reset(new GravityData(MeasurementSource::BleEddyStone, chip, "",
+                                    "", temp, gravity, angle, battery, 0, 0,
+                                    0));
 
-    data.address = address;
-    data.type = "EddyStone";
-    data.setUpdated();
-  } else {
-    Log.error(
-        F("BLE : Max gravitymon devices reached - no more devices "
-          "available." CR));
-  }
+  Log.info(F("BLE : Update data for gravitymon %s." CR), gravityData->getId());
+  myMeasurementList.updateData(gravityData);
 }
 
 void BleScanner::proccesPressuremonBeacon(const std::string &advertStringHex,
@@ -250,21 +230,14 @@ void BleScanner::proccesPressuremonBeacon(const std::string &advertStringHex,
     char chip[20];
     snprintf(&chip[0], sizeof(chip), "%6x", chipId);
 
-    int idx = findPressuremonId(chip);
-    if (idx >= 0) {
-      PressuremonData &data = getPressuremonData(idx);
-      Log.info(F("BLE : Update pressuremon %s, %d." CR), chip, idx);
-      data.tempC = temp;
-      data.pressure = pressure;
-      data.pressure1 = pressure1;
-      data.battery = battery;
-      data.id = chip;
-      data.address = address;
-      data.type = "Beacon";
-      data.setUpdated();
-    } else {
-      Log.error(F("BLE : Max devices reached - no more devices available." CR));
-    }
+    std::unique_ptr<MeasurementBaseData> pressureData;
+    pressureData.reset(new PressureData(MeasurementSource::BleBeacon, chip, "",
+                                        "", temp, pressure, pressure1, battery,
+                                        0, 0, 0));
+
+    Log.info(F("BLE : Update data for pressuremon %s." CR),
+             pressureData->getId());
+    myMeasurementList.updateData(pressureData);
   }
 }
 
@@ -293,24 +266,14 @@ void BleScanner::processPressuremonEddystoneBeacon(
   char chip[20];
   snprintf(&chip[0], sizeof(chip), "%6x", chipId);
 
-  int idx = findPressuremonId(chip);
-  if (idx >= 0) {
-    PressuremonData &data = getPressuremonData(idx);
-    Log.info(F("BLE : Update pressuremon %s, %d." CR), chip, idx);
-    data.tempC = temp;
-    data.pressure = pressure;
-    data.pressure1 = pressure1;
-    data.battery = battery;
-    data.id = chip;
+  std::unique_ptr<MeasurementBaseData> pressureData;
+  pressureData.reset(new PressureData(MeasurementSource::BleEddyStone, chip, "",
+                                      "", temp, pressure, pressure1, battery, 0,
+                                      0, 0));
 
-    data.address = address;
-    data.type = "EddyStone";
-    data.setUpdated();
-  } else {
-    Log.error(
-        F("BLE : Max pressuremon devices reached - no more devices "
-          "available." CR));
-  }
+  Log.info(F("BLE : Update data for pressuremon %s." CR),
+           pressureData->getId());
+  myMeasurementList.updateData(pressureData);
 }
 
 void BleScanner::proccesChamberBeacon(const std::string &advertStringHex,
@@ -335,18 +298,12 @@ void BleScanner::proccesChamberBeacon(const std::string &advertStringHex,
     char chip[20];
     snprintf(&chip[0], sizeof(chip), "%6x", chipId);
 
-    int idx = findChamberId(chip);
-    if (idx >= 0) {
-      ChamberData &data = getChamberData(idx);
-      data.chamberTempC = chamberTempC;
-      data.beerTempC = beerTempC;
-      data.id = chip;
-      data.address = address;
-      data.type = "Beacon";
-      data.setUpdated();
-    } else {
-      Log.error(F("BLE : Max devices reached - no more devices available." CR));
-    }
+    std::unique_ptr<MeasurementBaseData> chamberData;
+    chamberData.reset(new ChamberData(MeasurementSource::BleBeacon, chip,
+                                      chamberTempC, beerTempC, 0));
+
+    Log.info(F("BLE : Update data for chamber %s." CR), chamberData->getId());
+    myMeasurementList.updateData(chamberData);
   }
 }
 
@@ -376,26 +333,6 @@ bool BleScanner::scan() {
 
   _bleScan->clearResults();
 
-  // Mark all tilt data as invalid
-  for (int i = 0; i < NO_TILT_COLORS; i++) {
-    _tilt[i].updated = false;
-  }
-
-  // Mark all gravitymon data as invalid
-  for (int i = 0; i < NO_GRAVITYMON; i++) {
-    _gravitymon[i].updated = false;
-  }
-
-  // Mark all pressuremon data as invalid
-  for (int i = 0; i < NO_PRESSUREMON; i++) {
-    _pressuremon[i].updated = false;
-  }
-
-  // Mark all chamber data as invalid
-  for (int i = 0; i < NO_CHAMBER; i++) {
-    _chamber[i].updated = false;
-  }
-
   Log.notice(F("BLE : Starting %s scan." CR),
              _activeScan ? "ACTIVE" : "PASSIVE");
   _bleScan->setActiveScan(_activeScan);
@@ -408,14 +345,14 @@ bool BleScanner::scan() {
   return true;
 }
 
-TiltColor BleScanner::proccesTiltBeacon(const std::string &advertStringHex,
-                                        const int8_t &currentRSSI) {
+void BleScanner::proccesTiltBeacon(const std::string &advertStringHex,
+                                   const int8_t &currentRSSI) {
   TiltColor color;
 
   // Check that this is an iBeacon packet
   if (advertStringHex[0] != 0x4c || advertStringHex[1] != 0x00 ||
       advertStringHex[2] != 0x02 || advertStringHex[3] != 0x15)
-    return TiltColor::None;
+    return;
 
   // The advertisement string is the "manufacturer data" part of the
   // following: Advertised Device: Name: Tilt, Address: 88:c2:55:ac:26:81,
@@ -452,7 +389,7 @@ TiltColor BleScanner::proccesTiltBeacon(const std::string &advertStringHex,
 
   color = uuidToTiltColor(colorArray);
   if (color == TiltColor::None) {
-    return TiltColor::None;
+    return;
   }
 
   uint16_t temp = std::strtoul(tempArray, nullptr, 16);
@@ -461,25 +398,21 @@ TiltColor BleScanner::proccesTiltBeacon(const std::string &advertStringHex,
 
   float gravityFactor = 1000;
   float tempFactor = 1;
+  bool pro = false;
 
   if (gravity >= 5000) {  // check for tilt PRO
     gravityFactor = 10000;
     tempFactor = 10;
+    pro = true;
   }
 
-  // Log.notice(
-  //     F("BLE : Tilt data received Temp=%sF, SG=%s, TxPower=%d, Pro=%s" CR),
-  //     String(temp / tempFactor, 1).c_str(),
-  //     String(gravity / gravityFactor, 4).c_str(), txPower,
-  //     gravity >= 5000 ? "yes" : "no");
+  std::unique_ptr<MeasurementBaseData> tiltData;
+  tiltData.reset(new TiltData(MeasurementSource::BleBeacon, color,
+                              temp / tempFactor, gravity / gravityFactor,
+                              txPower, 0, pro));
 
-  TiltData &data = getTiltData(color);
-  data.gravity = gravity / gravityFactor;
-  data.tempF = temp / tempFactor;
-  data.txPower = txPower;
-  data.rssi = currentRSSI;
-  data.setUpdated();
-  return color;
+  Log.info(F("BLE : Update data for tilt %s." CR), tiltData->getId());
+  myMeasurementList.updateData(tiltData);
 }
 
 TiltColor BleScanner::uuidToTiltColor(std::string uuid) {
@@ -501,27 +434,6 @@ TiltColor BleScanner::uuidToTiltColor(std::string uuid) {
     return TiltColor::Pink;
   }
   return TiltColor::None;
-}
-
-const char *BleScanner::getTiltColorAsString(TiltColor col) {
-  if (col == TiltColor::Red) {
-    return "Red";
-  } else if (col == TiltColor::Green) {
-    return "Green";
-  } else if (col == TiltColor::Black) {
-    return "Black";
-  } else if (col == TiltColor::Purple) {
-    return "Purple";
-  } else if (col == TiltColor::Orange) {
-    return "Orange";
-  } else if (col == TiltColor::Blue) {
-    return "Blue";
-  } else if (col == TiltColor::Yellow) {
-    return "Yellow";
-  } else if (col == TiltColor::Pink) {
-    return "Pink";
-  }
-  return "";
 }
 
 #endif  // GATEWAY

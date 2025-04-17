@@ -40,6 +40,7 @@ void GravmonGatewayConfig::createJson(JsonObject& doc) {
   doc[CONFIG_GRAVITY_UNIT] = String(getGravityUnit());
   doc[CONFIG_TIMEZONE] = getTimezone();
   doc[CONFIG_BLE_ACTIVE_SCAN] = getBleActiveScan();
+  doc[CONFIG_BLE_ENABLE] = isBleEnable();
   doc[CONFIG_BLE_SCAN_TIME] = getBleScanTime();
   doc[CONFIG_PUSH_RESEND_TIME] = getPushResendTime();
   doc[CONFIG_PRESSURE_UNIT] = getPressureUnit();
@@ -68,12 +69,14 @@ void GravmonGatewayConfig::parseJson(JsonObject& doc) {
     String s = doc[CONFIG_GRAVITY_UNIT];
     setGravityUnit(s.charAt(0));
   }
-  if (!doc["gravity_format"].isNull()) { // Legacy support for gravity_format
+  if (!doc["gravity_format"].isNull()) {  // Legacy support for gravity_format
     String s = doc["gravity_format"];
     setGravityUnit(s.charAt(0));
   }
 
   if (!doc[CONFIG_TIMEZONE].isNull()) setTimezone(doc[CONFIG_TIMEZONE]);
+  if (!doc[CONFIG_BLE_ENABLE].isNull())
+    setBleEnable(doc[CONFIG_BLE_ENABLE].as<bool>());
   if (!doc[CONFIG_BLE_ACTIVE_SCAN].isNull())
     setBleActiveScan(doc[CONFIG_BLE_ACTIVE_SCAN].as<bool>());
   if (!doc[CONFIG_BLE_SCAN_TIME].isNull())

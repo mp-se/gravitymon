@@ -40,6 +40,8 @@ SOFTWARE.
 #endif
 #include <battery.hpp>
 #include <cstdio>
+#include <looptimer.hpp>
+#include <measurement.hpp>
 #include <uptime.hpp>
 
 constexpr auto CFG_FILENAME = "/gravitymon-gw.json";
@@ -65,12 +67,13 @@ GatewayWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 Display myDisplay;
 BatteryVoltage myBatteryVoltage;  // Needs to be defined but not used in gateway
+MeasurementList myMeasurementList;  // Data recevied from http or bluetooth
+LoopTimer controllerTimer(5000);
 
 // Define constats for this program
 bool sleepModeAlwaysSkip =
-    false;                // Needs to be defined but not used in gateway
-int interval = 1000;      // ms, time to wait between changes to output
-uint32_t loopMillis = 0;  // Used for main loop to run the code every _interval_
+    false;            // Needs to be defined but not used in gateway
+int interval = 1000;  // ms, time to wait between changes to output
 RunMode runMode = RunMode::measurementMode;
 
 struct LogEntry {
@@ -210,7 +213,7 @@ void setup() {
   }
 #endif
 
-  if (runMode == RunMode::measurementMode) {
+  if (runMode == RunMode::measurementMode && myConfig.isBleEnable()) {
     Log.notice(F("Main: Initialize ble scanner." CR));
     bleScanner.setScanTime(myConfig.getBleScanTime());
     bleScanner.setAllowActiveScan(myConfig.getBleActiveScan());
@@ -226,7 +229,6 @@ void setup() {
 #endif
   renderDisplayHeader();
   renderDisplayFooter();
-  loopMillis = millis();
 }
 
 void loop() {
@@ -307,154 +309,106 @@ void addChamberLogEntry(const char* id, tm timeinfo, float chamberTempC,
 
 void controller() {
   // Scan for ble beacons
-  bleScanner.setScanTime(myConfig.getBleScanTime());
-  bleScanner.setAllowActiveScan(myConfig.getBleActiveScan());
-  bleScanner.scan();
-  // bleScanner.waitForScan();
+  if (myConfig.isBleEnable()) {
+    bleScanner.setScanTime(myConfig.getBleScanTime());
+    bleScanner.setAllowActiveScan(myConfig.getBleActiveScan());
+    bleScanner.scan();
+  }
+
+  if (controllerTimer.hasExipred()) {
+    controllerTimer.reset();
+
+    BrewingPush push(&myConfig);
+
+    for (int i = 0; i < myMeasurementList.size(); i++) {
+      MeasurementEntry* entry = myMeasurementList.getMeasurementEntry(i);
+
+      switch (entry->getType()) {
+        case MeasurementType::Gravitymon: {
+          Log.notice("Loop: Processing Gravitymon data %d." CR, i);
+
+          if (entry->isUpdated() &&
+              (entry->getPushAge() > myConfig.getPushResendTime())) {
+            const GravityData* gd = entry->getGravityData();
+
+            addGravityLogEntry(gd->getId(), entry->getTimeinfoUpdated(),
+                               gd->getGravity(), gd->getTempC());
+
+            TemplatingEngine engine;
+
+            setupTemplateEngineGravityGateway(
+                engine, gd->getAngle(), gd->getGravity(), gd->getTempC(),
+                gd->getBattery(), gd->getInterval(), gd->getId(),
+                gd->getToken(), gd->getName());
+            push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY,
+                         myConfig.isHttpPostGravityEnable(),
+                         myConfig.isHttpPost2GravityEnable(),
+                         myConfig.isHttpGetGravityEnable(),
+                         myConfig.isInfluxdb2GravityEnable(),
+                         myConfig.isMqttGravityEnable());
+
+            entry->setPushed();
+          }
+        } break;
+
+        case MeasurementType::Pressuremon: {
+          Log.notice("Loop: Processing Pressuremon data %d." CR, i);
+
+          if (entry->isUpdated() &&
+              (entry->getPushAge() > myConfig.getPushResendTime())) {
+            const PressureData* pd = entry->getPressureData();
+
+            addPressureLogEntry(pd->getId(), entry->getTimeinfoUpdated(),
+                                pd->getPressure(), pd->getPressure1(),
+                                pd->getTempC());
+
+            TemplatingEngine engine;
+
+            setupTemplateEnginePressureGateway(
+                engine, pd->getPressure(), pd->getPressure1(), pd->getTempC(),
+                pd->getBattery(), pd->getInterval(), pd->getId(),
+                pd->getToken(), pd->getName());
+            push.sendAll(engine, BrewingPush::MeasurementType::PRESSURE,
+                         myConfig.isHttpPostPressureEnable(),
+                         myConfig.isHttpPost2PressureEnable(),
+                         myConfig.isHttpGetPressureEnable(),
+                         myConfig.isInfluxdb2PressureEnable(),
+                         myConfig.isMqttPressureEnable());
+
+            entry->setPushed();
+          }
+        } break;
+
+        case MeasurementType::Tilt:
+        case MeasurementType::TiltPro: {
+          Log.notice("Loop: Processing Tilt data %d." CR, i);
+
+#define ENABLE_TILT_SCANNING
 
 #if defined(ENABLE_TILT_SCANNING)
-  /*
-   * This part is for testing / debugging only, use Tiltbridge if you use Tilt
-   * as BLE transmission, will show detected tilt devices but dont send data.
-   */
-  for (int i = 0; i < NO_TILT_COLORS; i++) {
-    TiltData td = bleScanner.getTiltData((TiltColor)i);
+          //  This part is for testing / debugging only, use Tiltbridge if you
+          //  use Tilt
+          //  as BLE transmission, will show detected tilt devices but dont
+          //  send data.
 
-    if (td.updated && (td.getPushAge() > myConfig.getPushResendTime())) {
-      addGravityLogEntry(bleScanner.getTiltColorAsString((TiltColor)i),
-                         td.timeinfoUpdated, td.gravity, convertFtoC(td.tempF));
+          if (entry->isUpdated() &&
+              (entry->getPushAge() > myConfig.getPushResendTime())) {
+            const TiltData* pd = entry->getTiltData();
 
-      Log.notice(F("Main: Type=%s, Gravity=%F, Temp=%F." CR),
-                 bleScanner.getTiltColorAsString((TiltColor)i), td.gravity,
-                 convertFtoC(td.tempF));
+            addGravityLogEntry(pd->getId(), entry->getTimeinfoUpdated(),
+                               pd->getGravity(), pd->getTempC());
 
-      /*
-      push.sendAll(td.angle, td.gravity, td.tempC, td.battery, td.interval,
-                  td.id.c_str(), td.token.c_str(), td.name.c_str());
-      td.setPushed();
-      */
-    }
-  }
+            // TODO: Add push support
+
+            entry->setPushed();
+          }
 #endif
+        } break;
 
-  BrewingPush push(&myConfig);
-
-  // Process gravitymon from BLE
-  for (int i = 0; i < NO_GRAVITYMON; i++) {
-    GravitymonData& gmd = bleScanner.getGravitymonData(i);
-
-    if (gmd.updated && (gmd.getPushAge() > myConfig.getPushResendTime())) {
-      addGravityLogEntry(gmd.id.c_str(), gmd.timeinfoUpdated, gmd.gravity,
-                         gmd.tempC);
-
-      Log.notice(F("Main: Gravitymon Type=%s, Angle=%F Gravity=%F, Temp=%F, "
-                   "Battery=%F, "
-                   "Id=%s." CR),
-                 gmd.type.c_str(), gmd.angle, gmd.gravity, gmd.tempC,
-                 gmd.battery, gmd.id.c_str());
-
-      TemplatingEngine engine;
-
-      setupTemplateEngineGravityGateway(
-          engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
-          gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
-      push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
-
-      gmd.setPushed();
-    }
-  }
-
-  // Process gravitymon from HTTP
-  for (int i = 0; i < NO_GRAVITYMON; i++) {
-    GravitymonData& gmd = myWebServer.getGravitymonData(i);
-
-    if (gmd.updated && (gmd.getPushAge() > myConfig.getPushResendTime())) {
-      addGravityLogEntry(gmd.id.c_str(), gmd.timeinfoUpdated, gmd.gravity,
-                         gmd.tempC);
-
-      Log.notice(F("Main: Gravitymon Type=%s, Angle=%F Gravity=%F, Temp=%F, "
-                   "Battery=%F, "
-                   "Id=%s." CR),
-                 gmd.type.c_str(), gmd.angle, gmd.gravity, gmd.tempC,
-                 gmd.battery, gmd.id.c_str());
-
-      TemplatingEngine engine;
-
-      setupTemplateEngineGravityGateway(
-          engine, gmd.angle, gmd.gravity, gmd.tempC, gmd.battery, gmd.interval,
-          gmd.id.c_str(), gmd.token.c_str(), gmd.name.c_str());
-      push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
-
-      gmd.setPushed();
-    }
-  }
-
-  // Process pressuremon from BLE
-  for (int i = 0; i < NO_PRESSUREMON; i++) {
-    PressuremonData& pmd = bleScanner.getPressuremonData(i);
-
-    if (pmd.updated && (pmd.getPushAge() > myConfig.getPushResendTime())) {
-      addPressureLogEntry(pmd.id.c_str(), pmd.timeinfoUpdated, pmd.pressure,
-                          pmd.pressure1, pmd.tempC);
-
-      Log.notice(F("Main: Pressuremon Type=%s, Pressure=%F Pressure1=%F, "
-                   "Temp=%F, Battery=%F, "
-                   "Id=%s." CR),
-                 pmd.type.c_str(), pmd.pressure, pmd.pressure1, pmd.tempC,
-                 pmd.battery, pmd.id.c_str());
-
-      TemplatingEngine engine;
-
-      setupTemplateEnginePressureGateway(
-          engine, pmd.pressure, pmd.pressure1, pmd.tempC, pmd.battery,
-          pmd.interval, pmd.id.c_str(), pmd.token.c_str(), pmd.name.c_str());
-      push.sendAll(engine, BrewingPush::MeasurementType::PRESSURE);
-
-      pmd.setPushed();
-    }
-  }
-
-  // Process pressuremon from HTTP
-  for (int i = 0; i < NO_GRAVITYMON; i++) {
-    PressuremonData& pmd = myWebServer.getPressuremonData(i);
-
-    if (pmd.updated && (pmd.getPushAge() > myConfig.getPushResendTime())) {
-      addPressureLogEntry(pmd.id.c_str(), pmd.timeinfoUpdated, pmd.pressure,
-                          pmd.pressure1, pmd.tempC);
-
-      Log.notice(F("Main: Pressuremon Type=%s, Pressure=%F Pressure1=%F, "
-                   "Temp=%F, Battery=%F, "
-                   "Id=%s." CR),
-                 pmd.type.c_str(), pmd.pressure, pmd.pressure1, pmd.tempC,
-                 pmd.battery, pmd.id.c_str());
-
-      TemplatingEngine engine;
-
-      /* TODO: FIX PUSH OF PRESSURE DATA
-
-      setupTemplateEngineGravityGateway(engine, gmd.angle, gmd.gravity,
-      gmd.tempC, gmd.battery, gmd.interval, gmd.id.c_str(), gmd.token.c_str(),
-      gmd.name.c_str()); push.sendAll(engine,
-      BrewingPush::MeasurementType::GRAVITY);*/
-
-      pmd.setPushed();
-    }
-  }
-
-  // Process chamber from BLE
-  for (int i = 0; i < NO_CHAMBER; i++) {
-    ChamberData& cmd = bleScanner.getChamberData(i);
-
-    if (cmd.updated) {
-      addChamberLogEntry(cmd.id.c_str(), cmd.timeinfoUpdated, cmd.chamberTempC,
-                         cmd.beerTempC);
-
-      Log.notice(F("Main: Chamber Type=%s, ChamberTemp=%F BeerTemp=%F, "
-                   "Id=%s." CR),
-                 cmd.type.c_str(), cmd.chamberTempC, cmd.beerTempC,
-                 cmd.id.c_str());
-
-      // Just display the data, not pushing this
+        case MeasurementType::Chamber: {
+          Log.notice("Loop: Processing Chamber data %d." CR, i);
+        } break;
+      }
     }
   }
 }

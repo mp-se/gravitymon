@@ -29,9 +29,10 @@ SOFTWARE.
 GravitymonConfig myConfig("test", "test.cfg");
 #elif defined(PRESSUREMON)
 PressuremonConfig myConfig("test", "test.cfg");
-#elif defined(GATEWWAY)
-GatewayConfig myConfig("test", "test.cfg");
+#elif defined(GATEWAY)
+GravmonGatewayConfig myConfig("test", "test.cfg");
 #endif
+
 
 test(config_defaultValues) {
   float f = 4.15;
@@ -69,13 +70,6 @@ test(config_tempFormat) {
   assertEqual(myConfig.getTempFormat(), 'C');
 }
 
-test(config_batterySaving) {
-  myConfig.setBatterySaving(false);
-  assertEqual(myConfig.isBatterySaving(), false);
-  myConfig.setBatterySaving(true);
-  assertEqual(myConfig.isBatterySaving(), true);
-}
-
 test(config_tempSensorResolution) {
   myConfig.setTempSensorResolution(9); 
   assertEqual(myConfig.getTempSensorResolution(), 9);
@@ -87,6 +81,15 @@ test(config_tempSensorResolution) {
   myConfig.setTempSensorResolution(13);
   assertEqual(myConfig.getTempSensorResolution(), 12);
 }
+
+#if defined(GRAVITYMON) || defined(PRESSUREMON)
+test(config_batterySaving) {
+  myConfig.setBatterySaving(false);
+  assertEqual(myConfig.isBatterySaving(), false);
+  myConfig.setBatterySaving(true);
+  assertEqual(myConfig.isBatterySaving(), true);
+}
+#endif
 
 #if defined(GRAVITYMON)
 test(config_gravitymonValues) {

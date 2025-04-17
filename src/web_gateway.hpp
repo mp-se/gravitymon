@@ -26,35 +26,21 @@ SOFTWARE.
 
 #if defined(GATEWAY)
 
-#include <ble.hpp>
+#include <queue>
 #include <webserver.hpp>
 
 class GatewayWebServer : public BrewingWebServer {
  private:
-  GravitymonData _gravitymon[NO_GRAVITYMON];
-  PressuremonData _pressuremon[NO_PRESSUREMON];
+  std::queue<String> _postData;
 
  public:
   explicit GatewayWebServer(WebConfig *config);
-
   void webHandleRemotePost(AsyncWebServerRequest *request, JsonVariant &json);
-
-  int findGravitymonId(String id) {
-    for (int i = 0; i < NO_GRAVITYMON; i++)
-      if (_gravitymon[i].id == id || _gravitymon[i].id == "") return i;
-    return -1;
-  }
-  GravitymonData &getGravitymonData(int idx) { return _gravitymon[idx]; }
-
-  int findPRessuremonId(String id) {
-    for (int i = 0; i < NO_PRESSUREMON; i++)
-      if (_pressuremon[i].id == id || _pressuremon[i].id == "") return i;
-    return -1;
-  }
-  PressuremonData &getPressuremonData(int idx) { return _pressuremon[idx]; }
 
   void doWebStatus(JsonObject &obj);
   bool setupWebServer(const char *serviceName);
+
+  virtual void loop();
 };
 
 // Global instance created

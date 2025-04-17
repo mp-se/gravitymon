@@ -81,7 +81,7 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     String s = doc[CONFIG_GRAVITY_UNIT];
     setGravityUnit(s.charAt(0));
   }
-  if (!doc["gravity_format"].isNull()) { // Legacy support for gravity_format
+  if (!doc["gravity_format"].isNull()) {  // Legacy support for gravity_format
     String s = doc["gravity_format"];
     setGravityUnit(s.charAt(0));
   }

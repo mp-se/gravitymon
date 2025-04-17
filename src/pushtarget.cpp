@@ -101,14 +101,17 @@ BrewingPush::BrewingPush(BrewingConfig* BrewingConfig)
   _BrewingConfig = BrewingConfig;
 }
 
-void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
+void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
+                          bool enableHttpPost, bool enableHttpPost2,
+                          bool enableHttpGet, bool enableInfluxdb2,
+                          bool enableMqtt) {
   printHeap("PUSH");
   _http->setReuse(true);
 
   PushIntervalTracker intDelay;
   intDelay.load();
 
-  if (myConfig.hasTargetHttpPost() && intDelay.useHttp1()) {
+  if (myConfig.hasTargetHttpPost() && intDelay.useHttp1() && enableHttpPost) {
     PERF_BEGIN("push-http");
     String tpl;
 
@@ -127,7 +130,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
     PERF_END("push-http");
   }
 
-  if (myConfig.hasTargetHttpPost2() && intDelay.useHttp2()) {
+  if (myConfig.hasTargetHttpPost2() && intDelay.useHttp2() && enableHttpPost2) {
     PERF_BEGIN("push-http2");
     String tpl;
 
@@ -146,7 +149,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
     PERF_END("push-http2");
   }
 
-  if (myConfig.hasTargetHttpGet() && intDelay.useHttp3()) {
+  if (myConfig.hasTargetHttpGet() && intDelay.useHttp3() && enableHttpGet) {
     PERF_BEGIN("push-http3");
     String tpl;
 
@@ -165,7 +168,8 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
     PERF_END("push-http3");
   }
 
-  if (myConfig.hasTargetInfluxDb2() && intDelay.useInflux()) {
+  if (myConfig.hasTargetInfluxDb2() && intDelay.useInflux() &&
+      enableInfluxdb2) {
     PERF_BEGIN("push-influxdb2");
     String tpl;
 
@@ -184,7 +188,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type) {
     PERF_END("push-influxdb2");
   }
 
-  if (myConfig.hasTargetMqtt() && intDelay.useMqtt()) {
+  if (myConfig.hasTargetMqtt() && intDelay.useMqtt() && enableMqtt) {
     PERF_BEGIN("push-mqtt");
     String tpl;
 
