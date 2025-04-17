@@ -8,16 +8,23 @@ Checklist for configuring the device
 
 Install the firmware using one of the following options:
 
+- Gravitymon Web Flasher
 - Brewflasher via USB serial
 - Brewflasher WEB via USB serial
 - Esptool via USB serial
 - iSpindel web interface (only ESP8266)
 - Build from source and flash via VSCode + Platformio
 
+Gravitymon Web Flasher
+======================
+
+This web flasher is for all my projects and this one also support configuring wifi over the serial connection. 
+You will find it here: `Gravitymon WebFlasher <https://www.gravitymon.com/flasher/index.html/>`_  
+
 Brewflasher
 ===========
 
-The preferred option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works 
+Option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works 
 on both Windows and Mac. You can download the latest version from here: `Brewflasher <https://www.brewflasher.com/>`_ there is also a web based version 
 available here `Brewflasher WEB <https://web.brewflasher.com/>`_.
 

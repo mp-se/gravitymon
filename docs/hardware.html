@@ -1,15 +1,17 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en" data-content_root="">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Service Integration" href="services.html" /><link rel="prev" title="Format Templates" href="format-template.html" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Service Integration" href="services.html" /><link rel="prev" title="Format Templates" href="format-template.html" />
 
-    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Hardware - GravityMon v2.1.0</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
+        <title>Hardware - GravityMon v2.2.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
     
 
@@ -20,38 +22,38 @@
   --color-code-foreground: black;
   
   }
-  body[data-theme="dark"] {
-    --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-  }
-  @media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) {
+  @media not print {
+    body[data-theme="dark"] {
       --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   
     }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" />
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
     </svg>
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -60,15 +62,15 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -82,23 +84,64 @@
   </symbol>
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
 </svg>
@@ -112,6 +155,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -123,13 +168,14 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v2.1.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v2.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
         <button class="theme-toggle">
           <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
@@ -143,16 +189,16 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="index.html">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   <div class="sidebar-logo-container">
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v2.1.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.2.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -169,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Custom boards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
@@ -177,6 +224,7 @@
 
 </div>
 </div>
+
       </div>
       
     </div>
@@ -184,11 +232,20 @@
   <div class="main">
     <div class="content">
       <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
         <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+          
+
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
@@ -198,28 +255,35 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
-          <div class="section" id="hardware">
-<span id="id1"></span><h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h1>
+        <article role="main" id="furo-main-content">
+          <section id="hardware">
+<span id="id1"></span><h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading">¶</a></h1>
 <p>I’m not a hardware designer so I would recommend the following resources for more in depth information on this topic.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/cherryphilip74/iSpindel-PCB">Cherry Philip Hardware design</a></p></li>
 <li><p><a class="reference external" href="https://www.opensourcedistilling.com/ispindel">OpenSource Distilling</a></p></li>
 </ul>
-<div class="section" id="ispindle-based-on-esp8266">
-<h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this headline">¶</a></h2>
+<section id="custom-boards">
+<h2>Custom boards<a class="headerlink" href="#custom-boards" title="Permalink to this heading">¶</a></h2>
+<p>Besides the standard boards listed here (which are tested and verified by me) there is also a possibility
+to add custom boards which are included in the builds and made available through this gihub repository.
+A list of these boards can be found here <a class="reference internal" href="custom.html#custom-boards"><span class="std std-ref">Custom boards</span></a>. I cannot take full responsibility for these
+builds since I dont have access to these boards for testing.</p>
+</section>
+<section id="ispindle-based-on-esp8266">
+<h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this heading">¶</a></h2>
 <p>There are lots of resouces out there on how to build the hardware for an iSpindle so I will not go into details on that part. I typically use one of the
 excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip. Here is one of my standard builds using an esp8266.</p>
-<a class="reference internal image-reference" href="_images/ispindel_esp8266.jpg"><img alt="iSpindle esp8266" src="_images/ispindel_esp8266.jpg" style="width: 500px;"/></a>
-<div class="section" id="schema-for-esp8266-build">
-<h3>Schema for esp8266 build<a class="headerlink" href="#schema-for-esp8266-build" title="Permalink to this headline">¶</a></h3>
-<a class="reference internal image-reference" href="_images/schema_esp8266.png"><img alt="Schema esp8266" src="_images/schema_esp8266.png" style="width: 700px;"/></a>
-</div>
-</div>
-<div class="section" id="ispindle-based-on-esp32">
-<h2>iSpindle based on esp32<a class="headerlink" href="#ispindle-based-on-esp32" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/ispindel_esp8266.jpg"><img alt="iSpindle esp8266" src="_images/ispindel_esp8266.jpg" style="width: 500px;" /></a>
+<section id="schema-for-esp8266-build">
+<h3>Schema for esp8266 build<a class="headerlink" href="#schema-for-esp8266-build" title="Permalink to this heading">¶</a></h3>
+<a class="reference internal image-reference" href="_images/schema_esp8266.png"><img alt="Schema esp8266" src="_images/schema_esp8266.png" style="width: 700px;" /></a>
+</section>
+</section>
+<section id="ispindle-based-on-esp32">
+<h2>iSpindle based on esp32<a class="headerlink" href="#ispindle-based-on-esp32" title="Permalink to this heading">¶</a></h2>
 <p>Gravitymon supports a number of ESP32 boards that offers bluetooth support.</p>
-<a class="reference internal image-reference" href="_images/esp32_hardware.jpg"><img alt="iSpindle esp32 hardware options" src="_images/esp32_hardware.jpg" style="width: 500px;"/></a>
+<a class="reference internal image-reference" href="_images/esp32_hardware.jpg"><img alt="iSpindle esp32 hardware options" src="_images/esp32_hardware.jpg" style="width: 500px;" /></a>
 <ul class="simple">
 <li><p>esp32d1 mini, this was the first board i tried which is a smaller form factor of the first generetion esp32 with 2 cores. Slow on connecting to wifi is the main downside.</p></li>
 <li><p>esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support. Don’t buy v1.0 since that has a faulty wifi antenna.</p></li>
@@ -229,53 +293,53 @@ excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip.
 <p>It’s possible to use this PCB and mount an ESP32 mini on top of that (c3 or s2 are prefered). The esp32 d1 mini is a larger formfactor and can be hard to fit into the tube.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You need to add a resistor between A0 (Analog PIN) and ground of 470k. The reason is that the esp8266 has a build in resistor for a voltage divider
-which the esp32 does not have. So in order to get a valid voltage (less than 3.2V) on the A0 pin this is needed. Once the modification is done you might
+<p>You need to add a resistor between A0 (Analog PIN) and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider
+which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog pin this is needed. Once the modification is done you might
 need to adjust the voltage factor so the battery reading is correct.</p>
 </div>
-<div class="section" id="esp32c3-mini">
-<h3>ESP32c3 mini<a class="headerlink" href="#esp32c3-mini" title="Permalink to this headline">¶</a></h3>
+<section id="esp32c3-mini">
+<h3>ESP32c3 mini<a class="headerlink" href="#esp32c3-mini" title="Permalink to this heading">¶</a></h3>
 <p>This is model is fully supported by gravitymon.</p>
-<a class="reference internal image-reference" href="_images/ispindel_esp32c3.jpg"><img alt="Esp32c3 mini build" src="_images/ispindel_esp32c3.jpg" style="width: 500px;"/></a>
+<a class="reference internal image-reference" href="_images/ispindel_esp32c3.jpg"><img alt="Esp32c3 mini build" src="_images/ispindel_esp32c3.jpg" style="width: 500px;" /></a>
 <p>Here is an image of where I added the resistor for the voltage divider.</p>
-<a class="reference internal image-reference" href="_images/esp32_res.jpg"><img alt="Esp32c3 adding resistor as voltage dividier." src="_images/esp32_res.jpg" style="width: 500px;"/></a>
-</div>
-<div class="section" id="esp32s2-mini">
-<h3>ESP32s2 mini<a class="headerlink" href="#esp32s2-mini" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/esp32_res.jpg"><img alt="Esp32c3 adding resistor as voltage dividier." src="_images/esp32_res.jpg" style="width: 500px;" /></a>
+</section>
+<section id="esp32s2-mini">
+<h3>ESP32s2 mini<a class="headerlink" href="#esp32s2-mini" title="Permalink to this heading">¶</a></h3>
 <p>This is model is fully supported by gravitymon. Same setup as for ESP32C3 mini.</p>
-</div>
-<div class="section" id="esp32s3-mini">
-<h3>ESP32s3 mini<a class="headerlink" href="#esp32s3-mini" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="esp32s3-mini">
+<h3>ESP32s3 mini<a class="headerlink" href="#esp32s3-mini" title="Permalink to this heading">¶</a></h3>
 <p>This is model is fully supported by gravitymon. Same setup as for ESP32S2 mini.</p>
-</div>
-<div class="section" id="esp32-d1-mini">
-<h3>ESP32 d1 mini<a class="headerlink" href="#esp32-d1-mini" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="esp32-d1-mini">
+<h3>ESP32 d1 mini<a class="headerlink" href="#esp32-d1-mini" title="Permalink to this heading">¶</a></h3>
 <p>I would suggest that you try how it fits into the PET tube before soldering it to the PCB. Make sure that the battery is attached since this will be a really tight fit.</p>
-<a class="reference internal image-reference" href="_images/ispindel_esp32.jpg"><img alt="Esp32 mini build" src="_images/ispindel_esp32.jpg" style="width: 500px;"/></a>
-</div>
-<div class="section" id="schema-for-esp32-build">
-<h3>Schema for esp32 build<a class="headerlink" href="#schema-for-esp32-build" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ispindel_esp32.jpg"><img alt="Esp32 mini build" src="_images/ispindel_esp32.jpg" style="width: 500px;" /></a>
+</section>
+<section id="schema-for-esp32-build">
+<h3>Schema for esp32 build<a class="headerlink" href="#schema-for-esp32-build" title="Permalink to this heading">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This schema assumes that an ESP32 d1 mini (pin compatible with ESP8266). The ESP32 has two rows of pins but
 only the inner row is used. The main difference is the added resistor R3 so we get a voltage divider for measuring battery.
 The ESP8266 has a built in resistor thats not visible on the schema and this acts as a voltage divider.</p>
 </div>
-<a class="reference internal image-reference" href="_images/schema_esp32.png"><img alt="Schema esp32" src="_images/schema_esp32.png" style="width: 700px;"/></a>
-</div>
-<div class="section" id="adding-a-reed-magnetic-reset-switch">
-<h3>Adding a reed (magnetic) reset switch<a class="headerlink" href="#adding-a-reed-magnetic-reset-switch" title="Permalink to this headline">¶</a></h3>
+<a class="reference internal image-reference" href="_images/schema_esp32.png"><img alt="Schema esp32" src="_images/schema_esp32.png" style="width: 700px;" /></a>
+</section>
+<section id="adding-a-reed-magnetic-reset-switch">
+<h3>Adding a reed (magnetic) reset switch<a class="headerlink" href="#adding-a-reed-magnetic-reset-switch" title="Permalink to this heading">¶</a></h3>
 <p>A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to
 a magnet.</p>
-<a class="reference internal image-reference" href="_images/reed.jpg"><img alt="Reed switch" src="_images/reed.jpg" style="width: 400px;"/></a>
+<a class="reference internal image-reference" href="_images/reed.jpg"><img alt="Reed switch" src="_images/reed.jpg" style="width: 400px;" /></a>
 <p>If this is connected to the reset button a magnet can be used to trigger a reset of the device. The image below shows how
 I mounted the iSPINDLE PCB v4.0 just under the cap. The lower red circle shows the reset connection point for the reed switch.</p>
 <p>The reed switch is the glass tube visible under the esp8266.</p>
-<a class="reference internal image-reference" href="_images/reed_build.jpg"><img alt="Reed build" src="_images/reed_build.jpg" style="width: 400px;"/></a>
-</div>
-</div>
-<div class="section" id="floaty-hydrometer-diy-based-on-esp32-lite">
-<h2>Floaty Hydrometer DIY based on esp32 lite<a class="headerlink" href="#floaty-hydrometer-diy-based-on-esp32-lite" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/reed_build.jpg"><img alt="Reed build" src="_images/reed_build.jpg" style="width: 400px;" /></a>
+</section>
+</section>
+<section id="floaty-hydrometer-diy-based-on-esp32-lite">
+<h2>Floaty Hydrometer DIY based on esp32 lite<a class="headerlink" href="#floaty-hydrometer-diy-based-on-esp32-lite" title="Permalink to this heading">¶</a></h2>
 <p>Here we have another projects that has build a device similar to the iSpindel but based on an ESP32 instead.</p>
 <p>The setup is much simpler and attaches the GYRO to an ESP32 with a build in charger chip. GravityMon works on
 this hardware platform as well but there are a few limitations:</p>
@@ -283,9 +347,9 @@ this hardware platform as well but there are a few limitations:</p>
 <li><p>Temperature is read from the GYRO and cannot be changed. This works fine when measuring gravity but when in configuration mode the temperature will increase since it shows the chip temperature.</p></li>
 <li><p>No possibility to measure battery level (can be added with additional hardware).</p></li>
 </ul>
-</div>
-<div class="section" id="hardware-extensions">
-<h2>Hardware extensions<a class="headerlink" href="#hardware-extensions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="hardware-extensions">
+<h2>Hardware extensions<a class="headerlink" href="#hardware-extensions" title="Permalink to this heading">¶</a></h2>
 <p>GravityMon has implemented a few additions to the standard iSpindel hardware. It’s possible to channel the serial console to the TX/RX pins on the chip (these position also applies to all the
 ESP32 chips for iSpindel). You need a USB to TTL converter for this to work. This enables you to read the serial console even when on battery (newer chips dont have a diode to remove).</p>
 <div class="admonition note">
@@ -293,14 +357,14 @@ ESP32 chips for iSpindel). You need a USB to TTL converter for this to work. Thi
 <p>You need to compile the software using the -DUSE_SERIAL_PINS option to enable this feature.</p>
 </div>
 <p>Its also possible to force the device into configuration mode by connecting D7/D8 on the board during the startup sequence. This will enable the feature “gravity mode enabled during float”.</p>
-<a class="reference internal image-reference" href="_images/8266_pins.jpg"><img alt="iSpindel pins" src="_images/8266_pins.jpg" style="width: 500px;"/></a>
+<a class="reference internal image-reference" href="_images/8266_pins.jpg"><img alt="iSpindel pins" src="_images/8266_pins.jpg" style="width: 500px;" /></a>
 <p>For the floaty device pins 16/17 are used as TX/RX pins and the 13/15 pins are used to force the device into configuration mode. Pin 35 can also be connected to the battery voltage via an voltage divider to be able to read the battery voltage.</p>
-<a class="reference internal image-reference" href="_images/32lite_pins.jpg"><img alt="Floaty pins" src="_images/32lite_pins.jpg" style="width: 500px;"/></a>
+<a class="reference internal image-reference" href="_images/32lite_pins.jpg"><img alt="Floaty pins" src="_images/32lite_pins.jpg" style="width: 500px;" /></a>
 <p>It’s possible to modify the floaty hardware and add a real voltage measurement to enable more features in GravityMon. You connect the +5V to the + on the battery and GND to ground. The connection between the resistors
 is connected to PIN 35 on the floaty. You might need to correct the voltage factor after the modification to ensure the calculated measurement is correct.</p>
-<a class="reference internal image-reference" href="_images/floaty_voltage.jpg"><img alt="Voltage divider for floaty" src="_images/floaty_voltage.jpg" style="width: 200px;"/></a>
-</div>
-</div>
+<a class="reference internal image-reference" href="_images/floaty_voltage.jpg"><img alt="Voltage divider for floaty" src="_images/floaty_voltage.jpg" style="width: 200px;" /></a>
+</section>
+</section>
 
         </article>
       </div>
@@ -314,10 +378,10 @@ is connected to PIN 35 on the floaty. You might need to correct the voltage fact
                 </div>
                 <div class="title">Service Integration</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="format-template.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -328,11 +392,19 @@ is connected to PIN 35 on the floaty. You might need to correct the voltage fact
               </div>
             </a>
         </div>
-
-        <div class="related-information">
-              Copyright &#169; 2021-2025, Magnus Persson |
-          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2021-2025, Magnus Persson
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
         </div>
         
       </footer>
@@ -343,13 +415,14 @@ is connected to PIN 35 on the floaty. You might need to correct the voltage fact
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Hardware</a><ul>
+<li><a class="reference internal" href="#custom-boards">Custom boards</a></li>
 <li><a class="reference internal" href="#ispindle-based-on-esp8266">iSpindle based on esp8266</a><ul>
 <li><a class="reference internal" href="#schema-for-esp8266-build">Schema for esp8266 build</a></li>
 </ul>
@@ -376,12 +449,12 @@ is connected to PIN 35 on the floaty. You might need to correct the voltage fact
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/scripts/furo.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=90673249"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
     </body>
 </html>

@@ -1,15 +1,17 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en" data-content_root="">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Data Formats" href="data.html" /><link rel="prev" title="Hardware" href="hardware.html" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Data Formats" href="data.html" /><link rel="prev" title="Hardware" href="hardware.html" />
 
-    <meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Service Integration - GravityMon v2.1.0</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
+        <title>Service Integration - GravityMon v2.2.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
     
 
@@ -20,38 +22,38 @@
   --color-code-foreground: black;
   
   }
-  body[data-theme="dark"] {
-    --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-  }
-  @media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) {
+  @media not print {
+    body[data-theme="dark"] {
       --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   
     }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" />
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
     </svg>
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -60,15 +62,15 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -82,23 +84,64 @@
   </symbol>
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
 </svg>
@@ -112,6 +155,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -123,13 +168,14 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v2.1.0</div></a>
+      <a href="index.html"><div class="brand">GravityMon v2.2.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
         <button class="theme-toggle">
           <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
@@ -143,16 +189,16 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand centered" href="index.html">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   <div class="sidebar-logo-container">
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v2.1.0</span>
+  <span class="sidebar-brand-text">GravityMon v2.2.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -169,6 +215,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Custom boards</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling the software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
@@ -177,6 +224,7 @@
 
 </div>
 </div>
+
       </div>
       
     </div>
@@ -184,11 +232,20 @@
   <div class="main">
     <div class="content">
       <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
         <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+          
+
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
@@ -198,18 +255,19 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
-          <div class="section" id="service-integration">
-<span id="services"></span><h1>Service Integration<a class="headerlink" href="#service-integration" title="Permalink to this headline">¶</a></h1>
+        <article role="main" id="furo-main-content">
+          <section id="service-integration">
+<span id="services"></span><h1>Service Integration<a class="headerlink" href="#service-integration" title="Permalink to this heading">¶</a></h1>
 <p>This chapter contains a list of targets and what configuration is needed to interact with them.</p>
-<div class="section" id="brewfather">
-<h2>Brewfather<a class="headerlink" href="#brewfather" title="Permalink to this headline">¶</a></h2>
+<section id="brewfather">
+<h2>Brewfather<a class="headerlink" href="#brewfather" title="Permalink to this heading">¶</a></h2>
 <p>Brewfather is an all in one service that allows you to manage you recipes and brews.</p>
 <p><strong>Option 1</strong> - iSpindle Endpoint</p>
 <p>This option makes use of the standard http (1 or 2) endpoints in the push section. If you are using SG then the device name needs to end with [SG] or brewfather will assume
 that the data is in plato. You can also modify the format template using the following options:</p>
 <p>Update the following part <cite>“gravity”: ${gravity-plato},</cite> or <cite>“name” : “${mdns}[SG]”,`</cite></p>
 <p>This makes use of the standard format template, no changes needed.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://log.brewfather.net/ispindel?id=&lt;yourid&gt;
 </pre></div>
 </div>
@@ -217,40 +275,42 @@ that the data is in plato. You can also modify the format template using the fol
 <p><strong>Option 2</strong> - Custom Stream</p>
 <p>This option makes use of the http push endpoint with a custom format template. Just enter the http stream address found
 on brewfather, not other settings are needed. The stream endpoint URL has the following format:</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://log.brewfather.net/stream?id=&lt;yourid&gt;
 </pre></div>
 </div>
 <p>Documentation on this can be found under <a class="reference external" href="https://docs.brewfather.app/integrations/custom-stream">Brewfather Custom Endpoint</a></p>
 <p>The implementation is basically a http request with the following format template:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
-   "name": "${mdns}",
-   "temp": ${temp},
-   "aux_temp": 0,
-   "ext_temp": 0,
-   "temp_unit": "${temp-unit}",
-   "gravity": ${gravity},
-   "gravity_unit": "${gravity-unit}",
-   "pressure": 0,
-   "pressure_unit": "PSI",
-   "ph": 0,
-   "bpm": 0,
-   "comment": "",
-   "beer": "",
-   "battery": ${battery}
+   &quot;name&quot;: &quot;${mdns}&quot;,
+   &quot;temp&quot;: ${temp},
+   &quot;aux_temp&quot;: 0,
+   &quot;ext_temp&quot;: 0,
+   &quot;temp_unit&quot;: &quot;${temp-unit}&quot;,
+   &quot;gravity&quot;: ${gravity},
+   &quot;gravity_unit&quot;: &quot;${gravity-unit}&quot;,
+   &quot;pressure&quot;: 0,
+   &quot;pressure_unit&quot;: &quot;PSI&quot;,
+   &quot;ph&quot;: 0,
+   &quot;bpm&quot;: 0,
+   &quot;comment&quot;: &quot;&quot;,
+   &quot;beer&quot;: &quot;&quot;,
+   &quot;battery&quot;: ${battery}
 }
 </pre></div>
 </div>
-</div>
-<div class="section" id="fermentrack">
-<h2>Fermentrack<a class="headerlink" href="#fermentrack" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fermentrack">
+<h2>Fermentrack<a class="headerlink" href="#fermentrack" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://www.fermentrack.com">Fermentrack</a> is a open source brewing software to monitor and control fermentation.</p>
 <p>GravityMon can be installed and used as an iSpindle. Just register the device as an iSpindle and use the defined endpoint which normally is:</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">myservername</span><span class="o">/</span><span class="n">ispindel</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="ubidots">
-<h2>UBIdots<a class="headerlink" href="#ubidots" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ubidots">
+<h2>UBIdots<a class="headerlink" href="#ubidots" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://www.ubidots.com">UBIdots</a> is a IoT service that display data collected various sources. There is a limitation on this service where it can only handle 10 variables per device so
 you might need to reduce the number of values sent to the service. It will also treat every parameter as a number unless you create a custom device type and explicit define the string values
 as text. This will require a paid subscription (as I interpret the documentation). The example format below will only send numbers so that should work fine with the paid subscription.</p>
@@ -258,12 +318,14 @@ as text. This will require a paid subscription (as I interpret the documentation
 Swap the text &lt;devicename&gt; with the name you want to show in ubidots.</p>
 <p><strong>Option 1</strong> - token as an URL parameter</p>
 <p>Enter the following as URL:</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://industrial.api.ubidots.com/api/v1.6/devices/&lt;devicename&gt;/?token=&lt;api-token&gt;
 </pre></div>
 </div>
 <p>This is the less secure option.</p>
 <p><strong>Option 2</strong> - token as the http header</p>
 <p>Enter the following as URL, use either standard or ssl.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">industrial</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">ubidots</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="mf">.6</span><span class="o">/</span><span class="n">devices</span><span class="o">/&lt;</span><span class="n">devicename</span><span class="o">&gt;</span>
 <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">industrial</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">ubidots</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">v1</span><span class="mf">.6</span><span class="o">/</span><span class="n">devices</span><span class="o">/&lt;</span><span class="n">devicename</span><span class="o">&gt;</span>
 </pre></div>
@@ -276,17 +338,17 @@ Swap the text &lt;devicename&gt; with the name you want to show in ubidots.</p>
 <p>Even though ubidots can handle the default iSpindle format it probably better to just post the data you want. This is an example of a
 format template that can be used. For information on customizing the format see <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
-   "temperature": ${temp},
-   "gravity": ${gravity},
-   "angle": ${angle},
-   "battery": ${battery},
-   "RSSI": ${rssi}
+   &quot;temperature&quot;: ${temp},
+   &quot;gravity&quot;: ${gravity},
+   &quot;angle&quot;: ${angle},
+   &quot;battery&quot;: ${battery},
+   &quot;RSSI&quot;: ${rssi}
 }
 </pre></div>
 </div>
-</div>
-<div class="section" id="home-assistant">
-<h2>Home Assistant<a class="headerlink" href="#home-assistant" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="home-assistant">
+<h2>Home Assistant<a class="headerlink" href="#home-assistant" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://www.homeassistant.io">HomeAssistant</a> is a platform for home automation and can collect sensor data
 from multiple devices.</p>
 <p>This setup uses the MQTT integration with home assistant to collect values from the device.</p>
@@ -295,20 +357,21 @@ from multiple devices.</p>
 device is named <cite>gravmon2</cite></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mqtt</span><span class="p">:</span>
    <span class="n">sensor</span><span class="p">:</span>
-      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">"Gravmon2-Gravity"</span>
-         <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/gravity"</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Gravmon2-Gravity&quot;</span>
+         <span class="n">state_topic</span><span class="p">:</span> <span class="s2">&quot;gravmon/gravmon2/gravity&quot;</span>
          <span class="n">unique_id</span><span class="p">:</span> <span class="n">gravmon2_grav</span>
-         <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">"SG"</span>
-      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">"Gravmon2-RSSI"</span>
-         <span class="n">state_topic</span><span class="p">:</span> <span class="s2">"gravmon/gravmon2/rssi"</span>
+         <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">&quot;SG&quot;</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Gravmon2-RSSI&quot;</span>
+         <span class="n">state_topic</span><span class="p">:</span> <span class="s2">&quot;gravmon/gravmon2/rssi&quot;</span>
          <span class="n">unique_id</span><span class="p">:</span> <span class="n">gravmon2_rssi</span>
-         <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">"dBm"</span>
+         <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="s2">&quot;dBm&quot;</span>
 </pre></div>
 </div>
 <p>Enter the name of the MQTT server in Home Assistant in the URL. You might need to install that option
 first. This is the format needed to submit the data to the correct topics as needed above. You can add as
 many sensors / topics as you want. It’s also possible that you will need to create a user and supply the
 username / password to be able to publish messages on a topic.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: MQTT</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>gravmon/${mdns}/gravity:${gravity}|
 gravmon/${mdns}/rssi:${rssi}|
 gravmon/${mdns}/battery:${battery}|
@@ -319,6 +382,7 @@ gravmon/${mdns}/tilt:${tilt}|
 <p><strong>option 2</strong> - Autodiscover using HA automation</p>
 <p>Replace the ${key} with data applicable to your device. Add this as an automation script (edit in yaml).
 It should show up as an entity under the MQTT integration. If not, check the logfiles for any parsing errors.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: MQTT</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>alias: gravmon_${id}
 sequence:
   - service: mqtt.publish
@@ -327,9 +391,9 @@ sequence:
       retain: true
       topic: homeassistant/sensor/gravmon_${id}/gravity/config
       payload: &gt;-
-        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
-        "uniq_id":"${id}_grav", "name":"gravity",
-        "unit_of_meas":"${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"
+        {&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},
+        &quot;uniq_id&quot;:&quot;${id}_grav&quot;, &quot;name&quot;:&quot;gravity&quot;,
+        &quot;unit_of_meas&quot;:&quot;${gravity-unit}&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/gravity&quot;
         }
   - service: mqtt.publish
     data:
@@ -337,35 +401,35 @@ sequence:
       retain: true
       topic: homeassistant/sensor/gravmon_${id}/temperature/config
       payload: &gt;-
-        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
-        "uniq_id":"${id}_temp","name":"temperature",
-        "dev_cla":"temperature","unit_of_meas":"°${temp-unit}","stat_t":"gravmon/${mdns}/temperature"
+        {&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},
+        &quot;uniq_id&quot;:&quot;${id}_temp&quot;,&quot;name&quot;:&quot;temperature&quot;,
+        &quot;dev_cla&quot;:&quot;temperature&quot;,&quot;unit_of_meas&quot;:&quot;°${temp-unit}&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/temperature&quot;
         }
   - service: mqtt.publish
     data:
       retain: true
       topic: homeassistant/sensor/gravmon_${id}/rssi/config
       payload: &gt;-
-        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
-        "uniq_id":"${id}_rssi","name":"rssi",
-        "dev_cla":"signal_strength","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"
+        {&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},
+        &quot;uniq_id&quot;:&quot;${id}_rssi&quot;,&quot;name&quot;:&quot;rssi&quot;,
+        &quot;dev_cla&quot;:&quot;signal_strength&quot;,&quot;unit_of_meas&quot;:&quot;dBm&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/rssi&quot;
         }
 - service: mqtt.publish
    data:
       retain: true
       topic: homeassistant/sensor/gravmon_${id}/tilt/config
       payload: &gt;-
-        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
-        "uniq_id":"${id}_tilt","name":"tilt","stat_t":"gravmon/${mdns}/tilt"
+        {&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},
+        &quot;uniq_id&quot;:&quot;${id}_tilt&quot;,&quot;name&quot;:&quot;tilt&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/tilt&quot;
         }
 - service: mqtt.publish
    data:
       retain: true
       topic: homeassistant/sensor/gravmon_${id}/battery/config
       payload: &gt;-
-        {"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},
-        "uniq_id":"${id}_batt","name":"battery",
-        "dev_cla":"voltage","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"
+        {&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},
+        &quot;uniq_id&quot;:&quot;${id}_batt&quot;,&quot;name&quot;:&quot;battery&quot;,
+        &quot;dev_cla&quot;:&quot;voltage&quot;,&quot;unit_of_meas&quot;:&quot;V&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/battery&quot;
         }
 mode: restart
 </pre></div>
@@ -382,21 +446,22 @@ template will create two sensors and update the values for them.</p>
 <p>This method is not recommended for an ESP8266 since the low RAM memory will not be enough and there is a high probability that the device
 will crash insted. Testing shows that more than 1000 characters of data will likley crash the device.</p>
 </div>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: MQTT</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>gravmon/${mdns}/temperature:${temp}|
 gravmon/${mdns}/gravity:${gravity}|
 gravmon/${mdns}/rssi:${rssi}|
 gravmon/${mdns}/tilt:${tilt}|
 gravmon/${mdns}/battery:${battery}|
-homeassistant/sensor/gravmon_${id}/temperature/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_temp","name":"temperature","dev_cla":"temperature","unit_of_meas":"°${temp-unit}","stat_t":"gravmon/${mdns}/temperature"}|
-homeassistant/sensor/gravmon_${id}/gravity/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_grav","name":"gravity","unit_of_meas":" ${gravity-unit}","stat_t":"gravmon/${mdns}/gravity"}|
-homeassistant/sensor/gravmon_${id}/rssi/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_rssi","name":"rssi","dev_cla":"signal_strength","unit_of_meas":"dBm","stat_t":"gravmon/${mdns}/rssi"}|
-homeassistant/sensor/gravmon_${id}/tilt/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_tilt","name":"tilt","stat_t":"gravmon/${mdns}/tilt"}|
-homeassistant/sensor/gravmon_${id}/battery/config:{"dev":{"name":"${mdns}","mdl":"gravmon","sw":"${app-ver}","ids":"${id}"},"uniq_id":"${id}_batt","name":"battery","dev_cla":"voltage","unit_of_meas":"V","stat_t":"gravmon/${mdns}/battery"}|
+homeassistant/sensor/gravmon_${id}/temperature/config:{&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},&quot;uniq_id&quot;:&quot;${id}_temp&quot;,&quot;name&quot;:&quot;temperature&quot;,&quot;dev_cla&quot;:&quot;temperature&quot;,&quot;unit_of_meas&quot;:&quot;°${temp-unit}&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/temperature&quot;}|
+homeassistant/sensor/gravmon_${id}/gravity/config:{&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},&quot;uniq_id&quot;:&quot;${id}_grav&quot;,&quot;name&quot;:&quot;gravity&quot;,&quot;unit_of_meas&quot;:&quot; ${gravity-unit}&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/gravity&quot;}|
+homeassistant/sensor/gravmon_${id}/rssi/config:{&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},&quot;uniq_id&quot;:&quot;${id}_rssi&quot;,&quot;name&quot;:&quot;rssi&quot;,&quot;dev_cla&quot;:&quot;signal_strength&quot;,&quot;unit_of_meas&quot;:&quot;dBm&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/rssi&quot;}|
+homeassistant/sensor/gravmon_${id}/tilt/config:{&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},&quot;uniq_id&quot;:&quot;${id}_tilt&quot;,&quot;name&quot;:&quot;tilt&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/tilt&quot;}|
+homeassistant/sensor/gravmon_${id}/battery/config:{&quot;dev&quot;:{&quot;name&quot;:&quot;${mdns}&quot;,&quot;mdl&quot;:&quot;gravmon&quot;,&quot;sw&quot;:&quot;${app-ver}&quot;,&quot;ids&quot;:&quot;${id}&quot;},&quot;uniq_id&quot;:&quot;${id}_batt&quot;,&quot;name&quot;:&quot;battery&quot;,&quot;dev_cla&quot;:&quot;voltage&quot;,&quot;unit_of_meas&quot;:&quot;V&quot;,&quot;stat_t&quot;:&quot;gravmon/${mdns}/battery&quot;}|
 </pre></div>
 </div>
-</div>
-<div class="section" id="brewer-s-friend">
-<h2>Brewer’s Friend<a class="headerlink" href="#brewer-s-friend" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="brewer-s-friend">
+<h2>Brewer’s Friend<a class="headerlink" href="#brewer-s-friend" title="Permalink to this heading">¶</a></h2>
 <p>Brewer’s friend is an all in one service that allows you to manage you recipes and brews.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -405,6 +470,7 @@ the available documentation. If this works please let</p>
 </div>
 <p>You can find you API key when logged in to the service. Follow these <a class="reference external" href="https://docs.brewersfriend.com/devices/ispindel">instructions</a></p>
 <p><strong>Note there are different URLs if you are using plato or specific gravity!</strong></p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">log</span><span class="o">.</span><span class="n">brewersfriend</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ispindel</span><span class="o">/</span><span class="p">[</span><span class="n">API</span> <span class="n">KEY</span><span class="p">]</span>
 <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">log</span><span class="o">.</span><span class="n">brewersfriend</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ispindel_sg</span><span class="o">/</span><span class="p">[</span><span class="n">API</span> <span class="n">KEY</span><span class="p">]</span>
 </pre></div>
@@ -412,56 +478,59 @@ the available documentation. If this works please let</p>
 <p>From what I can read in the documentation you need to add the API key as a token as well. This can be done using a custom
 format for the endpoint. Just add you API key after token.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
- "name" : "${mdns}",
- "ID": "${id}",
- "token" : "[API KEY]",
- "interval": ${sleep-interval},
- "temperature": ${temp},
- "temp_units": "${temp-unit}",
- "gravity": ${gravity},
- "angle": ${angle},
- "battery": ${battery},
- "RSSI": ${rssi}
+ &quot;name&quot; : &quot;${mdns}&quot;,
+ &quot;ID&quot;: &quot;${id}&quot;,
+ &quot;token&quot; : &quot;[API KEY]&quot;,
+ &quot;interval&quot;: ${sleep-interval},
+ &quot;temperature&quot;: ${temp},
+ &quot;temp_units&quot;: &quot;${temp-unit}&quot;,
+ &quot;gravity&quot;: ${gravity},
+ &quot;angle&quot;: ${angle},
+ &quot;battery&quot;: ${battery},
+ &quot;RSSI&quot;: ${rssi}
 }
 </pre></div>
 </div>
-</div>
-<div class="section" id="brewspy">
-<h2>Brewspy<a class="headerlink" href="#brewspy" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="brewspy">
+<h2>Brewspy<a class="headerlink" href="#brewspy" title="Permalink to this heading">¶</a></h2>
 <p>BrewSpy is a service that can show the history and manage the brew.</p>
 <p>You need to enter the Token found in brewspy. The field is found under the field for http configuration.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">brew</span><span class="o">-</span><span class="n">spy</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">ispindel</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="thingspeak">
-<h2>Thingspeak<a class="headerlink" href="#thingspeak" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="thingspeak">
+<h2>Thingspeak<a class="headerlink" href="#thingspeak" title="Permalink to this heading">¶</a></h2>
 <p>Thingspeak is an IoT platform for receiving data which can be visualized.</p>
 <p>In order to use this platform you need to create a channel (channel = device) and get the APIKEY for
 writing to the channel. Each channel can handle up to 8 measurements. In the http field enter the following URL.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="o">.</span><span class="n">thingspeak</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">update</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
 <p>You also need to create a custom format for the selected endpoint where the field1-field8 contains the data
 you want to include. The example below sends 5 different values to the channel identified by the API key.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
-   "api_key": "&lt;your write api key for channel&gt;",
-   "field1": ${gravity},
-   "field2": ${temp},
-   "field3": ${angle},
-   "field4": ${battery},
-   "field5": ${rssi}
+   &quot;api_key&quot;: &quot;&lt;your write api key for channel&gt;&quot;,
+   &quot;field1&quot;: ${gravity},
+   &quot;field2&quot;: ${temp},
+   &quot;field3&quot;: ${angle},
+   &quot;field4&quot;: ${battery},
+   &quot;field5&quot;: ${rssi}
 }
 </pre></div>
 </div>
-</div>
-<div class="section" id="blynk-io">
-<h2>Blynk.io<a class="headerlink" href="#blynk-io" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="blynk-io">
+<h2>Blynk.io<a class="headerlink" href="#blynk-io" title="Permalink to this heading">¶</a></h2>
 <p>Blynk is an IoT service which can be updated via http get. It also has an mobile device that can be used to show the data.</p>
 <p>In order to use this platform you need to create a device which can be used to receive the data. Each device will have a
 unique token that is used to identify it. You need to use the HTTP GET option (http-3) on the device for this to work. Enter the
 following URL in the UI. This will allow us to update several data points at once. I usually enter the token in the <code class="docutils literal notranslate"><span class="pre">token2</span></code> field
 so the format template does not contain any sensitive data and it’s easier to switch to another device.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP GET</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">blynk</span><span class="o">.</span><span class="n">cloud</span><span class="o">/</span><span class="n">external</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">batch</span><span class="o">/</span><span class="n">update</span>
 </pre></div>
 </div>
@@ -471,9 +540,9 @@ starting with a <code class="docutils literal notranslate"><span class="pre">?</
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>?token=${token2}&amp;v1=${temp}&amp;v2=${gravity}&amp;v3=${angle}
 </pre></div>
 </div>
-</div>
-<div class="section" id="brewpi-remix">
-<h2>BrewPi Remix<a class="headerlink" href="#brewpi-remix" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="brewpi-remix">
+<h2>BrewPi Remix<a class="headerlink" href="#brewpi-remix" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://brewpiremix.com">BrewPi Remix</a> is a temperature fermentation controller that runs on a Pi and an Arduino or ESP8266 microcontroller.
 BrewPi Remix can recieve SG, Voltage and Temperature from Gravitymon.</p>
 <ul class="simple">
@@ -499,52 +568,56 @@ BrewPi Remix can recieve SG, Voltage and Temperature from Gravitymon.</p>
 <ul class="simple">
 <li><p>In Gravitymon, add push settings in: Configuration –&gt; Push settings –&gt; HTTP 1 (POST)</p></li>
 </ul>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">ip</span><span class="o">-</span><span class="n">address</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">your</span><span class="o">-</span><span class="n">BrewPi</span><span class="o">&gt;/</span><span class="n">brewpi</span><span class="o">-</span><span class="n">api</span><span class="o">.</span><span class="n">php</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Save settings and run a test push: (Configuration –&gt; Test push –&gt; Test)</p></li>
 </ul>
-</div>
-<div class="section" id="brewpiless">
-<h2>Brewpiless<a class="headerlink" href="#brewpiless" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="brewpiless">
+<h2>Brewpiless<a class="headerlink" href="#brewpiless" title="Permalink to this heading">¶</a></h2>
 <p>If you connect the device to the brewpiless access point there is not way to access the user interface for configuration so it’s recommended to connect the device to your normal network.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <p>The device need to have a name starting with iSpindle, for example <cite>iSpindel000</cite>. Set the URL for one of the http POST targets to <cite>http://ip/gravity</cite> where ip is the ip address of Brewpiless.</p>
-</div>
-<div class="section" id="brewblox">
-<h2>BrewBlox<a class="headerlink" href="#brewblox" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="brewblox">
+<h2>BrewBlox<a class="headerlink" href="#brewblox" title="Permalink to this heading">¶</a></h2>
 <p>To send iSpindel data to brewblox over mqtt you need to modify the format template to match the expected format. Once you have configured the mqtt information you also need to update the format template
 for this target.</p>
 <p>This format template will post the expected json document on the topic, don’t forget the <cite>|</cite> character at the end of the line which is needed to parse the payload. The first to words are the topic
 name and after the first <cite>:</cite> this is the json payload. Text within the brackets will be used as the unit for the value and degC is displayed as °C. You can add other parameters under the data section
 in the json document if you need other values as well.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>brewcast/history:{"key":"${mdns}","data":{"Temperature[degC]": ${temp-c},"Temperature[degF]": ${temp-f},"Battery[V]":${battery},"Tilt[deg]":${angle},"Rssi[dBm]":${rssi},"SG":${gravity-sg},"Plato":${gravity-plato}}}|
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: MQTT</span></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>brewcast/history:{&quot;key&quot;:&quot;${mdns}&quot;,&quot;data&quot;:{&quot;Temperature[degC]&quot;: ${temp-c},&quot;Temperature[degF]&quot;: ${temp-f},&quot;Battery[V]&quot;:${battery},&quot;Tilt[deg]&quot;:${angle},&quot;Rssi[dBm]&quot;:${rssi},&quot;SG&quot;:${gravity-sg},&quot;Plato&quot;:${gravity-plato}}}|
 </pre></div>
 </div>
 <p>The json message on the mqtt topic  would look like this:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gravitymon"</span><span class="p">,</span><span class="w"></span>
-<span class="w">   </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"Temperature[degC]"</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"Temperature[degF]"</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"Battery[V]"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.1</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"Tilt[deg]"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"Rssi[dBm]"</span><span class="p">:</span><span class="w"> </span><span class="mi">-78</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"SG"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"Plato"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">   </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gravitymon&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Temperature[degC]&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Temperature[degF]&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Battery[V]&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Tilt[deg]&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Rssi[dBm]&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-78</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;SG&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Plato&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="bierbot-bricks">
-<h2>BierBot Bricks<a class="headerlink" href="#bierbot-bricks" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="bierbot-bricks">
+<h2>BierBot Bricks<a class="headerlink" href="#bierbot-bricks" title="Permalink to this heading">¶</a></h2>
 <p>For this service you need to change the following for it to work.</p>
 <ul class="simple">
 <li><p>Set Interval to <code class="docutils literal notranslate"><span class="pre">910</span></code> seconds (This service will no accept data more often than 15 min)</p></li>
 <li><p>Set token to your <code class="docutils literal notranslate"><span class="pre">API</span> <span class="pre">KEY</span></code></p></li>
 </ul>
 <p>Enter the following URL for HTTP POST 1 target</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">brewbricks</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">iot</span><span class="o">/</span><span class="n">v1</span>
 </pre></div>
 </div>
@@ -554,16 +627,16 @@ in the json document if you need other values as well.</p>
 </div>
 <p>Finally add the following format template to HTTP POST 1</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>{
-   "apikey": "${token}",
-   "type":"gravitymon",
-   "brand":"wemos_d1_mini",
-   "version":"${app-ver}",
-   "chipid":"${id}",
-   "s_number_wort_0":${gravity-plato},
-   "s_number_temp_0":${temp-c},
-   "s_number_voltage_0":${battery},
-   "s_number_wifi_0":${rssi},
-   "s_number_tilt_0":${tilt}
+   &quot;apikey&quot;: &quot;${token}&quot;,
+   &quot;type&quot;:&quot;gravitymon&quot;,
+   &quot;brand&quot;:&quot;wemos_d1_mini&quot;,
+   &quot;version&quot;:&quot;${app-ver}&quot;,
+   &quot;chipid&quot;:&quot;${id}&quot;,
+   &quot;s_number_wort_0&quot;:${gravity-plato},
+   &quot;s_number_temp_0&quot;:${temp-c},
+   &quot;s_number_voltage_0&quot;:${battery},
+   &quot;s_number_wifi_0&quot;:${rssi},
+   &quot;s_number_tilt_0&quot;:${tilt}
 }
 </pre></div>
 </div>
@@ -574,8 +647,8 @@ small RAM size on that board Its likley to crash when using SSL and the web serv
 <p>To test this set a short sleep interval and tilt the device so it goes into gravity mode. If you have issues you can
 check the error log for any HTTP errors.</p>
 </div>
-</div>
-</div>
+</section>
+</section>
 
         </article>
       </div>
@@ -589,10 +662,10 @@ check the error log for any HTTP errors.</p>
                 </div>
                 <div class="title">Data Formats</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="hardware.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -603,11 +676,19 @@ check the error log for any HTTP errors.</p>
               </div>
             </a>
         </div>
-
-        <div class="related-information">
-              Copyright &#169; 2021-2025, Magnus Persson |
-          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2021-2025, Magnus Persson
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
         </div>
         
       </footer>
@@ -618,7 +699,7 @@ check the error log for any HTTP errors.</p>
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -648,12 +729,12 @@ check the error log for any HTTP errors.</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/scripts/furo.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=90673249"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
     </body>
 </html>
