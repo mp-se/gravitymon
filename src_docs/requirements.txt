@@ -1,0 +1,6 @@
+sphinx==7.1.2
+furo==2024.8.6
+#docutils
+#pygments
+sphinx-copybutton==0.5.2
+sphinx_design==0.6.1

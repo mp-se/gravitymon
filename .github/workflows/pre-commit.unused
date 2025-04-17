@@ -1,5 +1,4 @@
 # name: pre-commit
-
 # on:
 #   pull_request:
 #   push:
@@ -7,7 +6,6 @@
 #       - master
 #       - dev
 #       - '2.0.0-fwk'
-
 # jobs:
 #   pre-commit:
 #     runs-on: ubuntu-latest

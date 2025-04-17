@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ class HistoryLog {
  public:
   struct LogEntry {
     float _runTime;
-    float _gravity;
+    float _measurement;
     int _sleepTime;
   };
 
@@ -46,7 +46,7 @@ class HistoryLog {
 
  public:
   explicit HistoryLog(String fName);
-  void addLog(float runTime, float gravity, int sleepTime);
+  void addLog(float runTime, float measurement, int sleepTime);
   const LogEntry& getAverage() { return _average; }
 };
 

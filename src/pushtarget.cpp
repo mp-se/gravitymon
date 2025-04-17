@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ SOFTWARE.
 #include <MQTT.h>
 
 #include <battery.hpp>
-#include <config.hpp>
+#include <config_gravitymon.hpp>
 #include <cstdio>
 #include <helper.hpp>
 #include <main.hpp>
@@ -36,73 +36,6 @@ SOFTWARE.
 #include <pushtarget.hpp>
 #include <templating.hpp>
 constexpr auto PUSHINT_FILENAME = "/push.dat";
-
-// Use iSpindle format for compatibility, HTTP POST
-const char iSpindleFormat[] PROGMEM =
-    "{"
-    "\"name\": \"${mdns}\", "
-    "\"ID\": \"${id}\", "
-    "\"token\": \"${token}\", "
-    "\"interval\": ${sleep-interval}, "
-    "\"temperature\": ${temp}, "
-    "\"temp_units\": \"${temp-unit}\", "
-    "\"gravity\": ${gravity}, "
-    "\"angle\": ${angle}, "
-    "\"battery\": ${battery}, "
-    "\"RSSI\": ${rssi}, "
-    "\"corr-gravity\": ${corr-gravity}, "
-    "\"gravity-unit\": \"${gravity-unit}\", "
-    "\"run-time\": ${run-time} "
-    "}";
-
-const char bleFormat[] PROGMEM =
-    "{"
-    "\"name\":\"${mdns}\","
-    "\"ID\":\"${id}\","
-    "\"token\":\"${token}\","
-    "\"interval\":${sleep-interval},"
-    "\"temperature\":${temp},"
-    "\"temp_units\":\"${temp-unit}\","
-    "\"gravity\":${gravity},"
-    "\"angle\":${angle},"
-    "\"battery\":${battery},"
-    "\"RSSI\":0,"
-    "\"corr-gravity\":${corr-gravity},"
-    "\"gravity-unit\":\"${gravity-unit}\","
-    "\"run-time\":${run-time}"
-    "}";
-
-// Format for an HTTP GET
-const char iHttpGetFormat[] PROGMEM =
-    "?name=${mdns}"
-    "&id=${id}"
-    "&token=${token2}"
-    "&interval=${sleep-interval}"
-    "&temperature=${temp}"
-    "&temp-units=${temp-unit}"
-    "&gravity=${gravity}"
-    "&angle=${angle}"
-    "&battery=${battery}"
-    "&rssi=${rssi}"
-    "&corr-gravity=${corr-gravity}"
-    "&gravity-unit=${gravity-unit}"
-    "&run-time=${run-time}";
-
-const char influxDbFormat[] PROGMEM =
-    "measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-"
-    "format=${gravity-unit} "
-    "gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${"
-    "temp},battery=${battery},"
-    "rssi=${rssi}\n";
-
-const char mqttFormat[] PROGMEM =
-    "ispindel/${mdns}/tilt:${angle}|"
-    "ispindel/${mdns}/temperature:${temp}|"
-    "ispindel/${mdns}/temp_units:${temp-unit}|"
-    "ispindel/${mdns}/battery:${battery}|"
-    "ispindel/${mdns}/gravity:${gravity}|"
-    "ispindel/${mdns}/interval:${sleep-interval}|"
-    "ispindel/${mdns}/RSSI:${rssi}|";
 
 void PushIntervalTracker::update(const int index, const int defaultValue) {
   if (_counters[index] <= 0)
@@ -163,82 +96,111 @@ void PushIntervalTracker::save() {
   }
 }
 
-GravmonPush::GravmonPush(GravmonConfig* gravmonConfig)
-    : BasePush(gravmonConfig) {
-  _gravmonConfig = gravmonConfig;
+BrewingPush::BrewingPush(BrewingConfig* BrewingConfig)
+    : BasePush(BrewingConfig) {
+  _BrewingConfig = BrewingConfig;
 }
 
-void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
-                          float tempC, float runTime) {
+void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
+                          bool enableHttpPost, bool enableHttpPost2,
+                          bool enableHttpGet, bool enableInfluxdb2,
+                          bool enableMqtt) {
   printHeap("PUSH");
   _http->setReuse(true);
-
-  TemplatingEngine engine;
-  setupTemplateEngine(engine, angle, gravitySG, corrGravitySG, tempC, runTime,
-                      myBatteryVoltage.getVoltage());
 
   PushIntervalTracker intDelay;
   intDelay.load();
 
-  if (myConfig.hasTargetHttpPost() && intDelay.useHttp1()) {
+  if (myConfig.hasTargetHttpPost() && intDelay.useHttp1() && enableHttpPost) {
     PERF_BEGIN("push-http");
-    String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP1);
+    String tpl;
+
+    if (type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
+    else
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP1);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpPost(doc);
     PERF_END("push-http");
   }
 
-  if (myConfig.hasTargetHttpPost2() && intDelay.useHttp2()) {
+  if (myConfig.hasTargetHttpPost2() && intDelay.useHttp2() && enableHttpPost2) {
     PERF_BEGIN("push-http2");
-    String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP2);
+    String tpl;
+
+    if (type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
+    else
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP2);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpPost2(doc);
     PERF_END("push-http2");
   }
 
-  if (myConfig.hasTargetHttpGet() && intDelay.useHttp3()) {
+  if (myConfig.hasTargetHttpGet() && intDelay.useHttp3() && enableHttpGet) {
     PERF_BEGIN("push-http3");
-    String tpl = getTemplate(GravmonPush::TEMPLATE_HTTP3);
+    String tpl;
+
+    if (type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
+    else
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP3);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendHttpGet(doc);
     PERF_END("push-http3");
   }
 
-  if (myConfig.hasTargetInfluxDb2() && intDelay.useInflux()) {
+  if (myConfig.hasTargetInfluxDb2() && intDelay.useInflux() &&
+      enableInfluxdb2) {
     PERF_BEGIN("push-influxdb2");
-    String tpl = getTemplate(GravmonPush::TEMPLATE_INFLUX);
+    String tpl;
+
+    if (type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
+    else
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_INFLUX);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendInfluxDb2(doc);
     PERF_END("push-influxdb2");
   }
 
-  if (myConfig.hasTargetMqtt() && intDelay.useMqtt()) {
+  if (myConfig.hasTargetMqtt() && intDelay.useMqtt() && enableMqtt) {
     PERF_BEGIN("push-mqtt");
-    String tpl = getTemplate(GravmonPush::TEMPLATE_MQTT);
+    String tpl;
+
+    if (type == MeasurementType::GRAVITY)
+      tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
+    else
+      tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_MQTT);
+
     String doc = engine.create(tpl.c_str());
 
     if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest() &&
-        runMode != RunMode::gravityMode)
+        runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       sendMqtt(doc);
@@ -248,36 +210,52 @@ void GravmonPush::sendAll(float angle, float gravitySG, float corrGravitySG,
   intDelay.save();
 }
 
-const char* GravmonPush::getTemplate(Templates t, bool useDefaultTemplate) {
+const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
   String fname;
   _baseTemplate.reserve(600);
 
   // Load templates from memory
   switch (t) {
-    case TEMPLATE_HTTP1:
-      _baseTemplate = String(iSpindleFormat);
-      fname = TPL_FNAME_POST;
+    case GRAVITY_TEMPLATE_HTTP1:
+      _baseTemplate = String(iGravityHttpPostFormat);
+      fname = TPL_GRAVITY_FNAME_POST;
       break;
-    case TEMPLATE_HTTP2:
-      _baseTemplate = String(iSpindleFormat);
-      fname = TPL_FNAME_POST2;
+    case GRAVITY_TEMPLATE_HTTP2:
+      _baseTemplate = String(iGravityHttpPostFormat);
+      fname = TPL_GRAVITY_FNAME_POST2;
       break;
-    case TEMPLATE_HTTP3:
-      _baseTemplate = String(iHttpGetFormat);
-      fname = TPL_FNAME_GET;
+    case GRAVITY_TEMPLATE_HTTP3:
+      _baseTemplate = String(iGravityHttpGetFormat);
+      fname = TPL_GRAVITY_FNAME_GET;
       break;
-    case TEMPLATE_INFLUX:
-      _baseTemplate = String(influxDbFormat);
-      fname = TPL_FNAME_INFLUXDB;
+    case GRAVITY_TEMPLATE_INFLUX:
+      _baseTemplate = String(iGravityInfluxDbFormat);
+      fname = TPL_GRAVITY_FNAME_INFLUXDB;
       break;
-    case TEMPLATE_MQTT:
-      _baseTemplate = String(mqttFormat);
-      fname = TPL_FNAME_MQTT;
+    case GRAVITY_TEMPLATE_MQTT:
+      _baseTemplate = String(iGravityMqttFormat);
+      fname = TPL_GRAVITY_FNAME_MQTT;
       break;
-    case TEMPLATE_BLE:
-      _baseTemplate = String(bleFormat);
-      fname =
-          "/dummy";  // this file should not exist, use standard template only
+
+    case PRESSURE_TEMPLATE_HTTP1:
+      _baseTemplate = String(iPressureHttpPostFormat);
+      fname = TPL_PRESSURE_FNAME_POST;
+      break;
+    case PRESSURE_TEMPLATE_HTTP2:
+      _baseTemplate = String(iPressureHttpPostFormat);
+      fname = TPL_PRESSURE_FNAME_POST2;
+      break;
+    case PRESSURE_TEMPLATE_HTTP3:
+      _baseTemplate = String(iPressureHttpGetFormat);
+      fname = TPL_PRESSURE_FNAME_GET;
+      break;
+    case PRESSURE_TEMPLATE_INFLUX:
+      _baseTemplate = String(iPressureInfluxDbFormat);
+      fname = TPL_PRESSURE_FNAME_INFLUXDB;
+      break;
+    case PRESSURE_TEMPLATE_MQTT:
+      _baseTemplate = String(iPressureMqttFormat);
+      fname = TPL_PRESSURE_FNAME_MQTT;
       break;
   }
 
@@ -298,91 +276,6 @@ const char* GravmonPush::getTemplate(Templates t, bool useDefaultTemplate) {
 #endif
 
   return _baseTemplate.c_str();
-}
-
-void GravmonPush::setupTemplateEngine(TemplatingEngine& engine, float angle,
-                                      float gravitySG, float corrGravitySG,
-                                      float tempC, float runTime,
-                                      float voltage) {
-  // Names
-  engine.setVal(TPL_MDNS, myConfig.getMDNS());
-  engine.setVal(TPL_ID, myConfig.getID());
-  engine.setVal(TPL_TOKEN, myConfig.getToken());
-  engine.setVal(TPL_TOKEN2, myConfig.getToken2());
-
-  // Temperature
-  if (myConfig.isTempFormatC()) {
-    engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
-  } else {
-    engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
-  }
-
-  engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
-
-  // Battery & Timer
-  engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
-  engine.setVal(TPL_SLEEP_INTERVAL, myConfig.getSleepInterval());
-
-  int charge = 0;
-
-  if (voltage > 4.15)
-    charge = 100;
-  else if (voltage > 4.05)
-    charge = 90;
-  else if (voltage > 3.97)
-    charge = 80;
-  else if (voltage > 3.91)
-    charge = 70;
-  else if (voltage > 3.86)
-    charge = 60;
-  else if (voltage > 3.81)
-    charge = 50;
-  else if (voltage > 3.78)
-    charge = 40;
-  else if (voltage > 3.76)
-    charge = 30;
-  else if (voltage > 3.73)
-    charge = 20;
-  else if (voltage > 3.67)
-    charge = 10;
-  else if (voltage > 3.44)
-    charge = 5;
-
-  engine.setVal(TPL_BATTERY_PERCENT, charge);
-
-  // Performance metrics
-  engine.setVal(TPL_RUN_TIME, runTime, DECIMALS_RUNTIME);
-  engine.setVal(TPL_RSSI, WiFi.RSSI());
-
-  // Angle/Tilt
-  engine.setVal(TPL_TILT, angle, DECIMALS_TILT);
-  engine.setVal(TPL_ANGLE, angle, DECIMALS_TILT);
-
-  // Gravity options
-  if (myConfig.isGravitySG()) {
-    engine.setVal(TPL_GRAVITY, gravitySG, DECIMALS_SG);
-    engine.setVal(TPL_GRAVITY_CORR, corrGravitySG, DECIMALS_SG);
-  } else {
-    engine.setVal(TPL_GRAVITY, convertToPlato(gravitySG), DECIMALS_PLATO);
-    engine.setVal(TPL_GRAVITY_CORR, convertToPlato(corrGravitySG),
-                  DECIMALS_PLATO);
-  }
-
-  engine.setVal(TPL_GRAVITY_G, gravitySG, DECIMALS_SG);
-  engine.setVal(TPL_GRAVITY_P, convertToPlato(gravitySG), DECIMALS_PLATO);
-  engine.setVal(TPL_GRAVITY_CORR_G, corrGravitySG, DECIMALS_SG);
-  engine.setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG),
-                DECIMALS_PLATO);
-  engine.setVal(TPL_GRAVITY_UNIT, myConfig.getGravityFormat());
-
-  engine.setVal(TPL_APP_VER, CFG_APPVER);
-  engine.setVal(TPL_APP_BUILD, CFG_GITREV);
-
-#if LOG_LEVEL == 6
-  dumpAll();
-#endif
 }
 
 // EOF

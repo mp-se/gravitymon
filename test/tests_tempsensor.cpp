@@ -25,10 +25,15 @@ SOFTWARE.
 
 #include <tempsensor.hpp>
 
+#if defined(GRAVITYMON) || defined(PRESSUREMON)
+
 test(temp_readSensor) {
   myTempSensor.setup();
+  myTempSensor.readSensor();
   myTempSensor.getTempC();
   assertEqual(myTempSensor.isSensorAttached(), true);
 }
+
+#endif // GRAVITYMON || PRESSUREMON
 
 // EOF

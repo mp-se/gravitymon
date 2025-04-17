@@ -23,6 +23,7 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
+#if defined(GRAVITYMON)
 #include <gyro.hpp>
 
 test(gyro_connectGyro) {
@@ -41,5 +42,6 @@ test(gyro_readGyroTemp) {
   assertNotEqual(myGyro.getInitialSensorTempC(), f);
   assertNotEqual(myGyro.getSensorTempC(), f);
 }
+#endif // GRAVITYMON
 
 // EOF

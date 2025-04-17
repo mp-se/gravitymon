@@ -25,33 +25,40 @@ SOFTWARE.
 
 #include <config.hpp>
 
-GravmonConfig myConfig("test", "test.cfg");
+#if defined(GRAVITYMON)
+GravitymonConfig myConfig("test", "test.cfg");
+#elif defined(PRESSUREMON)
+PressuremonConfig myConfig("test", "test.cfg");
+#elif defined(GATEWAY)
+GravmonGatewayConfig myConfig("test", "test.cfg");
+#endif
+
 
 test(config_defaultValues) {
-  assertEqual(myConfig.getGravityFormat(), 'G');
-  assertEqual(myConfig.getTempFormat(), 'C');
-  assertEqual(myConfig.getSleepInterval(), 900);
-  assertEqual(myConfig.getTempSensorAdjC(), 0.0);
   float f = 4.15;
   assertEqual(myConfig.getVoltageConfig(), f);
-}
+  f = 1.59;
+  assertEqual(myConfig.getVoltageFactor(), f);
+  assertEqual(myConfig.getVoltagePin(), PIN_VOLT);
 
-test(config_advDefaultValues) {
-  assertEqual(myConfig.getDefaultCalibrationTemp(), 20.0);
-  assertEqual(myConfig.getGyroReadCount(), 50);
-  assertEqual(myConfig.getGyroReadDelay(), 3150);
-  assertEqual(myConfig.getGyroSensorMovingThreashold(), 500);
-  assertEqual(myConfig.getMaxFormulaCreationDeviation(), 3.0);
+  assertEqual(myConfig.getTempFormat(), 'C');
+  assertEqual(myConfig.getTempSensorAdjC(), 0.0);
+  assertEqual(myConfig.getSleepInterval(), 900);
+  assertEqual(myConfig.getTempSensorResolution(), 9);
+
   assertEqual(myConfig.getPushIntervalPost(), 0);
   assertEqual(myConfig.getPushIntervalPost2(), 0);
   assertEqual(myConfig.getPushIntervalGet(), 0);
   assertEqual(myConfig.getPushIntervalMqtt(), 0);
   assertEqual(myConfig.getPushIntervalInflux(), 0);
   assertEqual(myConfig.getPushTimeout(), 10);
-  assertEqual(myConfig.getTempSensorResolution(), 9);
-  assertEqual(myConfig.getWifiConnectionTimeout(), 20);
+
+  assertEqual(myConfig.getToken(), "");
+  assertEqual(myConfig.getToken2(), "");
+
+  assertEqual(myConfig.isWifiDirect(), false);
+  assertEqual(myConfig.getWifiConnectionTimeout(), 30);
   assertEqual(myConfig.getWifiPortalTimeout(), 120);
-  assertEqual(myConfig.isIgnoreLowAnges(), false);
 }
 
 test(config_tempFormat) {
@@ -63,6 +70,42 @@ test(config_tempFormat) {
   assertEqual(myConfig.getTempFormat(), 'C');
 }
 
+test(config_tempSensorResolution) {
+  myConfig.setTempSensorResolution(9); 
+  assertEqual(myConfig.getTempSensorResolution(), 9);
+  myConfig.setTempSensorResolution(8); 
+  assertEqual(myConfig.getTempSensorResolution(), 9); 
+
+  myConfig.setTempSensorResolution(12);
+  assertEqual(myConfig.getTempSensorResolution(), 12);
+  myConfig.setTempSensorResolution(13);
+  assertEqual(myConfig.getTempSensorResolution(), 12);
+}
+
+#if defined(GRAVITYMON) || defined(PRESSUREMON)
+test(config_batterySaving) {
+  myConfig.setBatterySaving(false);
+  assertEqual(myConfig.isBatterySaving(), false);
+  myConfig.setBatterySaving(true);
+  assertEqual(myConfig.isBatterySaving(), true);
+}
+#endif
+
+#if defined(GRAVITYMON)
+test(config_gravitymonValues) {
+  assertEqual(myConfig.getDefaultCalibrationTemp(), 20.0);
+  assertEqual(myConfig.getGyroReadCount(), 50);
+  assertEqual(myConfig.getGyroReadDelay(), 3150);
+  assertEqual(myConfig.getGyroSensorMovingThreashold(), 500);
+  assertEqual(myConfig.getGravityFormat(), 'G');
+  assertEqual(myConfig.isIgnoreLowAnges(), false);
+  assertEqual(myConfig.isBatterySaving(), true);
+  assertEqual(myConfig.isGyroTemp(), false);
+  assertEqual(myConfig.isStorageSleep(), false);
+  assertEqual(myConfig.isGyroDisabled(), false);
+  assertEqual(myConfig.isGravityTempAdj(), false);
+}
+
 test(config_gravityFormat) {
   myConfig.setGravityFormat('P');
   assertEqual(myConfig.getGravityFormat(), 'P');
@@ -71,5 +114,43 @@ test(config_gravityFormat) {
   myConfig.setGravityFormat('X');
   assertEqual(myConfig.getGravityFormat(), 'G');
 }
+
+test(config_gyroDisabled) {
+  myConfig.setGyroDisabled(true);
+  assertEqual(myConfig.isGyroDisabled(), true);
+  myConfig.setGyroDisabled(false);
+  assertEqual(myConfig.isGyroDisabled(), false);
+}
+
+test(config_gravityFormula) {
+  assertEqual(myConfig.getGravityFormula(), "");
+  myConfig.setGravityFormula("2+2^2");
+  assertEqual(myConfig.getGravityFormula(), "2+2^2");
+}
+
+test(config_tiltColor) {
+  assertEqual(myConfig.getBleTiltColor(), "");
+
+  myConfig.setBleTiltColor("Blue");
+  assertEqual(myConfig.getBleTiltColor(), "Blue");
+
+  myConfig.setBleTiltColor("");
+  assertEqual(myConfig.getBleTiltColor(), "");
+}
+
+test(config_formulaDeviation) {
+  float f = 0.01;
+  assertEqual(myConfig.getMaxFormulaCreationDeviation(), f);
+
+  myConfig.setMaxFormulaCreationDeviation(0.05);
+  f = 0.05;
+  assertEqual(myConfig.getMaxFormulaCreationDeviation(), f);
+
+  myConfig.setMaxFormulaCreationDeviation(0.1);
+  f = 0.1;
+  assertEqual(myConfig.getMaxFormulaCreationDeviation(), f);
+}
+
+#endif // GRAVITYMON
 
 // EOF

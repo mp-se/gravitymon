@@ -1,0 +1,55 @@
+/*
+MIT License
+
+Copyright (c) 2025 Magnus
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+#ifndef SRC_XIDIBEI_HPP_
+#define SRC_XIDIBEI_HPP_
+
+#if defined(PRESSUREMON)
+
+#include <Arduino.h>
+#include <Wire.h>
+
+#include <memory>
+
+constexpr auto XIDIBEI_I2C_ADDRESS = 0x7F;
+
+class XIDIBEI {
+ public:
+  // Max pressure (kPA) is the maximum value that the sensor can handle.
+  explicit XIDIBEI(uint16_t maxPressure, TwoWire *wire = &Wire);
+
+  bool begin();
+  // Pressure is returned in kPA
+  // Temperature is in degrees C
+  bool read(float &pressure, float &temperature);
+
+ private:
+  TwoWire *_wire;
+  uint16_t _maxPressure;
+};
+
+#endif  // PRESSUREMON
+
+#endif  // SRC_XIDIBEI_HPP_
+
+// EOF

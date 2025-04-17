@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #include <battery.hpp>
-#include <config.hpp>
-#include <main.hpp>
 
 BatteryVoltage::BatteryVoltage() {
 #if defined(ESP8266)
   pinMode(myConfig.getVoltagePin(), INPUT);
 #else
-  pinMode(myConfig.getVoltagePin(), INPUT_PULLDOWN);
+  pinMode(myConfig.getVoltagePin(), INPUT);
+  analogReadResolution(SOC_ADC_MAX_BITWIDTH);
+  analogSetAttenuation(ADC_11db);
 #endif
 }
 
@@ -42,11 +42,27 @@ void BatteryVoltage::read() {
   // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
 
+  // Max input values per board (2.5V is the a good setting)
+  // ESP32: 2450mV
+  // ESP32-S2: 2500mV
+  // ESP32-S3: 3100mV
+  // ESP32-C3: 2500mV
+  // ESP32-C6: 3300mV
+
 #if defined(ESP8266)
   _batteryLevel = ((3.3 / 1023) * v) * factor;
-#else  // defined (ESP32)
-  _batteryLevel = ((3.3 / 4095) * v) * factor;
+#elif defined(ESP32S2)
+  _batteryLevel = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+#elif defined(ESP32S3)
+  _batteryLevel = ((3.1 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+#elif defined(ESP32C3)
+  _batteryLevel = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+#elif defined(ESP32LITE)
+  _batteryLevel = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+#elif defined(ESP32)
+  _batteryLevel = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #endif
+
 #if LOG_LEVEL == 6
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),

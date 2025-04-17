@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,12 @@ SOFTWARE.
  */
 #include <Wire.h>
 
-#include <battery.hpp>
-#include <calc.hpp>
 #include <config.hpp>
-#include <gyro.hpp>
 #include <helper.hpp>
 #include <history.hpp>
 #include <main.hpp>
 #include <perf.hpp>
 #include <pushtarget.hpp>
-#include <resources.hpp>
-#include <templating.hpp>
-#include <tempsensor.hpp>
 #include <webserver.hpp>
 
 #if !defined(ESP8266)
@@ -42,12 +36,14 @@ SOFTWARE.
 #include <esp_task_wdt.h>
 #endif
 
+// #include <tempsensor.hpp>
+
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
-GravmonWebServer::GravmonWebServer(WebConfig *config) : BaseWebServer(config) {}
+BrewingWebServer::BrewingWebServer(WebConfig *config) : BaseWebServer(config) {}
 
-void GravmonWebServer::webHandleConfigRead(AsyncWebServerRequest *request) {
+void BrewingWebServer::webHandleConfigRead(AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
   }
@@ -62,7 +58,7 @@ void GravmonWebServer::webHandleConfigRead(AsyncWebServerRequest *request) {
   PERF_END("webserver-api-config-read");
 }
 
-void GravmonWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
+void BrewingWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
                                             JsonVariant &json) {
   if (!isAuthenticated(request)) {
     return;
@@ -76,6 +72,8 @@ void GravmonWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
   myConfig.saveFile();
   myBatteryVoltage.read();
 
+  doWebConfigWrite();
+
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
@@ -85,7 +83,7 @@ void GravmonWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
   PERF_END("webserver-api-config-write");
 }
 
-void GravmonWebServer::webHandleCalibrate(AsyncWebServerRequest *request) {
+void BrewingWebServer::webHandleCalibrate(AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
   }
@@ -102,36 +100,7 @@ void GravmonWebServer::webHandleCalibrate(AsyncWebServerRequest *request) {
   PERF_END("webserver-api-calibrate");
 }
 
-void GravmonWebServer::webHandleCalibrateStatus(
-    AsyncWebServerRequest *request) {
-  if (!isAuthenticated(request)) {
-    return;
-  }
-
-  PERF_BEGIN("webserver-api-calibrate-status");
-  Log.notice(F("WEB : webServer callback for /api/calibrate/status." CR));
-  AsyncJsonResponse *response = new AsyncJsonResponse(false);
-  JsonObject obj = response->getRoot().as<JsonObject>();
-  obj[PARAM_STATUS] = static_cast<bool>(_sensorCalibrationTask);
-  obj[PARAM_SUCCESS] = false;
-  obj[PARAM_MESSAGE] = "Calibration running";
-
-  if (!_sensorCalibrationTask) {
-    if (myGyro.isConnected()) {
-      obj[PARAM_SUCCESS] = true;
-      obj[PARAM_MESSAGE] = "Calibration completed";
-    } else {
-      obj[PARAM_SUCCESS] = false;
-      obj[PARAM_MESSAGE] = "Calibration failed, no gyro connected";
-    }
-  }
-
-  response->setLength();
-  request->send(response);
-  PERF_END("webserver-api-calibrate-status");
-}
-
-void GravmonWebServer::webHandleFactoryDefaults(
+void BrewingWebServer::webHandleFactoryDefaults(
     AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
@@ -141,10 +110,18 @@ void GravmonWebServer::webHandleFactoryDefaults(
   myConfig.saveFileWifiOnly();
   LittleFS.remove(ERR_FILENAME);
   LittleFS.remove(RUNTIME_FILENAME);
-  LittleFS.remove(TPL_FNAME_POST);
-  LittleFS.remove(TPL_FNAME_POST2);
-  LittleFS.remove(TPL_FNAME_INFLUXDB);
-  LittleFS.remove(TPL_FNAME_MQTT);
+
+  LittleFS.remove(TPL_GRAVITY_FNAME_POST);
+  LittleFS.remove(TPL_GRAVITY_FNAME_POST2);
+  LittleFS.remove(TPL_GRAVITY_FNAME_GET);
+  LittleFS.remove(TPL_GRAVITY_FNAME_INFLUXDB);
+  LittleFS.remove(TPL_GRAVITY_FNAME_MQTT);
+
+  LittleFS.remove(TPL_PRESSURE_FNAME_POST);
+  LittleFS.remove(TPL_PRESSURE_FNAME_POST2);
+  LittleFS.remove(TPL_PRESSURE_FNAME_GET);
+  LittleFS.remove(TPL_PRESSURE_FNAME_INFLUXDB);
+  LittleFS.remove(TPL_PRESSURE_FNAME_MQTT);
   LittleFS.end();
 
   Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
@@ -160,123 +137,7 @@ void GravmonWebServer::webHandleFactoryDefaults(
   _rebootTask = true;
 }
 
-void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
-  PERF_BEGIN("webserver-api-status");
-  Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
-
-  // Fallback since sometimes the loop() does not always run after firmware
-  // update...
-  if (_rebootTask) {
-    Log.notice(F("WEB : Rebooting using fallback..." CR));
-    delay(500);
-    ESP_RESET();
-  }
-
-  AsyncJsonResponse *response = new AsyncJsonResponse(false);
-  JsonObject obj = response->getRoot().as<JsonObject>();
-
-  double angle = 0;  // Indicate we have no valid gyro value
-
-  if (myGyro.hasValue()) angle = myGyro.getAngle();
-
-  double tempC = myTempSensor.getTempC();
-  double gravity = calculateGravity(angle, tempC);
-
-  obj[PARAM_ID] = myConfig.getID();
-  obj[PARAM_TEMP_FORMAT] = String(myConfig.getTempFormat());
-  obj[PARAM_GRAVITY_FORMAT] = String(myConfig.getGravityFormat());
-  obj[PARAM_APP_VER] = CFG_APPVER;
-  obj[PARAM_APP_BUILD] = CFG_GITREV;
-  obj[PARAM_MDNS] = myConfig.getMDNS();
-#if defined(ESP8266)
-  obj[PARAM_PLATFORM] = "esp8266";
-  obj[PARAM_HARDWARE] = "ispindel";
-#elif defined(ESP32C3)
-  obj[PARAM_PLATFORM] = "esp32c3";
-  obj[PARAM_HARDWARE] = "ispindel";
-#elif defined(ESP32S2)
-  obj[PARAM_PLATFORM] = "esp32s2";
-  obj[PARAM_HARDWARE] = "ispindel";
-#elif defined(ESP32S3)
-  obj[PARAM_PLATFORM] = "esp32s3";
-  obj[PARAM_HARDWARE] = "ispindel";
-#elif defined(ESP32LITE)
-  obj[PARAM_PLATFORM] = "esp32lite";
-  obj[PARAM_HARDWARE] = "floaty";
-#else  // esp32 mini
-  obj[PARAM_PLATFORM] = "esp32";
-  obj[PARAM_HARDWARE] = "ispindel";
-#endif
-
-  obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
-
-  if (myConfig.isGravityTempAdj()) {
-    gravity = gravityTemperatureCorrectionC(
-        gravity, tempC, myConfig.getDefaultCalibrationTemp());
-  }
-  if (myConfig.isGravityPlato()) {
-    obj[PARAM_GRAVITY] =
-        serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
-  } else {
-    obj[PARAM_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
-  }
-
-  if (myConfig.isTempFormatC()) {
-    obj[PARAM_TEMP] = serialized(String(tempC, DECIMALS_TEMP));
-  } else {
-    obj[PARAM_TEMP] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
-  }
-
-  obj[PARAM_BATTERY] =
-      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
-  obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
-  obj[PARAM_RSSI] = WiFi.RSSI();
-  obj[PARAM_SSID] = WiFi.SSID();
-
-#if defined(ESP8266)
-  obj[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
-  obj[PARAM_TOTAL_HEAP] = 81920;
-  obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
-  obj[PARAM_IP] = WiFi.localIP().toString();
-#else
-  obj[PARAM_ISPINDEL_CONFIG] = false;
-  obj[PARAM_TOTAL_HEAP] = ESP.getHeapSize();
-  obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
-  obj[PARAM_IP] = WiFi.localIP().toString();
-#endif
-  obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
-  obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
-
-  obj[PARAM_RUNTIME_AVERAGE] = serialized(
-      String(_averageRunTime ? _averageRunTime / 1000 : 0, DECIMALS_RUNTIME));
-
-  float v = myBatteryVoltage.getVoltage();
-
-#if defined(ESP32LITE)
-  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = true;  // No hardware support for these
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = true;
-#else
-  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
-#endif
-  obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
-      strlen(myConfig.getGravityFormula()) > 0 ? true : false;
-  obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
-  obj[PARAM_SELF][PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
-  obj[PARAM_SELF][PARAM_SELF_GYRO_MOVING] = myGyro.isSensorMoving();
-  obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
-      myConfig.isBleActive() || myConfig.hasTargetHttpPost() ||
-              myConfig.hasTargetHttpPost() || myConfig.hasTargetHttpGet() ||
-              myConfig.hasTargetMqtt() || myConfig.hasTargetInfluxDb2()
-          ? true
-          : false;
-
-  response->setLength();
-  request->send(response);
-  PERF_END("webserver-api-status");
-}
-
-void GravmonWebServer::webHandleSleepmode(AsyncWebServerRequest *request,
+void BrewingWebServer::webHandleSleepmode(AsyncWebServerRequest *request,
                                           JsonVariant &json) {
   if (!isAuthenticated(request)) {
     return;
@@ -295,46 +156,83 @@ void GravmonWebServer::webHandleSleepmode(AsyncWebServerRequest *request,
   PERF_END("webserver-api-sleepmode");
 }
 
-void GravmonWebServer::webHandleConfigFormatWrite(
+void BrewingWebServer::webHandleConfigFormatWrite(
     AsyncWebServerRequest *request, JsonVariant &json) {
   if (!isAuthenticated(request)) {
     return;
   }
 
   PERF_BEGIN("webserver-api-config-format-write");
-  Log.notice(F("WEB : webServer callback for /api/config/format(post)." CR));
+  Log.notice(F("WEB : webServer callback for /api/config/format(write)." CR));
 
   JsonObject obj = json.as<JsonObject>();
   int success = 0;
 
-  if (!obj[PARAM_FORMAT_POST].isNull()) {
-    success += writeFile(TPL_FNAME_POST, obj[PARAM_FORMAT_POST]) ? 1 : 0;
+  if (!obj[PARAM_FORMAT_POST_GRAVITY].isNull()) {
+    success += writeFile(TPL_GRAVITY_FNAME_POST, obj[PARAM_FORMAT_POST_GRAVITY])
+                   ? 1
+                   : 0;
   }
-  if (!obj[PARAM_FORMAT_POST2].isNull()) {
-    success += writeFile(TPL_FNAME_POST2, obj[PARAM_FORMAT_POST2]) ? 1 : 0;
-  }
-  if (!obj[PARAM_FORMAT_GET].isNull()) {
-    success += writeFile(TPL_FNAME_GET, obj[PARAM_FORMAT_GET]) ? 1 : 0;
-  }
-  if (!obj[PARAM_FORMAT_INFLUXDB].isNull()) {
+  if (!obj[PARAM_FORMAT_POST2_GRAVITY].isNull()) {
     success +=
-        writeFile(TPL_FNAME_INFLUXDB, obj[PARAM_FORMAT_INFLUXDB]) ? 1 : 0;
+        writeFile(TPL_GRAVITY_FNAME_POST2, obj[PARAM_FORMAT_POST2_GRAVITY]) ? 1
+                                                                            : 0;
   }
-  if (!obj[PARAM_FORMAT_MQTT].isNull()) {
-    success += writeFile(TPL_FNAME_MQTT, obj[PARAM_FORMAT_MQTT]) ? 1 : 0;
+  if (!obj[PARAM_FORMAT_GET_GRAVITY].isNull()) {
+    success +=
+        writeFile(TPL_GRAVITY_FNAME_GET, obj[PARAM_FORMAT_GET_GRAVITY]) ? 1 : 0;
+  }
+  if (!obj[PARAM_FORMAT_INFLUXDB_GRAVITY].isNull()) {
+    success += writeFile(TPL_GRAVITY_FNAME_INFLUXDB,
+                         obj[PARAM_FORMAT_INFLUXDB_GRAVITY])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_MQTT_GRAVITY].isNull()) {
+    success += writeFile(TPL_GRAVITY_FNAME_MQTT, obj[PARAM_FORMAT_MQTT_GRAVITY])
+                   ? 1
+                   : 0;
+  }
+
+  if (!obj[PARAM_FORMAT_POST_PRESSURE].isNull()) {
+    success +=
+        writeFile(TPL_PRESSURE_FNAME_POST, obj[PARAM_FORMAT_POST_PRESSURE]) ? 1
+                                                                            : 0;
+  }
+  if (!obj[PARAM_FORMAT_POST2_PRESSURE].isNull()) {
+    success +=
+        writeFile(TPL_PRESSURE_FNAME_POST2, obj[PARAM_FORMAT_POST2_PRESSURE])
+            ? 1
+            : 0;
+  }
+  if (!obj[PARAM_FORMAT_GET_PRESSURE].isNull()) {
+    success += writeFile(TPL_PRESSURE_FNAME_GET, obj[PARAM_FORMAT_GET_PRESSURE])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_INFLUXDB_PRESSURE].isNull()) {
+    success += writeFile(TPL_PRESSURE_FNAME_INFLUXDB,
+                         obj[PARAM_FORMAT_INFLUXDB_PRESSURE])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_MQTT_PRESSURE].isNull()) {
+    success +=
+        writeFile(TPL_PRESSURE_FNAME_MQTT, obj[PARAM_FORMAT_MQTT_PRESSURE]) ? 1
+                                                                            : 0;
   }
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = success > 0 ? true : false;
-  obj[PARAM_MESSAGE] = success > 0 ? "Format template stored"
-                                   : "Failed to store format template";
+  obj[PARAM_MESSAGE] = success > 0 ? "Pressure template stored"
+                                   : "Failed to store pressure template";
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-config-format-write");
 }
 
-void GravmonWebServer::webHandleTestPush(AsyncWebServerRequest *request,
+void BrewingWebServer::webHandleTestPush(AsyncWebServerRequest *request,
                                          JsonVariant &json) {
   if (!isAuthenticated(request)) {
     return;
@@ -357,7 +255,7 @@ void GravmonWebServer::webHandleTestPush(AsyncWebServerRequest *request,
   PERF_END("webserver-api-test-push");
 }
 
-void GravmonWebServer::webHandleTestPushStatus(AsyncWebServerRequest *request) {
+void BrewingWebServer::webHandleTestPushStatus(AsyncWebServerRequest *request) {
   PERF_BEGIN("webserver-api-test-push-status");
   Log.notice(F("WEB : webServer callback for /api/test/push/status." CR));
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
@@ -366,8 +264,10 @@ void GravmonWebServer::webHandleTestPushStatus(AsyncWebServerRequest *request) {
 
   if (_pushTestTask)
     s = "Running push tests for " + _pushTestTarget;
-  else if (!_pushTestTask && _pushTestLastSuccess == 0)
+  else if (!_pushTestTask && _pushTestLastCode == 0)
     s = "No push test has been started";
+  else if (!_pushTestTask && _pushTestLastCode < 0)
+    s = "Push test has failed";
   else
     s = "Push test for " + _pushTestTarget + " is complete";
 
@@ -381,7 +281,7 @@ void GravmonWebServer::webHandleTestPushStatus(AsyncWebServerRequest *request) {
   PERF_END("webserver-api-test-push-status");
 }
 
-bool GravmonWebServer::writeFile(String fname, String data) {
+bool BrewingWebServer::writeFile(String fname, String data) {
   if (data.length()) {
     data = urldecode(data);
     File file = LittleFS.open(fname, "w");
@@ -406,7 +306,7 @@ bool GravmonWebServer::writeFile(String fname, String data) {
   return false;
 }
 
-void GravmonWebServer::webHandleHardwareScan(AsyncWebServerRequest *request) {
+void BrewingWebServer::webHandleHardwareScan(AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
   }
@@ -422,7 +322,7 @@ void GravmonWebServer::webHandleHardwareScan(AsyncWebServerRequest *request) {
   request->send(response);
 }
 
-void GravmonWebServer::webHandleHardwareScanStatus(
+void BrewingWebServer::webHandleHardwareScanStatus(
     AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
@@ -444,7 +344,7 @@ void GravmonWebServer::webHandleHardwareScanStatus(
   }
 }
 
-String GravmonWebServer::readFile(String fname) {
+String BrewingWebServer::readFile(String fname) {
   File file = LittleFS.open(fname, "r");
   if (file) {
     char buf[file.size() + 1];
@@ -457,7 +357,7 @@ String GravmonWebServer::readFile(String fname) {
   return "";
 }
 
-void GravmonWebServer::webHandleConfigFormatRead(
+void BrewingWebServer::webHandleConfigFormatRead(
     AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
     return;
@@ -470,83 +370,194 @@ void GravmonWebServer::webHandleConfigFormatRead(
   JsonObject obj = response->getRoot().as<JsonObject>();
   String s;
 
-  s = readFile(TPL_FNAME_POST);
-  obj[PARAM_FORMAT_POST] =
-      s.length() ? urlencode(s) : urlencode(String(&iSpindleFormat[0]));
-  s = readFile(TPL_FNAME_POST2);
-  obj[PARAM_FORMAT_POST2] =
-      s.length() ? urlencode(s) : urlencode(String(&iSpindleFormat[0]));
-  s = readFile(TPL_FNAME_GET);
-  obj[PARAM_FORMAT_GET] =
-      s.length() ? urlencode(s) : urlencode(String(&iHttpGetFormat[0]));
-  s = readFile(TPL_FNAME_INFLUXDB);
-  obj[PARAM_FORMAT_INFLUXDB] =
-      s.length() ? urlencode(s) : urlencode(String(&influxDbFormat[0]));
-  s = readFile(TPL_FNAME_MQTT);
-  obj[PARAM_FORMAT_MQTT] =
-      s.length() ? urlencode(s) : urlencode(String(&mqttFormat[0]));
+#if defined(GRAVITYMON) || defined(GATEWAY)
+  s = readFile(TPL_GRAVITY_FNAME_POST);
+  obj[PARAM_FORMAT_POST_GRAVITY] =
+      s.length() ? urlencode(s) : urlencode(String(&iGravityHttpPostFormat[0]));
+  s = readFile(TPL_GRAVITY_FNAME_POST2);
+  obj[PARAM_FORMAT_POST2_GRAVITY] =
+      s.length() ? urlencode(s) : urlencode(String(&iGravityHttpPostFormat[0]));
+  s = readFile(TPL_GRAVITY_FNAME_GET);
+  obj[PARAM_FORMAT_GET_GRAVITY] =
+      s.length() ? urlencode(s) : urlencode(String(&iGravityHttpGetFormat[0]));
+  s = readFile(TPL_GRAVITY_FNAME_INFLUXDB);
+  obj[PARAM_FORMAT_INFLUXDB_GRAVITY] =
+      s.length() ? urlencode(s) : urlencode(String(&iGravityInfluxDbFormat[0]));
+  s = readFile(TPL_GRAVITY_FNAME_MQTT);
+  obj[PARAM_FORMAT_MQTT_GRAVITY] =
+      s.length() ? urlencode(s) : urlencode(String(&iGravityMqttFormat[0]));
+#endif
+
+#if defined(PRESSUREMON) || defined(GATEWAY)
+  s = readFile(TPL_PRESSURE_FNAME_POST);
+  obj[PARAM_FORMAT_POST_PRESSURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iPressureHttpPostFormat[0]));
+  s = readFile(TPL_PRESSURE_FNAME_POST2);
+  obj[PARAM_FORMAT_POST2_PRESSURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iPressureHttpPostFormat[0]));
+  s = readFile(TPL_PRESSURE_FNAME_GET);
+  obj[PARAM_FORMAT_GET_PRESSURE] =
+      s.length() ? urlencode(s) : urlencode(String(&iPressureHttpGetFormat[0]));
+  s = readFile(TPL_PRESSURE_FNAME_INFLUXDB);
+  obj[PARAM_FORMAT_INFLUXDB_PRESSURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iPressureInfluxDbFormat[0]));
+  s = readFile(TPL_PRESSURE_FNAME_MQTT);
+  obj[PARAM_FORMAT_MQTT_PRESSURE] =
+      s.length() ? urlencode(s) : urlencode(String(&iPressureMqttFormat[0]));
+#endif
 
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-config-format-read");
 }
 
-bool GravmonWebServer::setupWebServer() {
+void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
+  PERF_BEGIN("webserver-api-status");
+  Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
+
+  // Fallback since sometimes the loop() does not always run after firmware
+  // update...
+  if (_rebootTask) {
+    Log.notice(F("WEB : Rebooting using fallback..." CR));
+    delay(500);
+    ESP_RESET();
+  }
+
+  AsyncJsonResponse *response = new AsyncJsonResponse(false);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+
+  obj[PARAM_ID] = myConfig.getID();
+  obj[PARAM_TEMP_UNIT] = String(myConfig.getTempUnit());
+  obj[PARAM_APP_VER] = CFG_APPVER;
+  obj[PARAM_APP_BUILD] = CFG_GITREV;
+  obj[PARAM_MDNS] = myConfig.getMDNS();
+
+  obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
+  obj[PARAM_PLATFORM] = platform;
+
+#if defined(BOARD)
+  String b(BOARD);
+  b.toLowerCase();
+  obj[PARAM_BOARD] = b;
+#endif
+
+  obj[PARAM_BATTERY] =
+      serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
+  obj[PARAM_RSSI] = WiFi.RSSI();
+  obj[PARAM_SSID] = WiFi.SSID();
+
+#if defined(ESP8266)
+  obj[PARAM_TOTAL_HEAP] = 81920;
+  obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
+  obj[PARAM_IP] = WiFi.localIP().toString();
+#else
+  obj[PARAM_TOTAL_HEAP] = ESP.getHeapSize();
+  obj[PARAM_FREE_HEAP] = ESP.getFreeHeap();
+  obj[PARAM_IP] = WiFi.localIP().toString();
+#endif
+  obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
+
+  obj[PARAM_RUNTIME_AVERAGE] = serialized(
+      String(_averageRunTime ? _averageRunTime / 1000 : 0, DECIMALS_RUNTIME));
+
+  float v = myBatteryVoltage.getVoltage();
+
+  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
+  obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
+      myConfig.isBleActive() || myConfig.hasTargetHttpPost() ||
+              myConfig.hasTargetHttpPost2() || myConfig.hasTargetHttpGet() ||
+              myConfig.hasTargetMqtt() || myConfig.hasTargetInfluxDb2()
+          ? true
+          : false;
+
+  doWebStatus(obj);
+
+  response->setLength();
+  request->send(response);
+  PERF_END("webserver-api-status");
+}
+
+void BrewingWebServer::webHandleCalibrateStatus(
+    AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
+  PERF_BEGIN("webserver-api-calibrate-status");
+  Log.notice(F("WEB : webServer callback for /api/calibrate/status." CR));
+  AsyncJsonResponse *response = new AsyncJsonResponse(false);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+  obj[PARAM_STATUS] = static_cast<bool>(_sensorCalibrationTask);
+  obj[PARAM_SUCCESS] = false;
+  obj[PARAM_MESSAGE] = "Calibration running";
+
+  if (!_sensorCalibrationTask) {
+    doWebCalibrateStatus(obj);
+  }
+
+  response->setLength();
+  request->send(response);
+  PERF_END("webserver-api-calibrate-status");
+}
+
+bool BrewingWebServer::setupWebServer(const char *serviceName) {
   Log.notice(F("WEB : Configuring web server." CR));
 
   BaseWebServer::setupWebServer();
-  MDNS.addService("gravitymon", "tcp", 80);
+  MDNS.addService(serviceName, "tcp", 80);
 
   HistoryLog runLog(RUNTIME_FILENAME);
   _averageRunTime = runLog.getAverage()._runTime;
 
-  // Static content
-  Log.notice(F("WEB : Setting up handlers for gravmon web server." CR));
+  Log.notice(F("WEB : Setting up handlers for web server." CR));
 
   AsyncCallbackJsonWebHandler *handler;
   _server->on("/api/format", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleConfigFormatRead, this,
+              std::bind(&BrewingWebServer::webHandleConfigFormatRead, this,
                         std::placeholders::_1));
   handler = new AsyncCallbackJsonWebHandler(
       "/api/format",
-      std::bind(&GravmonWebServer::webHandleConfigFormatWrite, this,
+      std::bind(&BrewingWebServer::webHandleConfigFormatWrite, this,
                 std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
   handler = new AsyncCallbackJsonWebHandler(
       "/api/sleepmode",
-      std::bind(&GravmonWebServer::webHandleSleepmode, this,
+      std::bind(&BrewingWebServer::webHandleSleepmode, this,
                 std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
   _server->on("/api/config", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleConfigRead, this,
+              std::bind(&BrewingWebServer::webHandleConfigRead, this,
                         std::placeholders::_1));
   handler = new AsyncCallbackJsonWebHandler(
-      "/api/config", std::bind(&GravmonWebServer::webHandleConfigWrite, this,
+      "/api/config", std::bind(&BrewingWebServer::webHandleConfigWrite, this,
                                std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
   _server->on("/api/calibrate/status", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleCalibrateStatus, this,
+              std::bind(&BrewingWebServer::webHandleCalibrateStatus, this,
                         std::placeholders::_1));
   _server->on("/api/calibrate", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleCalibrate, this,
+              std::bind(&BrewingWebServer::webHandleCalibrate, this,
                         std::placeholders::_1));
   _server->on("/api/hardware/status", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleHardwareScanStatus, this,
+              std::bind(&BrewingWebServer::webHandleHardwareScanStatus, this,
                         std::placeholders::_1));
   _server->on("/api/hardware", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleHardwareScan, this,
+              std::bind(&BrewingWebServer::webHandleHardwareScan, this,
                         std::placeholders::_1));
   _server->on("/api/factory", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleFactoryDefaults, this,
+              std::bind(&BrewingWebServer::webHandleFactoryDefaults, this,
                         std::placeholders::_1));
   _server->on("/api/status", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleStatus, this,
+              std::bind(&BrewingWebServer::webHandleStatus, this,
                         std::placeholders::_1));
   _server->on("/api/push/status", HTTP_GET,
-              std::bind(&GravmonWebServer::webHandleTestPushStatus, this,
+              std::bind(&BrewingWebServer::webHandleTestPushStatus, this,
                         std::placeholders::_1));
   handler = new AsyncCallbackJsonWebHandler(
-      "/api/push", std::bind(&GravmonWebServer::webHandleTestPush, this,
+      "/api/push", std::bind(&BrewingWebServer::webHandleTestPush, this,
                              std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
 
@@ -554,93 +565,23 @@ bool GravmonWebServer::setupWebServer() {
   return true;
 }
 
-void GravmonWebServer::loop() {
+void BrewingWebServer::loop() {
 #if defined(ESP8266)
   MDNS.update();
 #endif
   BaseWebServer::loop();
 
   if (_sensorCalibrationTask) {
-    if (myGyro.isConnected()) {
-      myGyro.calibrateSensor();
-    } else {
-      Log.error(F("WEB : No gyro connected, skipping calibration" CR));
-    }
-
+    doTaskSensorCalibration();
     _sensorCalibrationTask = false;
   }
 
   if (_pushTestTask) {
-    float angle = myGyro.getAngle();
-    float tempC = myTempSensor.getTempC();
-    float gravitySG = calculateGravity(angle, tempC);
-    float corrGravitySG = gravityTemperatureCorrectionC(
-        gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
-
-    Log.notice(F("WEB : Running scheduled push test for %s" CR),
-               _pushTestTarget.c_str());
-
-    printHeap("TEST");
     TemplatingEngine engine;
-    GravmonPush push(&myConfig);
-    push.setupTemplateEngine(engine, angle, gravitySG, corrGravitySG, tempC,
-                             1.0, myBatteryVoltage.getVoltage());
+    BrewingPush push(&myConfig);
 
-    if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST) &&
-        myConfig.hasTargetHttpPost()) {
-      String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP1);
-      String doc = engine.create(tpl.c_str());
+    doTaskPushTestSetup(engine, push);
 
-      if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendHttpPost(doc);
-      _pushTestEnabled = true;
-    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST2) &&
-               myConfig.hasTargetHttpPost2()) {
-      String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP2);
-      String doc = engine.create(tpl.c_str());
-      if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendHttpPost2(doc);
-      _pushTestEnabled = true;
-    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_GET) &&
-               myConfig.hasTargetHttpGet()) {
-      String tpl = push.getTemplate(GravmonPush::TEMPLATE_HTTP3);
-      String doc = engine.create(tpl.c_str());
-      if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendHttpGet(doc);
-      _pushTestEnabled = true;
-    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_INFLUXDB) &&
-               myConfig.hasTargetInfluxDb2()) {
-      String tpl = push.getTemplate(GravmonPush::TEMPLATE_INFLUX);
-      String doc = engine.create(tpl.c_str());
-      if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendInfluxDb2(doc);
-      _pushTestEnabled = true;
-    } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_MQTT) &&
-               myConfig.hasTargetMqtt()) {
-      String tpl = push.getTemplate(GravmonPush::TEMPLATE_MQTT);
-      String doc = engine.create(tpl.c_str());
-      if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest())
-        Log.notice(
-            F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
-      else
-        push.sendMqtt(doc);
-      _pushTestEnabled = true;
-    }
-
-    engine.freeMemory();
-    push.clearTemplate();
     _pushTestLastSuccess = push.getLastSuccess();
     _pushTestLastCode = push.getLastCode();
     if (_pushTestEnabled)
@@ -664,7 +605,7 @@ void GravmonWebServer::loop() {
     // Scan the i2c bus for devices, initialized in gyro.cpp
     JsonArray i2c = obj[PARAM_I2C].to<JsonArray>();
 
-    for (int i = 1, j = 0; i < 127; i++) {
+    for (int i = 1, j = 0; i < 128; i++) {
       // The i2c_scanner uses the return value of
       // the Write.endTransmisstion to see if
       // a device did acknowledge to the address.
@@ -676,51 +617,6 @@ void GravmonWebServer::loop() {
         i2c[j][PARAM_ADRESS] = "0x" + String(i, 16);
         j++;
       }
-    }
-
-    // Scan onewire
-    JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
-
-    for (int i = 0, j = 0; i < mySensors.getDS18Count(); i++) {
-      DeviceAddress adr;
-      mySensors.getAddress(&adr[0], i);
-      Log.notice(F("WEB : Found onewire device %d." CR), i);
-      onew[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
-                             String(adr[2], 16) + String(adr[3], 16) +
-                             String(adr[4], 16) + String(adr[5], 16) +
-                             String(adr[6], 16) + String(adr[7], 16);
-      switch (adr[0]) {
-        case DS18S20MODEL:
-          onew[j][PARAM_FAMILY] = "DS18S20";
-          break;
-        case DS18B20MODEL:
-          onew[j][PARAM_FAMILY] = "DS18B20";
-          break;
-        case DS1822MODEL:
-          onew[j][PARAM_FAMILY] = "DS1822";
-          break;
-        case DS1825MODEL:
-          onew[j][PARAM_FAMILY] = "DS1825";
-          break;
-        case DS28EA00MODEL:
-          onew[j][PARAM_FAMILY] = "DS28EA00";
-          break;
-      }
-      onew[j][PARAM_RESOLUTION] = mySensors.getResolution();
-      j++;
-    }
-
-    // Test the gyro
-    switch (myGyro.getGyroID()) {
-      case 0x34:
-        obj[PARAM_GYRO][PARAM_FAMILY] = "MPU6050";
-        break;
-      case 0x38:
-        obj[PARAM_GYRO][PARAM_FAMILY] = "MPU6500";
-        break;
-      default:
-        obj[PARAM_GYRO][PARAM_FAMILY] = "0x" + String(myGyro.getGyroID(), 16);
-        break;
     }
 
     JsonObject cpu = obj[PARAM_CHIP].to<JsonObject>();
@@ -769,6 +665,8 @@ void GravmonWebServer::loop() {
         break;
     }
 #endif
+
+    doTaskHardwareScanning(obj);
 
     serializeJson(obj, _hardwareScanData);
     Log.notice(F("WEB : Scan complete %s." CR), _hardwareScanData.c_str());
