@@ -5,12 +5,14 @@ Gateway
 
 .. note::
 
-  This documentation reflects **v0.4.0 beta 1**. Last updated 2024-08-10
+  This documentation reflects **v0.7.0 beta 1**. Last updated 2025-04-18
 
-GravityMon Gateway is an separate project that can act as a proxy between your GravityMon devices and services. It can:
+GravityMon Gateway is an separate project that can act as a proxy between your GravityMon/Pressuremon devices and services. It can:
 
-* Receive the new GravityMon 2.0 BLE formats and transform these to HTTP Post/Get, InfluxDB or MQTT requests
-* Receive data via direct WiFi connection (Direct connection between the device and the gateway) and relay this data to defined endpoints. 
+* Receive the new GravityMon 2.0 BLE formats
+* Receive the new PressureMon 0.5 BLE formats
+* Receive the new Chamber Controller 0.4 BLE formats
+* Receive data via direct WiFi connection (http post). 
 
 Hardware 
 ========
@@ -20,6 +22,10 @@ The main supported hardware is ESP32s3 PRO with a TFT
 * `Lolin ESP32s3 PRO <https://www.wemos.cc/en/latest/s3/s3_pro.html>`_ 
 * `Lolin TFT <https://www.wemos.cc/en/latest/d1_mini_shield/tft_2_4.html>`_ 
 * Cable to connect the display with the ESP
+
+Other option is the integrated waveshare board
+
+* `Waveshare ESP32s3 TFT <https://www.waveshare.com/product/mcu-tools/development-boards/esp32/esp32-s3-touch-lcd-2.8.htm)>`_ 
 
 There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board does not have BLE 5 support.
 
@@ -34,9 +40,10 @@ Most of the UI is copied from GravityMon with a few alterations so the documenta
 
 .. note::
 
-  GravityMon Gateway does not support the TILT options, if you want to use these I recommend Tiltbridge that has a lot of good 
-  features for that. The main reason is that these formats have very little data and would require a lot of work to make the gateway
-  add the missing information. Tiltbridge already has this support built in so it makes little sense to replicate that work.
+  GravityMon Gateway does not support the TILT options. It will receive those but not forward these to other services. If you want to 
+  use these I recommend Tiltbridge that has a lot of good features for that. The main reason is that these formats have very little 
+  data and would require a lot of work to make the gateway add the missing information. Tiltbridge already has this support built 
+  in so it makes little sense to replicate that work.
 
 
 Home page 
@@ -74,6 +81,10 @@ Device - Settings
 
   Gravity format can be either `SG` or `Plato`. The device will use SG Internally and convert to Plato when displaying or sending data.
 
+* **Pressure format:**
+
+  Pressure format can be either `PSI`, `kPa` or `Bar`. The device will use PSI Internally and convert to other formats when displaying or sending data.
+
 * **Dark Mode:**
 
   Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.
@@ -93,6 +104,10 @@ Device - Hardware
 .. image:: images/gw/ui-device-hardware.png
   :width: 800
   :alt: Device Hardware
+
+* **Enable Bluetooth:**
+
+  Enable to disable BLE scanning. 
 
 * **Scan mode:**
 
@@ -154,8 +169,12 @@ Push - Settings
 Push - HTTP Post
 ++++++++++++++++
 
-See GravityMon configuration.
+.. image:: images/gw/ui-push-post.png
+  :width: 800
+  :alt: HTTP Post
 
+Most of the settings are the same for Gravitymon but with the extension to handle both pressure and gravity data for the same endpoint. Based on what
+data is received the gateway will choose the correct template for that data. You can also disable gravity/pressure data for each endpoint.
 
 Push - HTTP Get
 +++++++++++++++
