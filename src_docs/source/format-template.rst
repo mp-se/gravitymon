@@ -19,6 +19,11 @@ You can also select a template from the list and copy that to the current endpoi
 
    If you save a blank string the default template will be loaded.
 
+.. tip::
+
+   When selecting preview any json format will be verified and parsing errors will be shown. Applies to HTTP Post and MQTT.
+
+
 These are the format keys available for use in the format.
 
 .. list-table:: Format template keywords
