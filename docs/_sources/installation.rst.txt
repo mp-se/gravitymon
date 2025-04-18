@@ -8,7 +8,7 @@ Checklist for configuring the device
 
 Install the firmware using one of the following options:
 
-- Gravitymon Web Flasher
+- Gravitymon Web Flasher (Recommended for new devices)
 - Brewflasher via USB serial
 - Brewflasher WEB via USB serial
 - Esptool via USB serial

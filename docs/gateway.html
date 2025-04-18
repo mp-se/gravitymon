@@ -260,12 +260,14 @@
 <span id="id1"></span><h1>Gateway<a class="headerlink" href="#gateway" title="Permalink to this heading">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v0.4.0 beta 1</strong>. Last updated 2024-08-10</p>
+<p>This documentation reflects <strong>v0.7.0 beta 1</strong>. Last updated 2025-04-18</p>
 </div>
-<p>GravityMon Gateway is an separate project that can act as a proxy between your GravityMon devices and services. It can:</p>
+<p>GravityMon Gateway is an separate project that can act as a proxy between your GravityMon/Pressuremon devices and services. It can:</p>
 <ul class="simple">
-<li><p>Receive the new GravityMon 2.0 BLE formats and transform these to HTTP Post/Get, InfluxDB or MQTT requests</p></li>
-<li><p>Receive data via direct WiFi connection (Direct connection between the device and the gateway) and relay this data to defined endpoints.</p></li>
+<li><p>Receive the new GravityMon 2.0 BLE formats</p></li>
+<li><p>Receive the new PressureMon 0.5 BLE formats</p></li>
+<li><p>Receive the new Chamber Controller 0.4 BLE formats</p></li>
+<li><p>Receive data via direct WiFi connection (http post).</p></li>
 </ul>
 <section id="hardware">
 <h2>Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading">¶</a></h2>
@@ -274,6 +276,10 @@
 <li><p><a class="reference external" href="https://www.wemos.cc/en/latest/s3/s3_pro.html">Lolin ESP32s3 PRO</a></p></li>
 <li><p><a class="reference external" href="https://www.wemos.cc/en/latest/d1_mini_shield/tft_2_4.html">Lolin TFT</a></p></li>
 <li><p>Cable to connect the display with the ESP</p></li>
+</ul>
+<p>Other option is the integrated waveshare board</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.waveshare.com/product/mcu-tools/development-boards/esp32/esp32-s3-touch-lcd-2.8.htm)">Waveshare ESP32s3 TFT</a></p></li>
 </ul>
 <p>There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board does not have BLE 5 support.</p>
 <ul class="simple">
@@ -287,9 +293,10 @@
 <p>Most of the UI is copied from GravityMon with a few alterations so the documentation here will only point out the differences.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>GravityMon Gateway does not support the TILT options, if you want to use these I recommend Tiltbridge that has a lot of good
-features for that. The main reason is that these formats have very little data and would require a lot of work to make the gateway
-add the missing information. Tiltbridge already has this support built in so it makes little sense to replicate that work.</p>
+<p>GravityMon Gateway does not support the TILT options. It will receive those but not forward these to other services. If you want to
+use these I recommend Tiltbridge that has a lot of good features for that. The main reason is that these formats have very little
+data and would require a lot of work to make the gateway add the missing information. Tiltbridge already has this support built
+in so it makes little sense to replicate that work.</p>
 </div>
 </section>
 <section id="home-page">
@@ -314,6 +321,9 @@ The limitation is 63 chars but using long names might break endpoints that data 
 <li><p><strong>Gravity format:</strong></p>
 <p>Gravity format can be either <cite>SG</cite> or <cite>Plato</cite>. The device will use SG Internally and convert to Plato when displaying or sending data.</p>
 </li>
+<li><p><strong>Pressure format:</strong></p>
+<p>Pressure format can be either <cite>PSI</cite>, <cite>kPa</cite> or <cite>Bar</cite>. The device will use PSI Internally and convert to other formats when displaying or sending data.</p>
+</li>
 <li><p><strong>Dark Mode:</strong></p>
 <p>Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.</p>
 </li>
@@ -329,6 +339,9 @@ The limitation is 63 chars but using long names might break endpoints that data 
 <h3>Device - Hardware<a class="headerlink" href="#device-hardware" title="Permalink to this heading">¶</a></h3>
 <a class="reference internal image-reference" href="_images/ui-device-hardware1.png"><img alt="Device Hardware" src="_images/ui-device-hardware1.png" style="width: 800px;" /></a>
 <ul>
+<li><p><strong>Enable Bluetooth:</strong></p>
+<p>Enable to disable BLE scanning.</p>
+</li>
 <li><p><strong>Scan mode:</strong></p>
 <p>Determine if the BLE scan will be done in active or passive mode.</p>
 </li>
@@ -376,7 +389,9 @@ The limitation is 63 chars but using long names might break endpoints that data 
 </section>
 <section id="push-http-post">
 <h3>Push - HTTP Post<a class="headerlink" href="#push-http-post" title="Permalink to this heading">¶</a></h3>
-<p>See GravityMon configuration.</p>
+<a class="reference internal image-reference" href="_images/ui-push-post1.png"><img alt="HTTP Post" src="_images/ui-push-post1.png" style="width: 800px;" /></a>
+<p>Most of the settings are the same for Gravitymon but with the extension to handle both pressure and gravity data for the same endpoint. Based on what
+data is received the gateway will choose the correct template for that data. You can also disable gravity/pressure data for each endpoint.</p>
 </section>
 <section id="push-http-get">
 <h3>Push - HTTP Get<a class="headerlink" href="#push-http-get" title="Permalink to this heading">¶</a></h3>
