@@ -49,6 +49,13 @@ struct RawGyroData {
   int16_t temp;  // Only for information (temperature of chip)
 };
 
+// Used for holding result data
+struct GyroResultData {
+  bool isValid;
+  float angle;
+  float temp;
+};
+
 // Used for holding formulaData (used for calculating formula on device)
 #define FORMULA_DATA_SIZE 20
 
@@ -178,7 +185,7 @@ class GravmonConfig : public BaseConfig {
     _saveNeeded = true;
   }
 
-  int getSleepInterval() { return _sleepInterval; }
+  const int getSleepInterval() const { return _sleepInterval; }
   void setSleepInterval(int v) {
     _sleepInterval = v;
     _saveNeeded = true;
