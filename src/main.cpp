@@ -27,6 +27,7 @@ SOFTWARE.
 #include <battery.hpp>
 #include <calc.hpp>
 #include <config.hpp>
+#include <Wire.h>
 #include <gyro.hpp>
 #include <helper.hpp>
 #include <history.hpp>
@@ -82,6 +83,8 @@ bool skipRunTimeLog = false;
 RunMode runMode = RunMode::gravityMode;
 
 void checkSleepMode(float angle, float volt);
+bool runGyroSetup();
+void runGyroSleep();
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -157,9 +160,9 @@ void setup() {
 
     default:
       if (!myConfig.isGyroDisabled()) {
-        if (myGyro.setup()) {
+        if (runGyroSetup()) {
           PERF_BEGIN("main-gyro-read");
-          myGyro.read();
+          myGyro->read();
           PERF_END("main-gyro-read");
         } else {
           Log.notice(F(
@@ -171,9 +174,9 @@ void setup() {
       }
 
       myBatteryVoltage.read();
-      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      checkSleepMode(myGyro->getAngle(), myBatteryVoltage.getVoltage());
       Log.notice(F("Main: Battery %F V, Gyro=%F, Run-mode=%d." CR),
-                 myBatteryVoltage.getVoltage(), myGyro.getAngle(), runMode);
+                 myBatteryVoltage.getVoltage(), myGyro->getAngle(), runMode);
 
 #if defined(ESP32)
       if (!myConfig.isWifiPushActive() && runMode == RunMode::gravityMode) {
@@ -251,8 +254,8 @@ bool loopReadGravity() {
   // If we dont get any readings we just skip this and try again the next
   // interval.
   //
-  if (myGyro.hasValue()) {
-    angle = myGyro.getAngle();    // Gyro angle
+  if (myGyro->hasValue()) {
+    angle = myGyro->getAngle();    // Gyro angle
     stableGyroMillis = millis();  // Reset timer
 
     PERF_BEGIN("loop-temp-read");
@@ -378,13 +381,13 @@ void loopGravityOnInterval() {
     // printHeap("MAIN");
     if (!myConfig.isGyroDisabled()) {
       PERF_BEGIN("loop-gyro-read");
-      myGyro.read();
+      myGyro->read();
       PERF_END("loop-gyro-read");
     }
     myBatteryVoltage.read();
 
     if (runMode != RunMode::wifiSetupMode)
-      checkSleepMode(myGyro.getAngle(), myBatteryVoltage.getVoltage());
+      checkSleepMode(myGyro->getAngle(), myBatteryVoltage.getVoltage());
   }
 }
 
@@ -397,7 +400,7 @@ void goToSleep(int sleepInterval) {
              sleepInterval,
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
   LittleFS.end();
-  myGyro.enterSleep();
+  runGyroSleep();
   PERF_END("run-time");
   PERF_PUSH();
 
@@ -456,7 +459,7 @@ void loop() {
 
       if (!myConfig.isGyroDisabled()) {
         PERF_BEGIN("loop-gyro-read");
-        myGyro.read();
+        myGyro->read();
         PERF_END("loop-gyro-read");
       }
       myWifi.loop();
@@ -486,7 +489,7 @@ void checkSleepMode(float angle, float volt) {
 #endif
     runMode = RunMode::configurationMode;
   } else if (!myConfig.isGyroDisabled() &&
-             (!myGyro.hasValue() || !myGyro.isConnected())) {
+             (!myGyro->hasValue() || !myGyro->isConnected())) {
     runMode = RunMode::configurationMode;
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration
@@ -537,6 +540,61 @@ void checkSleepMode(float angle, float volt) {
     ESP.deepSleep(0);  // indefinite sleep
 #endif
   }
+}
+
+bool runGyroSetup() {
+#if defined(FLOATY)
+  pinMode(PIN_VCC, OUTPUT);
+  pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
+  digitalWrite(PIN_VCC, HIGH);
+  digitalWrite(PIN_GND, LOW);
+  delay(10);  // Wait for the pins to settle or we will fail to connect
+#endif
+  /* For testing pin config of new boards with led.
+  pinMode(PIN_SDA, OUTPUT);
+  pinMode(PIN_SCL, OUTPUT);
+  for(int i = 0, j = LOW, k = LOW; i < 100; i++) {
+
+    digitalWrite(PIN_SDA, k);
+    digitalWrite(PIN_SCL, j);
+    k = !k;
+    delay(300);
+    digitalWrite(PIN_SDA, k);
+    k = !k;
+    j = !j;
+    delay(300);
+  }*/
+
+#if LOG_LEVEL == 6
+  Log.verbose(F("GYRO: Setting up hardware." CR));
+#endif
+  Wire.begin(PIN_SDA, PIN_SCL);
+  Wire.setClock(400000); // 400kHz I2C clock.
+  if (icmGyro.isOnline()) {
+    myGyro = &icmGyro;
+#if LOG_LEVEL == 6
+    Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
+#endif
+  } else if (mpuGyro.isOnline()) {
+#if LOG_LEVEL == 6
+    Log.notice(F("GYRO: Connected to MPU6050 (gyro)." CR));
+#endif
+  } else {
+    writeErrorLog("GYRO: Failed to connect to gyro, is it connected?");
+    return false;
+  }
+  return myGyro->setup();
+}
+
+void runGyroSleep() {
+#if LOG_LEVEL == 6
+  Log.verbose(F("GYRO: Setting up hardware." CR));
+#endif
+#if defined(FLOATY)
+  digitalWrite(PIN_VCC, LOW);
+#else
+  myGyro->enterSleep();
+#endif
 }
 
 // EOF

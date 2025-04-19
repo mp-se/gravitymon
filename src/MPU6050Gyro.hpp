@@ -21,38 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <battery.hpp>
-#include <config.hpp>
-#include <main.hpp>
+#ifndef SRC_MPUGYRO_HPP_
+#define SRC_MPUGYRO_HPP_
 
-BatteryVoltage::BatteryVoltage() {
-#if defined(ESP8266) || defined(ESP32S2)
-  pinMode(myConfig.getVoltagePin(), INPUT);
-#else
-  pinMode(myConfig.getVoltagePin(), INPUT_PULLDOWN);
-#endif
-}
+#include <gyro.hpp>
 
-void BatteryVoltage::read() {
-  // The analog pin can only handle 3.3V maximum voltage so we need to reduce
-  // the voltage (from max 5V)
-  float factor = myConfig.getVoltageFactor();  // Default value is 1.63
-  int v = analogRead(myConfig.getVoltagePin());
+class MPU6050Gyro : public GyroSensor {
+ private:
+  RawGyroData raw;
+  void debug();
+  void applyCalibration();
+  GyroResultData readSensor();
 
-  // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
-  // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
+ public:
+  bool isOnline();
+  bool setup();
+  void calibrateSensor();
+  String getGyroFamily();
+  void enterSleep();
+};
 
-#if defined(ESP8266)
-  _batteryLevel = ((3.3 / 1023) * v) * factor;
-#elif defined(ESP32S2)
-  _batteryLevel = ((2.5 / 8191) * v) * factor;
-#else  // defined (ESP32)
-  _batteryLevel = ((3.3 / 4095) * v) * factor;
-#endif
-#if LOG_LEVEL == 6
-  Log.verbose(
-      F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
-      factor, v, _batteryLevel);
-#endif
-}
+extern MPU6050Gyro mpuGyro;
+
+#endif  // SRC_MPUGYRO_HPP_
+
 // EOF

@@ -21,38 +21,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <battery.hpp>
-#include <config.hpp>
-#include <main.hpp>
+#ifndef SRC_ICMGYRO_HPP_
+#define SRC_ICMGYRO_HPP_
 
-BatteryVoltage::BatteryVoltage() {
-#if defined(ESP8266) || defined(ESP32S2)
-  pinMode(myConfig.getVoltagePin(), INPUT);
-#else
-  pinMode(myConfig.getVoltagePin(), INPUT_PULLDOWN);
-#endif
-}
+#include <gyro.hpp>
 
-void BatteryVoltage::read() {
-  // The analog pin can only handle 3.3V maximum voltage so we need to reduce
-  // the voltage (from max 5V)
-  float factor = myConfig.getVoltageFactor();  // Default value is 1.63
-  int v = analogRead(myConfig.getVoltagePin());
+class ICM42670pGyro : public GyroSensor
+{
+private:
+  uint8_t addr = 0;
+  uint8_t buffer[16] = {0};
+  unsigned long configStart = 0;
+  void debug();
+  void applyCalibration();
+  GyroResultData readSensor();
+  bool writeMBank1(uint8_t reg, uint8_t value);
+  bool writeMBank1AndVerify(uint8_t reg, uint8_t value);
+  bool readMBank1(uint8_t reg);
+  uint8_t ReadFIFOPackets(const uint16_t &count, RawGyroDataL &data);
 
-  // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
-  // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
+public:
+  bool isOnline();
+  bool setup();
+  void calibrateSensor();
+  String getGyroFamily();
+  void enterSleep();
+};
 
-#if defined(ESP8266)
-  _batteryLevel = ((3.3 / 1023) * v) * factor;
-#elif defined(ESP32S2)
-  _batteryLevel = ((2.5 / 8191) * v) * factor;
-#else  // defined (ESP32)
-  _batteryLevel = ((3.3 / 4095) * v) * factor;
-#endif
-#if LOG_LEVEL == 6
-  Log.verbose(
-      F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
-      factor, v, _batteryLevel);
-#endif
-}
+extern ICM42670pGyro icmGyro;
+
+#endif // SRC_ICMGYRO_HPP_
+
 // EOF

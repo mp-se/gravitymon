@@ -61,7 +61,7 @@ void TempSensor::readSensor(bool useGyro) {
   if (useGyro) {
     // When using the gyro temperature only the first read value will be
     // accurate so we will use this for processing.
-    _temperatureC = myGyro.getInitialSensorTempC();
+    _temperatureC = myGyro->getInitialSensorTempC();
     _hasSensor = true;
 #if LOG_LEVEL == 6
     Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR),

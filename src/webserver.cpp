@@ -117,7 +117,7 @@ void GravmonWebServer::webHandleCalibrateStatus(
   obj[PARAM_MESSAGE] = "Calibration running";
 
   if (!_sensorCalibrationTask) {
-    if (myGyro.isConnected()) {
+    if (myGyro->isConnected()) {
       obj[PARAM_SUCCESS] = true;
       obj[PARAM_MESSAGE] = "Calibration completed";
     } else {
@@ -177,7 +177,7 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
 
   double angle = 0;  // Indicate we have no valid gyro value
 
-  if (myGyro.hasValue()) angle = myGyro.getAngle();
+  if (myGyro->hasValue()) angle = myGyro->getAngle();
 
   double tempC = myTempSensor.getTempC();
   double gravity = calculateGravity(angle, tempC);
@@ -262,8 +262,8 @@ void GravmonWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
       strlen(myConfig.getGravityFormula()) > 0 ? true : false;
   obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
-  obj[PARAM_SELF][PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
-  obj[PARAM_SELF][PARAM_SELF_GYRO_MOVING] = myGyro.isSensorMoving();
+  obj[PARAM_SELF][PARAM_SELF_GYRO_CONNECTED] = myGyro->isConnected();
+  obj[PARAM_SELF][PARAM_SELF_GYRO_MOVING] = !myGyro->hasValue();
   obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
       myConfig.isBleActive() || myConfig.hasTargetHttpPost() ||
               myConfig.hasTargetHttpPost() || myConfig.hasTargetHttpGet() ||
@@ -561,8 +561,8 @@ void GravmonWebServer::loop() {
   BaseWebServer::loop();
 
   if (_sensorCalibrationTask) {
-    if (myGyro.isConnected()) {
-      myGyro.calibrateSensor();
+    if (myGyro->isConnected()) {
+      myGyro->calibrateSensor();
     } else {
       Log.error(F("WEB : No gyro connected, skipping calibration" CR));
     }
@@ -571,7 +571,7 @@ void GravmonWebServer::loop() {
   }
 
   if (_pushTestTask) {
-    float angle = myGyro.getAngle();
+    float angle = myGyro->getAngle();
     float tempC = myTempSensor.getTempC();
     float gravitySG = calculateGravity(angle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
@@ -711,17 +711,7 @@ void GravmonWebServer::loop() {
     }
 
     // Test the gyro
-    switch (myGyro.getGyroID()) {
-      case 0x34:
-        obj[PARAM_GYRO][PARAM_FAMILY] = "MPU6050";
-        break;
-      case 0x38:
-        obj[PARAM_GYRO][PARAM_FAMILY] = "MPU6500";
-        break;
-      default:
-        obj[PARAM_GYRO][PARAM_FAMILY] = "0x" + String(myGyro.getGyroID(), 16);
-        break;
-    }
+    obj[PARAM_GYRO][PARAM_FAMILY] = myGyro->getGyroFamily();
 
     JsonObject cpu = obj[PARAM_CHIP].to<JsonObject>();
 
