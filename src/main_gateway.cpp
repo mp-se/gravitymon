@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,7 @@ SOFTWARE.
 #endif
 #include <battery.hpp>
 #include <cstdio>
+#include <deque>
 #include <looptimer.hpp>
 #include <measurement.hpp>
 #include <uptime.hpp>
@@ -54,9 +55,10 @@ constexpr auto CFG_AP_PASS = "password";
 #endif
 
 void controller();
-void renderDisplayHeader();
-void renderDisplayFooter();
-void renderDisplayLogs();
+// void renderDisplayHeader();
+// void renderDisplayLogs();
+void updateDisplayStatus();
+void updateDisplayLogs();
 void checkSleepMode(float angle, float volt);
 
 SerialDebug mySerial;
@@ -68,22 +70,18 @@ SerialWebSocket mySerialWebSocket;
 Display myDisplay;
 BatteryVoltage myBatteryVoltage;  // Needs to be defined but not used in gateway
 MeasurementList myMeasurementList;  // Data recevied from http or bluetooth
-LoopTimer controllerTimer(5000);
+LoopTimer controllerTimer(5000), displayTimer(2000);
 
-// Define constats for this program
 bool sleepModeAlwaysSkip =
-    false;            // Needs to be defined but not used in gateway
-int interval = 1000;  // ms, time to wait between changes to output
+    false;  // Needs to be defined but not used in gateway
 RunMode runMode = RunMode::measurementMode;
 
-struct LogEntry {
-  char s[60] = "";
-};
-
-const auto maxLogEntries = 9;
-LogEntry logEntryList[maxLogEntries];
-int logIndex = 0;
-bool logUpdated = true;
+const auto MAX_LOG_ENTRIES =
+    5;  // Max number of events to save (what can be displayed)
+std::deque<String> logEntryList;  // Last number of events
+bool logUpdated = true;           // If the history log should be updated
+int displayMeasurementIndex =
+    0;  // What entry is shown on the top of the display
 
 void setup() {
   // Main startup
@@ -225,24 +223,22 @@ void setup() {
   myDisplay.printLineCentered(3, "Startup completed");
   myDisplay.setFont(FontSize::FONT_9);
   delay(1000);
-  myDisplay.clear();
+  myDisplay.createUI();
 #endif
-  renderDisplayHeader();
-  renderDisplayFooter();
+  updateDisplayStatus();
 }
 
 void loop() {
   myUptime.calculate();
   myWebServer.loop();
   myWifi.loop();
-  // myDisplay.loop();
 
   switch (runMode) {
     case RunMode::measurementMode:
       if (!myWifi.isConnected()) {
         Log.warning(F("Loop: Wifi was disconnected, trying to reconnect." CR));
         myWifi.connect();
-        renderDisplayFooter();
+        updateDisplayStatus();
       }
       controller();
       break;
@@ -252,58 +248,175 @@ void loop() {
   }
 
   if (logUpdated) {
-    renderDisplayLogs();
+    updateDisplayLogs();
     logUpdated = false;
+  }
+
+  if (displayTimer.hasExipred()) {
+    displayTimer.reset();
+
+    if (myMeasurementList.size() == 0) {  // No data to display
+      myDisplay.updateDevice("No data received", "", "", "", "", 0, 0);
+    } else {
+      // If the index is out of bounds, start over
+      if (displayMeasurementIndex >= myMeasurementList.size())
+        displayMeasurementIndex = 0;
+
+      MeasurementEntry* entry =
+          myMeasurementList.getMeasurementEntry(displayMeasurementIndex);
+
+      char t[20], v1[20], v2[20], v3[20], s[20];
+      strftime(t, sizeof(t), "%Y-%m-%d %H:%M:%S", entry->getTimeinfoUpdated());
+
+      switch (entry->getType()) {
+        case MeasurementType::Gravitymon: {
+          const GravityData* gd = entry->getGravityData();
+
+          float temp = myConfig.isTempFormatF() ? convertCtoF(gd->getTempC())
+                                                : gd->getTempC();
+          float gravity = myConfig.isGravityPlato()
+                              ? convertToPlato(gd->getGravity())
+                              : gd->getGravity();
+
+          snprintf(v1, sizeof(v1), "%.3F%s", gravity,
+                   myConfig.isGravitySG() ? "SG" : "P");
+          snprintf(v2, sizeof(v2), "%.1F%s", temp,
+                   myConfig.isTempUnitC() ? "°C" : "°F");
+          snprintf(v3, sizeof(v3), "%.2FV", gd->getBattery());
+          snprintf(s, sizeof(s), "Gravmon (%s)", gd->getId());
+
+          myDisplay.updateDevice(strlen(gd->getName()) ? gd->getName() : s, v1, v2, v3, t,
+                                 displayMeasurementIndex,
+                                 myMeasurementList.size());
+        } break;
+        case MeasurementType::Pressuremon: {
+          const PressureData* pd = entry->getPressureData();
+
+          float temp = myConfig.isTempFormatF() ? convertCtoF(pd->getTempC())
+                                                : pd->getTempC();
+          float pressure = myConfig.isPressureBar()
+                               ? convertPsiPressureToBar(pd->getPressure())
+                           : myConfig.isPressureKpa()
+                               ? convertPsiPressureToKPa(pd->getPressure())
+                               : pd->getPressure();
+          // float pressure1 =
+          //     myConfig.isPressureBar()   ?
+          //     convertPsiPressureToBar(pd->getPressure1()) :
+          //     myConfig.isPressureKpa() ?
+          //     convertPsiPressureToKPa(pd->getPressure1())
+          //                                : pd->getPressure1();
+
+          snprintf(v1, sizeof(v1), "%.3F%s", pressure,
+                   myConfig.getPressureUnit());
+          snprintf(v2, sizeof(v2), "%.1F%s", temp,
+                   myConfig.isTempUnitC() ? "°C" : "°F");
+          snprintf(v3, sizeof(v3), "%.2FV", pd->getBattery());
+          snprintf(s, sizeof(s), "Pressmon (%s)", pd->getId());
+
+          myDisplay.updateDevice(strlen(pd->getName()) ? pd->getName() : s, v1, v2, v3, t,
+                                 displayMeasurementIndex,
+                                 myMeasurementList.size());
+        } break;
+        case MeasurementType::Chamber: {
+          const ChamberData* cd = entry->getChamberData();
+
+          float chamberTemp = myConfig.isTempFormatF()
+                                  ? convertCtoF(cd->getChamberTempC())
+                                  : cd->getChamberTempC();
+          float beerTemp = myConfig.isTempFormatF()
+                               ? convertCtoF(cd->getBeerTempC())
+                               : cd->getBeerTempC();
+
+          snprintf(v1, sizeof(v1), "C: %.1F%s", chamberTemp,
+                   myConfig.isTempUnitC() ? "°C" : "°F");
+          snprintf(v2, sizeof(v2), "B: %.1F%s", beerTemp,
+                   myConfig.isTempUnitC() ? "°C" : "°F");
+          snprintf(v3, sizeof(v3), "");
+          snprintf(s, sizeof(s), "Chamber (%s)", cd->getId());
+
+          myDisplay.updateDevice(s, v1, v2, v3, t, displayMeasurementIndex,
+                                 myMeasurementList.size());
+        } break;
+        case MeasurementType::TiltPro:
+        case MeasurementType::Tilt: {
+          const TiltData* td = entry->getTiltData();
+
+          float temp = myConfig.isTempFormatF() ? convertCtoF(td->getTempC())
+                                                : td->getTempC();
+          float gravity = myConfig.isGravityPlato()
+                              ? convertToPlato(td->getGravity())
+                              : td->getGravity();
+
+          snprintf(v1, sizeof(v1), "%.3F%s", gravity,
+                   myConfig.isGravitySG() ? "SG" : "P");
+          snprintf(v2, sizeof(v2), "%.1F%s", temp,
+                   myConfig.isTempUnitC() ? "°C" : "°F");
+                   snprintf(v3, sizeof(v3), "");
+                   snprintf(s, sizeof(s), "Tilt: %s", td->getId());
+
+          myDisplay.updateDevice(s, v1, v2, v3, t,
+                                 displayMeasurementIndex,
+                                 myMeasurementList.size());
+        } break;
+      }
+
+      displayMeasurementIndex++;
+    }
   }
 }
 
-void addGravityLogEntry(const char* id, tm timeinfo, float gravitySG,
+void addGravityLogEntry(const char* id, const tm* timeinfo, float gravitySG,
                         float tempC) {
   float temp = myConfig.isTempFormatF() ? convertCtoF(tempC) : tempC;
   float gravity =
       myConfig.isGravityPlato() ? convertToPlato(gravitySG) : gravitySG;
 
-  snprintf(&logEntryList[logIndex].s[0], sizeof(LogEntry::s),
-           "%02d:%02d G %s %.3F%s %.1F%s", timeinfo.tm_hour, timeinfo.tm_min,
-           id, gravity, myConfig.isGravitySG() ? "SG" : "P", temp,
+  char s[60];
+  snprintf(s, sizeof(s), "%02d:%02d ID:%s Gravity:%.3F%s Temp: %.1F%s",
+           timeinfo->tm_hour, timeinfo->tm_min, id, gravity,
+           myConfig.isGravitySG() ? "SG" : "P", temp,
            myConfig.isTempFormatC() ? "C" : "F");
 
-  if (++logIndex >= maxLogEntries) logIndex = 0;
-
+  logEntryList.push_back(s);
   logUpdated = true;
 }
 
-void addPressureLogEntry(const char* id, tm timeinfo, float pressurePSI,
+void addPressureLogEntry(const char* id, const tm* timeinfo, float pressurePSI,
                          float pressure1PSI, float tempC) {
   float temp = myConfig.isTempFormatF() ? convertCtoF(tempC) : tempC;
+  float pressure =
+      myConfig.isPressureBar()   ? convertPsiPressureToBar(pressurePSI)
+      : myConfig.isPressureKpa() ? convertPsiPressureToKPa(pressurePSI)
+                                 : pressurePSI;
+  float pressure1 =
+      myConfig.isPressureBar()   ? convertPsiPressureToBar(pressure1PSI)
+      : myConfig.isPressureKpa() ? convertPsiPressureToKPa(pressure1PSI)
+                                 : pressure1PSI;
 
-  // TODO FIX correct pressure conversion based on current setting
-  float pressure = pressurePSI;
-  float pressure1 = pressure1PSI;
+  char s[60];
+  snprintf(s, sizeof(s), "%02d:%02d ID:%s Pressure:%.3F%s Temp:%.1F%s",
+           timeinfo->tm_hour, timeinfo->tm_min, id, pressure,
+           myConfig.getPressureUnit(), temp,
+           myConfig.isTempFormatC() ? "C" : "F");
 
-  snprintf(&logEntryList[logIndex].s[0], sizeof(LogEntry::s),
-           "%02d:%02d P %s %.3F%s %.1F%s", timeinfo.tm_hour, timeinfo.tm_min,
-           id, pressure, "PSI", temp, myConfig.isTempFormatC() ? "C" : "F");
-
-  if (++logIndex >= maxLogEntries) logIndex = 0;
-
+  logEntryList.push_back(s);
   logUpdated = true;
 }
 
-void addChamberLogEntry(const char* id, tm timeinfo, float chamberTempC,
+void addChamberLogEntry(const char* id, const tm* timeinfo, float chamberTempC,
                         float beerTempC) {
   float chamberTemp =
       myConfig.isTempFormatF() ? convertCtoF(chamberTempC) : chamberTempC;
   float beerTemp =
       myConfig.isTempFormatF() ? convertCtoF(beerTempC) : beerTempC;
 
-  snprintf(&logEntryList[logIndex].s[0], sizeof(LogEntry::s),
-           "%02d:%02d C %s %.1F%s %.1F%s", timeinfo.tm_hour, timeinfo.tm_min,
-           id, chamberTemp, myConfig.isTempFormatC() ? "C" : "F", beerTemp,
+  char s[60];
+  snprintf(s, sizeof(s), "%02d:%02d ID:%s Chamber:%.1F%s Beer:%.1F%s",
+           timeinfo->tm_hour, timeinfo->tm_min, id, chamberTemp,
+           myConfig.isTempFormatC() ? "C" : "F", beerTemp,
            myConfig.isTempFormatC() ? "C" : "F");
 
-  if (++logIndex >= maxLogEntries) logIndex = 0;
-
+  logEntryList.push_back(s);
   logUpdated = true;
 }
 
@@ -413,11 +526,11 @@ void controller() {
   }
 }
 
-void renderDisplayHeader() {
-  myDisplay.printLineCentered(0, "GravityMon Gateway");
-}
+// void renderDisplayHeader() {
+//   myDisplay.printLineCentered(0, "GravityMon Gateway");
+// }
 
-void renderDisplayFooter() {
+void updateDisplayStatus() {
   char info[80];
 
   switch (runMode) {
@@ -437,14 +550,18 @@ void renderDisplayFooter() {
       break;
   }
 
-  myDisplay.printLineCentered(10, &info[0]);
+  myDisplay.updateStatus(info);
 }
 
-void renderDisplayLogs() {
-  for (int i = 0, j = logIndex; i < maxLogEntries; i++) {
-    j--;
-    if (j < 0) j = maxLogEntries - 1;
-    myDisplay.printLine(i + 1, &logEntryList[j].s[0]);
+void updateDisplayLogs() {
+  int idx = 0;
+
+  while (logEntryList.size() > MAX_LOG_ENTRIES) logEntryList.pop_front();
+
+  for (const auto& entry : logEntryList) {
+    if (idx >= MAX_LOG_ENTRIES) break;
+    Log.notice("Loop: Updating log entry %s (%d)." CR, entry.c_str(), idx);
+    myDisplay.updateHistory(entry.c_str(), idx++);
   }
 }
 
