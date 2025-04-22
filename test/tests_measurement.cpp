@@ -35,7 +35,7 @@ test(measure_list) {
 
   std::unique_ptr<MeasurementBaseData> td;
   
-  td.reset(new TiltData(MeasurementSource::NoSource, TiltColor::Red, 11.5, 2.2, 10, -10)); 
+  td.reset(new TiltData(MeasurementSource::NoSource, TiltColor::Red, 11.5, 2.2, 10, -10, false)); 
   list.updateData(td);
   // const TiltData* ptr = list.getMeasurementEntry(0)->getTiltData();
 
@@ -45,7 +45,7 @@ test(measure_list) {
   assertEqual(list.getMeasurementType(0), MeasurementType::Tilt);  
   assertEqual(list.getMeasurementType(-1), MeasurementType::NoType);  
   assertEqual(list.getMeasurementType(1), MeasurementType::NoType);  
-  td.reset(new TiltData(MeasurementSource::NoSource, TiltColor::Blue, 11.5, 2.2, 10, -12)); 
+  td.reset(new TiltData(MeasurementSource::NoSource, TiltColor::Blue, 11.5, 2.2, 10, -12, false)); 
 
   list.updateData(td);
   assertEqual(list.findMeasurementById("Blue"), 1);  
@@ -53,7 +53,7 @@ test(measure_list) {
   assertEqual(list.getMeasurementType(1), MeasurementType::Tilt);  
   assertEqual(list.getMeasurementEntry(1)->getTiltData()->getRssi(), -12);
 
-  td.reset(new TiltData(MeasurementSource::NoSource, TiltColor::Blue, 12.5, 3.2, 12, -18)); 
+  td.reset(new TiltData(MeasurementSource::NoSource, TiltColor::Blue, 12.5, 3.2, 12, -18, false)); 
   list.updateData(td);
   assertEqual(list.findMeasurementById("Blue"), 1);  
   assertEqual(list.size(), 2);  
@@ -87,7 +87,7 @@ test(measure_base) {
 }
 
 test(measure_tilt) {
-  TiltData d(MeasurementSource::NoSource, TiltColor::Red, 11.5, 2.2, 10, -10);
+  TiltData d(MeasurementSource::NoSource, TiltColor::Red, 11.5, 2.2, 10, -10, false);
 
   assertEqual(d.getType(), MeasurementType::Tilt);
   assertEqual(d.getId(), "Red");

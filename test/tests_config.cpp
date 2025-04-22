@@ -97,7 +97,7 @@ test(config_gravitymonValues) {
   assertEqual(myConfig.getGyroReadCount(), 50);
   assertEqual(myConfig.getGyroReadDelay(), 3150);
   assertEqual(myConfig.getGyroSensorMovingThreashold(), 500);
-  assertEqual(myConfig.getGravityFormat(), 'G');
+  assertEqual(myConfig.getGravityUnit(), 'G');
   assertEqual(myConfig.isIgnoreLowAnges(), false);
   assertEqual(myConfig.isBatterySaving(), true);
   assertEqual(myConfig.isGyroTemp(), false);
@@ -107,12 +107,12 @@ test(config_gravitymonValues) {
 }
 
 test(config_gravityFormat) {
-  myConfig.setGravityFormat('P');
-  assertEqual(myConfig.getGravityFormat(), 'P');
-  myConfig.setGravityFormat('G');
-  assertEqual(myConfig.getGravityFormat(), 'G');
-  myConfig.setGravityFormat('X');
-  assertEqual(myConfig.getGravityFormat(), 'G');
+  myConfig.setGravityUnit('P');
+  assertEqual(myConfig.getGravityUnit(), 'P');
+  myConfig.setGravityUnit('G');
+  assertEqual(myConfig.getGravityUnit(), 'G');
+  myConfig.setGravityUnit('X');
+  assertEqual(myConfig.getGravityUnit(), 'G');
 }
 
 test(config_gyroDisabled) {

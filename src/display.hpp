@@ -33,7 +33,6 @@ SOFTWARE.
 #include <lvgl.h>
 
 #include "TFT_eSPI.h"
-#endif
 
 struct LVGL_Data {
   lv_obj_t* _txtDeviceName;
@@ -61,6 +60,7 @@ struct LVGL_Data {
   String _dataStatusbar;
   String _dataHistory[5];
 };
+#endif
 
 enum FontSize { FONT_9 = 9, FONT_12 = 12, FONT_18 = 18, FONT_24 = 24 };
 
@@ -76,10 +76,10 @@ class Display {
  private:
 #if defined(ENABLE_TFT)
   TFT_eSPI* _tft = NULL;
+  uint32_t _backgroundColor = TFT_BLACK;
 #endif
   FontSize _fontSize = FontSize::FONT_9;
   Rotation _rotation = ROTATION_90;
-  uint32_t _backgroundColor = TFT_BLACK;
 
  public:
   Display();
@@ -101,6 +101,7 @@ class Display {
 };
 
 // Wrappers to simplify interaction with LVGL
+#if defined(ENABLE_TFT)
 lv_obj_t* createLabel(const char* label, int32_t x, int32_t y, int32_t w,
                       int32_t h, lv_style_t* style);
 void updateLabel(lv_obj_t* obj, const char* label);
@@ -108,8 +109,9 @@ void setStyle(lv_obj_t* obj, lv_style_t* style);
 void log_print(lv_log_level_t level, const char* buf);
 void lvgl_loop_handler(void* parameter);
 
-extern Display myDisplay;
 extern struct LVGL_Data lvglData;
+#endif
+extern Display myDisplay;
 
 #endif  // GATEWAY
 
