@@ -285,8 +285,8 @@ void loop() {
           snprintf(v3, sizeof(v3), "%.2FV", gd->getBattery());
           snprintf(s, sizeof(s), "Gravmon (%s)", gd->getId());
 
-          myDisplay.updateDevice(strlen(gd->getName()) ? gd->getName() : s, v1, v2, v3, t,
-                                 displayMeasurementIndex,
+          myDisplay.updateDevice(strlen(gd->getName()) ? gd->getName() : s, v1,
+                                 v2, v3, t, displayMeasurementIndex,
                                  myMeasurementList.size());
         } break;
         case MeasurementType::Pressuremon: {
@@ -313,8 +313,8 @@ void loop() {
           snprintf(v3, sizeof(v3), "%.2FV", pd->getBattery());
           snprintf(s, sizeof(s), "Pressmon (%s)", pd->getId());
 
-          myDisplay.updateDevice(strlen(pd->getName()) ? pd->getName() : s, v1, v2, v3, t,
-                                 displayMeasurementIndex,
+          myDisplay.updateDevice(strlen(pd->getName()) ? pd->getName() : s, v1,
+                                 v2, v3, t, displayMeasurementIndex,
                                  myMeasurementList.size());
         } break;
         case MeasurementType::Chamber: {
@@ -351,11 +351,10 @@ void loop() {
                    myConfig.isGravitySG() ? "SG" : "P");
           snprintf(v2, sizeof(v2), "%.1F%s", temp,
                    myConfig.isTempUnitC() ? "°C" : "°F");
-                   snprintf(v3, sizeof(v3), "");
-                   snprintf(s, sizeof(s), "Tilt: %s", td->getId());
+          snprintf(v3, sizeof(v3), "");
+          snprintf(s, sizeof(s), "Tilt: %s", td->getId());
 
-          myDisplay.updateDevice(s, v1, v2, v3, t,
-                                 displayMeasurementIndex,
+          myDisplay.updateDevice(s, v1, v2, v3, t, displayMeasurementIndex,
                                  myMeasurementList.size());
         } break;
       }
