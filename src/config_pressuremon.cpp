@@ -32,7 +32,7 @@ PressuremonConfig::PressuremonConfig(String baseMDNS, String fileName)
 #endif
 }
 
-void PressuremonConfig::createJson(JsonObject& doc) {
+void PressuremonConfig::createJson(JsonObject& doc) const {
   BrewingConfig::createJson(doc);
 
   doc[CONFIG_BATTERY_SAVING] = isBatterySaving();

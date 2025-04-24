@@ -37,9 +37,11 @@ constexpr auto PARAM_SELF_GYRO_CONNECTED = "gyro_connected";
 constexpr auto PARAM_SELF_GYRO_MOVING = "gyro_moving";
 constexpr auto PARAM_SELF_GYRO_CALIBRATION = "gyro_calibration";
 constexpr auto PARAM_SELF_GRAVITY_FORMULA = "gravity_formula";
-constexpr auto PARAM_GYRO = "gyro";
 constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
+constexpr auto PARAM_GYRO = "gyro";
+constexpr auto PARAM_GYRO_FAMILY = "gyro_family";
 constexpr auto PARAM_ONEWIRE = "onewire";
+constexpr auto PARAM_BLE_SUPPORTED = "ble_supported";
 
 void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
   if (myGyro.isConnected()) {
@@ -85,6 +87,14 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
   obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
 
+#if defined(BLE_ENABLED)
+  obj[PARAM_BLE_SUPPORTED] = true;
+#else
+  obj[PARAM_BLE_SUPPORTED] = false;
+#endif
+
+  obj[PARAM_GYRO_FAMILY] = myGyro.getGyroFamily();
+
 #if defined(ESP8266)
   obj[PARAM_ISPINDEL_CONFIG] = LittleFS.exists("/config.json");
 #else
@@ -103,7 +113,8 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
 
   obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
       strlen(myConfig.getGravityFormula()) > 0 ? true : false;
-  obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] = myConfig.hasGyroCalibration();
+  obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] =
+      myConfig.hasGyroCalibration() || !myGyro.needCalibration();
   obj[PARAM_SELF][PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
   obj[PARAM_SELF][PARAM_SELF_GYRO_MOVING] = myGyro.isSensorMoving();
 }
@@ -214,17 +225,7 @@ void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
   }
 
   // Test the gyro
-  switch (myGyro.getGyroID()) {
-    case 0x34:
-      obj[PARAM_GYRO][PARAM_FAMILY] = "MPU6050";
-      break;
-    case 0x38:
-      obj[PARAM_GYRO][PARAM_FAMILY] = "MPU6500";
-      break;
-    default:
-      obj[PARAM_GYRO][PARAM_FAMILY] = "0x" + String(myGyro.getGyroID(), 16);
-      break;
-  }
+  obj[PARAM_GYRO][PARAM_FAMILY] = myGyro.getGyroFamily();
 }
 
 #endif  // GRAVITYMON

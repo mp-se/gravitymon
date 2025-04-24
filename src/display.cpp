@@ -222,7 +222,7 @@ void lvgl_loop_handler(void *parameter) {
   LoopTimer taskLoop(500);
 
   for (;;) {
-    if (taskLoop.hasExipred()) {
+    if (taskLoop.hasExpired()) {
       taskLoop.reset();
 
       updateLabel(lvglData._txtDeviceName, lvglData._dataDeviceName.c_str());

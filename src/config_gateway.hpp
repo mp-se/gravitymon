@@ -77,121 +77,121 @@ class GravmonGatewayConfig : public BrewingConfig {
  public:
   GravmonGatewayConfig(String baseMDNS, String fileName);
 
-  const char* getTimezone() { return _timezone.c_str(); }
+  const char* getTimezone() const { return _timezone.c_str(); }
   void setTimezone(String s) {
     _timezone = s;
     _saveNeeded = true;
   }
 
-  bool isBleActive() {
+  bool isBleActive() const {
     return true;
   }  // Used in common code for reporting if push targets are defined.
 
-  bool isBleEnable() { return _bleEnable; }
+  bool isBleEnable() const { return _bleEnable; }
   void setBleEnable(bool f) {
     _bleEnable = f;
     _saveNeeded = true;
   }
 
-  bool isPressureBar() { return _pressureUnit == PRESSURE_BAR; }
-  bool isPressureKpa() { return _pressureUnit == PRESSURE_KPA; }
-  bool isPressurePsi() { return _pressureUnit == PRESSURE_PSI; }
+  bool isPressureBar() const { return _pressureUnit == PRESSURE_BAR; }
+  bool isPressureKpa() const { return _pressureUnit == PRESSURE_KPA; }
+  bool isPressurePsi() const { return _pressureUnit == PRESSURE_PSI; }
 
-  const char* getPressureUnit() { return _pressureUnit.c_str(); }
+  const char* getPressureUnit() const { return _pressureUnit.c_str(); }
   void setPressureUnit(String s) {
     _pressureUnit = s;
     _saveNeeded = true;
   }
 
-  bool isHttpPostGravityEnable() { return _httpPostGravityEnable; }
+  bool isHttpPostGravityEnable() const { return _httpPostGravityEnable; }
   void setHttpPostGravityEnable(bool f) {
     _httpPostGravityEnable = f;
     _saveNeeded = true;
   }
 
-  bool isHttpPostPressureEnable() { return _httpPostPressureEnable; }
+  bool isHttpPostPressureEnable() const { return _httpPostPressureEnable; }
   void setHttpPostPressureEnable(bool f) {
     _httpPostPressureEnable = f;
     _saveNeeded = true;
   }
 
-  bool isHttpPost2GravityEnable() { return _httpPost2GravityEnable; }
+  bool isHttpPost2GravityEnable() const { return _httpPost2GravityEnable; }
   void setHttpPost2GravityEnable(bool f) {
     _httpPost2GravityEnable = f;
     _saveNeeded = true;
   }
 
-  bool isHttpPost2PressureEnable() { return _httpPost2PressureEnable; }
+  bool isHttpPost2PressureEnable() const { return _httpPost2PressureEnable; }
   void setHttpPost2PressureEnable(bool f) {
     _httpPost2PressureEnable = f;
     _saveNeeded = true;
   }
 
-  bool isHttpGetGravityEnable() { return _httpGetGravityEnable; }
+  bool isHttpGetGravityEnable() const { return _httpGetGravityEnable; }
   void setHttpGetGravityEnable(bool f) {
     _httpGetGravityEnable = f;
     _saveNeeded = true;
   }
 
-  bool isHttpGetPressureEnable() { return _httpGetPressureEnable; }
+  bool isHttpGetPressureEnable() const { return _httpGetPressureEnable; }
   void setHttpGetPressureEnable(bool f) {
     _httpGetPressureEnable = f;
     _saveNeeded = true;
   }
 
-  bool isInfluxdb2GravityEnable() { return _influxdb2GravityEnable; }
+  bool isInfluxdb2GravityEnable() const { return _influxdb2GravityEnable; }
   void setInfluxdb2GravityEnable(bool f) {
     _influxdb2GravityEnable = f;
     _saveNeeded = true;
   }
 
-  bool isInfluxdb2PressureEnable() { return _influxdb2PressureEnable; }
+  bool isInfluxdb2PressureEnable() const { return _influxdb2PressureEnable; }
   void setInfluxdb2PressureEnable(bool f) {
     _influxdb2PressureEnable = f;
     _saveNeeded = true;
   }
 
-  bool isMqttGravityEnable() { return _mqttGravityEnable; }
+  bool isMqttGravityEnable() const { return _mqttGravityEnable; }
   void setMqttGravityEnable(bool f) {
     _mqttGravityEnable = f;
     _saveNeeded = true;
   }
 
-  bool isMqttPressureEnable() { return _mqttPressureEnable; }
+  bool isMqttPressureEnable() const { return _mqttPressureEnable; }
   void setMqttPressureEnable(bool f) {
     _mqttPressureEnable = f;
     _saveNeeded = true;
   }
 
-  int getBleScanTime() { return _bleScanTime; }
+  int getBleScanTime() const { return _bleScanTime; }
   void setBleScanTime(int v) {
     _bleScanTime = v;
     _saveNeeded = true;
   }
 
-  int getPushResendTime() { return _pushResendTime; }
+  int getPushResendTime() const { return _pushResendTime; }
   void setPushResendTime(int t) {
     _pushResendTime = t;
     _saveNeeded = true;
   }
 
-  bool getBleActiveScan() { return _bleActiveScan; }
+  bool getBleActiveScan() const { return _bleActiveScan; }
   void setBleActiveScan(bool b) {
     _bleActiveScan = b;
     _saveNeeded = true;
   }
 
-  char getGravityUnit() { return _gravityUnit; }
+  char getGravityUnit() const { return _gravityUnit; }
   void setGravityUnit(char c) {
     if (c == 'G' || c == 'P') {
       _gravityUnit = c;
       _saveNeeded = true;
     }
   }
-  bool isGravitySG() { return _gravityUnit == 'G'; }
-  bool isGravityPlato() { return _gravityUnit == 'P'; }
+  bool isGravitySG() const { return _gravityUnit == 'G'; }
+  bool isGravityPlato() const { return _gravityUnit == 'P'; }
 
-  bool isWifiPushActive() {
+  bool isWifiPushActive() const {
     return (hasTargetHttpPost() || hasTargetHttpPost2() || hasTargetHttpGet() ||
             hasTargetInfluxDb2() || hasTargetMqtt())
                ? true
@@ -199,7 +199,7 @@ class GravmonGatewayConfig : public BrewingConfig {
   }
 
   // IO functions
-  void createJson(JsonObject& doc);
+  void createJson(JsonObject& doc) const;
   void parseJson(JsonObject& doc);
 };
 

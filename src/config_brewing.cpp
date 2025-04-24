@@ -26,7 +26,7 @@ SOFTWARE.
 BrewingConfig::BrewingConfig(String baseMDNS, String fileName)
     : BaseConfig(baseMDNS, fileName) {}
 
-void BrewingConfig::createJson(JsonObject& doc) {
+void BrewingConfig::createJson(JsonObject& doc) const {
   createJsonBase(doc);
   createJsonWifi(doc);
   createJsonOta(doc);

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2024 Magnus
+Copyright (c) 2025 Magnus, Levi--G
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <AUnit.h>
+#ifndef SRC_ICM42670P_GYRO_HPP_
+#define SRC_ICM42670P_GYRO_HPP_
 
 #if defined(GRAVITYMON)
-#include <config.hpp>
+
 #include <gyro.hpp>
 
-GyroSensor myGyro(&myConfig);
+class ICM42670pGyro : public GyroSensorInterface {
+ private:
+  static uint8_t _addr;
 
-test(gyro_connectGyro) {
-  myGyro.setup();
-  assertEqual(myGyro.isConnected(), true);
-}
+  uint8_t _buffer[16] = {0};
+  uint32_t _configStart = 0;
+  GyroResultData _result = {false, 0, 0};
 
-test(gyro_readGyro) { 
-  myGyro.setup();
-  assertEqual(myGyro.read(), true);
-}
+  void debug();
+  void applyCalibration();
 
-test(gyro_readGyroTemp) {
-  myGyro.setup();
-  float f = INVALID_TEMPERATURE;
-  assertNotEqual(myGyro.getInitialSensorTempC(), f);
-  assertNotEqual(myGyro.getSensorTempC(), f);
-}
-#endif // GRAVITYMON
+  bool writeMBank1(uint8_t reg, uint8_t value);
+  bool writeMBank1AndVerify(uint8_t reg, uint8_t value);
+  bool readMBank1(uint8_t reg);
+  uint8_t ReadFIFOPackets(const uint16_t &count, RawGyroDataL &data);
+
+ public:
+  static bool isDeviceDetected();
+
+  explicit ICM42670pGyro(GyroConfigInterface *gyroConfig)
+      : GyroSensorInterface(gyroConfig) {}
+  bool setup();
+  void calibrateSensor();
+  void enterSleep();
+  GyroResultData readSensor();
+  const char *getGyroFamily();
+  uint8_t getGyroID() { return 0x67; }
+  bool needCalibration() { return false; }
+};
+
+#endif  // GRAVITYMON
+
+#endif  // SRC_ICM42670P_GYRO_HPP_
 
 // EOF

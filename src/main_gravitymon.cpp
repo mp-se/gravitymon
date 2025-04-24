@@ -71,6 +71,7 @@ SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
+GyroSensor myGyro(&myConfig);
 
 LoopTimer timerLoop(200);
 bool sleepModeAlwaysSkip =
@@ -376,7 +377,7 @@ bool loopReadGravity() {
 // Wrapper for loopGravity that only calls every 200ms so that we dont overload
 // this.
 void loopGravityOnInterval() {
-  if (timerLoop.hasExipred()) {
+  if (timerLoop.hasExpired()) {
     loopReadGravity();
     timerLoop.reset();
 

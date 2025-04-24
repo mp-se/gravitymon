@@ -53,7 +53,8 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
 
   // Battery & Timer
   engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
-  engine.setVal(TPL_SLEEP_INTERVAL, myConfig.getSleepInterval());
+  engine.setVal(TPL_SLEEP_INTERVAL,
+                myConfig.GravitymonConfig::getSleepInterval());
 
   int charge = 0;
 

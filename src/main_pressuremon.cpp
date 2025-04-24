@@ -75,6 +75,8 @@ SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
+PressureSensor myPressureSensor(&myConfig);
+PressureSensor myPressureSensor1(&myConfig);
 
 // Define constats for this program
 LoopTimer timerLoop(1000);
@@ -165,11 +167,11 @@ void setup() {
     default:
       Log.notice(F("Main: Setting up pressure sensors." CR));
       PERF_BEGIN("main-sensor-read");
-      myPressureSensor[0].setup(0, &Wire);
+      myPressureSensor.setup(0, &Wire);
       // myPressureSensor[1].setup(1, &Wire1);
       PERF_END("main-sensor-read");
 
-      if (!myPressureSensor[0].isActive() && !myPressureSensor[1].isActive()) {
+      if (!myPressureSensor.isActive() && !myPressureSensor1.isActive()) {
         Log.error(F("Main: No sensors are active, stopping." CR));
       }
 
@@ -248,15 +250,15 @@ bool loopReadPressure() {
   // interval.
   //
 
-  myPressureSensor[0].read();
-  // myPressureSensor[1].read();
+  myPressureSensor.read();
+  // myPressureSensor1.read();
   myTempSensor.readSensor(false);
 
   // float pressure, pressure1, temp, temp1;
   float pressurePsi, pressurePsi1, tempC;
 
-  pressurePsi = myPressureSensor[0].getPressurePsi();
-  // pressure1 = myPressureSensor[1].getPressurePsi();
+  pressurePsi = myPressureSensor.getPressurePsi();
+  // pressurePsi1 = myPressureSensor1.getPressurePsi();
   pressurePsi1 = NAN;
 
   tempC = myTempSensor.getTempC();
@@ -361,7 +363,7 @@ bool loopReadPressure() {
 }
 
 void loopPressureOnInterval() {
-  if (timerLoop.hasExipred()) {
+  if (timerLoop.hasExpired()) {
     loopReadPressure();
     timerLoop.reset();
 

@@ -28,14 +28,16 @@ SOFTWARE.
 #include <config.hpp>
 #include <Wire.h>
 
+PressureSensor myPressureSensor(&myConfig);
+
 test(pressure_connectSensor) {
   myConfig.setPressureSensorType(SensorXidibeiXDB401_I2C_KPa_200, 0);
   Wire.pins(PIN_SDA, PIN_SCL);
   Wire.begin();
 
-  myPressureSensor[0].setup(0, &Wire);
-  assertEqual(myPressureSensor[0].isActive(), true);
-  assertEqual(myPressureSensor[0].read(), true);
+  myPressureSensor.setup(0, &Wire);
+  assertEqual(myPressureSensor.isActive(), true);
+  assertEqual(myPressureSensor.read(), true);
 }
 #endif // PRESSUREMON
 

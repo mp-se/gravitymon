@@ -252,7 +252,7 @@ void loop() {
     logUpdated = false;
   }
 
-  if (displayTimer.hasExipred()) {
+  if (displayTimer.hasExpired()) {
     displayTimer.reset();
 
     if (myMeasurementList.size() == 0) {  // No data to display
@@ -427,7 +427,7 @@ void controller() {
     bleScanner.scan();
   }
 
-  if (controllerTimer.hasExipred()) {
+  if (controllerTimer.hasExpired()) {
     controllerTimer.reset();
 
     BrewingPush push(&myConfig);

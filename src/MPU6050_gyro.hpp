@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#include <AUnit.h>
+#ifndef SRC_MPU6050_GYRO_HPP_
+#define SRC_MPU6050_GYRO_HPP_
 
 #if defined(GRAVITYMON)
-#include <config.hpp>
+
+#include <MPU6050.h>
+
 #include <gyro.hpp>
 
-GyroSensor myGyro(&myConfig);
+class MPU6050Gyro : public GyroSensorInterface {
+ private:
+  MPU6050 _accelgyro;
+  RawGyroData raw;
+  RawGyroData _calibrationOffset;
 
-test(gyro_connectGyro) {
-  myGyro.setup();
-  assertEqual(myGyro.isConnected(), true);
-}
+  void debug();
+  void applyCalibration();
 
-test(gyro_readGyro) { 
-  myGyro.setup();
-  assertEqual(myGyro.read(), true);
-}
+ public:
+  static bool isDeviceDetected();
 
-test(gyro_readGyroTemp) {
-  myGyro.setup();
-  float f = INVALID_TEMPERATURE;
-  assertNotEqual(myGyro.getInitialSensorTempC(), f);
-  assertNotEqual(myGyro.getSensorTempC(), f);
-}
-#endif // GRAVITYMON
+  explicit MPU6050Gyro(GyroConfigInterface* gyroConfig)
+      : GyroSensorInterface(gyroConfig) {}
+  bool setup();
+  void calibrateSensor();
+  void enterSleep();
+  GyroResultData readSensor();
+  const char* getGyroFamily();
+  uint8_t getGyroID() { return _accelgyro.getDeviceID(); }
+  bool needCalibration() { return true; }
+};
+
+#endif  // GRAVITYMON
+
+#endif  // SRC_MPU6050_GYRO_HPP_
 
 // EOF

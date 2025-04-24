@@ -96,9 +96,9 @@ void PushIntervalTracker::save() {
   }
 }
 
-BrewingPush::BrewingPush(BrewingConfig* BrewingConfig)
-    : BasePush(BrewingConfig) {
-  _BrewingConfig = BrewingConfig;
+BrewingPush::BrewingPush(BrewingConfig* brewingConfig)
+    : BasePush(brewingConfig) {
+  _brewingConfig = brewingConfig;
 }
 
 void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
