@@ -87,6 +87,10 @@ class PressuremonConfig : public BrewingConfig, public PressureConfigInterface {
   void setPressureSensorType(int t, int idx) {
     setPressureSensorType((PressureSensorType)t, idx);
   }
+  bool hasPressureSensorConfigured() const {
+    return (_pressureSensor[0] != PressureSensorType::SensorNone ||
+            _pressureSensor[1] != PressureSensorType::SensorNone);
+  }
 
   float getPressureSensorCorrection(int idx) const {
     return _pressureSensorCorrection[idx];

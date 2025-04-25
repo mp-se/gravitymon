@@ -93,6 +93,8 @@ void setup() {
   pinMode(PIN_PWR, OUTPUT);
   delay(5);
 
+  delay(3000);  // Wait for power to stabilize
+
   PERF_BEGIN("run-time");
   PERF_BEGIN("main-setup");
   runtimeMillis = millis();
@@ -230,7 +232,7 @@ void setup() {
     default:
       // We cant use LED on ESP32C3 since that pin is connected to GYRO
       ledOn(
-          LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
+          LedColor::GREEN);  // Green or fast flashing to indicate measurement mode
       break;
   }
 
@@ -453,7 +455,7 @@ void checkSleepModePressure(float volt) {
     Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
 #endif
     runMode = RunMode::configurationMode;
-  } else if (volt > myConfig.getVoltageConfig()) {
+  } else if (volt > myConfig.getVoltageConfig() || volt < 2.0 || !myConfig.hasPressureSensorConfigured()) {
     runMode = RunMode::configurationMode;
   } else {
     runMode = RunMode::measurementMode;
