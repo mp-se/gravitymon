@@ -47,6 +47,7 @@ constexpr auto CONFIG_PUSH_INTERVAL_MQTT = "mqtt_int";
 constexpr auto CONFIG_IGNORE_LOW_ANGLES = "ignore_low_angles";
 constexpr auto CONFIG_BATTERY_SAVING = "battery_saving";
 constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
+constexpr auto CONFIG_FLASH_LOGGING = "flash_logging";
 
 class BrewingConfig : public BaseConfig {
  private:
@@ -88,8 +89,16 @@ class BrewingConfig : public BaseConfig {
 
   int _tempSensorResolution = 9;  // bits
 
+  bool _flashLogging = true;
+
  public:
   BrewingConfig(String baseMDNS, String fileName);
+
+  bool isFlashLogging() const { return _flashLogging; }
+  void setFlashLogging(bool b) {
+    _flashLogging = b;
+    _saveNeeded = true;
+  }
 
   bool isWifiDirect() const { return _wifiDirect; }
   void setWifiDirect(bool b) {

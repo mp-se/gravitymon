@@ -47,7 +47,7 @@ class HistoryLog {
  public:
   explicit HistoryLog(String fName);
   void addLog(float runTime, float measurement, int sleepTime);
-  const LogEntry& getAverage() { return _average; }
+  const LogEntry& getAverage() const { return _average; }
 };
 
 #endif  // SRC_HISTORY_HPP_

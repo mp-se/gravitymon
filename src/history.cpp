@@ -25,9 +25,13 @@ SOFTWARE.
 
 #include <cstdio>
 #include <history.hpp>
+#include <config.hpp>
 #include <log.hpp>
 
 HistoryLog::HistoryLog(String fName) {
+  if(!myConfig.isFlashLogging())
+    return;
+
   _fName = fName;
 
   File runFile = LittleFS.open(_fName, "r");
@@ -63,6 +67,9 @@ void HistoryLog::addLog(float runTime, float measurement, int sleepTime) {
 }
 
 void HistoryLog::save() {
+  if(!myConfig.isFlashLogging())
+    return;
+
   File runFile = LittleFS.open(_fName, "w");
   if (runFile) {
     for (int i = 0; i < 10; i++) {
