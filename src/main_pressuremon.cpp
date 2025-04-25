@@ -448,6 +448,7 @@ void checkSleepModePressure(float volt) {
   return;
 #endif
 
+
   if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration
     // mode.
@@ -455,9 +456,14 @@ void checkSleepModePressure(float volt) {
     Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
 #endif
     runMode = RunMode::configurationMode;
-  } else if (volt > myConfig.getVoltageConfig() || volt < 2.0 || !myConfig.hasPressureSensorConfigured()) {
+  } else if (!myPressureSensor.isActive() && !myPressureSensor1.isActive()) {
+    Log.notice(F("MAIN: No sensors active, will go into config mode." CR));
+    runMode = RunMode::configurationMode;
+  } else if (volt > myConfig.getVoltageConfig() || volt < 2.0) {
+    Log.notice(F("MAIN: Voltage out of range, will go into config mode." CR));
     runMode = RunMode::configurationMode;
   } else {
+    Log.notice(F("MAIN: Going into measurement mode." CR));
     runMode = RunMode::measurementMode;
   }
 
