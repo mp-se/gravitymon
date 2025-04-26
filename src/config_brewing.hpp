@@ -89,7 +89,7 @@ class BrewingConfig : public BaseConfig {
 
   int _tempSensorResolution = 9;  // bits
 
-  bool _flashLogging = true;
+  bool _flashLogging = false;
 
  public:
   BrewingConfig(String baseMDNS, String fileName);
