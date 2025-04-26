@@ -40,14 +40,16 @@ class MPU6050Gyro : public GyroSensorInterface {
   void applyCalibration();
 
  public:
-  static bool isDeviceDetected();
+  static bool isDeviceDetected(uint8_t& addr);
 
-  explicit MPU6050Gyro(GyroConfigInterface* gyroConfig)
-      : GyroSensorInterface(gyroConfig) {}
-  bool setup();
+  explicit MPU6050Gyro(uint8_t addr, GyroConfigInterface* gyroConfig)
+      : GyroSensorInterface(gyroConfig) {
+    _accelgyro = MPU6050(addr);
+  }
+  bool setup(GyroMode mode, bool force);
   void calibrateSensor();
-  void enterSleep();
-  GyroResultData readSensor();
+  GyroMode enterSleep(GyroMode mode);
+  GyroResultData readSensor(GyroMode mode);
   const char* getGyroFamily();
   uint8_t getGyroID() { return _accelgyro.getDeviceID(); }
   bool needCalibration() { return true; }

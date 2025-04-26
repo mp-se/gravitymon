@@ -33,45 +33,83 @@ SOFTWARE.
 #define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
                             // calibration
 
-bool GyroSensor::setup() {
-  int clock = 400000;
+#if USE_RTC_MEM
+RTC_DATA_ATTR RTC_Gyro_Data myRTC_Gyro_Data;
+#endif
+
+bool GyroSensor::setup(GyroMode mode, bool force) {
+  if (_currentMode == GyroMode::GYRO_UNCONFIGURED || !_impl) {
+    int clock = 400000;
 
 #if defined(FLOATY)
-  pinMode(PIN_VCC, OUTPUT);
-  pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
-  digitalWrite(PIN_VCC, HIGH);
-  digitalWrite(PIN_GND, LOW);
-  delay(10);  // Wait for the pins to settle or we will fail to connect
+    pinMode(PIN_VCC, OUTPUT);
+    pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
+    digitalWrite(PIN_VCC, HIGH);
+    digitalWrite(PIN_GND, LOW);
+    delay(10);  // Wait for the pins to settle or we will fail to connect
 #endif
 
 #if LOG_LEVEL == 6
-  Log.verbose(F("GYRO: Setting up hardware." CR));
+    Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
 
-  Wire.begin(PIN_SDA, PIN_SCL);
-  Wire.setClock(clock);  // 400kHz I2C clock.
-
-  if (MPU6050Gyro::isDeviceDetected()) {
-    Log.notice(F("GYRO: Detected MPU6050/MPU6000." CR));
-    _impl.reset(new MPU6050Gyro(_gyroConfig));
-    _impl->setup();
+    Wire.begin(PIN_SDA, PIN_SCL);
+    Wire.setClock(clock);  // 400kHz I2C clock.
+#if USE_RTC_MEM
+    if (myRTC_Gyro_Data.IsDataAvailable == GYRO_RTC_DATA_AVAILABLE) {
+      if (myRTC_Gyro_Data.Type == GyroType::GYRO_MPU6050) {
+        Log.notice(F("GYRO: Restored MPU6050/MPU6000." CR));
+        _impl.reset(new MPU6050Gyro(myRTC_Gyro_Data.Address, _gyroConfig));
+        _currentMode = GyroMode::GYRO_RUN;
+      } else if (myRTC_Gyro_Data.Type == GyroType::GYRO_ICM42670P) {
+        Log.notice(F("GYRO: Restored ICM42670-p." CR));
+        _impl.reset(new ICM42670pGyro(myRTC_Gyro_Data.Address, _gyroConfig));
+        _currentMode = GyroMode::GYRO_RUN;
+      }
+    }
+#endif
+    if (!_impl) {
+      uint8_t addr = 0;
+      if (MPU6050Gyro::isDeviceDetected(addr)) {
+        Log.notice(F("GYRO: Detected MPU6050/MPU6000." CR));
+        _impl.reset(new MPU6050Gyro(addr, _gyroConfig));
+#if USE_RTC_MEM
+        myRTC_Gyro_Data = {.Type = GyroType::GYRO_MPU6050,
+                           .Address = addr,
+                           .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
+#endif
+      } else if (ICM42670pGyro::isDeviceDetected(addr)) {
+        Log.notice(F("GYRO: Detected ICM42670-p." CR));
+        _impl.reset(new ICM42670pGyro(addr, _gyroConfig));
+#if USE_RTC_MEM
+        myRTC_Gyro_Data = {.Type = GyroType::GYRO_ICM42670P,
+                           .Address = addr,
+                           .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
+#endif
+      } else {
+        Log.error(F("GYRO: No gyro detected." CR));
+      }
+      // Add code for new gyro implementations here
+    }
+  }
+  if (_impl) {
+    if (_currentMode == mode && !force) {
+      return true;  // already correctly setup
+    }
+    if (_impl->setup(mode, force)) {
+      _currentMode = mode;
+    }
+  } else {
+    _currentMode = GyroMode::GYRO_UNCONFIGURED;
   }
 
-  if (ICM42670pGyro::isDeviceDetected()) {
-    Log.notice(F("GYRO: Detected ICM42670-p." CR));
-    _impl.reset(new ICM42670pGyro(_gyroConfig));
-    _impl->setup();
-  }
-
-  // Add code for new gyro implementations here
-
-  return _impl ? _impl->isConnected() : false;
+  return _currentMode != GyroMode::GYRO_UNCONFIGURED;
 }
 
 bool GyroSensor::read() {
   if (!_impl) return false;
 
-  GyroResultData resultData = _impl->readSensor();
+  GyroResultData resultData = _impl->readSensor(_currentMode);
 
   _valid = resultData.valid;
 
@@ -90,8 +128,9 @@ bool GyroSensor::read() {
 void GyroSensor::enterSleep() {
 #if defined(FLOATY)
   digitalWrite(PIN_VCC, LOW);
+  _currentMode = GyroMode::GYRO_UNCONFIGURED;
 #else
-  if (_impl) _impl->enterSleep();
+  if (_impl) _currentMode = _impl->enterSleep(_currentMode);
 #endif
 }
 

@@ -31,17 +31,27 @@ SOFTWARE.
 #define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
                             // calibration
 
-bool MPU6050Gyro::isDeviceDetected() {
-  uint8_t buffer[14];
-  I2Cdev::readBits(MPU6050_DEFAULT_ADDRESS, MPU6050_RA_WHO_AM_I,
-                   MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH, buffer,
-                   I2Cdev::readTimeout);
-  return buffer[0] == 0x34 || buffer[0] == 0x38;
+bool MPU6050Gyro::isDeviceDetected(uint8_t &addr) {
+  uint8_t whoami;
+  if (I2Cdev::readBits(MPU6050_ADDRESS_AD0_LOW, MPU6050_RA_WHO_AM_I,
+                       MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH,
+                       &whoami) == 1 &&
+      (whoami == 0x34 || whoami == 0x38)) {
+    addr = MPU6050_ADDRESS_AD0_LOW;
+    return true;
+  }
+  if (I2Cdev::readBits(MPU6050_ADDRESS_AD0_HIGH, MPU6050_RA_WHO_AM_I,
+                       MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH,
+                       &whoami) == 1 &&
+      (whoami == 0x34 || whoami == 0x38)) {
+    addr = MPU6050_ADDRESS_AD0_HIGH;
+    return true;
+  }
+  return false;
 }
 
-bool MPU6050Gyro::setup() {
+bool MPU6050Gyro::setup(GyroMode mode, bool force) {
   _accelgyro.initialize();
-  _sensorConnected = true;
 
   // Configure the sensor
   _accelgyro.setTempSensorEnabled(true);
@@ -60,12 +70,15 @@ bool MPU6050Gyro::setup() {
   // config.
   _calibrationOffset = _gyroConfig->getGyroCalibration();
   applyCalibration();
-  return _sensorConnected;
+  return true;
 }
 
-void MPU6050Gyro::enterSleep() { _accelgyro.setSleepEnabled(true); }
+GyroMode MPU6050Gyro::enterSleep(GyroMode mode) {
+  _accelgyro.setSleepEnabled(true);
+  return GyroMode::GYRO_SLEEP;
+}
 
-GyroResultData MPU6050Gyro::readSensor() {
+GyroResultData MPU6050Gyro::readSensor(GyroMode mode) {
   int noIterations = _gyroConfig->getGyroReadCount();
 #if !defined(GYRO_USE_INTERRUPT)
   int delayTime = myConfig.getGyroReadDelay();

@@ -29,8 +29,6 @@ SOFTWARE.
 #include <log.hpp>
 #include <main.hpp>
 
-// #define USE_FIFO_MODE
-
 #define INT16_FROM_BUFFER(high, low) \
   (int16_t)((((int16_t)_buffer[high]) << 8) | _buffer[low])
 #define UINT16_FROM_BUFFER(high, low) \
@@ -43,22 +41,21 @@ SOFTWARE.
 #define ICM42670_FLUSH_REGISTER 0x75
 #define ICM42670_FLUSH_VALUE 0x67
 #define ICM42670_PWR_MGMT0_REGISTER 0x1F
+#define ICM42670_FIFO_CONFIG1_REGISTER 0x28
 
-uint8_t ICM42670pGyro::_addr = 0;
-
-bool ICM42670pGyro::isDeviceDetected() {
-  uint8_t buffer[16] = {0};
+bool ICM42670pGyro::isDeviceDetected(uint8_t &addr) {
+  uint8_t whoami = 0;
 
   if (I2Cdev::readByte(ICM42670_PRIMARY_ADDRESS, ICM42670_WHOAMI_REGISTER,
-                       buffer) == 1 &&
-      buffer[0] == ICM42670_WHOAMI_VALUE) {
-    _addr = ICM42670_PRIMARY_ADDRESS;
+                       &whoami) == 1 &&
+      whoami == ICM42670_WHOAMI_VALUE) {
+    addr = ICM42670_PRIMARY_ADDRESS;
     return true;
   }
   if (I2Cdev::readByte(ICM42670_SECONDARY_ADDRESS, ICM42670_WHOAMI_REGISTER,
-                       buffer) == 1 &&
-      buffer[0] == ICM42670_WHOAMI_VALUE) {
-    _addr = ICM42670_SECONDARY_ADDRESS;
+                       &whoami) == 1 &&
+      whoami == ICM42670_WHOAMI_VALUE) {
+    addr = ICM42670_SECONDARY_ADDRESS;
     return true;
   }
   return false;
@@ -121,23 +118,40 @@ uint8_t getDecimationValue(uint8_t p) {
   return min(7 + p, 15);
 }
 
-bool ICM42670pGyro::setup() {
+bool ICM42670pGyro::setup(GyroMode mode, bool force) {
 #if LOG_LEVEL == 6
   Log.verbose(F("ICM : Starting ICM setup" CR));
 #endif
-#if defined(USE_FIFO_MODE)
-  if (I2Cdev::readByte(_addr, ICM42670_PWR_MGMT0_REGISTER, _buffer) == 1 &&
-      _buffer[0] == 0x0F) {
+  if (!force && mode == GyroMode::GYRO_RUN &&
+      I2Cdev::readByte(_addr, ICM42670_PWR_MGMT0_REGISTER, _buffer) == 1 &&
+      (_buffer[0] & 0x0F) == 0x0F &&
+      I2Cdev::readByte(_addr, ICM42670_FIFO_CONFIG1_REGISTER, _buffer) == 1 &&
+      (_buffer[0] & 0x03) == 0x00) {
     // ICM is already configured = OK
 #if LOG_LEVEL == 6
     Log.info(F("ICM : Setup OK" CR));
 #endif
-    _sensorConnected = true;
     return true;
-  } else {
-    // first time setup or comm faillure
+  }
+
+  // first time setup or comm faillure
+  // reset ICM
+  if (!I2Cdev::writeByte(_addr, 0x02, 0x14)) {
+    Log.error(F("ICM : Reset failed" CR));
+    return false;
+  }
+  while (!I2Cdev::readByte(_addr, 0x02, _buffer) ||
+         (_buffer[0] & 0x10) == 0x10) {
+#if LOG_LEVEL == 6
+    Log.verbose(F("ICM : Waiting for reset" CR));
+#endif
+  }
+  // mandatory wait
+  delay(3);
+
+  if (mode == GYRO_RUN) {
     // start oscillator
-    if (!I2Cdev::writeByte(_addr, 0x1F, 0x10)) {
+    if (!I2Cdev::writeByte(_addr, ICM42670_PWR_MGMT0_REGISTER, 0x10)) {
       Log.error(F("ICM : Start OSC failed" CR));
       return false;
     }
@@ -185,7 +199,7 @@ bool ICM42670pGyro::setup() {
       return false;
     }
     // enable sensors
-    if (!I2Cdev::writeByte(_addr, 0x1F, 0x0F)) {
+    if (!I2Cdev::writeByte(_addr, ICM42670_PWR_MGMT0_REGISTER, 0x0F)) {
       Log.error(F("ICM : Sensor enable failed" CR));
       return false;
     }
@@ -196,45 +210,37 @@ bool ICM42670pGyro::setup() {
       Log.error(F("ICM : Sensor config failed" CR));
     }
     // enable fifo
-    if (!I2Cdev::writeByte(_addr, 0x28, 0x00)) {
+    if (!I2Cdev::writeByte(_addr, ICM42670_FIFO_CONFIG1_REGISTER, 0x00)) {
       Log.error(F("ICM : Fifo enable failed" CR));
     }
-  }
-#else
-  // GYRO=LN ACCEL=LN
-  if (!I2Cdev::writeByte(_addr, ICM42670_PWR_MGMT0_REGISTER, 0x0F)) {
+  } else if (mode == GyroMode::GYRO_CONTINUOUS) {
+    // GYRO=LN ACCEL=LN
+    if (!I2Cdev::writeByte(_addr, ICM42670_PWR_MGMT0_REGISTER, 0x0F)) {
+      return false;
+    }
+    _configStart = millis();
+    delayMicroseconds(200);  // mandatory per datasheet
+    // GYRO=250dps GYRO=800Hz
+    // ACCEL=2g ACCEL=800Hz
+    // TEMP=4HzBW
+    // GYRO=16HzBW
+    // ACCEL=16HzBW
+    uint8_t config[5] = {0x66, 0x66, 0x70, 0x37, 0x47};
+    if (!I2Cdev::writeBytes(_addr, 0x20, 5, config)) {
+      return false;
+    }
+  } else {
     return false;
   }
-  _configStart = millis();
-  delayMicroseconds(200);  // mandatory per datasheet
-  // Original setup:
-  // GYRO=250dps GYRO=800Hz
-  // I2Cdev::writeByte(_addr, 0x20, 0x66)
-  // ACCEL=2g ACCEL=800Hz
-  // I2Cdev::writeByte(_addr, 0x21, 0x66)
-  // TEMP=4HzBW
-  // I2Cdev::writeByte(_addr, 0x22, 0x70)
-  // GYRO=16HzBW
-  // I2Cdev::writeByte(_addr, 0x23, 0x37)
-  // ACCEL=16HzBW
-  // I2Cdev::writeByte(_addr, 0x24, 0x47)
-  uint8_t config[5] = {0x66, 0x66, 0x70, 0x37, 0x47};
-  if (!I2Cdev::writeBytes(_addr, 0x20, 5, config)) {
-    return false;
-  }
-#endif
-
-  _sensorConnected = true;
-  // we will not do calibration for now
-  // _calibrationOffset = myConfig.getGyroCalibration();
-  // applyCalibration();
   return true;
 }
 
-void ICM42670pGyro::enterSleep() {
-#if !defined(USE_FIFO_MODE)
-  I2Cdev::writeByte(_addr, ICM42670_PWR_MGMT0_REGISTER, 0x00);
-#endif
+GyroMode ICM42670pGyro::enterSleep(GyroMode mode) {
+  if (mode == GyroMode::GYRO_RUN) {
+    return mode;
+  }
+  return setup(GyroMode::GYRO_RUN, false) ? GyroMode::GYRO_RUN
+                                          : GyroMode::GYRO_UNCONFIGURED;
 }
 
 uint8_t ICM42670pGyro::ReadFIFOPackets(const uint16_t &count,
@@ -269,97 +275,100 @@ uint8_t ICM42670pGyro::ReadFIFOPackets(const uint16_t &count,
   return success;
 }
 
-GyroResultData ICM42670pGyro::readSensor() {
+GyroResultData ICM42670pGyro::readSensor(GyroMode mode) {
   RawGyroDataL average = {0, 0, 0, 0, 0, 0};
-
-#if defined(USE_FIFO_MODE)
-  _buffer[0] = 0;
-  _buffer[1] = 0;
-  I2Cdev::readBytes(_addr, 0x3D, 2, _buffer);
-  uint16_t count = UINT16_FROM_BUFFER(0, 1);
-  count = min(count, (uint16_t)138);
+  GyroResultData _result = {false, 0, 0};
+  if (mode == GyroMode::GYRO_RUN) {
+    _buffer[0] = 0;
+    _buffer[1] = 0;
+    I2Cdev::readBytes(_addr, 0x3D, 2, _buffer);
+    uint16_t count = UINT16_FROM_BUFFER(0, 1);
+    count = min(count, (uint16_t)138);
 #if LOG_LEVEL == 6
-  Log.verbose(F("ICM : available packets= %d" CR), count);
+    Log.verbose(F("ICM : available packets= %d" CR), count);
 #endif
-  if (count > 0) {
-    count = ReadFIFOPackets(count, average);
+    if (count > 0) {
+      count = ReadFIFOPackets(count, average);
 
-    if (count) {
-      average.ax /= count;
-      average.ay /= count;
-      average.az /= count;
-      float ax = (static_cast<float>(average.ax)) / 16384,
-            ay = (static_cast<float>(average.ay)) / 16384,
-            az = (static_cast<float>(average.az)) / 16384;
-      _result.valid = true;
-      _result.angle = calculateAngle(ax, ay, az);
-      _result.temp = (static_cast<float>(average.temp)) / count / 2 + 25;
-      Log.notice(F("ICM : angle=%F, temp=%F" CR), _result.angle, _result.temp);
+      if (count) {
+        average.ax /= count;
+        average.ay /= count;
+        average.az /= count;
+        float ax = (static_cast<float>(average.ax)) / 16384,
+              ay = (static_cast<float>(average.ay)) / 16384,
+              az = (static_cast<float>(average.az)) / 16384;
+        _result.valid = true;
+        _result.angle = calculateAngle(ax, ay, az);
+        _result.temp = (static_cast<float>(average.temp)) / count / 2 + 25;
+        Log.notice(F("ICM : angle=%F, temp=%F" CR), _result.angle,
+                   _result.temp);
+      }
     }
+  } else if (mode == GyroMode::GYRO_CONTINUOUS) {
+    int noIterations = _gyroConfig->getGyroReadCount();
+    RawGyroData raw;
+    auto end = millis();
+    auto dur = end - _configStart;
+    if (dur < 45) {
+      delay(45 - dur);
+    }
+
+    for (int cnt = 0; cnt < noIterations; cnt++) {
+      // INT_STATUS_DRDY
+      while (I2Cdev::readByte(_addr, 0x36, _buffer) == 0 ||
+             (_buffer[0] & 1) == 0) {
+#if LOG_LEVEL == 6
+        Log.verbose(F("INT_STATUS_DRDY: %X" CR), _buffer[0]);
+#endif
+      }
+
+      I2Cdev::readBytes(_addr, 0x09, 14, _buffer);
+      raw.temp = (((int16_t)_buffer[0]) << 8) | _buffer[1];
+      raw.ax = (((int16_t)_buffer[2]) << 8) | _buffer[3];
+      raw.ay = (((int16_t)_buffer[4]) << 8) | _buffer[5];
+      raw.az = (((int16_t)_buffer[6]) << 8) | _buffer[7];
+      raw.gx = (((int16_t)_buffer[8]) << 8) | _buffer[9];
+      raw.gy = (((int16_t)_buffer[10]) << 8) | _buffer[11];
+      raw.gz = (((int16_t)_buffer[12]) << 8) | _buffer[13];
+      // Log.verbose(F("Buffer: %X %X %X %X %X %X %X" CR), raw.temp, raw.ax,
+      // raw.ay, raw.az, raw.gx, raw.gy, raw.gz);
+
+      average.ax += raw.ax;
+      average.ay += raw.ay;
+      average.az += raw.az;
+      average.gx += raw.gx;
+      average.gy += raw.gy;
+      average.gz += raw.gz;
+      average.temp += raw.temp;
+    }
+
+    raw.ax = average.ax / noIterations;
+    raw.ay = average.ay / noIterations;
+    raw.az = average.az / noIterations;
+    raw.gx = average.gx / noIterations;
+    raw.gy = average.gy / noIterations;
+    raw.gz = average.gz / noIterations;
+    raw.temp = average.temp / noIterations;
+
+    Log.verbose(F("Results: %d\t%d\t%d\t%d\t%d\t%d\t%d" CR), raw.ax, raw.ay,
+                raw.az, raw.gx, raw.gy, raw.gz, raw.temp);
+
+    _result.valid = !isSensorMoving(raw.gx, raw.gy, raw.gz);
+    if (_result.valid) {
+      // Smooth out the readings to we can have a more stable angle/tilt.
+      // ------------------------------------------------------------------------------------------------------------
+      // Accelerometer full scale range of +/- 2g with Sensitivity Scale Factor
+      // of 16,384 LSB(Count)/g. Gyroscope full scale range of +/- 250 °/s with
+      // Sensitivity Scale Factor of 131 LSB (Count)/°/s.
+      float ax = (static_cast<float>(raw.ax)) / 16384,
+            ay = (static_cast<float>(raw.ay)) / 16384,
+            az = (static_cast<float>(raw.az)) / 16384;
+
+      _result.angle = calculateAngle(ax, ay, az);
+    }
+    _result.temp = (static_cast<float>(raw.temp)) / 340 + 36.53;
   }
   return _result;
-#else
-  int noIterations = _gyroConfig->getGyroReadCount();
-  RawGyroData raw;
-  auto end = millis();
-  auto dur = end - _configStart;
-  if (dur < 45) {
-    delay(45 - dur);
-  }
-
-  for (int cnt = 0; cnt < noIterations; cnt++) {
-    // INT_STATUS_DRDY
-    while (I2Cdev::readByte(_addr, 0x36, _buffer) == 0 || _buffer[0] == 0) {
-    }
-
-    I2Cdev::readBytes(_addr, 0x09, 14, _buffer);
-    raw.temp = (((int16_t)_buffer[0]) << 8) | _buffer[1];
-    raw.ax = (((int16_t)_buffer[2]) << 8) | _buffer[3];
-    raw.ay = (((int16_t)_buffer[4]) << 8) | _buffer[5];
-    raw.az = (((int16_t)_buffer[6]) << 8) | _buffer[7];
-    raw.gx = (((int16_t)_buffer[8]) << 8) | _buffer[9];
-    raw.gy = (((int16_t)_buffer[10]) << 8) | _buffer[11];
-    raw.gz = (((int16_t)_buffer[12]) << 8) | _buffer[13];
-
-    average.ax += raw.ax;
-    average.ay += raw.ay;
-    average.az += raw.az;
-    average.gx += raw.gx;
-    average.gy += raw.gy;
-    average.gz += raw.gz;
-    average.temp += raw.temp;
-  }
-
-  raw.ax = average.ax / noIterations;
-  raw.ay = average.ay / noIterations;
-  raw.az = average.az / noIterations;
-  raw.gx = average.gx / noIterations;
-  raw.gy = average.gy / noIterations;
-  raw.gz = average.gz / noIterations;
-  raw.temp = average.temp / noIterations;
-
-  GyroResultData result;
-  result.valid = !isSensorMoving(raw.gx, raw.gy, raw.gz);
-  if (result.valid) {
-    // Smooth out the readings to we can have a more stable angle/tilt.
-    // ------------------------------------------------------------------------------------------------------------
-    // Accelerometer full scale range of +/- 2g with Sensitivity Scale Factor of
-    // 16,384 LSB(Count)/g. Gyroscope full scale range of +/- 250 °/s with
-    // Sensitivity Scale Factor of 131 LSB (Count)/°/s.
-    float ax = (static_cast<float>(raw.ax)) / 16384,
-          ay = (static_cast<float>(raw.ay)) / 16384,
-          az = (static_cast<float>(raw.az)) / 16384;
-
-    result.angle = calculateAngle(ax, ay, az);
-  }
-  result.temp = (static_cast<float>(raw.temp)) / 340 + 36.53;
-  return result;
-#endif
-}
-
-void ICM42670pGyro::applyCalibration() {
-  // don't for now, these should be properly factory calibrated, any slight
-  // error during calibration will introduce more error
 }
 
 void ICM42670pGyro::calibrateSensor() {

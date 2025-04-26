@@ -30,14 +30,11 @@ SOFTWARE.
 
 class ICM42670pGyro : public GyroSensorInterface {
  private:
-  static uint8_t _addr;
-
+  uint8_t _addr;
   uint8_t _buffer[16] = {0};
   uint32_t _configStart = 0;
-  GyroResultData _result = {false, 0, 0};
 
   void debug();
-  void applyCalibration();
 
   bool writeMBank1(uint8_t reg, uint8_t value);
   bool writeMBank1AndVerify(uint8_t reg, uint8_t value);
@@ -45,14 +42,16 @@ class ICM42670pGyro : public GyroSensorInterface {
   uint8_t ReadFIFOPackets(const uint16_t &count, RawGyroDataL &data);
 
  public:
-  static bool isDeviceDetected();
+  static bool isDeviceDetected(uint8_t &addr);
 
-  explicit ICM42670pGyro(GyroConfigInterface *gyroConfig)
-      : GyroSensorInterface(gyroConfig) {}
-  bool setup();
+  explicit ICM42670pGyro(uint8_t addr, GyroConfigInterface *gyroConfig)
+      : GyroSensorInterface(gyroConfig) {
+    _addr = addr;
+  }
+  bool setup(GyroMode mode, bool force);
   void calibrateSensor();
-  void enterSleep();
-  GyroResultData readSensor();
+  GyroMode enterSleep(GyroMode mode);
+  GyroResultData readSensor(GyroMode mode);
   const char *getGyroFamily();
   uint8_t getGyroID() { return 0x67; }
   bool needCalibration() { return false; }

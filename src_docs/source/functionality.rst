@@ -60,6 +60,17 @@ The main features
   of RAM will cause the device to crash. So enable SSL with caution and only when you really need it. GravityMon will try
   to minimize the needed RAM but the remote service might not support that feature.
 
+* **Supports multiple gyro**
+
+  From v2.2 the project is now supporting additonal gyro implementations to keep up with the technology changes. Gyro detection is 
+  automatic. Currently the following gyros are supported:
+
+  - MPU-6050, standard gyro used in the iSpindle
+  - MPU-6500, variant of the above gyro
+  - ICM-42670-p, does sampling in the background with lower power consumption, higher accuracy and faster data collection.
+
+  Thanks to Levi--G for his contribution to support the ICM-42670-p gyro.
+
 * **Multiple Bluetooth data tranmission options**
 
   TILT has been support since the ESP32c3 board was supported but in this release there are a few new options that allows for 

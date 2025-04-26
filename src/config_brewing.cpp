@@ -95,7 +95,7 @@ void BrewingConfig::parseJson(JsonObject& doc) {
   if (!doc[CONFIG_TEMPSENSOR_RESOLUTION].isNull())
     this->setTempSensorResolution(doc[CONFIG_TEMPSENSOR_RESOLUTION].as<int>());
 
-  if(!doc[CONFIG_FLASH_LOGGING].isNull())
+  if (!doc[CONFIG_FLASH_LOGGING].isNull())
     setFlashLogging(doc[CONFIG_FLASH_LOGGING].as<bool>());
 }
 

@@ -231,8 +231,8 @@ void setup() {
 
     default:
       // We cant use LED on ESP32C3 since that pin is connected to GYRO
-      ledOn(
-          LedColor::GREEN);  // Green or fast flashing to indicate measurement mode
+      ledOn(LedColor::GREEN);  // Green or fast flashing to indicate measurement
+                               // mode
       break;
   }
 
@@ -447,7 +447,6 @@ void checkSleepModePressure(float volt) {
   runMode = RunMode::measurementMode;
   return;
 #endif
-
 
   if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration

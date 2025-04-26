@@ -160,3 +160,19 @@ is connected to PIN 35 on the floaty. You might need to correct the voltage fact
 .. image:: images/floaty_voltage.jpg
   :width: 200
   :alt: Voltage divider for floaty
+
+New Gyro options
+================
+
+Besides the standard MPU-6050 and MPU-6500 gravitymon now also supports the ICM-42670-p which can be obtained from Aliexpress as a development board. 
+There is some work ongoing to create a new PCB based on this gyro. I will update with links when available.
+
+.. image:: images/gyro-icm42670p.png
+  :width: 200
+  :alt: ICM-42670-P
+
+This is what I have used during my testing but it has a different orientation compared to the MPU-6050 but there is a setting in the device configuration
+that allows you to use the Y axis for tilt detection. The boards I used is pin compatible with the order board so current iSpindle PCB can be used.
+  
+.. note::
+  The ICM gyro does not have any calibration feature since they are calibrated from the factory. So mounting the at the correct angle is important.
