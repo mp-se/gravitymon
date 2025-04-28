@@ -87,7 +87,7 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
   obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
 
-#if defined(BLE_ENABLED)
+#if defined(ENABLE_BLE)
   obj[PARAM_BLE_SUPPORTED] = true;
 #else
   obj[PARAM_BLE_SUPPORTED] = false;
