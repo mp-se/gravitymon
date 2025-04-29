@@ -26,13 +26,16 @@ SOFTWARE.
 #include <I2Cdev.h>
 
 #include <ICM42670P_gyro.hpp>
+#include <algorithm>
 #include <log.hpp>
 #include <main.hpp>
 
-#define INT16_FROM_BUFFER(high, low) \
-  (int16_t)((((int16_t)_buffer[high]) << 8) | _buffer[low])
-#define UINT16_FROM_BUFFER(high, low) \
-  (uint16_t)((((uint16_t)_buffer[high]) << 8) | _buffer[low])
+#define INT16_FROM_BUFFER(high, low)                                  \
+  static_cast<int16_t>(((static_cast<int16_t>(_buffer[high])) << 8) | \
+                       _buffer[low])
+#define UINT16_FROM_BUFFER(high, low)                                   \
+  static_cast<uint16_t>(((static_cast<uint16_t>(_buffer[high])) << 8) | \
+                        _buffer[low])
 
 #define ICM42670_PRIMARY_ADDRESS 0x68
 #define ICM42670_SECONDARY_ADDRESS 0x69
@@ -252,8 +255,8 @@ uint8_t ICM42670pGyro::ReadFIFOPackets(const uint16_t &count,
     uint8_t req = 0;
     uint16_t total = 0;
     while (count > total) {
-      req = (uint8_t)min(count - total, 8);
-      if (Wire.requestFrom(_addr, (size_t)(req * 16),
+      req = static_cast<uint8_t>(min(count - total, 8));
+      if (Wire.requestFrom(_addr, static_cast<size_t>(req * 16),
                            (req == (count - total))) == req * 16) {
         while (Wire.available() >= 16) {
           Wire.readBytes(_buffer, 16);
@@ -264,7 +267,7 @@ uint8_t ICM42670pGyro::ReadFIFOPackets(const uint16_t &count,
             data.ax += INT16_FROM_BUFFER(1, 2);
             data.ay += INT16_FROM_BUFFER(3, 4);
             data.az += INT16_FROM_BUFFER(5, 6);
-            data.temp += (int8_t)_buffer[13];
+            data.temp += _buffer[13];
             success++;
           }
         }
@@ -283,7 +286,7 @@ GyroResultData ICM42670pGyro::readSensor(GyroMode mode) {
     _buffer[1] = 0;
     I2Cdev::readBytes(_addr, 0x3D, 2, _buffer);
     uint16_t count = UINT16_FROM_BUFFER(0, 1);
-    count = min(count, (uint16_t)138);
+    count = min(count, static_cast<uint16_t>(138));
 #if LOG_LEVEL == 6
     Log.verbose(F("ICM : available packets= %d" CR), count);
 #endif
@@ -323,13 +326,13 @@ GyroResultData ICM42670pGyro::readSensor(GyroMode mode) {
       }
 
       I2Cdev::readBytes(_addr, 0x09, 14, _buffer);
-      raw.temp = (((int16_t)_buffer[0]) << 8) | _buffer[1];
-      raw.ax = (((int16_t)_buffer[2]) << 8) | _buffer[3];
-      raw.ay = (((int16_t)_buffer[4]) << 8) | _buffer[5];
-      raw.az = (((int16_t)_buffer[6]) << 8) | _buffer[7];
-      raw.gx = (((int16_t)_buffer[8]) << 8) | _buffer[9];
-      raw.gy = (((int16_t)_buffer[10]) << 8) | _buffer[11];
-      raw.gz = (((int16_t)_buffer[12]) << 8) | _buffer[13];
+      raw.temp = ((static_cast<int16_t>(_buffer[0])) << 8) | _buffer[1];
+      raw.ax = ((static_cast<int16_t>(_buffer[2])) << 8) | _buffer[3];
+      raw.ay = ((static_cast<int16_t>(_buffer[4])) << 8) | _buffer[5];
+      raw.az = ((static_cast<int16_t>(_buffer[6])) << 8) | _buffer[7];
+      raw.gx = ((static_cast<int16_t>(_buffer[8])) << 8) | _buffer[9];
+      raw.gy = ((static_cast<int16_t>(_buffer[10])) << 8) | _buffer[11];
+      raw.gz = ((static_cast<int16_t>(_buffer[12])) << 8) | _buffer[13];
       // Log.verbose(F("Buffer: %X %X %X %X %X %X %X" CR), raw.temp, raw.ax,
       // raw.ay, raw.az, raw.gx, raw.gy, raw.gz);
 

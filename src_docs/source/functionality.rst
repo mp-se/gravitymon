@@ -67,9 +67,9 @@ The main features
 
   - MPU-6050, standard gyro used in the iSpindle
   - MPU-6500, variant of the above gyro
-  - ICM-42670-p, does sampling in the background with lower power consumption, higher accuracy and faster data collection.
+  - ICM-42670-p, does sampling in the background with lower power consumption, higher accuracy and faster data collection, longer batterylife.
 
-  Thanks to Levi--G for his contribution to support the ICM-42670-p gyro.
+  Thanks to Levi--G for his contribution to support the ICM-42670-p gyro. The main benefits with the ICM gyro is:
 
 * **Multiple Bluetooth data tranmission options**
 
