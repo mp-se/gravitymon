@@ -71,6 +71,7 @@ SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
+GyroSensor myGyro(&myConfig);
 
 LoopTimer timerLoop(200);
 bool sleepModeAlwaysSkip =
@@ -159,7 +160,7 @@ void setup() {
 
     default:
       if (!myConfig.isGyroDisabled()) {
-        if (myGyro.setup()) {
+        if (myGyro.setup(GyroMode::GYRO_RUN, false)) {
           PERF_BEGIN("main-gyro-read");
           myGyro.read();
           PERF_END("main-gyro-read");
@@ -206,13 +207,18 @@ void setup() {
   switch (runMode) {
     case RunMode::configurationMode:
       if (myWifi.isConnected()) {
-        Log.notice(F("Main: Activating web server." CR));
         // We cant use LED on ESP32C3 since that pin is connected to GYRO
         ledOn(LedColor::BLUE);  // Blue or slow flashing to indicate config mode
+
+        Log.notice(F("Main: Switching gyro to continous." CR));
+        myGyro.setup(GyroMode::GYRO_CONTINUOUS, true);
+
         PERF_BEGIN("main-wifi-ota");
         if (myOta.checkFirmwareVersion()) myOta.updateFirmware();
         PERF_END("main-wifi-ota");
+
         case RunMode::wifiSetupMode:
+          Log.notice(F("Main: Activating web server." CR));
           myWebServer.setupWebServer("gravitymon");  // Takes less than 4ms, so
                                                      // skip this measurement
           mySerialWebSocket.begin(myWebServer.getWebServer(), &Serial);
@@ -376,7 +382,7 @@ bool loopReadGravity() {
 // Wrapper for loopGravity that only calls every 200ms so that we dont overload
 // this.
 void loopGravityOnInterval() {
-  if (timerLoop.hasExipred()) {
+  if (timerLoop.hasExpired()) {
     loopReadGravity();
     timerLoop.reset();
 

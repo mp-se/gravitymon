@@ -21,35 +21,42 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_HISTORY_HPP_
-#define SRC_HISTORY_HPP_
+#ifndef SRC_MPU6050_GYRO_HPP_
+#define SRC_MPU6050_GYRO_HPP_
 
-#include <Arduino.h>
+#if defined(GRAVITYMON)
 
-constexpr auto RUNTIME_FILENAME = "/runtime.log";
+#include <MPU6050.h>
 
-class HistoryLog {
- public:
-  struct LogEntry {
-    float _runTime;
-    float _measurement;
-    int _sleepTime;
-  };
+#include <gyro.hpp>
 
+class MPU6050Gyro : public GyroSensorInterface {
  private:
-  String _fName;
-  LogEntry _average = {0, 0, 0};
-  LogEntry _log[10] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
-                       {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-  int _count = 0;
-  void save();
+  MPU6050 _accelgyro;
+  RawGyroData raw;
+  RawGyroData _calibrationOffset;
+
+  void debug();
+  void applyCalibration();
 
  public:
-  explicit HistoryLog(String fName);
-  void addLog(float runTime, float measurement, int sleepTime);
-  const LogEntry& getAverage() const { return _average; }
+  static bool isDeviceDetected(uint8_t& addr);
+
+  explicit MPU6050Gyro(uint8_t addr, GyroConfigInterface* gyroConfig)
+      : GyroSensorInterface(gyroConfig) {
+    _accelgyro = MPU6050(addr);
+  }
+  bool setup(GyroMode mode, bool force);
+  void calibrateSensor();
+  GyroMode enterSleep(GyroMode mode);
+  GyroResultData readSensor(GyroMode mode);
+  const char* getGyroFamily();
+  uint8_t getGyroID() { return _accelgyro.getDeviceID(); }
+  bool needCalibration() { return true; }
 };
 
-#endif  // SRC_HISTORY_HPP_
+#endif  // GRAVITYMON
+
+#endif  // SRC_MPU6050_GYRO_HPP_
 
 // EOF

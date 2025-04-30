@@ -75,6 +75,8 @@ SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
+PressureSensor myPressureSensor(&myConfig);
+PressureSensor myPressureSensor1(&myConfig);
 
 // Define constats for this program
 LoopTimer timerLoop(1000);
@@ -90,6 +92,8 @@ void checkSleepModePressure(float volt);
 void setup() {
   pinMode(PIN_PWR, OUTPUT);
   delay(5);
+
+  delay(3000);  // Wait for power to stabilize
 
   PERF_BEGIN("run-time");
   PERF_BEGIN("main-setup");
@@ -165,11 +169,11 @@ void setup() {
     default:
       Log.notice(F("Main: Setting up pressure sensors." CR));
       PERF_BEGIN("main-sensor-read");
-      myPressureSensor[0].setup(0, &Wire);
+      myPressureSensor.setup(0, &Wire);
       // myPressureSensor[1].setup(1, &Wire1);
       PERF_END("main-sensor-read");
 
-      if (!myPressureSensor[0].isActive() && !myPressureSensor[1].isActive()) {
+      if (!myPressureSensor.isActive() && !myPressureSensor1.isActive()) {
         Log.error(F("Main: No sensors are active, stopping." CR));
       }
 
@@ -227,8 +231,8 @@ void setup() {
 
     default:
       // We cant use LED on ESP32C3 since that pin is connected to GYRO
-      ledOn(
-          LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
+      ledOn(LedColor::GREEN);  // Green or fast flashing to indicate measurement
+                               // mode
       break;
   }
 
@@ -248,15 +252,15 @@ bool loopReadPressure() {
   // interval.
   //
 
-  myPressureSensor[0].read();
-  // myPressureSensor[1].read();
+  myPressureSensor.read();
+  // myPressureSensor1.read();
   myTempSensor.readSensor(false);
 
   // float pressure, pressure1, temp, temp1;
   float pressurePsi, pressurePsi1, tempC;
 
-  pressurePsi = myPressureSensor[0].getPressurePsi();
-  // pressure1 = myPressureSensor[1].getPressurePsi();
+  pressurePsi = myPressureSensor.getPressurePsi();
+  // pressurePsi1 = myPressureSensor1.getPressurePsi();
   pressurePsi1 = NAN;
 
   tempC = myTempSensor.getTempC();
@@ -361,7 +365,7 @@ bool loopReadPressure() {
 }
 
 void loopPressureOnInterval() {
-  if (timerLoop.hasExipred()) {
+  if (timerLoop.hasExpired()) {
     loopReadPressure();
     timerLoop.reset();
 
@@ -451,9 +455,14 @@ void checkSleepModePressure(float volt) {
     Log.notice(F("MAIN: Sleep mode disabled from web interface." CR));
 #endif
     runMode = RunMode::configurationMode;
-  } else if (volt > myConfig.getVoltageConfig()) {
+  } else if (!myPressureSensor.isActive() && !myPressureSensor1.isActive()) {
+    Log.notice(F("MAIN: No sensors active, will go into config mode." CR));
+    runMode = RunMode::configurationMode;
+  } else if (volt > myConfig.getVoltageConfig() || volt < 2.0) {
+    Log.notice(F("MAIN: Voltage out of range, will go into config mode." CR));
     runMode = RunMode::configurationMode;
   } else {
+    Log.notice(F("MAIN: Going into measurement mode." CR));
     runMode = RunMode::measurementMode;
   }
 

@@ -28,7 +28,7 @@ SOFTWARE.
 GravitymonConfig::GravitymonConfig(String baseMDNS, String fileName)
     : BrewingConfig(baseMDNS, fileName) {}
 
-void GravitymonConfig::createJson(JsonObject& doc) {
+void GravitymonConfig::createJson(JsonObject& doc) const {
   BrewingConfig::createJson(doc);
 
   doc[CONFIG_BLE_TILT_COLOR] = getBleTiltColor();
@@ -36,6 +36,7 @@ void GravitymonConfig::createJson(JsonObject& doc) {
   doc[CONFIG_GRAVITY_UNIT] = String(getGravityUnit());
   doc[CONFIG_GYRO_TEMP] = isGyroTemp();
   doc[CONFIG_GYRO_DISABLED] = isGyroDisabled();
+  doc[CONFIG_GYRO_SWAP_XY] = isGyroSwapXY();
   doc[CONFIG_STORAGE_SLEEP] = isStorageSleep();
   doc[CONFIG_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
 
@@ -75,6 +76,8 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     setGravityTempAdj(doc[CONFIG_GRAVITY_TEMP_ADJ].as<bool>());
   if (!doc[CONFIG_GYRO_TEMP].isNull())
     setGyroTemp(doc[CONFIG_GYRO_TEMP].as<bool>());
+  if (!doc[CONFIG_GYRO_SWAP_XY].isNull())
+    setGyroSwapXY(doc[CONFIG_GYRO_SWAP_XY].as<bool>());
   if (!doc[CONFIG_STORAGE_SLEEP].isNull())
     setStorageSleep(doc[CONFIG_STORAGE_SLEEP].as<bool>());
   if (!doc[CONFIG_GRAVITY_UNIT].isNull()) {

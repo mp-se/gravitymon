@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include <deque>
 #include <memory>
+#include <utility>
 #include <utils.hpp>
 
 enum MeasurementType {
@@ -276,7 +277,7 @@ class MeasurementEntry {
   String _id = "";
 
  public:
-  MeasurementEntry(String id) { _id = id; }
+  explicit MeasurementEntry(String id) { _id = id; }
   ~MeasurementEntry() {}
 
   const MeasurementBaseData* getData() const { return _measurement.get(); }
@@ -319,7 +320,7 @@ class MeasurementEntry {
 
   uint32_t getUpdateAge() const { return (millis() - _timeUpdated) / 1000; }
   uint32_t getPushAge() const { return (millis() - _timePushed) / 1000; }
-  struct tm getTimeinfoUpdated() const { return _timeinfoUpdated; }
+  const struct tm* getTimeinfoUpdated() const { return &_timeinfoUpdated; }
 };
 
 // List of data measurements

@@ -26,6 +26,7 @@ SOFTWARE.
 #include <ble_gateway.hpp>
 #include <cstdio>
 #include <log.hpp>
+#include <memory>
 #include <string>
 #include <utils.hpp>
 #include <vector>

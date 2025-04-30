@@ -40,7 +40,7 @@ constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
 constexpr auto PARAM_ONEWIRE = "onewire";
 
 void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
-  if (myPressureSensor[0].isActive() || myPressureSensor[1].isActive()) {
+  if (myPressureSensor.isActive() || myPressureSensor1.isActive()) {
     obj[PARAM_SUCCESS] = true;
     obj[PARAM_MESSAGE] = "Calibration completed";
   } else {
@@ -53,21 +53,21 @@ void BrewingWebServer::doWebConfigWrite() {
   Log.notice(
       F("WEB : Configuring pressure sensors after configuration update" CR));
 
-  myPressureSensor[0].setup(0, &Wire);
-  // myPressureSensor[1].setup(1, &Wire1);
+  myPressureSensor.setup(0, &Wire);
+  // myPressureSensor1.setup(1, &Wire1);
 }
 
 void BrewingWebServer::doWebStatus(JsonObject &obj) {
   // float pressure, pressure1, temp, temp1;
   float pressure, pressure1, temp;
 
-  pressure = myPressureSensor[0].getPressurePsi();
-  // pressure1 = myPressureSensor[1].getPressurePsi();
+  pressure = myPressureSensor.getPressurePsi();
+  // pressure1 = myPressureSensor1.getPressurePsi();
   pressure1 = NAN;
 
   temp = myTempSensor.getTempC();
-  // temp = myPressureSensor[0].getTemperatureC();
-  // temp1 = myPressureSensor[1].getTemperatureC();
+  // temp = myPressureSensor.getTemperatureC();
+  // temp1 = myPressureSensor1.getTemperatureC();
   // temp1 = NAN;
 
   if (!isnan(pressure)) {
@@ -110,12 +110,19 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
 }
 
 void BrewingWebServer::doTaskSensorCalibration() {
-  if (myPressureSensor[0].isActive()) {
-    myPressureSensor[0].calibrate();
+  if (myPressureSensor.isActive()) {
+    myPressureSensor.calibrate();
   } else {
     Log.warning(
         F("WEB : First sensor not connnected, skipping calibration" CR));
   }
+
+  // if (myPressureSensor1.isActive()) {
+  //   myPressureSensor1.calibrate();
+  // } else {
+  //   Log.warning(
+  //       F("WEB : Second sensor not connnected, skipping calibration" CR));
+  // }
 }
 
 void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
@@ -123,8 +130,8 @@ void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
   // float pressure, pressure1, temp, temp1;
   float pressure, pressure1, temp;
 
-  pressure = myPressureSensor[0].getPressurePsi();
-  // pressure1 = myPressureSensor[1].getPressurePsi();
+  pressure = myPressureSensor.getPressurePsi();
+  // pressure1 = myPressureSensor1.getPressurePsi();
   pressure1 = NAN;
 
   temp = myTempSensor.getTempC();

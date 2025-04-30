@@ -30,29 +30,87 @@ SOFTWARE.
 #include <main.hpp>
 
 #if defined(ENABLE_TFT)
+#include <lvgl.h>
+
 #include "TFT_eSPI.h"
+
+struct LVGL_Data {
+  lv_obj_t* _txtDeviceName;
+  lv_obj_t* _txtDeviceIndex;
+  lv_obj_t* _txtDeviceValue1;
+  lv_obj_t* _txtDeviceValue2;
+  lv_obj_t* _txtDeviceValue3;
+  lv_obj_t* _txtDeviceTimeStamp;
+  lv_obj_t* _txtHistory[5];
+  lv_obj_t* _txtStatusbar;
+
+  lv_style_t _font12;
+  lv_style_t _font12c;
+  lv_style_t _font16c;
+  lv_style_t _font20c;
+
+  lv_display_t* _display;
+
+  String _dataDeviceName;
+  String _dataDeviceIndex;
+  String _dataDeviceValue1;
+  String _dataDeviceValue2;
+  String _dataDeviceValue3;
+  String _dataDeviceTimeStamp;
+  String _dataStatusbar;
+  String _dataHistory[5];
+};
 #endif
 
 enum FontSize { FONT_9 = 9, FONT_12 = 12, FONT_18 = 18, FONT_24 = 24 };
 
 class Display {
+ public:
+  enum Rotation {
+    // ROTATION_0 = 0, // Not supported
+    ROTATION_90 = 1,
+    // ROTATION_180 = 2,  // Not supported
+    ROTATION_270 = 3
+  };
+
  private:
 #if defined(ENABLE_TFT)
   TFT_eSPI* _tft = NULL;
+  uint32_t _backgroundColor = TFT_BLACK;
 #endif
   FontSize _fontSize = FontSize::FONT_9;
+  Rotation _rotation = ROTATION_90;
 
  public:
   Display();
   void setup();
-  // void loop();
+  void createUI();
 
   void clear();
   void setFont(FontSize f);
   void printLine(int l, const String& text);
   void printLineCentered(int l, const String& text);
+  Rotation getRotation() { return _rotation; }
+  void setRotation(Rotation rotation);
+
+  void updateDevice(const char* name, const char* value1, const char* value2,
+                    const char* value3, const char* timestamp, int index,
+                    int maxIndex);
+  void updateHistory(const char* history, int idx);
+  void updateStatus(const char* status);
 };
 
+// Wrappers to simplify interaction with LVGL
+#if defined(ENABLE_TFT)
+lv_obj_t* createLabel(const char* label, int32_t x, int32_t y, int32_t w,
+                      int32_t h, lv_style_t* style);
+void updateLabel(lv_obj_t* obj, const char* label);
+void setStyle(lv_obj_t* obj, lv_style_t* style);
+void log_print(lv_log_level_t level, const char* buf);
+void lvgl_loop_handler(void* parameter);
+
+extern struct LVGL_Data lvglData;
+#endif
 extern Display myDisplay;
 
 #endif  // GATEWAY

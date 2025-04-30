@@ -8,3 +8,4 @@ env
 src_docs/_build/*
 .DS_Store
 *.map
+cad/*

@@ -94,6 +94,10 @@ Device - Settings
 
   Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.
 
+* **Enable flash logging:**
+
+  If disabled there will be no runtime logging on every run, this will prolong the lifespan of the device. 
+
 * **Factory default**
 
   This function will reset all settings to factory default. Use with caution!
@@ -159,6 +163,17 @@ Device - Hardware
   .. warning::
 
     The device will **not** go into `gravity monitoring` mode unless calibrated
+
+
+.. image:: images/ui-device-hardware-icm.png
+  :width: 800
+  :alt: Device Hardware (ICM)
+
+When using a the ICM gyro the hardware page looks a little different since there is no calibration option and gyro settings. 
+
+* **Swap X and Y axis:** 
+
+  When enabled this option will use the Y axis for the tilt calculation instead of the X axis. The ICM development boards uses this orientation.
 
 
 Device - WIFI

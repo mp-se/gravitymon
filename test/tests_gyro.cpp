@@ -24,7 +24,10 @@ SOFTWARE.
 #include <AUnit.h>
 
 #if defined(GRAVITYMON)
+#include <config.hpp>
 #include <gyro.hpp>
+
+GyroSensor myGyro(&myConfig);
 
 test(gyro_connectGyro) {
   myGyro.setup();

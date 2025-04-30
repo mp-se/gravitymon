@@ -29,7 +29,7 @@ SOFTWARE.
 GravmonGatewayConfig::GravmonGatewayConfig(String baseMDNS, String fileName)
     : BrewingConfig(baseMDNS, fileName) {}
 
-void GravmonGatewayConfig::createJson(JsonObject& doc) {
+void GravmonGatewayConfig::createJson(JsonObject& doc) const {
   BrewingConfig::createJson(doc);
 
   // Call base class functions

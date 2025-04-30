@@ -47,6 +47,7 @@ constexpr auto CONFIG_PUSH_INTERVAL_MQTT = "mqtt_int";
 constexpr auto CONFIG_IGNORE_LOW_ANGLES = "ignore_low_angles";
 constexpr auto CONFIG_BATTERY_SAVING = "battery_saving";
 constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
+constexpr auto CONFIG_FLASH_LOGGING = "flash_logging";
 
 class BrewingConfig : public BaseConfig {
  private:
@@ -88,27 +89,35 @@ class BrewingConfig : public BaseConfig {
 
   int _tempSensorResolution = 9;  // bits
 
+  bool _flashLogging = false;
+
  public:
   BrewingConfig(String baseMDNS, String fileName);
 
-  const bool isWifiDirect() { return _wifiDirect; }
+  bool isFlashLogging() const { return _flashLogging; }
+  void setFlashLogging(bool b) {
+    _flashLogging = b;
+    _saveNeeded = true;
+  }
+
+  bool isWifiDirect() const { return _wifiDirect; }
   void setWifiDirect(bool b) {
     _wifiDirect = b;
     _saveNeeded = true;
   }
 
-  const char* getToken() { return _token.c_str(); }
+  const char* getToken() const { return _token.c_str(); }
   void setToken(String s) {
     _token = s;
     _saveNeeded = true;
   }
-  const char* getToken2() { return _token2.c_str(); }
+  const char* getToken2() const { return _token2.c_str(); }
   void setToken2(String s) {
     _token2 = s;
     _saveNeeded = true;
   }
 
-  int getSleepInterval() { return _sleepInterval; }
+  int getSleepInterval() const { return _sleepInterval; }
   void setSleepInterval(int v) {
     _sleepInterval = v;
     _saveNeeded = true;
@@ -118,7 +127,7 @@ class BrewingConfig : public BaseConfig {
     _saveNeeded = true;
   }
 
-  float getVoltageFactor() { return _voltageFactor; }
+  float getVoltageFactor() const { return _voltageFactor; }
   void setVoltageFactor(float f) {
     _voltageFactor = f;
     _saveNeeded = true;
@@ -128,13 +137,13 @@ class BrewingConfig : public BaseConfig {
     _saveNeeded = true;
   }
 
-  int getVoltagePin() { return _voltagePin; }
+  int getVoltagePin() const { return _voltagePin; }
   void setVoltagePin(int v) {
     _voltagePin = v;
     _saveNeeded = true;
   }
 
-  float getVoltageConfig() { return _voltageConfig; }
+  float getVoltageConfig() const { return _voltageConfig; }
   void setVoltageConfig(float f) {
     _voltageConfig = f;
     _saveNeeded = true;
@@ -144,7 +153,7 @@ class BrewingConfig : public BaseConfig {
     _saveNeeded = true;
   }
 
-  float getTempSensorAdjC() { return _tempSensorAdjC; }
+  float getTempSensorAdjC() const { return _tempSensorAdjC; }
   void setTempSensorAdjC(float f) {
     _tempSensorAdjC = f;
     _saveNeeded = true;
@@ -158,63 +167,63 @@ class BrewingConfig : public BaseConfig {
     _saveNeeded = true;
   }
 
-  const bool isSkipSslOnTest() { return _skipSslOnTest; }
+  bool isSkipSslOnTest() const { return _skipSslOnTest; }
   void setSkipSslOnTest(bool b) {
     _skipSslOnTest = b;
     _saveNeeded = true;
   }
 
-  int getTempSensorResolution() { return _tempSensorResolution; }
+  int getTempSensorResolution() const { return _tempSensorResolution; }
   void setTempSensorResolution(int t) {
     if (t >= 9 && t <= 12) _tempSensorResolution = t;
     _saveNeeded = true;
   }
 
-  bool isWifiPushActive() {
+  bool isWifiPushActive() const {
     return (hasTargetHttpPost() || hasTargetHttpPost2() || hasTargetHttpGet() ||
             hasTargetInfluxDb2() || hasTargetMqtt())
                ? true
                : false;
   }
 
-  int getPushIntervalPost() { return _pushIntervalPost; }
+  int getPushIntervalPost() const { return _pushIntervalPost; }
   void setPushIntervalPost(int t) {
     _pushIntervalPost = t;
     _saveNeeded = true;
   }
 
-  int getPushIntervalPost2() { return _pushIntervalPost2; }
+  int getPushIntervalPost2() const { return _pushIntervalPost2; }
   void setPushIntervalPost2(int t) {
     _pushIntervalPost2 = t;
     _saveNeeded = true;
   }
 
-  int getPushIntervalGet() { return _pushIntervalGet; }
+  int getPushIntervalGet() const { return _pushIntervalGet; }
   void setPushIntervalGet(int t) {
     _pushIntervalGet = t;
     _saveNeeded = true;
   }
 
-  int getPushIntervalInflux() { return _pushIntervalInflux; }
+  int getPushIntervalInflux() const { return _pushIntervalInflux; }
   void setPushIntervalInflux(int t) {
     _pushIntervalInflux = t;
     _saveNeeded = true;
   }
 
-  int getPushIntervalMqtt() { return _pushIntervalMqtt; }
+  int getPushIntervalMqtt() const { return _pushIntervalMqtt; }
   void setPushIntervalMqtt(int t) {
     _pushIntervalMqtt = t;
     _saveNeeded = true;
   }
 
-  bool isPushIntervalActive() {
+  bool isPushIntervalActive() const {
     return (_pushIntervalPost + _pushIntervalPost2 + _pushIntervalGet +
             _pushIntervalInflux + _pushIntervalMqtt) == 0
                ? false
                : true;
   }
 
-  void createJson(JsonObject& doc);
+  void createJson(JsonObject& doc) const;
   void parseJson(JsonObject& doc);
 };
 

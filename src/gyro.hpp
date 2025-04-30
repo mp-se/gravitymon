@@ -29,10 +29,51 @@ SOFTWARE.
 #define I2CDEV_IMPLEMENTATION I2CDEV_ARDUINO_WIRE
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
 
-#include <config.hpp>
+#include <memory>
 
-struct RawGyroDataL {  // Used for average multiple readings
-  int32_t ax;          // Raw Acceleration
+#define USE_RTC_MEM defined(ESP32)
+
+#if USE_RTC_MEM
+
+#include <esp_attr.h>
+
+#define GYRO_RTC_DATA_AVAILABLE \
+  static_cast<uint8_t>(105)  // Unique number to flag resume data is available
+
+// Represents the type of the gyro
+enum GyroType {
+  GYRO_NONE,
+  GYRO_MPU6050,
+  GYRO_ICM42670P,
+};
+
+// Used for the data stored in RTC memory
+struct RTC_Gyro_Data {
+  GyroType Type;
+  uint8_t Address;
+  uint8_t IsDataAvailable;
+};
+
+extern RTC_DATA_ATTR RTC_Gyro_Data myRTC_Gyro_Data;
+
+#endif  // ESP32
+
+// Used for holding sensordata or sensoroffsets
+struct RawGyroData {
+  int16_t ax;  // Raw Acceleration
+  int16_t ay;
+  int16_t az;
+
+  int16_t gx;  // Raw Position
+  int16_t gy;
+  int16_t gz;
+
+  int16_t temp;  // Only for information (temperature of chip)
+};
+
+// Used for average multiple readings
+struct RawGyroDataL {
+  int32_t ax;  // Raw Acceleration
   int32_t ay;
   int32_t az;
 
@@ -43,40 +84,113 @@ struct RawGyroDataL {  // Used for average multiple readings
   int32_t temp;  // Only for information (temperature of chip)
 };
 
+// Return data from gyro implementation
+struct GyroResultData {
+  bool valid;
+  float angle;
+  float temp;
+};
+
+// Represents the mode of the gyro
+enum GyroMode {
+  GYRO_UNCONFIGURED,  // gyro is not configured
+  GYRO_RUN,           // run in normal (sleep) mode, fifo if configured
+  GYRO_CONTINUOUS,    // run in continuous mode, no fifo
+  GYRO_SLEEP          // gyro is sleeping and not enabled
+};
+
+// Inteface towards config class for gyro related settings
+class GyroConfigInterface {
+ public:
+  virtual bool saveFile() = 0;
+
+  // Common methods for all gyros
+  virtual bool isGyroSwapXY() const;
+  virtual int getGyroSensorMovingThreashold() const;
+
+  // Methods for ICM42670p
+  virtual int getSleepInterval() const;
+
+  // Methods for MPU6050/MPU6500
+  virtual const RawGyroData& getGyroCalibration() const;
+  virtual void setGyroCalibration(const RawGyroData& r);
+  virtual bool hasGyroCalibration() const;
+  virtual int getGyroReadCount() const;
+  virtual int getGyroReadDelay() const;
+};
+
+class GyroSensorInterface {
+ protected:
+  GyroConfigInterface* _gyroConfig;
+  bool _sensorMoving = false;
+
+  virtual void debug() = 0;
+
+  bool isSensorMoving(int16_t gx, int16_t gy, int16_t gz);
+  float calculateAngle(float ax, float ay, float az);
+
+ public:
+  explicit GyroSensorInterface(GyroConfigInterface* gyroConfig) {
+    _gyroConfig = gyroConfig;
+  }
+  /// @brief set up the gyro, or reconfigure if set up before
+  /// @param mode the GyroMode the gyro needs to run in
+  /// @param force force the update even if its already configured
+  /// @return true if the setup is successful, otherwise the sensor is not found
+  /// or an issue occured
+  virtual bool setup(GyroMode mode, bool force);
+  virtual GyroResultData readSensor(GyroMode mode);
+  virtual void calibrateSensor();
+  virtual const char* getGyroFamily();
+  virtual uint8_t getGyroID();
+  virtual GyroMode enterSleep(GyroMode mode);
+  virtual bool needCalibration();
+
+  bool isSensorMoving() { return _sensorMoving; }
+};
+
 #define INVALID_TEMPERATURE -273
 
 class GyroSensor {
  private:
-  bool _sensorConnected = false;
-  bool _validValue = false;
-  float _angle = 0;
-  float _sensorTemp = 0;
-  float _initialSensorTemp = INVALID_TEMPERATURE;
-  RawGyroData _calibrationOffset;
+  GyroConfigInterface* _gyroConfig;
+  std::unique_ptr<GyroSensorInterface> _impl;
+
   RawGyroData _lastGyroData;
-  bool _sensorMoving = false;
+  float _angle = 0;
+  float _temp = 0;
+  float _initialSensorTemp = INVALID_TEMPERATURE;
+  bool _valid = false;
+  GyroMode _currentMode = GyroMode::GYRO_UNCONFIGURED;
 
   void debug();
   void applyCalibration();
   void dumpCalibration();
-  void readSensor(RawGyroData &raw, const int noIterations = 100,
-                  const int delayTime = 1);
-  bool isSensorMoving(RawGyroData &raw);
-  float calculateAngle(RawGyroData &raw);
 
  public:
-  bool setup();
-  bool read();
-  void calibrateSensor();
-  uint8_t getGyroID();
-  bool isSensorMoving() { return _sensorMoving; }
+  explicit GyroSensor(GyroConfigInterface* gyroConfig) {
+    _gyroConfig = gyroConfig;
+  }
 
-  const RawGyroData &getLastGyroData() { return _lastGyroData; }
+  bool setup(GyroMode mode, bool force);
+  bool read();
+  void calibrateSensor() {
+    if (_impl) _impl->calibrateSensor();
+  }
+  virtual const char* getGyroFamily() {
+    return _impl ? _impl->getGyroFamily() : "";
+  }
+  uint8_t getGyroID() { return _impl ? _impl->getGyroID() : 0; }
+  bool isSensorMoving() { return _impl ? _impl->isSensorMoving() : 0; }
+
+  const RawGyroData& getLastGyroData() { return _lastGyroData; }
   float getAngle() { return _angle; }
-  float getSensorTempC() { return _sensorTemp; }
+  float getSensorTempC() { return _temp; }
   float getInitialSensorTempC() { return _initialSensorTemp; }
-  bool isConnected() { return _sensorConnected; }
-  bool hasValue() { return _validValue; }
+  bool isConnected() { return _currentMode != GyroMode::GYRO_UNCONFIGURED; }
+  GyroMode getCurrentGyroMode() { return _currentMode; }
+  bool hasValue() { return _valid; }
+  bool needCalibration() { return _impl ? _impl->needCalibration() : false; }
   void enterSleep();
 };
 

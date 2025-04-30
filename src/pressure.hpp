@@ -29,33 +29,86 @@ SOFTWARE.
 #include <Arduino.h>
 #include <Wire.h>
 
-#include <config.hpp>
 #include <log.hpp>
 #include <memory>
 
-class PressureSensorInterface {
+enum PressureSensorType {
+  SensorNone = 0,
+
+  SensorXidibeiXDB401_I2C_KPa_200 = 1,    // 0-0.2 MPa
+  SensorXidibeiXDB401_I2C_KPa_400 = 2,    // 0-0.4 MPa
+  SensorXidibeiXDB401_I2C_KPa_500 = 3,    // 0-0.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_600 = 4,    // 0-0.6 MPa
+  SensorXidibeiXDB401_I2C_KPa_800 = 5,    // 0-0.8 MPa
+  SensorXidibeiXDB401_I2C_KPa_1000 = 6,   // 0-1 MPa
+  SensorXidibeiXDB401_I2C_KPa_1200 = 7,   // 0-1.2 MPa
+  SensorXidibeiXDB401_I2C_KPa_1500 = 8,   // 0-1.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_1600 = 9,   // 0-1.6 MPa
+  SensorXidibeiXDB401_I2C_KPa_2000 = 10,  // 0-2 MPa
+  SensorXidibeiXDB401_I2C_KPa_2500 = 11,  // 0-2.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_3000 = 12,  // 0-3 MPa
+  SensorXidibeiXDB401_I2C_KPa_3500 = 13,  // 0-3.5 MPa
+  SensorXidibeiXDB401_I2C_KPa_4000 = 14,  // 0-4 MPa
+
+  SensorXidibeiXDB401_Analog_KPa_200 = 101,   // 0-0.2 MPa
+  SensorXidibeiXDB401_Analog_KPa_400 = 102,   // 0-0.4 MPa
+  SensorXidibeiXDB401_Analog_KPa_500 = 103,   // 0-0.5 MPa
+  SensorXidibeiXDB401_Analog_KPa_600 = 104,   // 0-0.6 MPa
+  SensorXidibeiXDB401_Analog_KPa_800 = 105,   // 0-0.8 MPa
+  SensorXidibeiXDB401_Analog_KPa_1000 = 106,  // 0-1 MPa
+  SensorXidibeiXDB401_Analog_KPa_1200 = 107,  // 0-1.2 MPa
+  SensorXidibeiXDB401_Analog_KPa_1500 = 108,  // 0-1.5 MPa
+  SensorXidibeiXDB401_Analog_KPa_1600 = 109,  // 0-1.6 MPa
+  SensorXidibeiXDB401_Analog_KPa_2000 = 110,  // 0-2 MPa
+  SensorXidibeiXDB401_Analog_KPa_2500 = 111,  // 0-2.5 MPa
+  SensorXidibeiXDB401_Analog_KPa_3000 = 112,  // 0-3 MPa
+  SensorXidibeiXDB401_Analog_KPa_3500 = 113,  // 0-3.5 MPa
+  SensorXidibeiXDB401_Analog_KPa_4000 = 114,  // 0-4 MPa
+};
+
+// Inteface towards config class for pressure sensor related settings
+class PressureConfigInterface {
  public:
-  PressureSensorInterface() = default;
+  virtual bool isPressureBar() const = 0;
+  virtual bool isPressureKpa() const;
+  virtual bool isPressurePsi() const;
 
-  virtual bool read(bool validate = true);
+  virtual const char* getPressureUnit() const;
+  virtual char getTempUnit() const;
 
+  virtual PressureSensorType getPressureSensorType(int idx) const;
+};
+
+class PressureSensorInterface {
+ protected:
+  PressureConfigInterface* _pressureConfig;
+
+ public:
+  explicit PressureSensorInterface(PressureConfigInterface* pressureConfig) {
+    _pressureConfig = pressureConfig;
+  }
+
+  virtual bool read(bool validate = true) = 0;
   virtual bool isActive();
-
   virtual float getPressurePsi(bool doCorrection = true);
   virtual float getTemperatureC();
-
   virtual void calibrate();
-
   virtual float getAnalogVoltage();
 };
 
 class PressureSensor {
  private:
+  PressureConfigInterface* _pressureConfig;
   std::unique_ptr<PressureSensorInterface> _impl;
+
   int _idx = 0;
 
  public:
-  void setup(uint8_t idx, TwoWire *wire);
+  explicit PressureSensor(PressureConfigInterface* pressureConfig) {
+    _pressureConfig = pressureConfig;
+  }
+
+  void setup(uint8_t idx, TwoWire* wire);
 
   bool read();
   bool isActive();
@@ -73,7 +126,8 @@ class PressureSensor {
   float getAnalogVoltage();
 };
 
-extern PressureSensor myPressureSensor[MAX_SENSOR_DEVICES];
+extern PressureSensor myPressureSensor;
+extern PressureSensor myPressureSensor1;
 
 #endif  // PRESSUREMON
 

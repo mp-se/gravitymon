@@ -47,10 +47,11 @@ class AnalogPressureSensor : public PressureSensorInterface {
   void selectChannel();
 
  public:
-  AnalogPressureSensor() {}
+  explicit AnalogPressureSensor(PressureConfigInterface* pressureConfig)
+      : PressureSensorInterface(pressureConfig) {}
 
   bool setup(float minV, float maxV, float minKpa, float maxKpa,
-             int _adcChannel, TwoWire *wire, uint8_t idx);
+             int _adcChannel, TwoWire* wire, uint8_t idx);
   bool read(bool validate = true);
   bool isActive() { return _sensorActive; }
 

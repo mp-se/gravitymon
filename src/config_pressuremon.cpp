@@ -28,11 +28,11 @@ SOFTWARE.
 PressuremonConfig::PressuremonConfig(String baseMDNS, String fileName)
     : BrewingConfig(baseMDNS, fileName) {
 #if defined(ESP32C3)
-  setVoltageFactor(2.32);  // Override default voltage factor for C3 pico board
+  setVoltageFactor(2.41);  // Override default voltage factor for C3 pico board
 #endif
 }
 
-void PressuremonConfig::createJson(JsonObject& doc) {
+void PressuremonConfig::createJson(JsonObject& doc) const {
   BrewingConfig::createJson(doc);
 
   doc[CONFIG_BATTERY_SAVING] = isBatterySaving();

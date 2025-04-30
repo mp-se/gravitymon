@@ -95,11 +95,11 @@ extern const char iPressureMqttFormat[] PROGMEM;
 
 class BrewingPush : public BasePush {
  private:
-  BrewingConfig* _BrewingConfig;
+  BrewingConfig* _brewingConfig;
   String _baseTemplate;
 
  public:
-  explicit BrewingPush(BrewingConfig* BrewingConfig);
+  explicit BrewingPush(BrewingConfig* brewingConfig);
 
   enum Templates {
     GRAVITY_TEMPLATE_HTTP1 = 0,

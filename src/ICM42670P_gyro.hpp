@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2025 Magnus, Levi--G
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,35 +21,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_HISTORY_HPP_
-#define SRC_HISTORY_HPP_
+#ifndef SRC_ICM42670P_GYRO_HPP_
+#define SRC_ICM42670P_GYRO_HPP_
 
-#include <Arduino.h>
+#if defined(GRAVITYMON)
 
-constexpr auto RUNTIME_FILENAME = "/runtime.log";
+#include <gyro.hpp>
 
-class HistoryLog {
- public:
-  struct LogEntry {
-    float _runTime;
-    float _measurement;
-    int _sleepTime;
-  };
-
+class ICM42670pGyro : public GyroSensorInterface {
  private:
-  String _fName;
-  LogEntry _average = {0, 0, 0};
-  LogEntry _log[10] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
-                       {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-  int _count = 0;
-  void save();
+  uint8_t _addr;
+  uint8_t _buffer[16] = {0};
+  uint32_t _configStart = 0;
+
+  void debug();
+
+  bool writeMBank1(uint8_t reg, uint8_t value);
+  bool writeMBank1AndVerify(uint8_t reg, uint8_t value);
+  bool readMBank1(uint8_t reg);
+  uint8_t ReadFIFOPackets(const uint16_t &count, RawGyroDataL &data);
 
  public:
-  explicit HistoryLog(String fName);
-  void addLog(float runTime, float measurement, int sleepTime);
-  const LogEntry& getAverage() const { return _average; }
+  static bool isDeviceDetected(uint8_t &addr);
+
+  explicit ICM42670pGyro(uint8_t addr, GyroConfigInterface *gyroConfig)
+      : GyroSensorInterface(gyroConfig) {
+    _addr = addr;
+  }
+  bool setup(GyroMode mode, bool force);
+  void calibrateSensor();
+  GyroMode enterSleep(GyroMode mode);
+  GyroResultData readSensor(GyroMode mode);
+  const char *getGyroFamily();
+  uint8_t getGyroID() { return 0x67; }
+  bool needCalibration() { return false; }
 };
 
-#endif  // SRC_HISTORY_HPP_
+#endif  // GRAVITYMON
+
+#endif  // SRC_ICM42670P_GYRO_HPP_
 
 // EOF

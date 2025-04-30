@@ -27,6 +27,7 @@ SOFTWARE.
 #if defined(PRESSUREMON)
 
 #include <config_brewing.hpp>
+#include <pressure.hpp>
 
 enum PressuremonBleFormat {
   BLE_DISABLED = 0,
@@ -34,45 +35,11 @@ enum PressuremonBleFormat {
   // BLE_PRESSUREMON_EDDYSTONE = 2
 };
 
-enum PressureSensorType {
-  SensorNone = 0,
-
-  SensorXidibeiXDB401_I2C_KPa_200 = 1,    // 0-0.2 MPa
-  SensorXidibeiXDB401_I2C_KPa_400 = 2,    // 0-0.4 MPa
-  SensorXidibeiXDB401_I2C_KPa_500 = 3,    // 0-0.5 MPa
-  SensorXidibeiXDB401_I2C_KPa_600 = 4,    // 0-0.6 MPa
-  SensorXidibeiXDB401_I2C_KPa_800 = 5,    // 0-0.8 MPa
-  SensorXidibeiXDB401_I2C_KPa_1000 = 6,   // 0-1 MPa
-  SensorXidibeiXDB401_I2C_KPa_1200 = 7,   // 0-1.2 MPa
-  SensorXidibeiXDB401_I2C_KPa_1500 = 8,   // 0-1.5 MPa
-  SensorXidibeiXDB401_I2C_KPa_1600 = 9,   // 0-1.6 MPa
-  SensorXidibeiXDB401_I2C_KPa_2000 = 10,  // 0-2 MPa
-  SensorXidibeiXDB401_I2C_KPa_2500 = 11,  // 0-2.5 MPa
-  SensorXidibeiXDB401_I2C_KPa_3000 = 12,  // 0-3 MPa
-  SensorXidibeiXDB401_I2C_KPa_3500 = 13,  // 0-3.5 MPa
-  SensorXidibeiXDB401_I2C_KPa_4000 = 14,  // 0-4 MPa
-
-  SensorXidibeiXDB401_Analog_KPa_200 = 101,   // 0-0.2 MPa
-  SensorXidibeiXDB401_Analog_KPa_400 = 102,   // 0-0.4 MPa
-  SensorXidibeiXDB401_Analog_KPa_500 = 103,   // 0-0.5 MPa
-  SensorXidibeiXDB401_Analog_KPa_600 = 104,   // 0-0.6 MPa
-  SensorXidibeiXDB401_Analog_KPa_800 = 105,   // 0-0.8 MPa
-  SensorXidibeiXDB401_Analog_KPa_1000 = 106,  // 0-1 MPa
-  SensorXidibeiXDB401_Analog_KPa_1200 = 107,  // 0-1.2 MPa
-  SensorXidibeiXDB401_Analog_KPa_1500 = 108,  // 0-1.5 MPa
-  SensorXidibeiXDB401_Analog_KPa_1600 = 109,  // 0-1.6 MPa
-  SensorXidibeiXDB401_Analog_KPa_2000 = 110,  // 0-2 MPa
-  SensorXidibeiXDB401_Analog_KPa_2500 = 111,  // 0-2.5 MPa
-  SensorXidibeiXDB401_Analog_KPa_3000 = 112,  // 0-3 MPa
-  SensorXidibeiXDB401_Analog_KPa_3500 = 113,  // 0-3.5 MPa
-  SensorXidibeiXDB401_Analog_KPa_4000 = 114,  // 0-4 MPa
-};
+constexpr auto MAX_SENSOR_DEVICES = 2;
 
 constexpr auto PRESSURE_KPA = "kPa";
 constexpr auto PRESSURE_BAR = "Bar";
 constexpr auto PRESSURE_PSI = "PSI";
-
-constexpr auto MAX_SENSOR_DEVICES = 2;
 
 constexpr auto CONFIG_SENSOR_TYPE = "sensor_type";
 constexpr auto CONFIG_SENSOR1_TYPE = "sensor1_type";
@@ -81,7 +48,7 @@ constexpr auto CONFIG_PRESSURE1_ADJUSTMENT = "pressure1_adjustment";
 
 constexpr auto CONFIG_PRESSURE_UNIT = "pressure_unit";
 
-class PressuremonConfig : public BrewingConfig {
+class PressuremonConfig : public BrewingConfig, public PressureConfigInterface {
  private:
   PressuremonBleFormat _pressuremonBleFormat =
       PressuremonBleFormat::BLE_DISABLED;
@@ -97,31 +64,35 @@ class PressuremonConfig : public BrewingConfig {
  public:
   PressuremonConfig(String baseMDNS, String fileName);
 
-  bool isPressureBar() { return _pressureUnit == PRESSURE_BAR; }
-  bool isPressureKpa() { return _pressureUnit == PRESSURE_KPA; }
-  bool isPressurePsi() { return _pressureUnit == PRESSURE_PSI; }
+  bool isPressureBar() const { return _pressureUnit == PRESSURE_BAR; }
+  bool isPressureKpa() const { return _pressureUnit == PRESSURE_KPA; }
+  bool isPressurePsi() const { return _pressureUnit == PRESSURE_PSI; }
 
-  const char* getPressureUnit() { return _pressureUnit.c_str(); }
+  const char* getPressureUnit() const { return _pressureUnit.c_str(); }
   void setPressureUnit(String s) {
     _pressureUnit = s;
     _saveNeeded = true;
   }
 
-  PressureSensorType getPressureSensorType(int idx) {
+  PressureSensorType getPressureSensorType(int idx) const {
     return _pressureSensor[idx];
   }
-  int getPressureSensorTypeAsInt(int idx) {
+  int getPressureSensorTypeAsInt(int idx) const {
     return static_cast<int>(_pressureSensor[idx]);
   }
-  void setPressureSensorType(PressureSensorType s, int idx) {
-    _pressureSensor[idx] = s;
+  void setPressureSensorType(PressureSensorType t, int idx) {
+    _pressureSensor[idx] = t;
     _saveNeeded = true;
   }
-  void setPressureSensorType(int s, int idx) {
-    setPressureSensorType((PressureSensorType)s, idx);
+  void setPressureSensorType(int t, int idx) {
+    setPressureSensorType((PressureSensorType)t, idx);
+  }
+  bool hasPressureSensorConfigured() const {
+    return (_pressureSensor[0] != PressureSensorType::SensorNone ||
+            _pressureSensor[1] != PressureSensorType::SensorNone);
   }
 
-  float getPressureSensorCorrection(int idx) {
+  float getPressureSensorCorrection(int idx) const {
     return _pressureSensorCorrection[idx];
   }
   void setPressureSensorCorrection(float v, int idx) {
@@ -129,13 +100,13 @@ class PressuremonConfig : public BrewingConfig {
     _saveNeeded = true;
   }
 
-  float getTemperatureSensorCorrection(int idx) { return 0; }
+  float getTemperatureSensorCorrection(int idx) const { return 0; }
 
-  bool isBleActive() {
+  bool isBleActive() const {
     return (_pressuremonBleFormat != PressuremonBleFormat::BLE_DISABLED);
   }
 
-  const PressuremonBleFormat getPressuremonBleFormat() {
+  const PressuremonBleFormat getPressuremonBleFormat() const {
     return _pressuremonBleFormat;
   }
   void setPressuremonBleFormat(int b) {
@@ -147,14 +118,17 @@ class PressuremonConfig : public BrewingConfig {
     _saveNeeded = true;
   }
 
-  const bool isBatterySaving() { return _batterySaving; }
+  const bool isBatterySaving() const { return _batterySaving; }
   void setBatterySaving(bool b) {
     _batterySaving = b;
     _saveNeeded = true;
   }
 
-  void createJson(JsonObject& doc);
+  void createJson(JsonObject& doc) const;
   void parseJson(JsonObject& doc);
+
+  // Wrappers for PressureConfig
+  char getTempUnit() const { return BaseConfig::getTempUnit(); }
 };
 
 extern PressuremonConfig myConfig;

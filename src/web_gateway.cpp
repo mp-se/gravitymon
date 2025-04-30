@@ -28,6 +28,7 @@ SOFTWARE.
 #include <ble.hpp>
 #include <config.hpp>
 #include <measurement.hpp>
+#include <memory>
 #include <uptime.hpp>
 #include <web_gateway.hpp>
 
