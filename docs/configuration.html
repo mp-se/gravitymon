@@ -323,6 +323,9 @@ code the update will be done during startup.</p>
 <li><p><strong>Dark Mode:</strong></p>
 <p>Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.</p>
 </li>
+<li><p><strong>Enable flash logging:</strong></p>
+<p>If disabled there will be no runtime logging on every run, this will prolong the lifespan of the device.</p>
+</li>
 <li><p><strong>Factory default</strong></p>
 <p>This function will reset all settings to factory default. Use with caution!</p>
 </li>
@@ -377,6 +380,13 @@ been running the value would be totally off.</p>
 <p class="admonition-title">Warning</p>
 <p>The device will <strong>not</strong> go into <cite>gravity monitoring</cite> mode unless calibrated</p>
 </div>
+</li>
+</ul>
+<a class="reference internal image-reference" href="_images/ui-device-hardware-icm.png"><img alt="Device Hardware (ICM)" src="_images/ui-device-hardware-icm.png" style="width: 800px;" /></a>
+<p>When using a the ICM gyro the hardware page looks a little different since there is no calibration option and gyro settings.</p>
+<ul>
+<li><p><strong>Swap X and Y axis:</strong></p>
+<p>When enabled this option will use the Y axis for the tilt calculation instead of the X axis. The ICM development boards uses this orientation.</p>
 </li>
 </ul>
 </section>

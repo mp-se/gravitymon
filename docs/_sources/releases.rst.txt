@@ -13,9 +13,12 @@ v2.2.0
 
 New features
 ++++++++++++
+* New gyro support ICM-42670-P
+* Added flag to disable logging data to flash
 * Voltage reading on ESP32 boards have been changed to improve accuracy
 * Addes support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.
 * Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.
+* Format editor will now validate json payloads for http post and mqtt when selecting preview. 
 
 Bugs fixed
 ++++++++++

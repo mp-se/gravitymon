@@ -305,6 +305,16 @@ of RAM will cause the device to crash. So enable SSL with caution and only when 
 to minimize the needed RAM but the remote service might not support that feature.</p>
 </div>
 <ul>
+<li><p><strong>Supports multiple gyro</strong></p>
+<p>From v2.2 the project is now supporting additonal gyro implementations to keep up with the technology changes. Gyro detection is
+automatic. Currently the following gyros are supported:</p>
+<ul class="simple">
+<li><p>MPU-6050, standard gyro used in the iSpindle</p></li>
+<li><p>MPU-6500, variant of the above gyro</p></li>
+<li><p>ICM-42670-p, does sampling in the background with lower power consumption, higher accuracy and faster data collection, longer batterylife.</p></li>
+</ul>
+<p>Thanks to Levi–G for his contribution to support the ICM-42670-p gyro. The main benefits with the ICM gyro is:</p>
+</li>
 <li><p><strong>Multiple Bluetooth data tranmission options</strong></p>
 <p>TILT has been support since the ESP32c3 board was supported but in this release there are a few new options that allows for
 more data to be transmitted.</p>

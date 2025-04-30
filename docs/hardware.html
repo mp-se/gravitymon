@@ -364,6 +364,18 @@ ESP32 chips for iSpindel). You need a USB to TTL converter for this to work. Thi
 is connected to PIN 35 on the floaty. You might need to correct the voltage factor after the modification to ensure the calculated measurement is correct.</p>
 <a class="reference internal image-reference" href="_images/floaty_voltage.jpg"><img alt="Voltage divider for floaty" src="_images/floaty_voltage.jpg" style="width: 200px;" /></a>
 </section>
+<section id="new-gyro-options">
+<h2>New Gyro options<a class="headerlink" href="#new-gyro-options" title="Permalink to this heading">¶</a></h2>
+<p>Besides the standard MPU-6050 and MPU-6500 gravitymon now also supports the ICM-42670-p which can be obtained from Aliexpress as a development board.
+There is some work ongoing to create a new PCB based on this gyro. I will update with links when available.</p>
+<a class="reference internal image-reference" href="_images/gyro-icm42670p.png"><img alt="ICM-42670-P" src="_images/gyro-icm42670p.png" style="width: 200px;" /></a>
+<p>This is what I have used during my testing but it has a different orientation compared to the MPU-6050 but there is a setting in the device configuration
+that allows you to use the Y axis for tilt detection. The boards I used is pin compatible with the order board so current iSpindle PCB can be used.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The ICM gyro does not have any calibration feature since they are calibrated from the factory. So mounting the at the correct angle is important.</p>
+</div>
+</section>
 </section>
 
         </article>
@@ -438,6 +450,7 @@ is connected to PIN 35 on the floaty. You might need to correct the voltage fact
 </li>
 <li><a class="reference internal" href="#floaty-hydrometer-diy-based-on-esp32-lite">Floaty Hydrometer DIY based on esp32 lite</a></li>
 <li><a class="reference internal" href="#hardware-extensions">Hardware extensions</a></li>
+<li><a class="reference internal" href="#new-gyro-options">New Gyro options</a></li>
 </ul>
 </li>
 </ul>
