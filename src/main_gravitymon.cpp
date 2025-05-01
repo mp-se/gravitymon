@@ -487,8 +487,8 @@ void checkSleepMode(float angle, float volt) {
   return;
 #endif
 
-  if (!myConfig.hasGyroCalibration() && !myConfig.isGyroDisabled()) {
-    // Will not enter sleep mode if: no calibration data
+if ((!myConfig.hasGyroCalibration() && myGyro.needCalibration()) && !myConfig.isGyroDisabled()) {
+  // Will not enter sleep mode if: no calibration data
 #if LOG_LEVEL == 6
     Log.notice(
         F("MAIN: Missing calibration data, so forcing webserver to be "
