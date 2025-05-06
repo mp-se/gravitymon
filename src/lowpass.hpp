@@ -26,9 +26,6 @@ SOFTWARE.
 
 #include <Arduino.h>
 
-#include <limits>
-#include <queue>
-
 constexpr auto FILTER_BUFFER_SIZE = 5;
 
 struct FilterData {
