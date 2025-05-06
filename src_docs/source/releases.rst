@@ -13,6 +13,7 @@ v2.2.0
 
 New features
 ++++++++++++
+* (beta3) Removed flash logging since this will no longer be needed for other features
 * New gyro support ICM-42670-P
 * Added flag to disable logging data to flash
 * Voltage reading on ESP32 boards have been changed to improve accuracy

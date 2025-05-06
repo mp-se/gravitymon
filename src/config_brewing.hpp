@@ -89,16 +89,8 @@ class BrewingConfig : public BaseConfig {
 
   int _tempSensorResolution = 9;  // bits
 
-  bool _flashLogging = false;
-
  public:
   BrewingConfig(String baseMDNS, String fileName);
-
-  bool isFlashLogging() const { return _flashLogging; }
-  void setFlashLogging(bool b) {
-    _flashLogging = b;
-    _saveNeeded = true;
-  }
 
   bool isWifiDirect() const { return _wifiDirect; }
   void setWifiDirect(bool b) {

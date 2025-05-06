@@ -51,8 +51,6 @@ void BrewingConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
 
   doc[CONFIG_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
-
-  doc[CONFIG_FLASH_LOGGING] = isFlashLogging();
 }
 
 void BrewingConfig::parseJson(JsonObject& doc) {
@@ -94,9 +92,6 @@ void BrewingConfig::parseJson(JsonObject& doc) {
 
   if (!doc[CONFIG_TEMPSENSOR_RESOLUTION].isNull())
     this->setTempSensorResolution(doc[CONFIG_TEMPSENSOR_RESOLUTION].as<int>());
-
-  if (!doc[CONFIG_FLASH_LOGGING].isNull())
-    setFlashLogging(doc[CONFIG_FLASH_LOGGING].as<bool>());
 }
 
 // EOF

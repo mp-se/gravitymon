@@ -40,7 +40,6 @@ SOFTWARE.
 #include <battery.hpp>
 #include <config.hpp>
 #include <helper.hpp>
-#include <history.hpp>
 #include <pushtarget.hpp>
 #include <utils.hpp>
 #include <webserver.hpp>
@@ -84,7 +83,6 @@ bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
 uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
-bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
 
 void checkSleepModePressure(float volt);
@@ -339,19 +337,6 @@ bool loopReadPressure() {
                                     (millis() - runtimeMillis) / 1000,
                                     myBatteryVoltage.getVoltage());
         push.sendAll(engine, BrewingPush::MeasurementType::PRESSURE);
-
-        // Only log when in gravity mode
-        if (!skipRunTimeLog && runMode == RunMode::measurementMode) {
-          Log.notice(
-              F("Main: Updating history log with, runtime and "
-                "interval." CR));
-          float runtime = (millis() - runtimeMillis);
-          HistoryLog runLog(RUNTIME_FILENAME);
-          runLog.addLog(
-              runtime, 0,
-              myConfig.getSleepInterval());  // Dont store the readings in
-                                             // history log, no need for them
-        }
       }
     }
     PERF_END("loop-push");
@@ -408,9 +393,6 @@ void loop() {
       myWifi.loop();
       loopPressureOnInterval();
       delay(1);
-
-      // If we switched mode, dont include this in the log.
-      if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
       break;
 
     case RunMode::measurementMode:

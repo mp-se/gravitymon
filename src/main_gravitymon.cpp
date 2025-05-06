@@ -39,7 +39,6 @@ SOFTWARE.
 #include <battery.hpp>
 #include <config.hpp>
 #include <helper.hpp>
-#include <history.hpp>
 #include <pushtarget.hpp>
 #include <utils.hpp>
 #include <webserver.hpp>
@@ -80,7 +79,6 @@ uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 uint32_t stableGyroMillis;  // Used to calculate the total time since last
                             // stable gyro reading
-bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
 
 void checkSleepMode(float angle, float volt);
@@ -352,16 +350,6 @@ bool loopReadGravity() {
                                      tempC, (millis() - runtimeMillis) / 1000,
                                      myBatteryVoltage.getVoltage());
           push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
-
-          // Only log when in gravity mode
-          if (!skipRunTimeLog && runMode == RunMode::measurementMode) {
-            Log.notice(
-                F("Main: Updating history log with, runtime, gravity and "
-                  "interval." CR));
-            float runtime = (millis() - runtimeMillis);
-            HistoryLog runLog(RUNTIME_FILENAME);
-            runLog.addLog(runtime, gravitySG, myConfig.getSleepInterval());
-          }
         }
       }
       PERF_END("loop-push");
@@ -431,9 +419,6 @@ void loop() {
       myWifi.loop();
       loopGravityOnInterval();
       delay(1);
-
-      // If we switched mode, dont include this in the log.
-      if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
       break;
 
     case RunMode::measurementMode:

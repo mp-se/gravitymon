@@ -25,7 +25,6 @@ SOFTWARE.
 
 #include <config.hpp>
 #include <helper.hpp>
-#include <history.hpp>
 #include <main.hpp>
 #include <perf.hpp>
 #include <pushtarget.hpp>
@@ -109,7 +108,6 @@ void BrewingWebServer::webHandleFactoryDefaults(
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
   myConfig.saveFileWifiOnly();
   LittleFS.remove(ERR_FILENAME);
-  LittleFS.remove(RUNTIME_FILENAME);
 
   LittleFS.remove(TPL_GRAVITY_FNAME_POST);
   LittleFS.remove(TPL_GRAVITY_FNAME_POST2);
@@ -460,9 +458,6 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
 #endif
   obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
 
-  obj[PARAM_RUNTIME_AVERAGE] = serialized(
-      String(_averageRunTime ? _averageRunTime / 1000 : 0, DECIMALS_RUNTIME));
-
   float v = myBatteryVoltage.getVoltage();
 
   obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
@@ -508,9 +503,6 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
 
   BaseWebServer::setupWebServer();
   MDNS.addService(serviceName, "tcp", 80);
-
-  HistoryLog runLog(RUNTIME_FILENAME);
-  _averageRunTime = runLog.getAverage()._runTime;
 
   Log.notice(F("WEB : Setting up handlers for web server." CR));
 
