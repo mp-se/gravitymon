@@ -33,7 +33,7 @@ SOFTWARE.
 #define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
                             // calibration
 
-#if defined(USE_RTC_MEM) && defined(ESP32)
+#if defined(ESP32)
 RTC_DATA_ATTR RtcGyroData myRtcGyroData;
 RTC_DATA_ATTR FilterData myRtcFilterData;
 #endif
@@ -56,7 +56,7 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
 
     Wire.begin(PIN_SDA, PIN_SCL);
     Wire.setClock(clock);  // 400kHz I2C clock.
-#if defined(USE_RTC_MEM) && defined(ESP32)
+#if defined(ESP32)
     if (myRtcGyroData.IsDataAvailable == GYRO_RTC_DATA_AVAILABLE) {
       if (myRtcGyroData.Type == GyroType::GYRO_MPU6050) {
         Log.notice(F("GYRO: Restored MPU6050/MPU6000." CR));
@@ -74,7 +74,7 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
       if (MPU6050Gyro::isDeviceDetected(addr)) {
         Log.notice(F("GYRO: Detected MPU6050/MPU6000." CR));
         _impl.reset(new MPU6050Gyro(addr, _gyroConfig));
-#if defined(USE_RTC_MEM) && defined(ESP32)
+#if defined(ESP32)
         myRtcGyroData = {.Type = GyroType::GYRO_MPU6050,
                          .Address = addr,
                          .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
@@ -82,7 +82,7 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
       } else if (ICM42670pGyro::isDeviceDetected(addr)) {
         Log.notice(F("GYRO: Detected ICM42670-p." CR));
         _impl.reset(new ICM42670pGyro(addr, _gyroConfig));
-#if defined(USE_RTC_MEM) && defined(ESP32)
+#if defined(ESP32)
         myRtcGyroData = {.Type = GyroType::GYRO_ICM42670P,
                          .Address = addr,
                          .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
@@ -115,17 +115,16 @@ bool GyroSensor::read() {
   _valid = resultData.valid;
 
   if (resultData.valid) {
-    _angle = _filteredAngle = resultData.angle;
+    _angle = resultData.angle;
     _temp = resultData.temp;
 
     if (_initialSensorTemp == INVALID_TEMPERATURE) {
       _initialSensorTemp = resultData.temp;
     }
-
-#if defined(USE_RTC_MEM) && defined(ESP32)
-    if (_gyroConfig->isGyroFilter()) {
-      _filteredAngle = _filter->filter(_angle);
-    }
+#if defined(ESP32)
+    _filteredAngle = _filter->filter(_angle);
+#else
+    _filteredAngle = _angle;
 #endif
   }
 

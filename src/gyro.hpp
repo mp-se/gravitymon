@@ -32,7 +32,7 @@ SOFTWARE.
 #include <lowpass.hpp>
 #include <memory>
 
-#if defined(USE_RTC_MEM) && defined(ESP32)
+#if defined(ESP32)
 
 #include <esp_attr.h>
 
@@ -156,7 +156,7 @@ class GyroSensor {
  private:
   GyroConfigInterface* _gyroConfig;
   std::unique_ptr<GyroSensorInterface> _impl;
-#if defined(USE_RTC_MEM) && defined(ESP32)
+#if defined(ESP32)
   std::unique_ptr<FilterBase> _filter;
 #endif
 
@@ -175,9 +175,9 @@ class GyroSensor {
  public:
   explicit GyroSensor(GyroConfigInterface* gyroConfig) {
     _gyroConfig = gyroConfig;
-#if defined(USE_RTC_MEM) && defined(ESP32)
+#if defined(ESP32)
     _filter.reset(new TrimmedMovingAverageFilter(&myRtcFilterData));
-// _filter.reset(new MovingAverageFilter(&myRtcFilterData));
+    // _filter.reset(new MovingAverageFilter(&myRtcFilterData));
 #endif
   }
 
