@@ -129,13 +129,19 @@ void BrewingWebServer::doTaskSensorCalibration() {
 
 void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
                                            BrewingPush &push) {
+  // When runnning in configuration mode we dont apply the filter on the angle
   float angle = myGyro.getAngle();
   float tempC = myTempSensor.getTempC();
   float gravitySG = calculateGravity(angle, tempC);
   float corrGravitySG = gravityTemperatureCorrectionC(
       gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
-  setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG, tempC,
-                             1.0, myBatteryVoltage.getVoltage());
+
+  if (myConfig.isGravityTempAdj()) {  // Apply if flag is set
+    gravitySG = corrGravitySG;
+  }
+
+  setupTemplateEngineGravity(engine, angle, angle, gravitySG, corrGravitySG,
+                             tempC, 1.0, myBatteryVoltage.getVoltage());
 
   Log.notice(F("WEB : Running scheduled push test for %s" CR),
              _pushTestTarget.c_str());

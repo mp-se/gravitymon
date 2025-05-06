@@ -36,6 +36,7 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_GRAVITY_UNIT] = String(getGravityUnit());
   doc[CONFIG_GYRO_TEMP] = isGyroTemp();
   doc[CONFIG_GYRO_DISABLED] = isGyroDisabled();
+  doc[CONFIG_GYRO_FILTER] = isGyroFilter();
   doc[CONFIG_GYRO_SWAP_XY] = isGyroSwapXY();
   doc[CONFIG_STORAGE_SLEEP] = isStorageSleep();
   doc[CONFIG_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
@@ -90,6 +91,8 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
   }
   if (!doc[CONFIG_GYRO_DISABLED].isNull())
     setGyroDisabled(doc[CONFIG_GYRO_DISABLED].as<bool>());
+  if (!doc[CONFIG_GYRO_FILTER].isNull())
+    setGyroFilter(doc[CONFIG_GYRO_FILTER].as<bool>());
 
   if (!doc[CONFIG_GYRO_CALIBRATION]["ax"].isNull())
     _gyroCalibration.ax = doc[CONFIG_GYRO_CALIBRATION]["ax"];

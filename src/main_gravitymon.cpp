@@ -23,6 +23,8 @@ SOFTWARE.
  */
 #if defined(GRAVITYMON)
 
+// #define FORCE_GRAVITY_MODE
+
 #include <main.hpp>
 #include <main_gravitymon.hpp>
 
@@ -246,7 +248,7 @@ void setup() {
 // Main loop that does gravity readings and push data to targets
 // Return true if gravity reading was successful
 bool loopReadGravity() {
-  float angle = 0;
+  float angle = 0, filteredAngle = 0;
 
 #if LOG_LEVEL == 6
   Log.verbose(F("Main: Entering main loopGravity." CR));
@@ -258,7 +260,8 @@ bool loopReadGravity() {
   // interval.
   //
   if (myGyro.hasValue()) {
-    angle = myGyro.getAngle();    // Gyro angle
+    angle = myGyro.getAngle();  // Gyro angle
+    filteredAngle = myGyro.getFilteredAngle();
     stableGyroMillis = millis();  // Reset timer
 
     PERF_BEGIN("loop-temp-read");
@@ -267,12 +270,23 @@ bool loopReadGravity() {
     PERF_END("loop-temp-read");
 
     float gravitySG = calculateGravity(angle, tempC);
+    float filteredGravitySG = calculateGravity(filteredAngle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
-        gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
+        myConfig.isGyroFilter() ? filteredGravitySG : gravitySG, tempC,
+        myConfig.getDefaultCalibrationTemp());
 
+    // Corrected gravity can contain either temperature corrected gravity /
+    // filtered gravity.
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
+    } else if (myConfig.isGyroFilter()) {
+      // TODO: Uncomment this next line once the
+      // filters has been tested correctly
+      // gravitySG = filteredGravitySG;
     }
+
+    Log.warning(F("Main: Angle: %F (%F)" CR), angle, filteredAngle);
+
 #if LOG_LEVEL == 6
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
                   "corr_gravity=%F." CR),
@@ -330,9 +344,9 @@ bool loopReadGravity() {
 
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
-          setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG,
-                                     tempC, (millis() - runtimeMillis) / 1000,
-                                     myBatteryVoltage.getVoltage());
+          setupTemplateEngineGravity(
+              engine, angle, filteredAngle, gravitySG, corrGravitySG, tempC,
+              (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
           String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1,
                                         true);  // Use default post template
           String payload = engine.create(tpl.c_str());
@@ -348,9 +362,9 @@ bool loopReadGravity() {
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
 
-          setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG,
-                                     tempC, (millis() - runtimeMillis) / 1000,
-                                     myBatteryVoltage.getVoltage());
+          setupTemplateEngineGravity(
+              engine, angle, filteredAngle, gravitySG, corrGravitySG, tempC,
+              (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
           push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
 
           // Only log when in gravity mode
@@ -487,8 +501,9 @@ void checkSleepMode(float angle, float volt) {
   return;
 #endif
 
-if ((!myConfig.hasGyroCalibration() && myGyro.needCalibration()) && !myConfig.isGyroDisabled()) {
-  // Will not enter sleep mode if: no calibration data
+  if ((!myConfig.hasGyroCalibration() && myGyro.needCalibration()) &&
+      !myConfig.isGyroDisabled()) {
+    // Will not enter sleep mode if: no calibration data
 #if LOG_LEVEL == 6
     Log.notice(
         F("MAIN: Missing calibration data, so forcing webserver to be "

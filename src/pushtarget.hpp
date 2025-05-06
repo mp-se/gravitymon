@@ -52,6 +52,7 @@ constexpr auto TPL_RSSI = "${rssi}";
 constexpr auto TPL_RUN_TIME = "${run-time}";
 constexpr auto TPL_APP_VER = "${app-ver}";
 constexpr auto TPL_ANGLE = "${angle}";
+constexpr auto TPL_FILTERED_ANGLE = "${filtered-angle}";
 constexpr auto TPL_TILT = "${tilt}";  // same as angle
 constexpr auto TPL_GRAVITY = "${gravity}";
 constexpr auto TPL_GRAVITY_G = "${gravity-sg}";

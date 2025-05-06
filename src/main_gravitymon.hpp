@@ -37,8 +37,9 @@ enum RunMode {
 };
 
 void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
-                                float gravitySG, float corrGravitySG,
-                                float tempC, float runTime, float voltage);
+                                float angleFiltered, float gravitySG,
+                                float corrGravitySG, float tempC, float runTime,
+                                float voltage);
 void runGpioHardwareTests();
 
 #if defined(D1_MINI)

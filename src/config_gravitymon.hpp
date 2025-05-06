@@ -35,6 +35,7 @@ constexpr auto CONFIG_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto CONFIG_GYRO_CALIBRATION = "gyro_calibration_data";
 constexpr auto CONFIG_GYRO_TEMP = "gyro_temp";
 constexpr auto CONFIG_GYRO_DISABLED = "gyro_disabled";
+constexpr auto CONFIG_GYRO_FILTER = "gyro_filter";
 constexpr auto CONFIG_GYRO_SWAP_XY = "gyro_swap_xy";
 constexpr auto CONFIG_STORAGE_SLEEP = "storage_sleep";
 constexpr auto CONFIG_FORMULA_DATA = "formula_calculation_data";
@@ -77,6 +78,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool _storageSleep = false;
   bool _gyroDisabled = false;
   bool _gyroSwapXY = false;
+  bool _gyroFilter = false;
 #if defined(FLOATY)
   bool _gyroTemp = true;
   bool _batterySaving = false;
@@ -116,6 +118,12 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool isGyroDisabled() const { return _gyroDisabled; }
   void setGyroDisabled(bool b) {
     _gyroDisabled = b;
+    _saveNeeded = true;
+  }
+
+  bool isGyroFilter() const { return _gyroFilter; }
+  void setGyroFilter(bool b) {
+    _gyroFilter = b;
     _saveNeeded = true;
   }
 

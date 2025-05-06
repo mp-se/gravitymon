@@ -32,8 +32,9 @@ SOFTWARE.
 #endif
 
 void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
-                                float gravitySG, float corrGravitySG,
-                                float tempC, float runTime, float voltage) {
+                                float filteredAngle, float gravitySG,
+                                float corrGravitySG, float tempC, float runTime,
+                                float voltage) {
   // Names
   engine.setVal(TPL_MDNS, myConfig.getMDNS());
   engine.setVal(TPL_ID, myConfig.getID());
@@ -90,6 +91,7 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
   // Angle/Tilt
   engine.setVal(TPL_TILT, angle, DECIMALS_TILT);
   engine.setVal(TPL_ANGLE, angle, DECIMALS_TILT);
+  engine.setVal(TPL_FILTERED_ANGLE, filteredAngle, DECIMALS_TILT);
 
   // Gravity options
   if (myConfig.isGravitySG()) {

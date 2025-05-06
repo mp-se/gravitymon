@@ -6,7 +6,7 @@ Functionality
 The main features
 -----------------
 
-* **Operates in two modes gravity monitoring and configuration mode**
+* **Operates in two modes gravity monitoring and configuration mode** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   In ``gravity monitoring`` mode it behaves just like the iSpindle, it wakes up at regular intervals, measures 
   angle/tile, temperature, calculates gravity and pushes the data to defined endpoints. 
@@ -25,7 +25,7 @@ The main features
 
   See the :ref:`setting-up-device` section for more information on how to trigger the configuration mode.
 
-* **Can send data to multiple endpoints**
+* **Can send data to multiple endpoints** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   The original iSpindle can only have one destination, this software will push data to all defined endpoints so 
   in theory you can use them all. However this will consume more battery power so use only as many as needed. Its much 
@@ -60,7 +60,17 @@ The main features
   of RAM will cause the device to crash. So enable SSL with caution and only when you really need it. GravityMon will try
   to minimize the needed RAM but the remote service might not support that feature.
 
-* **Supports multiple gyro**
+* **Filtering gyro output** :bdg-primary:`ESP32 Only`
+  
+  From v2.2 the project now supports running data through a filter (Moving Avereage Filter) which helps to smooth out 
+  the data. This feature uses a RTC_MEM to allow data to be stored during deep sleep which only exist on ESP32 boards. 
+  The feature is only applied when the device is in gravity mode and data measurements are done. 
+
+  .. image:: images/filter.png
+      :width: 300
+      :alt: Filter output
+
+* **Supports multiple gyro** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   From v2.2 the project is now supporting additonal gyro implementations to keep up with the technology changes. Gyro detection is 
   automatic. Currently the following gyros are supported:
@@ -71,7 +81,7 @@ The main features
 
   Thanks to Levi--G for his contribution to support the ICM-42670-p gyro. The main benefits with the ICM gyro is:
 
-* **Multiple Bluetooth data tranmission options**
+* **Multiple Bluetooth data tranmission options** :bdg-primary:`ESP32 Only`
 
   TILT has been support since the ESP32c3 board was supported but in this release there are a few new options that allows for 
   more data to be transmitted.
@@ -81,13 +91,13 @@ The main features
   - Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.
   - Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.
 
-* **WIFI Direct to GravityMon Gateway**
+* **WIFI Direct to GravityMon Gateway** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   This works in combination with the GravityMon Gatewat that will act as an Access Point (AP) and receive data from GravityMon and then forward 
   it to the right destination. The Gatewway works with both BLE and WIFI. This works only in gravity mode and will force the device to connect to the closest
   defined AP with the best reception.
 
-* **Create gravity formulas on the device**
+* **Create gravity formulas on the device** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   Another big difference is that this software can create the gravity formula in the device, just enter the 
   angle/gravity data that you have collected. You will also see a graph simulating how the formula would work. 
@@ -96,7 +106,7 @@ The main features
 
   You can also analyse how the formula compares to your raw data and formulas of different complexities.
 
-* **Customize the data format being sent to push targets**
+* **Customize the data format being sent to push targets** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   In order to make it easier to support more targets there is a built in format editor that can be used to 
   customize the data that is to be sent. This way you can easily adapt the software to new targets without coding. 
@@ -104,7 +114,7 @@ The main features
   for other users to enjoy. See the :ref:`format-template` for more information. See :ref:`services` for a list of
   services currently validated.
 
-* **Validation of common configuration errors**
+* **Validation of common configuration errors** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   Common configuration errors or hardware problems will now be displayed on the front page. The following are checked:
 
@@ -117,45 +127,45 @@ The main features
   - No temperature sensor connected (not Floaty build) 
   - Battery voltage out of range (Not Floaty build)
 
-* **Automatic temperature adjustment of gravity reading**
+* **Automatic temperature adjustment of gravity reading** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice 
   feature that can correct the gravity as a second step making this independent of the formula. 
 
-* **Migration of formula and gyro calibration from iSpindel**
+* **Migration of formula and gyro calibration from iSpindel** :bdg-primary:`ESP8266 Only`
 
   If GravityMon is installed over an working ispindel it can migrate calibration formula and gyro settings making 
   the transition smooth.
 
-* **OTA support from webserver**
+* **OTA support from webserver** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   When starting up in configuration mode the device will check for a software update from a webserver. This is an easily
   way to keep the software up to date. In the future I might add a hosted endpoint for providing updates. OTA can also be 
   done over a SSL connection.
 
-* **Backup and Restore of settings**
+* **Backup and Restore of settings** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   All the configuration of the device can be exported and stored as a text file (json). This can be used to restore settings in case of 
   hardware problems. You can also create a template of your settings and use that on multiple devices. Just make sure to change the "id" fields 
   to match your device id (can be found on the index page). 
  
-* **DS18B20 temperature adjustments**
+* **DS18B20 temperature adjustments** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   You can adjust the temperature reading of the temperature sensor. In normal cases this should not be needed since 
   the sensors should be calibrated. 
 
-* **Gyro Movement**
+* **Gyro Movement** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60 seconds. 
   This way we should avoid faulty measurements and peaks in the graphs. 
 
-* **WIFI connection issues**
+* **WIFI connection issues** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   The software will not wait indefinitely for a wifi connection. If it takes longer than 20 seconds to connect then
   the device will try the secondary wifi configuration, and that also fails it will go into deep sleep for 60 seconds and then 
   retry later. This to conserve batter as much as possible.
 
-* **Use gyro temperature sensor**
+* **Use gyro temperature sensor** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   This works fine when the device has time to cool down between measurements and it saves up to 400 ms. 
   My testing shows that this is quite accurate with a deviation of less than 0.3C. This  
@@ -171,29 +181,29 @@ The main features
   :width: 800
   :alt: Gyro temp vs DS18B20
 
-* **Celsius or Fahrenheit**
+* **Celsius or Fahrenheit** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   You can switch between different temperature formats. GravityMon will always use C for it's internal calculations and 
   convert to F when displayed.
 
-* **SG or Plato**
+* **SG or Plato** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   You can switch between different gravity formats. GravityMon will always use SG for it's internal calculations and 
   convert to Plato when displayed.
 
-* **Stable gyro data**
+* **Stable gyro data** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   The device will read the gyro 50 times to get an accurate reading. If the standard deviation is to high it will not 
   use the data since this is inaccurate and the device is probably moving, probably do to active fermentation or movement of 
   fermentation vessel. This sequence takes 900 ms seconds to execute and besides wifi connection this is what consumes the most
   battery. With more testing this might be changes to either speed up or provide more stable readings.
 
-* **Crash detection and Error Logging** 
+* **Crash detection and Error Logging** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   There is a build in logging function so that errors that occurs can be detected and logged to a file. On the ESP8266 crashes will also 
   be logged so that these problems can be detected and fixed. Crash logging is not available on the ESP32 variants.
 
-* **Performance measurements** 
+* **Performance measurements** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   I've also create a small library to measure execution code in some areas of the code that i know is time consuming. This 
   way I can find a good balance between performance and quality. This is a lot of help trying to figure out where bottlenecks 
@@ -209,12 +219,12 @@ The main features
 
   See the :ref:`compiling-the-software` for more information.
 
-* **Battery saving**
+* **Battery saving** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   If the battery voltage drops below 20%, then the device will enter battery savings mode 
   and change the sleep interval to 1 hour.
 
-* **Custom board support**
+* **Custom board support** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   There are lots of boards out there that can support a gravitymonitor and now there is a possibility to 
   add custom builds for boards that I dont have access to, in sense a community approach where everyone can 
