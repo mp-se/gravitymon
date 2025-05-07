@@ -42,13 +42,13 @@ test(template_applyTemplate1) {
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
-  setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
   String v = "{\"name\": \"gravitymon\", \"ID\": \"" + id +
              "\", \"token\": \"\", \"interval\": 900, \"temperature\": 21.20, "
-             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.000, "
+             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"velocity\": 0.0, \"angle\": 45.000, "
              "\"battery\": 3.88"
              ", \"RSSI\": " + rssi + ", \"corr-gravity\": 1.2230, \"gravity-unit\": "
              "\"G\", \"run-time\": 2.98 }";
@@ -61,13 +61,13 @@ test(template_applyTemplate2) {
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
-  setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(e, 45.0, 2.1, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
   String v = "{\"name\": \"gravitymon\", \"ID\": \"" + id +
              "\", \"token\": \"\", \"interval\": 900, \"temperature\": 21.20, "
-             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"angle\": 45.000, "
+             "\"temp_units\": \"C\", \"gravity\": 1.1230, \"velocity\": 2.1, \"angle\": 45.000, "
              "\"battery\": 3.88"
              ", \"RSSI\": " + rssi + ", \"corr-gravity\": 1.2230, \"gravity-unit\": "
              "\"G\", \"run-time\": 2.98 }";
@@ -80,13 +80,13 @@ test(template_applyTemplate3) {
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
-  setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(e, 45.0, 0.1, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
   String v = "?name=gravitymon&id=" + id +
              "&token=&interval=900&temperature=21.20&temp-units=C&gravity=1."
-             "1230&angle=45.000&battery=3.88"
+             "1230&velocity=0.1&angle=45.000&battery=3.88"
              "&rssi=" + rssi + "&corr-gravity=1.2230&gravity-unit=G&run-time=2.98";
   assertEqual(s, v);
 }
@@ -97,14 +97,14 @@ test(template_applyTemplate4) {
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
-  setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(e, 45.0, 3.1, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
   String v =
       "measurement,host=gravitymon,device=" + id +
       ",temp-format=C,gravity-format=G "
-      "gravity=1.1230,corr-gravity=1.2230,angle=45.000,temp=21.20,battery=3.88"
+      "gravity=1.1230,velocity=3.1,corr-gravity=1.2230,angle=45.000,temp=21.20,battery=3.88"
       ",rssi=" + rssi + "\n";
   assertEqual(s, v);
 }
@@ -115,14 +115,14 @@ test(template_applyTemplate5) {
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
-  setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(e, 45.0, 3.4, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String rssi = String(WiFi.RSSI());
   String v =
       "ispindel/gravitymon/tilt:45.000|ispindel/gravitymon/"
       "temperature:21.20|ispindel/gravitymon/temp_units:C|ispindel/gravitymon/"
       "battery:3.88"
-      "|ispindel/gravitymon/gravity:1.1230|ispindel/gravitymon/"
+      "|ispindel/gravitymon/gravity:1.1230|ispindel/gravitymon/velocity:3.4|ispindel/gravitymon/"
       "interval:900|ispindel/gravitymon/RSSI:" + rssi + "|";
   assertEqual(s, v);
 }
@@ -137,7 +137,7 @@ test(template_applyTemplate6) {
     "<result><channel>Batterie</channel><float>1</float><value>${battery}</value></result>"
     "<result><channel>Temperature</channel><float>1</float><value>${temp}</value></result></prtg>";
 
-  setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(tpl);
   String v = "<prtg><result><channel>Densite</channel><float>1</float><value>1.1230</value></result>"
              "<result><channel>Batterie</channel><float>1</float><value>3.88</value></result>"
@@ -153,7 +153,7 @@ test(template_applyTemplate7) {
   const char* tpl = 
     "${battery}-${battery-percent}";
 
-  setupTemplateEngineGravity(e, 45.0, 1.123, 1.223, 21.2, 2.98, 4.20);
+  setupTemplateEngineGravity(e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 4.20);
   String s = e.create(tpl);
 
   // When run using charger the level should be 100%
