@@ -13,9 +13,12 @@ v2.2.0
 
 New features
 ++++++++++++
+* (beta3) Removed flash logging of runtime data since this is no longer needed
+* (beta3) Added gravity velocity (points per 24h) as new datapoints (currently experimental)
 * (beta3) Added filter to gyro reading in order to smooth out readings (5 point moving avegage with min/max removed)
+
 * (beta2) New gyro support ICM-42670-P
-* (beta2) Added flag to disable logging data to flash
+
 * (beta1) Voltage reading on ESP32 boards have been changed to improve accuracy
 * (beta1) Adds support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.
 * (beta1) Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.

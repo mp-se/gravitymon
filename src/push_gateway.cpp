@@ -90,6 +90,7 @@ void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle,
   // Angle/Tilt
   engine.setVal(TPL_TILT, angle, DECIMALS_TILT);
   engine.setVal(TPL_ANGLE, angle, DECIMALS_TILT);
+  engine.setVal(TPL_VELOCITY, 0, 1);
 
   // Gravity options
   if (myConfig.isGravitySG()) {

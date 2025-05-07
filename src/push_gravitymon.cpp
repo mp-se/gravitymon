@@ -32,7 +32,7 @@ SOFTWARE.
 #endif
 
 void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
-                                float filteredAngle, float gravitySG,
+                                float velocity, float gravitySG,
                                 float corrGravitySG, float tempC, float runTime,
                                 float voltage) {
   // Names
@@ -91,7 +91,7 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
   // Angle/Tilt
   engine.setVal(TPL_TILT, angle, DECIMALS_TILT);
   engine.setVal(TPL_ANGLE, angle, DECIMALS_TILT);
-  engine.setVal(TPL_FILTERED_ANGLE, filteredAngle, DECIMALS_TILT);
+  engine.setVal(TPL_VELOCITY, velocity, 1);
 
   // Gravity options
   if (myConfig.isGravitySG()) {

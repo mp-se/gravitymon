@@ -51,6 +51,11 @@ SOFTWARE.
 #include <calc.hpp>
 #include <gyro.hpp>
 #include <tempsensor.hpp>
+#include <velocity.hpp>
+
+#if defined(ESP32)
+#include <esp_attr.h>
+#endif
 
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";
@@ -74,7 +79,9 @@ SerialWebSocket mySerialWebSocket;
 BleSender myBleSender;
 #endif
 GyroSensor myGyro(&myConfig);
-
+#if defined(ESP32)
+RTC_DATA_ATTR GravityVelocityData data = {0};
+#endif
 LoopTimer timerLoop(200);
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
@@ -285,7 +292,15 @@ bool loopReadGravity() {
       // gravitySG = filteredGravitySG;
     }
 
-    Log.warning(F("Main: Angle: %F (%F)" CR), angle, filteredAngle);
+    float velocity = 0;
+
+#if defined(ESP32)
+    GravityVelocity gv(&data, myConfig.getSleepInterval());
+    gv.addValue(gravitySG);
+    velocity = gv.getVelocity();
+#endif
+
+    Log.warning(F("Main: Angle: %F (%F), Velocity: %F" CR), angle, filteredAngle, velocity);
 
 #if LOG_LEVEL == 6
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
@@ -345,7 +360,7 @@ bool loopReadGravity() {
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
           setupTemplateEngineGravity(
-              engine, angle, filteredAngle, gravitySG, corrGravitySG, tempC,
+              engine, angle, velocity, gravitySG, corrGravitySG, tempC,
               (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
           String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1,
                                         true);  // Use default post template
@@ -363,7 +378,7 @@ bool loopReadGravity() {
           BrewingPush push(&myConfig);
 
           setupTemplateEngineGravity(
-              engine, angle, filteredAngle, gravitySG, corrGravitySG, tempC,
+              engine, angle, velocity, gravitySG, corrGravitySG, tempC,
               (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
           push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
 

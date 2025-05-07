@@ -37,7 +37,7 @@ enum RunMode {
 };
 
 void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
-                                float angleFiltered, float gravitySG,
+                                float velocity, float gravitySG,
                                 float corrGravitySG, float tempC, float runTime,
                                 float voltage);
 void runGpioHardwareTests();

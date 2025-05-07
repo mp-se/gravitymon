@@ -140,7 +140,7 @@ void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
     gravitySG = corrGravitySG;
   }
 
-  setupTemplateEngineGravity(engine, angle, angle, gravitySG, corrGravitySG,
+  setupTemplateEngineGravity(engine, angle, 0, gravitySG, corrGravitySG,
                              tempC, 1.0, myBatteryVoltage.getVoltage());
 
   Log.notice(F("WEB : Running scheduled push test for %s" CR),

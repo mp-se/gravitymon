@@ -60,9 +60,19 @@ The main features
   of RAM will cause the device to crash. So enable SSL with caution and only when you really need it. GravityMon will try
   to minimize the needed RAM but the remote service might not support that feature.
 
+* **Gravity velocity** :bdg-primary:`ESP32 Only`
+  
+  Calculates the number of gravity points that will be lost over the coming 24 hour period. 
+
+  1 point equals an SG value of 0.001
+
+  This gives an indication on how  active the yeast is. This feature uses the RTC MEM which is a memory that is not lost 
+  during deep sleep and only exist on the ESP32. The feature stores average data from the last 16 hours in 4 hour periods and use this for estimating 
+  the fermentation velocity. The number indicates now many gravity points that will be lost in the next 24 hours. 
+
 * **Filtering gyro output** :bdg-primary:`ESP32 Only`
   
-  From v2.2 the project now supports running data through a filter (Moving Avereage Filter) which helps to smooth out 
+  From v2.2.0 the project now supports running data through a filter (Moving Avereage Filter) which helps to smooth out 
   the data. This feature uses a RTC_MEM to allow data to be stored during deep sleep which only exist on ESP32 boards. 
   The feature is only applied when the device is in gravity mode and data measurements are done. 
 
