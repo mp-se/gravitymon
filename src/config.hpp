@@ -25,8 +25,17 @@ SOFTWARE.
 #define SRC_CONFIG_HPP_
 
 #include <config_brewing.hpp>
+
+#if defined(GATEWAY)
 #include <config_gateway.hpp>
+#endif
+
+#if defined(GRAVITYMON)
 #include <config_gravitymon.hpp>
+#endif
+
+#if defined(PRESSUREMON)
 #include <config_pressuremon.hpp>
+#endif
 
 #endif  // SRC_CONFIG_HPP_

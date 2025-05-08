@@ -24,8 +24,16 @@ SOFTWARE.
 #ifndef SRC_BLE_HPP_
 #define SRC_BLE_HPP_
 
+#if defined(GATEWAY)
 #include <ble_gateway.hpp>
+#endif
+
+#if defined(GRAVITYMON)
 #include <ble_gravitymon.hpp>
+#endif
+
+#if defined(PRESSUREMON)
 #include <ble_pressuremon.hpp>
+#endif
 
 #endif  // SRC_BLE_HPP_

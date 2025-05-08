@@ -27,9 +27,18 @@ SOFTWARE.
 #include <stdlib.h>
 
 #include <espframework.hpp>
+
+#if defined(GATEWAU)
 #include <main_gateway.hpp>
+#endif
+
+#if defined(GRAVITYMON)
 #include <main_gravitymon.hpp>
+#endif
+
+#if defined(PRESSUREMON)
 #include <main_pressuremon.hpp>
+#endif
 
 extern RunMode runMode;
 

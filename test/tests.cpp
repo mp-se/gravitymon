@@ -34,8 +34,6 @@ void setup() {
   Serial.begin(115200);
 #if defined(GRAVITYMON)
   Serial.println("Gravitymon - Unit Test Build");
-#elif defined(PRESSUREMON)
-Serial.println("Pressuremon - Unit Test Build");
 #elif defined(GATEWAY)
 Serial.println("Gateway - Unit Test Build");
 #endif
