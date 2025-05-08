@@ -30,7 +30,6 @@ SOFTWARE.
 #include <templating.hpp>
 
 constexpr auto PARAM_HARDWARE = "hardware";
-constexpr auto PARAM_RUNTIME_AVERAGE = "runtime_average";
 constexpr auto PARAM_SLEEP_MODE = "sleep_mode";
 constexpr auto PARAM_BATTERY = "battery";
 constexpr auto PARAM_APP_VER = "app_ver";
@@ -85,8 +84,6 @@ class BrewingWebServer : public BaseWebServer {
   String _pushTestTarget;
   int _pushTestLastCode;
   bool _pushTestLastSuccess, _pushTestEnabled;
-
-  float _averageRunTime = 0;
 
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
