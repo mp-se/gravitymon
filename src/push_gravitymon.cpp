@@ -23,6 +23,8 @@ SOFTWARE.
  */
 #if defined(GRAVITYMON)
 
+#include <main.hpp>
+#include <push_gravitymon.hpp>
 #include <pushtarget.hpp>
 
 #if defined(ESP8266)
@@ -31,18 +33,19 @@ SOFTWARE.
 #include <WiFi.h>
 #endif
 
-void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
+void setupTemplateEngineGravity(GravitymonConfig* config,
+                                TemplatingEngine& engine, float angle,
                                 float velocity, float gravitySG,
                                 float corrGravitySG, float tempC, float runTime,
                                 float voltage) {
   // Names
-  engine.setVal(TPL_MDNS, myConfig.getMDNS());
-  engine.setVal(TPL_ID, myConfig.getID());
-  engine.setVal(TPL_TOKEN, myConfig.getToken());
-  engine.setVal(TPL_TOKEN2, myConfig.getToken2());
+  engine.setVal(TPL_MDNS, config->getMDNS());
+  engine.setVal(TPL_ID, config->getID());
+  engine.setVal(TPL_TOKEN, config->getToken());
+  engine.setVal(TPL_TOKEN2, config->getToken2());
 
   // Temperature
-  if (myConfig.isTempFormatC()) {
+  if (config->isTempFormatC()) {
     engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
   } else {
     engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
@@ -50,12 +53,11 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
 
   engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
+  engine.setVal(TPL_TEMP_UNITS, config->getTempFormat());
 
   // Battery & Timer
   engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
-  engine.setVal(TPL_SLEEP_INTERVAL,
-                myConfig.GravitymonConfig::getSleepInterval());
+  engine.setVal(TPL_SLEEP_INTERVAL, config->getSleepInterval());
 
   int charge = 0;
 
@@ -94,7 +96,7 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
   engine.setVal(TPL_VELOCITY, velocity, 1);
 
   // Gravity options
-  if (myConfig.isGravitySG()) {
+  if (config->isGravitySG()) {
     engine.setVal(TPL_GRAVITY, gravitySG, DECIMALS_SG);
     engine.setVal(TPL_GRAVITY_CORR, corrGravitySG, DECIMALS_SG);
   } else {
@@ -108,7 +110,7 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
   engine.setVal(TPL_GRAVITY_CORR_G, corrGravitySG, DECIMALS_SG);
   engine.setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG),
                 DECIMALS_PLATO);
-  engine.setVal(TPL_GRAVITY_UNIT, myConfig.getGravityUnit());
+  engine.setVal(TPL_GRAVITY_UNIT, config->getGravityUnit());
 
   engine.setVal(TPL_APP_VER, CFG_APPVER);
   engine.setVal(TPL_APP_BUILD, CFG_GITREV);

@@ -26,23 +26,46 @@ SOFTWARE.
 
 #if defined(GRAVITYMON) || defined(PRESSUREMON)
 
+#include <Arduino.h>
+#include <OneWire.h>
 #include <DallasTemperature.h>
+#include <config.hpp>
+#include <memory>
 
 class TempSensor {
  private:
+  std::unique_ptr<DallasTemperature> _sensors;
+  std::unique_ptr<OneWire> _onewire;
+ 
   bool _hasSensor = false;
   float _tempSensorAdjC = 0;
   float _temperatureC = 0;
+  TempSensorConfigInteface *_tempSensorConfig = nullptr;
 
  public:
-  void setup();
+  explicit TempSensor(TempSensorConfigInteface *tempSensorConfig)
+      : _tempSensorConfig(tempSensorConfig) {
+  }
+
+  void setup(int pin);
   void readSensor(bool useGyro = false);
   bool isSensorAttached() { return _hasSensor; }
   float getTempC() { return _temperatureC + _tempSensorAdjC; }
+
+  int getSensorCount() {
+    return _sensors ? _sensors->getDS18Count() : 0;
+  }
+  void getSensorAddress(uint8_t* deviceAddress, int index) {
+    if (_sensors) {
+      _sensors->getAddress(deviceAddress, index);
+    }
+  }
+  int getSensorResolution() {
+    return _sensors ? _sensors->getResolution() : 0;
+  } 
 };
 
-extern TempSensor myTempSensor;
-extern DallasTemperature mySensors;
+extern TempSensor myTempSensor; 
 
 #endif  // GRAVITYMON || PRESSUREMON
 

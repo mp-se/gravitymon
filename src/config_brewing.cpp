@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 #include <config_brewing.hpp>
+#include <main.hpp>
 
 BrewingConfig::BrewingConfig(String baseMDNS, String fileName)
     : BaseConfig(baseMDNS, fileName) {}
@@ -40,7 +41,6 @@ void BrewingConfig::createJson(JsonObject& doc) const {
       serialized(String(getVoltageFactor(), DECIMALS_BATTERY));
   doc[CONFIG_VOLTAGE_CONFIG] =
       serialized(String(getVoltageConfig(), DECIMALS_BATTERY));
-  doc[CONFIG_VOLTAGE_PIN] = getVoltagePin();
   doc[CONFIG_TEMP_ADJ] = serialized(String(getTempSensorAdjC(), DECIMALS_TEMP));
 
   doc[CONFIG_SKIP_SSL_ON_TEST] = isSkipSslOnTest();
@@ -76,8 +76,6 @@ void BrewingConfig::parseJson(JsonObject& doc) {
 
   if (!doc[CONFIG_SKIP_SSL_ON_TEST].isNull())
     setSkipSslOnTest(doc[CONFIG_SKIP_SSL_ON_TEST].as<bool>());
-  if (!doc[CONFIG_VOLTAGE_PIN].isNull())
-    setVoltagePin(doc[CONFIG_VOLTAGE_PIN].as<int>());
 
   if (!doc[CONFIG_PUSH_INTERVAL_POST].isNull())
     this->setPushIntervalPost(doc[CONFIG_PUSH_INTERVAL_POST].as<int>());

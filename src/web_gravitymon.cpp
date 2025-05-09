@@ -24,10 +24,12 @@ SOFTWARE.
 #if defined(GRAVITYMON)
 
 #include <calc.hpp>
-#include <config.hpp>
+#include <config_gravitymon.hpp>
 #include <gyro.hpp>
+#include <main.hpp>
+#include <push_gravitymon.hpp>
 #include <tempsensor.hpp>
-#include <webserver.hpp>
+#include <web_gravitymon.hpp>
 
 constexpr auto PARAM_ANGLE = "angle";
 constexpr auto PARAM_TEMP = "temp";
@@ -43,7 +45,7 @@ constexpr auto PARAM_GYRO_FAMILY = "gyro_family";
 constexpr auto PARAM_ONEWIRE = "onewire";
 constexpr auto PARAM_BLE_SUPPORTED = "ble_supported";
 
-void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
+void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
   if (myGyro.isConnected()) {
     obj[PARAM_SUCCESS] = true;
     obj[PARAM_MESSAGE] = "Calibration completed";
@@ -53,32 +55,41 @@ void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
   }
 }
 
-void BrewingWebServer::doWebConfigWrite() {}
+void GravitymonWebServer::doWebConfigWrite() {}
 
-void BrewingWebServer::doWebStatus(JsonObject &obj) {
+void GravitymonWebServer::doWebStatus(JsonObject &obj) {
+  obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
+      _gravConfig->isBleActive() || _gravConfig->hasTargetHttpPost() ||
+              _gravConfig->hasTargetHttpPost2() ||
+              _gravConfig->hasTargetHttpGet() || _gravConfig->hasTargetMqtt() ||
+              _gravConfig->hasTargetInfluxDb2()
+          ? true
+          : false;
+
   double angle = 0;  // Indicate we have no valid gyro value
 
   if (myGyro.hasValue()) angle = myGyro.getAngle();
 
   double tempC = myTempSensor.getTempC();
-  double gravity = calculateGravity(angle, tempC);
+  double gravity =
+      calculateGravity(_gravConfig->getGravityFormula(), angle, tempC);
 
-  obj[CONFIG_GRAVITY_UNIT] = String(myConfig.getGravityUnit());
+  obj[CONFIG_GRAVITY_UNIT] = String(_gravConfig->getGravityUnit());
 
   obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
 
-  if (myConfig.isGravityTempAdj()) {
+  if (_gravConfig->isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
-        gravity, tempC, myConfig.getDefaultCalibrationTemp());
+        gravity, tempC, _gravConfig->getDefaultCalibrationTemp());
   }
-  if (myConfig.isGravityPlato()) {
+  if (_gravConfig->isGravityPlato()) {
     obj[CONFIG_GRAVITY] =
         serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
   } else {
     obj[CONFIG_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
   }
 
-  if (myConfig.isTempFormatC()) {
+  if (_gravConfig->isTempFormatC()) {
     obj[PARAM_TEMP] = serialized(String(tempC, DECIMALS_TEMP));
   } else {
     obj[PARAM_TEMP] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
@@ -112,14 +123,14 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
 #endif
 
   obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
-      strlen(myConfig.getGravityFormula()) > 0 ? true : false;
+      strlen(_gravConfig->getGravityFormula()) > 0 ? true : false;
   obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] =
-      myConfig.hasGyroCalibration() || !myGyro.needCalibration();
+      _gravConfig->hasGyroCalibration() || !myGyro.needCalibration();
   obj[PARAM_SELF][PARAM_SELF_GYRO_CONNECTED] = myGyro.isConnected();
   obj[PARAM_SELF][PARAM_SELF_GYRO_MOVING] = myGyro.isSensorMoving();
 }
 
-void BrewingWebServer::doTaskSensorCalibration() {
+void GravitymonWebServer::doTaskSensorCalibration() {
   if (myGyro.isConnected()) {
     myGyro.calibrateSensor();
   } else {
@@ -127,67 +138,69 @@ void BrewingWebServer::doTaskSensorCalibration() {
   }
 }
 
-void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
-                                           BrewingPush &push) {
+void GravitymonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
+                                              BrewingPush &push) {
   // When runnning in configuration mode we dont apply the filter on the angle
   float angle = myGyro.getAngle();
   float tempC = myTempSensor.getTempC();
-  float gravitySG = calculateGravity(angle, tempC);
+  float gravitySG =
+      calculateGravity(_gravConfig->getGravityFormula(), angle, tempC);
   float corrGravitySG = gravityTemperatureCorrectionC(
-      gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
+      gravitySG, tempC, _gravConfig->getDefaultCalibrationTemp());
 
-  if (myConfig.isGravityTempAdj()) {  // Apply if flag is set
+  if (_gravConfig->isGravityTempAdj()) {  // Apply if flag is set
     gravitySG = corrGravitySG;
   }
 
-  setupTemplateEngineGravity(engine, angle, 0, gravitySG, corrGravitySG,
-                             tempC, 1.0, myBatteryVoltage.getVoltage());
+  setupTemplateEngineGravity(_gravConfig, engine, angle, 0, gravitySG,
+                             corrGravitySG, tempC, 1.0,
+                             myBatteryVoltage.getVoltage());
 
   Log.notice(F("WEB : Running scheduled push test for %s" CR),
              _pushTestTarget.c_str());
 
   if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST) &&
-      myConfig.hasTargetHttpPost()) {
+      _gravConfig->hasTargetHttpPost()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
     String doc = engine.create(tpl.c_str());
 
-    if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest())
+    if (_gravConfig->isHttpPostSSL() && _gravConfig->isSkipSslOnTest())
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       push.sendHttpPost(doc);
     _pushTestEnabled = true;
   } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST2) &&
-             myConfig.hasTargetHttpPost2()) {
+             _gravConfig->hasTargetHttpPost2()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
     String doc = engine.create(tpl.c_str());
-    if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest())
+    if (_gravConfig->isHttpPost2SSL() && _gravConfig->isSkipSslOnTest())
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       push.sendHttpPost2(doc);
     _pushTestEnabled = true;
   } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_GET) &&
-             myConfig.hasTargetHttpGet()) {
+             _gravConfig->hasTargetHttpGet()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
     String doc = engine.create(tpl.c_str());
-    if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest())
+    if (_gravConfig->isHttpGetSSL() && _gravConfig->isSkipSslOnTest())
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       push.sendHttpGet(doc);
     _pushTestEnabled = true;
   } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_INFLUXDB) &&
-             myConfig.hasTargetInfluxDb2()) {
+             _gravConfig->hasTargetInfluxDb2()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
     String doc = engine.create(tpl.c_str());
-    if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest())
+    if (_gravConfig->isHttpInfluxDb2SSL() && _gravConfig->isSkipSslOnTest())
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       push.sendInfluxDb2(doc);
     _pushTestEnabled = true;
   } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_MQTT) &&
-             myConfig.hasTargetMqtt()) {
+             _gravConfig->hasTargetMqtt()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
     String doc = engine.create(tpl.c_str());
-    if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest())
+    if (_gravConfig->isMqttSSL() && _gravConfig->isSkipSslOnTest())
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
       push.sendMqtt(doc);
@@ -198,12 +211,12 @@ void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
   push.clearTemplate();
 }
 
-void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
+void GravitymonWebServer::doTaskHardwareScanning(JsonObject &obj) {
   JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
 
-  for (int i = 0, j = 0; i < mySensors.getDS18Count(); i++) {
+  for (int i = 0, j = 0; i < myTempSensor.getSensorCount(); i++) {
     DeviceAddress adr;
-    mySensors.getAddress(&adr[0], i);
+    myTempSensor.getSensorAddress(&adr[0], i);
     Log.notice(F("WEB : Found onewire device %d." CR), i);
     onew[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
                             String(adr[2], 16) + String(adr[3], 16) +
@@ -226,7 +239,7 @@ void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
         onew[j][PARAM_FAMILY] = "DS28EA00";
         break;
     }
-    onew[j][PARAM_RESOLUTION] = mySensors.getResolution();
+    onew[j][PARAM_RESOLUTION] = myTempSensor.getSensorResolution();
     j++;
   }
 

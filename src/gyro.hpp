@@ -29,6 +29,7 @@ SOFTWARE.
 #define I2CDEV_IMPLEMENTATION I2CDEV_ARDUINO_WIRE
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
 
+#include <Arduino.h>
 #include <lowpass.hpp>
 #include <memory>
 

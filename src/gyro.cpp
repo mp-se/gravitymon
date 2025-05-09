@@ -27,11 +27,11 @@ SOFTWARE.
 #include <MPU6050_gyro.hpp>
 #include <gyro.hpp>
 #include <log.hpp>
-#include <main.hpp>
+#include <main_gravitymon.hpp>
 
 #define GYRO_USE_INTERRUPT  // Use interrupt to detect when new sample is ready
-#define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
-                            // calibration
+// #define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
+// calibration
 
 #if defined(ESP32)
 RTC_DATA_ATTR RtcGyroData myRtcGyroData;

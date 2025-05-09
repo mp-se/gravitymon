@@ -24,9 +24,10 @@ SOFTWARE.
 #ifndef SRC_CONFIG_BREWING_HPP_
 #define SRC_CONFIG_BREWING_HPP_
 
-#include <baseconfig.hpp>
-#include <main.hpp>
+#include <Arduino.h>
+#include <config.hpp>
 #include <utils.hpp>
+#include <baseconfig.hpp>
 
 constexpr auto CONFIG_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
 constexpr auto CONFIG_CONFIG_VER = "config_version";
@@ -49,7 +50,7 @@ constexpr auto CONFIG_BATTERY_SAVING = "battery_saving";
 constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
 constexpr auto CONFIG_FLASH_LOGGING = "flash_logging";
 
-class BrewingConfig : public BaseConfig {
+class BrewingConfig : public BaseConfig, public BatteryConfigInteface, public TempSensorConfigInteface {
  private:
 #if defined(ESP8266)
   float _voltageFactor = 1.59;
@@ -62,13 +63,12 @@ class BrewingConfig : public BaseConfig {
 #elif defined(ESP32)
   float _voltageFactor = 2.45;
 #else
-#error "Unknown platform"
+  #error "Unknown platform"
 #endif
 
   float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;
   int _sleepInterval = 900;
-  int _voltagePin = PIN_VOLT;
 
   bool _wifiDirect = false;
 #if defined(ESP8266)
@@ -90,7 +90,7 @@ class BrewingConfig : public BaseConfig {
   int _tempSensorResolution = 9;  // bits
 
  public:
-  BrewingConfig(String baseMDNS, String fileName);
+  explicit BrewingConfig(String baseMDNS, String fileName);
 
   bool isWifiDirect() const { return _wifiDirect; }
   void setWifiDirect(bool b) {
@@ -126,12 +126,6 @@ class BrewingConfig : public BaseConfig {
   }
   void setVoltageFactor(String s) {
     _voltageFactor = s.toFloat();
-    _saveNeeded = true;
-  }
-
-  int getVoltagePin() const { return _voltagePin; }
-  void setVoltagePin(int v) {
-    _voltagePin = v;
     _saveNeeded = true;
   }
 
@@ -214,6 +208,9 @@ class BrewingConfig : public BaseConfig {
                ? false
                : true;
   }
+
+  // virtual int getVoltagePin() const { return 0; }
+  virtual int getVoltagePin() const = 0;
 
   void createJson(JsonObject& doc) const;
   void parseJson(JsonObject& doc);

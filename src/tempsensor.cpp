@@ -23,38 +23,32 @@ SOFTWARE.
  */
 #if defined(GRAVITYMON) || defined(PRESSUREMON)
 
-#include <OneWire.h>
-#include <Wire.h>
-
-#include <config.hpp>
 #include <log.hpp>
-#include <main.hpp>
 #include <tempsensor.hpp>
 
 #if defined(GRAVITYMON)
 #include <gyro.hpp>
 #endif  // GRAVITYMON
 
-OneWire myOneWire(PIN_DS);
-DallasTemperature mySensors(&myOneWire);
+void TempSensor::setup(int pin) {
+  _onewire.reset(new OneWire(pin));
+  _sensors.reset(new DallasTemperature(_onewire.get()));
 
-TempSensor myTempSensor;
-
-void TempSensor::setup() {
 #if LOG_LEVEL == 6
   Log.verbose(F("TSEN: Looking for temp sensors." CR));
 #endif
-  mySensors.begin();
+  _sensors->begin();
 
-  if (mySensors.getDS18Count()) {
+  if (_sensors->getDS18Count()) {
     Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d bit" CR),
-               mySensors.getDS18Count(), myConfig.getTempSensorResolution());
+               _sensors->getDS18Count(),
+               _tempSensorConfig->getTempSensorResolution());
   } else {
     Log.warning(F("TSEN: No temp sensors found" CR));
   }
 
   // Set the temp sensor adjustment values
-  _tempSensorAdjC = myConfig.getTempSensorAdjC();
+  _tempSensorAdjC = _tempSensorConfig->getTempSensorAdjC();
 
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
   Log.verbose(F("TSEN: Adjustment values for temp sensor %F C." CR),
@@ -78,7 +72,7 @@ void TempSensor::readSensor(bool useGyro) {
 #endif  // GRAVITYMON
 
   // If we dont have sensors just return 0
-  if (!mySensors.getDS18Count()) {
+  if (!_sensors->getDS18Count()) {
 #if LOG_LEVEL == 6
     Log.notice(F("TSEN: No temperature sensors found. Skipping read." CR));
 #endif
@@ -87,11 +81,11 @@ void TempSensor::readSensor(bool useGyro) {
   }
 
   // Read the sensors
-  mySensors.setResolution(myConfig.getTempSensorResolution());
-  mySensors.requestTemperatures();
+  _sensors->setResolution(_tempSensorConfig->getTempSensorResolution());
+  _sensors->requestTemperatures();
 
-  if (mySensors.getDS18Count() >= 1) {
-    _temperatureC = mySensors.getTempCByIndex(0);
+  if (_sensors->getDS18Count() >= 1) {
+    _temperatureC = _sensors->getTempCByIndex(0);
     _hasSensor = true;
 
 #if LOG_LEVEL == 6

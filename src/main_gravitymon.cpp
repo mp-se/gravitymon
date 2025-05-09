@@ -25,7 +25,6 @@ SOFTWARE.
 
 // #define FORCE_GRAVITY_MODE
 
-#include <main.hpp>
 #include <main_gravitymon.hpp>
 
 // EspFramework
@@ -39,18 +38,19 @@ SOFTWARE.
 
 // Common
 #include <battery.hpp>
-#include <config.hpp>
 #include <helper.hpp>
 #include <pushtarget.hpp>
 #include <utils.hpp>
-#include <webserver.hpp>
 
 // Gravitymon specific
-#include <ble.hpp>
+#include <ble_gravitymon.hpp>
 #include <calc.hpp>
+#include <config_gravitymon.hpp>
 #include <gyro.hpp>
+#include <push_gravitymon.hpp>
 #include <tempsensor.hpp>
 #include <velocity.hpp>
+#include <web_gravitymon.hpp>
 
 #if defined(ESP32)
 #include <esp_attr.h>
@@ -71,13 +71,14 @@ GravitymonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
                       USER_SSID, USER_PASS);
 OtaUpdate myOta(&myConfig, CFG_APPVER, CFG_FILENAMEBIN);
-BatteryVoltage myBatteryVoltage;
-BrewingWebServer myWebServer(&myConfig);
+BatteryVoltage myBatteryVoltage(&myConfig);
+GravitymonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
 GyroSensor myGyro(&myConfig);
+TempSensor myTempSensor(&myConfig);
 #if defined(ESP32)
 RTC_DATA_ATTR GravityVelocityData data = {0};
 #endif
@@ -91,6 +92,7 @@ uint32_t stableGyroMillis;  // Used to calculate the total time since last
 RunMode runMode = RunMode::measurementMode;
 
 void checkSleepMode(float angle, float volt);
+void runGpioHardwareTests();
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -205,7 +207,7 @@ void setup() {
       }
 
       PERF_BEGIN("main-temp-setup");
-      myTempSensor.setup();
+      myTempSensor.setup(PIN_DS);
       PERF_END("main-temp-setup");
       break;
   }
@@ -274,8 +276,10 @@ bool loopReadGravity() {
     float tempC = myTempSensor.getTempC();
     PERF_END("loop-temp-read");
 
-    float gravitySG = calculateGravity(angle, tempC);
-    float filteredGravitySG = calculateGravity(filteredAngle, tempC);
+    float gravitySG =
+        calculateGravity(myConfig.getGravityFormula(), angle, tempC);
+    float filteredGravitySG =
+        calculateGravity(myConfig.getGravityFormula(), filteredAngle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
         myConfig.isGyroFilter() ? filteredGravitySG : gravitySG, tempC,
         myConfig.getDefaultCalibrationTemp());
@@ -298,7 +302,8 @@ bool loopReadGravity() {
     velocity = gv.getVelocity();
 #endif
 
-    Log.warning(F("Main: Angle: %F (%F), Velocity: %F" CR), angle, filteredAngle, velocity);
+    Log.warning(F("Main: Angle: %F (%F), Velocity: %F" CR), angle,
+                filteredAngle, velocity);
 
 #if LOG_LEVEL == 6
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
@@ -357,9 +362,10 @@ bool loopReadGravity() {
 
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
-          setupTemplateEngineGravity(
-              engine, angle, velocity, gravitySG, corrGravitySG, tempC,
-              (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
+          setupTemplateEngineGravity(&myConfig, engine, angle, velocity,
+                                     gravitySG, corrGravitySG, tempC,
+                                     (millis() - runtimeMillis) / 1000,
+                                     myBatteryVoltage.getVoltage());
           String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1,
                                         true);  // Use default post template
           String payload = engine.create(tpl.c_str());
@@ -375,9 +381,10 @@ bool loopReadGravity() {
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
 
-          setupTemplateEngineGravity(
-              engine, angle, velocity, gravitySG, corrGravitySG, tempC,
-              (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
+          setupTemplateEngineGravity(&myConfig, engine, angle, velocity,
+                                     gravitySG, corrGravitySG, tempC,
+                                     (millis() - runtimeMillis) / 1000,
+                                     myBatteryVoltage.getVoltage());
           push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
         }
       }

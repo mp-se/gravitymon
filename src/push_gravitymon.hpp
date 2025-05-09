@@ -21,11 +21,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_BLE_HPP_
-#define SRC_BLE_HPP_
+#ifndef SRC_PUSH_GRAVITYMON_HPP_
+#define SRC_PUSH_GRAVITYMON_HPP_
 
-#include <ble_gateway.hpp>
-#include <ble_gravitymon.hpp>
-#include <ble_pressuremon.hpp>
+#if defined(GRAVITYMON)
 
-#endif  // SRC_BLE_HPP_
+#include <templating.hpp>
+#include <config_gravitymon.hpp>
+
+void setupTemplateEngineGravity(GravitymonConfig *config, TemplatingEngine& engine, float angle,
+    float velocity, float gravitySG,
+    float corrGravitySG, float tempC, float runTime,
+    float voltage);
+
+#endif  // GRAVITYMON
+
+#endif  // SRC_PUSH_GRAVITYMON_HPP_

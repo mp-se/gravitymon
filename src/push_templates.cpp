@@ -118,7 +118,8 @@ const char iGravityHttpGetFormat[] PROGMEM =
 const char iGravityInfluxDbFormat[] PROGMEM =
     "measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-"
     "format=${gravity-unit} "
-    "gravity=${gravity},velocity=${velocity},corr-gravity=${corr-gravity},angle=${angle},temp=${"
+    "gravity=${gravity},velocity=${velocity},corr-gravity=${corr-gravity},"
+    "angle=${angle},temp=${"
     "temp},battery=${battery},"
     "rssi=${rssi}\n";
 

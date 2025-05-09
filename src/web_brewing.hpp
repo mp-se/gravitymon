@@ -21,8 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_WEBSERVER_HPP_
-#define SRC_WEBSERVER_HPP_
+#ifndef SRC_WEB_BREWING_HPP_
+#define SRC_WEB_BREWING_HPP_
 
 #include <basewebserver.hpp>
 #include <battery.hpp>
@@ -74,7 +74,9 @@ constexpr auto PARAM_PUSH_RETURN_CODE = "push_return_code";
 constexpr auto PARAM_PUSH_ENABLED = "push_enabled";
 
 class BrewingWebServer : public BaseWebServer {
- private:
+ protected:
+  BrewingConfig* _brewingConfig = nullptr;
+
   volatile bool _sensorCalibrationTask = false;
   volatile bool _pushTestTask = false;
   volatile bool _hardwareScanTask = false;
@@ -84,7 +86,7 @@ class BrewingWebServer : public BaseWebServer {
   String _pushTestTarget;
   int _pushTestLastCode;
   bool _pushTestLastSuccess, _pushTestEnabled;
-
+ 
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
@@ -103,26 +105,21 @@ class BrewingWebServer : public BaseWebServer {
   String readFile(String fname);
   bool writeFile(String fname, String data);
 
-  virtual void doTaskSensorCalibration();
-  virtual void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push);
-  virtual void doTaskHardwareScanning(JsonObject &obj);
+  virtual void doTaskSensorCalibration() = 0;
+  virtual void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push) = 0;
+  virtual void doTaskHardwareScanning(JsonObject &obj) = 0;
 
-  virtual void doWebStatus(JsonObject &obj);
-  virtual void doWebConfigWrite();
-  virtual void doWebCalibrateStatus(JsonObject &obj);
+  virtual void doWebStatus(JsonObject &obj) = 0;
+  virtual void doWebConfigWrite() = 0;
+  virtual void doWebCalibrateStatus(JsonObject &obj) = 0;
 
  public:
-  explicit BrewingWebServer(WebConfig *config);
+  explicit BrewingWebServer(BrewingConfig* brewingConfig);
 
   virtual bool setupWebServer(const char *serviceName);
   virtual void loop();
 };
 
-#if defined(GRAVITYMON) || defined(PRESSUREMON)
-// Global instance created
-extern BrewingWebServer myWebServer;
-#endif  // GRAVITYMON || PRESSUREMON
-
-#endif  // SRC_WEBSERVER_HPP_
+#endif  // SRC_WEB_BREWING_HPP_
 
 // EOF

@@ -27,6 +27,7 @@ SOFTWARE.
 #if defined(GRAVITYMON)
 
 #include <config_brewing.hpp>
+#include <main_gravitymon.hpp>
 #include <gyro.hpp>
 
 constexpr auto CONFIG_GRAVITY_FORMULA = "gravity_formula";
@@ -87,6 +88,8 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool _batterySaving = true;
 #endif
 
+  int _voltagePin = PIN_VOLT;
+
   char _gravityUnit = 'G';
 
   float _maxFormulaCreationDeviation = 0.01;  // SG
@@ -107,6 +110,12 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
     _gyroTemp = b;
     _saveNeeded = true;
 #endif
+  }
+
+  int getVoltagePin() const { return _voltagePin; }
+  void setVoltagePin(int v) {
+    _voltagePin = v;
+    _saveNeeded = true;
   }
 
   bool isStorageSleep() const { return _storageSleep; }
@@ -252,8 +261,6 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   int getSleepInterval() const { return BrewingConfig::getSleepInterval(); }
   bool saveFile() { return BaseConfig::saveFile(); }
 };
-
-extern GravitymonConfig myConfig;
 
 #endif  // GRAVITYMON
 

@@ -24,14 +24,16 @@ SOFTWARE.
 #ifndef SRC_BATTERY_HPP_
 #define SRC_BATTERY_HPP_
 
+#include <Arduino.h>
 #include <config.hpp>
 
 class BatteryVoltage {
  private:
   float _batteryLevel = 0;
+  BatteryConfigInteface *_batteryConfig = nullptr;
 
  public:
-  BatteryVoltage();
+  explicit BatteryVoltage(BatteryConfigInteface *batteryConfig);
   void read();
   float getVoltage() { return _batteryLevel; }
 };
