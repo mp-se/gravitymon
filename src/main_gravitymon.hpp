@@ -26,8 +26,7 @@ SOFTWARE.
 
 #if defined(GRAVITYMON)
 
-#include <main.hpp>
-#include <templating.hpp>
+#include <Arduino.h>
 
 #if defined(D1_MINI)
 // Hardware config for ESP8266-d1-mini, iSpindel hardware

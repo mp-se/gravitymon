@@ -31,6 +31,7 @@ SOFTWARE.
 #include <led.hpp>
 #include <log.hpp>
 #include <looptimer.hpp>
+#include <main.hpp>
 #include <ota.hpp>
 #include <perf.hpp>
 #include <serialws.hpp>
