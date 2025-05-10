@@ -25,9 +25,10 @@ SOFTWARE.
 #define SRC_CONFIG_BREWING_HPP_
 
 #include <Arduino.h>
-#include <config.hpp>
 #include <utils.hpp>
 #include <baseconfig.hpp>
+#include <battery.hpp>
+#include <tempsensor.hpp>
 
 constexpr auto CONFIG_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
 constexpr auto CONFIG_CONFIG_VER = "config_version";
@@ -50,7 +51,7 @@ constexpr auto CONFIG_BATTERY_SAVING = "battery_saving";
 constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
 constexpr auto CONFIG_FLASH_LOGGING = "flash_logging";
 
-class BrewingConfig : public BaseConfig, public BatteryConfigInteface, public TempSensorConfigInteface {
+class BrewingConfig : public BaseConfig, public BatteryConfigInterface, public TempSensorConfigInterface {
  private:
 #if defined(ESP8266)
   float _voltageFactor = 1.59;

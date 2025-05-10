@@ -24,12 +24,9 @@ SOFTWARE.
 #ifndef SRC_TEMPSENSOR_HPP_
 #define SRC_TEMPSENSOR_HPP_
 
-#if defined(GRAVITYMON) || defined(PRESSUREMON)
-
 #include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include <config.hpp>
 #include <memory>
 
 constexpr auto INVALID_TEMPERATURE = -273.0f;
@@ -38,6 +35,12 @@ class SecondayTempSensorInterface {
  public:
    virtual float getInitialSensorTempC() const = 0;
 };
+
+class TempSensorConfigInterface {
+  public:
+   virtual int getTempSensorResolution() const = 0;
+   virtual float getTempSensorAdjC() const = 0;
+ };
 
 class TempSensor {
  private:
@@ -48,10 +51,10 @@ class TempSensor {
   bool _hasSensor = false;
   float _tempSensorAdjC = 0;
   float _temperatureC = 0;
-  TempSensorConfigInteface *_tempSensorConfig = nullptr;
+  TempSensorConfigInterface *_tempSensorConfig = nullptr;
 
  public:
-  explicit TempSensor(TempSensorConfigInteface *tempSensorConfig, SecondayTempSensorInterface *secondary = nullptr)
+  explicit TempSensor(TempSensorConfigInterface *tempSensorConfig, SecondayTempSensorInterface *secondary = nullptr)
       : _tempSensorConfig(tempSensorConfig), _secondary(secondary) {}
 
   void setup(int pin);
@@ -73,8 +76,6 @@ class TempSensor {
 };
 
 extern TempSensor myTempSensor; 
-
-#endif  // GRAVITYMON || PRESSUREMON
 
 #endif  // SRC_TEMPSENSOR_HPP_
 

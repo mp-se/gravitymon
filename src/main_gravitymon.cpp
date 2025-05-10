@@ -79,7 +79,7 @@ SerialWebSocket mySerialWebSocket;
 BleSender myBleSender;
 #endif
 GyroSensor myGyro(&myConfig);
-TempSensor myTempSensor(&myConfig);
+TempSensor myTempSensor(&myConfig, &myGyro);
 #if defined(ESP32)
 RTC_DATA_ATTR GravityVelocityData data = {0};
 #endif

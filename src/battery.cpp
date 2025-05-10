@@ -23,7 +23,7 @@ SOFTWARE.
  */
 #include <battery.hpp>
 
-BatteryVoltage::BatteryVoltage(BatteryConfigInteface *batteryConfig) {
+BatteryVoltage::BatteryVoltage(BatteryConfigInterface *batteryConfig) {
   _batteryConfig = batteryConfig;
 #if defined(ESP8266)
   pinMode(_batteryConfig->getVoltagePin(), INPUT);

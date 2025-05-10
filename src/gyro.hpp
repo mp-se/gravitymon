@@ -107,19 +107,19 @@ class GyroConfigInterface {
   virtual bool saveFile() = 0;
 
   // Common methods for all gyros
-  virtual bool isGyroFilter() const;
-  virtual bool isGyroSwapXY() const;
-  virtual int getGyroSensorMovingThreashold() const;
+  virtual bool isGyroFilter() const = 0;
+  virtual bool isGyroSwapXY() const = 0;
+  virtual int getGyroSensorMovingThreashold() const = 0;
 
   // Methods for ICM42670p
-  virtual int getSleepInterval() const;
+  virtual int getSleepInterval() const = 0;
 
   // Methods for MPU6050/MPU6500
-  virtual const RawGyroData& getGyroCalibration() const;
-  virtual void setGyroCalibration(const RawGyroData& r);
-  virtual bool hasGyroCalibration() const;
-  virtual int getGyroReadCount() const;
-  virtual int getGyroReadDelay() const;
+  virtual const RawGyroData& getGyroCalibration() const = 0;
+  virtual void setGyroCalibration(const RawGyroData& r) = 0;
+  virtual bool hasGyroCalibration() const = 0;
+  virtual int getGyroReadCount() const = 0;
+  virtual int getGyroReadDelay() const = 0;
 };
 
 class GyroSensorInterface {
