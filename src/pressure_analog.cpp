@@ -23,7 +23,6 @@ SOFTWARE.
  */
 #if defined(PRESSUREMON)
 
-#include <config.hpp>
 #include <helper.hpp>
 #include <memory>
 #include <pressure_analog.hpp>
@@ -35,7 +34,7 @@ constexpr auto XIDIBEI_ANALOG_CALIBRATION_COUNT = 10;
 bool AnalogPressureSensor::setup(float minV, float maxV, float minKpa,
                                  float maxKpa, int adcChannel, TwoWire *wire,
                                  uint8_t idx) {
-  _pressureCorrection = myConfig.getPressureSensorCorrection(idx);
+  _pressureCorrection = _pressureConfig->getPressureSensorCorrection(idx);
 
   _idx = idx;
   _minV = minV;
@@ -158,10 +157,10 @@ void AnalogPressureSensor::calibrate() {
 
   Log.notice(F("PRES: Measured difference %F (%d)." CR),
              zero / XIDIBEI_ANALOG_CALIBRATION_COUNT, _idx);
-  myConfig.setPressureSensorCorrection(
+  _pressureConfig->setPressureSensorCorrection(
       -(zero / XIDIBEI_ANALOG_CALIBRATION_COUNT), _idx);
-  myConfig.saveFile();
-  _pressureCorrection = myConfig.getPressureSensorCorrection(_idx);
+  _pressureConfig->saveFile();
+  _pressureCorrection = _pressureConfig->getPressureSensorCorrection(_idx);
 }
 
 float AnalogPressureSensor::getTemperatureC() { return NAN; }

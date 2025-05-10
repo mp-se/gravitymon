@@ -23,7 +23,9 @@ SOFTWARE.
  */
 #if defined(PRESSUREMON)
 
+#include <config_pressuremon.hpp>
 #include <helper.hpp>
+#include <main.hpp>
 #include <pressure.hpp>
 #include <pushtarget.hpp>
 
@@ -33,7 +35,8 @@ SOFTWARE.
 #include <WiFi.h>
 #endif
 
-void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
+void setupTemplateEnginePressure(PressuremonConfig* config,
+                                 TemplatingEngine& engine, float pressurePsi,
                                  float pressurePsi1, float tempC, float runTime,
                                  float voltage) {
   // Set values so that the payload is not invalid
@@ -42,13 +45,13 @@ void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
   if (isnan(tempC)) tempC = 0;
 
   // Names
-  engine.setVal(TPL_MDNS, myConfig.getMDNS());
-  engine.setVal(TPL_ID, myConfig.getID());
-  engine.setVal(TPL_TOKEN, myConfig.getToken());
-  engine.setVal(TPL_TOKEN2, myConfig.getToken2());
+  engine.setVal(TPL_MDNS, config->getMDNS());
+  engine.setVal(TPL_ID, config->getID());
+  engine.setVal(TPL_TOKEN, config->getToken());
+  engine.setVal(TPL_TOKEN2, config->getToken2());
 
   // Temperature
-  if (myConfig.isTempFormatC()) {
+  if (config->isTempFormatC()) {
     engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
   } else {
     engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
@@ -56,11 +59,11 @@ void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
 
   engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
+  engine.setVal(TPL_TEMP_UNITS, config->getTempFormat());
 
   // Battery & Timer
   engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
-  engine.setVal(TPL_SLEEP_INTERVAL, myConfig.getSleepInterval());
+  engine.setVal(TPL_SLEEP_INTERVAL, config->getSleepInterval());
 
   int charge = 0;
 
@@ -104,12 +107,12 @@ void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
   engine.setVal(TPL_PRESSURE_KPA, convertPsiPressureToKPa(pressurePsi1),
                 DECIMALS_PRESSURE);
 
-  if (myConfig.isPressureBar()) {
+  if (config->isPressureBar()) {
     engine.setVal(TPL_PRESSURE, convertPsiPressureToBar(pressurePsi),
                   DECIMALS_PRESSURE);
     engine.setVal(TPL_PRESSURE1, convertPsiPressureToBar(pressurePsi1),
                   DECIMALS_PRESSURE);
-  } else if (myConfig.isPressureKpa()) {
+  } else if (config->isPressureKpa()) {
     engine.setVal(TPL_PRESSURE, convertPsiPressureToKPa(pressurePsi),
                   DECIMALS_PRESSURE);
     engine.setVal(TPL_PRESSURE1, convertPsiPressureToKPa(pressurePsi1),
@@ -119,7 +122,7 @@ void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
     engine.setVal(TPL_PRESSURE1, pressurePsi1, DECIMALS_PRESSURE);
   }
 
-  engine.setVal(TPL_PRESSURE_UNIT, myConfig.getPressureUnit());
+  engine.setVal(TPL_PRESSURE_UNIT, config->getPressureUnit());
 
   engine.setVal(TPL_APP_VER, CFG_APPVER);
   engine.setVal(TPL_APP_BUILD, CFG_GITREV);

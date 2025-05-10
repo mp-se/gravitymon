@@ -24,11 +24,12 @@ SOFTWARE.
 #if defined(PRESSUREMON)
 
 #include <battery.hpp>
-#include <config.hpp>
 #include <helper.hpp>
+#include <main.hpp>
 #include <pressure.hpp>
+#include <push_pressuremon.hpp>
 #include <tempsensor.hpp>
-#include <webserver.hpp>
+#include <web_pressuremon.hpp>
 
 constexpr auto PARAM_PRESSURE = "pressure";
 constexpr auto PARAM_PRESSURE1 = "pressure1";
@@ -39,7 +40,7 @@ constexpr auto PARAM_SELF_SENSOR_CONFIGURED = "sensor_configured";
 constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
 constexpr auto PARAM_ONEWIRE = "onewire";
 
-void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
+void PressuremonWebServer::doWebCalibrateStatus(JsonObject &obj) {
   if (myPressureSensor.isActive() || myPressureSensor1.isActive()) {
     obj[PARAM_SUCCESS] = true;
     obj[PARAM_MESSAGE] = "Calibration completed";
@@ -49,7 +50,7 @@ void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {
   }
 }
 
-void BrewingWebServer::doWebConfigWrite() {
+void PressuremonWebServer::doWebConfigWrite() {
   Log.notice(
       F("WEB : Configuring pressure sensors after configuration update" CR));
 
@@ -57,7 +58,16 @@ void BrewingWebServer::doWebConfigWrite() {
   // myPressureSensor1.setup(1, &Wire1);
 }
 
-void BrewingWebServer::doWebStatus(JsonObject &obj) {
+void PressuremonWebServer::doWebStatus(JsonObject &obj) {
+  obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
+      _pressConfig->isBleActive() || _pressConfig->hasTargetHttpPost() ||
+              _pressConfig->hasTargetHttpPost2() ||
+              _pressConfig->hasTargetHttpGet() ||
+              _pressConfig->hasTargetMqtt() ||
+              _pressConfig->hasTargetInfluxDb2()
+          ? true
+          : false;
+
   // float pressure, pressure1, temp, temp1;
   float pressure, pressure1, temp;
 
@@ -109,7 +119,7 @@ void BrewingWebServer::doWebStatus(JsonObject &obj) {
   obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = true;  // TODO; Fix this!
 }
 
-void BrewingWebServer::doTaskSensorCalibration() {
+void PressuremonWebServer::doTaskSensorCalibration() {
   if (myPressureSensor.isActive()) {
     myPressureSensor.calibrate();
   } else {
@@ -125,8 +135,8 @@ void BrewingWebServer::doTaskSensorCalibration() {
   // }
 }
 
-void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
-                                           BrewingPush &push) {
+void PressuremonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
+                                               BrewingPush &push) {
   // float pressure, pressure1, temp, temp1;
   float pressure, pressure1, temp;
 
@@ -136,7 +146,7 @@ void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
 
   temp = myTempSensor.getTempC();
 
-  setupTemplateEnginePressure(engine, pressure, pressure1, temp, 1.0,
+  setupTemplateEnginePressure(&myConfig, engine, pressure, pressure1, temp, 1.0,
                               myBatteryVoltage.getVoltage());
 
   Log.notice(F("WEB : Running scheduled push test for %s" CR),
@@ -196,7 +206,7 @@ void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
 
 // constexpr auto PARAM_I2C_1 = "i2c_1";
 
-void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
+void PressuremonWebServer::doTaskHardwareScanning(JsonObject &obj) {
   // JsonArray i2c1 = obj[PARAM_I2C_1].to<JsonArray>();
 
   // for (int i = 1, j = 0; i < 128; i++) {
@@ -215,9 +225,9 @@ void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
 
   JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
 
-  for (int i = 0, j = 0; i < mySensors.getDS18Count(); i++) {
+  for (int i = 0, j = 0; i < myTempSensor.getSensorCount(); i++) {
     DeviceAddress adr;
-    mySensors.getAddress(&adr[0], i);
+    myTempSensor.getSensorAddress(&adr[0], i);
     Log.notice(F("WEB : Found onewire device %d." CR), i);
     onew[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
                             String(adr[2], 16) + String(adr[3], 16) +
@@ -240,7 +250,7 @@ void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {
         onew[j][PARAM_FAMILY] = "DS28EA00";
         break;
     }
-    onew[j][PARAM_RESOLUTION] = mySensors.getResolution();
+    onew[j][PARAM_RESOLUTION] = myTempSensor.getSensorResolution();
     j++;
   }
 }

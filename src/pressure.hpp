@@ -70,13 +70,20 @@ enum PressureSensorType {
 class PressureConfigInterface {
  public:
   virtual bool isPressureBar() const = 0;
-  virtual bool isPressureKpa() const;
-  virtual bool isPressurePsi() const;
+  virtual bool isPressureKpa() const = 0;
+  virtual bool isPressurePsi() const = 0;
 
-  virtual const char* getPressureUnit() const;
-  virtual char getTempUnit() const;
+  virtual const char* getPressureUnit() const = 0;
+  virtual char getTempUnit() const = 0;
 
-  virtual PressureSensorType getPressureSensorType(int idx) const;
+  virtual float getPressureSensorCorrection(int idx) const = 0;
+  virtual void setPressureSensorCorrection(float v, int idx) = 0;
+
+  virtual float getTemperatureSensorCorrection(int idx) const = 0; 
+
+  virtual bool saveFile() = 0;
+
+  virtual PressureSensorType getPressureSensorType(int idx) const = 0;
 };
 
 class PressureSensorInterface {

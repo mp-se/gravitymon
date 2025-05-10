@@ -23,7 +23,6 @@ SOFTWARE.
  */
 #if defined(PRESSUREMON)
 
-#include <config.hpp>
 #include <helper.hpp>
 #include <pressure_xidibei.hpp>
 
@@ -31,8 +30,8 @@ constexpr auto XIDIBEI_IIC_CALIBRATION_COUNT = 5;
 
 bool XIDIBEIPressureSensor::setup(float maxPressure, TwoWire *wire,
                                   uint8_t idx) {
-  _pressureCorrection = myConfig.getPressureSensorCorrection(idx);
-  _temperatureCorrection = myConfig.getTemperatureSensorCorrection(idx);
+  _pressureCorrection = _pressureConfig->getPressureSensorCorrection(idx);
+  _temperatureCorrection = _pressureConfig->getTemperatureSensorCorrection(idx);
   _maxPressure = maxPressure;
   _idx = idx;
   _xidibeiSensor.reset(new XIDIBEI(_maxPressure, wire));
@@ -60,10 +59,10 @@ void XIDIBEIPressureSensor::calibrate() {
 
   Log.notice(F("PRES: Measured difference, ave %F, sum %F (%d)." CR),
              zero / XIDIBEI_IIC_CALIBRATION_COUNT, zero, _idx);
-  myConfig.setPressureSensorCorrection(-(zero / XIDIBEI_IIC_CALIBRATION_COUNT),
-                                       _idx);
-  myConfig.saveFile();
-  _pressureCorrection = myConfig.getPressureSensorCorrection(_idx);
+  _pressureConfig->setPressureSensorCorrection(
+      -(zero / XIDIBEI_IIC_CALIBRATION_COUNT), _idx);
+  _pressureConfig->saveFile();
+  _pressureCorrection = _pressureConfig->getPressureSensorCorrection(_idx);
 }
 
 float XIDIBEIPressureSensor::getTemperatureC() {
