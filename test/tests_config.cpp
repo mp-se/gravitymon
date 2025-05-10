@@ -23,16 +23,9 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#include <config.hpp>
+#include <config_gravitymon.hpp>
 
-#if defined(GRAVITYMON)
-GravitymonConfig myConfig("test", "test.cfg");
-#elif defined(PRESSUREMON)
-PressuremonConfig myConfig("test", "test.cfg");
-#elif defined(GATEWAY)
-GravmonGatewayConfig myConfig("test", "test.cfg");
-#endif
-
+extern GravitymonConfig myConfig;
 
 test(config_defaultValues) {
   float f = 4.15;

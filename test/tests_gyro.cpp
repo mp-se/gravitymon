@@ -24,10 +24,12 @@ SOFTWARE.
 #include <AUnit.h>
 
 #if defined(GRAVITYMON)
-#include <config.hpp>
-#include <gyro.hpp>
 
-GyroSensor myGyro(&myConfig);
+#include <gyro.hpp>
+#include <config_gravitymon.hpp>
+
+extern GravitymonConfig myConfig;
+extern GyroSensor myGyro;
 
 test(gyro_connectGyro) {
   myGyro.setup(GyroMode::GYRO_CONTINUOUS, true);

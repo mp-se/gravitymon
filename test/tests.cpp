@@ -25,10 +25,23 @@ SOFTWARE.
 #include <main.hpp>
 #include <helper.hpp>
 #include <AUnit.h>
+#include <config_gravitymon.hpp>
 
 using aunit::Printer;
 using aunit::TestRunner;
 using aunit::Verbosity;
+
+#if defined(GRAVITYMON)
+GravitymonConfig myConfig("test", "test.cfg");
+GyroSensor myGyro(&myConfig);
+BatteryVoltage myBatteryVoltage(&myConfig);
+TempSensor myTempSensor(&myConfig, &myGyro);
+
+// #elif defined(PRESSUREMON)
+// PressuremonConfig myConfig("test", "test.cfg");
+// #elif defined(GATEWAY)
+// GravmonGatewayConfig myConfig("test", "test.cfg");
+#endif
 
 void setup() {
   Serial.begin(115200);

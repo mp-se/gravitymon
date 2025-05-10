@@ -23,26 +23,26 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#include <config.hpp>
 #include <templating.hpp>
 #include <pushtarget.hpp>
-#include <config.hpp>
+#include <config_gravitymon.hpp>
+#include <push_gravitymon.hpp>
 #if defined(ESP8266)
 #include <ESP8266WiFi.h>
 #else
 #include <WiFi.h>
 #endif
 
-BrewingConfig cfg("", "");
+extern GravitymonConfig myConfig;
 
 #if defined(GRAVITYMON)
 test(template_applyTemplate1) {
   TemplatingEngine e;
-  BrewingPush p(&cfg);
+  BrewingPush p(&myConfig);
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
-  setupTemplateEngineGravity(e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
@@ -57,11 +57,11 @@ test(template_applyTemplate1) {
 
 test(template_applyTemplate2) {
   TemplatingEngine e;
-  BrewingPush p(&cfg);
+  BrewingPush p(&myConfig);
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
-  setupTemplateEngineGravity(e, 45.0, 2.1, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 2.1, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
@@ -76,11 +76,11 @@ test(template_applyTemplate2) {
 
 test(template_applyTemplate3) {
   TemplatingEngine e;
-  BrewingPush p(&cfg);
+  BrewingPush p(&myConfig);
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
-  setupTemplateEngineGravity(e, 45.0, 0.1, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 0.1, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
@@ -93,11 +93,11 @@ test(template_applyTemplate3) {
 
 test(template_applyTemplate4) {
   TemplatingEngine e;
-  BrewingPush p(&cfg);
+  BrewingPush p(&myConfig);
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
-  setupTemplateEngineGravity(e, 45.0, 3.1, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 3.1, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String id = myConfig.getID();
   String rssi = String(WiFi.RSSI());
@@ -111,11 +111,11 @@ test(template_applyTemplate4) {
 
 test(template_applyTemplate5) {
   TemplatingEngine e;
-  BrewingPush p(&cfg);
+  BrewingPush p(&myConfig);
   myConfig.setMDNS("gravitymon");
 
   String t = p.getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
-  setupTemplateEngineGravity(e, 45.0, 3.4, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 3.4, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(t.c_str());
   String rssi = String(WiFi.RSSI());
   String v =
@@ -129,7 +129,7 @@ test(template_applyTemplate5) {
 
 test(template_applyTemplate6) {
   TemplatingEngine e;
-  BrewingPush p(&cfg);
+  BrewingPush p(&myConfig);
   myConfig.setMDNS("gravitymon");
 
   const char* tpl = 
@@ -137,7 +137,7 @@ test(template_applyTemplate6) {
     "<result><channel>Batterie</channel><float>1</float><value>${battery}</value></result>"
     "<result><channel>Temperature</channel><float>1</float><value>${temp}</value></result></prtg>";
 
-  setupTemplateEngineGravity(e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 3.88);
   String s = e.create(tpl);
   String v = "<prtg><result><channel>Densite</channel><float>1</float><value>1.1230</value></result>"
              "<result><channel>Batterie</channel><float>1</float><value>3.88</value></result>"
@@ -147,13 +147,13 @@ test(template_applyTemplate6) {
 
 test(template_applyTemplate7) {
   TemplatingEngine e;
-  BrewingPush p(&cfg);
+  BrewingPush p(&myConfig);
   myConfig.setMDNS("gravitymon");
 
   const char* tpl = 
     "${battery}-${battery-percent}";
 
-  setupTemplateEngineGravity(e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 4.20);
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 4.20);
   String s = e.create(tpl);
 
   // When run using charger the level should be 100%
