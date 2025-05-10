@@ -26,10 +26,6 @@ SOFTWARE.
 #include <log.hpp>
 #include <tempsensor.hpp>
 
-#if defined(GRAVITYMON)
-#include <gyro.hpp>
-#endif  // GRAVITYMON
-
 void TempSensor::setup(int pin) {
   _onewire.reset(new OneWire(pin));
   _sensors.reset(new DallasTemperature(_onewire.get()));
@@ -57,26 +53,29 @@ void TempSensor::setup(int pin) {
 }
 
 void TempSensor::readSensor(bool useGyro) {
-#if defined(GRAVITYMON)
   if (useGyro) {
     // When using the gyro temperature only the first read value will be
     // accurate so we will use this for processing.
-    _temperatureC = myGyro.getInitialSensorTempC();
-    _hasSensor = true;
+    if (_secondary) {
+      _temperatureC = _secondary->getInitialSensorTempC();
+      _hasSensor = true;
+    } else {
+      _temperatureC = INVALID_TEMPERATURE;
+      _hasSensor = false;
+    }
 #if LOG_LEVEL == 6
     Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR),
                 _temperatureC);
 #endif
     return;
   }
-#endif  // GRAVITYMON
 
   // If we dont have sensors just return 0
   if (!_sensors->getDS18Count()) {
 #if LOG_LEVEL == 6
     Log.notice(F("TSEN: No temperature sensors found. Skipping read." CR));
 #endif
-    _temperatureC = -273;
+    _temperatureC = INVALID_TEMPERATURE;
     return;
   }
 

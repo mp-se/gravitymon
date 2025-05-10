@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include <Arduino.h>
 #include <lowpass.hpp>
+#include <tempsensor.hpp>
 #include <memory>
 
 #if defined(ESP32)
@@ -153,7 +154,7 @@ class GyroSensorInterface {
 
 #define INVALID_TEMPERATURE -273
 
-class GyroSensor {
+class GyroSensor : public SecondayTempSensorInterface {
  private:
   GyroConfigInterface* _gyroConfig;
   std::unique_ptr<GyroSensorInterface> _impl;
@@ -193,14 +194,14 @@ class GyroSensor {
   uint8_t getGyroID() { return _impl ? _impl->getGyroID() : 0; }
   bool isSensorMoving() { return _impl ? _impl->isSensorMoving() : 0; }
 
-  const RawGyroData& getLastGyroData() { return _lastGyroData; }
-  float getAngle() { return _angle; }
-  float getFilteredAngle() { return _filteredAngle; }
-  float getSensorTempC() { return _temp; }
-  float getInitialSensorTempC() { return _initialSensorTemp; }
-  bool isConnected() { return _currentMode != GyroMode::GYRO_UNCONFIGURED; }
+  const RawGyroData& getLastGyroData() const { return _lastGyroData; }
+  float getAngle() const { return _angle; }
+  float getFilteredAngle() const { return _filteredAngle; }
+  float getSensorTempC() const { return _temp; }
+  float getInitialSensorTempC() const { return _initialSensorTemp; }
+  bool isConnected() const { return _currentMode != GyroMode::GYRO_UNCONFIGURED; }
   GyroMode getCurrentGyroMode() { return _currentMode; }
-  bool hasValue() { return _valid; }
+  bool hasValue() const { return _valid; }
   bool needCalibration() { return _impl ? _impl->needCalibration() : false; }
   void enterSleep();
 };

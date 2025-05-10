@@ -32,10 +32,18 @@ SOFTWARE.
 #include <config.hpp>
 #include <memory>
 
+constexpr auto INVALID_TEMPERATURE = -273.0f;
+
+class SecondayTempSensorInterface {
+ public:
+   virtual float getInitialSensorTempC() const = 0;
+};
+
 class TempSensor {
  private:
   std::unique_ptr<DallasTemperature> _sensors;
   std::unique_ptr<OneWire> _onewire;
+  SecondayTempSensorInterface *_secondary = nullptr;
  
   bool _hasSensor = false;
   float _tempSensorAdjC = 0;
@@ -43,9 +51,8 @@ class TempSensor {
   TempSensorConfigInteface *_tempSensorConfig = nullptr;
 
  public:
-  explicit TempSensor(TempSensorConfigInteface *tempSensorConfig)
-      : _tempSensorConfig(tempSensorConfig) {
-  }
+  explicit TempSensor(TempSensorConfigInteface *tempSensorConfig, SecondayTempSensorInterface *secondary = nullptr)
+      : _tempSensorConfig(tempSensorConfig), _secondary(secondary) {}
 
   void setup(int pin);
   void readSensor(bool useGyro = false);
