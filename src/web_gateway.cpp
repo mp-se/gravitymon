@@ -25,8 +25,8 @@ SOFTWARE.
 
 #include <ArduinoJson.h>
 
-#include <ble.hpp>
-#include <config.hpp>
+#include <ble_gateway.hpp>
+#include <config_gateway.hpp>
 #include <measurement.hpp>
 #include <memory>
 #include <uptime.hpp>
@@ -51,25 +51,8 @@ constexpr auto PARAM_UPTIME_MINUTES = "uptime_minutes";
 constexpr auto PARAM_UPTIME_HOURS = "uptime_hours";
 constexpr auto PARAM_UPTIME_DAYS = "uptime_days";
 
-void BrewingWebServer::doWebCalibrateStatus(JsonObject &obj) {}
-
-void BrewingWebServer::doWebConfigWrite() {}
-
-void BrewingWebServer::doWebStatus(JsonObject &obj) {}
-
-void BrewingWebServer::doTaskSensorCalibration() {}
-
-void BrewingWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
-                                           BrewingPush &push) {
-  // TODO Add support for push test related to gateway
-}
-
-void BrewingWebServer::doTaskHardwareScanning(JsonObject &obj) {}
-
-// Methods specific for GatewayWebServer
-
-GatewayWebServer::GatewayWebServer(WebConfig *config)
-    : BrewingWebServer(config) {}
+GatewayWebServer::GatewayWebServer(GravmonGatewayConfig *config)
+    : BrewingWebServer(config), _gatewayConfig(config) {}
 
 void GatewayWebServer::doWebStatus(JsonObject &obj) {
   JsonArray gravityDevices = obj[PARAM_GRAVITY_DEVICE].to<JsonArray>();

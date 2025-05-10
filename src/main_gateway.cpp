@@ -23,13 +23,14 @@ SOFTWARE.
  */
 #if defined(GATEWAY)
 
-#include <ble.hpp>
-#include <config.hpp>
+#include <ble_gateway.hpp>
+#include <config_gateway.hpp>
 #include <display.hpp>
 #include <helper.hpp>
 #include <led.hpp>
 #include <log.hpp>
 #include <main.hpp>
+#include <push_gateway.hpp>
 #include <pushtarget.hpp>
 #include <serialws.hpp>
 #include <utils.hpp>
@@ -68,7 +69,7 @@ WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
 GatewayWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 Display myDisplay;
-BatteryVoltage myBatteryVoltage;  // Needs to be defined but not used in gateway
+BatteryVoltage myBatteryVoltage(&myConfig); // Needs to be defined but not used in gateway
 MeasurementList myMeasurementList;  // Data recevied from http or bluetooth
 LoopTimer controllerTimer(5000), displayTimer(2000);
 
@@ -449,9 +450,9 @@ void controller() {
             TemplatingEngine engine;
 
             setupTemplateEngineGravityGateway(
-                engine, gd->getAngle(), gd->getGravity(), gd->getTempC(),
-                gd->getBattery(), gd->getInterval(), gd->getId(),
-                gd->getToken(), gd->getName());
+                &myConfig, engine, gd->getAngle(), gd->getGravity(),
+                gd->getTempC(), gd->getBattery(), gd->getInterval(),
+                gd->getId(), gd->getToken(), gd->getName());
             push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY,
                          myConfig.isHttpPostGravityEnable(),
                          myConfig.isHttpPost2GravityEnable(),
@@ -477,9 +478,9 @@ void controller() {
             TemplatingEngine engine;
 
             setupTemplateEnginePressureGateway(
-                engine, pd->getPressure(), pd->getPressure1(), pd->getTempC(),
-                pd->getBattery(), pd->getInterval(), pd->getId(),
-                pd->getToken(), pd->getName());
+                &myConfig, engine, pd->getPressure(), pd->getPressure1(),
+                pd->getTempC(), pd->getBattery(), pd->getInterval(),
+                pd->getId(), pd->getToken(), pd->getName());
             push.sendAll(engine, BrewingPush::MeasurementType::PRESSURE,
                          myConfig.isHttpPostPressureEnable(),
                          myConfig.isHttpPost2PressureEnable(),

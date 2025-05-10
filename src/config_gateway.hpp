@@ -77,6 +77,8 @@ class GravmonGatewayConfig : public BrewingConfig {
  public:
   GravmonGatewayConfig(String baseMDNS, String fileName);
 
+  int getVoltagePin() const { return 0; }
+
   const char* getTimezone() const { return _timezone.c_str(); }
   void setTimezone(String s) {
     _timezone = s;

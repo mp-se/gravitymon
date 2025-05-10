@@ -26,19 +26,28 @@ SOFTWARE.
 
 #if defined(GATEWAY)
 
+#include <web_gateway.hpp>
+#include <web_brewing.hpp>
+
 #include <queue>
-#include <webserver.hpp>
 
 class GatewayWebServer : public BrewingWebServer {
  private:
   std::queue<String> _postData;
+  GravmonGatewayConfig* _gatewayConfig = nullptr;
 
  public:
-  explicit GatewayWebServer(WebConfig *config);
+  explicit GatewayWebServer(GravmonGatewayConfig *config);
   void webHandleRemotePost(AsyncWebServerRequest *request, JsonVariant &json);
 
   void doWebStatus(JsonObject &obj);
   bool setupWebServer(const char *serviceName);
+
+  void doWebCalibrateStatus(JsonObject &obj) {}
+  void doWebConfigWrite() {}  
+  void doTaskSensorCalibration() {}
+  void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push) {}
+  void doTaskHardwareScanning(JsonObject &obj) {}
 
   virtual void loop();
 };

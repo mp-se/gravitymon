@@ -26,7 +26,7 @@ SOFTWARE.
 
 #if defined(GATEWAY)
 
-#include <config.hpp>
+#include <config_gateway.hpp>
 #include <main.hpp>
 
 #if defined(ENABLE_TFT)

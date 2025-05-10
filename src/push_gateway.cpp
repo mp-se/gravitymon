@@ -25,10 +25,14 @@ SOFTWARE.
 
 #include <WiFi.h>
 
+#include <config_gateway.hpp>
 #include <helper.hpp>
+#include <main.hpp>
+#include <push_gateway.hpp>
 #include <pushtarget.hpp>
 
-void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle,
+void setupTemplateEngineGravityGateway(GravmonGatewayConfig* config,
+                                       TemplatingEngine& engine, float angle,
                                        float gravitySG, float tempC,
                                        float voltage, int interval,
                                        const char* id, const char* token,
@@ -36,13 +40,13 @@ void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle,
   float runTime = 0, corrGravitySG = gravitySG;
 
   // Names
-  engine.setVal(TPL_MDNS, strlen(name) ? name : myConfig.getMDNS());
+  engine.setVal(TPL_MDNS, strlen(name) ? name : config->getMDNS());
   engine.setVal(TPL_ID, id);
-  engine.setVal(TPL_TOKEN, strlen(token) ? token : myConfig.getToken());
-  engine.setVal(TPL_TOKEN2, strlen(token) ? token : myConfig.getToken());
+  engine.setVal(TPL_TOKEN, strlen(token) ? token : config->getToken());
+  engine.setVal(TPL_TOKEN2, strlen(token) ? token : config->getToken());
 
   // Temperature
-  if (myConfig.isTempFormatC()) {
+  if (config->isTempFormatC()) {
     engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
   } else {
     engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
@@ -50,7 +54,7 @@ void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle,
 
   engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
+  engine.setVal(TPL_TEMP_UNITS, config->getTempFormat());
 
   // Battery & Timer
   engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
@@ -93,7 +97,7 @@ void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle,
   engine.setVal(TPL_VELOCITY, 0, 1);
 
   // Gravity options
-  if (myConfig.isGravitySG()) {
+  if (config->isGravitySG()) {
     engine.setVal(TPL_GRAVITY, gravitySG, DECIMALS_SG);
     engine.setVal(TPL_GRAVITY_CORR, corrGravitySG, DECIMALS_SG);
   } else {
@@ -107,13 +111,14 @@ void setupTemplateEngineGravityGateway(TemplatingEngine& engine, float angle,
   engine.setVal(TPL_GRAVITY_CORR_G, corrGravitySG, DECIMALS_SG);
   engine.setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG),
                 DECIMALS_PLATO);
-  engine.setVal(TPL_GRAVITY_UNIT, myConfig.getGravityUnit());
+  engine.setVal(TPL_GRAVITY_UNIT, config->getGravityUnit());
 
   engine.setVal(TPL_APP_VER, CFG_APPVER);
   engine.setVal(TPL_APP_BUILD, CFG_GITREV);
 }
 
-void setupTemplateEnginePressureGateway(TemplatingEngine& engine,
+void setupTemplateEnginePressureGateway(GravmonGatewayConfig* config,
+                                        TemplatingEngine& engine,
                                         float pressurePsi, float pressurePsi1,
                                         float tempC, float voltage,
                                         int interval, const char* id,
@@ -121,13 +126,13 @@ void setupTemplateEnginePressureGateway(TemplatingEngine& engine,
   float runTime = 0;
 
   // Names
-  engine.setVal(TPL_MDNS, strlen(name) ? name : myConfig.getMDNS());
+  engine.setVal(TPL_MDNS, strlen(name) ? name : config->getMDNS());
   engine.setVal(TPL_ID, id);
-  engine.setVal(TPL_TOKEN, strlen(token) ? token : myConfig.getToken());
-  engine.setVal(TPL_TOKEN2, strlen(token) ? token : myConfig.getToken());
+  engine.setVal(TPL_TOKEN, strlen(token) ? token : config->getToken());
+  engine.setVal(TPL_TOKEN2, strlen(token) ? token : config->getToken());
 
   // Temperature
-  if (myConfig.isTempFormatC()) {
+  if (config->isTempFormatC()) {
     engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
   } else {
     engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
@@ -135,7 +140,7 @@ void setupTemplateEnginePressureGateway(TemplatingEngine& engine,
 
   engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
+  engine.setVal(TPL_TEMP_UNITS, config->getTempFormat());
 
   // Battery & Timer
   engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
@@ -183,12 +188,12 @@ void setupTemplateEnginePressureGateway(TemplatingEngine& engine,
   engine.setVal(TPL_PRESSURE_KPA, convertPsiPressureToKPa(pressurePsi1),
                 DECIMALS_PRESSURE);
 
-  if (myConfig.isPressureBar()) {
+  if (config->isPressureBar()) {
     engine.setVal(TPL_PRESSURE, convertPsiPressureToBar(pressurePsi),
                   DECIMALS_PRESSURE);
     engine.setVal(TPL_PRESSURE1, convertPsiPressureToBar(pressurePsi1),
                   DECIMALS_PRESSURE);
-  } else if (myConfig.isPressureKpa()) {
+  } else if (config->isPressureKpa()) {
     engine.setVal(TPL_PRESSURE, convertPsiPressureToKPa(pressurePsi),
                   DECIMALS_PRESSURE);
     engine.setVal(TPL_PRESSURE1, convertPsiPressureToKPa(pressurePsi1),
@@ -198,7 +203,7 @@ void setupTemplateEnginePressureGateway(TemplatingEngine& engine,
     engine.setVal(TPL_PRESSURE1, pressurePsi1, DECIMALS_PRESSURE);
   }
 
-  engine.setVal(TPL_PRESSURE_UNIT, myConfig.getPressureUnit());
+  engine.setVal(TPL_PRESSURE_UNIT, config->getPressureUnit());
 
   engine.setVal(TPL_APP_VER, CFG_APPVER);
   engine.setVal(TPL_APP_BUILD, CFG_GITREV);

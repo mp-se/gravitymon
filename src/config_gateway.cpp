@@ -23,7 +23,7 @@ SOFTWARE.
  */
 #if defined(GATEWAY)
 
-#include <config.hpp>
+#include <config_gateway.hpp>
 #include <main.hpp>
 
 GravmonGatewayConfig::GravmonGatewayConfig(String baseMDNS, String fileName)
