@@ -46,12 +46,12 @@ class TempSensor {
  private:
   std::unique_ptr<DallasTemperature> _sensors;
   std::unique_ptr<OneWire> _onewire;
+  TempSensorConfigInterface *_tempSensorConfig = nullptr;
   SecondayTempSensorInterface *_secondary = nullptr;
  
   bool _hasSensor = false;
   float _tempSensorAdjC = 0;
   float _temperatureC = 0;
-  TempSensorConfigInterface *_tempSensorConfig = nullptr;
 
  public:
   explicit TempSensor(TempSensorConfigInterface *tempSensorConfig, SecondayTempSensorInterface *secondary = nullptr)
