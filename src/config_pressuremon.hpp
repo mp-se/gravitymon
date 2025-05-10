@@ -27,6 +27,7 @@ SOFTWARE.
 #if defined(PRESSUREMON)
 
 #include <config_brewing.hpp>
+#include <main_pressuremon.hpp>
 #include <pressure.hpp>
 
 enum PressuremonBleFormat {
@@ -63,6 +64,8 @@ class PressuremonConfig : public BrewingConfig, public PressureConfigInterface {
 
  public:
   PressuremonConfig(String baseMDNS, String fileName);
+
+  int getVoltagePin() const { return PIN_VOLT; }
 
   bool isPressureBar() const { return _pressureUnit == PRESSURE_BAR; }
   bool isPressureKpa() const { return _pressureUnit == PRESSURE_KPA; }
@@ -129,6 +132,7 @@ class PressuremonConfig : public BrewingConfig, public PressureConfigInterface {
 
   // Wrappers for PressureConfig
   char getTempUnit() const { return BaseConfig::getTempUnit(); }
+  bool saveFile() { return BaseConfig::saveFile(); }
 };
 
 extern PressuremonConfig myConfig;

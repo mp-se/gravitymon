@@ -25,7 +25,6 @@ SOFTWARE.
 
 #include <main.hpp>
 #include <main_pressuremon.hpp>
-#include <pressure.hpp>
 
 // EspFramework
 #include <led.hpp>
@@ -38,15 +37,17 @@ SOFTWARE.
 
 // Common
 #include <battery.hpp>
-#include <config.hpp>
 #include <helper.hpp>
 #include <pushtarget.hpp>
 #include <utils.hpp>
-#include <webserver.hpp>
 
 // Pressuremon specific
-#include <ble.hpp>
+#include <ble_pressuremon.hpp>
+#include <config_pressuremon.hpp>
+#include <pressure.hpp>
+#include <push_pressuremon.hpp>
 #include <tempsensor.hpp>
+#include <web_pressuremon.hpp>
 
 const char* CFG_FILENAME = "/pressuremon2.json";
 const char* CFG_AP_SSID = "PressureMon";
@@ -68,14 +69,15 @@ PressuremonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
                       USER_SSID, USER_PASS);
 OtaUpdate myOta(&myConfig, CFG_APPVER);
-BatteryVoltage myBatteryVoltage;
-BrewingWebServer myWebServer(&myConfig);
+BatteryVoltage myBatteryVoltage(&myConfig);
+PressuremonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
 PressureSensor myPressureSensor(&myConfig);
 PressureSensor myPressureSensor1(&myConfig);
+TempSensor myTempSensor(&myConfig, nullptr);
 
 // Define constats for this program
 LoopTimer timerLoop(1000);
@@ -198,7 +200,7 @@ void setup() {
       }
 
       PERF_BEGIN("main-temp-setup");
-      myTempSensor.setup();
+      myTempSensor.setup(PIN_DS);
       PERF_END("main-temp-setup");
       break;
   }
@@ -315,9 +317,9 @@ bool loopReadPressure() {
         TemplatingEngine engine;
         BrewingPush push(&myConfig);
 
-        setupTemplateEnginePressure(engine, pressurePsi, pressurePsi1, tempC,
-                                    (millis() - runtimeMillis) / 1000,
-                                    myBatteryVoltage.getVoltage());
+        setupTemplateEnginePressure(
+            &myConfig, engine, pressurePsi, pressurePsi1, tempC,
+            (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
         String tpl = push.getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP1,
                                       true);  // Use default post template
         String payload = engine.create(tpl.c_str());
@@ -333,9 +335,9 @@ bool loopReadPressure() {
         TemplatingEngine engine;
         BrewingPush push(&myConfig);
 
-        setupTemplateEnginePressure(engine, pressurePsi, pressurePsi1, tempC,
-                                    (millis() - runtimeMillis) / 1000,
-                                    myBatteryVoltage.getVoltage());
+        setupTemplateEnginePressure(
+            &myConfig, engine, pressurePsi, pressurePsi1, tempC,
+            (millis() - runtimeMillis) / 1000, myBatteryVoltage.getVoltage());
         push.sendAll(engine, BrewingPush::MeasurementType::PRESSURE);
       }
     }

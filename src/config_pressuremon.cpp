@@ -24,6 +24,7 @@ SOFTWARE.
 #if defined(PRESSUREMON)
 
 #include <config_pressuremon.hpp>
+#include <main.hpp>
 
 PressuremonConfig::PressuremonConfig(String baseMDNS, String fileName)
     : BrewingConfig(baseMDNS, fileName) {

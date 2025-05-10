@@ -26,18 +26,7 @@ SOFTWARE.
 
 #if defined(PRESSUREMON)
 
-#include <main.hpp>
-#include <templating.hpp>
-
-enum RunMode {
-  measurementMode = 0,
-  configurationMode = 1,
-  wifiSetupMode = 2,
-};
-
-void setupTemplateEnginePressure(TemplatingEngine& engine, float pressurePsi,
-                                 float pressurePsi1, float tempC, float runTime,
-                                 float voltage);
+#include <Arduino.h>
 
 #if defined(LOLIN_S3_MINI)
 // Hardware config for ESP32-s3-mini, pressuremon hardware
