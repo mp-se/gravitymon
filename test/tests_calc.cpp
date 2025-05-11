@@ -23,8 +23,6 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#if defined(GRAVITYMON)
-
 #include <calc.hpp>
 #include <utils.hpp>
 #include <helper.hpp>
@@ -50,7 +48,5 @@ test(calc_gravityTemperatureCorrectionC) {
   float v2 = 1.03;
   assertEqual(v1, v2);
 }
-
-#endif // GRAVITYMON
 
 // EOF

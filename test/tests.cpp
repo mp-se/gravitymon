@@ -31,27 +31,14 @@ using aunit::Printer;
 using aunit::TestRunner;
 using aunit::Verbosity;
 
-#if defined(GRAVITYMON)
 GravitymonConfig myConfig("test", "test.cfg");
 GyroSensor myGyro(&myConfig);
 BatteryVoltage myBatteryVoltage(&myConfig);
 TempSensor myTempSensor(&myConfig, &myGyro);
 
-// #elif defined(PRESSUREMON)
-// PressuremonConfig myConfig("test", "test.cfg");
-// #elif defined(GATEWAY)
-// GravmonGatewayConfig myConfig("test", "test.cfg");
-#endif
-
 void setup() {
   Serial.begin(115200);
-#if defined(GRAVITYMON)
   Serial.println("Gravitymon - Unit Test Build");
-#elif defined(PRESSUREMON)
-Serial.println("Pressuremon - Unit Test Build");
-#elif defined(GATEWAY)
-Serial.println("Gateway - Unit Test Build");
-#endif
 
   delay(2000);
   Printer::setPrinter(&Serial);

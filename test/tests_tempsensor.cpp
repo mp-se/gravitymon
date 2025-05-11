@@ -23,8 +23,6 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#if defined(GRAVITYMON) 
-
 #include <tempsensor.hpp>
 #include <main_gravitymon.hpp>
 #include <config_gravitymon.hpp>
@@ -38,7 +36,5 @@ test(temp_readSensor) {
   myTempSensor.getTempC();
   assertEqual(myTempSensor.isSensorAttached(), true);
 }
-
-#endif // GRAVITYMON 
 
 // EOF

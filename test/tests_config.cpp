@@ -75,16 +75,13 @@ test(config_tempSensorResolution) {
   assertEqual(myConfig.getTempSensorResolution(), 12);
 }
 
-#if defined(GRAVITYMON) || defined(PRESSUREMON)
 test(config_batterySaving) {
   myConfig.setBatterySaving(false);
   assertEqual(myConfig.isBatterySaving(), false);
   myConfig.setBatterySaving(true);
   assertEqual(myConfig.isBatterySaving(), true);
 }
-#endif
 
-#if defined(GRAVITYMON)
 test(config_gravitymonValues) {
   assertEqual(myConfig.getDefaultCalibrationTemp(), 20.0);
   assertEqual(myConfig.getGyroReadCount(), 50);
@@ -143,7 +140,5 @@ test(config_formulaDeviation) {
   f = 0.1;
   assertEqual(myConfig.getMaxFormulaCreationDeviation(), f);
 }
-
-#endif // GRAVITYMON
 
 // EOF
