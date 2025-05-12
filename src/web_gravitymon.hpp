@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2024-2025 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +21,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#ifndef SRC_WEB_GATEWAY_HPP_
-#define SRC_WEB_GATEWAY_HPP_
+#ifndef SRC_WEB_GRAVITYMON_HPP_
+#define SRC_WEB_GRAVITYMON_HPP_
 
-#if defined(GATEWAY)
+#if defined(GRAVITYMON) 
 
-#include <queue>
-#include <webserver.hpp>
+#include <web_brewing.hpp>
+#include <config_gravitymon.hpp>
+#include <battery.hpp>
+#include <pushtarget.hpp>
+#include <templating.hpp>
 
-class GatewayWebServer : public BrewingWebServer {
+class GravitymonWebServer : public BrewingWebServer {
  private:
-  std::queue<String> _postData;
+  GravitymonConfig* _gravConfig = nullptr;
 
- public:
-  explicit GatewayWebServer(WebConfig *config);
-  void webHandleRemotePost(AsyncWebServerRequest *request, JsonVariant &json);
+  void doTaskSensorCalibration();
+  void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push);
+  void doTaskHardwareScanning(JsonObject &obj);
 
   void doWebStatus(JsonObject &obj);
-  bool setupWebServer(const char *serviceName);
+  void doWebConfigWrite();
+  void doWebCalibrateStatus(JsonObject &obj);
 
-  virtual void loop();
+ public:
+  explicit GravitymonWebServer(GravitymonConfig* gravConfig) : BrewingWebServer(gravConfig), _gravConfig(gravConfig) {}
 };
 
 // Global instance created
-extern GatewayWebServer myWebServer;
+extern GravitymonWebServer myWebServer;
 
-#endif  // GATEWAY
+#endif  // GRAVITYMON 
 
-#endif  // SRC_WEB_GATEWAY_HPP_
+#endif  // SRC_WEB_GRAVITYMON_HPP_
 
 // EOF

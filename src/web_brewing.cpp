@@ -23,13 +23,12 @@ SOFTWARE.
  */
 #include <Wire.h>
 
-#include <config.hpp>
+#include <config_brewing.hpp>
 #include <helper.hpp>
-#include <history.hpp>
 #include <main.hpp>
 #include <perf.hpp>
 #include <pushtarget.hpp>
-#include <webserver.hpp>
+#include <web_brewing.hpp>
 
 #if !defined(ESP8266)
 #include <esp_int_wdt.h>
@@ -41,7 +40,10 @@ SOFTWARE.
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
-BrewingWebServer::BrewingWebServer(WebConfig *config) : BaseWebServer(config) {}
+BrewingWebServer::BrewingWebServer(BrewingConfig *config)
+    : BaseWebServer(config) {
+  _brewingConfig = config;
+}
 
 void BrewingWebServer::webHandleConfigRead(AsyncWebServerRequest *request) {
   if (!isAuthenticated(request)) {
@@ -52,7 +54,7 @@ void BrewingWebServer::webHandleConfigRead(AsyncWebServerRequest *request) {
   Log.notice(F("WEB : webServer callback for /api/config(read)." CR));
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
-  myConfig.createJson(obj);
+  _webConfig->createJson(obj);
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-config-read");
@@ -67,9 +69,9 @@ void BrewingWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
   PERF_BEGIN("webserver-api-config-write");
   Log.notice(F("WEB : webServer callback for /api/config(write)." CR));
   JsonObject obj = json.as<JsonObject>();
-  myConfig.parseJson(obj);
+  _webConfig->parseJson(obj);
   obj.clear();
-  myConfig.saveFile();
+  _webConfig->saveFile();
   myBatteryVoltage.read();
 
   doWebConfigWrite();
@@ -107,9 +109,8 @@ void BrewingWebServer::webHandleFactoryDefaults(
   }
 
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
-  myConfig.saveFileWifiOnly();
+  _brewingConfig->saveFileWifiOnly();
   LittleFS.remove(ERR_FILENAME);
-  LittleFS.remove(RUNTIME_FILENAME);
 
   LittleFS.remove(TPL_GRAVITY_FNAME_POST);
   LittleFS.remove(TPL_GRAVITY_FNAME_POST2);
@@ -429,11 +430,11 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
 
-  obj[PARAM_ID] = myConfig.getID();
-  obj[PARAM_TEMP_UNIT] = String(myConfig.getTempUnit());
+  obj[PARAM_ID] = _webConfig->getID();
+  obj[PARAM_TEMP_UNIT] = String(_brewingConfig->getTempUnit());
   obj[PARAM_APP_VER] = CFG_APPVER;
   obj[PARAM_APP_BUILD] = CFG_GITREV;
-  obj[PARAM_MDNS] = myConfig.getMDNS();
+  obj[PARAM_MDNS] = _webConfig->getMDNS();
 
   obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
   obj[PARAM_PLATFORM] = platform;
@@ -460,18 +461,9 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
 #endif
   obj[PARAM_WIFI_SETUP] = (runMode == RunMode::wifiSetupMode) ? true : false;
 
-  obj[PARAM_RUNTIME_AVERAGE] = serialized(
-      String(_averageRunTime ? _averageRunTime / 1000 : 0, DECIMALS_RUNTIME));
-
   float v = myBatteryVoltage.getVoltage();
 
   obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] = v < 3.2 || v > 5.1 ? false : true;
-  obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
-      myConfig.isBleActive() || myConfig.hasTargetHttpPost() ||
-              myConfig.hasTargetHttpPost2() || myConfig.hasTargetHttpGet() ||
-              myConfig.hasTargetMqtt() || myConfig.hasTargetInfluxDb2()
-          ? true
-          : false;
 
   doWebStatus(obj);
 
@@ -508,9 +500,6 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
 
   BaseWebServer::setupWebServer();
   MDNS.addService(serviceName, "tcp", 80);
-
-  HistoryLog runLog(RUNTIME_FILENAME);
-  _averageRunTime = runLog.getAverage()._runTime;
 
   Log.notice(F("WEB : Setting up handlers for web server." CR));
 
@@ -578,7 +567,7 @@ void BrewingWebServer::loop() {
 
   if (_pushTestTask) {
     TemplatingEngine engine;
-    BrewingPush push(&myConfig);
+    BrewingPush push(_brewingConfig);
 
     doTaskPushTestSetup(engine, push);
 

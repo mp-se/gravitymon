@@ -23,28 +23,27 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#if defined(GRAVITYMON)
-#include <config.hpp>
 #include <gyro.hpp>
+#include <config_gravitymon.hpp>
 
-GyroSensor myGyro(&myConfig);
+extern GravitymonConfig myConfig;
+extern GyroSensor myGyro;
 
 test(gyro_connectGyro) {
-  myGyro.setup();
+  myGyro.setup(GyroMode::GYRO_CONTINUOUS, true);
   assertEqual(myGyro.isConnected(), true);
 }
 
 test(gyro_readGyro) { 
-  myGyro.setup();
+  myGyro.setup(GyroMode::GYRO_CONTINUOUS, true);
   assertEqual(myGyro.read(), true);
 }
 
 test(gyro_readGyroTemp) {
-  myGyro.setup();
+  myGyro.setup(GyroMode::GYRO_CONTINUOUS, true);
   float f = INVALID_TEMPERATURE;
   assertNotEqual(myGyro.getInitialSensorTempC(), f);
   assertNotEqual(myGyro.getSensorTempC(), f);
 }
-#endif // GRAVITYMON
 
 // EOF

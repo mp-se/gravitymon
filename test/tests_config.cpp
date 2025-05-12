@@ -23,16 +23,9 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#include <config.hpp>
+#include <config_gravitymon.hpp>
 
-#if defined(GRAVITYMON)
-GravitymonConfig myConfig("test", "test.cfg");
-#elif defined(PRESSUREMON)
-PressuremonConfig myConfig("test", "test.cfg");
-#elif defined(GATEWAY)
-GravmonGatewayConfig myConfig("test", "test.cfg");
-#endif
-
+extern GravitymonConfig myConfig;
 
 test(config_defaultValues) {
   float f = 4.15;
@@ -82,16 +75,13 @@ test(config_tempSensorResolution) {
   assertEqual(myConfig.getTempSensorResolution(), 12);
 }
 
-#if defined(GRAVITYMON) || defined(PRESSUREMON)
 test(config_batterySaving) {
   myConfig.setBatterySaving(false);
   assertEqual(myConfig.isBatterySaving(), false);
   myConfig.setBatterySaving(true);
   assertEqual(myConfig.isBatterySaving(), true);
 }
-#endif
 
-#if defined(GRAVITYMON)
 test(config_gravitymonValues) {
   assertEqual(myConfig.getDefaultCalibrationTemp(), 20.0);
   assertEqual(myConfig.getGyroReadCount(), 50);
@@ -150,7 +140,5 @@ test(config_formulaDeviation) {
   f = 0.1;
   assertEqual(myConfig.getMaxFormulaCreationDeviation(), f);
 }
-
-#endif // GRAVITYMON
 
 // EOF

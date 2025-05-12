@@ -26,9 +26,9 @@ SOFTWARE.
 
 #if defined(GRAVITYMON)
 
-#include <config.hpp>
+#include <Arduino.h>
 
-double calculateGravity(double angle, double tempC,
+double calculateGravity(const char* formula, double angle, double tempC,
                         const char *tempFormula = 0);
 double gravityTemperatureCorrectionC(double gravity, double tempC,
                                      double calTempC);

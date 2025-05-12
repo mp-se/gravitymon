@@ -24,16 +24,17 @@ SOFTWARE.
 #include <AUnit.h>
 
 #include <tempsensor.hpp>
+#include <main_gravitymon.hpp>
+#include <config_gravitymon.hpp>
 
-#if defined(GRAVITYMON) || defined(PRESSUREMON)
+extern GravitymonConfig myConfig;
+extern TempSensor myTempSensor;
 
 test(temp_readSensor) {
-  myTempSensor.setup();
+  myTempSensor.setup(PIN_DS);
   myTempSensor.readSensor();
   myTempSensor.getTempC();
   assertEqual(myTempSensor.isSensorAttached(), true);
 }
-
-#endif // GRAVITYMON || PRESSUREMON
 
 // EOF

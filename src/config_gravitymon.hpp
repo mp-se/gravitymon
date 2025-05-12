@@ -27,6 +27,7 @@ SOFTWARE.
 #if defined(GRAVITYMON)
 
 #include <config_brewing.hpp>
+#include <main_gravitymon.hpp>
 #include <gyro.hpp>
 
 constexpr auto CONFIG_GRAVITY_FORMULA = "gravity_formula";
@@ -35,6 +36,7 @@ constexpr auto CONFIG_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto CONFIG_GYRO_CALIBRATION = "gyro_calibration_data";
 constexpr auto CONFIG_GYRO_TEMP = "gyro_temp";
 constexpr auto CONFIG_GYRO_DISABLED = "gyro_disabled";
+constexpr auto CONFIG_GYRO_FILTER = "gyro_filter";
 constexpr auto CONFIG_GYRO_SWAP_XY = "gyro_swap_xy";
 constexpr auto CONFIG_STORAGE_SLEEP = "storage_sleep";
 constexpr auto CONFIG_FORMULA_DATA = "formula_calculation_data";
@@ -77,6 +79,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool _storageSleep = false;
   bool _gyroDisabled = false;
   bool _gyroSwapXY = false;
+  bool _gyroFilter = false;
 #if defined(FLOATY)
   bool _gyroTemp = true;
   bool _batterySaving = false;
@@ -84,6 +87,8 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool _gyroTemp = false;
   bool _batterySaving = true;
 #endif
+
+  int _voltagePin = PIN_VOLT;
 
   char _gravityUnit = 'G';
 
@@ -107,6 +112,12 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
 #endif
   }
 
+  int getVoltagePin() const { return _voltagePin; }
+  void setVoltagePin(int v) {
+    _voltagePin = v;
+    _saveNeeded = true;
+  }
+
   bool isStorageSleep() const { return _storageSleep; }
   void setStorageSleep(bool b) {
     _storageSleep = b;
@@ -116,6 +127,12 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool isGyroDisabled() const { return _gyroDisabled; }
   void setGyroDisabled(bool b) {
     _gyroDisabled = b;
+    _saveNeeded = true;
+  }
+
+  bool isGyroFilter() const { return _gyroFilter; }
+  void setGyroFilter(bool b) {
+    _gyroFilter = b;
     _saveNeeded = true;
   }
 
@@ -244,8 +261,6 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   int getSleepInterval() const { return BrewingConfig::getSleepInterval(); }
   bool saveFile() { return BaseConfig::saveFile(); }
 };
-
-extern GravitymonConfig myConfig;
 
 #endif  // GRAVITYMON
 

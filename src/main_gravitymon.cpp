@@ -23,13 +23,15 @@ SOFTWARE.
  */
 #if defined(GRAVITYMON)
 
-#include <main.hpp>
+// #define FORCE_GRAVITY_MODE
+
 #include <main_gravitymon.hpp>
 
 // EspFramework
 #include <led.hpp>
 #include <log.hpp>
 #include <looptimer.hpp>
+#include <main.hpp>
 #include <ota.hpp>
 #include <perf.hpp>
 #include <serialws.hpp>
@@ -37,18 +39,23 @@ SOFTWARE.
 
 // Common
 #include <battery.hpp>
-#include <config.hpp>
 #include <helper.hpp>
-#include <history.hpp>
 #include <pushtarget.hpp>
 #include <utils.hpp>
-#include <webserver.hpp>
 
 // Gravitymon specific
-#include <ble.hpp>
+#include <ble_gravitymon.hpp>
 #include <calc.hpp>
+#include <config_gravitymon.hpp>
 #include <gyro.hpp>
+#include <push_gravitymon.hpp>
 #include <tempsensor.hpp>
+#include <velocity.hpp>
+#include <web_gravitymon.hpp>
+
+#if defined(ESP32)
+#include <esp_attr.h>
+#endif
 
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";
@@ -65,14 +72,17 @@ GravitymonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
                       USER_SSID, USER_PASS);
 OtaUpdate myOta(&myConfig, CFG_APPVER, CFG_FILENAMEBIN);
-BatteryVoltage myBatteryVoltage;
-BrewingWebServer myWebServer(&myConfig);
+BatteryVoltage myBatteryVoltage(&myConfig);
+GravitymonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
 GyroSensor myGyro(&myConfig);
-
+TempSensor myTempSensor(&myConfig, &myGyro);
+#if defined(ESP32)
+RTC_DATA_ATTR GravityVelocityData data = {0};
+#endif
 LoopTimer timerLoop(200);
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
@@ -80,10 +90,10 @@ uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 uint32_t stableGyroMillis;  // Used to calculate the total time since last
                             // stable gyro reading
-bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
 
 void checkSleepMode(float angle, float volt);
+void runGpioHardwareTests();
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -198,7 +208,7 @@ void setup() {
       }
 
       PERF_BEGIN("main-temp-setup");
-      myTempSensor.setup();
+      myTempSensor.setup(PIN_DS);
       PERF_END("main-temp-setup");
       break;
   }
@@ -246,7 +256,7 @@ void setup() {
 // Main loop that does gravity readings and push data to targets
 // Return true if gravity reading was successful
 bool loopReadGravity() {
-  float angle = 0;
+  float angle = 0, filteredAngle = 0;
 
 #if LOG_LEVEL == 6
   Log.verbose(F("Main: Entering main loopGravity." CR));
@@ -258,7 +268,8 @@ bool loopReadGravity() {
   // interval.
   //
   if (myGyro.hasValue()) {
-    angle = myGyro.getAngle();    // Gyro angle
+    angle = myGyro.getAngle();  // Gyro angle
+    filteredAngle = myGyro.getFilteredAngle();
     stableGyroMillis = millis();  // Reset timer
 
     PERF_BEGIN("loop-temp-read");
@@ -266,13 +277,35 @@ bool loopReadGravity() {
     float tempC = myTempSensor.getTempC();
     PERF_END("loop-temp-read");
 
-    float gravitySG = calculateGravity(angle, tempC);
+    float gravitySG =
+        calculateGravity(myConfig.getGravityFormula(), angle, tempC);
+    float filteredGravitySG =
+        calculateGravity(myConfig.getGravityFormula(), filteredAngle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
-        gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
+        myConfig.isGyroFilter() ? filteredGravitySG : gravitySG, tempC,
+        myConfig.getDefaultCalibrationTemp());
 
+    // Corrected gravity can contain either temperature corrected gravity /
+    // filtered gravity.
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
+    } else if (myConfig.isGyroFilter()) {
+      // TODO: Uncomment this next line once the
+      // filters has been tested correctly
+      // gravitySG = filteredGravitySG;
     }
+
+    float velocity = 0;
+
+#if defined(ESP32)
+    GravityVelocity gv(&data, myConfig.getSleepInterval());
+    gv.addValue(gravitySG);
+    velocity = gv.getVelocity();
+#endif
+
+    Log.warning(F("Main: Angle: %F (%F), Velocity: %F" CR), angle,
+                filteredAngle, velocity);
+
 #if LOG_LEVEL == 6
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
                   "corr_gravity=%F." CR),
@@ -330,8 +363,9 @@ bool loopReadGravity() {
 
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
-          setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG,
-                                     tempC, (millis() - runtimeMillis) / 1000,
+          setupTemplateEngineGravity(&myConfig, engine, angle, velocity,
+                                     gravitySG, corrGravitySG, tempC,
+                                     (millis() - runtimeMillis) / 1000,
                                      myBatteryVoltage.getVoltage());
           String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1,
                                         true);  // Use default post template
@@ -348,20 +382,11 @@ bool loopReadGravity() {
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
 
-          setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG,
-                                     tempC, (millis() - runtimeMillis) / 1000,
+          setupTemplateEngineGravity(&myConfig, engine, angle, velocity,
+                                     gravitySG, corrGravitySG, tempC,
+                                     (millis() - runtimeMillis) / 1000,
                                      myBatteryVoltage.getVoltage());
           push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
-
-          // Only log when in gravity mode
-          if (!skipRunTimeLog && runMode == RunMode::measurementMode) {
-            Log.notice(
-                F("Main: Updating history log with, runtime, gravity and "
-                  "interval." CR));
-            float runtime = (millis() - runtimeMillis);
-            HistoryLog runLog(RUNTIME_FILENAME);
-            runLog.addLog(runtime, gravitySG, myConfig.getSleepInterval());
-          }
         }
       }
       PERF_END("loop-push");
@@ -431,9 +456,6 @@ void loop() {
       myWifi.loop();
       loopGravityOnInterval();
       delay(1);
-
-      // If we switched mode, dont include this in the log.
-      if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
       break;
 
     case RunMode::measurementMode:
@@ -487,7 +509,8 @@ void checkSleepMode(float angle, float volt) {
   return;
 #endif
 
-  if (!myConfig.hasGyroCalibration() && !myConfig.isGyroDisabled()) {
+  if ((!myConfig.hasGyroCalibration() && myGyro.needCalibration()) &&
+      !myConfig.isGyroDisabled()) {
     // Will not enter sleep mode if: no calibration data
 #if LOG_LEVEL == 6
     Log.notice(

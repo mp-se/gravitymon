@@ -1,0 +1,27 @@
+# name: Trigger Target Repo Build
+
+# on:
+#   push:
+#     branches:
+#       - dev
+
+# jobs:
+#   trigger-build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Trigger build in pressuremon
+#         run: |
+#           curl -X POST \
+#             -H "Accept: application/vnd.github.v3+json" \
+#             -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+#             https://api.github.com/repos/mp-se/pressuremon/actions/workflows/pio-build.yaml/dispatches \
+#             -d '{"ref":"dev"}'
+#       - name: Trigger build in gravitymon-gateway
+#         run: |
+#           curl -X POST \
+#             -H "Accept: application/vnd.github.v3+json" \
+#             -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+#             https://api.github.com/repos/mp-se/gravitymon-gateway/actions/workflows/pio-build.yaml/dispatches \
+#             -d '{"ref":"dev"}'
+
+            

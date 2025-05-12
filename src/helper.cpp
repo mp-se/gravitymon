@@ -58,6 +58,9 @@ void printBuildOptions() {
 #if defined(PRESSUREMON)
                "PRESSUREMON "
 #endif
+#if defined(GATEWAY)
+               "GATEWAY "
+#endif
 #if defined(ESP8266)
                "ESP8266 "
 #else

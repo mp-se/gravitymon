@@ -21,40 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(GRAVITYMON) || defined(PRESSUREMON)
-
-#include <OneWire.h>
-#include <Wire.h>
-
-#include <config.hpp>
 #include <log.hpp>
-#include <main.hpp>
 #include <tempsensor.hpp>
 
-#if defined(GRAVITYMON)
-#include <gyro.hpp>
-#endif  // GRAVITYMON
+void TempSensor::setup(int pin) {
+  _onewire.reset(new OneWire(pin));
+  _sensors.reset(new DallasTemperature(_onewire.get()));
 
-OneWire myOneWire(PIN_DS);
-DallasTemperature mySensors(&myOneWire);
-
-TempSensor myTempSensor;
-
-void TempSensor::setup() {
 #if LOG_LEVEL == 6
   Log.verbose(F("TSEN: Looking for temp sensors." CR));
 #endif
-  mySensors.begin();
+  _sensors->begin();
 
-  if (mySensors.getDS18Count()) {
+  if (_sensors->getDS18Count()) {
     Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d bit" CR),
-               mySensors.getDS18Count(), myConfig.getTempSensorResolution());
+               _sensors->getDS18Count(),
+               _tempSensorConfig->getTempSensorResolution());
   } else {
     Log.warning(F("TSEN: No temp sensors found" CR));
   }
 
   // Set the temp sensor adjustment values
-  _tempSensorAdjC = myConfig.getTempSensorAdjC();
+  _tempSensorAdjC = _tempSensorConfig->getTempSensorAdjC();
 
 #if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
   Log.verbose(F("TSEN: Adjustment values for temp sensor %F C." CR),
@@ -63,35 +51,38 @@ void TempSensor::setup() {
 }
 
 void TempSensor::readSensor(bool useGyro) {
-#if defined(GRAVITYMON)
   if (useGyro) {
     // When using the gyro temperature only the first read value will be
     // accurate so we will use this for processing.
-    _temperatureC = myGyro.getInitialSensorTempC();
-    _hasSensor = true;
+    if (_secondary) {
+      _temperatureC = _secondary->getInitialSensorTempC();
+      _hasSensor = true;
+    } else {
+      _temperatureC = INVALID_TEMPERATURE;
+      _hasSensor = false;
+    }
 #if LOG_LEVEL == 6
     Log.verbose(F("TSEN: Reciving temp value for gyro sensor %F C." CR),
                 _temperatureC);
 #endif
     return;
   }
-#endif  // GRAVITYMON
 
   // If we dont have sensors just return 0
-  if (!mySensors.getDS18Count()) {
+  if (!_sensors->getDS18Count()) {
 #if LOG_LEVEL == 6
     Log.notice(F("TSEN: No temperature sensors found. Skipping read." CR));
 #endif
-    _temperatureC = -273;
+    _temperatureC = INVALID_TEMPERATURE;
     return;
   }
 
   // Read the sensors
-  mySensors.setResolution(myConfig.getTempSensorResolution());
-  mySensors.requestTemperatures();
+  _sensors->setResolution(_tempSensorConfig->getTempSensorResolution());
+  _sensors->requestTemperatures();
 
-  if (mySensors.getDS18Count() >= 1) {
-    _temperatureC = mySensors.getTempCByIndex(0);
+  if (_sensors->getDS18Count() >= 1) {
+    _temperatureC = _sensors->getTempCByIndex(0);
     _hasSensor = true;
 
 #if LOG_LEVEL == 6
@@ -100,7 +91,5 @@ void TempSensor::readSensor(bool useGyro) {
 #endif
   }
 }
-
-#endif  // GRAVITYMON || PRESSUREMON
 
 // EOF

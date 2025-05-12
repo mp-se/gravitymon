@@ -26,20 +26,7 @@ SOFTWARE.
 
 #if defined(GRAVITYMON)
 
-#include <main.hpp>
-#include <templating.hpp>
-
-enum RunMode {
-  measurementMode = 0,
-  configurationMode = 1,
-  wifiSetupMode = 2,
-  storageMode = 3
-};
-
-void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
-                                float gravitySG, float corrGravitySG,
-                                float tempC, float runTime, float voltage);
-void runGpioHardwareTests();
+#include <Arduino.h>
 
 #if defined(D1_MINI)
 // Hardware config for ESP8266-d1-mini, iSpindel hardware

@@ -23,7 +23,6 @@ SOFTWARE.
  */
 #include <AUnit.h>
 #include <Arduino.h>
-#include <main.hpp>
 
 // This should be the last test and its used to dump the gcov data to serial. Uncomment __gcov_exit() to dump coverage data.
 

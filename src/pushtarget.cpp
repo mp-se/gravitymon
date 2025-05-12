@@ -23,18 +23,19 @@ SOFTWARE.
  */
 #if defined(ESP8266)
 #include <ESP8266mDNS.h>
-#else  // defined (ESP32)
 #endif
+
 #include <MQTT.h>
 
 #include <battery.hpp>
-#include <config_gravitymon.hpp>
+#include <config_brewing.hpp>
 #include <cstdio>
 #include <helper.hpp>
 #include <main.hpp>
 #include <perf.hpp>
 #include <pushtarget.hpp>
 #include <templating.hpp>
+
 constexpr auto PUSHINT_FILENAME = "/push.dat";
 
 void PushIntervalTracker::update(const int index, const int defaultValue) {
@@ -70,14 +71,14 @@ void PushIntervalTracker::load() {
 }
 
 void PushIntervalTracker::save() {
-  update(0, myConfig.getPushIntervalPost());
-  update(1, myConfig.getPushIntervalPost2());
-  update(2, myConfig.getPushIntervalGet());
-  update(3, myConfig.getPushIntervalInflux());
-  update(4, myConfig.getPushIntervalMqtt());
+  update(0, _brewingConfig->getPushIntervalPost());
+  update(1, _brewingConfig->getPushIntervalPost2());
+  update(2, _brewingConfig->getPushIntervalGet());
+  update(3, _brewingConfig->getPushIntervalInflux());
+  update(4, _brewingConfig->getPushIntervalMqtt());
 
   // If this feature is disabled we skip saving the file
-  if (!myConfig.isPushIntervalActive()) {
+  if (!_brewingConfig->isPushIntervalActive()) {
 #if LOG_LEVEL == 6
     Log.notice(F("PUSH: Variabled push interval disabled." CR));
 #endif
@@ -108,10 +109,11 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
   printHeap("PUSH");
   _http->setReuse(true);
 
-  PushIntervalTracker intDelay;
+  PushIntervalTracker intDelay(_brewingConfig);
   intDelay.load();
 
-  if (myConfig.hasTargetHttpPost() && intDelay.useHttp1() && enableHttpPost) {
+  if (_brewingConfig->hasTargetHttpPost() && intDelay.useHttp1() &&
+      enableHttpPost) {
     PERF_BEGIN("push-http");
     String tpl;
 
@@ -122,7 +124,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
 
     String doc = engine.create(tpl.c_str());
 
-    if (myConfig.isHttpPostSSL() && myConfig.isSkipSslOnTest() &&
+    if (_brewingConfig->isHttpPostSSL() && _brewingConfig->isSkipSslOnTest() &&
         runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
@@ -130,7 +132,8 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_END("push-http");
   }
 
-  if (myConfig.hasTargetHttpPost2() && intDelay.useHttp2() && enableHttpPost2) {
+  if (_brewingConfig->hasTargetHttpPost2() && intDelay.useHttp2() &&
+      enableHttpPost2) {
     PERF_BEGIN("push-http2");
     String tpl;
 
@@ -141,7 +144,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
 
     String doc = engine.create(tpl.c_str());
 
-    if (myConfig.isHttpPost2SSL() && myConfig.isSkipSslOnTest() &&
+    if (_brewingConfig->isHttpPost2SSL() && _brewingConfig->isSkipSslOnTest() &&
         runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
@@ -149,7 +152,8 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_END("push-http2");
   }
 
-  if (myConfig.hasTargetHttpGet() && intDelay.useHttp3() && enableHttpGet) {
+  if (_brewingConfig->hasTargetHttpGet() && intDelay.useHttp3() &&
+      enableHttpGet) {
     PERF_BEGIN("push-http3");
     String tpl;
 
@@ -160,7 +164,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
 
     String doc = engine.create(tpl.c_str());
 
-    if (myConfig.isHttpGetSSL() && myConfig.isSkipSslOnTest() &&
+    if (_brewingConfig->isHttpGetSSL() && _brewingConfig->isSkipSslOnTest() &&
         runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
@@ -168,7 +172,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_END("push-http3");
   }
 
-  if (myConfig.hasTargetInfluxDb2() && intDelay.useInflux() &&
+  if (_brewingConfig->hasTargetInfluxDb2() && intDelay.useInflux() &&
       enableInfluxdb2) {
     PERF_BEGIN("push-influxdb2");
     String tpl;
@@ -180,7 +184,8 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
 
     String doc = engine.create(tpl.c_str());
 
-    if (myConfig.isHttpInfluxDb2SSL() && myConfig.isSkipSslOnTest() &&
+    if (_brewingConfig->isHttpInfluxDb2SSL() &&
+        _brewingConfig->isSkipSslOnTest() &&
         runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else
@@ -188,7 +193,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_END("push-influxdb2");
   }
 
-  if (myConfig.hasTargetMqtt() && intDelay.useMqtt() && enableMqtt) {
+  if (_brewingConfig->hasTargetMqtt() && intDelay.useMqtt() && enableMqtt) {
     PERF_BEGIN("push-mqtt");
     String tpl;
 
@@ -199,7 +204,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
 
     String doc = engine.create(tpl.c_str());
 
-    if (myConfig.isMqttSSL() && myConfig.isSkipSslOnTest() &&
+    if (_brewingConfig->isMqttSSL() && _brewingConfig->isSkipSslOnTest() &&
         runMode != RunMode::measurementMode)
       Log.notice(F("PUSH: SSL enabled, skip run when not in gravity mode." CR));
     else

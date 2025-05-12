@@ -24,6 +24,8 @@ SOFTWARE.
 #ifndef SRC_HELPER_HPP_
 #define SRC_HELPER_HPP_
 
+#include <Arduino.h>
+
 // Force config mode
 bool checkPinConnected();
 

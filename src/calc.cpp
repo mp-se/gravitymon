@@ -26,13 +26,13 @@ SOFTWARE.
 #include <tinyexpr.h>
 
 #include <calc.hpp>
+#include <config_gravitymon.hpp>
 #include <cstdio>
 #include <log.hpp>
 #include <utils.hpp>
 
-double calculateGravity(double angle, double temp, const char *tempFormula) {
-  const char *formula = myConfig.getGravityFormula();
-
+double calculateGravity(const char *formula, double angle, double temp,
+                        const char *tempFormula) {
   if (tempFormula != 0) {
 #if LOG_LEVEL == 6
     Log.verbose(F("CALC: Using temporary formula." CR));
