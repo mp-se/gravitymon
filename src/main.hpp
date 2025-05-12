@@ -26,13 +26,14 @@ SOFTWARE.
 
 #include <Arduino.h>
 #include <stdlib.h>
+
 #include <espframework.hpp>
 
 enum RunMode {
-    measurementMode = 0,
-    configurationMode = 1,
-    wifiSetupMode = 2,
-    storageMode = 3
+  measurementMode = 0,
+  configurationMode = 1,
+  wifiSetupMode = 2,
+  storageMode = 3
 };
 
 extern RunMode runMode;

@@ -75,7 +75,7 @@ constexpr auto PARAM_PUSH_ENABLED = "push_enabled";
 
 class BrewingWebServer : public BaseWebServer {
  protected:
-  BrewingConfig* _brewingConfig = nullptr;
+  BrewingConfig *_brewingConfig = nullptr;
 
   volatile bool _sensorCalibrationTask = false;
   volatile bool _pushTestTask = false;
@@ -86,7 +86,7 @@ class BrewingWebServer : public BaseWebServer {
   String _pushTestTarget;
   int _pushTestLastCode;
   bool _pushTestLastSuccess, _pushTestEnabled;
- 
+
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
@@ -106,7 +106,8 @@ class BrewingWebServer : public BaseWebServer {
   bool writeFile(String fname, String data);
 
   virtual void doTaskSensorCalibration() = 0;
-  virtual void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push) = 0;
+  virtual void doTaskPushTestSetup(TemplatingEngine &engine,
+                                   BrewingPush &push) = 0;
   virtual void doTaskHardwareScanning(JsonObject &obj) = 0;
 
   virtual void doWebStatus(JsonObject &obj) = 0;
@@ -114,7 +115,7 @@ class BrewingWebServer : public BaseWebServer {
   virtual void doWebCalibrateStatus(JsonObject &obj) = 0;
 
  public:
-  explicit BrewingWebServer(BrewingConfig* brewingConfig);
+  explicit BrewingWebServer(BrewingConfig *brewingConfig);
 
   virtual bool setupWebServer(const char *serviceName);
   virtual void loop();

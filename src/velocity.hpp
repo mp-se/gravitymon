@@ -25,6 +25,7 @@ SOFTWARE.
 #define SRC_VELOCITY_HPP_
 
 #include <Arduino.h>
+
 #include <lowpass.hpp>
 #include <memory>
 

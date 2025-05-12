@@ -29,7 +29,7 @@ SOFTWARE.
 #include <Arduino.h>
 
 double calculateGravity(const char* formula, double angle, double tempC,
-                        const char *tempFormula = 0);
+                        const char* tempFormula = 0);
 double gravityTemperatureCorrectionC(double gravity, double tempC,
                                      double calTempC);
 

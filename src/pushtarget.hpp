@@ -25,8 +25,8 @@ SOFTWARE.
 #define SRC_PUSHTARGET_HPP_
 
 #include <basepush.hpp>
-#include <templating.hpp>
 #include <config_brewing.hpp>
+#include <templating.hpp>
 
 extern const char iPressureHttpPostFormat[] PROGMEM;
 extern const char iPressureHttpGetFormat[] PROGMEM;
@@ -139,7 +139,8 @@ class PushIntervalTracker {
   void update(const int index, const int defaultValue);
 
  public:
-  explicit PushIntervalTracker(BrewingConfig* brewingConfig) : _brewingConfig(brewingConfig) {}
+  explicit PushIntervalTracker(BrewingConfig* brewingConfig)
+      : _brewingConfig(brewingConfig) {}
 
   bool useHttp1() { return _counters[0] == 0 ? true : false; }
   bool useHttp2() { return _counters[1] == 0 ? true : false; }

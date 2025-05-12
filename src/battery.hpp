@@ -27,10 +27,10 @@ SOFTWARE.
 #include <Arduino.h>
 
 class BatteryConfigInterface {
-  public:
-   virtual int getVoltagePin() const = 0;
-   virtual float getVoltageFactor() const = 0;
- };
+ public:
+  virtual int getVoltagePin() const = 0;
+  virtual float getVoltageFactor() const = 0;
+};
 
 class BatteryVoltage {
  private:

@@ -24,17 +24,17 @@ SOFTWARE.
 #ifndef SRC_WEB_GRAVITYMON_HPP_
 #define SRC_WEB_GRAVITYMON_HPP_
 
-#if defined(GRAVITYMON) 
+#if defined(GRAVITYMON)
 
-#include <web_brewing.hpp>
-#include <config_gravitymon.hpp>
 #include <battery.hpp>
+#include <config_gravitymon.hpp>
 #include <pushtarget.hpp>
 #include <templating.hpp>
+#include <web_brewing.hpp>
 
 class GravitymonWebServer : public BrewingWebServer {
  private:
-  GravitymonConfig* _gravConfig = nullptr;
+  GravitymonConfig *_gravConfig = nullptr;
 
   void doTaskSensorCalibration();
   void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push);
@@ -45,13 +45,14 @@ class GravitymonWebServer : public BrewingWebServer {
   void doWebCalibrateStatus(JsonObject &obj);
 
  public:
-  explicit GravitymonWebServer(GravitymonConfig* gravConfig) : BrewingWebServer(gravConfig), _gravConfig(gravConfig) {}
+  explicit GravitymonWebServer(GravitymonConfig *gravConfig)
+      : BrewingWebServer(gravConfig), _gravConfig(gravConfig) {}
 };
 
 // Global instance created
 extern GravitymonWebServer myWebServer;
 
-#endif  // GRAVITYMON 
+#endif  // GRAVITYMON
 
 #endif  // SRC_WEB_GRAVITYMON_HPP_
 
