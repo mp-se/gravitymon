@@ -261,7 +261,7 @@
 <section id="the-main-features">
 <h2>The main features<a class="headerlink" href="#the-main-features" title="Permalink to this heading">¶</a></h2>
 <ul>
-<li><p><strong>Operates in two modes gravity monitoring and configuration mode</strong></p>
+<li><p><strong>Operates in two modes gravity monitoring and configuration mode</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>In <code class="docutils literal notranslate"><span class="pre">gravity</span> <span class="pre">monitoring</span></code> mode it behaves just like the iSpindle, it wakes up at regular intervals, measures
 angle/tile, temperature, calculates gravity and pushes the data to defined endpoints.</p>
 <p>In <code class="docutils literal notranslate"><span class="pre">configuration</span> <span class="pre">mode</span></code> the device is always active and the webserver is active. Here you can view the
@@ -273,7 +273,7 @@ the device so you don’t needs to wait for the device to wake up and push the d
 sequence can be handled via the web interface without need for additional software tools.</p>
 <p>See the <a class="reference internal" href="configuration.html#setting-up-device"><span class="std std-ref">Configuration</span></a> section for more information on how to trigger the configuration mode.</p>
 </li>
-<li><p><strong>Can send data to multiple endpoints</strong></p>
+<li><p><strong>Can send data to multiple endpoints</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>The original iSpindle can only have one destination, this software will push data to all defined endpoints so
 in theory you can use them all. However this will consume more battery power so use only as many as needed. Its much
 more efficient to have the endpoints on your local network than on the internet.</p>
@@ -305,7 +305,20 @@ of RAM will cause the device to crash. So enable SSL with caution and only when 
 to minimize the needed RAM but the remote service might not support that feature.</p>
 </div>
 <ul>
-<li><p><strong>Supports multiple gyro</strong></p>
+<li><p><strong>Gravity velocity</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32 Only</span></p>
+<p>Calculates the number of gravity points that will be lost over the coming 24 hour period.</p>
+<p>1 point equals an SG value of 0.001</p>
+<p>This gives an indication on how  active the yeast is. This feature uses the RTC MEM which is a memory that is not lost
+during deep sleep and only exist on the ESP32. The feature stores average data from the last 16 hours in 4 hour periods and use this for estimating
+the fermentation velocity. The number indicates now many gravity points that will be lost in the next 24 hours.</p>
+</li>
+<li><p><strong>Filtering gyro output</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32 Only</span></p>
+<p>From v2.2.0 the project now supports running data through a filter (Moving Avereage Filter) which helps to smooth out
+the data. This feature uses a RTC_MEM to allow data to be stored during deep sleep which only exist on ESP32 boards.
+The feature is only applied when the device is in gravity mode and data measurements are done.</p>
+<a class="reference internal image-reference" href="_images/filter.png"><img alt="Filter output" src="_images/filter.png" style="width: 300px;" /></a>
+</li>
+<li><p><strong>Supports multiple gyro</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>From v2.2 the project is now supporting additonal gyro implementations to keep up with the technology changes. Gyro detection is
 automatic. Currently the following gyros are supported:</p>
 <ul class="simple">
@@ -315,7 +328,7 @@ automatic. Currently the following gyros are supported:</p>
 </ul>
 <p>Thanks to Levi–G for his contribution to support the ICM-42670-p gyro. The main benefits with the ICM gyro is:</p>
 </li>
-<li><p><strong>Multiple Bluetooth data tranmission options</strong></p>
+<li><p><strong>Multiple Bluetooth data tranmission options</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32 Only</span></p>
 <p>TILT has been support since the ESP32c3 board was supported but in this release there are a few new options that allows for
 more data to be transmitted.</p>
 <ul class="simple">
@@ -325,25 +338,25 @@ more data to be transmitted.</p>
 <li><p>Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.</p></li>
 </ul>
 </li>
-<li><p><strong>WIFI Direct to GravityMon Gateway</strong></p>
+<li><p><strong>WIFI Direct to GravityMon Gateway</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>This works in combination with the GravityMon Gatewat that will act as an Access Point (AP) and receive data from GravityMon and then forward
 it to the right destination. The Gatewway works with both BLE and WIFI. This works only in gravity mode and will force the device to connect to the closest
 defined AP with the best reception.</p>
 </li>
-<li><p><strong>Create gravity formulas on the device</strong></p>
+<li><p><strong>Create gravity formulas on the device</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>Another big difference is that this software can create the gravity formula in the device, just enter the
 angle/gravity data that you have collected. You will also see a graph simulating how the formula would work.</p>
 <p>Currently the device can handle 20 data points which should be enough to get a accurate formula.</p>
 <p>You can also analyse how the formula compares to your raw data and formulas of different complexities.</p>
 </li>
-<li><p><strong>Customize the data format being sent to push targets</strong></p>
+<li><p><strong>Customize the data format being sent to push targets</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>In order to make it easier to support more targets there is a built in format editor that can be used to
 customize the data that is to be sent. This way you can easily adapt the software to new targets without coding.
 If you have a good template please share it on the github repository and I will add it to the documentation
 for other users to enjoy. See the <a class="reference internal" href="format-template.html#format-template"><span class="std std-ref">Format Templates</span></a> for more information. See <a class="reference internal" href="services.html#services"><span class="std std-ref">Service Integration</span></a> for a list of
 services currently validated.</p>
 </li>
-<li><p><strong>Validation of common configuration errors</strong></p>
+<li><p><strong>Validation of common configuration errors</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>Common configuration errors or hardware problems will now be displayed on the front page. The following are checked:</p>
 <ul class="simple">
 <li><p>Newer software version available</p></li>
@@ -356,38 +369,38 @@ services currently validated.</p>
 <li><p>Battery voltage out of range (Not Floaty build)</p></li>
 </ul>
 </li>
-<li><p><strong>Automatic temperature adjustment of gravity reading</strong></p>
+<li><p><strong>Automatic temperature adjustment of gravity reading</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>If you want to correct gravity based on beer temperature you can do this in the formula but here is a nice
 feature that can correct the gravity as a second step making this independent of the formula.</p>
 </li>
-<li><p><strong>Migration of formula and gyro calibration from iSpindel</strong></p>
+<li><p><strong>Migration of formula and gyro calibration from iSpindel</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266 Only</span></p>
 <p>If GravityMon is installed over an working ispindel it can migrate calibration formula and gyro settings making
 the transition smooth.</p>
 </li>
-<li><p><strong>OTA support from webserver</strong></p>
+<li><p><strong>OTA support from webserver</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>When starting up in configuration mode the device will check for a software update from a webserver. This is an easily
 way to keep the software up to date. In the future I might add a hosted endpoint for providing updates. OTA can also be
 done over a SSL connection.</p>
 </li>
-<li><p><strong>Backup and Restore of settings</strong></p>
+<li><p><strong>Backup and Restore of settings</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>All the configuration of the device can be exported and stored as a text file (json). This can be used to restore settings in case of
 hardware problems. You can also create a template of your settings and use that on multiple devices. Just make sure to change the “id” fields
 to match your device id (can be found on the index page).</p>
 </li>
-<li><p><strong>DS18B20 temperature adjustments</strong></p>
+<li><p><strong>DS18B20 temperature adjustments</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>You can adjust the temperature reading of the temperature sensor. In normal cases this should not be needed since
 the sensors should be calibrated.</p>
 </li>
-<li><p><strong>Gyro Movement</strong></p>
+<li><p><strong>Gyro Movement</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>The software will detect if the gyro is moving and if this is the case it will go back to sleep for 60 seconds.
 This way we should avoid faulty measurements and peaks in the graphs.</p>
 </li>
-<li><p><strong>WIFI connection issues</strong></p>
+<li><p><strong>WIFI connection issues</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>The software will not wait indefinitely for a wifi connection. If it takes longer than 20 seconds to connect then
 the device will try the secondary wifi configuration, and that also fails it will go into deep sleep for 60 seconds and then
 retry later. This to conserve batter as much as possible.</p>
 </li>
-<li><p><strong>Use gyro temperature sensor</strong></p>
+<li><p><strong>Use gyro temperature sensor</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>This works fine when the device has time to cool down between measurements and it saves up to 400 ms.
 My testing shows that this is quite accurate with a deviation of less than 0.3C. This
 reduces the run time by 20% (with optimal wifi connection).</p>
@@ -400,25 +413,25 @@ be 0.5-1.0C higher.</p>
 </ul>
 <a class="reference internal image-reference" href="_images/temp1.png"><img alt="Gyro temp vs DS18B20" src="_images/temp1.png" style="width: 800px;" /></a>
 <ul>
-<li><p><strong>Celsius or Fahrenheit</strong></p>
+<li><p><strong>Celsius or Fahrenheit</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>You can switch between different temperature formats. GravityMon will always use C for it’s internal calculations and
 convert to F when displayed.</p>
 </li>
-<li><p><strong>SG or Plato</strong></p>
+<li><p><strong>SG or Plato</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>You can switch between different gravity formats. GravityMon will always use SG for it’s internal calculations and
 convert to Plato when displayed.</p>
 </li>
-<li><p><strong>Stable gyro data</strong></p>
+<li><p><strong>Stable gyro data</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>The device will read the gyro 50 times to get an accurate reading. If the standard deviation is to high it will not
 use the data since this is inaccurate and the device is probably moving, probably do to active fermentation or movement of
 fermentation vessel. This sequence takes 900 ms seconds to execute and besides wifi connection this is what consumes the most
 battery. With more testing this might be changes to either speed up or provide more stable readings.</p>
 </li>
-<li><p><strong>Crash detection and Error Logging</strong></p>
+<li><p><strong>Crash detection and Error Logging</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>There is a build in logging function so that errors that occurs can be detected and logged to a file. On the ESP8266 crashes will also
 be logged so that these problems can be detected and fixed. Crash logging is not available on the ESP32 variants.</p>
 </li>
-<li><p><strong>Performance measurements</strong></p>
+<li><p><strong>Performance measurements</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>I’ve also create a small library to measure execution code in some areas of the code that i know is time consuming. This
 way I can find a good balance between performance and quality. This is a lot of help trying to figure out where bottlenecks
 are in the code and where to put optimization efforts. Examples of real measurements:</p>
@@ -433,11 +446,11 @@ are in the code and where to put optimization efforts. Examples of real measurem
 </ul>
 <p>See the <a class="reference internal" href="compiling.html#compiling-the-software"><span class="std std-ref">Compiling the software</span></a> for more information.</p>
 </li>
-<li><p><strong>Battery saving</strong></p>
+<li><p><strong>Battery saving</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>If the battery voltage drops below 20%, then the device will enter battery savings mode
 and change the sleep interval to 1 hour.</p>
 </li>
-<li><p><strong>Custom board support</strong></p>
+<li><p><strong>Custom board support</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>There are lots of boards out there that can support a gravitymonitor and now there is a possibility to
 add custom builds for boards that I dont have access to, in sense a community approach where everyone can
 add new boards that can be supported. See: <a class="reference internal" href="custom.html#custom-boards"><span class="std std-ref">Custom boards</span></a></p>
