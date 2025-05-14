@@ -39,6 +39,7 @@ constexpr auto CONFIG_USE_WIFI_DIRECT = "use_wifi_direct";
 constexpr auto CONFIG_SLEEP_INTERVAL = "sleep_interval";
 constexpr auto CONFIG_VOLTAGE_FACTOR = "voltage_factor";
 constexpr auto CONFIG_VOLTAGE_CONFIG = "voltage_config";
+constexpr auto CONFIG_BATTERY_TYPE = "battery_type";
 constexpr auto CONFIG_TEMP_ADJ = "temp_adjustment_value";
 constexpr auto CONFIG_VOLTAGE_PIN = "voltage_pin";
 constexpr auto CONFIG_BLE_FORMAT = "ble_format";
@@ -69,6 +70,7 @@ class BrewingConfig : public BaseConfig,
 #else
 #error "Unknown platform"
 #endif
+  BatteryType _batteryType;
 
   float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;
@@ -140,6 +142,12 @@ class BrewingConfig : public BaseConfig,
   }
   void setVoltageConfig(String s) {
     _voltageConfig = s.toFloat();
+    _saveNeeded = true;
+  }
+
+  BatteryType getBatteryType() const { return _batteryType; }
+  void setBatteryType(int t) {
+    _batteryType = (BatteryType)t;
     _saveNeeded = true;
   }
 

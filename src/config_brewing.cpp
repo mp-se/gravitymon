@@ -37,6 +37,7 @@ void BrewingConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_TOKEN] = getToken();
   doc[CONFIG_TOKEN2] = getToken2();
   doc[CONFIG_SLEEP_INTERVAL] = getSleepInterval();
+  doc[CONFIG_BATTERY_TYPE] = (int)getBatteryType();
   doc[CONFIG_VOLTAGE_FACTOR] =
       serialized(String(getVoltageFactor(), DECIMALS_BATTERY));
   doc[CONFIG_VOLTAGE_CONFIG] =
@@ -73,6 +74,8 @@ void BrewingConfig::parseJson(JsonObject& doc) {
     setVoltageConfig(doc[CONFIG_VOLTAGE_CONFIG].as<float>());
   if (!doc[CONFIG_TEMP_ADJ].isNull())
     setTempSensorAdjC(doc[CONFIG_TEMP_ADJ].as<float>());
+  if (!doc[CONFIG_BATTERY_TYPE].isNull())
+    setBatteryType(doc[CONFIG_BATTERY_TYPE].as<int>());
 
   if (!doc[CONFIG_SKIP_SSL_ON_TEST].isNull())
     setSkipSslOnTest(doc[CONFIG_SKIP_SSL_ON_TEST].as<bool>());
