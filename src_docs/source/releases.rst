@@ -13,6 +13,10 @@ v2.2.0
 
 New features
 ++++++++++++
+* (beta4) Added onewire scanning of devices to hardware test
+* (beta4) Rewritten battery percentage to support more battery types.
+* (beta4) Battery saving mode now starts when 30% capacity is left.
+
 * (beta3) Removed flash logging of runtime data since this is no longer needed
 * (beta3) Added gravity velocity (points per 24h) as new datapoints (currently experimental)
 * (beta3) Added filter to gyro reading in order to smooth out readings (5 point moving avegage with min/max removed)
