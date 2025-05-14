@@ -213,17 +213,18 @@ void GravitymonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
 }
 
 void GravitymonWebServer::doTaskHardwareScanning(JsonObject &obj) {
+#if defined(ESP8266)
   JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
 
-#if defined(ESP8266)
-  const uint8_t owPins[] = { /*D0,*/ D1, D2, D3, D4, D5, D6, D7, D8 /*, RX, TX*/};
+  const uint8_t owPins[] = {/*D0,*/ D1, D2, D3, D4,
+                            D5,         D6, D7, D8 /*, RX, TX*/};
 
   for (uint8_t i = 0, j = 0; i < sizeof(owPins); i++) {
     // Log.notice(F("WEB : Scanning onewire pin %d." CR), owPins[i]);
     uint8_t addr[8];
     OneWire ds(owPins[i]);
 
-    if( ds.search(&addr[0]) ) {
+    if (ds.search(&addr[0])) {
       Log.notice(F("WEB : Found onewire on pin %d." CR), owPins[i]);
       onew[j] = owPins[i];
     }
