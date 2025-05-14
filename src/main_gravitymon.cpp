@@ -436,7 +436,7 @@ void goToSleep(int sleepInterval) {
   PERF_END("run-time");
   PERF_PUSH();
 
-  if (myConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
+  if (myConfig.isBatterySaving() && getBatteryPercentage(volt, BatteryType::LithiumIon) < 30) {
     sleepInterval = 3600;
   }
 
