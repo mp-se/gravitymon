@@ -46,4 +46,13 @@ constexpr auto DECIMALS_TILT = 3;
 constexpr auto DECIMALS_PRESSURE = 3;
 constexpr auto DECIMALS_BATTERY = 2;
 
+// Ensure we get the correct PIN configurations for the build
+#if defined(PRESSUREMON)
+#include <main_pressuremon.hpp>
+#endif
+
+#if defined(GRAVITYMON)
+#include <main_gravitymon.hpp>
+#endif
+
 #endif  // SRC_MAIN_HPP_
