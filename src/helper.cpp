@@ -41,7 +41,7 @@ bool checkPinConnected(int pin1, int pin2) {
   delay(5);
   digitalWrite(pin2, 1);
   delay(5);
-  int i = digitalRead(pin2);
+  int i = digitalRead(pin1);
   digitalWrite(pin2, 0);
   return i == LOW ? false : true;
 }
