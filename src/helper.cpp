@@ -31,23 +31,19 @@ extern "C" {
 void write_bytes(int fd, char* buf, int n) { EspSerial.print(*buf); }
 }
 
-bool checkPinConnected() {
-#if defined(PIN_CFG1) && defined(PIN_CFG2)
+bool checkPinConnected(int pin1, int pin2) {
 #if defined(ESP8266)
-  pinMode(PIN_CFG1, INPUT);
+  pinMode(pin1, INPUT);
 #else
-  pinMode(PIN_CFG1, INPUT_PULLDOWN);
+  pinMode(pin1, INPUT_PULLDOWN);
 #endif
-  pinMode(PIN_CFG2, OUTPUT);
+  pinMode(pin2, OUTPUT);
   delay(5);
-  digitalWrite(PIN_CFG2, 1);
+  digitalWrite(pin2, 1);
   delay(5);
-  int i = digitalRead(PIN_CFG1);
-  digitalWrite(PIN_CFG2, 0);
+  int i = digitalRead(pin2);
+  digitalWrite(pin2, 0);
   return i == LOW ? false : true;
-#else
-  return false;
-#endif
 }
 
 void printBuildOptions() {
