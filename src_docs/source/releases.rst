@@ -31,7 +31,8 @@ New features
 
 Bugs fixed
 ++++++++++
-* Fixed floaty build so it will start up correcly after upgrading to OneWireNG
+* (beta4) Fixed UI during wifi setup mode when sensors are not initialized.
+* (beta1) Fixed floaty build so it will start up correcly after upgrading to OneWireNG
 
 
 v2.1.0
