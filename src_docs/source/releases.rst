@@ -13,6 +13,7 @@ v2.2.0
 
 New features
 ++++++++++++
+* (beta4) Adding tcp socket transmission for http port 1 target (secure connection is not supported)
 * (beta4) Added onewire scanning of devices to hardware test
 * (beta4) Rewritten battery percentage to support more battery types.
 * (beta4) Battery saving mode now starts when 30% capacity is left.
