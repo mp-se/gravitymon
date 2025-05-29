@@ -22,7 +22,8 @@
       "variant": "super_mini_esp32c3"
     },
     "connectivity": [
-      "wifi"
+      "wifi",
+      "bluetooth"
     ],
     "debug": {
       "openocd_target": "esp32c3.cfg"
