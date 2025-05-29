@@ -45,6 +45,7 @@ constexpr auto PARAM_IP = "ip";
 constexpr auto PARAM_WIFI_SETUP = "wifi_setup";
 constexpr auto PARAM_I2C = "i2c";
 constexpr auto PARAM_ADRESS = "adress";
+constexpr auto PARAM_BUS = "bus";
 constexpr auto PARAM_RESOLUTION = "resolution";
 constexpr auto PARAM_FAMILY = "family";
 constexpr auto PARAM_CHIP = "chip";

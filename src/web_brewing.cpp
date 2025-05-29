@@ -604,6 +604,7 @@ void BrewingWebServer::loop() {
       if (err == 0) {
         Log.notice(F("WEB : Found device at 0x%x." CR), i);
         i2c[j][PARAM_ADRESS] = "0x" + String(i, 16);
+        i2c[j][PARAM_BUS] = "Wire";
         j++;
       }
     }
