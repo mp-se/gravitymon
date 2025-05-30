@@ -35,7 +35,7 @@ SOFTWARE.
 #include <memory>
 #include <tempsensor.hpp>
 
-#if defined(ESP32)
+#if defined(ESP32) && defined(ENABLE_RTCMEM)
 
 #include <esp_attr.h>
 
@@ -178,7 +178,7 @@ class GyroSensor : public SecondayTempSensorInterface {
  public:
   explicit GyroSensor(GyroConfigInterface* gyroConfig) {
     _gyroConfig = gyroConfig;
-#if defined(ESP32)
+#if defined(ESP32) && defined(ENABLE_RTCMEM)
     _filter.reset(new TrimmedMovingAverageFilter(&myRtcFilterData));
     // _filter.reset(new MovingAverageFilter(&myRtcFilterData));
 #endif
