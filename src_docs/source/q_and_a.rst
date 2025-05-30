@@ -1,6 +1,13 @@
 Q & A
 #####
 
+I cant see any sensor values
+----------------------------
+When in WIFI setup mode the device will not initialize any sensors so no data will be available when in this mode.
+
+If you are running in configuration mode there is a hardware scan feature under support that can be used to see what sensors are connected to the device.
+
+
 My device is no going in to sleep after fully charged
 -----------------------------------------------------
 - Calibrate the device in the web interface
@@ -148,3 +155,12 @@ WIFI error codes
 * 5 - Connection lot.
 * 6 - Wrong password.
 * 7 - Disconnected by AP.
+
+I have a hidden WiFi SSID
+-------------------------
+
+Its not recommended to use hidden SSIDs with the ESP boards, but it will work. However the WiFi scanning will not be able to 
+detect the hidden SSID so you have the following options:
+
+* Temporarily make the SSID visible and connect the device to it.
+* Use the wifi configuration tool in the web flasher which allows you to enter any SSID/password combination.
