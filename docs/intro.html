@@ -266,10 +266,19 @@ more information.</p>
 <p>The first step is to flash the firmware, I recommend using Brewflasher as the easy option. Detailed
 instructions can be found here <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Software Installation</span></a></p>
 </section>
-<section id="step-2-setup-wifi-configuration">
-<h2>Step 2 - Setup WIFI &amp; Configuration<a class="headerlink" href="#step-2-setup-wifi-configuration" title="Permalink to this heading">¶</a></h2>
-<p>When the device starts up the first time it will first start an WIFI access point so that the WIFI Settings
-can be configured. The wifi settings can be found under the Device - WIFI menu.</p>
+<section id="step-2-setup-wifi">
+<h2>Step 2 - Setup WIFI<a class="headerlink" href="#step-2-setup-wifi" title="Permalink to this heading">¶</a></h2>
+<p>You can set the wifi settings using the flasher on gravitymon.com which is the easy way.</p>
+<p>When the device starts up the first time and it does not have any wifi settings, it first start an WIFI access point
+so that the WIFI Settings can be configured. The wifi settings can be found under the Device - WIFI menu.</p>
+<p>When in wifi setup mode neither the gyro or temperature sensor will be initialized. This is by design since if these would
+cause a startup error there would be no way to get into the device.</p>
+<p>Once the device is restarted it will connect to the wifi and be accessible as any device on your network using the
+mdns name or ip address.</p>
+<p>You can do this step before soldering the esp to ensure it works as expected.</p>
+</section>
+<section id="step-3-device-configuration">
+<h2>Step 3 - Device Configuration<a class="headerlink" href="#step-3-device-configuration" title="Permalink to this heading">¶</a></h2>
 <p>The user interface does no longer require internet access for most functions, the exception is the graphs which
 require access to chartjs in order to render properly. This is due to lack of memory on the device.</p>
 <p>The device will go into <cite>configuration mode</cite> and start a web server for doing the initial configuration.
@@ -316,8 +325,8 @@ the measurements and let the device derive the formula for you.</p>
 voltage are then the calculation is off. This could block the device from going to sleep properly.</p>
 </section>
 </section>
-<section id="step-4-completed">
-<h2>Step 4 - Completed<a class="headerlink" href="#step-4-completed" title="Permalink to this heading">¶</a></h2>
+<section id="step-5-completed">
+<h2>Step 5 - Completed<a class="headerlink" href="#step-5-completed" title="Permalink to this heading">¶</a></h2>
 <p>You are now done and can enjoy the GravityMon software. Check out the <a class="reference internal" href="configuration.html#setting-up-device"><span class="std std-ref">Configuration</span></a> section for other configuration options.</p>
 <p>If you want to enter the configuration mode place the device flat on a surface and do a reset (or wait until it wakes up).
 Its recommended to attach the device to power when you have it in <cite>configuration mode</cite> so the battery is not drained.</p>
@@ -382,7 +391,8 @@ Its recommended to attach the device to power when you have it in <cite>configur
             <ul>
 <li><a class="reference internal" href="#">Getting started</a><ul>
 <li><a class="reference internal" href="#step-1-flash-the-device">Step 1 - Flash the device</a></li>
-<li><a class="reference internal" href="#step-2-setup-wifi-configuration">Step 2 - Setup WIFI &amp; Configuration</a><ul>
+<li><a class="reference internal" href="#step-2-setup-wifi">Step 2 - Setup WIFI</a></li>
+<li><a class="reference internal" href="#step-3-device-configuration">Step 3 - Device Configuration</a><ul>
 <li><a class="reference internal" href="#configuration-device-settings-device-name">Configuration - Device Settings - Device Name</a></li>
 <li><a class="reference internal" href="#configuration-device-settings-gyro-calibration">Configuration - Device Settings - Gyro Calibration</a></li>
 <li><a class="reference internal" href="#configuration-push-settings">Configuration - Push Settings</a></li>
@@ -391,7 +401,7 @@ Its recommended to attach the device to power when you have it in <cite>configur
 <li><a class="reference internal" href="#check-battery-voltage">Check battery voltage</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#step-4-completed">Step 4 - Completed</a></li>
+<li><a class="reference internal" href="#step-5-completed">Step 5 - Completed</a></li>
 </ul>
 </li>
 </ul>

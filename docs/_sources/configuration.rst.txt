@@ -3,17 +3,26 @@
 Configuration
 #############
 
-The device can operate in two modes and must be in ``configuration mode`` in order for the web 
+In the ``measurement mode`` the UI is not enabled and the device will go into deep sleep once the sensors has 
+been read and data has been transmitted.
+
+The device can operate in modes and must be in ``configuration mode`` in order for the web 
 server to be active. The device (esp) LED will flash slowly or show blue color when the device 
-is in configuration mode. If the LED is constantly or show white color then the device is in 
-WIFI setup mode. The ESP32c3 and ESP32s3 has a LED that can change color.
+is in configuration mode. 
+
+If the LED is constant or show white color then the device is in  WIFI setup mode. 
+In ``wifi setup mode`` that is triggered when pressing the reset button multiple times or there 
+is no wifi settings stored. This mode is onlu used for  configuring the wifi settings since sensors 
+are not active in this mode. It can also be used as a 
+failsafe mode if the sensors should cause startup issues.
 
 One of the following conditions will place the device in ``configuration mode``:
 
-- Gyro has not been calibrated
-- Sleep mode has been disabled in the web interface
+- Gyro has not been calibrated (Only applies to the MPU6050/MPU6500)
+- Sleep mode has been disabled in the web user interface
 - Placed in horizontal mode 85-90 degrees
-- Charger connected >4.15V (or the value that is configured). This does not work on the Floaty variant due to lack of hardware support.
+- Charger connected >4.15V or the value that is configured (This does not work on the Floaty variant due to lack of hardware support)
+- The TX/RX pins are connected which will force the device into configuration mode.
 
 .. tip::
 
@@ -23,7 +32,6 @@ One of the following conditions will place the device in ``configuration mode``:
    If the LED is solid on show white color then it detected a double reset and has entered WIFI setup mode, in 
    this case just press reset twice again.
 
-From v2 the WIFI setup is built into the UI so everything can now be changed from one User Interface.
 
 Home page 
 =========

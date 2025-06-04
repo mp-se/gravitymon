@@ -13,6 +13,11 @@ v2.2.0
 
 New features
 ++++++++++++
+* (beta4) Adding tcp socket transmission for http port 1 target (secure connection is not supported)
+* (beta4) Added onewire scanning of devices to hardware test
+* (beta4) Rewritten battery percentage to support more battery types.
+* (beta4) Battery saving mode now starts when 30% capacity is left.
+
 * (beta3) Removed flash logging of runtime data since this is no longer needed
 * (beta3) Added gravity velocity (points per 24h) as new datapoints (currently experimental)
 * (beta3) Added filter to gyro reading in order to smooth out readings (5 point moving avegage with min/max removed)
@@ -26,7 +31,8 @@ New features
 
 Bugs fixed
 ++++++++++
-* Fixed floaty build so it will start up correcly after upgrading to OneWireNG
+* (beta4) Fixed UI sensor error messagesduring wifi setup mode when sensors are not initialized.
+* (beta1) Fixed floaty build so it will start up correcly after upgrading to OneWireNG
 
 
 v2.1.0

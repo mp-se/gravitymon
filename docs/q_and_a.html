@@ -258,6 +258,11 @@
         <article role="main" id="furo-main-content">
           <section id="q-a">
 <h1>Q &amp; A<a class="headerlink" href="#q-a" title="Permalink to this heading">¶</a></h1>
+<section id="i-cant-see-any-sensor-values">
+<h2>I cant see any sensor values<a class="headerlink" href="#i-cant-see-any-sensor-values" title="Permalink to this heading">¶</a></h2>
+<p>When in WIFI setup mode the device will not initialize any sensors so no data will be available when in this mode.</p>
+<p>If you are running in configuration mode there is a hardware scan feature under support that can be used to see what sensors are connected to the device.</p>
+</section>
 <section id="my-device-is-no-going-in-to-sleep-after-fully-charged">
 <h2>My device is no going in to sleep after fully charged<a class="headerlink" href="#my-device-is-no-going-in-to-sleep-after-fully-charged" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -394,6 +399,15 @@ to memory leaks.</p>
 <li><p>7 - Disconnected by AP.</p></li>
 </ul>
 </section>
+<section id="i-have-a-hidden-wifi-ssid">
+<h2>I have a hidden WiFi SSID<a class="headerlink" href="#i-have-a-hidden-wifi-ssid" title="Permalink to this heading">¶</a></h2>
+<p>Its not recommended to use hidden SSIDs with the ESP boards, but it will work. However the WiFi scanning will not be able to
+detect the hidden SSID so you have the following options:</p>
+<ul class="simple">
+<li><p>Temporarily make the SSID visible and connect the device to it.</p></li>
+<li><p>Use the wifi configuration tool in the web flasher which allows you to enter any SSID/password combination.</p></li>
+</ul>
+</section>
 </section>
 
         </article>
@@ -444,6 +458,7 @@ to memory leaks.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Q &amp; A</a><ul>
+<li><a class="reference internal" href="#i-cant-see-any-sensor-values">I cant see any sensor values</a></li>
 <li><a class="reference internal" href="#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
 <li><a class="reference internal" href="#what-does-the-flashing-led-mean">What does the flashing led mean?</a></li>
 <li><a class="reference internal" href="#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
@@ -454,6 +469,7 @@ to memory leaks.</p>
 <li><a class="reference internal" href="#http-error-codes">HTTP error codes</a></li>
 <li><a class="reference internal" href="#mqtt-error-codes">MQTT error codes</a></li>
 <li><a class="reference internal" href="#wifi-error-codes">WIFI error codes</a></li>
+<li><a class="reference internal" href="#i-have-a-hidden-wifi-ssid">I have a hidden WiFi SSID</a></li>
 </ul>
 </li>
 </ul>
