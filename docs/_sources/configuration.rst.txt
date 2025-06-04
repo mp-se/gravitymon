@@ -8,20 +8,21 @@ been read and data has been transmitted.
 
 The device can operate in modes and must be in ``configuration mode`` in order for the web 
 server to be active. The device (esp) LED will flash slowly or show blue color when the device 
-is in configuration mode. 
+is in ``configuration mode``. 
 
 If the LED is constant or show white color then the device is in ``wifi setup mode`` where access is done through 
-the Access Point. It can also be triggered when pressing the reset button multiple times. This mode is only 
-used for configuring the wifi settings since sensors are not active in this mode. It can also be used as a 
-failsafe mode if the sensors cause startup issues.
+the Access Point provided by the software. It can also be triggered when pressing the reset button multiple times. 
+This mode is only used for configuring the wifi settings since sensors are not active in this mode. It can also 
+be used as a failsafe mode if the sensors cause startup issues.
 
 One of the following conditions will place the device in ``configuration mode``:
 
 - Gyro has not been calibrated (Only applies to the MPU6050/MPU6500)
-- Sleep mode has been disabled in the web user interface
-- Placed in horizontal mode 85-90 degrees
-- Charger connected >4.15V or the value that is configured (This does not work on the Floaty variant due to lack of hardware support)
+- Configuration mode has been forced in the web user interface on main page.
 - The TX/RX pins are connected which will force the device into configuration mode.
+- Placed in horizontal mode 85-90 degrees on gyro
+- Battery shows >4.15V or the value that is configured (This does not work on the Floaty variant due to lack of hardware support)
+- Battery shows belove 2V
 
 .. tip::
 
