@@ -10,11 +10,10 @@ The device can operate in modes and must be in ``configuration mode`` in order f
 server to be active. The device (esp) LED will flash slowly or show blue color when the device 
 is in configuration mode. 
 
-If the LED is constant or show white color then the device is in  WIFI setup mode. 
-In ``wifi setup mode`` that is triggered when pressing the reset button multiple times or there 
-is no wifi settings stored. This mode is onlu used for  configuring the wifi settings since sensors 
-are not active in this mode. It can also be used as a 
-failsafe mode if the sensors should cause startup issues.
+If the LED is constant or show white color then the device is in ``wifi setup mode`` where access is done through 
+the Access Point. It can also be triggered when pressing the reset button multiple times. This mode is only 
+used for configuring the wifi settings since sensors are not active in this mode. It can also be used as a 
+failsafe mode if the sensors cause startup issues.
 
 One of the following conditions will place the device in ``configuration mode``:
 
@@ -26,11 +25,8 @@ One of the following conditions will place the device in ``configuration mode``:
 
 .. tip::
 
-   The easiest way to enter configuration mode is to place the device on a flat surface and press the 
-   reset button on the esp a 3 times, each attempt must be within 3 seconds. 
-   
-   If the LED is solid on show white color then it detected a double reset and has entered WIFI setup mode, in 
-   this case just press reset twice again.
+  The easiest way to enter configuration mode is to place the device on a flat surface and press the 
+  reset button once. 
 
 
 Home page 
