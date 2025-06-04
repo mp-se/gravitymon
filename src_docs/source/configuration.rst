@@ -22,7 +22,7 @@ One of the following conditions will place the device in ``configuration mode``:
 - The TX/RX pins are connected which will force the device into configuration mode.
 - Placed in horizontal mode 85-90 degrees on gyro
 - Battery shows >4.15V or the value that is configured (This does not work on the Floaty variant due to lack of hardware support)
-- Battery shows belove 2V
+- Battery shows below 2V
 
 .. tip::
 
