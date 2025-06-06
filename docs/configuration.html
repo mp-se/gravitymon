@@ -397,6 +397,7 @@ been running the value would be totally off.</p>
 <section id="device-wifi">
 <h3>Device - WIFI<a class="headerlink" href="#device-wifi" title="Permalink to this heading">¶</a></h3>
 <a class="reference internal image-reference" href="_images/ui-device-wifi.png"><img alt="Device WIFI" src="_images/ui-device-wifi.png" style="width: 800px;" /></a>
+<p>If you have hidden SSID for your network then use the webflasher to configure the wifi.</p>
 <ul>
 <li><p><strong>SSID #1:</strong></p>
 <p>Select the desired primary SSID to use.</p>
@@ -537,6 +538,10 @@ with the current interval.</p>
 <li><p><strong>HTTP URL:</strong></p>
 <p>Endpoint to send data via http. Default format used is <a class="reference internal" href="data.html#data-formats-ispindle"><span class="std std-ref">HTTP Post, iSpindle format</span></a>. You can customize the format below.</p>
 <p>If you add the prefix <cite>https://</cite> then the device will use SSL when sending data.</p>
+</li>
+<li><p><strong>Use TCP:</strong></p>
+<p>This setting skips using HTTP as the protocol and just send data through the connection. Added to support services
+that does not have a http server.</p>
 </li>
 <li><p><strong>HTTP Headers</strong></p>
 <p>You can define 2 http headers. Enter a value or just select one from the list.</p>
