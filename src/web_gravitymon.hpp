@@ -47,6 +47,10 @@ class GravitymonWebServer : public BrewingWebServer {
  public:
   explicit GravitymonWebServer(GravitymonConfig *gravConfig)
       : BrewingWebServer(gravConfig), _gravConfig(gravConfig) {}
+
+  virtual bool setupWebServer(const char *serviceName);
+
+  void webHandleGyro(AsyncWebServerRequest *request);
 };
 
 // Global instance created

@@ -266,6 +266,31 @@ void GravitymonWebServer::doTaskHardwareScanning(JsonObject &obj) {
   obj[PARAM_GYRO][PARAM_FAMILY] = myGyro.getGyroFamily();
 }
 
+void GravitymonWebServer::webHandleGyro(AsyncWebServerRequest *request) {
+  Log.notice(F("WEB : webServer callback for /api/gyro(get)." CR));
+
+  AsyncJsonResponse *response = new AsyncJsonResponse(false);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+
+  double angle = 0;  // Indicate we have no valid gyro value
+
+  if (myGyro.hasValue()) angle = myGyro.getAngle();
+
+  obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+
+  response->setLength();
+  request->send(response);
+}
+
+bool GravitymonWebServer::setupWebServer(const char *serviceName) {
+  BrewingWebServer::setupWebServer(serviceName);
+
+  _server->on("/api/gyro", HTTP_GET,
+              std::bind(&GravitymonWebServer::webHandleGyro, this,
+                        std::placeholders::_1));
+  return true;
+}
+
 #endif  // GRAVITYMON
 
 // EOF
