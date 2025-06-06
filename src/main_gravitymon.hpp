@@ -102,7 +102,7 @@ SOFTWARE.
 #define PIN_GND A18
 #define CFG_FILENAMEBIN "firmware32lite.bin"
 
-#elif defined(OLIMEX_ESP32_C3_DEVKIT_LIPO)
+#elif defined(OLIMEX_ESP32C3_DEVKIT_LIPO)
 // Hardware config for ESP32C3 from Olimex with build in Charger
 // (ESP32-C3-DevKit-Lipo)
 // ------------------------------------------------------
@@ -112,9 +112,9 @@ SOFTWARE.
 #define PIN_VOLT GPIO3
 #define PIN_CFG1 GPIO4
 #define PIN_CFG2 GPIO20
-#define CFG_FILENAMEBIN "custom-olimex_esp32_c3_devkit_lipo.bin"
+#define CFG_FILENAMEBIN "custom-olimex_esp32c3_devkit_lipo.bin"
 
-#elif defined(SUPER_MINI_ESP32C3)
+#elif defined(TENSTAR_ESP32C3_SUPER_MINI)
 // Hardware config for SUPER_MINI_ESP32C3, iSpindel hardware
 // ------------------------------------------------------
 #define PIN_SDA 7
@@ -124,7 +124,7 @@ SOFTWARE.
 
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
-#define CFG_FILENAMEBIN "custom-super_mini_esp32c3.bin"
+#define CFG_FILENAMEBIN "custom-tenstar_esp32c3_super_mini.bin"
 
 #else
 #warning "Unknown board type"
