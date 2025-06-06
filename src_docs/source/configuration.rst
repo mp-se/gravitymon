@@ -188,9 +188,11 @@ Device - WIFI
   :width: 800
   :alt: Device WIFI
 
+If you have hidden SSID for your network then use the webflasher to configure the wifi.
+
 * **SSID #1:**
 
-  Select the desired primary SSID to use. 
+  Select the desired primary SSID to use.
 
 * **Password #1:**
 
@@ -381,6 +383,11 @@ Push - HTTP Post
   Endpoint to send data via http. Default format used is :ref:`data-formats-ispindle`. You can customize the format below.
 
   If you add the prefix `https://` then the device will use SSL when sending data.
+
+* **Use TCP:**
+
+  This setting skips using HTTP as the protocol and just send data through the connection. Added to support services 
+  that does not have a http server.
 
 * **HTTP Headers** 
 
