@@ -26,13 +26,14 @@ SOFTWARE.
 
 #if defined(GRAVITYMON)
 
-#include <templating.hpp>
 #include <config_gravitymon.hpp>
+#include <templating.hpp>
 
-void setupTemplateEngineGravity(GravitymonConfig *config, TemplatingEngine& engine, float angle,
-    float velocity, float gravitySG,
-    float corrGravitySG, float tempC, float runTime,
-    float voltage);
+void setupTemplateEngineGravity(GravitymonConfig* config,
+                                TemplatingEngine& engine, float angle,
+                                float velocity, float gravitySG,
+                                float corrGravitySG, float tempC, float runTime,
+                                float voltage);
 
 #endif  // GRAVITYMON
 

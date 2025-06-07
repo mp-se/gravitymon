@@ -43,6 +43,7 @@ constexpr auto PARAM_SELF_TEMP_CONNECTED = "temp_connected";
 constexpr auto PARAM_GYRO = "gyro";
 constexpr auto PARAM_GYRO_FAMILY = "gyro_family";
 constexpr auto PARAM_ONEWIRE = "onewire";
+constexpr auto PARAM_TEMP_SENSOR = "temp_sensor";
 constexpr auto PARAM_BLE_SUPPORTED = "ble_supported";
 
 void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
@@ -212,39 +213,82 @@ void GravitymonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
 }
 
 void GravitymonWebServer::doTaskHardwareScanning(JsonObject &obj) {
+#if defined(ESP8266)
   JsonArray onew = obj[PARAM_ONEWIRE].to<JsonArray>();
+
+  const uint8_t owPins[] = {/*D0,*/ D1, D2, D3, D4,
+                            D5,         D6, D7, D8 /*, RX, TX*/};
+
+  for (uint8_t i = 0, j = 0; i < sizeof(owPins); i++) {
+    // Log.notice(F("WEB : Scanning onewire pin %d." CR), owPins[i]);
+    uint8_t addr[8];
+    OneWire ds(owPins[i]);
+
+    if (ds.search(&addr[0])) {
+      Log.notice(F("WEB : Found onewire on pin %d." CR), owPins[i]);
+      onew[j] = owPins[i];
+    }
+  }
+#endif
+
+  JsonArray sensor = obj[PARAM_TEMP_SENSOR].to<JsonArray>();
 
   for (int i = 0, j = 0; i < myTempSensor.getSensorCount(); i++) {
     DeviceAddress adr;
     myTempSensor.getSensorAddress(&adr[0], i);
     Log.notice(F("WEB : Found onewire device %d." CR), i);
-    onew[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
-                            String(adr[2], 16) + String(adr[3], 16) +
-                            String(adr[4], 16) + String(adr[5], 16) +
-                            String(adr[6], 16) + String(adr[7], 16);
+    sensor[j][PARAM_ADRESS] = String(adr[0], 16) + String(adr[1], 16) +
+                              String(adr[2], 16) + String(adr[3], 16) +
+                              String(adr[4], 16) + String(adr[5], 16) +
+                              String(adr[6], 16) + String(adr[7], 16);
     switch (adr[0]) {
       case DS18S20MODEL:
-        onew[j][PARAM_FAMILY] = "DS18S20";
+        sensor[j][PARAM_FAMILY] = "DS18S20";
         break;
       case DS18B20MODEL:
-        onew[j][PARAM_FAMILY] = "DS18B20";
+        sensor[j][PARAM_FAMILY] = "DS18B20";
         break;
       case DS1822MODEL:
-        onew[j][PARAM_FAMILY] = "DS1822";
+        sensor[j][PARAM_FAMILY] = "DS1822";
         break;
       case DS1825MODEL:
-        onew[j][PARAM_FAMILY] = "DS1825";
+        sensor[j][PARAM_FAMILY] = "DS1825";
         break;
       case DS28EA00MODEL:
-        onew[j][PARAM_FAMILY] = "DS28EA00";
+        sensor[j][PARAM_FAMILY] = "DS28EA00";
         break;
     }
-    onew[j][PARAM_RESOLUTION] = myTempSensor.getSensorResolution();
+    sensor[j][PARAM_RESOLUTION] = myTempSensor.getSensorResolution();
     j++;
   }
 
   // Test the gyro
   obj[PARAM_GYRO][PARAM_FAMILY] = myGyro.getGyroFamily();
+}
+
+void GravitymonWebServer::webHandleGyro(AsyncWebServerRequest *request) {
+  Log.notice(F("WEB : webServer callback for /api/gyro(get)." CR));
+
+  AsyncJsonResponse *response = new AsyncJsonResponse(false);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+
+  double angle = 0;  // Indicate we have no valid gyro value
+
+  if (myGyro.hasValue()) angle = myGyro.getAngle();
+
+  obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+
+  response->setLength();
+  request->send(response);
+}
+
+bool GravitymonWebServer::setupWebServer(const char *serviceName) {
+  BrewingWebServer::setupWebServer(serviceName);
+
+  _server->on("/api/gyro", HTTP_GET,
+              std::bind(&GravitymonWebServer::webHandleGyro, this,
+                        std::placeholders::_1));
+  return true;
 }
 
 #endif  // GRAVITYMON

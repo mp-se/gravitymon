@@ -19,10 +19,11 @@
         ] 
       ],
       "mcu": "esp32c3",
-      "variant": "super_mini_esp32c3"
+      "variant": "tenstar_esp32c3_super_mini"
     },
     "connectivity": [
-      "wifi"
+      "wifi",
+      "bluetooth"
     ],
     "debug": {
       "openocd_target": "esp32c3.cfg"

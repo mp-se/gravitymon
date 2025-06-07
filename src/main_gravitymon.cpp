@@ -125,10 +125,12 @@ void setup() {
   // For restoring ispindel backup to test migration
   // LittleFS.rename("/ispindel.json", "/config.json");
 
-  sleepModeAlwaysSkip = checkPinConnected();
+#if defined(PIN_CFG1) && defined(PIN_CFG2)
+  sleepModeAlwaysSkip = checkPinConnected(PIN_CFG1, PIN_CFG2);
   if (sleepModeAlwaysSkip) {
-    Log.notice(F("Main: Forcing config mode since D7/D8 are connected." CR));
+    Log.notice(F("Main: Forcing config mode since TX/RX are connected." CR));
   }
+#endif
 
   // TODO: Remove the file from the old wifi manager if that exist.
   if (LittleFS.exists("/drd.dat")) {
@@ -436,7 +438,7 @@ void goToSleep(int sleepInterval) {
   PERF_END("run-time");
   PERF_PUSH();
 
-  if (myConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
+  if (myConfig.isBatterySaving() && getBatteryPercentage(volt, BatteryType::LithiumIon) < 30) {
     sleepInterval = 3600;
   }
 

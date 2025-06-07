@@ -23,6 +23,7 @@ SOFTWARE.
  */
 #if defined(GRAVITYMON)
 
+#include <battery.hpp>
 #include <main.hpp>
 #include <push_gravitymon.hpp>
 #include <pushtarget.hpp>
@@ -59,32 +60,8 @@ void setupTemplateEngineGravity(GravitymonConfig* config,
   engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
   engine.setVal(TPL_SLEEP_INTERVAL, config->getSleepInterval());
 
-  int charge = 0;
-
-  if (voltage > 4.15)
-    charge = 100;
-  else if (voltage > 4.05)
-    charge = 90;
-  else if (voltage > 3.97)
-    charge = 80;
-  else if (voltage > 3.91)
-    charge = 70;
-  else if (voltage > 3.86)
-    charge = 60;
-  else if (voltage > 3.81)
-    charge = 50;
-  else if (voltage > 3.78)
-    charge = 40;
-  else if (voltage > 3.76)
-    charge = 30;
-  else if (voltage > 3.73)
-    charge = 20;
-  else if (voltage > 3.67)
-    charge = 10;
-  else if (voltage > 3.44)
-    charge = 5;
-
-  engine.setVal(TPL_BATTERY_PERCENT, charge);
+  engine.setVal(TPL_BATTERY_PERCENT,
+                getBatteryPercentage(voltage, BatteryType::LithiumIon));
 
   // Performance metrics
   engine.setVal(TPL_RUN_TIME, runTime, DECIMALS_RUNTIME);

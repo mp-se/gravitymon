@@ -3,27 +3,32 @@
 Configuration
 #############
 
-The device can operate in two modes and must be in ``configuration mode`` in order for the web 
+In the ``measurement mode`` the UI is not enabled and the device will go into deep sleep once the sensors has 
+been read and data has been transmitted.
+
+The device can operate in modes and must be in ``configuration mode`` in order for the web 
 server to be active. The device (esp) LED will flash slowly or show blue color when the device 
-is in configuration mode. If the LED is constantly or show white color then the device is in 
-WIFI setup mode. The ESP32c3 and ESP32s3 has a LED that can change color.
+is in ``configuration mode``. 
+
+If the LED is constant or show white color then the device is in ``wifi setup mode`` where access is done through 
+the Access Point provided by the software. It can also be triggered when pressing the reset button multiple times. 
+This mode is only used for configuring the wifi settings since sensors are not active in this mode. It can also 
+be used as a failsafe mode if the sensors cause startup issues.
 
 One of the following conditions will place the device in ``configuration mode``:
 
-- Gyro has not been calibrated
-- Sleep mode has been disabled in the web interface
-- Placed in horizontal mode 85-90 degrees
-- Charger connected >4.15V (or the value that is configured). This does not work on the Floaty variant due to lack of hardware support.
+- Gyro has not been calibrated (Only applies to the MPU6050/MPU6500)
+- Configuration mode has been forced in the web user interface on main page.
+- The TX/RX pins are connected which will force the device into configuration mode.
+- Placed in horizontal mode 85-90 degrees on gyro
+- Battery shows >4.15V or the value that is configured (This does not work on the Floaty variant due to lack of hardware support)
+- Battery shows below 2V
 
 .. tip::
 
-   The easiest way to enter configuration mode is to place the device on a flat surface and press the 
-   reset button on the esp a 3 times, each attempt must be within 3 seconds. 
-   
-   If the LED is solid on show white color then it detected a double reset and has entered WIFI setup mode, in 
-   this case just press reset twice again.
+  The easiest way to enter configuration mode is to place the device on a flat surface and press the 
+  reset button once. 
 
-From v2 the WIFI setup is built into the UI so everything can now be changed from one User Interface.
 
 Home page 
 =========
@@ -183,9 +188,11 @@ Device - WIFI
   :width: 800
   :alt: Device WIFI
 
+If you have hidden SSID for your network then use the webflasher to configure the wifi.
+
 * **SSID #1:**
 
-  Select the desired primary SSID to use. 
+  Select the desired primary SSID to use.
 
 * **Password #1:**
 
@@ -376,6 +383,11 @@ Push - HTTP Post
   Endpoint to send data via http. Default format used is :ref:`data-formats-ispindle`. You can customize the format below.
 
   If you add the prefix `https://` then the device will use SSL when sending data.
+
+* **Use TCP:**
+
+  This setting skips using HTTP as the protocol and just send data through the connection. Added to support services 
+  that does not have a http server.
 
 * **HTTP Headers** 
 

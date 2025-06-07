@@ -10,23 +10,32 @@ v2.2.0
   Only ESP32! The voltage divider for the battery voltage has been changed since there where issues with some ESP32 boards. 220k + 220k is now the recommended values.
   When updating to this version you will need to recalculate the voltage factor if you are using an ESP32 board.
 
-
 New features
 ++++++++++++
-* (beta3) Removed flash logging of runtime data since this is no longer needed
-* (beta3) Added gravity velocity (points per 24h) as new datapoints (currently experimental)
-* (beta3) Added filter to gyro reading in order to smooth out readings (5 point moving avegage with min/max removed)
+* THe formula page now shows the current angle with a 2s update refresh. This to make it easier to create the formula.
+* Adding tcp socket transmission for http port 1 target (secure connection is not supported), some remote services dont support http.
+* Added onewire scanning of devices to hardware test on esp8266
+* Rewritten battery percentage to support more battery types and battery saving mode now starts when 30% capacity is left and calculation now support multiple battery types.
+* Removed flash logging of runtime data since this is no longer needed.
+* New gyro support ICM-42670-P
+* Adds support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.
+* Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.
+* Format editor will now validate json payloads for http post and mqtt when selecting preview. 
 
-* (beta2) New gyro support ICM-42670-P
-
-* (beta1) Voltage reading on ESP32 boards have been changed to improve accuracy
-* (beta1) Adds support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.
-* (beta1) Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.
-* (beta1) Format editor will now validate json payloads for http post and mqtt when selecting preview. 
+New features (ESP32 only)
++++++++++++++++++++++++++
+* Voltage reading on ESP32 boards have been changed to improve accuracy
+* (experimental) Added gravity velocity (points per 24h) as new datapoints
+* (experimental) Added filter to gyro reading in order to smooth out readings (5 point moving avegage with min/max removed)
 
 Bugs fixed
 ++++++++++
+* Fixed UI sensor error messages during wifi setup mode when sensors are not initialized. Wifi setup mode is also used for fallback if there are issues with sensor intitialization
 * Fixed floaty build so it will start up correcly after upgrading to OneWireNG
+
+.. note::
+  This will be the latest version were I support the Floaty hardware and the ESP32 d1 mini boards. I plan to add support for 
+  newer ESP32 based boards instead. 
 
 
 v2.1.0

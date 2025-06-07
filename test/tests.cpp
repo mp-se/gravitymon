@@ -44,17 +44,17 @@ void setup() {
   Printer::setPrinter(&Serial);
   // TestRunner::setVerbosity(Verbosity::kAll);
 
+  // TestRunner::exclude("battery_*");
   // TestRunner::exclude("calc_*");
   // TestRunner::exclude("ble_*");
   // TestRunner::exclude("config_*");
   // TestRunner::exclude("gyro_*");
   // TestRunner::exclude("helper_*");
   // TestRunner::exclude("json_*");
-  // TestRunner::exclude("templating_*");
+  // TestRunner::exclude("template_*");
   // TestRunner::exclude("tempsensor_*");
   // TestRunner::exclude("webserver_*");
   // TestRunner::exclude("wifi_*");
-  // TestRunner::exclude("measure_*");
 }
 
 void loop() {

@@ -33,4 +33,3 @@ Thanks to the following persons for supporting me and this project:
 * Vonchilliman
 * Andreas Dohl
 * StodgyWaif
-

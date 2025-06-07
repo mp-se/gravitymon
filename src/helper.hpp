@@ -27,7 +27,7 @@ SOFTWARE.
 #include <Arduino.h>
 
 // Force config mode
-bool checkPinConnected();
+bool checkPinConnected(int pin1, int pin2);
 
 // Show build options
 void printBuildOptions();

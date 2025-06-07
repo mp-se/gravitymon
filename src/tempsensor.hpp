@@ -25,22 +25,23 @@ SOFTWARE.
 #define SRC_TEMPSENSOR_HPP_
 
 #include <Arduino.h>
-#include <OneWire.h>
 #include <DallasTemperature.h>
+#include <OneWire.h>
+
 #include <memory>
 
 constexpr auto INVALID_TEMPERATURE = -273.0f;
 
 class SecondayTempSensorInterface {
  public:
-   virtual float getInitialSensorTempC() const = 0;
+  virtual float getInitialSensorTempC() const = 0;
 };
 
 class TempSensorConfigInterface {
-  public:
-   virtual int getTempSensorResolution() const = 0;
-   virtual float getTempSensorAdjC() const = 0;
- };
+ public:
+  virtual int getTempSensorResolution() const = 0;
+  virtual float getTempSensorAdjC() const = 0;
+};
 
 class TempSensor {
  private:
@@ -48,13 +49,14 @@ class TempSensor {
   std::unique_ptr<OneWire> _onewire;
   TempSensorConfigInterface *_tempSensorConfig = nullptr;
   SecondayTempSensorInterface *_secondary = nullptr;
- 
+
   bool _hasSensor = false;
   float _tempSensorAdjC = 0;
   float _temperatureC = 0;
 
  public:
-  explicit TempSensor(TempSensorConfigInterface *tempSensorConfig, SecondayTempSensorInterface *secondary = nullptr)
+  explicit TempSensor(TempSensorConfigInterface *tempSensorConfig,
+                      SecondayTempSensorInterface *secondary = nullptr)
       : _tempSensorConfig(tempSensorConfig), _secondary(secondary) {}
 
   void setup(int pin);
@@ -62,20 +64,16 @@ class TempSensor {
   bool isSensorAttached() { return _hasSensor; }
   float getTempC() { return _temperatureC + _tempSensorAdjC; }
 
-  int getSensorCount() {
-    return _sensors ? _sensors->getDS18Count() : 0;
-  }
-  void getSensorAddress(uint8_t* deviceAddress, int index) {
+  int getSensorCount() { return _sensors ? _sensors->getDS18Count() : 0; }
+  void getSensorAddress(uint8_t *deviceAddress, int index) {
     if (_sensors) {
       _sensors->getAddress(deviceAddress, index);
     }
   }
-  int getSensorResolution() {
-    return _sensors ? _sensors->getResolution() : 0;
-  } 
+  int getSensorResolution() { return _sensors ? _sensors->getResolution() : 0; }
 };
 
-extern TempSensor myTempSensor; 
+extern TempSensor myTempSensor;
 
 #endif  // SRC_TEMPSENSOR_HPP_
 

@@ -25,6 +25,7 @@ SOFTWARE.
 #define SRC_VELOCITY_HPP_
 
 #include <Arduino.h>
+
 #include <lowpass.hpp>
 #include <memory>
 
@@ -97,13 +98,11 @@ class GravityVelocity {
     _samplesPerPeriod = sleepInterval >= (3600 * VELOCITY_PERIOD_TIME)
                             ? 1
                             : (3600 * VELOCITY_PERIOD_TIME) / sleepInterval;
-    // _filter.reset(new TrimmedMovingAverageFilter(&myRtcFilterData));
     _filter.reset(new MovingAverageFilter(&data->filter));
   }
 
   float addValue(float value) {
     int dataPoints = getNoValues();
-    // printf("# %d\n", dataPoints);
 
     // Check if there is room for more values
     if (dataPoints >= _samplesPerPeriod * VELOCITY_PERIODS) {
@@ -115,11 +114,9 @@ class GravityVelocity {
 
     // Add value
     float fValue = _filter->filter(value);
-    // printf("Val: %0.4f Filter: %0.4f\n", value, fValue);
 
     for (int i = 0; i < VELOCITY_PERIODS; i++) {
       if (_data->period[i].count < _samplesPerPeriod) {
-        // _data->period[i].total += value;
         _data->period[i].total += fValue;
         _data->period[i].count++;
 
@@ -147,14 +144,8 @@ class GravityVelocity {
         VELOCITY_MIN_HOURS)  // Not enough samples to calculate velocity
       return 0.0;
 
-    // float first = getFirstMax(), last = lastFirstMin();
     float first = getFirstAve(), last = lastFirstAve();
-
     float velocity = ((last - first) / hours) * 24;
-
-    // printf("Data from %d hours, min: %.4f max: %0.4f, Velocity: %0.4f per
-    // 24h\n", hours, min, max, velocity);
-
     return velocity * 1000;
   }
 

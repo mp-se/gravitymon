@@ -26,22 +26,30 @@ SOFTWARE.
 
 #include <Arduino.h>
 
+enum BatteryType {
+  LiPo = 0,
+  LithiumIon = 1  // 18650 battery
+};
+
 class BatteryConfigInterface {
-  public:
-   virtual int getVoltagePin() const = 0;
-   virtual float getVoltageFactor() const = 0;
- };
+ public:
+  virtual int getVoltagePin() const = 0;
+  virtual float getVoltageFactor() const = 0;
+  virtual BatteryType getBatteryType() const = 0;
+};
 
 class BatteryVoltage {
  private:
-  float _batteryLevel = 0;
+  float _batteryVoltage = 0;
   BatteryConfigInterface *_batteryConfig = nullptr;
 
  public:
   explicit BatteryVoltage(BatteryConfigInterface *batteryConfig);
   void read();
-  float getVoltage() { return _batteryLevel; }
+  float getVoltage() const { return _batteryVoltage; }
 };
+
+float getBatteryPercentage(float value, BatteryType type);
 
 extern BatteryVoltage myBatteryVoltage;
 

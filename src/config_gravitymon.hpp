@@ -27,8 +27,8 @@ SOFTWARE.
 #if defined(GRAVITYMON)
 
 #include <config_brewing.hpp>
-#include <main_gravitymon.hpp>
 #include <gyro.hpp>
+#include <main_gravitymon.hpp>
 
 constexpr auto CONFIG_GRAVITY_FORMULA = "gravity_formula";
 constexpr auto CONFIG_GRAVITY_UNIT = "gravity_unit";

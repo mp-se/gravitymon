@@ -25,10 +25,11 @@ SOFTWARE.
 #define SRC_CONFIG_BREWING_HPP_
 
 #include <Arduino.h>
-#include <utils.hpp>
+
 #include <baseconfig.hpp>
 #include <battery.hpp>
 #include <tempsensor.hpp>
+#include <utils.hpp>
 
 constexpr auto CONFIG_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
 constexpr auto CONFIG_CONFIG_VER = "config_version";
@@ -38,6 +39,7 @@ constexpr auto CONFIG_USE_WIFI_DIRECT = "use_wifi_direct";
 constexpr auto CONFIG_SLEEP_INTERVAL = "sleep_interval";
 constexpr auto CONFIG_VOLTAGE_FACTOR = "voltage_factor";
 constexpr auto CONFIG_VOLTAGE_CONFIG = "voltage_config";
+constexpr auto CONFIG_BATTERY_TYPE = "battery_type";
 constexpr auto CONFIG_TEMP_ADJ = "temp_adjustment_value";
 constexpr auto CONFIG_VOLTAGE_PIN = "voltage_pin";
 constexpr auto CONFIG_BLE_FORMAT = "ble_format";
@@ -51,7 +53,9 @@ constexpr auto CONFIG_BATTERY_SAVING = "battery_saving";
 constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
 constexpr auto CONFIG_FLASH_LOGGING = "flash_logging";
 
-class BrewingConfig : public BaseConfig, public BatteryConfigInterface, public TempSensorConfigInterface {
+class BrewingConfig : public BaseConfig,
+                      public BatteryConfigInterface,
+                      public TempSensorConfigInterface {
  private:
 #if defined(ESP8266)
   float _voltageFactor = 1.59;
@@ -64,8 +68,9 @@ class BrewingConfig : public BaseConfig, public BatteryConfigInterface, public T
 #elif defined(ESP32)
   float _voltageFactor = 2.45;
 #else
-  #error "Unknown platform"
+#error "Unknown platform"
 #endif
+  BatteryType _batteryType;
 
   float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;
@@ -137,6 +142,12 @@ class BrewingConfig : public BaseConfig, public BatteryConfigInterface, public T
   }
   void setVoltageConfig(String s) {
     _voltageConfig = s.toFloat();
+    _saveNeeded = true;
+  }
+
+  BatteryType getBatteryType() const { return _batteryType; }
+  void setBatteryType(int t) {
+    _batteryType = (BatteryType)t;
     _saveNeeded = true;
   }
 

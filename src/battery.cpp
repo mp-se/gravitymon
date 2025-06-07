@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#include <algorithm>
 #include <battery.hpp>
+#include <cmath>
 
 BatteryVoltage::BatteryVoltage(BatteryConfigInterface *batteryConfig) {
   _batteryConfig = batteryConfig;
@@ -51,24 +53,58 @@ void BatteryVoltage::read() {
   // ESP32-C6: 3300mV
 
 #if defined(ESP8266)
-  _batteryLevel = ((3.3 / 1023) * v) * factor;
+  _batteryVoltage = ((3.3 / 1023) * v) * factor;
 #elif defined(ESP32S2)
-  _batteryLevel = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+  _batteryVoltage = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32S3)
-  _batteryLevel = ((3.1 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+  _batteryVoltage = ((3.1 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32C3)
-  _batteryLevel = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+  _batteryVoltage = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32LITE)
-  _batteryLevel = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+  _batteryVoltage = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32)
-  _batteryLevel = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
+  _batteryVoltage = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #endif
 
 #if LOG_LEVEL == 6
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
-      factor, v, _batteryLevel);
+      factor, v, _batteryVoltage);
 #endif
+}
+
+float getBatteryPercentage(float value, BatteryType type) {
+  constexpr float MAX_VOLTAGE_LITHIUMION = 4.20;
+  constexpr float MIN_VOLTAGE_LITHIUMION = 3.00;
+  constexpr float MAX_VOLTAGE_LIPO = 4.20;
+  constexpr float MIN_VOLTAGE_LIPO = 3.30;
+
+  float percentage;
+
+  switch (type) {
+    case BatteryType::LiPo:
+      if (value >= MAX_VOLTAGE_LIPO) return 100;
+      if (value <= MIN_VOLTAGE_LIPO) return 0;
+
+      percentage =
+          ((value - MIN_VOLTAGE_LIPO) / (MAX_VOLTAGE_LIPO - MIN_VOLTAGE_LIPO)) *
+          100.0;
+      percentage = constrain(percentage, 0.0, 100.0);
+      return round(percentage);
+
+    default:
+    case BatteryType::LithiumIon:
+      if (value >= MAX_VOLTAGE_LITHIUMION) return 100.0f;
+      if (value <= MIN_VOLTAGE_LITHIUMION) return 0.0f;
+
+      percentage = ((value - MIN_VOLTAGE_LITHIUMION) /
+                    (MAX_VOLTAGE_LITHIUMION - MIN_VOLTAGE_LITHIUMION)) *
+                   100.0;
+      percentage = constrain(percentage, 0.0, 100.0);
+      return round(percentage);
+  }
+
+  return 0.0;
 }
 
 // EOF

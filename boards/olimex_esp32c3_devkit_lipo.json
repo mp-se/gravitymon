@@ -9,7 +9,7 @@
     "flash_mode": "qio",
     "extra_flags": "-DARDUINO_ESP32C3_DEV",
     "mcu": "esp32c3",
-    "variant": "olimex_esp32_c3_devkit_lipo"
+    "variant": "olimex_esp32c3_devkit_lipo"
   },
   "connectivity": [
     "wifi",

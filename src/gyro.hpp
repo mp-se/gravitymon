@@ -30,11 +30,12 @@ SOFTWARE.
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
 
 #include <Arduino.h>
-#include <lowpass.hpp>
-#include <tempsensor.hpp>
-#include <memory>
 
-#if defined(ESP32)
+#include <lowpass.hpp>
+#include <memory>
+#include <tempsensor.hpp>
+
+#if defined(ESP32) && defined(ENABLE_RTCMEM)
 
 #include <esp_attr.h>
 
@@ -177,7 +178,7 @@ class GyroSensor : public SecondayTempSensorInterface {
  public:
   explicit GyroSensor(GyroConfigInterface* gyroConfig) {
     _gyroConfig = gyroConfig;
-#if defined(ESP32)
+#if defined(ESP32) && defined(ENABLE_RTCMEM)
     _filter.reset(new TrimmedMovingAverageFilter(&myRtcFilterData));
     // _filter.reset(new MovingAverageFilter(&myRtcFilterData));
 #endif
@@ -199,7 +200,9 @@ class GyroSensor : public SecondayTempSensorInterface {
   float getFilteredAngle() const { return _filteredAngle; }
   float getSensorTempC() const { return _temp; }
   float getInitialSensorTempC() const { return _initialSensorTemp; }
-  bool isConnected() const { return _currentMode != GyroMode::GYRO_UNCONFIGURED; }
+  bool isConnected() const {
+    return _currentMode != GyroMode::GYRO_UNCONFIGURED;
+  }
   GyroMode getCurrentGyroMode() { return _currentMode; }
   bool hasValue() const { return _valid; }
   bool needCalibration() { return _impl ? _impl->needCalibration() : false; }
