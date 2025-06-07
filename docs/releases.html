@@ -268,26 +268,36 @@ When updating to this version you will need to recalculate the voltage factor if
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>(beta4) Adding tcp socket transmission for http port 1 target (secure connection is not supported)</p></li>
-<li><p>(beta4) Added onewire scanning of devices to hardware test</p></li>
-<li><p>(beta4) Rewritten battery percentage to support more battery types.</p></li>
-<li><p>(beta4) Battery saving mode now starts when 30% capacity is left.</p></li>
-<li><p>(beta3) Removed flash logging of runtime data since this is no longer needed</p></li>
-<li><p>(beta3) Added gravity velocity (points per 24h) as new datapoints (currently experimental)</p></li>
-<li><p>(beta3) Added filter to gyro reading in order to smooth out readings (5 point moving avegage with min/max removed)</p></li>
-<li><p>(beta2) New gyro support ICM-42670-P</p></li>
-<li><p>(beta1) Voltage reading on ESP32 boards have been changed to improve accuracy</p></li>
-<li><p>(beta1) Adds support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.</p></li>
-<li><p>(beta1) Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.</p></li>
-<li><p>(beta1) Format editor will now validate json payloads for http post and mqtt when selecting preview.</p></li>
+<li><p>THe formula page now shows the current angle with a 2s update refresh. This to make it easier to create the formula.</p></li>
+<li><p>Adding tcp socket transmission for http port 1 target (secure connection is not supported), some remote services dont support http.</p></li>
+<li><p>Added onewire scanning of devices to hardware test on esp8266</p></li>
+<li><p>Rewritten battery percentage to support more battery types and battery saving mode now starts when 30% capacity is left and calculation now support multiple battery types.</p></li>
+<li><p>Removed flash logging of runtime data since this is no longer needed.</p></li>
+<li><p>New gyro support ICM-42670-P</p></li>
+<li><p>Adds support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.</p></li>
+<li><p>Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.</p></li>
+<li><p>Format editor will now validate json payloads for http post and mqtt when selecting preview.</p></li>
+</ul>
+</section>
+<section id="new-features-esp32-only">
+<h3>New features (ESP32 only)<a class="headerlink" href="#new-features-esp32-only" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Voltage reading on ESP32 boards have been changed to improve accuracy</p></li>
+<li><p>(experimental) Added gravity velocity (points per 24h) as new datapoints</p></li>
+<li><p>(experimental) Added filter to gyro reading in order to smooth out readings (5 point moving avegage with min/max removed)</p></li>
 </ul>
 </section>
 <section id="bugs-fixed">
 <h3>Bugs fixed<a class="headerlink" href="#bugs-fixed" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>(beta4) Fixed UI sensor error messagesduring wifi setup mode when sensors are not initialized.</p></li>
-<li><p>(beta1) Fixed floaty build so it will start up correcly after upgrading to OneWireNG</p></li>
+<li><p>Fixed UI sensor error messages during wifi setup mode when sensors are not initialized. Wifi setup mode is also used for fallback if there are issues with sensor intitialization</p></li>
+<li><p>Fixed floaty build so it will start up correcly after upgrading to OneWireNG</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This will be the latest version were I support the Floaty hardware and the ESP32 d1 mini boards. I plan to add support for
+newer ESP32 based boards instead.</p>
+</div>
 </section>
 </section>
 <section id="v2-1-0">
@@ -852,6 +862,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
 <li><a class="reference internal" href="#">Releases</a><ul>
 <li><a class="reference internal" href="#v2-2-0">v2.2.0</a><ul>
 <li><a class="reference internal" href="#new-features">New features</a></li>
+<li><a class="reference internal" href="#new-features-esp32-only">New features (ESP32 only)</a></li>
 <li><a class="reference internal" href="#bugs-fixed">Bugs fixed</a></li>
 </ul>
 </li>
