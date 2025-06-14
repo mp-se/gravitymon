@@ -566,6 +566,8 @@ void checkSleepMode(float angle, float volt) {
   if (runMode == RunMode::storageMode) {
     Log.notice(
         F("Main: Storage mode entered, going to sleep for maximum time." CR));
+    myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
+    delay(100);
 #if defined(ESP8266)
     ESP.deepSleep(0);  // indefinite sleep
 #else
