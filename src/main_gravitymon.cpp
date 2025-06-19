@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -133,15 +133,16 @@ void setup() {
 #endif
 
   // TODO: Remove the file from the old wifi manager if that exist.
-  if (LittleFS.exists("/drd.dat")) {
-    LittleFS.remove("/drd.dat");
-  }
+  // if (LittleFS.exists("/drd.dat")) {
+  //   LittleFS.remove("/drd.dat");
+  // }
 
   // Setup watchdog
 #if defined(ESP8266)
   ESP.wdtDisable();
   ESP.wdtEnable(5000);  // 5 seconds
-#else                   // defined (ESP32)
+#else                   
+  // ESP32
 #endif
 
   // No stored config, move to portal
@@ -171,6 +172,11 @@ void setup() {
       break;
 
     default:
+      if(myConfig.getGyroType() == GyroType::GYRO_NONE) {
+        myConfig.setGyroType(myGyro.detectGyro());
+        myConfig.saveFile();
+      }
+
       if (myGyro.setup(GyroMode::GYRO_RUN, false)) {
         PERF_BEGIN("main-gyro-read");
         myGyro.read();

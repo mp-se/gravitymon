@@ -220,9 +220,6 @@ class BrewingConfig : public BaseConfig,
                : true;
   }
 
-  // virtual int getVoltagePin() const { return 0; }
-  virtual int getVoltagePin() const = 0;
-
   void createJson(JsonObject& doc) const;
   void parseJson(JsonObject& doc);
 };

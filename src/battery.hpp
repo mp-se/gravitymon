@@ -33,7 +33,6 @@ enum BatteryType {
 
 class BatteryConfigInterface {
  public:
-  virtual int getVoltagePin() const = 0;
   virtual float getVoltageFactor() const = 0;
   virtual BatteryType getBatteryType() const = 0;
 };

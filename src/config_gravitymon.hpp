@@ -36,6 +36,7 @@ constexpr auto CONFIG_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto CONFIG_GYRO_CALIBRATION = "gyro_calibration_data";
 constexpr auto CONFIG_GYRO_TEMP = "gyro_temp";
 constexpr auto CONFIG_GYRO_FILTER = "gyro_filter";
+constexpr auto CONFIG_GYRO_TYPE = "gyro_type";
 constexpr auto CONFIG_GYRO_SWAP_XY = "gyro_swap_xy";
 constexpr auto CONFIG_STORAGE_SLEEP = "storage_sleep";
 constexpr auto CONFIG_FORMULA_DATA = "formula_calculation_data";
@@ -72,6 +73,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
   GravitymonBleFormat _gravitymonBleFormat = GravitymonBleFormat::BLE_DISABLED;
+  GyroType _gyroType = GyroType::GYRO_NONE; 
 
   bool _gravityTempAdj = false;
   bool _ignoreLowAnges = false;
@@ -92,6 +94,16 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
 
  public:
   GravitymonConfig(String baseMDNS, String fileName);
+
+  GyroType getGyroType() const { return _gyroType; }
+  void setGyroType(int t) {
+    _gyroType = (GyroType) t;
+    _saveNeeded = true;
+  }
+  void setGyroType(GyroType t) {
+    _gyroType = t;
+    _saveNeeded = true;
+  }
 
   bool isGyroTemp() const { return _gyroTemp; }
   void setGyroTemp(bool b) {

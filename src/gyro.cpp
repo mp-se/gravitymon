@@ -38,53 +38,82 @@ RTC_DATA_ATTR RtcGyroData myRtcGyroData;
 RTC_DATA_ATTR FilterData myRtcFilterData;
 #endif
 
+GyroType GyroSensor::detectGyro() {
+  Log.notice(F("GYRO: Detecting installed gyro." CR));
+  int clock = 400000;
+  uint8_t addr;
+
+  Wire.begin(PIN_SDA, PIN_SCL);
+  Wire.setClock(clock);  // 400kHz I2C clock.
+
+  if( MPU6050Gyro::isDeviceDetected(addr) ) {
+    Log.notice(F("GYRO: MPU6050 detected." CR));
+    return GyroType::GYRO_MPU6050;
+  }
+
+  else if( ICM42670pGyro::isDeviceDetected(addr) ) {
+    Log.notice(F("GYRO: ICM42670P detected." CR));
+    return GyroType::GYRO_ICM42670P;
+  }
+
+  return GyroType::GYRO_NONE;
+}
+
 bool GyroSensor::setup(GyroMode mode, bool force) {
+  uint8_t addr = 0;
+  int clock = 400000;
+
   if (_currentMode == GyroMode::GYRO_UNCONFIGURED || !_impl) {
-    int clock = 400000;
+    Log.notice(F("GYRO: Setting up hardware." CR));
 
-#if LOG_LEVEL == 6
-    Log.verbose(F("GYRO: Setting up hardware." CR));
-#endif
+    switch(_gyroConfig->getGyroType()) {
+      case GyroType::GYRO_MPU6050: {
+        Wire.begin(PIN_SDA, PIN_SCL);
+        Wire.setClock(clock);  // 400kHz I2C clock.
 
-    Wire.begin(PIN_SDA, PIN_SCL);
-    Wire.setClock(clock);  // 400kHz I2C clock.
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
-    if (myRtcGyroData.IsDataAvailable == GYRO_RTC_DATA_AVAILABLE) {
-      if (myRtcGyroData.Type == GyroType::GYRO_MPU6050) {
-        Log.notice(F("GYRO: Restored MPU6050/MPU6000." CR));
-        _impl.reset(new MPU6050Gyro(myRtcGyroData.Address, _gyroConfig));
-        _currentMode = GyroMode::GYRO_RUN;
-      } else if (myRtcGyroData.Type == GyroType::GYRO_ICM42670P) {
-        Log.notice(F("GYRO: Restored ICM42670-p." CR));
-        _impl.reset(new ICM42670pGyro(myRtcGyroData.Address, _gyroConfig));
-        _currentMode = GyroMode::GYRO_RUN;
+        if (myRtcGyroData.IsDataAvailable == GYRO_RTC_DATA_AVAILABLE) {
+          Log.notice(F("GYRO: Using MPU6050/MPU6500 %x." CR), myRtcGyroData.Address);
+
+          _impl.reset(new MPU6050Gyro(myRtcGyroData.Address, _gyroConfig));
+          _currentMode = GyroMode::GYRO_RUN;
+        } else 
+#endif
+        if (MPU6050Gyro::isDeviceDetected(addr)) {
+          Log.notice(F("GYRO: Detected MPU6050/MPU6500 %x." CR), addr);
+          _impl.reset(new MPU6050Gyro(addr, _gyroConfig));
+#if defined(ESP32) && defined(ENABLE_RTCMEM)
+          myRtcGyroData = {.Address = addr,
+                          .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE };
+#endif
+        }
       }
-    }
-#endif
-    if (!_impl) {
-      uint8_t addr = 0;
-      if (MPU6050Gyro::isDeviceDetected(addr)) {
-        Log.notice(F("GYRO: Detected MPU6050/MPU6000." CR));
-        _impl.reset(new MPU6050Gyro(addr, _gyroConfig));
+      break;
+      
+      case GyroType::GYRO_ICM42670P: {
+        Wire.begin(PIN_SDA, PIN_SCL);
+        Wire.setClock(clock);  // 400kHz I2C clock.
+
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
-        myRtcGyroData = {.Type = GyroType::GYRO_MPU6050,
-                         .Address = addr,
-                         .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
+        if (myRtcGyroData.IsDataAvailable == GYRO_RTC_DATA_AVAILABLE) {
+          Log.notice(F("GYRO: Using ICM42670-p %x." CR), myRtcGyroData.Address);
+          _impl.reset(new ICM42670pGyro(myRtcGyroData.Address, _gyroConfig));
+          _currentMode = GyroMode::GYRO_RUN;
+        } else 
 #endif
-      } else if (ICM42670pGyro::isDeviceDetected(addr)) {
-        Log.notice(F("GYRO: Detected ICM42670-p." CR));
-        _impl.reset(new ICM42670pGyro(addr, _gyroConfig));
+        if (ICM42670pGyro::isDeviceDetected(addr)) {
+          Log.notice(F("GYRO: Detected ICM42670-p %x." CR), addr);
+          _impl.reset(new ICM42670pGyro(addr, _gyroConfig));
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
-        myRtcGyroData = {.Type = GyroType::GYRO_ICM42670P,
-                         .Address = addr,
-                         .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
+          myRtcGyroData = {.Address = addr,
+                          .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
 #endif
-      } else {
-        Log.error(F("GYRO: No gyro detected." CR));
+        }
       }
-      // Add code for new gyro implementations here
+      break;
     }
   }
+
   if (_impl) {
     if (_currentMode == mode && !force) {
       return true;  // already correctly setup
