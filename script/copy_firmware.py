@@ -14,17 +14,14 @@ def after_build(source, target, env):
 
     # Gravity
 
-    if name == "gravity-debug" :
-        target = dir + "/bin/firmware-debug.bin"
-        source = dir + "/.pio/build/" + name + "/firmware.bin"
-        print( "Copy file : " + source + " -> " + target )
-        shutil.copyfile( source, target )
-
     if name == "gravity-release" :
         target = dir + "/bin/firmware.bin"
         source = dir + "/.pio/build/" + name + "/firmware.bin"
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
+
+    elif name == "gravity-unit" :
+        print( "Skipping copy of unit test build" )
 
     # elif name == "gravity32-release" :
     #     target = dir + "/bin/firmware32.bin"
