@@ -41,7 +41,6 @@ constexpr auto CONFIG_VOLTAGE_FACTOR = "voltage_factor";
 constexpr auto CONFIG_VOLTAGE_CONFIG = "voltage_config";
 constexpr auto CONFIG_BATTERY_TYPE = "battery_type";
 constexpr auto CONFIG_TEMP_ADJ = "temp_adjustment_value";
-constexpr auto CONFIG_VOLTAGE_PIN = "voltage_pin";
 constexpr auto CONFIG_BLE_FORMAT = "ble_format";
 constexpr auto CONFIG_PUSH_INTERVAL_POST = "http_post_int";
 constexpr auto CONFIG_PUSH_INTERVAL_POST2 = "http_post2_int";

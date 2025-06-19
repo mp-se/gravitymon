@@ -113,15 +113,8 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
   obj[PARAM_ISPINDEL_CONFIG] = false;
 #endif
 
-#if defined(ESP32LITE)
-  obj[PARAM_HARDWARE] = "floaty";
-  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] =
-      true;  // No hardware support for these
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = true;
-#else
   obj[PARAM_HARDWARE] = "ispindel";
   obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
-#endif
 
   obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
       strlen(_gravConfig->getGravityFormula()) > 0 ? true : false;

@@ -62,9 +62,6 @@ void printBuildOptions() {
 #else
                "ESP32 "
 #endif
-#if defined(FLOATY)
-               "FLOATY "
-#endif
 #ifdef SKIP_SLEEPMODE
                "SKIP_SLEEP "
 #endif

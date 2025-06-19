@@ -46,7 +46,6 @@ void BatteryVoltage::read() {
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
 
   // Max input values per board (2.5V is the a good setting)
-  // ESP32: 2450mV
   // ESP32-S2: 2500mV
   // ESP32-S3: 3100mV
   // ESP32-C3: 2500mV
@@ -60,10 +59,6 @@ void BatteryVoltage::read() {
   _batteryVoltage = ((3.1 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32C3)
   _batteryVoltage = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
-#elif defined(ESP32LITE)
-  _batteryVoltage = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
-#elif defined(ESP32)
-  _batteryVoltage = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #endif
 
 #if LOG_LEVEL == 6

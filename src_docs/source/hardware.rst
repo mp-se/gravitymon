@@ -121,18 +121,6 @@ The reed switch is the glass tube visible under the esp8266.
   :alt: Reed build
 
 
-Floaty Hydrometer DIY based on esp32 lite
-=========================================
-
-Here we have another projects that has build a device similar to the iSpindel but based on an ESP32 instead.
-
-The setup is much simpler and attaches the GYRO to an ESP32 with a build in charger chip. GravityMon works on 
-this hardware platform as well but there are a few limitations:
-
-* Temperature is read from the GYRO and cannot be changed. This works fine when measuring gravity but when in configuration mode the temperature will increase since it shows the chip temperature.
-* No possibility to measure battery level (can be added with additional hardware). 
-
-
 Hardware extensions
 ===================
 
@@ -147,19 +135,6 @@ Its also possible to force the device into configuration mode by connecting D7/D
 .. image:: images/8266_pins.jpg
   :width: 500
   :alt: iSpindel pins
-
-For the floaty device pins 16/17 are used as TX/RX pins and the 13/15 pins are used to force the device into configuration mode. Pin 35 can also be connected to the battery voltage via an voltage divider to be able to read the battery voltage. 
-
-.. image:: images/32lite_pins.jpg
-  :width: 500
-  :alt: Floaty pins
-
-It's possible to modify the floaty hardware and add a real voltage measurement to enable more features in GravityMon. You connect the +5V to the + on the battery and GND to ground. The connection between the resistors 
-is connected to PIN 35 on the floaty. You might need to correct the voltage factor after the modification to ensure the calculated measurement is correct. 
-
-.. image:: images/floaty_voltage.jpg
-  :width: 200
-  :alt: Voltage divider for floaty
 
 New Gyro options
 ================

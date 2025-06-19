@@ -42,14 +42,6 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
   if (_currentMode == GyroMode::GYRO_UNCONFIGURED || !_impl) {
     int clock = 400000;
 
-#if defined(FLOATY)
-    pinMode(PIN_VCC, OUTPUT);
-    pinMode(PIN_GND, OUTPUT_OPEN_DRAIN);
-    digitalWrite(PIN_VCC, HIGH);
-    digitalWrite(PIN_GND, LOW);
-    delay(10);  // Wait for the pins to settle or we will fail to connect
-#endif
-
 #if LOG_LEVEL == 6
     Log.verbose(F("GYRO: Setting up hardware." CR));
 #endif
@@ -132,12 +124,7 @@ bool GyroSensor::read() {
 }
 
 void GyroSensor::enterSleep() {
-#if defined(FLOATY)
-  digitalWrite(PIN_VCC, LOW);
-  _currentMode = GyroMode::GYRO_UNCONFIGURED;
-#else
   if (_impl) _currentMode = _impl->enterSleep(_currentMode);
-#endif
 }
 
 float GyroSensorInterface::calculateAngle(float ax, float ay, float az) {

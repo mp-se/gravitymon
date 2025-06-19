@@ -35,7 +35,6 @@ constexpr auto CONFIG_GRAVITY_UNIT = "gravity_unit";
 constexpr auto CONFIG_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto CONFIG_GYRO_CALIBRATION = "gyro_calibration_data";
 constexpr auto CONFIG_GYRO_TEMP = "gyro_temp";
-constexpr auto CONFIG_GYRO_DISABLED = "gyro_disabled";
 constexpr auto CONFIG_GYRO_FILTER = "gyro_filter";
 constexpr auto CONFIG_GYRO_SWAP_XY = "gyro_swap_xy";
 constexpr auto CONFIG_STORAGE_SLEEP = "storage_sleep";
@@ -77,18 +76,10 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool _gravityTempAdj = false;
   bool _ignoreLowAnges = false;
   bool _storageSleep = false;
-  bool _gyroDisabled = false;
   bool _gyroSwapXY = false;
   bool _gyroFilter = false;
-#if defined(FLOATY)
-  bool _gyroTemp = true;
-  bool _batterySaving = false;
-#else
   bool _gyroTemp = false;
   bool _batterySaving = true;
-#endif
-
-  int _voltagePin = PIN_VOLT;
 
   char _gravityUnit = 'G';
 
@@ -104,29 +95,13 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
 
   bool isGyroTemp() const { return _gyroTemp; }
   void setGyroTemp(bool b) {
-#if defined(FLOATY)
-    // Floaty hardware dont have a temp sensor, uses gyro temperature
-#else
     _gyroTemp = b;
-    _saveNeeded = true;
-#endif
-  }
-
-  int getVoltagePin() const { return _voltagePin; }
-  void setVoltagePin(int v) {
-    _voltagePin = v;
     _saveNeeded = true;
   }
 
   bool isStorageSleep() const { return _storageSleep; }
   void setStorageSleep(bool b) {
     _storageSleep = b;
-    _saveNeeded = true;
-  }
-
-  bool isGyroDisabled() const { return _gyroDisabled; }
-  void setGyroDisabled(bool b) {
-    _gyroDisabled = b;
     _saveNeeded = true;
   }
 

@@ -134,8 +134,8 @@ The main features
   - Missing gravity formula
   - No push targets defined
   - Skip sleep mode setting
-  - No temperature sensor connected (not Floaty build) 
-  - Battery voltage out of range (Not Floaty build)
+  - No temperature sensor connected 
+  - Battery voltage out of range 
 
 * **Automatic temperature adjustment of gravity reading** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 

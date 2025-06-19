@@ -89,19 +89,6 @@ SOFTWARE.
 #define PIN_VOLT A1
 #define CFG_FILENAMEBIN "firmware32s3.bin"
 
-#elif defined(LOLIN32_LITE) && defined(FLOATY)
-// Hardware config for ESP32-lite, Floaty hardware
-// ------------------------------------------------------
-#define PIN_SDA A17
-#define PIN_SCL A19
-#define PIN_DS A12
-#define PIN_VOLT A7
-#define PIN_CFG1 A14
-#define PIN_CFG2 A13
-#define PIN_VCC A5
-#define PIN_GND A18
-#define CFG_FILENAMEBIN "firmware32lite.bin"
-
 #elif defined(OLIMEX_ESP32C3_DEVKIT_LIPO)
 // Hardware config for ESP32C3 from Olimex with build in Charger
 // (ESP32-C3-DevKit-Lipo)

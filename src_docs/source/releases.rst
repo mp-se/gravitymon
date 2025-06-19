@@ -3,6 +3,9 @@
 Releases 
 ########
 
+In this version I have dropped some fetures to make room for new options and 
+features due to limitations on the devices supported, mainly the 4mb flash limit. 
+
 v2.3.0
 ======
 
@@ -13,6 +16,7 @@ New features
 Dropped features
 ++++++++++++++++
 * Support for ESP32lite/Floaty and ESP32 d1 mini has been dropped. Latest version is v2.2. This to remove these boards that are quite old and make room for new options.
+* Remove the gyro disabled flag which was used to run the device as a temperature probe only. Latest version is v2.2
 
 Bugs fixed
 ++++++++++
