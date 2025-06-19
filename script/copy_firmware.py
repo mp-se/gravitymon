@@ -26,16 +26,16 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
-    elif name == "gravity32-release" :
-        target = dir + "/bin/firmware32.bin"
-        source = dir + "/.pio/build/" + name + "/firmware.bin"
-        print( "Copy file : " + source + " -> " + target )
-        shutil.copyfile( source, target )
+    # elif name == "gravity32-release" :
+    #     target = dir + "/bin/firmware32.bin"
+    #     source = dir + "/.pio/build/" + name + "/firmware.bin"
+    #     print( "Copy file : " + source + " -> " + target )
+    #     shutil.copyfile( source, target )
 
-        target = dir + "/bin/partitions32.bin"
-        source = dir + "/.pio/build/" + name + "/partitions.bin"
-        print( "Copy file : " + source + " -> " + target )
-        shutil.copyfile( source, target )
+    #     target = dir + "/bin/partitions32.bin"
+    #     source = dir + "/.pio/build/" + name + "/partitions.bin"
+    #     print( "Copy file : " + source + " -> " + target )
+    #     shutil.copyfile( source, target )
 
     elif name == "gravity32c3-release" :
         target = dir + "/bin/firmware32c3.bin"
@@ -70,16 +70,16 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
-    elif name == "gravity32lite-release" :
-        target = dir + "/bin/firmware32lite.bin"
-        source = dir + "/.pio/build/" + name + "/firmware.bin"
-        print( "Copy file : " + source + " -> " + target )
-        shutil.copyfile( source, target )
+    # elif name == "gravity32lite-release" :
+    #     target = dir + "/bin/firmware32lite.bin"
+    #     source = dir + "/.pio/build/" + name + "/firmware.bin"
+    #     print( "Copy file : " + source + " -> " + target )
+    #     shutil.copyfile( source, target )
 
-        target = dir + "/bin/partitions32lite.bin"
-        source = dir + "/.pio/build/" + name + "/partitions.bin"
-        print( "Copy file : " + source + " -> " + target )
-        shutil.copyfile( source, target )
+    #     target = dir + "/bin/partitions32lite.bin"
+    #     source = dir + "/.pio/build/" + name + "/partitions.bin"
+    #     print( "Copy file : " + source + " -> " + target )
+    #     shutil.copyfile( source, target )
 
 
     # Custom boards
