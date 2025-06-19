@@ -3,6 +3,22 @@
 Releases 
 ########
 
+v2.3.0
+======
+
+New features
+++++++++++++
+* tbd
+
+Dropped features
+++++++++++++++++
+* Support for ESP32lite/Floaty and ESP32 d1 mini has been dropped. Latest version is v2.2. This to remove these boards that are quite old and make room for new options.
+
+Bugs fixed
+++++++++++
+* tbd
+
+
 v2.2.0
 ======
 
