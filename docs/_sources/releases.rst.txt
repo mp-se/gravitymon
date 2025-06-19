@@ -30,6 +30,7 @@ New features (ESP32 only)
 
 Bugs fixed
 ++++++++++
+* Wifi mode could be triggered by sleep mode.
 * Fixed bug that device goes into wifi setup mode after deep sleep.
 * Fixed UI sensor error messages during wifi setup mode when sensors are not initialized. Wifi setup mode is also used for fallback if there are issues with sensor intitialization
 * Fixed floaty build so it will start up correcly after upgrading to OneWireNG
