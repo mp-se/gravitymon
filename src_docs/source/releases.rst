@@ -21,6 +21,7 @@ New features
 * Adds support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.
 * Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.
 * Format editor will now validate json payloads for http post and mqtt when selecting preview. 
+* Optimized reset counter code to avoid writes to flash.
 
 New features (ESP32 only)
 +++++++++++++++++++++++++
@@ -30,6 +31,7 @@ New features (ESP32 only)
 
 Bugs fixed
 ++++++++++
+* Deep sleep mode is fixed for ESP32 boards
 * Wifi mode could be triggered by sleep mode.
 * Fixed bug that device goes into wifi setup mode after deep sleep.
 * Fixed UI sensor error messages during wifi setup mode when sensors are not initialized. Wifi setup mode is also used for fallback if there are issues with sensor intitialization
