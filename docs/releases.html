@@ -277,6 +277,7 @@ When updating to this version you will need to recalculate the voltage factor if
 <li><p>Adds support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.</p></li>
 <li><p>Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.</p></li>
 <li><p>Format editor will now validate json payloads for http post and mqtt when selecting preview.</p></li>
+<li><p>Optimized reset counter code to avoid writes to flash.</p></li>
 </ul>
 </section>
 <section id="new-features-esp32-only">
@@ -290,6 +291,7 @@ When updating to this version you will need to recalculate the voltage factor if
 <section id="bugs-fixed">
 <h3>Bugs fixed<a class="headerlink" href="#bugs-fixed" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
+<li><p>Deep sleep mode is fixed for ESP32 boards</p></li>
 <li><p>Wifi mode could be triggered by sleep mode.</p></li>
 <li><p>Fixed bug that device goes into wifi setup mode after deep sleep.</p></li>
 <li><p>Fixed UI sensor error messages during wifi setup mode when sensors are not initialized. Wifi setup mode is also used for fallback if there are issues with sensor intitialization</p></li>
