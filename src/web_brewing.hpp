@@ -65,12 +65,6 @@ constexpr auto PARAM_FORMAT_INFLUXDB_PRESSURE = "influxdb2_format_pressure";
 constexpr auto PARAM_FORMAT_MQTT_PRESSURE = "mqtt_format_pressure";
 
 constexpr auto PARAM_PUSH_FORMAT = "push_format";
-constexpr auto PARAM_FORMAT_POST = "http_post";
-constexpr auto PARAM_FORMAT_POST2 = "http_post2";
-constexpr auto PARAM_FORMAT_GET = "http_get";
-constexpr auto PARAM_FORMAT_INFLUXDB = "influxdb2";
-constexpr auto PARAM_FORMAT_MQTT = "mqtt";
-
 constexpr auto PARAM_PUSH_RETURN_CODE = "push_return_code";
 constexpr auto PARAM_PUSH_ENABLED = "push_enabled";
 

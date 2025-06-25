@@ -160,7 +160,7 @@ void GravitymonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
   Log.notice(F("WEB : Running scheduled push test for %s" CR),
              _pushTestTarget.c_str());
 
-  if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST) &&
+  if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST_GRAVITY) &&
       _gravConfig->hasTargetHttpPost()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
     String doc = engine.create(tpl.c_str());
@@ -170,7 +170,7 @@ void GravitymonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
     else
       push.sendHttpPost(doc);
     _pushTestEnabled = true;
-  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST2) &&
+  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_POST2_GRAVITY) &&
              _gravConfig->hasTargetHttpPost2()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
     String doc = engine.create(tpl.c_str());
@@ -179,7 +179,7 @@ void GravitymonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
     else
       push.sendHttpPost2(doc);
     _pushTestEnabled = true;
-  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_GET) &&
+  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_GET_GRAVITY) &&
              _gravConfig->hasTargetHttpGet()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
     String doc = engine.create(tpl.c_str());
@@ -188,7 +188,7 @@ void GravitymonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
     else
       push.sendHttpGet(doc);
     _pushTestEnabled = true;
-  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_INFLUXDB) &&
+  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_INFLUXDB_GRAVITY) &&
              _gravConfig->hasTargetInfluxDb2()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
     String doc = engine.create(tpl.c_str());
@@ -197,7 +197,7 @@ void GravitymonWebServer::doTaskPushTestSetup(TemplatingEngine &engine,
     else
       push.sendInfluxDb2(doc);
     _pushTestEnabled = true;
-  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_MQTT) &&
+  } else if (!_pushTestTarget.compareTo(PARAM_FORMAT_MQTT_GRAVITY) &&
              _gravConfig->hasTargetMqtt()) {
     String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
     String doc = engine.create(tpl.c_str());
