@@ -442,6 +442,7 @@ void goToSleep(int sleepInterval) {
     sleepInterval = 3600;
   }
 
+  myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
   delay(100);
   deepSleep(sleepInterval);
 }
@@ -468,12 +469,10 @@ void loop() {
                                           // defined push targets.
         Log.notice(
             F("MAIN: No connection to wifi established, sleeping for 60s." CR));
-        myWifi.stopDoubleReset();
         goToSleep(60);
       }
 
       if (loopReadGravity()) {
-        myWifi.stopDoubleReset();
         goToSleep(myConfig.getSleepInterval());
       }
 
@@ -484,7 +483,6 @@ void loop() {
         Log.notice(
             F("MAIN: Unable to get a stable reading for 10s, sleeping for "
               "60s." CR));
-        myWifi.stopDoubleReset();
         goToSleep(60);
       }
 
@@ -567,7 +565,7 @@ void checkSleepMode(float angle, float volt) {
 #if defined(ESP8266)
     ESP.deepSleep(0);  // indefinite sleep
 #else
-    ESP.deepSleep(0);  // indefinite sleep
+    ESP.deepSleep(0xFFFFFFFF);  // indefinite sleep
 #endif
   }
 }
