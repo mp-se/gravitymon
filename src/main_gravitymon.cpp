@@ -569,7 +569,7 @@ void checkSleepMode(float angle, float volt) {
 #if defined(ESP8266)
     ESP.deepSleep(0);  // indefinite sleep
 #else
-    ESP.deepSleep(0);  // indefinite sleep
+    ESP.deepSleep(0xFFFFFFFF);  // indefinite sleep
 #endif
   }
 }
