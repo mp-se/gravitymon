@@ -35,6 +35,12 @@ SOFTWARE.
 #include <memory>
 #include <tempsensor.hpp>
 
+enum GyroType {
+  GYRO_NONE = 0,
+  GYRO_MPU6050 = 1,
+  GYRO_ICM42670P = 2,
+};
+
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
 
 #include <esp_attr.h>
@@ -46,12 +52,6 @@ SOFTWARE.
 struct RtcGyroData {
   uint8_t Address;
   uint8_t IsDataAvailable;
-};
-
-enum GyroType {
-  GYRO_NONE = 0,
-  GYRO_MPU6050 = 1,
-  GYRO_ICM42670P = 2,
 };
 
 extern RTC_DATA_ATTR RtcGyroData myRtcGyroData;
