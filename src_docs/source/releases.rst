@@ -3,6 +3,15 @@
 Releases 
 ########
 
+v2.2.1
+======
+
+Bugs fixed
+++++++++++
+* Wifi mode could be triggered by sleep mode was not correcly fixed in v2.2.0.
+* Ignore low angles was not working correcly in gravity mode.
+* FileSystem was not closed properly when going into storage mode, could potentially cause file system corruption.
+
 v2.2.0
 ======
 
