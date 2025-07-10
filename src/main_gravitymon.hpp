@@ -39,16 +39,16 @@ SOFTWARE.
 #define PIN_VOLT PIN_A0
 #define CFG_FILENAMEBIN "firmware.bin"
 
-#elif defined(WEMOS_D1_MINI32)
-// Hardware config for ESP32-d1-mini, iSpindel hardware
-// ------------------------------------------------------
-#define PIN_SDA D3
-#define PIN_SCL D4
-#define PIN_DS D6
-#define PIN_CFG1 D8
-#define PIN_CFG2 D7
-#define PIN_VOLT PIN_A0
-#define CFG_FILENAMEBIN "firmware32.bin"
+// #elif defined(WEMOS_D1_MINI32) // Support removed for this board
+// // Hardware config for ESP32-d1-mini, iSpindel hardware
+// // ------------------------------------------------------
+// #define PIN_SDA D3
+// #define PIN_SCL D4
+// #define PIN_DS D6
+// #define PIN_CFG1 D8
+// #define PIN_CFG2 D7
+// #define PIN_VOLT PIN_A0
+// #define CFG_FILENAMEBIN "firmware32.bin"
 
 #elif defined(LOLIN_C3_MINI)
 // Hardware config for ESP32-c3-mini, iSpindel hardware
@@ -65,6 +65,7 @@ SOFTWARE.
 #define PIN_VOLT A3
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
+#define PIN_STORAGE 10
 #define CFG_FILENAMEBIN "firmware32c3.bin"
 
 #elif defined(LOLIN_C3_PICO)
@@ -76,6 +77,7 @@ SOFTWARE.
 #define PIN_VOLT A3
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
+#define PIN_STORAGE 10
 #define CFG_FILENAMEBIN "firmware32c3pico.bin"
 
 #elif defined(LOLIN_S2_MINI)
@@ -87,6 +89,7 @@ SOFTWARE.
 #define PIN_CFG2 A10
 #define PIN_DS A8
 #define PIN_VOLT A2
+#define PIN_STORAGE 35
 #define CFG_FILENAMEBIN "firmware32s2.bin"
 
 #elif defined(LOLIN_S3_MINI)
@@ -98,6 +101,7 @@ SOFTWARE.
 #define PIN_CFG2 A9
 #define PIN_DS A12
 #define PIN_VOLT A1
+#define PIN_STORAGE 36
 #define CFG_FILENAMEBIN "firmware32s3.bin"
 
 #elif defined(OLIMEX_ESP32C3_DEVKIT_LIPO)

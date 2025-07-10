@@ -29,6 +29,9 @@ SOFTWARE.
 // Force config mode
 bool checkPinConnected(int pin1, int pin2);
 
+// Pin storage mode
+bool checkPinStorage(int pin);
+
 // Show build options
 void printBuildOptions();
 void detectChipRevision();

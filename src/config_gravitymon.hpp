@@ -46,6 +46,7 @@ constexpr auto CONFIG_GYRO_READ_COUNT = "gyro_read_count";
 constexpr auto CONFIG_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
 constexpr auto CONFIG_FORMULA_DEVIATION = "formula_max_deviation";
 constexpr auto CONFIG_FORMULA_CALIBRATION_TEMP = "formula_calibration_temp";
+constexpr auto CONFIG_PIN_STORAGE_ENABLED = "pin_storage_enabled";
 
 enum GravitymonBleFormat {
   BLE_DISABLED = 0,
@@ -82,6 +83,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool _gyroFilter = false;
   bool _gyroTemp = false;
   bool _batterySaving = true;
+  bool _pinStorageMode = false;
 
   char _gravityUnit = 'G';
 
@@ -236,6 +238,12 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool isBatterySaving() const { return _batterySaving; }
   void setBatterySaving(bool b) {
     _batterySaving = b;
+    _saveNeeded = true;
+  }
+
+  bool isPinStorageMode() const { return _pinStorageMode; }
+  void setPinStorageMode(bool b) {
+    _pinStorageMode = b;
     _saveNeeded = true;
   }
 
