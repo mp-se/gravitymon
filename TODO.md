@@ -1,0 +1,1 @@
+Add Bluetooth to selftest options
