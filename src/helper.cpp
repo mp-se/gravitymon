@@ -51,6 +51,7 @@ bool checkPinStorage(int pin) {
   return false;
 #else
   pinMode(pin, INPUT_PULLDOWN);
+  delay(5);
   analogReadResolution(SOC_ADC_MAX_BITWIDTH);
   analogSetAttenuation(ADC_11db);
   int v = analogRead(pin);

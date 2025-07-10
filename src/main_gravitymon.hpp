@@ -65,7 +65,7 @@ SOFTWARE.
 #define PIN_VOLT A3
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
-#define PIN_STORAGE 10
+#define PIN_STORAGE A1 // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32c3.bin"
 
 #elif defined(LOLIN_C3_PICO)
@@ -77,7 +77,7 @@ SOFTWARE.
 #define PIN_VOLT A3
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
-#define PIN_STORAGE 10
+#define PIN_STORAGE 10 // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32c3pico.bin"
 
 #elif defined(LOLIN_S2_MINI)
@@ -89,7 +89,7 @@ SOFTWARE.
 #define PIN_CFG2 A10
 #define PIN_DS A8
 #define PIN_VOLT A2
-#define PIN_STORAGE 35
+#define PIN_STORAGE A6 // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32s2.bin"
 
 #elif defined(LOLIN_S3_MINI)
@@ -101,7 +101,7 @@ SOFTWARE.
 #define PIN_CFG2 A9
 #define PIN_DS A12
 #define PIN_VOLT A1
-#define PIN_STORAGE 36
+#define PIN_STORAGE A11 // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32s3.bin"
 
 #elif defined(OLIMEX_ESP32C3_DEVKIT_LIPO)
