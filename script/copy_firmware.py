@@ -14,7 +14,7 @@ def after_build(source, target, env):
 
     # Gravity
 
-    if name == "gravity-release" :
+    if name == "gravity-8266" :
         target = dir + "/bin/firmware.bin"
         source = dir + "/.pio/build/" + name + "/firmware.bin"
         print( "Copy file : " + source + " -> " + target )
@@ -34,7 +34,7 @@ def after_build(source, target, env):
     #     print( "Copy file : " + source + " -> " + target )
     #     shutil.copyfile( source, target )
 
-    elif name == "gravity32c3-release" :
+    elif name == "gravity-32c3_mini" :
         target = dir + "/bin/firmware32c3.bin"
         source = dir + "/.pio/build/" + name + "/firmware.bin"
         print( "Copy file : " + source + " -> " + target )
@@ -45,7 +45,18 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
-    elif name == "gravity32s2-release" :
+    elif name == "gravity-32c3_pico" :
+        target = dir + "/bin/firmware32c3pico.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32c3pico.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+    elif name == "gravity-32s2_mini" :
         target = dir + "/bin/firmware32s2.bin"
         source = dir + "/.pio/build/" + name + "/firmware.bin"
         print( "Copy file : " + source + " -> " + target )
@@ -56,7 +67,7 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
-    elif name == "gravity32s3-release" :
+    elif name == "gravity-32s3_mini" :
         target = dir + "/bin/firmware32s3.bin"
         source = dir + "/.pio/build/" + name + "/firmware.bin"
         print( "Copy file : " + source + " -> " + target )

@@ -67,6 +67,17 @@ SOFTWARE.
 #define PIN_CFG2 A4
 #define CFG_FILENAMEBIN "firmware32c3.bin"
 
+#elif defined(LOLIN_C3_PICO)
+// Hardware config for ESP32-c3-pico, iSpindel hardware
+// ------------------------------------------------------
+#define PIN_SDA 7
+#define PIN_SCL 6
+#define PIN_DS A0
+#define PIN_VOLT A3
+#define PIN_CFG1 A5
+#define PIN_CFG2 A4
+#define CFG_FILENAMEBIN "firmware32c3pico.bin"
+
 #elif defined(LOLIN_S2_MINI)
 // Hardware config for ESP32-s2-mini, iSpindel hardware
 // ------------------------------------------------------
