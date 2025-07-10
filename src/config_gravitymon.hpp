@@ -76,7 +76,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   GyroType _gyroType = GyroType::GYRO_NONE; 
 
   bool _gravityTempAdj = false;
-  bool _ignoreLowAnges = false;
+  bool _ignoreLowAngles = false;
   bool _storageSleep = false;
   bool _gyroSwapXY = false;
   bool _gyroFilter = false;
@@ -227,9 +227,9 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
     _saveNeeded = true;
   }
 
-  bool isIgnoreLowAnges() const { return _ignoreLowAnges; }
-  void setIgnoreLowAnges(bool b) {
-    _ignoreLowAnges = b;
+  bool isIgnoreLowAngles() const { return _ignoreLowAngles; }
+  void setIgnoreLowAngles(bool b) {
+    _ignoreLowAngles = b;
     _saveNeeded = true;
   }
 

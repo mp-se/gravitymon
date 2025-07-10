@@ -96,6 +96,7 @@ void checkSleepMode(float angle, float volt);
 void runGpioHardwareTests();
 
 void setup() {
+
   PERF_BEGIN("run-time");
   PERF_BEGIN("main-setup");
   runtimeMillis = millis();
@@ -318,13 +319,14 @@ bool loopReadGravity() {
 
     bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
                         (myConfig.getSleepInterval() * 1000));
+    bool angleValid = true;
 
-    if (myConfig.isIgnoreLowAnges() &&
+    if (myConfig.isIgnoreLowAngles() &&
         (angle < myConfig.getFormulaData().a[0])) {
       Log.warning(
           F("Main: Angle is lower than water, so we regard this as faulty and "
             "dont send any data." CR));
-      pushExpired = false;
+      angleValid = false;
     }
 
     if (pushExpired || runMode == RunMode::measurementMode) {
@@ -332,7 +334,7 @@ bool loopReadGravity() {
       PERF_BEGIN("loop-push");
 
 #if defined(ENABLE_BLE)
-      if (myConfig.isBleActive()) {
+      if (myConfig.isBleActive() && angleValid) {
         myBleSender.init();
 
         switch (myConfig.getGravitymonBleFormat()) {
@@ -359,7 +361,7 @@ bool loopReadGravity() {
       }
 #endif  // ENABLE_BLE
 
-      if (myWifi.isConnected()) {  // no need to try if there is no wifi
+      if (myWifi.isConnected() && angleValid) {  // no need to try if there is no wifi
                                    // connection.
         if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
           Log.notice(F(
@@ -380,7 +382,7 @@ bool loopReadGravity() {
           myConfig.setHeader1HttpPost("Content-Type: application/json");
           myConfig.setHeader2HttpPost("");
           push.sendHttpPost(payload);
-        } else {
+        } else if (angleValid) {
           Log.notice(F("Main: Sending data to all defined push targets." CR));
 
           TemplatingEngine engine;
@@ -433,7 +435,6 @@ void goToSleep(int sleepInterval) {
                "battery=%FV." CR),
              sleepInterval,
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
-  LittleFS.end();
   myGyro.enterSleep();
   PERF_END("run-time");
   PERF_PUSH();
@@ -443,6 +444,7 @@ void goToSleep(int sleepInterval) {
   }
 
   myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
+  LittleFS.end();
   delay(100);
   deepSleep(sleepInterval);
 }
@@ -561,6 +563,7 @@ void checkSleepMode(float angle, float volt) {
     Log.notice(
         F("Main: Storage mode entered, going to sleep for maximum time." CR));
     myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
+    LittleFS.end();  
     delay(100);
 #if defined(ESP8266)
     ESP.deepSleep(0);  // indefinite sleep

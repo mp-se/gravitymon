@@ -63,7 +63,7 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_FORMULA_DEVIATION] =
       serialized(String(this->getMaxFormulaCreationDeviation(), DECIMALS_TILT));
   doc[CONFIG_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
-  doc[CONFIG_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
+  doc[CONFIG_IGNORE_LOW_ANGLES] = this->isIgnoreLowAngles();
   doc[CONFIG_BLE_FORMAT] = getGravitymonBleFormat();
   doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
 }
@@ -138,7 +138,7 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     this->SetDefaultCalibrationTemp(
         doc[CONFIG_FORMULA_CALIBRATION_TEMP].as<float>());
   if (!doc[CONFIG_IGNORE_LOW_ANGLES].isNull())
-    setIgnoreLowAnges(doc[CONFIG_IGNORE_LOW_ANGLES].as<bool>());
+    setIgnoreLowAngles(doc[CONFIG_IGNORE_LOW_ANGLES].as<bool>());
   if (!doc[CONFIG_BLE_FORMAT].isNull())
     setGravitymonBleFormat(doc[CONFIG_BLE_FORMAT].as<int>());
   if (!doc[CONFIG_BATTERY_SAVING].isNull())

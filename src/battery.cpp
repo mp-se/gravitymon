@@ -25,6 +25,9 @@ SOFTWARE.
 #include <battery.hpp>
 #include <main_gravitymon.hpp>
 #include <cmath>
+#include <log.hpp>
+
+// #define SIMULATE_VOLTAGE 3.9
 
 BatteryVoltage::BatteryVoltage(BatteryConfigInterface *batteryConfig) {
   _batteryConfig = batteryConfig;
@@ -66,6 +69,10 @@ void BatteryVoltage::read() {
   Log.verbose(
       F("BATT: Reading voltage level. Factor=%F Value=%d, Voltage=%F." CR),
       factor, v, _batteryVoltage);
+#endif
+
+#if defined(SIMULATE_VOLTAGE)
+  _batteryVoltage = SIMULATE_VOLTAGE;
 #endif
 }
 
