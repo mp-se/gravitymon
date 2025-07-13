@@ -5,7 +5,7 @@ on:
   push:
     branches: 
       - master
-      - dev
+      # - dev
 
 jobs:
   doc-build:
