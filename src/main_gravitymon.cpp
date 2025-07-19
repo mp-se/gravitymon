@@ -536,9 +536,9 @@ void checkSleepMode(float angle, float volt) {
     runMode = RunMode::measurementMode;
   }
 
-#if defined(PIN_STORAGE)
+#if defined(PIN_CHARGING)
   // If there is voltage on the storage pin, we enter storage mode.
-  if(myConfig.isPinStorageMode() && checkPinStorage(PIN_STORAGE)) {
+  if(myConfig.isPinStorageMode() && checkPinStorage(PIN_CHARGING)) {
       Log.info(F("MAIN: Storage pin active." CR));
 #if LOG_LEVEL == 6
       Log.notice(F("MAIN: Storage pin active." CR));
@@ -579,12 +579,12 @@ void checkSleepMode(float angle, float volt) {
 #if defined(ESP8266)
     ESP.deepSleep(0);  // indefinite sleep
 #else
-  #if defined(PIN_STORAGE)
+  #if defined(PIN_CHARGING)
     if(myConfig.isPinStorageMode()) {
       #if defined(ESP32C3)
-      esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_STORAGE, ESP_GPIO_WAKEUP_GPIO_LOW);
+      esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_CHARGING, ESP_GPIO_WAKEUP_GPIO_LOW);
       #elif defined(ESP32S2) || defined(ESP32S3)
-      esp_sleep_enable_ext1_wakeup(1ULL << PIN_STORAGE, ESP_EXT1_WAKEUP_ANY_LOW);
+      esp_sleep_enable_ext1_wakeup(1ULL << PIN_CHARGING, ESP_EXT1_WAKEUP_ANY_LOW);
       #endif
       esp_deep_sleep_start();
     } 

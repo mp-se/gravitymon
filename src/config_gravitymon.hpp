@@ -46,7 +46,7 @@ constexpr auto CONFIG_GYRO_READ_COUNT = "gyro_read_count";
 constexpr auto CONFIG_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
 constexpr auto CONFIG_FORMULA_DEVIATION = "formula_max_deviation";
 constexpr auto CONFIG_FORMULA_CALIBRATION_TEMP = "formula_calibration_temp";
-constexpr auto CONFIG_PIN_STORAGE_ENABLED = "pin_storage_enabled";
+constexpr auto CONFIG_CHARGING_PIN_ENABLED = "charging_pin_enabled";
 
 enum GravitymonBleFormat {
   BLE_DISABLED = 0,
