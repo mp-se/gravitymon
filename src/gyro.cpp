@@ -67,6 +67,12 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
     Log.notice(F("GYRO: Setting up hardware." CR));
 
     switch(_gyroConfig->getGyroType()) {
+      case GyroType::GYRO_NONE: {
+        Log.error(F("GYRO: No gyro mode not defined." CR));
+        return false;
+      }
+      break;
+
       case GyroType::GYRO_MPU6050: {
         Wire.begin(PIN_SDA, PIN_SCL);
         Wire.setClock(clock);  // 400kHz I2C clock.
