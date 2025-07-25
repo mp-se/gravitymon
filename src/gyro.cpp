@@ -29,6 +29,8 @@ SOFTWARE.
 #include <log.hpp>
 #include <main_gravitymon.hpp>
 
+// #define SIMULATE_ANGLE 45
+
 #define GYRO_USE_INTERRUPT  // Use interrupt to detect when new sample is ready
 // #define GYRO_SHOW_MINMAX    // Will calculate the min/max values when doing
 // calibration
@@ -144,6 +146,10 @@ bool GyroSensor::read() {
   if (resultData.valid) {
     _angle = resultData.angle;
     _temp = resultData.temp;
+
+#if defined(SIMULATE_ANGLE)
+    _angle = SIMULATE_ANGLE;
+#endif
 
     if (_initialSensorTemp == INVALID_TEMPERATURE) {
       _initialSensorTemp = resultData.temp;
