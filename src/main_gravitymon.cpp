@@ -441,6 +441,8 @@ void goToSleep(int sleepInterval) {
 
   if (myConfig.isBatterySaving() && getBatteryPercentage(volt, BatteryType::LithiumIon) < 30) {
     sleepInterval = 3600;
+    Log.notice(F("MAIN: Battery saving is enabled, sleeping for %ds." CR),
+             sleepInterval);
   }
 
   myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
