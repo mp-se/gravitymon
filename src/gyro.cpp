@@ -36,8 +36,8 @@ SOFTWARE.
 // calibration
 
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
-RTC_DATA_ATTR RtcGyroData myRtcGyroData;
-RTC_DATA_ATTR FilterData myRtcFilterData;
+RTC_DATA_ATTR RtcGyroData myRtcGyroData = {0};
+RTC_DATA_ATTR FilterData myRtcFilterData = {0};
 #endif
 
 GyroType GyroSensor::detectGyro() {
@@ -79,21 +79,11 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
         Wire.begin(PIN_SDA, PIN_SCL);
         Wire.setClock(clock);  // 400kHz I2C clock.
 
-#if defined(ESP32) && defined(ENABLE_RTCMEM)
-        if (myRtcGyroData.IsDataAvailable == GYRO_RTC_DATA_AVAILABLE) {
-          Log.notice(F("GYRO: Using MPU6050/MPU6500 %x." CR), myRtcGyroData.Address);
+        // Using RTC memory on an ESP32c3 zero or super mini will not work, the code will hang when waiting for interrupt from the MPU6050.
 
-          _impl.reset(new MPU6050Gyro(myRtcGyroData.Address, _gyroConfig));
-          _currentMode = GyroMode::GYRO_RUN;
-        } else 
-#endif
         if (MPU6050Gyro::isDeviceDetected(addr)) {
           Log.notice(F("GYRO: Detected MPU6050/MPU6500 %x." CR), addr);
           _impl.reset(new MPU6050Gyro(addr, _gyroConfig));
-#if defined(ESP32) && defined(ENABLE_RTCMEM)
-          myRtcGyroData = {.Address = addr,
-                          .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE };
-#endif
         }
       }
       break;
