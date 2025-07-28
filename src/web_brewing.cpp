@@ -423,14 +423,13 @@ void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
   JsonObject obj = response->getRoot().as<JsonObject>();
 
   obj[PARAM_PLATFORM] = platform;
-
 #if defined(BOARD)
-  String b(BOARD);
-  b.toLowerCase();
-  obj[PARAM_BOARD] = b;
+  obj[PARAM_BOARD] = BOARD;
 #else
-  obj[PARAM_BOARD] = "Undefined";
+  obj[PARAM_BOARD] = "UNDEFINED";
 #endif
+  obj[PARAM_APP_VER] = CFG_APPVER;
+  obj[PARAM_APP_BUILD] = CFG_GITREV;
 
   doWebFeature(obj);
 
@@ -456,19 +455,9 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
 
   obj[PARAM_ID] = _webConfig->getID();
   obj[PARAM_TEMP_UNIT] = String(_brewingConfig->getTempUnit());
-  obj[PARAM_APP_VER] = CFG_APPVER;
-  obj[PARAM_APP_BUILD] = CFG_GITREV;
   obj[PARAM_MDNS] = _webConfig->getMDNS();
 
   obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
-  obj[PARAM_PLATFORM] = platform;
-
-#if defined(BOARD)
-  String b(BOARD);
-  b.toLowerCase();
-  obj[PARAM_BOARD] = b;
-#endif
-
   obj[PARAM_BATTERY] =
       serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
   obj[PARAM_RSSI] = WiFi.RSSI();

@@ -46,7 +46,8 @@ constexpr auto PARAM_ONEWIRE = "onewire";
 constexpr auto PARAM_TEMP_SENSOR = "temp_sensor";
 
 constexpr auto PARAM_FEATURE_BLE_SUPPORTED = "ble";
-constexpr auto PARAM_FEATURE_RTCMEM_SUPPORTED = "rtcmem";
+constexpr auto PARAM_FEATURE_FILTER_SUPPORTED = "filter";
+constexpr auto PARAM_FEATURE_VELOCITY_SUPPORTED = "velocity";
 constexpr auto PARAM_FEATURE_CHARGING_SUPPORTED = "charging";
 
 void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
@@ -62,21 +63,24 @@ void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
 void GravitymonWebServer::doWebConfigWrite() {}
 
 void GravitymonWebServer::doWebFeature(JsonObject &obj) {
-#if defined(ENABLE_BLE)
+#if defined(ENABLE_BLE) && defined(ESP32)
   obj[PARAM_FEATURE_BLE_SUPPORTED] = true;
 #else
   obj[PARAM_FEATURE_BLE_SUPPORTED] = false;
 #endif
-#if defined(ENABLE_RTC)
-  obj[PARAM_FEATURE_RTCMEM_SUPPORTED] = true;
+#if defined(ENABLE_RTCMEM) && defined(ESP32)
+  obj[PARAM_FEATURE_VELOCITY_SUPPORTED] = true;
+  obj[PARAM_FEATURE_FILTER_SUPPORTED] = true;
 #else
-  obj[PARAM_FEATURE_RTCMEM_SUPPORTED] = false;
+  obj[PARAM_FEATURE_VELOCITY_SUPPORTED] = false;
+  obj[PARAM_FEATURE_FILTER_SUPPORTED] = false;
 #endif
-#if defined(PIN_CHARGING)
+#if defined(PIN_CHARGING) && defined(ESP32)
   obj[PARAM_FEATURE_CHARGING_SUPPORTED] = true;
 #else
   obj[PARAM_FEATURE_CHARGING_SUPPORTED] = false;
 #endif
+  obj[PARAM_HARDWARE] = "ispindel";
 }
 
 void GravitymonWebServer::doWebStatus(JsonObject &obj) {
@@ -118,7 +122,6 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
   }
 
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
   obj[PARAM_GYRO_FAMILY] = myGyro.getGyroFamily();
 
 #if defined(ESP8266)
@@ -127,9 +130,7 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
   obj[PARAM_ISPINDEL_CONFIG] = false;
 #endif
 
-  obj[PARAM_HARDWARE] = "ispindel";
   obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
-
   obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
       strlen(_gravConfig->getGravityFormula()) > 0 ? true : false;
   obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] =
