@@ -448,7 +448,9 @@ void goToSleep(int sleepInterval) {
   myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
   LittleFS.end();
   delay(100);
-  deepSleep(sleepInterval);
+  ledOff();
+  uint32_t wake = sleepInterval * 1000000;
+  ESP.deepSleep(wake);
 }
 
 void loop() {
@@ -578,6 +580,7 @@ void checkSleepMode(float angle, float volt) {
     myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
     LittleFS.end();  
     delay(100);
+    ledOff();
 #if defined(ESP8266)
     ESP.deepSleep(0);  // indefinite sleep
 #else
