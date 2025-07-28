@@ -44,7 +44,10 @@ constexpr auto PARAM_GYRO = "gyro";
 constexpr auto PARAM_GYRO_FAMILY = "gyro_family";
 constexpr auto PARAM_ONEWIRE = "onewire";
 constexpr auto PARAM_TEMP_SENSOR = "temp_sensor";
-constexpr auto PARAM_BLE_SUPPORTED = "ble_supported";
+
+constexpr auto PARAM_FEATURE_BLE_SUPPORTED = "ble";
+constexpr auto PARAM_FEATURE_RTCMEM_SUPPORTED = "rtcmem";
+constexpr auto PARAM_FEATURE_CHARGING_SUPPORTED = "charging";
 
 void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
   if (myGyro.isConnected()) {
@@ -57,6 +60,24 @@ void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
 }
 
 void GravitymonWebServer::doWebConfigWrite() {}
+
+void GravitymonWebServer::doWebFeature(JsonObject &obj) {
+#if defined(ENABLE_BLE)
+  obj[PARAM_FEATURE_BLE_SUPPORTED] = true;
+#else
+  obj[PARAM_FEATURE_BLE_SUPPORTED] = false;
+#endif
+#if defined(ENABLE_RTC)
+  obj[PARAM_FEATURE_RTCMEM_SUPPORTED] = true;
+#else
+  obj[PARAM_FEATURE_RTCMEM_SUPPORTED] = false;
+#endif
+#if defined(PIN_CHARGING)
+  obj[PARAM_FEATURE_CHARGING_SUPPORTED] = true;
+#else
+  obj[PARAM_FEATURE_CHARGING_SUPPORTED] = false;
+#endif
+}
 
 void GravitymonWebServer::doWebStatus(JsonObject &obj) {
   obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
@@ -98,13 +119,6 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
 
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
   obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
-
-#if defined(ENABLE_BLE)
-  obj[PARAM_BLE_SUPPORTED] = true;
-#else
-  obj[PARAM_BLE_SUPPORTED] = false;
-#endif
-
   obj[PARAM_GYRO_FAMILY] = myGyro.getGyroFamily();
 
 #if defined(ESP8266)

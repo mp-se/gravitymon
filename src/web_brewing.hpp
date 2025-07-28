@@ -83,6 +83,7 @@ class BrewingWebServer : public BaseWebServer {
   bool _pushTestLastSuccess, _pushTestEnabled;
 
   void webHandleStatus(AsyncWebServerRequest *request);
+  void webHandleFeature(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleConfigFormatRead(AsyncWebServerRequest *request);
@@ -106,6 +107,7 @@ class BrewingWebServer : public BaseWebServer {
   virtual void doTaskHardwareScanning(JsonObject &obj) = 0;
 
   virtual void doWebStatus(JsonObject &obj) = 0;
+  virtual void doWebFeature(JsonObject &obj) = 0;
   virtual void doWebConfigWrite() = 0;
   virtual void doWebCalibrateStatus(JsonObject &obj) = 0;
 

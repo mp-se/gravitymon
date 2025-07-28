@@ -415,6 +415,30 @@ void BrewingWebServer::webHandleConfigFormatRead(
   PERF_END("webserver-api-config-format-read");
 }
 
+void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
+  PERF_BEGIN("webserver-api-status");
+  Log.notice(F("WEB : webServer callback for /api/feature(get)." CR));
+
+  AsyncJsonResponse *response = new AsyncJsonResponse(false);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+
+  obj[PARAM_PLATFORM] = platform;
+
+#if defined(BOARD)
+  String b(BOARD);
+  b.toLowerCase();
+  obj[PARAM_BOARD] = b;
+#else
+  obj[PARAM_BOARD] = "Undefined";
+#endif
+
+  doWebFeature(obj);
+
+  response->setLength();
+  request->send(response);
+  PERF_END("webserver-api-status");
+}
+
 void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   PERF_BEGIN("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
@@ -541,6 +565,9 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
                         std::placeholders::_1));
   _server->on("/api/status", HTTP_GET,
               std::bind(&BrewingWebServer::webHandleStatus, this,
+                        std::placeholders::_1));
+  _server->on("/api/feature", HTTP_GET,
+              std::bind(&BrewingWebServer::webHandleFeature, this,
                         std::placeholders::_1));
   _server->on("/api/push/status", HTTP_GET,
               std::bind(&BrewingWebServer::webHandleTestPushStatus, this,
