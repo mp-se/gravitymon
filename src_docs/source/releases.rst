@@ -12,7 +12,8 @@ features due to limitations on the devices supported, mainly the 4mb flash limit
 
 New features
 ++++++++++++
-* tbd
+* Refactored code for gravity velocity and filter to better follow guidelines for RTCMEM on ESP32.
+* Added feature flags to build so builds can be customized and UI will better adapt.
 
 Dropped features
 ++++++++++++++++
@@ -21,7 +22,7 @@ Dropped features
 
 Bugs fixed
 ++++++++++
-* tbd
+* Fixed startup issue after deep sleep on some boards when RTCMEM was enabled.
 
 v2.2.1
 ======
