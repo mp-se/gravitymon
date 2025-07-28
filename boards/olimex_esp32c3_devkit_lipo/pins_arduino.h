@@ -16,19 +16,19 @@ static const uint8_t RX = 20;
 static const uint8_t SCL = 0;
 static const uint8_t SDA = 1;
 
-static const uint8_t GPIO0 = 0;
-static const uint8_t GPIO1 = 1;
-static const uint8_t GPIO2 = 2;
-static const uint8_t GPIO3 = 3;
-static const uint8_t GPIO4 = 4;
-static const uint8_t GPIO5 = 5;
-static const uint8_t GPIO6 = 6;
+static const uint8_t IO0 = 0;
+static const uint8_t IO1 = 1;
+static const uint8_t IO2 = 2;
+static const uint8_t IO3 = 3;
+static const uint8_t IO4 = 4;
+static const uint8_t IO5 = 5;
+static const uint8_t IO6 = 6;
 
-static const uint8_t GPIO7 = 7;
-static const uint8_t GPIO8 = 8;
-static const uint8_t GPIO9 = 9;
-static const uint8_t GPIO10 = 10;
-static const uint8_t GPIO20 = 20;
-static const uint8_t GPIO21 = 21;
+static const uint8_t IO7 = 7;
+static const uint8_t IO8 = 8;
+static const uint8_t IO9 = 9;
+static const uint8_t IO10 = 10;
+static const uint8_t IO20 = 20;
+static const uint8_t IO21 = 21;
 
 #endif /* Pins_Arduino_h */

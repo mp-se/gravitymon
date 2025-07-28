@@ -19,12 +19,12 @@ static const uint8_t USB_DM = 18;
 static const uint8_t SDA = 1;
 static const uint8_t SCL = 0;
 
-static const uint8_t S10 = 10; // Also used for RGB LED
-static const uint8_t S9 = 9;
-static const uint8_t S8 = 8;
-static const uint8_t S7 = 7;
-static const uint8_t S6 = 6;
-static const uint8_t S5 = 5;
+static const uint8_t IO10 = 10; // Also used for RGB LED
+static const uint8_t IO9 = 9;
+static const uint8_t IO8 = 8;
+static const uint8_t IO7 = 7;
+static const uint8_t IO6 = 6;
+static const uint8_t IO5 = 5;
 
 static const uint8_t A0 = 0;
 static const uint8_t A1 = 1;

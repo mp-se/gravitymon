@@ -30,6 +30,11 @@ static const uint8_t A2 = 2;
 static const uint8_t A3 = 3;
 static const uint8_t A4 = 4;
 static const uint8_t A5 = 5;
-static const uint8_t A10 = 10;
+
+static const uint8_t IO6 = 6;
+static const uint8_t IO7 = 7;
+static const uint8_t IO8 = 8;
+static const uint8_t IO9 = 9;
+static const uint8_t IO10 = 10;
 
 #endif /* Pins_Arduino_h */
