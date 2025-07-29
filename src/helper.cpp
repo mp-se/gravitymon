@@ -46,7 +46,7 @@ bool checkPinConnected(int pin1, int pin2) {
   return i == LOW ? false : true;
 }
 
-bool checkPinStorage(int pin) {
+bool checkPinCharging(int pin) {
 #if defined(ESP8266)
   return false;
 #else

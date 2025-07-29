@@ -87,7 +87,7 @@ The main features
 
 * **Storage mode when charging** :bdg-primary:`ESP32`
 
-  When power (>2V) is applied to the storage pin the device will go to deep sleep until the power is lost. This can be used together with a 
+  When power (>2V) is applied to the charging pin the device will go to deep sleep until the power is lost. This can be used together with a 
   wireless charger so the device is sleeping when charged and starts automatically when charger is removed. This needs to be enabled in configuration 
   and also valid pin needs to be set for the target (not all targets is build with this feature enabled).
 

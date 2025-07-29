@@ -66,7 +66,7 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_IGNORE_LOW_ANGLES] = this->isIgnoreLowAngles();
   doc[CONFIG_BLE_FORMAT] = getGravitymonBleFormat();
   doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
-  doc[CONFIG_CHARGING_PIN_ENABLED] = this->isPinStorageMode();
+  doc[CONFIG_CHARGING_PIN_ENABLED] = this->isPinChargingMode();
 }
 
 void GravitymonConfig::parseJson(JsonObject& doc) {
@@ -145,7 +145,7 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
   if (!doc[CONFIG_BATTERY_SAVING].isNull())
     setBatterySaving(doc[CONFIG_BATTERY_SAVING].as<bool>());
   if (!doc[CONFIG_CHARGING_PIN_ENABLED].isNull())
-    setPinStorageMode(doc[CONFIG_CHARGING_PIN_ENABLED].as<bool>());
+    setPinChargingMode(doc[CONFIG_CHARGING_PIN_ENABLED].as<bool>());
 }
 
 void GravitymonConfig::migrateSettings() {

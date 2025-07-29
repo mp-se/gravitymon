@@ -129,7 +129,7 @@ void setup() {
 #if defined(PIN_CFG1) && defined(PIN_CFG2)
   sleepModeAlwaysSkip = checkPinConnected(PIN_CFG1, PIN_CFG2);
   if (sleepModeAlwaysSkip) {
-    Log.notice(F("Main: Forcing config mode since TX/RX are connected." CR));
+    Log.notice(F("Main: Forcing config mode since GPIO%d/GPIO%d are connected." CR), PIN_CFG1, PIN_CFG2);
   }
 #endif
 
@@ -542,11 +542,8 @@ void checkSleepMode(float angle, float volt) {
 
 #if defined(PIN_CHARGING)
   // If there is voltage on the storage pin, we enter storage mode.
-  if(myConfig.isPinStorageMode() && checkPinStorage(PIN_CHARGING)) {
-      Log.info(F("MAIN: Storage pin active." CR));
-#if LOG_LEVEL == 6
-      Log.notice(F("MAIN: Storage pin active." CR));
-#endif
+  if(myConfig.isPinChargingMode() && checkPinCharging(PIN_CHARGING)) {
+      Log.info(F("MAIN: Charging pin active." CR));
     runMode = RunMode::storageMode;
   }
 #endif
@@ -585,7 +582,7 @@ void checkSleepMode(float angle, float volt) {
     ESP.deepSleep(0);  // indefinite sleep
 #else
   #if defined(PIN_CHARGING)
-    if(myConfig.isPinStorageMode()) {
+    if(myConfig.isPinChargingMode()) {
       #if defined(ESP32C3)
       esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_CHARGING, ESP_GPIO_WAKEUP_GPIO_LOW);
       #elif defined(ESP32S2) || defined(ESP32S3)

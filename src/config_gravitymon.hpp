@@ -83,7 +83,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool _gyroFilter = false;
   bool _gyroTemp = false;
   bool _batterySaving = true;
-  bool _pinStorageMode = false;
+  bool _pinChargingMode = false;
 
   char _gravityUnit = 'G';
 
@@ -241,9 +241,9 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
     _saveNeeded = true;
   }
 
-  bool isPinStorageMode() const { return _pinStorageMode; }
-  void setPinStorageMode(bool b) {
-    _pinStorageMode = b;
+  bool isPinChargingMode() const { return _pinChargingMode; }
+  void setPinChargingMode(bool b) {
+    _pinChargingMode = b;
     _saveNeeded = true;
   }
 

@@ -69,21 +69,21 @@ Here is an image of where I added the resistor for the voltage divider.
   :width: 500
   :alt: Esp32c3 adding resistor as voltage dividier.
 
-The storage pin is connected to pin; GPIO 1
+The charging pin is connected to pin; GPIO 1
 
 ESP32s2 mini
 ++++++++++++
 
 This is model is fully supported by gravitymon. Same setup as for ESP32C3 mini.
 
-The storage pin is connected to pin; GPIO 7
+The charging pin is connected to pin; GPIO 7
 
 ESP32s3 mini
 ++++++++++++
 
 This is model is fully supported by gravitymon. Same setup as for ESP32S2 mini.
 
-The storage pin is connected to pin; GPIO 12
+The charging pin is connected to pin; GPIO 12
 
 ESP32 d1 mini
 +++++++++++++
