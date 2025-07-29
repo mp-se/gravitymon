@@ -133,13 +133,15 @@ SOFTWARE.
 #elif defined(TENSTAR_ESP32C3_SUPER_MINI)
 // Hardware config for SUPER_MINI_ESP32C3, iSpindel hardware
 // ------------------------------------------------------
-#define PIN_SDA 7
-#define PIN_SCL 6
+// IO8 is LED pin
+// A2, IO8, IO9 is strapping pin
+#define PIN_SDA IO7
+#define PIN_SCL IO6
 #define PIN_DS A0
 #define PIN_VOLT A3
-
-#define PIN_CFG1 A5
-#define PIN_CFG2 A4
+#define PIN_CHARGING A4 // Needs to be an Analog and RTC connected pin
+#define PIN_CFG1 IO10
+#define PIN_CFG2 A1
 #define CFG_FILENAMEBIN "custom-tenstar_esp32c3_super_mini.bin"
 
 #else

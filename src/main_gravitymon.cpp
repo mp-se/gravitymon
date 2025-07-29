@@ -584,6 +584,7 @@ void checkSleepMode(float angle, float volt) {
   #if defined(PIN_CHARGING)
     if(myConfig.isPinChargingMode()) {
       #if defined(ESP32C3)
+      pinMode(PIN_CHARGING, INPUT_PULLDOWN);
       esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_CHARGING, ESP_GPIO_WAKEUP_GPIO_LOW);
       #elif defined(ESP32S2) || defined(ESP32S3)
       esp_sleep_enable_ext1_wakeup(1ULL << PIN_CHARGING, ESP_EXT1_WAKEUP_ANY_LOW);
