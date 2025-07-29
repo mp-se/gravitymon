@@ -573,7 +573,7 @@ void checkSleepMode(float angle, float volt) {
   // If we are in storage mode, just go back to sleep
   if (runMode == RunMode::storageMode) {
     Log.notice(
-        F("Main: Storage mode entered, going to sleep for maximum time." CR));
+        F("Main: Charging/Storage mode entered, going to sleep for maximum time." CR));
     myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
     LittleFS.end();  
     delay(100);

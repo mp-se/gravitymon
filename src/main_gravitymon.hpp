@@ -83,13 +83,14 @@ SOFTWARE.
 #elif defined(WAVESHARE_ESP32C3_ZERO)
 // Hardware config for ESP32-c3-zero, iSpindel hardware
 // ------------------------------------------------------
-// S10 is connected to RBG LED
-#define PIN_SDA S8
-#define PIN_SCL S9
-#define PIN_DS S5 
+// IO10 is connected to RBG LED
+// A2. IO8, IO9 are strapping pins
+#define PIN_SDA IO6
+#define PIN_SCL IO7
+#define PIN_DS IO5
 #define PIN_VOLT A0
-#define PIN_CFG1 S7
-#define PIN_CFG2 S6
+#define PIN_CFG1 A1
+#define PIN_CFG2 A3
 #define PIN_CHARGING A4 // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32c3zero.bin"
 
