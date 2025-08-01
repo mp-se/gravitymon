@@ -122,12 +122,12 @@ SOFTWARE.
 // Hardware config for ESP32C3 from Olimex with build in Charger
 // (ESP32-C3-DevKit-Lipo)
 // ------------------------------------------------------
-#define PIN_SCL GPIO0
-#define PIN_SDA GPIO1
-#define PIN_DS GPIO5  // implemetation with DS18 not tested
-#define PIN_VOLT GPIO3
-#define PIN_CFG1 GPIO4
-#define PIN_CFG2 GPIO20
+#define PIN_SCL IO0
+#define PIN_SDA IO1
+#define PIN_DS IO5  // implemetation with DS18 not tested
+#define PIN_VOLT IO3
+#define PIN_CFG1 IO4
+#define PIN_CFG2 IO20
 #define CFG_FILENAMEBIN "custom-olimex_esp32c3_devkit_lipo.bin"
 
 #elif defined(TENSTAR_ESP32C3_SUPER_MINI)
@@ -142,7 +142,7 @@ SOFTWARE.
 #define PIN_CHARGING A4 // Needs to be an Analog and RTC connected pin
 #define PIN_CFG1 IO10
 #define PIN_CFG2 A1
-#define CFG_FILENAMEBIN "custom-tenstar_esp32c3_super_mini.bin"
+#define CFG_FILENAMEBIN "firmware32c3supermini.bin"
 
 #else
 #warning "Unknown board type"
