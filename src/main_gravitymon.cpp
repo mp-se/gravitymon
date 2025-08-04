@@ -72,7 +72,7 @@ GravitymonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
                       USER_SSID, USER_PASS);
 OtaUpdate myOta(&myConfig, CFG_APPVER, CFG_FILENAMEBIN);
-BatteryVoltage myBatteryVoltage(&myConfig);
+BatteryVoltage myBatteryVoltage(&myConfig, PIN_VOLT);
 GravitymonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)

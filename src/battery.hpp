@@ -40,10 +40,11 @@ class BatteryConfigInterface {
 class BatteryVoltage {
  private:
   float _batteryVoltage = 0;
+  int _pin;
   BatteryConfigInterface *_batteryConfig = nullptr;
 
  public:
-  explicit BatteryVoltage(BatteryConfigInterface *batteryConfig);
+  explicit BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin);
   void read();
   float getVoltage() const { return _batteryVoltage; }
 };
