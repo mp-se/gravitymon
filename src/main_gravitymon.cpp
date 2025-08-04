@@ -362,9 +362,8 @@ bool loopReadGravity() {
       }
 #endif  // ENABLE_BLE
 
-      if (myWifi.isConnected() &&
-          angleValid) {  // no need to try if there is no wifi
-                         // connection.
+      if (myWifi.isConnected() && angleValid) {  // no need to try if there is
+                                                 // no wifi connection.
         if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
           Log.notice(F(
               "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
