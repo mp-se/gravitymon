@@ -63,6 +63,7 @@ void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
 void GravitymonWebServer::doWebConfigWrite() {}
 
 void GravitymonWebServer::doWebFeature(JsonObject &obj) {
+  obj[PARAM_FIRMWARE_FILE] = CFG_FILENAMEBIN;
 #if defined(ENABLE_BLE) && defined(ESP32)
   obj[PARAM_FEATURE_BLE_SUPPORTED] = true;
 #else
