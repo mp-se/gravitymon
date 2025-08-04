@@ -48,12 +48,12 @@ GyroType GyroSensor::detectGyro() {
   Wire.begin(PIN_SDA, PIN_SCL);
   Wire.setClock(clock);  // 400kHz I2C clock.
 
-  if( MPU6050Gyro::isDeviceDetected(addr) ) {
+  if (MPU6050Gyro::isDeviceDetected(addr)) {
     Log.notice(F("GYRO: MPU6050 detected." CR));
     return GyroType::GYRO_MPU6050;
   }
 
-  else if( ICM42670pGyro::isDeviceDetected(addr) ) {
+  else if (ICM42670pGyro::isDeviceDetected(addr)) {
     Log.notice(F("GYRO: ICM42670P detected." CR));
     return GyroType::GYRO_ICM42670P;
   }
@@ -68,26 +68,25 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
   if (_currentMode == GyroMode::GYRO_UNCONFIGURED || !_impl) {
     Log.notice(F("GYRO: Setting up hardware." CR));
 
-    switch(_gyroConfig->getGyroType()) {
+    switch (_gyroConfig->getGyroType()) {
       case GyroType::GYRO_NONE: {
         Log.error(F("GYRO: No gyro mode not defined." CR));
         return false;
-      }
-      break;
+      } break;
 
       case GyroType::GYRO_MPU6050: {
         Wire.begin(PIN_SDA, PIN_SCL);
         Wire.setClock(clock);  // 400kHz I2C clock.
 
-        // Using RTC memory on an ESP32c3 zero or super mini will not work, the code will hang when waiting for interrupt from the MPU6050.
+        // Using RTC memory on an ESP32c3 zero or super mini will not work, the
+        // code will hang when waiting for interrupt from the MPU6050.
 
         if (MPU6050Gyro::isDeviceDetected(addr)) {
           Log.notice(F("GYRO: Detected MPU6050/MPU6500 %x." CR), addr);
           _impl.reset(new MPU6050Gyro(addr, _gyroConfig));
         }
-      }
-      break;
-      
+      } break;
+
       case GyroType::GYRO_ICM42670P: {
         Wire.begin(PIN_SDA, PIN_SCL);
         Wire.setClock(clock);  // 400kHz I2C clock.
@@ -97,18 +96,17 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
           Log.notice(F("GYRO: Using ICM42670-p %x." CR), myRtcGyroData.Address);
           _impl.reset(new ICM42670pGyro(myRtcGyroData.Address, _gyroConfig));
           _currentMode = GyroMode::GYRO_RUN;
-        } else 
+        } else
 #endif
-        if (ICM42670pGyro::isDeviceDetected(addr)) {
+            if (ICM42670pGyro::isDeviceDetected(addr)) {
           Log.notice(F("GYRO: Detected ICM42670-p %x." CR), addr);
           _impl.reset(new ICM42670pGyro(addr, _gyroConfig));
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
           myRtcGyroData = {.Address = addr,
-                          .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
+                           .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
 #endif
         }
-      }
-      break;
+      } break;
     }
   }
 

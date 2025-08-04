@@ -96,7 +96,6 @@ void checkSleepMode(float angle, float volt);
 void runGpioHardwareTests();
 
 void setup() {
-
   PERF_BEGIN("run-time");
   PERF_BEGIN("main-setup");
   runtimeMillis = millis();
@@ -129,7 +128,9 @@ void setup() {
 #if defined(PIN_CFG1) && defined(PIN_CFG2)
   sleepModeAlwaysSkip = checkPinConnected(PIN_CFG1, PIN_CFG2);
   if (sleepModeAlwaysSkip) {
-    Log.notice(F("Main: Forcing config mode since GPIO%d/GPIO%d are connected." CR), PIN_CFG1, PIN_CFG2);
+    Log.notice(
+        F("Main: Forcing config mode since GPIO%d/GPIO%d are connected." CR),
+        PIN_CFG1, PIN_CFG2);
   }
 #endif
 
@@ -142,7 +143,7 @@ void setup() {
 #if defined(ESP8266)
   ESP.wdtDisable();
   ESP.wdtEnable(5000);  // 5 seconds
-#else                   
+#else
   // ESP32
 #endif
 
@@ -173,7 +174,7 @@ void setup() {
       break;
 
     default:
-      if(myConfig.getGyroType() == GyroType::GYRO_NONE) {
+      if (myConfig.getGyroType() == GyroType::GYRO_NONE) {
         myConfig.setGyroType(myGyro.detectGyro());
         myConfig.saveFile();
       }
@@ -183,9 +184,9 @@ void setup() {
         myGyro.read();
         PERF_END("main-gyro-read");
       } else {
-        Log.notice(F(
-            "Main: Failed to connect to the gyro, software will not be able "
-            "to detect angles." CR));
+        Log.notice(
+            F("Main: Failed to connect to the gyro, software will not be able "
+              "to detect angles." CR));
       }
 
       myBatteryVoltage.read();
@@ -361,8 +362,9 @@ bool loopReadGravity() {
       }
 #endif  // ENABLE_BLE
 
-      if (myWifi.isConnected() && angleValid) {  // no need to try if there is no wifi
-                                   // connection.
+      if (myWifi.isConnected() &&
+          angleValid) {  // no need to try if there is no wifi
+                         // connection.
         if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
           Log.notice(F(
               "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
@@ -439,13 +441,14 @@ void goToSleep(int sleepInterval) {
   PERF_END("run-time");
   PERF_PUSH();
 
-  if (myConfig.isBatterySaving() && getBatteryPercentage(volt, BatteryType::LithiumIon) < 30) {
+  if (myConfig.isBatterySaving() &&
+      getBatteryPercentage(volt, BatteryType::LithiumIon) < 30) {
     sleepInterval = 3600;
     Log.notice(F("MAIN: Battery saving is enabled, sleeping for %ds." CR),
-             sleepInterval);
+               sleepInterval);
   }
 
-  myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
+  myWifi.stopDoubleReset();  // Ensure we dont go into wifi mode when wakeup
   LittleFS.end();
   delay(100);
   ledOff();
@@ -542,8 +545,8 @@ void checkSleepMode(float angle, float volt) {
 
 #if defined(PIN_CHARGING)
   // If there is voltage on the storage pin, we enter storage mode.
-  if(myConfig.isPinChargingMode() && checkPinCharging(PIN_CHARGING)) {
-      Log.info(F("MAIN: Charging pin active." CR));
+  if (myConfig.isPinChargingMode() && checkPinCharging(PIN_CHARGING)) {
+    Log.info(F("MAIN: Charging pin active." CR));
     runMode = RunMode::storageMode;
   }
 #endif
@@ -573,25 +576,28 @@ void checkSleepMode(float angle, float volt) {
   // If we are in storage mode, just go back to sleep
   if (runMode == RunMode::storageMode) {
     Log.notice(
-        F("Main: Charging/Storage mode entered, going to sleep for maximum time." CR));
-    myWifi.stopDoubleReset(); // Ensure we dont go into wifi mode when wakeup
-    LittleFS.end();  
+        F("Main: Charging/Storage mode entered, going to sleep for maximum "
+          "time." CR));
+    myWifi.stopDoubleReset();  // Ensure we dont go into wifi mode when wakeup
+    LittleFS.end();
     delay(100);
     ledOff();
 #if defined(ESP8266)
     ESP.deepSleep(0);  // indefinite sleep
 #else
-  #if defined(PIN_CHARGING)
-    if(myConfig.isPinChargingMode()) {
-      #if defined(ESP32C3)
+#if defined(PIN_CHARGING)
+    if (myConfig.isPinChargingMode()) {
+#if defined(ESP32C3)
       pinMode(PIN_CHARGING, INPUT_PULLDOWN);
-      esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_CHARGING, ESP_GPIO_WAKEUP_GPIO_LOW);
-      #elif defined(ESP32S2) || defined(ESP32S3)
-      esp_sleep_enable_ext1_wakeup(1ULL << PIN_CHARGING, ESP_EXT1_WAKEUP_ANY_LOW);
-      #endif
+      esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_CHARGING,
+                                        ESP_GPIO_WAKEUP_GPIO_LOW);
+#elif defined(ESP32S2) || defined(ESP32S3)
+      esp_sleep_enable_ext1_wakeup(1ULL << PIN_CHARGING,
+                                   ESP_EXT1_WAKEUP_ANY_LOW);
+#endif
       esp_deep_sleep_start();
-    } 
-  #endif
+    }
+#endif
     ESP.deepSleep(0xFFFFFFFF);  // indefinite sleep
 #endif
   }

@@ -23,9 +23,9 @@ SOFTWARE.
  */
 #include <algorithm>
 #include <battery.hpp>
-#include <main_gravitymon.hpp>
 #include <cmath>
 #include <log.hpp>
+#include <main_gravitymon.hpp>
 
 // #define SIMULATE_VOLTAGE 3.9
 

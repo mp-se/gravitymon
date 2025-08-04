@@ -183,7 +183,7 @@ class GyroSensor : public SecondayTempSensorInterface {
 #endif
   }
 
-  GyroType detectGyro(); 
+  GyroType detectGyro();
 
   bool setup(GyroMode mode, bool force);
   bool read();

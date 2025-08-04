@@ -74,7 +74,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
   GravitymonBleFormat _gravitymonBleFormat = GravitymonBleFormat::BLE_DISABLED;
-  GyroType _gyroType = GyroType::GYRO_NONE; 
+  GyroType _gyroType = GyroType::GYRO_NONE;
 
   bool _gravityTempAdj = false;
   bool _ignoreLowAngles = false;
@@ -99,7 +99,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
 
   GyroType getGyroType() const { return _gyroType; }
   void setGyroType(int t) {
-    _gyroType = (GyroType) t;
+    _gyroType = (GyroType)t;
     _saveNeeded = true;
   }
   void setGyroType(GyroType t) {
