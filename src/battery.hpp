@@ -44,7 +44,7 @@ class BatteryVoltage {
   BatteryConfigInterface *_batteryConfig = nullptr;
 
  public:
-  explicit BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin);
+  explicit BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin = -1);
   void read();
   float getVoltage() const { return _batteryVoltage; }
 };

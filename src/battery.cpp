@@ -32,11 +32,15 @@ BatteryVoltage::BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin) {
   _batteryConfig = batteryConfig;
   _pin = pin;
 #if defined(ESP8266)
-  pinMode(_pin, INPUT);
+  if(_pin > 0) {
+    pinMode(_pin, INPUT);
+  }
 #else
-  pinMode(_pin, INPUT);
-  analogReadResolution(SOC_ADC_MAX_BITWIDTH);
-  analogSetAttenuation(ADC_11db);
+  if(_pin > 0) {
+    pinMode(_pin, INPUT);
+    analogReadResolution(SOC_ADC_MAX_BITWIDTH);
+    analogSetAttenuation(ADC_11db);
+  }
 #endif
 }
 
@@ -44,7 +48,11 @@ void BatteryVoltage::read() {
   // The analog pin can only handle 3.3V maximum voltage so we need to reduce
   // the voltage (from max 5V)
   float factor = _batteryConfig->getVoltageFactor();  // Default value is 1.63
-  int v = analogRead(_pin);
+  int v = 0;
+
+  if( _pin > 0) {
+    v = analogRead(_pin);
+  }
 
   // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
