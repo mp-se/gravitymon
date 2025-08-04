@@ -35,10 +35,12 @@ SOFTWARE.
 #include <esp_task_wdt.h>
 #endif
 
-// #include <tempsensor.hpp>
+#include <spi_manager.hpp>
 
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
+
+SPIBusManager spiBus;
 
 BrewingWebServer::BrewingWebServer(BrewingConfig *config)
     : BaseWebServer(config) {
@@ -51,10 +53,19 @@ void BrewingWebServer::webHandleConfigRead(AsyncWebServerRequest *request) {
   }
 
   PERF_BEGIN("webserver-api-config-read");
+
+  if(!spiBus.acquire()) {
+    Log.warning(F("WEB : Failed to acquire SPI bus for reading configuration." CR));
+    request->send(423, "text/plain", "Failed to acquire SPI bus for reading configuration");
+    PERF_END("webserver-api-config-read");
+    return;
+  }
+
   Log.notice(F("WEB : webServer callback for /api/config(read)." CR));
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   _webConfig->createJson(obj);
+  spiBus.release();
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-config-read");
@@ -67,6 +78,14 @@ void BrewingWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
   }
 
   PERF_BEGIN("webserver-api-config-write");
+
+  if(!spiBus.acquire()) {
+    Log.warning(F("WEB : Failed to acquire SPI bus for writing configuration." CR));
+    request->send(423, "text/plain", "Failed to acquire SPI bus for writing configuration");
+    PERF_END("webserver-api-config-write");
+    return;
+  }
+
   Log.notice(F("WEB : webServer callback for /api/config(write)." CR));
   JsonObject obj = json.as<JsonObject>();
   _webConfig->parseJson(obj);
@@ -75,6 +94,7 @@ void BrewingWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
   myBatteryVoltage.read();
 
   doWebConfigWrite();
+  spiBus.release();
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
@@ -109,6 +129,13 @@ void BrewingWebServer::webHandleFactoryDefaults(
   }
 
   Log.notice(F("WEB : webServer callback for /api/factory." CR));
+
+  if(!spiBus.acquire()) {
+    Log.warning(F("WEB : Failed to acquire SPI bus for performing factory reset." CR));
+    request->send(423, "text/plain", "Failed to acquire SPI bus for performing factory reset");
+    return;
+  }
+
   _brewingConfig->saveFileWifiOnly();
   LittleFS.remove(ERR_FILENAME);
 
@@ -125,6 +152,7 @@ void BrewingWebServer::webHandleFactoryDefaults(
   LittleFS.remove(TPL_PRESSURE_FNAME_MQTT);
   LittleFS.end();
 
+  spiBus.release();
   Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
@@ -165,6 +193,13 @@ void BrewingWebServer::webHandleConfigFormatWrite(
 
   PERF_BEGIN("webserver-api-config-format-write");
   Log.notice(F("WEB : webServer callback for /api/config/format(write)." CR));
+
+  if(!spiBus.acquire()) {
+    Log.warning(F("WEB : Failed to acquire SPI bus for writing templates." CR));
+    request->send(423, "text/plain", "Failed to acquire SPI bus for writing templates");
+    PERF_END("webserver-api-config-format-write");
+    return;
+  }
 
   JsonObject obj = json.as<JsonObject>();
   int success = 0;
@@ -222,6 +257,8 @@ void BrewingWebServer::webHandleConfigFormatWrite(
         writeFile(TPL_PRESSURE_FNAME_MQTT, obj[PARAM_FORMAT_MQTT_PRESSURE]) ? 1
                                                                             : 0;
   }
+
+  spiBus.release();
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
@@ -367,6 +404,13 @@ void BrewingWebServer::webHandleConfigFormatRead(
   PERF_BEGIN("webserver-api-config-format-read");
   Log.notice(F("WEB : webServer callback for /api/config/format(read)." CR));
 
+  if(!spiBus.acquire()) {
+    Log.warning(F("WEB : Failed to acquire SPI bus for reading format templates." CR));
+    request->send(423, "text/plain", "Failed to acquire SPI bus for reading format templates");
+    PERF_END("webserver-api-config-format-read");
+    return;
+  }
+
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
   String s;
@@ -410,6 +454,7 @@ void BrewingWebServer::webHandleConfigFormatRead(
       s.length() ? urlencode(s) : urlencode(String(&iPressureMqttFormat[0]));
 #endif
 
+  spiBus.release();
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-config-format-read");
