@@ -149,6 +149,21 @@ class GravityVelocity {
     return velocity * 1000;
   }
 
+  bool isVelocityValid() const {
+    int dataPoints = getNoValues();
+
+    if (!dataPoints)  // No samples to calculate velocity
+      return false;
+
+    int hours = (dataPoints * VELOCITY_PERIOD_TIME) / _samplesPerPeriod;
+
+    if (hours <=
+        VELOCITY_MIN_HOURS)  // Not enough samples to calculate velocity
+      return false;
+
+    return true;
+  }
+
   void dump() const {
     for (int i = 0; i < VELOCITY_PERIODS; i++)
       printf(

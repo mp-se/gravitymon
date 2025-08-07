@@ -53,7 +53,9 @@ enum GravitymonBleFormat {
   BLE_TILT = 1,
   BLE_TILT_PRO = 2,
   BLE_GRAVITYMON_EDDYSTONE = 4,
-  BLE_GRAVITYMON_IBEACON = 5
+  BLE_GRAVITYMON_IBEACON = 5,
+  BLE_RAPT_V1 = 6,
+  BLE_RAPT_V2 = 7,
 };
 
 // Used for holding formulaData (used for calculating formula on device)

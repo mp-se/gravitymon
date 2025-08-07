@@ -358,6 +358,17 @@ bool loopReadGravity() {
             myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), tempC,
                                           gravitySG, angle);
           } break;
+
+          case GravitymonBleFormat::BLE_RAPT_V1: {
+            myBleSender.sendRaptV1Data(myBatteryVoltage.getVoltage(), tempC,
+                                       gravitySG, angle);
+          } break;
+
+          case GravitymonBleFormat::BLE_RAPT_V2: {
+            myBleSender.sendRaptV2Data(myBatteryVoltage.getVoltage(), tempC,
+                                       gravitySG, angle, velocity,
+                                       gv.isVelocityValid());
+          } break;
         }
       }
 #endif  // ENABLE_BLE
