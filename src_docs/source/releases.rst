@@ -14,6 +14,7 @@ New features
 ++++++++++++
 * Refactored code for gravity velocity and filter to better follow guidelines for RTCMEM on ESP32.
 * Added feature flags to build so builds can be customized and UI will better adapt.
+* Added RAPT bluetooth transmission covering both v1 and v2 formats.
 
 Dropped features
 ++++++++++++++++
