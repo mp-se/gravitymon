@@ -7,9 +7,85 @@ I'm not a hardware designer so I would recommend the following resources for mor
 
 * `Cherry Philip Hardware design <https://github.com/cherryphilip74/iSpindel-PCB>`_
 * `OpenSource Distilling <https://www.opensourcedistilling.com/ispindel>`_
+* `iSpindel Gravitymon Pill PCB <https://github.com/andreq/iSpindel-Gravitymon-Pill-PCB>`_
+* `iSpindel <https://github.com/hobipivo/iSpindel>`_
+
+
+Supported ESP boards
+====================
+
+From v2.3 i have changed the main boards that I support as part of this project and the focus is now
+moving towards ESP32 based boards. The main reason is that the ESP8266 is old and resources are limited
+for adding new features. The original iSpindle design is starting to get older and new and better boards 
+and components exist today.
+
+For the pcbs make for the ESP8266 some of the features will not be available but I'm currently working with 
+some pcb designeers to create new options that full utilize the features in Gravitymon.
+
+I'm working on adding more ESP options and I will add the pinouts once they have been confirmed.
+
+.. list-table:: GPIO pins for ESP boards
+   :header-rows: 1
+
+   * - Board
+     - SDA
+     - SCL
+     - OneWire
+     - Battery
+     - Reset
+     - Charging
+     - Config
+   * - Lolin ESP8266
+     - D3
+     - D4
+     - D6
+     - A0
+     - EN
+     - 
+     - D8 / D7
+   * - Lolin ESP32 c3 mini
+     - 7
+     - 6
+     - A0
+     - A3
+     - EN
+     - A1
+     - A5 / A4
+   * - Lolin ESP32 s2 mini
+     - A17
+     - A15
+     - A8
+     - A2
+     - EN
+     - A6
+     - A10 / A11     
+   * - Lolin ESP32 s3 mini
+     - A17
+     - A15
+     - A12
+     - A1
+     - EN
+     - A11
+     - A9 / A10
+   * - Waveshare ESP32c3 Zero
+     - 
+     - 
+     - 
+     - 
+     - 
+     - 
+     - 
+   * - Tenstar ESP32c3 super mini
+     - 
+     - 
+     - 
+     - 
+     - 
+     - 
+     - 
 
 Custom boards
-=============
++++++++++++++
 
 Besides the standard boards listed here (which are tested and verified by me) there is also a possibility 
 to add custom boards which are included in the builds and made available through this gihub repository. 
@@ -34,28 +110,23 @@ Schema for esp8266 build
   :width: 700
   :alt: Schema esp8266
 
-iSpindle based on esp32
-=======================
+What is different for the ESP32
+===============================
 
-Gravitymon supports a number of ESP32 boards that offers bluetooth support. 
+You need to add a resistor between Battery PIN and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider 
+which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog 
+pin this is needed. Once the modification is done you might
+need to adjust the voltage factor so the battery reading is correct. 
 
-.. image:: images/esp32_hardware.jpg
-  :width: 500
-  :alt: iSpindle esp32 hardware options
+The charing pin needs to be enabled in the configuration and when power is higher than 2.5V on that pin it will force the device into deep 
+sleep until the power is lost. This is intended to be used with wireless chargers so when the device is charging its turned off. You might 
+need to add a voltage divider and pull-down resistor for this to work correctly and not damage the ESP with more than 3.3V.
 
-* esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support. Don't buy v1.0 since that has a faulty wifi antenna.
-* esp32s2 mini, similar to the c3 board but without bluetooth support. 
-* esp32s3 mini, similar to the s2 board but with bluetooth support. 
+The charging pin can also be used for doing a reset of the device that does not have an exposed reset pin, this applies to the smaller 
+boards like Zero or Super Mini boards.
 
-It's possible to use this PCB and mount an ESP32 mini on top of that (c3 or s2 are prefered). The esp32 d1 mini is a larger formfactor and can be hard to fit into the tube.
-
-.. note::
-  You need to add a resistor between A0 (Analog PIN) and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider 
-  which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog pin this is needed. Once the modification is done you might
-  need to adjust the voltage factor so the battery reading is correct. 
-
-ESP32c3 mini
-++++++++++++
+Example: ESP32c3 mini
++++++++++++++++++++++
 
 This is model is fully supported by gravitymon. 
 
@@ -69,42 +140,9 @@ Here is an image of where I added the resistor for the voltage divider.
   :width: 500
   :alt: Esp32c3 adding resistor as voltage dividier.
 
-The charging pin is connected to pin; GPIO 1
 
-ESP32s2 mini
-++++++++++++
-
-This is model is fully supported by gravitymon. Same setup as for ESP32C3 mini.
-
-The charging pin is connected to pin; GPIO 7
-
-ESP32s3 mini
-++++++++++++
-
-This is model is fully supported by gravitymon. Same setup as for ESP32S2 mini.
-
-The charging pin is connected to pin; GPIO 12
-
-ESP32 d1 mini
-+++++++++++++
-
-I would suggest that you try how it fits into the PET tube before soldering it to the PCB. Make sure that the battery is attached since this will be a really tight fit.
-
-.. image:: images/ispindel_esp32.jpg
-  :width: 500
-  :alt: Esp32 mini build
-
-Schema for esp32 build
-++++++++++++++++++++++
-
-.. note::  
-  This schema assumes that an ESP32 d1 mini (pin compatible with ESP8266). The ESP32 has two rows of pins but 
-  only the inner row is used. The main difference is the added resistor R3 so we get a voltage divider for measuring battery. 
-  The ESP8266 has a built in resistor thats not visible on the schema and this acts as a voltage divider. 
-
-.. image:: images/schema_esp32.png
-  :width: 700
-  :alt: Schema esp32
+Modifications
+=============
 
 Adding a reed (magnetic) reset switch
 +++++++++++++++++++++++++++++++++++++
@@ -125,24 +163,8 @@ The reed switch is the glass tube visible under the esp8266.
   :width: 400
   :alt: Reed build
 
-
-Hardware extensions
-===================
-
-GravityMon has implemented a few additions to the standard iSpindel hardware. It's possible to channel the serial console to the TX/RX pins on the chip (these position also applies to all the 
-ESP32 chips for iSpindel). You need a USB to TTL converter for this to work. This enables you to read the serial console even when on battery (newer chips dont have a diode to remove).
-
-.. note::
-  You need to compile the software using the -DUSE_SERIAL_PINS option to enable this feature. 
-
-Its also possible to force the device into configuration mode by connecting D7/D8 on the board during the startup sequence. This will enable the feature "gravity mode enabled during float".
-
-.. image:: images/8266_pins.jpg
-  :width: 500
-  :alt: iSpindel pins
-
-New Gyro options
-================
+Gyro options
+============
 
 Besides the standard MPU-6050 and MPU-6500 gravitymon now also supports the ICM-42670-p which can be obtained from Aliexpress as a development board. 
 There is some work ongoing to create a new PCB based on this gyro. I will update with links when available.
