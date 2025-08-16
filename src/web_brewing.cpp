@@ -35,8 +35,6 @@ SOFTWARE.
 #include <esp_task_wdt.h>
 #endif
 
-// #include <tempsensor.hpp>
-
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
@@ -415,6 +413,29 @@ void BrewingWebServer::webHandleConfigFormatRead(
   PERF_END("webserver-api-config-format-read");
 }
 
+void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
+  PERF_BEGIN("webserver-api-status");
+  Log.notice(F("WEB : webServer callback for /api/feature(get)." CR));
+
+  AsyncJsonResponse *response = new AsyncJsonResponse(false);
+  JsonObject obj = response->getRoot().as<JsonObject>();
+
+  obj[PARAM_PLATFORM] = platform;
+#if defined(BOARD)
+  obj[PARAM_BOARD] = BOARD;
+#else
+  obj[PARAM_BOARD] = "UNDEFINED";
+#endif
+  obj[PARAM_APP_VER] = CFG_APPVER;
+  obj[PARAM_APP_BUILD] = CFG_GITREV;
+
+  doWebFeature(obj);
+
+  response->setLength();
+  request->send(response);
+  PERF_END("webserver-api-status");
+}
+
 void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
   PERF_BEGIN("webserver-api-status");
   Log.notice(F("WEB : webServer callback for /api/status(get)." CR));
@@ -432,19 +453,9 @@ void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
 
   obj[PARAM_ID] = _webConfig->getID();
   obj[PARAM_TEMP_UNIT] = String(_brewingConfig->getTempUnit());
-  obj[PARAM_APP_VER] = CFG_APPVER;
-  obj[PARAM_APP_BUILD] = CFG_GITREV;
   obj[PARAM_MDNS] = _webConfig->getMDNS();
 
   obj[PARAM_SLEEP_MODE] = sleepModeAlwaysSkip;
-  obj[PARAM_PLATFORM] = platform;
-
-#if defined(BOARD)
-  String b(BOARD);
-  b.toLowerCase();
-  obj[PARAM_BOARD] = b;
-#endif
-
   obj[PARAM_BATTERY] =
       serialized(String(myBatteryVoltage.getVoltage(), DECIMALS_BATTERY));
   obj[PARAM_RSSI] = WiFi.RSSI();
@@ -541,6 +552,9 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
                         std::placeholders::_1));
   _server->on("/api/status", HTTP_GET,
               std::bind(&BrewingWebServer::webHandleStatus, this,
+                        std::placeholders::_1));
+  _server->on("/api/feature", HTTP_GET,
+              std::bind(&BrewingWebServer::webHandleFeature, this,
                         std::placeholders::_1));
   _server->on("/api/push/status", HTTP_GET,
               std::bind(&BrewingWebServer::webHandleTestPushStatus, this,

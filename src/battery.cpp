@@ -28,14 +28,19 @@ SOFTWARE.
 
 // #define SIMULATE_VOLTAGE 3.9
 
-BatteryVoltage::BatteryVoltage(BatteryConfigInterface *batteryConfig) {
+BatteryVoltage::BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin) {
   _batteryConfig = batteryConfig;
+  _pin = pin;
 #if defined(ESP8266)
-  pinMode(_batteryConfig->getVoltagePin(), INPUT);
+  if(_pin > 0) {
+    pinMode(_pin, INPUT);
+  }
 #else
-  pinMode(_batteryConfig->getVoltagePin(), INPUT);
-  analogReadResolution(SOC_ADC_MAX_BITWIDTH);
-  analogSetAttenuation(ADC_11db);
+  if(_pin > 0) {
+    pinMode(_pin, INPUT);
+    analogReadResolution(SOC_ADC_MAX_BITWIDTH);
+    analogSetAttenuation(ADC_11db);
+  }
 #endif
 }
 
@@ -43,13 +48,16 @@ void BatteryVoltage::read() {
   // The analog pin can only handle 3.3V maximum voltage so we need to reduce
   // the voltage (from max 5V)
   float factor = _batteryConfig->getVoltageFactor();  // Default value is 1.63
-  int v = analogRead(_batteryConfig->getVoltagePin());
+  int v = 0;
+
+  if( _pin > 0) {
+    v = analogRead(_pin);
+  }
 
   // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
 
   // Max input values per board (2.5V is the a good setting)
-  // ESP32: 2450mV
   // ESP32-S2: 2500mV
   // ESP32-S3: 3100mV
   // ESP32-C3: 2500mV
@@ -63,10 +71,6 @@ void BatteryVoltage::read() {
   _batteryVoltage = ((3.1 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #elif defined(ESP32C3)
   _batteryVoltage = ((2.5 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
-#elif defined(ESP32LITE)
-  _batteryVoltage = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
-#elif defined(ESP32)
-  _batteryVoltage = ((2.4 / ((1 << SOC_ADC_MAX_BITWIDTH) - 1)) * v) * factor;
 #endif
 
 #if LOG_LEVEL == 6

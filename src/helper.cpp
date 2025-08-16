@@ -46,6 +46,19 @@ bool checkPinConnected(int pin1, int pin2) {
   return i == LOW ? false : true;
 }
 
+bool checkPinCharging(int pin) {
+#if defined(ESP8266)
+  return false;
+#else
+  pinMode(pin, INPUT_PULLDOWN);
+  delay(5);
+  analogReadResolution(SOC_ADC_MAX_BITWIDTH);
+  analogSetAttenuation(ADC_11db);
+  int v = analogRead(pin);
+  return v > 2500 ? true : false;  // > 2V on pin
+#endif
+}
+
 void printBuildOptions() {
   Log.notice(F("Build options: %s (%s) LOGLEVEL %d "
 #if defined(GRAVITYMON)
@@ -61,9 +74,6 @@ void printBuildOptions() {
                "ESP8266 "
 #else
                "ESP32 "
-#endif
-#if defined(FLOATY)
-               "FLOATY "
 #endif
 #ifdef SKIP_SLEEPMODE
                "SKIP_SLEEP "

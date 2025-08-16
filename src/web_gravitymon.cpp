@@ -44,7 +44,11 @@ constexpr auto PARAM_GYRO = "gyro";
 constexpr auto PARAM_GYRO_FAMILY = "gyro_family";
 constexpr auto PARAM_ONEWIRE = "onewire";
 constexpr auto PARAM_TEMP_SENSOR = "temp_sensor";
-constexpr auto PARAM_BLE_SUPPORTED = "ble_supported";
+
+constexpr auto PARAM_FEATURE_BLE_SUPPORTED = "ble";
+constexpr auto PARAM_FEATURE_FILTER_SUPPORTED = "filter";
+constexpr auto PARAM_FEATURE_VELOCITY_SUPPORTED = "velocity";
+constexpr auto PARAM_FEATURE_CHARGING_SUPPORTED = "charging";
 
 void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
   if (myGyro.isConnected()) {
@@ -57,6 +61,28 @@ void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
 }
 
 void GravitymonWebServer::doWebConfigWrite() {}
+
+void GravitymonWebServer::doWebFeature(JsonObject &obj) {
+  obj[PARAM_FIRMWARE_FILE] = CFG_FILENAMEBIN;
+#if defined(ENABLE_BLE) && defined(ESP32)
+  obj[PARAM_FEATURE_BLE_SUPPORTED] = true;
+#else
+  obj[PARAM_FEATURE_BLE_SUPPORTED] = false;
+#endif
+#if defined(ENABLE_RTCMEM) && defined(ESP32)
+  obj[PARAM_FEATURE_VELOCITY_SUPPORTED] = true;
+  obj[PARAM_FEATURE_FILTER_SUPPORTED] = true;
+#else
+  obj[PARAM_FEATURE_VELOCITY_SUPPORTED] = false;
+  obj[PARAM_FEATURE_FILTER_SUPPORTED] = false;
+#endif
+#if defined(PIN_CHARGING) && defined(ESP32)
+  obj[PARAM_FEATURE_CHARGING_SUPPORTED] = true;
+#else
+  obj[PARAM_FEATURE_CHARGING_SUPPORTED] = false;
+#endif
+  obj[PARAM_HARDWARE] = "ispindel";
+}
 
 void GravitymonWebServer::doWebStatus(JsonObject &obj) {
   obj[PARAM_SELF][PARAM_SELF_PUSH_TARGET] =
@@ -97,14 +123,6 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
   }
 
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
-
-#if defined(ENABLE_BLE)
-  obj[PARAM_BLE_SUPPORTED] = true;
-#else
-  obj[PARAM_BLE_SUPPORTED] = false;
-#endif
-
   obj[PARAM_GYRO_FAMILY] = myGyro.getGyroFamily();
 
 #if defined(ESP8266)
@@ -113,16 +131,7 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
   obj[PARAM_ISPINDEL_CONFIG] = false;
 #endif
 
-#if defined(ESP32LITE)
-  obj[PARAM_HARDWARE] = "floaty";
-  obj[PARAM_SELF][PARAM_SELF_BATTERY_LEVEL] =
-      true;  // No hardware support for these
-  obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = true;
-#else
-  obj[PARAM_HARDWARE] = "ispindel";
   obj[PARAM_SELF][PARAM_SELF_TEMP_CONNECTED] = myTempSensor.isSensorAttached();
-#endif
-
   obj[PARAM_SELF][PARAM_SELF_GRAVITY_FORMULA] =
       strlen(_gravConfig->getGravityFormula()) > 0 ? true : false;
   obj[PARAM_SELF][PARAM_SELF_GYRO_CALIBRATION] =

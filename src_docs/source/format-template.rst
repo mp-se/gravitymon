@@ -78,6 +78,9 @@ These are the format keys available for use in the format.
    * - ${tilt}
      - Same as angle.
      - 28.673
+   * - ${velocity}
+     - Calculated gravity velocity, 1 decimal
+     - 2.1
    * - ${gravity}
      - Calculated gravity, 4 decimals for SG and 2 for Plato.
      - 1.0456

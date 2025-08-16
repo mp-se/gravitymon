@@ -35,6 +35,12 @@ SOFTWARE.
 #include <memory>
 #include <tempsensor.hpp>
 
+enum GyroType {
+  GYRO_NONE = 0,
+  GYRO_MPU6050 = 1,
+  GYRO_ICM42670P = 2,
+};
+
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
 
 #include <esp_attr.h>
@@ -42,16 +48,8 @@ SOFTWARE.
 #define GYRO_RTC_DATA_AVAILABLE \
   static_cast<uint8_t>(105)  // Unique number to flag resume data is available
 
-// Represents the type of the gyro
-enum GyroType {
-  GYRO_NONE,
-  GYRO_MPU6050,
-  GYRO_ICM42670P,
-};
-
 // Used for the data stored in RTC memory
 struct RtcGyroData {
-  GyroType Type;
   uint8_t Address;
   uint8_t IsDataAvailable;
 };
@@ -111,6 +109,7 @@ class GyroConfigInterface {
   virtual bool isGyroFilter() const = 0;
   virtual bool isGyroSwapXY() const = 0;
   virtual int getGyroSensorMovingThreashold() const = 0;
+  virtual GyroType getGyroType() const = 0;
 
   // Methods for ICM42670p
   virtual int getSleepInterval() const = 0;
@@ -183,6 +182,8 @@ class GyroSensor : public SecondayTempSensorInterface {
     // _filter.reset(new MovingAverageFilter(&myRtcFilterData));
 #endif
   }
+
+  GyroType detectGyro();
 
   bool setup(GyroMode mode, bool force);
   bool read();

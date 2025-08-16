@@ -32,7 +32,6 @@ test(config_defaultValues) {
   assertEqual(myConfig.getVoltageConfig(), f);
   f = 1.59;
   assertEqual(myConfig.getVoltageFactor(), f);
-  assertEqual(myConfig.getVoltagePin(), PIN_VOLT);
 
   assertEqual(myConfig.getTempFormat(), 'C');
   assertEqual(myConfig.getTempSensorAdjC(), 0.0);
@@ -88,11 +87,10 @@ test(config_gravitymonValues) {
   assertEqual(myConfig.getGyroReadDelay(), 3150);
   assertEqual(myConfig.getGyroSensorMovingThreashold(), 500);
   assertEqual(myConfig.getGravityUnit(), 'G');
-  assertEqual(myConfig.isIgnoreLowAnges(), false);
+  assertEqual(myConfig.isIgnoreLowAngles(), false);
   assertEqual(myConfig.isBatterySaving(), true);
   assertEqual(myConfig.isGyroTemp(), false);
   assertEqual(myConfig.isStorageSleep(), false);
-  assertEqual(myConfig.isGyroDisabled(), false);
   assertEqual(myConfig.isGravityTempAdj(), false);
 }
 
@@ -103,13 +101,6 @@ test(config_gravityFormat) {
   assertEqual(myConfig.getGravityUnit(), 'G');
   myConfig.setGravityUnit('X');
   assertEqual(myConfig.getGravityUnit(), 'G');
-}
-
-test(config_gyroDisabled) {
-  myConfig.setGyroDisabled(true);
-  assertEqual(myConfig.isGyroDisabled(), true);
-  myConfig.setGyroDisabled(false);
-  assertEqual(myConfig.isGyroDisabled(), false);
 }
 
 test(config_gravityFormula) {

@@ -80,6 +80,17 @@ The main features
       :width: 300
       :alt: Filter output
 
+* **Storage mode** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
+  
+  When placed on the cap (close to 9 degrees) the device will go into storage mode and sleep for a long time. Its recommended to 
+  have a reed (magnetic) switch connected to the reset pin to wake up the device when needed.
+
+* **Storage mode when charging** :bdg-primary:`ESP32`
+
+  When power (>2V) is applied to the charging pin the device will go to deep sleep until the power is lost. This can be used together with a 
+  wireless charger so the device is sleeping when charged and starts automatically when charger is removed. This needs to be enabled in configuration 
+  and also valid pin needs to be set for the target (not all targets is build with this feature enabled).
+
 * **Supports multiple gyro** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
   From v2.2 the project is now supporting additonal gyro implementations to keep up with the technology changes. Gyro detection is 
@@ -134,8 +145,8 @@ The main features
   - Missing gravity formula
   - No push targets defined
   - Skip sleep mode setting
-  - No temperature sensor connected (not Floaty build) 
-  - Battery voltage out of range (Not Floaty build)
+  - No temperature sensor connected 
+  - Battery voltage out of range 
 
 * **Automatic temperature adjustment of gravity reading** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 

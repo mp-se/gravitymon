@@ -35,8 +35,8 @@ constexpr auto CONFIG_GRAVITY_UNIT = "gravity_unit";
 constexpr auto CONFIG_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto CONFIG_GYRO_CALIBRATION = "gyro_calibration_data";
 constexpr auto CONFIG_GYRO_TEMP = "gyro_temp";
-constexpr auto CONFIG_GYRO_DISABLED = "gyro_disabled";
 constexpr auto CONFIG_GYRO_FILTER = "gyro_filter";
+constexpr auto CONFIG_GYRO_TYPE = "gyro_type";
 constexpr auto CONFIG_GYRO_SWAP_XY = "gyro_swap_xy";
 constexpr auto CONFIG_STORAGE_SLEEP = "storage_sleep";
 constexpr auto CONFIG_FORMULA_DATA = "formula_calculation_data";
@@ -46,13 +46,16 @@ constexpr auto CONFIG_GYRO_READ_COUNT = "gyro_read_count";
 constexpr auto CONFIG_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
 constexpr auto CONFIG_FORMULA_DEVIATION = "formula_max_deviation";
 constexpr auto CONFIG_FORMULA_CALIBRATION_TEMP = "formula_calibration_temp";
+constexpr auto CONFIG_CHARGING_PIN_ENABLED = "charging_pin_enabled";
 
 enum GravitymonBleFormat {
   BLE_DISABLED = 0,
   BLE_TILT = 1,
   BLE_TILT_PRO = 2,
   BLE_GRAVITYMON_EDDYSTONE = 4,
-  BLE_GRAVITYMON_IBEACON = 5
+  BLE_GRAVITYMON_IBEACON = 5,
+  BLE_RAPT_V1 = 6,
+  BLE_RAPT_V2 = 7,
 };
 
 // Used for holding formulaData (used for calculating formula on device)
@@ -73,22 +76,16 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
   GravitymonBleFormat _gravitymonBleFormat = GravitymonBleFormat::BLE_DISABLED;
+  GyroType _gyroType = GyroType::GYRO_NONE;
 
   bool _gravityTempAdj = false;
   bool _ignoreLowAngles = false;
   bool _storageSleep = false;
-  bool _gyroDisabled = false;
   bool _gyroSwapXY = false;
   bool _gyroFilter = false;
-#if defined(FLOATY)
-  bool _gyroTemp = true;
-  bool _batterySaving = false;
-#else
   bool _gyroTemp = false;
   bool _batterySaving = true;
-#endif
-
-  int _voltagePin = PIN_VOLT;
+  bool _pinChargingMode = false;
 
   char _gravityUnit = 'G';
 
@@ -102,31 +99,25 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
  public:
   GravitymonConfig(String baseMDNS, String fileName);
 
-  bool isGyroTemp() const { return _gyroTemp; }
-  void setGyroTemp(bool b) {
-#if defined(FLOATY)
-    // Floaty hardware dont have a temp sensor, uses gyro temperature
-#else
-    _gyroTemp = b;
+  GyroType getGyroType() const { return _gyroType; }
+  void setGyroType(int t) {
+    _gyroType = (GyroType)t;
     _saveNeeded = true;
-#endif
+  }
+  void setGyroType(GyroType t) {
+    _gyroType = t;
+    _saveNeeded = true;
   }
 
-  int getVoltagePin() const { return _voltagePin; }
-  void setVoltagePin(int v) {
-    _voltagePin = v;
+  bool isGyroTemp() const { return _gyroTemp; }
+  void setGyroTemp(bool b) {
+    _gyroTemp = b;
     _saveNeeded = true;
   }
 
   bool isStorageSleep() const { return _storageSleep; }
   void setStorageSleep(bool b) {
     _storageSleep = b;
-    _saveNeeded = true;
-  }
-
-  bool isGyroDisabled() const { return _gyroDisabled; }
-  void setGyroDisabled(bool b) {
-    _gyroDisabled = b;
     _saveNeeded = true;
   }
 
@@ -249,6 +240,12 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool isBatterySaving() const { return _batterySaving; }
   void setBatterySaving(bool b) {
     _batterySaving = b;
+    _saveNeeded = true;
+  }
+
+  bool isPinChargingMode() const { return _pinChargingMode; }
+  void setPinChargingMode(bool b) {
+    _pinChargingMode = b;
     _saveNeeded = true;
   }
 

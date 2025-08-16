@@ -78,6 +78,26 @@ GravityMon can be installed and used as an iSpindle. Just register the device as
    http://myservername/ispindel
 
 
+
+Grainfather
++++++++++++
+
+In the Grainfather App select the **+** button under **Equipment**, then choose **Fermentation Tracking Equipment** > **iSpindel DIY electronic Hydrometer** 
+and enter the **name** for the iSpindle and save it. Select the iSpindle under **Equipment** and open **View instructions** and make a note 
+of the **Server URL** displayed (e.g. /iot/**mydevice**/ispindel). Where the **mydevice** value/content is different for each iSpindle.
+
+:bdg-primary:`Endpoint: HTTP POST`
+
+Under Gravitymon configuration menue **Push-Targets** select **HTTP-Post**, into **HTTP URL** field enter the URL
+
+.. code-block::
+
+   http://community.grainfather.com/iot/**mydevice**/ispindel
+
+Select **JSON Data** for **HTTP Header**
+Select **iSpindel** for **Data format**
+
+
 UBIdots
 +++++++
 

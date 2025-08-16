@@ -47,13 +47,13 @@ void BleSender::init() {
   _initFlag = true;
 }
 
-void BleSender::sendEddystoneData(float battery, float tempC, float gravity,
+void BleSender::sendEddystoneData(float battery, float tempC, float gravSG,
                                   float angle) {
   Log.info(F("Starting eddystone data transmission" CR));
 
   char beacon_data[25];
 
-  uint16_t g = gravity * 10000;
+  uint16_t g = gravSG * 10000;
   uint16_t t = tempC * 1000;
   uint16_t b = battery * 1000;
   uint16_t a = angle * 100;
@@ -145,13 +145,168 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   _advertising->stop();
 }
 
-void BleSender::sendCustomBeaconData(float battery, float tempC, float gravity,
+void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG, float angle) {
+  Log.info(F("Starting rapt v1 beacon data transmission" CR));
+
+  _advertising->stop();
+
+  uint16_t t = (tempC + 273.15) * 128.0;
+  uint16_t b = battery * 256;
+  uint16_t a = angle * 16;
+  uint32_t chipId = 0;
+
+  union { // For mapping the raw float to bytes
+      float f;
+      uint8_t b[4];
+  } floatUnion;
+
+  for (int i = 0; i < 17; i = i + 8) {
+    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+  }
+
+  std::string mf = "";
+
+  /*
+    typedef struct __attribute__((packed)) {
+        char prefix[4];        // RAPT
+        uint8_t version;       // always 0x01
+        uint8_t mac[6];
+        uint16_t temperature;  // x / 128 - 273.15
+        float gravity;         // / 1000
+        int16_t x;             // x / 16
+        int16_t y;             // x / 16
+        int16_t z;             // x / 16
+        int16_t battery;       // x / 256
+    } RAPTPillMetricsV1;
+  */
+
+  mf += "RAPT";
+  mf += static_cast<char>(0x01);  // Rapt v1
+
+  mf += static_cast<char>(0x00);  // Mac adress, using that for ChipID
+  mf += static_cast<char>(0x00);  // 
+  mf += static_cast<char>(((chipId & 0xFF000000) >> 24));
+  mf += static_cast<char>(((chipId & 0xFF0000) >> 16));
+  mf += static_cast<char>(((chipId & 0xFF00) >> 8));
+  mf += static_cast<char>((chipId & 0xFF));
+
+  mf += static_cast<char>((t >> 8));  // Temperature
+  mf += static_cast<char>((t & 0xFF));
+
+  floatUnion.f = gravSG * 1000;  // Gravity
+  mf += static_cast<char>(floatUnion.b[3]);
+  mf += static_cast<char>(floatUnion.b[2]);
+  mf += static_cast<char>(floatUnion.b[1]);
+  mf += static_cast<char>(floatUnion.b[0]);
+
+  mf += static_cast<char>((a >> 8));  // X, Angle
+  mf += static_cast<char>((a & 0xFF));
+  mf += static_cast<char>(0x00);  // Y
+  mf += static_cast<char>(0x00); 
+  mf += static_cast<char>(0x00);  // Z
+  mf += static_cast<char>(0x00); 
+
+  mf += static_cast<char>((b >> 8));  // Battery
+  mf += static_cast<char>((b & 0xFF));
+
+#if LOG_LEVEL == 6
+  dumpPayload(mf.c_str(), mf.length());
+#endif
+
+  BLEAdvertisementData advData = BLEAdvertisementData();
+  advData.setFlags(0x04);
+  advData.setManufacturerData(mf);
+  _advertising->setAdvertisementData(advData);
+
+  _advertising->setConnectableMode(BLE_GAP_CONN_MODE_NON);
+  _advertising->start();
+  delay(_beaconTime);
+  _advertising->stop();
+}
+
+void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG, float angle, float velocity, bool velocityValid) {
+  Log.info(F("Starting rapt v2 beacon data transmission" CR));
+
+  _advertising->stop();
+
+  union { // For mapping the raw float to bytes
+      float f;
+      uint8_t b[4];
+  } floatUnion;
+
+  uint16_t t = (tempC + 273.15) * 128.0;
+  uint16_t b = battery * 256;
+  uint16_t a = angle * 16;
+
+  std::string mf = "";
+
+  /*
+        typedef struct __attribute__((packed)) {
+            char prefix[4];        // RAPT
+            uint8_t version;       // always 0x02
+            bool gravity_velocity_valid;
+            float gravity_velocity;
+            uint16_t temperature;  // x / 128 - 273.15
+            float gravity;         // / 1000
+            int16_t x;             // x / 16
+            int16_t y;             // x / 16
+            int16_t z;             // x / 16
+            int16_t battery;       // x / 256
+        } RAPTPillMetricsV2;
+  */
+
+  mf += "RAPT";
+  mf += static_cast<char>(0x02);  // Rapt v2
+
+  mf += static_cast<char>(velocityValid ? 0x01 : 0x00);  // Valocity valid
+
+  floatUnion.f = velocity;  // Velocity
+  mf += static_cast<char>(floatUnion.b[3]);
+  mf += static_cast<char>(floatUnion.b[2]);
+  mf += static_cast<char>(floatUnion.b[1]);
+  mf += static_cast<char>(floatUnion.b[0]);
+
+  mf += static_cast<char>((t >> 8));  // Temperature
+  mf += static_cast<char>((t & 0xFF));
+
+  floatUnion.f = gravSG * 1000;  // Gravity
+  mf += static_cast<char>(floatUnion.b[3]);
+  mf += static_cast<char>(floatUnion.b[2]);
+  mf += static_cast<char>(floatUnion.b[1]);
+  mf += static_cast<char>(floatUnion.b[0]);
+
+  mf += static_cast<char>((a >> 8));  // X, Angle
+  mf += static_cast<char>((a & 0xFF));
+  mf += static_cast<char>(0x00);  // Y
+  mf += static_cast<char>(0x00); 
+  mf += static_cast<char>(0x00);  // Z
+  mf += static_cast<char>(0x00); 
+
+  mf += static_cast<char>((b >> 8));  // Battery (batt_v*1000)
+  mf += static_cast<char>((b & 0xFF));
+
+#if LOG_LEVEL == 6
+  dumpPayload(mf.c_str(), mf.length());
+#endif
+
+  BLEAdvertisementData advData = BLEAdvertisementData();
+  advData.setFlags(0x04);
+  advData.setManufacturerData(mf);
+  _advertising->setAdvertisementData(advData);
+
+  _advertising->setConnectableMode(BLE_GAP_CONN_MODE_NON);
+  _advertising->start();
+  delay(_beaconTime);
+  _advertising->stop();
+}
+
+void BleSender::sendCustomBeaconData(float battery, float tempC, float gravSG,
                                      float angle) {
   Log.info(F("Starting custom beacon data transmission" CR));
 
   _advertising->stop();
 
-  uint16_t g = gravity * 10000;
+  uint16_t g = gravSG * 10000;
   uint16_t t = tempC * 1000;
   uint16_t b = battery * 1000;
   uint16_t a = angle * 100;

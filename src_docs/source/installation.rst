@@ -48,11 +48,6 @@ In the /bin directory you will find 4 different firmware builds;
 
   This is the standard release build (preferred version) 
 
-* **firmware32.bin**
-
-  This is the release build for an ESP32-d1-mini variant. When flashing an ESP32 you also need the *partition32.bin* file that outlines the flash memory structure. Due to 
-  the size of the firmware we are using a custom partition setup.
-
 * **firmware32c3.bin**
 
   This is the release build for an ESP32c3-mini variant v2.1 or newer. When flashing an ESP32 you also need the *partition32c3.bin* file that outlines the flash memory structure. Due to 
@@ -67,10 +62,6 @@ In the /bin directory you will find 4 different firmware builds;
 
   This is the release build for an ESP32s3-mini variant. When flashing an ESP32 you also need the *partition32s3.bin* file that outlines the flash memory structure. Due to 
   the size of the firmware we are using a custom partition setup.
-
-* **firmware32lite.bin**
-
-  This is the release build for an ESP32lite which is used by the floaty build (clone).
 
 Esptool (esp8266)
 =================

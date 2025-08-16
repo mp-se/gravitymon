@@ -21,7 +21,7 @@ One of the following conditions will place the device in ``configuration mode``:
 - Configuration mode has been forced in the web user interface on main page.
 - The TX/RX pins are connected which will force the device into configuration mode.
 - Placed in horizontal mode 85-90 degrees on gyro
-- Battery shows >4.15V or the value that is configured (This does not work on the Floaty variant due to lack of hardware support)
+- Battery shows >4.15V or the value that is configured
 - Battery shows below 2V
 
 .. tip::
@@ -138,7 +138,7 @@ Device - Hardware
 
 * **Battery saving:**
 
-  If this option is checked the sleep interval will be changed to 1 hour when battery drops below 20%. Default = on. This setting is set to off for Floaty builds.
+  If this option is checked the sleep interval will be changed to 1 hour when battery drops below 20%. Default = on. 
 
 * **DS18B20 Resolution:**
 
