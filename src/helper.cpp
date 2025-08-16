@@ -31,22 +31,31 @@ extern "C" {
 void write_bytes(int fd, char* buf, int n) { EspSerial.print(*buf); }
 }
 
-bool checkPinConnected() {
-#if defined(PIN_CFG1) && defined(PIN_CFG2)
+bool checkPinConnected(int pin1, int pin2) {
 #if defined(ESP8266)
-  pinMode(PIN_CFG1, INPUT);
+  pinMode(pin1, INPUT);
 #else
-  pinMode(PIN_CFG1, INPUT_PULLDOWN);
+  pinMode(pin1, INPUT_PULLDOWN);
 #endif
-  pinMode(PIN_CFG2, OUTPUT);
+  pinMode(pin2, OUTPUT);
   delay(5);
-  digitalWrite(PIN_CFG2, 1);
+  digitalWrite(pin2, 1);
   delay(5);
-  int i = digitalRead(PIN_CFG1);
-  digitalWrite(PIN_CFG2, 0);
+  int i = digitalRead(pin1);
+  digitalWrite(pin2, 0);
   return i == LOW ? false : true;
-#else
+}
+
+bool checkPinCharging(int pin) {
+#if defined(ESP8266)
   return false;
+#else
+  pinMode(pin, INPUT_PULLDOWN);
+  delay(5);
+  analogReadResolution(SOC_ADC_MAX_BITWIDTH);
+  analogSetAttenuation(ADC_11db);
+  int v = analogRead(pin);
+  return v > 2500 ? true : false;  // > 2V on pin
 #endif
 }
 
@@ -58,13 +67,13 @@ void printBuildOptions() {
 #if defined(PRESSUREMON)
                "PRESSUREMON "
 #endif
+#if defined(GATEWAY)
+               "GATEWAY "
+#endif
 #if defined(ESP8266)
                "ESP8266 "
 #else
                "ESP32 "
-#endif
-#if defined(FLOATY)
-               "FLOATY "
 #endif
 #ifdef SKIP_SLEEPMODE
                "SKIP_SLEEP "
@@ -77,7 +86,7 @@ void printBuildOptions() {
 }
 
 float convertPsiPressureToBar(float psi) { return psi * 0.0689475729; }
-float convertPsiPressureToKPa(float psi) { return psi * 68.947572932 * 1000; }
+float convertPsiPressureToKPa(float psi) { return psi * 68.947572932 / 1000; }
 float convertPaPressureToPsi(float pa) { return pa * 0.000145038; }
 float convertPaPressureToBar(float pa) { return pa / 100000; }
 

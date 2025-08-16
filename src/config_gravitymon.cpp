@@ -24,6 +24,8 @@ SOFTWARE.
 #if defined(GRAVITYMON)
 
 #include <config_gravitymon.hpp>
+#include <log.hpp>
+#include <main.hpp>
 
 GravitymonConfig::GravitymonConfig(String baseMDNS, String fileName)
     : BrewingConfig(baseMDNS, fileName) {}
@@ -35,7 +37,8 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_GRAVITY_FORMULA] = getGravityFormula();
   doc[CONFIG_GRAVITY_UNIT] = String(getGravityUnit());
   doc[CONFIG_GYRO_TEMP] = isGyroTemp();
-  doc[CONFIG_GYRO_DISABLED] = isGyroDisabled();
+  doc[CONFIG_GYRO_FILTER] = isGyroFilter();
+  doc[CONFIG_GYRO_TYPE] = getGyroType();
   doc[CONFIG_GYRO_SWAP_XY] = isGyroSwapXY();
   doc[CONFIG_STORAGE_SLEEP] = isStorageSleep();
   doc[CONFIG_GRAVITY_TEMP_ADJ] = isGravityTempAdj();
@@ -60,9 +63,10 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_FORMULA_DEVIATION] =
       serialized(String(this->getMaxFormulaCreationDeviation(), DECIMALS_TILT));
   doc[CONFIG_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
-  doc[CONFIG_IGNORE_LOW_ANGLES] = this->isIgnoreLowAnges();
+  doc[CONFIG_IGNORE_LOW_ANGLES] = this->isIgnoreLowAngles();
   doc[CONFIG_BLE_FORMAT] = getGravitymonBleFormat();
   doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
+  doc[CONFIG_CHARGING_PIN_ENABLED] = this->isPinChargingMode();
 }
 
 void GravitymonConfig::parseJson(JsonObject& doc) {
@@ -88,8 +92,10 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     String s = doc["gravity_format"];
     setGravityUnit(s.charAt(0));
   }
-  if (!doc[CONFIG_GYRO_DISABLED].isNull())
-    setGyroDisabled(doc[CONFIG_GYRO_DISABLED].as<bool>());
+  if (!doc[CONFIG_GYRO_FILTER].isNull())
+    setGyroFilter(doc[CONFIG_GYRO_FILTER].as<bool>());
+  if (!doc[CONFIG_GYRO_TYPE].isNull())
+    setGyroType(doc[CONFIG_GYRO_TYPE].as<int>());
 
   if (!doc[CONFIG_GYRO_CALIBRATION]["ax"].isNull())
     _gyroCalibration.ax = doc[CONFIG_GYRO_CALIBRATION]["ax"];
@@ -133,11 +139,13 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     this->SetDefaultCalibrationTemp(
         doc[CONFIG_FORMULA_CALIBRATION_TEMP].as<float>());
   if (!doc[CONFIG_IGNORE_LOW_ANGLES].isNull())
-    setIgnoreLowAnges(doc[CONFIG_IGNORE_LOW_ANGLES].as<bool>());
+    setIgnoreLowAngles(doc[CONFIG_IGNORE_LOW_ANGLES].as<bool>());
   if (!doc[CONFIG_BLE_FORMAT].isNull())
     setGravitymonBleFormat(doc[CONFIG_BLE_FORMAT].as<int>());
   if (!doc[CONFIG_BATTERY_SAVING].isNull())
     setBatterySaving(doc[CONFIG_BATTERY_SAVING].as<bool>());
+  if (!doc[CONFIG_CHARGING_PIN_ENABLED].isNull())
+    setPinChargingMode(doc[CONFIG_CHARGING_PIN_ENABLED].as<bool>());
 }
 
 void GravitymonConfig::migrateSettings() {

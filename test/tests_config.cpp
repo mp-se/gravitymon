@@ -23,23 +23,15 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#include <config.hpp>
+#include <config_gravitymon.hpp>
 
-#if defined(GRAVITYMON)
-GravitymonConfig myConfig("test", "test.cfg");
-#elif defined(PRESSUREMON)
-PressuremonConfig myConfig("test", "test.cfg");
-#elif defined(GATEWAY)
-GravmonGatewayConfig myConfig("test", "test.cfg");
-#endif
-
+extern GravitymonConfig myConfig;
 
 test(config_defaultValues) {
   float f = 4.15;
   assertEqual(myConfig.getVoltageConfig(), f);
   f = 1.59;
   assertEqual(myConfig.getVoltageFactor(), f);
-  assertEqual(myConfig.getVoltagePin(), PIN_VOLT);
 
   assertEqual(myConfig.getTempFormat(), 'C');
   assertEqual(myConfig.getTempSensorAdjC(), 0.0);
@@ -82,27 +74,23 @@ test(config_tempSensorResolution) {
   assertEqual(myConfig.getTempSensorResolution(), 12);
 }
 
-#if defined(GRAVITYMON) || defined(PRESSUREMON)
 test(config_batterySaving) {
   myConfig.setBatterySaving(false);
   assertEqual(myConfig.isBatterySaving(), false);
   myConfig.setBatterySaving(true);
   assertEqual(myConfig.isBatterySaving(), true);
 }
-#endif
 
-#if defined(GRAVITYMON)
 test(config_gravitymonValues) {
   assertEqual(myConfig.getDefaultCalibrationTemp(), 20.0);
   assertEqual(myConfig.getGyroReadCount(), 50);
   assertEqual(myConfig.getGyroReadDelay(), 3150);
   assertEqual(myConfig.getGyroSensorMovingThreashold(), 500);
   assertEqual(myConfig.getGravityUnit(), 'G');
-  assertEqual(myConfig.isIgnoreLowAnges(), false);
+  assertEqual(myConfig.isIgnoreLowAngles(), false);
   assertEqual(myConfig.isBatterySaving(), true);
   assertEqual(myConfig.isGyroTemp(), false);
   assertEqual(myConfig.isStorageSleep(), false);
-  assertEqual(myConfig.isGyroDisabled(), false);
   assertEqual(myConfig.isGravityTempAdj(), false);
 }
 
@@ -113,13 +101,6 @@ test(config_gravityFormat) {
   assertEqual(myConfig.getGravityUnit(), 'G');
   myConfig.setGravityUnit('X');
   assertEqual(myConfig.getGravityUnit(), 'G');
-}
-
-test(config_gyroDisabled) {
-  myConfig.setGyroDisabled(true);
-  assertEqual(myConfig.isGyroDisabled(), true);
-  myConfig.setGyroDisabled(false);
-  assertEqual(myConfig.isGyroDisabled(), false);
 }
 
 test(config_gravityFormula) {
@@ -150,7 +131,5 @@ test(config_formulaDeviation) {
   f = 0.1;
   assertEqual(myConfig.getMaxFormulaCreationDeviation(), f);
 }
-
-#endif // GRAVITYMON
 
 // EOF

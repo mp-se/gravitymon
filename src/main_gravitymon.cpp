@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2024 Magnus
+Copyright (c) 2021-2025 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +23,15 @@ SOFTWARE.
  */
 #if defined(GRAVITYMON)
 
-#include <main.hpp>
+// #define FORCE_GRAVITY_MODE
+
 #include <main_gravitymon.hpp>
 
 // EspFramework
 #include <led.hpp>
 #include <log.hpp>
 #include <looptimer.hpp>
+#include <main.hpp>
 #include <ota.hpp>
 #include <perf.hpp>
 #include <serialws.hpp>
@@ -37,18 +39,23 @@ SOFTWARE.
 
 // Common
 #include <battery.hpp>
-#include <config.hpp>
 #include <helper.hpp>
-#include <history.hpp>
 #include <pushtarget.hpp>
 #include <utils.hpp>
-#include <webserver.hpp>
 
 // Gravitymon specific
-#include <ble.hpp>
+#include <ble_gravitymon.hpp>
 #include <calc.hpp>
+#include <config_gravitymon.hpp>
 #include <gyro.hpp>
+#include <push_gravitymon.hpp>
 #include <tempsensor.hpp>
+#include <velocity.hpp>
+#include <web_gravitymon.hpp>
+
+#if defined(ESP32)
+#include <esp_attr.h>
+#endif
 
 const char* CFG_FILENAME = "/gravitymon2.json";
 const char* CFG_AP_SSID = "GravityMon";
@@ -65,14 +72,17 @@ GravitymonConfig myConfig(CFG_APPNAME, CFG_FILENAME);
 WifiConnection myWifi(&myConfig, CFG_AP_SSID, CFG_AP_PASS, CFG_APPNAME,
                       USER_SSID, USER_PASS);
 OtaUpdate myOta(&myConfig, CFG_APPVER, CFG_FILENAMEBIN);
-BatteryVoltage myBatteryVoltage;
-BrewingWebServer myWebServer(&myConfig);
+BatteryVoltage myBatteryVoltage(&myConfig, PIN_VOLT);
+GravitymonWebServer myWebServer(&myConfig);
 SerialWebSocket mySerialWebSocket;
 #if defined(ENABLE_BLE)
 BleSender myBleSender;
 #endif
 GyroSensor myGyro(&myConfig);
-
+TempSensor myTempSensor(&myConfig, &myGyro);
+#if defined(ESP32)
+RTC_DATA_ATTR GravityVelocityData data = {0};
+#endif
 LoopTimer timerLoop(200);
 bool sleepModeAlwaysSkip =
     false;  // Flag set in web interface to override normal behaviour
@@ -80,10 +90,10 @@ uint32_t pushMillis = 0;  // Used to control how often we will send push data
 uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 uint32_t stableGyroMillis;  // Used to calculate the total time since last
                             // stable gyro reading
-bool skipRunTimeLog = false;
 RunMode runMode = RunMode::measurementMode;
 
 void checkSleepMode(float angle, float volt);
+void runGpioHardwareTests();
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -115,21 +125,26 @@ void setup() {
   // For restoring ispindel backup to test migration
   // LittleFS.rename("/ispindel.json", "/config.json");
 
-  sleepModeAlwaysSkip = checkPinConnected();
+#if defined(PIN_CFG1) && defined(PIN_CFG2)
+  sleepModeAlwaysSkip = checkPinConnected(PIN_CFG1, PIN_CFG2);
   if (sleepModeAlwaysSkip) {
-    Log.notice(F("Main: Forcing config mode since D7/D8 are connected." CR));
+    Log.notice(
+        F("Main: Forcing config mode since GPIO%d/GPIO%d are connected." CR),
+        PIN_CFG1, PIN_CFG2);
   }
+#endif
 
   // TODO: Remove the file from the old wifi manager if that exist.
-  if (LittleFS.exists("/drd.dat")) {
-    LittleFS.remove("/drd.dat");
-  }
+  // if (LittleFS.exists("/drd.dat")) {
+  //   LittleFS.remove("/drd.dat");
+  // }
 
   // Setup watchdog
 #if defined(ESP8266)
   ESP.wdtDisable();
   ESP.wdtEnable(5000);  // 5 seconds
-#else                   // defined (ESP32)
+#else
+  // ESP32
 #endif
 
   // No stored config, move to portal
@@ -159,18 +174,19 @@ void setup() {
       break;
 
     default:
-      if (!myConfig.isGyroDisabled()) {
-        if (myGyro.setup(GyroMode::GYRO_RUN, false)) {
-          PERF_BEGIN("main-gyro-read");
-          myGyro.read();
-          PERF_END("main-gyro-read");
-        } else {
-          Log.notice(F(
-              "Main: Failed to connect to the gyro, software will not be able "
-              "to detect angles." CR));
-        }
+      if (myConfig.getGyroType() == GyroType::GYRO_NONE) {
+        myConfig.setGyroType(myGyro.detectGyro());
+        myConfig.saveFile();
+      }
+
+      if (myGyro.setup(GyroMode::GYRO_RUN, false)) {
+        PERF_BEGIN("main-gyro-read");
+        myGyro.read();
+        PERF_END("main-gyro-read");
       } else {
-        Log.notice(F("Main: Gyro is disabled in configuration." CR));
+        Log.notice(
+            F("Main: Failed to connect to the gyro, software will not be able "
+              "to detect angles." CR));
       }
 
       myBatteryVoltage.read();
@@ -198,7 +214,7 @@ void setup() {
       }
 
       PERF_BEGIN("main-temp-setup");
-      myTempSensor.setup();
+      myTempSensor.setup(PIN_DS);
       PERF_END("main-temp-setup");
       break;
   }
@@ -246,7 +262,7 @@ void setup() {
 // Main loop that does gravity readings and push data to targets
 // Return true if gravity reading was successful
 bool loopReadGravity() {
-  float angle = 0;
+  float angle = 0, filteredAngle = 0;
 
 #if LOG_LEVEL == 6
   Log.verbose(F("Main: Entering main loopGravity." CR));
@@ -258,7 +274,8 @@ bool loopReadGravity() {
   // interval.
   //
   if (myGyro.hasValue()) {
-    angle = myGyro.getAngle();    // Gyro angle
+    angle = myGyro.getAngle();  // Gyro angle
+    filteredAngle = myGyro.getFilteredAngle();
     stableGyroMillis = millis();  // Reset timer
 
     PERF_BEGIN("loop-temp-read");
@@ -266,13 +283,35 @@ bool loopReadGravity() {
     float tempC = myTempSensor.getTempC();
     PERF_END("loop-temp-read");
 
-    float gravitySG = calculateGravity(angle, tempC);
+    float gravitySG =
+        calculateGravity(myConfig.getGravityFormula(), angle, tempC);
+    float filteredGravitySG =
+        calculateGravity(myConfig.getGravityFormula(), filteredAngle, tempC);
     float corrGravitySG = gravityTemperatureCorrectionC(
-        gravitySG, tempC, myConfig.getDefaultCalibrationTemp());
+        myConfig.isGyroFilter() ? filteredGravitySG : gravitySG, tempC,
+        myConfig.getDefaultCalibrationTemp());
 
+    // Corrected gravity can contain either temperature corrected gravity /
+    // filtered gravity.
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
+    } else if (myConfig.isGyroFilter()) {
+      // TODO: Uncomment this next line once the
+      // filters has been tested correctly
+      // gravitySG = filteredGravitySG;
     }
+
+    float velocity = 0;
+
+#if defined(ESP32)
+    GravityVelocity gv(&data, myConfig.getSleepInterval());
+    gv.addValue(gravitySG);
+    velocity = gv.getVelocity();
+#endif
+
+    Log.warning(F("Main: Angle: %F (%F), Velocity: %F" CR), angle,
+                filteredAngle, velocity);
+
 #if LOG_LEVEL == 6
     Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
                   "corr_gravity=%F." CR),
@@ -281,13 +320,14 @@ bool loopReadGravity() {
 
     bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
                         (myConfig.getSleepInterval() * 1000));
+    bool angleValid = true;
 
-    if (myConfig.isIgnoreLowAnges() &&
+    if (myConfig.isIgnoreLowAngles() &&
         (angle < myConfig.getFormulaData().a[0])) {
       Log.warning(
           F("Main: Angle is lower than water, so we regard this as faulty and "
             "dont send any data." CR));
-      pushExpired = false;
+      angleValid = false;
     }
 
     if (pushExpired || runMode == RunMode::measurementMode) {
@@ -295,7 +335,7 @@ bool loopReadGravity() {
       PERF_BEGIN("loop-push");
 
 #if defined(ENABLE_BLE)
-      if (myConfig.isBleActive()) {
+      if (myConfig.isBleActive() && angleValid) {
         myBleSender.init();
 
         switch (myConfig.getGravitymonBleFormat()) {
@@ -318,20 +358,32 @@ bool loopReadGravity() {
             myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), tempC,
                                           gravitySG, angle);
           } break;
+
+          case GravitymonBleFormat::BLE_RAPT_V1: {
+            myBleSender.sendRaptV1Data(myBatteryVoltage.getVoltage(), tempC,
+                                       gravitySG, angle);
+          } break;
+
+          case GravitymonBleFormat::BLE_RAPT_V2: {
+            myBleSender.sendRaptV2Data(myBatteryVoltage.getVoltage(), tempC,
+                                       gravitySG, angle, velocity,
+                                       gv.isVelocityValid());
+          } break;
         }
       }
 #endif  // ENABLE_BLE
 
-      if (myWifi.isConnected()) {  // no need to try if there is no wifi
-                                   // connection.
+      if (myWifi.isConnected() && angleValid) {  // no need to try if there is
+                                                 // no wifi connection.
         if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
           Log.notice(F(
               "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
 
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
-          setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG,
-                                     tempC, (millis() - runtimeMillis) / 1000,
+          setupTemplateEngineGravity(&myConfig, engine, angle, velocity,
+                                     gravitySG, corrGravitySG, tempC,
+                                     (millis() - runtimeMillis) / 1000,
                                      myBatteryVoltage.getVoltage());
           String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1,
                                         true);  // Use default post template
@@ -342,26 +394,17 @@ bool loopReadGravity() {
           myConfig.setHeader1HttpPost("Content-Type: application/json");
           myConfig.setHeader2HttpPost("");
           push.sendHttpPost(payload);
-        } else {
+        } else if (angleValid) {
           Log.notice(F("Main: Sending data to all defined push targets." CR));
 
           TemplatingEngine engine;
           BrewingPush push(&myConfig);
 
-          setupTemplateEngineGravity(engine, angle, gravitySG, corrGravitySG,
-                                     tempC, (millis() - runtimeMillis) / 1000,
+          setupTemplateEngineGravity(&myConfig, engine, angle, velocity,
+                                     gravitySG, corrGravitySG, tempC,
+                                     (millis() - runtimeMillis) / 1000,
                                      myBatteryVoltage.getVoltage());
           push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
-
-          // Only log when in gravity mode
-          if (!skipRunTimeLog && runMode == RunMode::measurementMode) {
-            Log.notice(
-                F("Main: Updating history log with, runtime, gravity and "
-                  "interval." CR));
-            float runtime = (millis() - runtimeMillis);
-            HistoryLog runLog(RUNTIME_FILENAME);
-            runLog.addLog(runtime, gravitySG, myConfig.getSleepInterval());
-          }
         }
       }
       PERF_END("loop-push");
@@ -386,11 +429,9 @@ void loopGravityOnInterval() {
     loopReadGravity();
     timerLoop.reset();
 
-    if (!myConfig.isGyroDisabled()) {
-      PERF_BEGIN("loop-gyro-read");
-      myGyro.read();
-      PERF_END("loop-gyro-read");
-    }
+    PERF_BEGIN("loop-gyro-read");
+    myGyro.read();
+    PERF_END("loop-gyro-read");
     myBatteryVoltage.read();
 
     if (runMode != RunMode::wifiSetupMode)
@@ -406,17 +447,23 @@ void goToSleep(int sleepInterval) {
                "battery=%FV." CR),
              sleepInterval,
              reduceFloatPrecision(runtime / 1000, DECIMALS_RUNTIME), volt);
-  LittleFS.end();
   myGyro.enterSleep();
   PERF_END("run-time");
   PERF_PUSH();
 
-  if (myConfig.isBatterySaving() && (volt < 3.73 && volt > 2.0)) {
+  if (myConfig.isBatterySaving() &&
+      getBatteryPercentage(volt, BatteryType::LithiumIon) < 30) {
     sleepInterval = 3600;
+    Log.notice(F("MAIN: Battery saving is enabled, sleeping for %ds." CR),
+               sleepInterval);
   }
 
+  myWifi.stopDoubleReset();  // Ensure we dont go into wifi mode when wakeup
+  LittleFS.end();
   delay(100);
-  deepSleep(sleepInterval);
+  ledOff();
+  uint32_t wake = sleepInterval * 1000000;
+  ESP.deepSleep(wake);
 }
 
 void loop() {
@@ -431,9 +478,6 @@ void loop() {
       myWifi.loop();
       loopGravityOnInterval();
       delay(1);
-
-      // If we switched mode, dont include this in the log.
-      if (runMode != RunMode::configurationMode) skipRunTimeLog = true;
       break;
 
     case RunMode::measurementMode:
@@ -444,12 +488,10 @@ void loop() {
                                           // defined push targets.
         Log.notice(
             F("MAIN: No connection to wifi established, sleeping for 60s." CR));
-        myWifi.stopDoubleReset();
         goToSleep(60);
       }
 
       if (loopReadGravity()) {
-        myWifi.stopDoubleReset();
         goToSleep(myConfig.getSleepInterval());
       }
 
@@ -460,15 +502,12 @@ void loop() {
         Log.notice(
             F("MAIN: Unable to get a stable reading for 10s, sleeping for "
               "60s." CR));
-        myWifi.stopDoubleReset();
         goToSleep(60);
       }
 
-      if (!myConfig.isGyroDisabled()) {
-        PERF_BEGIN("loop-gyro-read");
-        myGyro.read();
-        PERF_END("loop-gyro-read");
-      }
+      PERF_BEGIN("loop-gyro-read");
+      myGyro.read();
+      PERF_END("loop-gyro-read");
       myWifi.loop();
       break;
   }
@@ -487,7 +526,7 @@ void checkSleepMode(float angle, float volt) {
   return;
 #endif
 
-  if (!myConfig.hasGyroCalibration() && !myConfig.isGyroDisabled()) {
+  if ((!myConfig.hasGyroCalibration() && myGyro.needCalibration())) {
     // Will not enter sleep mode if: no calibration data
 #if LOG_LEVEL == 6
     Log.notice(
@@ -495,8 +534,7 @@ void checkSleepMode(float angle, float volt) {
           "active." CR));
 #endif
     runMode = RunMode::configurationMode;
-  } else if (!myConfig.isGyroDisabled() &&
-             (!myGyro.hasValue() || !myGyro.isConnected())) {
+  } else if (!myGyro.hasValue() || !myGyro.isConnected()) {
     runMode = RunMode::configurationMode;
   } else if (sleepModeAlwaysSkip) {
     // Check if the flag from the UI has been set, the we force configuration
@@ -514,6 +552,14 @@ void checkSleepMode(float angle, float volt) {
   } else {
     runMode = RunMode::measurementMode;
   }
+
+#if defined(PIN_CHARGING)
+  // If there is voltage on the storage pin, we enter storage mode.
+  if (myConfig.isPinChargingMode() && checkPinCharging(PIN_CHARGING)) {
+    Log.info(F("MAIN: Charging pin active." CR));
+    runMode = RunMode::storageMode;
+  }
+#endif
 
   switch (runMode) {
     case RunMode::configurationMode:
@@ -540,11 +586,29 @@ void checkSleepMode(float angle, float volt) {
   // If we are in storage mode, just go back to sleep
   if (runMode == RunMode::storageMode) {
     Log.notice(
-        F("Main: Storage mode entered, going to sleep for maximum time." CR));
+        F("Main: Charging/Storage mode entered, going to sleep for maximum "
+          "time." CR));
+    myWifi.stopDoubleReset();  // Ensure we dont go into wifi mode when wakeup
+    LittleFS.end();
+    delay(100);
+    ledOff();
 #if defined(ESP8266)
     ESP.deepSleep(0);  // indefinite sleep
 #else
-    ESP.deepSleep(0);  // indefinite sleep
+#if defined(PIN_CHARGING)
+    if (myConfig.isPinChargingMode()) {
+#if defined(ESP32C3)
+      pinMode(PIN_CHARGING, INPUT_PULLDOWN);
+      esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_CHARGING,
+                                        ESP_GPIO_WAKEUP_GPIO_LOW);
+#elif defined(ESP32S2) || defined(ESP32S3)
+      esp_sleep_enable_ext1_wakeup(1ULL << PIN_CHARGING,
+                                   ESP_EXT1_WAKEUP_ANY_LOW);
+#endif
+      esp_deep_sleep_start();
+    }
+#endif
+    ESP.deepSleep(0xFFFFFFFF);  // indefinite sleep
 #endif
   }
 }

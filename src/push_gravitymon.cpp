@@ -23,6 +23,9 @@ SOFTWARE.
  */
 #if defined(GRAVITYMON)
 
+#include <battery.hpp>
+#include <main.hpp>
+#include <push_gravitymon.hpp>
 #include <pushtarget.hpp>
 
 #if defined(ESP8266)
@@ -31,17 +34,19 @@ SOFTWARE.
 #include <WiFi.h>
 #endif
 
-void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
-                                float gravitySG, float corrGravitySG,
-                                float tempC, float runTime, float voltage) {
+void setupTemplateEngineGravity(GravitymonConfig* config,
+                                TemplatingEngine& engine, float angle,
+                                float velocity, float gravitySG,
+                                float corrGravitySG, float tempC, float runTime,
+                                float voltage) {
   // Names
-  engine.setVal(TPL_MDNS, myConfig.getMDNS());
-  engine.setVal(TPL_ID, myConfig.getID());
-  engine.setVal(TPL_TOKEN, myConfig.getToken());
-  engine.setVal(TPL_TOKEN2, myConfig.getToken2());
+  engine.setVal(TPL_MDNS, config->getMDNS());
+  engine.setVal(TPL_ID, config->getID());
+  engine.setVal(TPL_TOKEN, config->getToken());
+  engine.setVal(TPL_TOKEN2, config->getToken2());
 
   // Temperature
-  if (myConfig.isTempFormatC()) {
+  if (config->isTempFormatC()) {
     engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
   } else {
     engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
@@ -49,39 +54,14 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
 
   engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
   engine.setVal(TPL_TEMP_F, convertCtoF(tempC), DECIMALS_TEMP);
-  engine.setVal(TPL_TEMP_UNITS, myConfig.getTempFormat());
+  engine.setVal(TPL_TEMP_UNITS, config->getTempFormat());
 
   // Battery & Timer
   engine.setVal(TPL_BATTERY, voltage, DECIMALS_BATTERY);
-  engine.setVal(TPL_SLEEP_INTERVAL,
-                myConfig.GravitymonConfig::getSleepInterval());
+  engine.setVal(TPL_SLEEP_INTERVAL, config->getSleepInterval());
 
-  int charge = 0;
-
-  if (voltage > 4.15)
-    charge = 100;
-  else if (voltage > 4.05)
-    charge = 90;
-  else if (voltage > 3.97)
-    charge = 80;
-  else if (voltage > 3.91)
-    charge = 70;
-  else if (voltage > 3.86)
-    charge = 60;
-  else if (voltage > 3.81)
-    charge = 50;
-  else if (voltage > 3.78)
-    charge = 40;
-  else if (voltage > 3.76)
-    charge = 30;
-  else if (voltage > 3.73)
-    charge = 20;
-  else if (voltage > 3.67)
-    charge = 10;
-  else if (voltage > 3.44)
-    charge = 5;
-
-  engine.setVal(TPL_BATTERY_PERCENT, charge);
+  engine.setVal(TPL_BATTERY_PERCENT,
+                getBatteryPercentage(voltage, BatteryType::LithiumIon));
 
   // Performance metrics
   engine.setVal(TPL_RUN_TIME, runTime, DECIMALS_RUNTIME);
@@ -90,9 +70,10 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
   // Angle/Tilt
   engine.setVal(TPL_TILT, angle, DECIMALS_TILT);
   engine.setVal(TPL_ANGLE, angle, DECIMALS_TILT);
+  engine.setVal(TPL_VELOCITY, velocity, 1);
 
   // Gravity options
-  if (myConfig.isGravitySG()) {
+  if (config->isGravitySG()) {
     engine.setVal(TPL_GRAVITY, gravitySG, DECIMALS_SG);
     engine.setVal(TPL_GRAVITY_CORR, corrGravitySG, DECIMALS_SG);
   } else {
@@ -106,7 +87,7 @@ void setupTemplateEngineGravity(TemplatingEngine& engine, float angle,
   engine.setVal(TPL_GRAVITY_CORR_G, corrGravitySG, DECIMALS_SG);
   engine.setVal(TPL_GRAVITY_CORR_P, convertToPlato(corrGravitySG),
                 DECIMALS_PLATO);
-  engine.setVal(TPL_GRAVITY_UNIT, myConfig.getGravityUnit());
+  engine.setVal(TPL_GRAVITY_UNIT, config->getGravityUnit());
 
   engine.setVal(TPL_APP_VER, CFG_APPVER);
   engine.setVal(TPL_APP_BUILD, CFG_GITREV);

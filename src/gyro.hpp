@@ -29,32 +29,33 @@ SOFTWARE.
 #define I2CDEV_IMPLEMENTATION I2CDEV_ARDUINO_WIRE
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
 
+#include <Arduino.h>
+
+#include <lowpass.hpp>
 #include <memory>
+#include <tempsensor.hpp>
 
-#define USE_RTC_MEM defined(ESP32)
+enum GyroType {
+  GYRO_NONE = 0,
+  GYRO_MPU6050 = 1,
+  GYRO_ICM42670P = 2,
+};
 
-#if USE_RTC_MEM
+#if defined(ESP32) && defined(ENABLE_RTCMEM)
 
 #include <esp_attr.h>
 
 #define GYRO_RTC_DATA_AVAILABLE \
   static_cast<uint8_t>(105)  // Unique number to flag resume data is available
 
-// Represents the type of the gyro
-enum GyroType {
-  GYRO_NONE,
-  GYRO_MPU6050,
-  GYRO_ICM42670P,
-};
-
 // Used for the data stored in RTC memory
-struct RTC_Gyro_Data {
-  GyroType Type;
+struct RtcGyroData {
   uint8_t Address;
   uint8_t IsDataAvailable;
 };
 
-extern RTC_DATA_ATTR RTC_Gyro_Data myRTC_Gyro_Data;
+extern RTC_DATA_ATTR RtcGyroData myRtcGyroData;
+extern RTC_DATA_ATTR FilterData myRtcFilterData;
 
 #endif  // ESP32
 
@@ -105,18 +106,20 @@ class GyroConfigInterface {
   virtual bool saveFile() = 0;
 
   // Common methods for all gyros
-  virtual bool isGyroSwapXY() const;
-  virtual int getGyroSensorMovingThreashold() const;
+  virtual bool isGyroFilter() const = 0;
+  virtual bool isGyroSwapXY() const = 0;
+  virtual int getGyroSensorMovingThreashold() const = 0;
+  virtual GyroType getGyroType() const = 0;
 
   // Methods for ICM42670p
-  virtual int getSleepInterval() const;
+  virtual int getSleepInterval() const = 0;
 
   // Methods for MPU6050/MPU6500
-  virtual const RawGyroData& getGyroCalibration() const;
-  virtual void setGyroCalibration(const RawGyroData& r);
-  virtual bool hasGyroCalibration() const;
-  virtual int getGyroReadCount() const;
-  virtual int getGyroReadDelay() const;
+  virtual const RawGyroData& getGyroCalibration() const = 0;
+  virtual void setGyroCalibration(const RawGyroData& r) = 0;
+  virtual bool hasGyroCalibration() const = 0;
+  virtual int getGyroReadCount() const = 0;
+  virtual int getGyroReadDelay() const = 0;
 };
 
 class GyroSensorInterface {
@@ -151,13 +154,17 @@ class GyroSensorInterface {
 
 #define INVALID_TEMPERATURE -273
 
-class GyroSensor {
+class GyroSensor : public SecondayTempSensorInterface {
  private:
   GyroConfigInterface* _gyroConfig;
   std::unique_ptr<GyroSensorInterface> _impl;
+#if defined(ESP32)
+  std::unique_ptr<FilterBase> _filter;
+#endif
 
-  RawGyroData _lastGyroData;
+  RawGyroData _lastGyroData = {0};
   float _angle = 0;
+  float _filteredAngle = 0;
   float _temp = 0;
   float _initialSensorTemp = INVALID_TEMPERATURE;
   bool _valid = false;
@@ -170,7 +177,13 @@ class GyroSensor {
  public:
   explicit GyroSensor(GyroConfigInterface* gyroConfig) {
     _gyroConfig = gyroConfig;
+#if defined(ESP32) && defined(ENABLE_RTCMEM)
+    _filter.reset(new TrimmedMovingAverageFilter(&myRtcFilterData));
+    // _filter.reset(new MovingAverageFilter(&myRtcFilterData));
+#endif
   }
+
+  GyroType detectGyro();
 
   bool setup(GyroMode mode, bool force);
   bool read();
@@ -183,13 +196,16 @@ class GyroSensor {
   uint8_t getGyroID() { return _impl ? _impl->getGyroID() : 0; }
   bool isSensorMoving() { return _impl ? _impl->isSensorMoving() : 0; }
 
-  const RawGyroData& getLastGyroData() { return _lastGyroData; }
-  float getAngle() { return _angle; }
-  float getSensorTempC() { return _temp; }
-  float getInitialSensorTempC() { return _initialSensorTemp; }
-  bool isConnected() { return _currentMode != GyroMode::GYRO_UNCONFIGURED; }
+  const RawGyroData& getLastGyroData() const { return _lastGyroData; }
+  float getAngle() const { return _angle; }
+  float getFilteredAngle() const { return _filteredAngle; }
+  float getSensorTempC() const { return _temp; }
+  float getInitialSensorTempC() const { return _initialSensorTemp; }
+  bool isConnected() const {
+    return _currentMode != GyroMode::GYRO_UNCONFIGURED;
+  }
   GyroMode getCurrentGyroMode() { return _currentMode; }
-  bool hasValue() { return _valid; }
+  bool hasValue() const { return _valid; }
   bool needCalibration() { return _impl ? _impl->needCalibration() : false; }
   void enterSleep();
 };

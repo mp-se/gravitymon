@@ -13,12 +13,25 @@ Step 1 - Flash the device
 The first step is to flash the firmware, I recommend using Brewflasher as the easy option. Detailed 
 instructions can be found here :ref:`installation`
 
-Step 2 - Setup WIFI & Configuration
------------------------------------
+Step 2 - Setup WIFI
+-------------------
 
-When the device starts up the first time it will first start an WIFI access point so that the WIFI Settings 
-can be configured. The wifi settings can be found under the Device - WIFI menu.
-  
+You can set the wifi settings using the flasher on gravitymon.com which is the easy way.
+
+When the device starts up the first time and it does not have any wifi settings, it first start an WIFI access point
+so that the WIFI Settings can be configured. The wifi settings can be found under the Device - WIFI menu.
+
+When in wifi setup mode neither the gyro or temperature sensor will be initialized. This is by design since if these would 
+cause a startup error there would be no way to get into the device. 
+
+Once the device is restarted it will connect to the wifi and be accessible as any device on your network using the 
+mdns name or ip address. 
+
+You can do this step before soldering the esp to ensure it works as expected.
+
+Step 3 - Device Configuration
+-----------------------------
+
 The user interface does no longer require internet access for most functions, the exception is the graphs which 
 require access to chartjs in order to render properly. This is due to lack of memory on the device.
 
@@ -78,7 +91,7 @@ Check battery voltage
 Check the battery voltage so the value is correctly measured. If the wrong resistor values in the
 voltage are then the calculation is off. This could block the device from going to sleep properly.   
 
-Step 4 - Completed
+Step 5 - Completed
 ------------------
 
 You are now done and can enjoy the GravityMon software. Check out the :ref:`setting-up-device` section for other configuration options.

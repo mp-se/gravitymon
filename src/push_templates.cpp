@@ -89,6 +89,7 @@ const char iGravityHttpPostFormat[] PROGMEM =
     "\"temperature\": ${temp}, "
     "\"temp_units\": \"${temp-unit}\", "
     "\"gravity\": ${gravity}, "
+    "\"velocity\": ${velocity}, "
     "\"angle\": ${angle}, "
     "\"battery\": ${battery}, "
     "\"RSSI\": ${rssi}, "
@@ -106,6 +107,7 @@ const char iGravityHttpGetFormat[] PROGMEM =
     "&temperature=${temp}"
     "&temp-units=${temp-unit}"
     "&gravity=${gravity}"
+    "&velocity=${velocity}"
     "&angle=${angle}"
     "&battery=${battery}"
     "&rssi=${rssi}"
@@ -116,7 +118,8 @@ const char iGravityHttpGetFormat[] PROGMEM =
 const char iGravityInfluxDbFormat[] PROGMEM =
     "measurement,host=${mdns},device=${id},temp-format=${temp-unit},gravity-"
     "format=${gravity-unit} "
-    "gravity=${gravity},corr-gravity=${corr-gravity},angle=${angle},temp=${"
+    "gravity=${gravity},velocity=${velocity},corr-gravity=${corr-gravity},"
+    "angle=${angle},temp=${"
     "temp},battery=${battery},"
     "rssi=${rssi}\n";
 
@@ -126,6 +129,7 @@ const char iGravityMqttFormat[] PROGMEM =
     "ispindel/${mdns}/temp_units:${temp-unit}|"
     "ispindel/${mdns}/battery:${battery}|"
     "ispindel/${mdns}/gravity:${gravity}|"
+    "ispindel/${mdns}/velocity:${velocity}|"
     "ispindel/${mdns}/interval:${sleep-interval}|"
     "ispindel/${mdns}/RSSI:${rssi}|";
 

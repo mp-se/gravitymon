@@ -24,8 +24,13 @@ SOFTWARE.
 #ifndef SRC_HELPER_HPP_
 #define SRC_HELPER_HPP_
 
+#include <Arduino.h>
+
 // Force config mode
-bool checkPinConnected();
+bool checkPinConnected(int pin1, int pin2);
+
+// Pin charging mode
+bool checkPinCharging(int pin);
 
 // Show build options
 void printBuildOptions();

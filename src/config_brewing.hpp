@@ -24,8 +24,11 @@ SOFTWARE.
 #ifndef SRC_CONFIG_BREWING_HPP_
 #define SRC_CONFIG_BREWING_HPP_
 
+#include <Arduino.h>
+
 #include <baseconfig.hpp>
-#include <main.hpp>
+#include <battery.hpp>
+#include <tempsensor.hpp>
 #include <utils.hpp>
 
 constexpr auto CONFIG_SKIP_SSL_ON_TEST = "skip_ssl_on_test";
@@ -36,8 +39,8 @@ constexpr auto CONFIG_USE_WIFI_DIRECT = "use_wifi_direct";
 constexpr auto CONFIG_SLEEP_INTERVAL = "sleep_interval";
 constexpr auto CONFIG_VOLTAGE_FACTOR = "voltage_factor";
 constexpr auto CONFIG_VOLTAGE_CONFIG = "voltage_config";
+constexpr auto CONFIG_BATTERY_TYPE = "battery_type";
 constexpr auto CONFIG_TEMP_ADJ = "temp_adjustment_value";
-constexpr auto CONFIG_VOLTAGE_PIN = "voltage_pin";
 constexpr auto CONFIG_BLE_FORMAT = "ble_format";
 constexpr auto CONFIG_PUSH_INTERVAL_POST = "http_post_int";
 constexpr auto CONFIG_PUSH_INTERVAL_POST2 = "http_post2_int";
@@ -49,7 +52,9 @@ constexpr auto CONFIG_BATTERY_SAVING = "battery_saving";
 constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
 constexpr auto CONFIG_FLASH_LOGGING = "flash_logging";
 
-class BrewingConfig : public BaseConfig {
+class BrewingConfig : public BaseConfig,
+                      public BatteryConfigInterface,
+                      public TempSensorConfigInterface {
  private:
 #if defined(ESP8266)
   float _voltageFactor = 1.59;
@@ -64,11 +69,11 @@ class BrewingConfig : public BaseConfig {
 #else
 #error "Unknown platform"
 #endif
+  BatteryType _batteryType;
 
   float _voltageConfig = 4.15;
   float _tempSensorAdjC = 0;
   int _sleepInterval = 900;
-  int _voltagePin = PIN_VOLT;
 
   bool _wifiDirect = false;
 #if defined(ESP8266)
@@ -89,16 +94,8 @@ class BrewingConfig : public BaseConfig {
 
   int _tempSensorResolution = 9;  // bits
 
-  bool _flashLogging = false;
-
  public:
-  BrewingConfig(String baseMDNS, String fileName);
-
-  bool isFlashLogging() const { return _flashLogging; }
-  void setFlashLogging(bool b) {
-    _flashLogging = b;
-    _saveNeeded = true;
-  }
+  explicit BrewingConfig(String baseMDNS, String fileName);
 
   bool isWifiDirect() const { return _wifiDirect; }
   void setWifiDirect(bool b) {
@@ -137,12 +134,6 @@ class BrewingConfig : public BaseConfig {
     _saveNeeded = true;
   }
 
-  int getVoltagePin() const { return _voltagePin; }
-  void setVoltagePin(int v) {
-    _voltagePin = v;
-    _saveNeeded = true;
-  }
-
   float getVoltageConfig() const { return _voltageConfig; }
   void setVoltageConfig(float f) {
     _voltageConfig = f;
@@ -150,6 +141,12 @@ class BrewingConfig : public BaseConfig {
   }
   void setVoltageConfig(String s) {
     _voltageConfig = s.toFloat();
+    _saveNeeded = true;
+  }
+
+  BatteryType getBatteryType() const { return _batteryType; }
+  void setBatteryType(int t) {
+    _batteryType = (BatteryType)t;
     _saveNeeded = true;
   }
 

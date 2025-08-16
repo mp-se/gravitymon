@@ -24,12 +24,17 @@ SOFTWARE.
 #ifndef SRC_MAIN_HPP_
 #define SRC_MAIN_HPP_
 
+#include <Arduino.h>
 #include <stdlib.h>
 
 #include <espframework.hpp>
-#include <main_gateway.hpp>
-#include <main_gravitymon.hpp>
-#include <main_pressuremon.hpp>
+
+enum RunMode {
+  measurementMode = 0,
+  configurationMode = 1,
+  wifiSetupMode = 2,
+  storageMode = 3
+};
 
 extern RunMode runMode;
 

@@ -25,7 +25,7 @@ SOFTWARE.
 #define SRC_PUSHTARGET_HPP_
 
 #include <basepush.hpp>
-#include <config.hpp>
+#include <config_brewing.hpp>
 #include <templating.hpp>
 
 extern const char iPressureHttpPostFormat[] PROGMEM;
@@ -53,6 +53,7 @@ constexpr auto TPL_RUN_TIME = "${run-time}";
 constexpr auto TPL_APP_VER = "${app-ver}";
 constexpr auto TPL_ANGLE = "${angle}";
 constexpr auto TPL_TILT = "${tilt}";  // same as angle
+constexpr auto TPL_VELOCITY = "${velocity}";
 constexpr auto TPL_GRAVITY = "${gravity}";
 constexpr auto TPL_GRAVITY_G = "${gravity-sg}";
 constexpr auto TPL_GRAVITY_P = "${gravity-plato}";
@@ -132,10 +133,15 @@ class BrewingPush : public BasePush {
 
 class PushIntervalTracker {
  private:
+  BrewingConfig* _brewingConfig;
+
   int _counters[5] = {0, 0, 0, 0, 0};
   void update(const int index, const int defaultValue);
 
  public:
+  explicit PushIntervalTracker(BrewingConfig* brewingConfig)
+      : _brewingConfig(brewingConfig) {}
+
   bool useHttp1() { return _counters[0] == 0 ? true : false; }
   bool useHttp2() { return _counters[1] == 0 ? true : false; }
   bool useHttp3() { return _counters[2] == 0 ? true : false; }

@@ -24,17 +24,32 @@ SOFTWARE.
 #ifndef SRC_BATTERY_HPP_
 #define SRC_BATTERY_HPP_
 
-#include <config.hpp>
+#include <Arduino.h>
+
+enum BatteryType {
+  LiPo = 0,
+  LithiumIon = 1  // 18650 battery
+};
+
+class BatteryConfigInterface {
+ public:
+  virtual float getVoltageFactor() const = 0;
+  virtual BatteryType getBatteryType() const = 0;
+};
 
 class BatteryVoltage {
  private:
-  float _batteryLevel = 0;
+  float _batteryVoltage = 0;
+  int _pin;
+  BatteryConfigInterface *_batteryConfig = nullptr;
 
  public:
-  BatteryVoltage();
+  explicit BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin = -1);
   void read();
-  float getVoltage() { return _batteryLevel; }
+  float getVoltage() const { return _batteryVoltage; }
 };
+
+float getBatteryPercentage(float value, BatteryType type);
 
 extern BatteryVoltage myBatteryVoltage;
 

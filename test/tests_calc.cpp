@@ -23,14 +23,13 @@ SOFTWARE.
  */
 #include <AUnit.h>
 
-#if defined(GRAVITYMON)
-
 #include <calc.hpp>
+#include <utils.hpp>
 #include <helper.hpp>
 
 test(calc_calculateGravity1) {
   const char* formula = "0.00000909*tilt^2+0.00124545*tilt+0.96445455";
-  double g = calculateGravity(30, 20, formula);
+  double g = calculateGravity(formula, 30, 20);
   float v1 = reduceFloatPrecision(g, 2);
   float v2 = 1.01;
   assertEqual(v1, v2);
@@ -38,7 +37,7 @@ test(calc_calculateGravity1) {
 
 test(calc_calculateGravity2) {
   const char* formula = "0.00000909*tilt2^2+0.00124545*tilt+0.96445455";
-  double g = calculateGravity(30, 20, formula);
+  double g = calculateGravity(formula, 30, 20);
   double g2 = 0.0;
   assertEqual(g, g2);
 }
@@ -49,7 +48,5 @@ test(calc_gravityTemperatureCorrectionC) {
   float v2 = 1.03;
   assertEqual(v1, v2);
 }
-
-#endif // GRAVITYMON
 
 // EOF

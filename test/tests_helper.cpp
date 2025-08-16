@@ -25,11 +25,11 @@ SOFTWARE.
 
 #include <battery.hpp>
 #include <utils.hpp>
-#include <log.hpp>
-#include <history.hpp>
 #include <helper.hpp>
+#include <log.hpp>
+#include <config_gravitymon.hpp>
 
-BatteryVoltage myBatteryVoltage;
+extern GravitymonConfig myConfig;
 
 test(helper_convertToPlato) {
   double p = convertToPlato(1.008);
@@ -121,16 +121,6 @@ test(helper_resetReason) { // Include for code coverage
 test(helper_writeErrorLog) { // Include for code coverage
   writeErrorLog("Write to error log.");
   assertEqual(1,1);
-}
-
-test(helper_history) { 
-  LittleFS.begin();
-
-  HistoryLog hist("/history.log");
-  hist.addLog(1.0, 2.0, 300);
-  hist.addLog(1.0, 2.1, 600);
-  float f = hist.getAverage()._runTime;
-  assertEqual(f, 1.0);
 }
 
 // EOF
