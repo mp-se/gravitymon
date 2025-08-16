@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Releases" href="releases.html" /><link rel="prev" title="Welcome to GravityMon" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Functionality - GravityMon v2.2.0</title>
+        <title>Functionality - Gravitymon v2.3.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v2.2.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v2.2.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.3.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -318,6 +318,15 @@ the data. This feature uses a RTC_MEM to allow data to be stored during deep sle
 The feature is only applied when the device is in gravity mode and data measurements are done.</p>
 <a class="reference internal image-reference" href="_images/filter.png"><img alt="Filter output" src="_images/filter.png" style="width: 300px;" /></a>
 </li>
+<li><p><strong>Storage mode</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
+<p>When placed on the cap (close to 9 degrees) the device will go into storage mode and sleep for a long time. Its recommended to
+have a reed (magnetic) switch connected to the reset pin to wake up the device when needed.</p>
+</li>
+<li><p><strong>Storage mode when charging</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span></p>
+<p>When power (&gt;2V) is applied to the charging pin the device will go to deep sleep until the power is lost. This can be used together with a
+wireless charger so the device is sleeping when charged and starts automatically when charger is removed. This needs to be enabled in configuration
+and also valid pin needs to be set for the target (not all targets is build with this feature enabled).</p>
+</li>
 <li><p><strong>Supports multiple gyro</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
 <p>From v2.2 the project is now supporting additonal gyro implementations to keep up with the technology changes. Gyro detection is
 automatic. Currently the following gyros are supported:</p>
@@ -365,8 +374,8 @@ services currently validated.</p>
 <li><p>Missing gravity formula</p></li>
 <li><p>No push targets defined</p></li>
 <li><p>Skip sleep mode setting</p></li>
-<li><p>No temperature sensor connected (not Floaty build)</p></li>
-<li><p>Battery voltage out of range (Not Floaty build)</p></li>
+<li><p>No temperature sensor connected</p></li>
+<li><p>Battery voltage out of range</p></li>
 </ul>
 </li>
 <li><p><strong>Automatic temperature adjustment of gravity reading</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>

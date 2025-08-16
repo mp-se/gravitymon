@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Data Formats" href="data.html" /><link rel="prev" title="Hardware" href="hardware.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Service Integration - GravityMon v2.2.0</title>
+        <title>Service Integration - Gravitymon v2.3.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v2.2.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v2.2.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.3.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -308,6 +308,19 @@ on brewfather, not other settings are needed. The stream endpoint URL has the fo
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">myservername</span><span class="o">/</span><span class="n">ispindel</span>
 </pre></div>
 </div>
+</section>
+<section id="grainfather">
+<h2>Grainfather<a class="headerlink" href="#grainfather" title="Permalink to this heading">¶</a></h2>
+<p>In the Grainfather App select the <strong>+</strong> button under <strong>Equipment</strong>, then choose <strong>Fermentation Tracking Equipment</strong> &gt; <strong>iSpindel DIY electronic Hydrometer</strong>
+and enter the <strong>name</strong> for the iSpindle and save it. Select the iSpindle under <strong>Equipment</strong> and open <strong>View instructions</strong> and make a note
+of the <strong>Server URL</strong> displayed (e.g. /iot/<strong>mydevice</strong>/ispindel). Where the <strong>mydevice</strong> value/content is different for each iSpindle.</p>
+<p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
+<p>Under Gravitymon configuration menue <strong>Push-Targets</strong> select <strong>HTTP-Post</strong>, into <strong>HTTP URL</strong> field enter the URL</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">community</span><span class="o">.</span><span class="n">grainfather</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">iot</span><span class="o">/**</span><span class="n">mydevice</span><span class="o">**/</span><span class="n">ispindel</span>
+</pre></div>
+</div>
+<p>Select <strong>JSON Data</strong> for <strong>HTTP Header</strong>
+Select <strong>iSpindel</strong> for <strong>Data format</strong></p>
 </section>
 <section id="ubidots">
 <h2>UBIdots<a class="headerlink" href="#ubidots" title="Permalink to this heading">¶</a></h2>
@@ -708,6 +721,7 @@ check the error log for any HTTP errors.</p>
 <li><a class="reference internal" href="#">Service Integration</a><ul>
 <li><a class="reference internal" href="#brewfather">Brewfather</a></li>
 <li><a class="reference internal" href="#fermentrack">Fermentrack</a></li>
+<li><a class="reference internal" href="#grainfather">Grainfather</a></li>
 <li><a class="reference internal" href="#ubidots">UBIdots</a></li>
 <li><a class="reference internal" href="#home-assistant">Home Assistant</a></li>
 <li><a class="reference internal" href="#brewer-s-friend">Brewer’s Friend</a></li>

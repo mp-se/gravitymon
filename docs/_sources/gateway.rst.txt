@@ -5,27 +5,28 @@ Gateway
 
 .. note::
 
-  This documentation reflects **v0.7.0 beta 1**. Last updated 2025-04-18
+  This documentation reflects **v0.8.0 beta 1**. Last updated 2025-08-12
 
-GravityMon Gateway is an separate project that can act as a proxy between your GravityMon/Pressuremon devices and services. It can:
+GravityMon Gateway is an separate project that can act as a proxy between your Gravitymon/Pressuremon devices and services. It can:
 
-* Receive the new GravityMon 2.0 BLE formats
-* Receive the new PressureMon 0.5 BLE formats
-* Receive the new Chamber Controller 0.4 BLE formats
-* Receive data via direct WiFi connection (http post). 
+* Receive Gravitymon 2.0+ BLE formats
+* Receive Pressuremon 0.4+ BLE formats
+* Receive Chamber Controller 0.4+ BLE formats
+* Receive Gravitymon data via direct WiFi connection (http post). 
+* Receive Pressuremon data via direct WiFi connection (http post). 
 
 Hardware 
 ========
 
-The main supported hardware is ESP32s3 PRO with a TFT 
+The main supported hardware is an Waveshare ESP32s3 PRO with a built in TFT 
+
+* `Waveshare ESP32s3 TFT <https://www.waveshare.com/product/mcu-tools/development-boards/esp32/esp32-s3-touch-lcd-2.8.htm)>`_ 
+
+The second options is Lolin ESP32s3 PRO with a Lolin TFT 
 
 * `Lolin ESP32s3 PRO <https://www.wemos.cc/en/latest/s3/s3_pro.html>`_ 
 * `Lolin TFT <https://www.wemos.cc/en/latest/d1_mini_shield/tft_2_4.html>`_ 
 * Cable to connect the display with the ESP
-
-Other option is the integrated waveshare board
-
-* `Waveshare ESP32s3 TFT <https://www.waveshare.com/product/mcu-tools/development-boards/esp32/esp32-s3-touch-lcd-2.8.htm)>`_ 
 
 There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board does not have BLE 5 support.
 
@@ -36,14 +37,15 @@ There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that doe
 * `Thorraks Tiltbridge case for D32 PRO <https://www.printables.com/model/141680-tiltbridge-case-d32-pro-w-tft>`_ 
 * `Modified Tiltbridge case for D32 s3 PRO <https://www.printables.com/model/939801-case-for-esp32-s3-pro-w-tft>`_ 
 
-Most of the UI is copied from GravityMon with a few alterations so the documentation here will only point out the differences.
+Most of the UI is copied from Gravitymon with a few alterations so the documentation here will only point out the differences.
 
 .. note::
 
-  GravityMon Gateway does not support the TILT options. It will receive those but not forward these to other services. If you want to 
-  use these I recommend Tiltbridge that has a lot of good features for that. The main reason is that these formats have very little 
-  data and would require a lot of work to make the gateway add the missing information. Tiltbridge already has this support built 
-  in so it makes little sense to replicate that work.
+  Gravitymon Gateway does not support the BLE TILT / BLE RAPT options, it will detect and display but not forward these to the targets.
+
+  If you want to use these I recommend Tiltbridge that has a lot of good features for that. The main reason is that these formats
+  have very little data and would require a lot of work to make the gateway add the missing information. Tiltbridge already has this
+  support built in so it makes little sense to replicate that work.
 
 
 Home page 

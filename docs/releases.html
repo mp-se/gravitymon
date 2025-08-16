@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Getting started" href="intro.html" /><link rel="prev" title="Functionality" href="functionality.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Releases - GravityMon v2.2.0</title>
+        <title>Releases - Gravitymon v2.3.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v2.2.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v2.2.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.3.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -258,10 +258,36 @@
         <article role="main" id="furo-main-content">
           <section id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this heading">¶</a></h1>
-<section id="v2-2-1">
-<h2>v2.2.1<a class="headerlink" href="#v2-2-1" title="Permalink to this heading">¶</a></h2>
+<section id="v2-3-0">
+<h2>v2.3.0<a class="headerlink" href="#v2-3-0" title="Permalink to this heading">¶</a></h2>
+<p>In this version I have dropped some fetures to make room for new options and
+features due to limitations on the devices supported, mainly the 4mb flash limit.</p>
+<section id="new-features">
+<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added feature flags to build so builds can be customized and UI will better adapt.</p></li>
+<li><p>Added RAPT bluetooth transmission covering both v1 and v2 formats.</p></li>
+<li><p>Added instructions for Grainfather integration.</p></li>
+</ul>
+</section>
+<section id="dropped-features">
+<h3>Dropped features<a class="headerlink" href="#dropped-features" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support for ESP32lite/Floaty and ESP32 d1 mini has been dropped. Latest version is v2.2. This to remove these boards that are quite old and make room for new options.</p></li>
+<li><p>Remove the gyro disabled flag which was used to run the device as a temperature probe only. Latest version is v2.2</p></li>
+</ul>
+</section>
 <section id="bugs-fixed">
 <h3>Bugs fixed<a class="headerlink" href="#bugs-fixed" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed startup issue after deep sleep on some boards when RTCMEM was enabled.</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-2-1">
+<h2>v2.2.1<a class="headerlink" href="#v2-2-1" title="Permalink to this heading">¶</a></h2>
+<section id="id2">
+<h3>Bugs fixed<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Wifi mode could be triggered by sleep mode was not correcly fixed in v2.2.0.</p></li>
 <li><p>Ignore low angles was not working correcly in gravity mode.</p></li>
@@ -276,8 +302,8 @@
 <p>Only ESP32! The voltage divider for the battery voltage has been changed since there where issues with some ESP32 boards. 220k + 220k is now the recommended values.
 When updating to this version you will need to recalculate the voltage factor if you are using an ESP32 board.</p>
 </div>
-<section id="new-features">
-<h3>New features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
+<section id="id3">
+<h3>New features<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>THe formula page now shows the current angle with a 2s update refresh. This to make it easier to create the formula.</p></li>
 <li><p>Adding tcp socket transmission for http port 1 target (secure connection is not supported), some remote services dont support http.</p></li>
@@ -299,8 +325,8 @@ When updating to this version you will need to recalculate the voltage factor if
 <li><p>(experimental) Added filter to gyro reading in order to smooth out readings (5 point moving avegage with min/max removed)</p></li>
 </ul>
 </section>
-<section id="id2">
-<h3>Bugs fixed<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<section id="id4">
+<h3>Bugs fixed<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Deep sleep mode is fixed for ESP32 boards</p></li>
 <li><p>Wifi mode could be triggered by sleep mode.</p></li>
@@ -317,8 +343,8 @@ newer ESP32 based boards instead.</p>
 </section>
 <section id="v2-1-0">
 <h2>v2.1.0<a class="headerlink" href="#v2-1-0" title="Permalink to this heading">¶</a></h2>
-<section id="id3">
-<h3>New features<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<section id="id5">
+<h3>New features<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Updated formula creator.</p>
 <ul>
@@ -341,8 +367,8 @@ newer ESP32 based boards instead.</p>
 <li><p>Update dependant libraries to latest version (Json 7, AsyncWebServer, EspFwk)</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Bugs fixed<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<section id="id6">
+<h3>Bugs fixed<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>UI no shows clearly when gyro is moving and average is not calculated</p></li>
 <li><p>Fixed broken link to removing old iSpindle configuration.</p></li>
@@ -360,8 +386,8 @@ newer ESP32 based boards instead.</p>
 </section>
 <section id="v2-0-0">
 <h2>v2.0.0<a class="headerlink" href="#v2-0-0" title="Permalink to this heading">¶</a></h2>
-<section id="id5">
-<h3>New features<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<section id="id7">
+<h3>New features<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Refactor some of the UI to make it easier to maintain.</p></li>
 <li><p>Added feature to force device to search for the stronget AP.</p></li>
@@ -391,8 +417,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 </section>
 <section id="v1-4-1">
 <h2>v1.4.1<a class="headerlink" href="#v1-4-1" title="Permalink to this heading">¶</a></h2>
-<section id="id6">
-<h3>Issues adressed<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<section id="id8">
+<h3>Issues adressed<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Fixed broken iSpindel configuration migration for the esp8266.</p></li>
 <li><p>Fixed broken gather support button.</p></li>
@@ -440,8 +466,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Added BierBot Bricks configuration as external service target.</p></li>
 </ul>
 </section>
-<section id="id7">
-<h3>Issues adressed<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
+<section id="id9">
+<h3>Issues adressed<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Updated code so it now works with newer versions of ArduniJSON</p></li>
 <li><p>Fixed issue with ESP32 were reboot didn’t work sometimes</p></li>
@@ -457,8 +483,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 </section>
 <section id="v1-3-0">
 <h2>v1.3.0<a class="headerlink" href="#v1-3-0" title="Permalink to this heading">¶</a></h2>
-<section id="id8">
-<h3>Features<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
+<section id="id10">
+<h3>Features<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Refactored logoutput from WifiManager to be consistent with other logs.</p></li>
 <li><p>Added feature to do backup and restore of device settings. Data will be exported as a text (json) file.</p></li>
@@ -473,8 +499,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.</p></li>
 </ul>
 </section>
-<section id="id9">
-<h3>Documentation<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+<section id="id11">
+<h3>Documentation<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Updated getting started section to clarify what needs to be done during setup.</p></li>
 <li><p>Updated documentation with new images and text</p></li>
@@ -482,8 +508,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Added description for how to get voltage measurement on a floaty, see Hardware section.</p></li>
 </ul>
 </section>
-<section id="id10">
-<h3>Issues adressed<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
+<section id="id12">
+<h3>Issues adressed<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Double reset was detected incorrectly on ESP32C3, created own code and dropped douoble reset detection library for better stability. Will now require 3 taps within 3 seconds each to go into wifi configuration.</p></li>
 <li><p>BUG: Gyro and Tempsensor was not detected after a reset on ESP32 (needed power cycle), reverted to older Arduino version to solve the problem.</p></li>
@@ -514,20 +540,20 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 </section>
 <section id="v1-2-1">
 <h2>v1.2.1<a class="headerlink" href="#v1-2-1" title="Permalink to this heading">¶</a></h2>
-<section id="id11">
-<h3>Issues adressed<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
+<section id="id13">
+<h3>Issues adressed<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Under some circumstances the last part of the format template was omitted.</p></li>
 </ul>
 </section>
-<section id="id12">
-<h3>Other<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
+<section id="id14">
+<h3>Other<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Update tinyexpr library to latest baseline (Used for forumula evaluation).</p></li>
 </ul>
 </section>
-<section id="id13">
-<h3>Documentation<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
+<section id="id15">
+<h3>Documentation<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Minor updates and corrections to the documetation.</p></li>
 <li><p>Updated Q&amp;A section</p></li>
@@ -536,8 +562,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 </section>
 <section id="v1-2-0">
 <h2>v1.2.0<a class="headerlink" href="#v1-2-0" title="Permalink to this heading">¶</a></h2>
-<section id="id14">
-<h3>Features<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+<section id="id16">
+<h3>Features<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Added function to calcualate voltage factor based on measured value.</p></li>
 <li><p>Updated battery estimation for the various esp32 boards.</p></li>
@@ -549,8 +575,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Added option to download firmware updates from <a class="reference external" href="https://www.gravitymon.com">https://www.gravitymon.com</a></p></li>
 </ul>
 </section>
-<section id="id15">
-<h3>Documentation<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
+<section id="id17">
+<h3>Documentation<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Added section about the Floaty hardware</p></li>
 <li><p>Fixed schema errors in hardware section and linked PCB options</p></li>
@@ -558,8 +584,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Updated installation instructions.</p></li>
 </ul>
 </section>
-<section id="id16">
-<h3>Issues adressed<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
+<section id="id18">
+<h3>Issues adressed<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: The first portion of a format template was lost when doing conversion.</p></li>
 </ul>
@@ -573,8 +599,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 </section>
 <section id="v1-1-0">
 <h2>v1.1.0<a class="headerlink" href="#v1-1-0" title="Permalink to this heading">¶</a></h2>
-<section id="id17">
-<h3>Features<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
+<section id="id19">
+<h3>Features<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Added information to error log about abnormal resets (for instance crashes) to detect and fix those</p></li>
 <li><p>Changed storage mode so that the device will go into deep sleep until reset (sleep forever)</p></li>
@@ -624,8 +650,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>User can now edit the voltage level that forces the device into config mode (device detects charging)</p></li>
 </ul>
 </section>
-<section id="id18">
-<h3>Documentation<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
+<section id="id20">
+<h3>Documentation<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Added documentation for Brewpiless as target</p></li>
 <li><p>Added documentation for BVrewblox as target</p></li>
@@ -637,8 +663,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Added q&amp;a on formula creation and value deviation</p></li>
 </ul>
 </section>
-<section id="id19">
-<h3>Other<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
+<section id="id21">
+<h3>Other<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Upgraded framework for ESP8266 to v5.0.0</p></li>
 <li><p>Upgraded framework for ESP32 to v2.0.2</p></li>
@@ -649,8 +675,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 </section>
 <section id="v1-0-0">
 <h2>v1.0.0<a class="headerlink" href="#v1-0-0" title="Permalink to this heading">¶</a></h2>
-<section id="id20">
-<h3>Documentation<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
+<section id="id22">
+<h3>Documentation<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Update documentation to match v1.0</p></li>
 <li><p>Installation instructions updated on how to find the device after wifi has been configured.</p></li>
@@ -659,8 +685,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Added additional http error codes to troubleshooting documentation</p></li>
 </ul>
 </section>
-<section id="id21">
-<h3>User interface<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
+<section id="id23">
+<h3>User interface<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Upgraded to bootstrap v5.1 for web pages.</p></li>
 <li><p>Added button on index page to direct to github issues.</p></li>
@@ -671,8 +697,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Added function on format page so that it’s easy to copy a format template from the docs (simplify service integration).</p></li>
 </ul>
 </section>
-<section id="id22">
-<h3>Features<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
+<section id="id24">
+<h3>Features<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Added advanced setting to ignore angles that are lower than water. This is disabled by default.</p></li>
 <li><p>Added support for MPU6500 (standard is MPU6050).</p></li>
@@ -689,8 +715,8 @@ to the Gateway and then forward this to the correct endpoint.</p></li>
 <li><p>Advanced settings: Adjust resolution of temp sensor (9 bits to 12 bits), higher resolution takes longer thus reducing battery life</p></li>
 </ul>
 </section>
-<section id="id23">
-<h3>Issues addressed<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
+<section id="id25">
+<h3>Issues addressed<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>BUG: Fixed issue in formula calculation in case there were a gap in the data series</p></li>
 <li><p>BUG: Field name for wifi strength changed from “rssi” to “RSSI”</p></li>
@@ -875,29 +901,35 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v2-2-1">v2.2.1</a><ul>
+<li><a class="reference internal" href="#v2-3-0">v2.3.0</a><ul>
+<li><a class="reference internal" href="#new-features">New features</a></li>
+<li><a class="reference internal" href="#dropped-features">Dropped features</a></li>
 <li><a class="reference internal" href="#bugs-fixed">Bugs fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#v2-2-0">v2.2.0</a><ul>
-<li><a class="reference internal" href="#new-features">New features</a></li>
-<li><a class="reference internal" href="#new-features-esp32-only">New features (ESP32 only)</a></li>
+<li><a class="reference internal" href="#v2-2-1">v2.2.1</a><ul>
 <li><a class="reference internal" href="#id2">Bugs fixed</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#v2-1-0">v2.1.0</a><ul>
+<li><a class="reference internal" href="#v2-2-0">v2.2.0</a><ul>
 <li><a class="reference internal" href="#id3">New features</a></li>
+<li><a class="reference internal" href="#new-features-esp32-only">New features (ESP32 only)</a></li>
 <li><a class="reference internal" href="#id4">Bugs fixed</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v2-1-0">v2.1.0</a><ul>
+<li><a class="reference internal" href="#id5">New features</a></li>
+<li><a class="reference internal" href="#id6">Bugs fixed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v2-0-1">v2.0.1</a></li>
 <li><a class="reference internal" href="#v2-0-0">v2.0.0</a><ul>
-<li><a class="reference internal" href="#id5">New features</a></li>
+<li><a class="reference internal" href="#id7">New features</a></li>
 <li><a class="reference internal" href="#issues-adressed">Issues adressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-4-1">v1.4.1</a><ul>
-<li><a class="reference internal" href="#id6">Issues adressed</a></li>
+<li><a class="reference internal" href="#id8">Issues adressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-4-0">v1.4.0</a><ul>
@@ -905,44 +937,44 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
 <li><a class="reference internal" href="#known-issues">Known issues</a></li>
 <li><a class="reference internal" href="#maintenance">Maintenance</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
-<li><a class="reference internal" href="#id7">Issues adressed</a></li>
+<li><a class="reference internal" href="#id9">Issues adressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-3-1">v1.3.1</a></li>
 <li><a class="reference internal" href="#v1-3-0">v1.3.0</a><ul>
-<li><a class="reference internal" href="#id8">Features</a></li>
-<li><a class="reference internal" href="#id9">Documentation</a></li>
-<li><a class="reference internal" href="#id10">Issues adressed</a></li>
+<li><a class="reference internal" href="#id10">Features</a></li>
+<li><a class="reference internal" href="#id11">Documentation</a></li>
+<li><a class="reference internal" href="#id12">Issues adressed</a></li>
 <li><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-2-1">v1.2.1</a><ul>
-<li><a class="reference internal" href="#id11">Issues adressed</a></li>
-<li><a class="reference internal" href="#id12">Other</a></li>
-<li><a class="reference internal" href="#id13">Documentation</a></li>
+<li><a class="reference internal" href="#id13">Issues adressed</a></li>
+<li><a class="reference internal" href="#id14">Other</a></li>
+<li><a class="reference internal" href="#id15">Documentation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-2-0">v1.2.0</a><ul>
-<li><a class="reference internal" href="#id14">Features</a></li>
-<li><a class="reference internal" href="#id15">Documentation</a></li>
-<li><a class="reference internal" href="#id16">Issues adressed</a></li>
+<li><a class="reference internal" href="#id16">Features</a></li>
+<li><a class="reference internal" href="#id17">Documentation</a></li>
+<li><a class="reference internal" href="#id18">Issues adressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-1-1">v1.1.1</a></li>
 <li><a class="reference internal" href="#v1-1-0">v1.1.0</a><ul>
-<li><a class="reference internal" href="#id17">Features</a></li>
+<li><a class="reference internal" href="#id19">Features</a></li>
 <li><a class="reference internal" href="#known-issues-not-yet-fixed">Known issues, not yet fixed</a></li>
 <li><a class="reference internal" href="#issues-addressed">Issues addressed</a></li>
 <li><a class="reference internal" href="#user-interface">User interface</a></li>
-<li><a class="reference internal" href="#id18">Documentation</a></li>
-<li><a class="reference internal" href="#id19">Other</a></li>
+<li><a class="reference internal" href="#id20">Documentation</a></li>
+<li><a class="reference internal" href="#id21">Other</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v1-0-0">v1.0.0</a><ul>
-<li><a class="reference internal" href="#id20">Documentation</a></li>
-<li><a class="reference internal" href="#id21">User interface</a></li>
-<li><a class="reference internal" href="#id22">Features</a></li>
-<li><a class="reference internal" href="#id23">Issues addressed</a></li>
+<li><a class="reference internal" href="#id22">Documentation</a></li>
+<li><a class="reference internal" href="#id23">User interface</a></li>
+<li><a class="reference internal" href="#id24">Features</a></li>
+<li><a class="reference internal" href="#id25">Issues addressed</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-9-0">v0.9.0</a></li>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionality" href="functionality.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>GravityMon v2.2.0</title>
+        <title>Gravitymon v2.3.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">GravityMon v2.2.0</div></a>
+      <a href="#"><div class="brand">Gravitymon v2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v2.2.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.3.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -275,7 +275,7 @@ can be tracked. The graph has been rendered using Fermentrack.</p>
 implements a lot of the features that has been requested in the original iSpindle project but never implemented for
 various reasons.</p>
 <p>The firmware also supports a iSpindle built using an ESP32 which is pin compatible with esp8266, currently there are 3 options that are
-supported ESP32-D1 mini, ESP32-C3 mini, ESP32-S2 mini, ESP32-S3 mini, ESP32 lite (floaty). See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>. The more modern hardware
+supported ESP32-C3 mini, ESP32-S2 mini, ESP32-S3 mini. See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>. The more modern hardware
 will allow better support for SSL and other memory intensive functions.</p>
 <p>I started GravityMon because I like to create software and wanted to do some microcontroller programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural.</p>
@@ -356,6 +356,7 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v2-3-0">v2.3.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v2-2-1">v2.2.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v2-2-0">v2.2.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v2-1-0">v2.1.0</a></li>
@@ -409,17 +410,17 @@ the following libraries and without these this would have been much more difficu
 </li>
 <li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hardware.html#custom-boards">Custom boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#supported-esp-boards">Supported ESP boards</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp8266">iSpindle based on esp8266</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp32">iSpindle based on esp32</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hardware.html#floaty-hydrometer-diy-based-on-esp32-lite">Floaty Hydrometer DIY based on esp32 lite</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hardware.html#hardware-extensions">Hardware extensions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hardware.html#new-gyro-options">New Gyro options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#what-is-different-for-the-esp32">What is different for the ESP32</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#modifications">Modifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#gyro-options">Gyro options</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewfather">Brewfather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#fermentrack">Fermentrack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="services.html#grainfather">Grainfather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#ubidots">UBIdots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#home-assistant">Home Assistant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewer-s-friend">Brewer’s Friend</a></li>

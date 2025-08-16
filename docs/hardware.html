@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Service Integration" href="services.html" /><link rel="prev" title="Format Templates" href="format-template.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Hardware - GravityMon v2.2.0</title>
+        <title>Hardware - Gravitymon v2.3.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">GravityMon v2.2.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">GravityMon v2.2.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.3.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -262,13 +262,97 @@
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/cherryphilip74/iSpindel-PCB">Cherry Philip Hardware design</a></p></li>
 <li><p><a class="reference external" href="https://www.opensourcedistilling.com/ispindel">OpenSource Distilling</a></p></li>
+<li><p><a class="reference external" href="https://github.com/andreq/iSpindel-Gravitymon-Pill-PCB">iSpindel Gravitymon Pill PCB</a></p></li>
+<li><p><a class="reference external" href="https://github.com/hobipivo/iSpindel">iSpindel</a></p></li>
 </ul>
+<section id="supported-esp-boards">
+<h2>Supported ESP boards<a class="headerlink" href="#supported-esp-boards" title="Permalink to this heading">¶</a></h2>
+<p>From v2.3 i have changed the main boards that I support as part of this project and the focus is now
+moving towards ESP32 based boards. The main reason is that the ESP8266 is old and resources are limited
+for adding new features. The original iSpindle design is starting to get older and new and better boards
+and components exist today.</p>
+<p>For the pcbs make for the ESP8266 some of the features will not be available but I’m currently working with
+some pcb designeers to create new options that full utilize the features in Gravitymon.</p>
+<p>I’m working on adding more ESP options and I will add the pinouts once they have been confirmed.</p>
+<div class="table-wrapper docutils container" id="id2">
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">GPIO pins for ESP boards</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Board</p></th>
+<th class="head"><p>SDA</p></th>
+<th class="head"><p>SCL</p></th>
+<th class="head"><p>OneWire</p></th>
+<th class="head"><p>Battery</p></th>
+<th class="head"><p>Reset</p></th>
+<th class="head"><p>Charging</p></th>
+<th class="head"><p>Config</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Lolin ESP8266</p></td>
+<td><p>D3</p></td>
+<td><p>D4</p></td>
+<td><p>D6</p></td>
+<td><p>A0</p></td>
+<td><p>EN</p></td>
+<td></td>
+<td><p>D8 / D7</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lolin ESP32 c3 mini</p></td>
+<td><p>7</p></td>
+<td><p>6</p></td>
+<td><p>A0</p></td>
+<td><p>A3</p></td>
+<td><p>EN</p></td>
+<td><p>A1</p></td>
+<td><p>A5 / A4</p></td>
+</tr>
+<tr class="row-even"><td><p>Lolin ESP32 s2 mini</p></td>
+<td><p>A17</p></td>
+<td><p>A15</p></td>
+<td><p>A8</p></td>
+<td><p>A2</p></td>
+<td><p>EN</p></td>
+<td><p>A6</p></td>
+<td><p>A10 / A11</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lolin ESP32 s3 mini</p></td>
+<td><p>A17</p></td>
+<td><p>A15</p></td>
+<td><p>A12</p></td>
+<td><p>A1</p></td>
+<td><p>EN</p></td>
+<td><p>A11</p></td>
+<td><p>A9 / A10</p></td>
+</tr>
+<tr class="row-even"><td><p>Waveshare ESP32c3 Zero</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Tenstar ESP32c3 super mini</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
 <section id="custom-boards">
-<h2>Custom boards<a class="headerlink" href="#custom-boards" title="Permalink to this heading">¶</a></h2>
+<h3>Custom boards<a class="headerlink" href="#custom-boards" title="Permalink to this heading">¶</a></h3>
 <p>Besides the standard boards listed here (which are tested and verified by me) there is also a possibility
 to add custom boards which are included in the builds and made available through this gihub repository.
 A list of these boards can be found here <a class="reference internal" href="custom.html#custom-boards"><span class="std std-ref">Custom boards</span></a>. I cannot take full responsibility for these
 builds since I dont have access to these boards for testing.</p>
+</section>
 </section>
 <section id="ispindle-based-on-esp8266">
 <h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this heading">¶</a></h2>
@@ -280,53 +364,27 @@ excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip.
 <a class="reference internal image-reference" href="_images/schema_esp8266.png"><img alt="Schema esp8266" src="_images/schema_esp8266.png" style="width: 700px;" /></a>
 </section>
 </section>
-<section id="ispindle-based-on-esp32">
-<h2>iSpindle based on esp32<a class="headerlink" href="#ispindle-based-on-esp32" title="Permalink to this heading">¶</a></h2>
-<p>Gravitymon supports a number of ESP32 boards that offers bluetooth support.</p>
-<a class="reference internal image-reference" href="_images/esp32_hardware.jpg"><img alt="iSpindle esp32 hardware options" src="_images/esp32_hardware.jpg" style="width: 500px;" /></a>
-<ul class="simple">
-<li><p>esp32d1 mini, this was the first board i tried which is a smaller form factor of the first generetion esp32 with 2 cores. Slow on connecting to wifi is the main downside.</p></li>
-<li><p>esp32c3 mini, a newer version based on the latest risc v7 architecture, is seen as the replacement for the esp8266 with bluetooth support. Don’t buy v1.0 since that has a faulty wifi antenna.</p></li>
-<li><p>esp32s2 mini, similar to the c3 board but without bluetooth support.</p></li>
-<li><p>esp32s3 mini, similar to the s2 board but with bluetooth support.</p></li>
-</ul>
-<p>It’s possible to use this PCB and mount an ESP32 mini on top of that (c3 or s2 are prefered). The esp32 d1 mini is a larger formfactor and can be hard to fit into the tube.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You need to add a resistor between A0 (Analog PIN) and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider
-which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog pin this is needed. Once the modification is done you might
+<section id="what-is-different-for-the-esp32">
+<h2>What is different for the ESP32<a class="headerlink" href="#what-is-different-for-the-esp32" title="Permalink to this heading">¶</a></h2>
+<p>You need to add a resistor between Battery PIN and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider
+which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog
+pin this is needed. Once the modification is done you might
 need to adjust the voltage factor so the battery reading is correct.</p>
-</div>
-<section id="esp32c3-mini">
-<h3>ESP32c3 mini<a class="headerlink" href="#esp32c3-mini" title="Permalink to this heading">¶</a></h3>
+<p>The charing pin needs to be enabled in the configuration and when power is higher than 2.5V on that pin it will force the device into deep
+sleep until the power is lost. This is intended to be used with wireless chargers so when the device is charging its turned off. You might
+need to add a voltage divider and pull-down resistor for this to work correctly and not damage the ESP with more than 3.3V.</p>
+<p>The charging pin can also be used for doing a reset of the device that does not have an exposed reset pin, this applies to the smaller
+boards like Zero or Super Mini boards.</p>
+<section id="example-esp32c3-mini">
+<h3>Example: ESP32c3 mini<a class="headerlink" href="#example-esp32c3-mini" title="Permalink to this heading">¶</a></h3>
 <p>This is model is fully supported by gravitymon.</p>
 <a class="reference internal image-reference" href="_images/ispindel_esp32c3.jpg"><img alt="Esp32c3 mini build" src="_images/ispindel_esp32c3.jpg" style="width: 500px;" /></a>
 <p>Here is an image of where I added the resistor for the voltage divider.</p>
 <a class="reference internal image-reference" href="_images/esp32_res.jpg"><img alt="Esp32c3 adding resistor as voltage dividier." src="_images/esp32_res.jpg" style="width: 500px;" /></a>
 </section>
-<section id="esp32s2-mini">
-<h3>ESP32s2 mini<a class="headerlink" href="#esp32s2-mini" title="Permalink to this heading">¶</a></h3>
-<p>This is model is fully supported by gravitymon. Same setup as for ESP32C3 mini.</p>
 </section>
-<section id="esp32s3-mini">
-<h3>ESP32s3 mini<a class="headerlink" href="#esp32s3-mini" title="Permalink to this heading">¶</a></h3>
-<p>This is model is fully supported by gravitymon. Same setup as for ESP32S2 mini.</p>
-</section>
-<section id="esp32-d1-mini">
-<h3>ESP32 d1 mini<a class="headerlink" href="#esp32-d1-mini" title="Permalink to this heading">¶</a></h3>
-<p>I would suggest that you try how it fits into the PET tube before soldering it to the PCB. Make sure that the battery is attached since this will be a really tight fit.</p>
-<a class="reference internal image-reference" href="_images/ispindel_esp32.jpg"><img alt="Esp32 mini build" src="_images/ispindel_esp32.jpg" style="width: 500px;" /></a>
-</section>
-<section id="schema-for-esp32-build">
-<h3>Schema for esp32 build<a class="headerlink" href="#schema-for-esp32-build" title="Permalink to this heading">¶</a></h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This schema assumes that an ESP32 d1 mini (pin compatible with ESP8266). The ESP32 has two rows of pins but
-only the inner row is used. The main difference is the added resistor R3 so we get a voltage divider for measuring battery.
-The ESP8266 has a built in resistor thats not visible on the schema and this acts as a voltage divider.</p>
-</div>
-<a class="reference internal image-reference" href="_images/schema_esp32.png"><img alt="Schema esp32" src="_images/schema_esp32.png" style="width: 700px;" /></a>
-</section>
+<section id="modifications">
+<h2>Modifications<a class="headerlink" href="#modifications" title="Permalink to this heading">¶</a></h2>
 <section id="adding-a-reed-magnetic-reset-switch">
 <h3>Adding a reed (magnetic) reset switch<a class="headerlink" href="#adding-a-reed-magnetic-reset-switch" title="Permalink to this heading">¶</a></h3>
 <p>A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to
@@ -338,34 +396,8 @@ I mounted the iSPINDLE PCB v4.0 just under the cap. The lower red circle shows t
 <a class="reference internal image-reference" href="_images/reed_build.jpg"><img alt="Reed build" src="_images/reed_build.jpg" style="width: 400px;" /></a>
 </section>
 </section>
-<section id="floaty-hydrometer-diy-based-on-esp32-lite">
-<h2>Floaty Hydrometer DIY based on esp32 lite<a class="headerlink" href="#floaty-hydrometer-diy-based-on-esp32-lite" title="Permalink to this heading">¶</a></h2>
-<p>Here we have another projects that has build a device similar to the iSpindel but based on an ESP32 instead.</p>
-<p>The setup is much simpler and attaches the GYRO to an ESP32 with a build in charger chip. GravityMon works on
-this hardware platform as well but there are a few limitations:</p>
-<ul class="simple">
-<li><p>Temperature is read from the GYRO and cannot be changed. This works fine when measuring gravity but when in configuration mode the temperature will increase since it shows the chip temperature.</p></li>
-<li><p>No possibility to measure battery level (can be added with additional hardware).</p></li>
-</ul>
-</section>
-<section id="hardware-extensions">
-<h2>Hardware extensions<a class="headerlink" href="#hardware-extensions" title="Permalink to this heading">¶</a></h2>
-<p>GravityMon has implemented a few additions to the standard iSpindel hardware. It’s possible to channel the serial console to the TX/RX pins on the chip (these position also applies to all the
-ESP32 chips for iSpindel). You need a USB to TTL converter for this to work. This enables you to read the serial console even when on battery (newer chips dont have a diode to remove).</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You need to compile the software using the -DUSE_SERIAL_PINS option to enable this feature.</p>
-</div>
-<p>Its also possible to force the device into configuration mode by connecting D7/D8 on the board during the startup sequence. This will enable the feature “gravity mode enabled during float”.</p>
-<a class="reference internal image-reference" href="_images/8266_pins.jpg"><img alt="iSpindel pins" src="_images/8266_pins.jpg" style="width: 500px;" /></a>
-<p>For the floaty device pins 16/17 are used as TX/RX pins and the 13/15 pins are used to force the device into configuration mode. Pin 35 can also be connected to the battery voltage via an voltage divider to be able to read the battery voltage.</p>
-<a class="reference internal image-reference" href="_images/32lite_pins.jpg"><img alt="Floaty pins" src="_images/32lite_pins.jpg" style="width: 500px;" /></a>
-<p>It’s possible to modify the floaty hardware and add a real voltage measurement to enable more features in GravityMon. You connect the +5V to the + on the battery and GND to ground. The connection between the resistors
-is connected to PIN 35 on the floaty. You might need to correct the voltage factor after the modification to ensure the calculated measurement is correct.</p>
-<a class="reference internal image-reference" href="_images/floaty_voltage.jpg"><img alt="Voltage divider for floaty" src="_images/floaty_voltage.jpg" style="width: 200px;" /></a>
-</section>
-<section id="new-gyro-options">
-<h2>New Gyro options<a class="headerlink" href="#new-gyro-options" title="Permalink to this heading">¶</a></h2>
+<section id="gyro-options">
+<h2>Gyro options<a class="headerlink" href="#gyro-options" title="Permalink to this heading">¶</a></h2>
 <p>Besides the standard MPU-6050 and MPU-6500 gravitymon now also supports the ICM-42670-p which can be obtained from Aliexpress as a development board.
 There is some work ongoing to create a new PCB based on this gyro. I will update with links when available.</p>
 <a class="reference internal image-reference" href="_images/gyro-icm42670p.png"><img alt="ICM-42670-P" src="_images/gyro-icm42670p.png" style="width: 200px;" /></a>
@@ -434,23 +466,23 @@ that allows you to use the Y axis for tilt detection. The boards I used is pin c
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Hardware</a><ul>
+<li><a class="reference internal" href="#supported-esp-boards">Supported ESP boards</a><ul>
 <li><a class="reference internal" href="#custom-boards">Custom boards</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#ispindle-based-on-esp8266">iSpindle based on esp8266</a><ul>
 <li><a class="reference internal" href="#schema-for-esp8266-build">Schema for esp8266 build</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ispindle-based-on-esp32">iSpindle based on esp32</a><ul>
-<li><a class="reference internal" href="#esp32c3-mini">ESP32c3 mini</a></li>
-<li><a class="reference internal" href="#esp32s2-mini">ESP32s2 mini</a></li>
-<li><a class="reference internal" href="#esp32s3-mini">ESP32s3 mini</a></li>
-<li><a class="reference internal" href="#esp32-d1-mini">ESP32 d1 mini</a></li>
-<li><a class="reference internal" href="#schema-for-esp32-build">Schema for esp32 build</a></li>
+<li><a class="reference internal" href="#what-is-different-for-the-esp32">What is different for the ESP32</a><ul>
+<li><a class="reference internal" href="#example-esp32c3-mini">Example: ESP32c3 mini</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#modifications">Modifications</a><ul>
 <li><a class="reference internal" href="#adding-a-reed-magnetic-reset-switch">Adding a reed (magnetic) reset switch</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#floaty-hydrometer-diy-based-on-esp32-lite">Floaty Hydrometer DIY based on esp32 lite</a></li>
-<li><a class="reference internal" href="#hardware-extensions">Hardware extensions</a></li>
-<li><a class="reference internal" href="#new-gyro-options">New Gyro options</a></li>
+<li><a class="reference internal" href="#gyro-options">Gyro options</a></li>
 </ul>
 </li>
 </ul>
