@@ -16,7 +16,7 @@ Now also works with ESP32 c3 mini, ESP32 S2 mini, ESP32 S3 mini which are pin co
 
 Installation can be made using https://www.brewflasher.com or the web version at https://web.brewflasher.com
 
-The documentation can be found here: https://www.gravitymon.com/docs.html
+The documentation can be found here: https://www.gravitymon.com/doc-gravitymon.html
 
 Visit the gravitymon homepage here for more information about the project: https://www.gravitymon.com
 
