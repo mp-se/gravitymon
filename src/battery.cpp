@@ -32,11 +32,11 @@ BatteryVoltage::BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin) {
   _batteryConfig = batteryConfig;
   _pin = pin;
 #if defined(ESP8266)
-  if(_pin > 0) {
+  if (_pin > 0) {
     pinMode(_pin, INPUT);
   }
 #else
-  if(_pin > 0) {
+  if (_pin > 0) {
     pinMode(_pin, INPUT);
     analogReadResolution(SOC_ADC_MAX_BITWIDTH);
     analogSetAttenuation(ADC_11db);
@@ -50,7 +50,7 @@ void BatteryVoltage::read() {
   float factor = _batteryConfig->getVoltageFactor();  // Default value is 1.63
   int v = 0;
 
-  if( _pin > 0) {
+  if (_pin > 0) {
     v = analogRead(_pin);
   }
 

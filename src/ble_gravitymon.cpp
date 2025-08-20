@@ -145,7 +145,8 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   _advertising->stop();
 }
 
-void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG, float angle) {
+void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG,
+                               float angle) {
   Log.info(F("Starting rapt v1 beacon data transmission" CR));
 
   _advertising->stop();
@@ -155,9 +156,9 @@ void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG, float a
   uint16_t a = angle * 16;
   uint32_t chipId = 0;
 
-  union { // For mapping the raw float to bytes
-      float f;
-      uint8_t b[4];
+  union {  // For mapping the raw float to bytes
+    float f;
+    uint8_t b[4];
   } floatUnion;
 
   for (int i = 0; i < 17; i = i + 8) {
@@ -184,7 +185,7 @@ void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG, float a
   mf += static_cast<char>(0x01);  // Rapt v1
 
   mf += static_cast<char>(0x00);  // Mac adress, using that for ChipID
-  mf += static_cast<char>(0x00);  // 
+  mf += static_cast<char>(0x00);  //
   mf += static_cast<char>(((chipId & 0xFF000000) >> 24));
   mf += static_cast<char>(((chipId & 0xFF0000) >> 16));
   mf += static_cast<char>(((chipId & 0xFF00) >> 8));
@@ -202,9 +203,9 @@ void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG, float a
   mf += static_cast<char>((a >> 8));  // X, Angle
   mf += static_cast<char>((a & 0xFF));
   mf += static_cast<char>(0x00);  // Y
-  mf += static_cast<char>(0x00); 
+  mf += static_cast<char>(0x00);
   mf += static_cast<char>(0x00);  // Z
-  mf += static_cast<char>(0x00); 
+  mf += static_cast<char>(0x00);
 
   mf += static_cast<char>((b >> 8));  // Battery
   mf += static_cast<char>((b & 0xFF));
@@ -224,14 +225,16 @@ void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG, float a
   _advertising->stop();
 }
 
-void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG, float angle, float velocity, bool velocityValid) {
+void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
+                               float angle, float velocity,
+                               bool velocityValid) {
   Log.info(F("Starting rapt v2 beacon data transmission" CR));
 
   _advertising->stop();
 
-  union { // For mapping the raw float to bytes
-      float f;
-      uint8_t b[4];
+  union {  // For mapping the raw float to bytes
+    float f;
+    uint8_t b[4];
   } floatUnion;
 
   uint16_t t = (tempC + 273.15) * 128.0;
@@ -280,9 +283,9 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG, float a
   mf += static_cast<char>((a >> 8));  // X, Angle
   mf += static_cast<char>((a & 0xFF));
   mf += static_cast<char>(0x00);  // Y
-  mf += static_cast<char>(0x00); 
+  mf += static_cast<char>(0x00);
   mf += static_cast<char>(0x00);  // Z
-  mf += static_cast<char>(0x00); 
+  mf += static_cast<char>(0x00);
 
   mf += static_cast<char>((b >> 8));  // Battery (batt_v*1000)
   mf += static_cast<char>((b & 0xFF));

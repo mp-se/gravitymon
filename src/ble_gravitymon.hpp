@@ -48,10 +48,10 @@ class BleSender {
 
   // Beacons
   void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendRaptV1Data(float battery, float tempC, float gravSG, float angle); 
-  void sendRaptV2Data(float battery, float tempC, float gravSG, float angle, float velocity, bool velocityValid); 
-  void sendEddystoneData(float battery, float tempC, float gravSG,
-                         float angle);
+  void sendRaptV1Data(float battery, float tempC, float gravSG, float angle);
+  void sendRaptV2Data(float battery, float tempC, float gravSG, float angle,
+                      float velocity, bool velocityValid);
+  void sendEddystoneData(float battery, float tempC, float gravSG, float angle);
   void sendCustomBeaconData(float battery, float tempC, float gravSG,
                             float angle);
 };
