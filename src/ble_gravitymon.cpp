@@ -244,6 +244,8 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
   std::string mf = "";
 
   /*
+        https://gitlab.com/rapt.io/public/-/wikis/Pill-Hydrometer-Bluetooth-Transmissions
+
         typedef struct __attribute__((packed)) {
             char prefix[4];        // RAPT
             uint8_t version;       // always 0x02
