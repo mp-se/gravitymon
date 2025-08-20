@@ -244,7 +244,8 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG, float a
         typedef struct __attribute__((packed)) {
             char prefix[4];        // RAPT
             uint8_t version;       // always 0x02
-            bool gravity_velocity_valid;
+            uint8_t padding;       // always 0x00
+            uint8_t gravity_velocity_valid; // boolean
             float gravity_velocity;
             uint16_t temperature;  // x / 128 - 273.15
             float gravity;         // / 1000
@@ -257,6 +258,7 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG, float a
 
   mf += "RAPT";
   mf += static_cast<char>(0x02);  // Rapt v2
+  mf += static_cast<char>(0x00);  // Padding
 
   mf += static_cast<char>(velocityValid ? 0x01 : 0x00);  // Valocity valid
 
