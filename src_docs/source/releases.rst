@@ -15,6 +15,9 @@ New features
 * Added feature flags to build so builds can be customized and UI will better adapt.
 * Added RAPT bluetooth transmission covering both v1 and v2 formats.
 * Added instructions for Grainfather integration.
+* Added timeouts to the i2c bus and improved error handling when timeout occurs during hardware scan.
+* Added support for Tenstar ESP32c3 super mini (16-pin board)
+* Added support for Waveshare ESP32c3 zero (18-pin board)
 
 Dropped features
 ++++++++++++++++
