@@ -40,7 +40,7 @@ RTC_DATA_ATTR RtcGyroData myRtcGyroData = {0};
 RTC_DATA_ATTR FilterData myRtcFilterData = {0};
 #endif
 
-int wireClock = 100000;
+int wireClock = 400000;
 #if defined(ESP32)
 int wireTimeout = 200;
 #endif
@@ -51,10 +51,6 @@ GyroType GyroSensor::detectGyro() {
 
   Wire.begin(PIN_SDA, PIN_SCL);
   Wire.setClock(wireClock);  // 400kHz I2C clock.
-  // Ensure internal pull-ups are enabled and allow more time for slow devices
-  // pinMode(PIN_SDA, INPUT_PULLUP);
-  // pinMode(PIN_SCL, INPUT_PULLUP);
-  Wire.setTimeOut(200);
   #if defined(ESP32)
   Wire.setTimeOut(wireTimeout);
   #endif
@@ -87,9 +83,6 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
       case GyroType::GYRO_MPU6050: {
         Wire.begin(PIN_SDA, PIN_SCL);
         Wire.setClock(wireClock);  
-        // Enable internal pull-ups explicitly before starting I2C
-        // pinMode(PIN_SDA, INPUT_PULLUP);
-        // pinMode(PIN_SCL, INPUT_PULLUP);
         #if defined(ESP32)
         Wire.setTimeOut(wireTimeout);
         #endif
@@ -106,9 +99,6 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
       case GyroType::GYRO_ICM42670P: {
         Wire.begin(PIN_SDA, PIN_SCL);
         Wire.setClock(wireClock);
-        // Enable internal pull-ups explicitly before starting I2C
-        pinMode(PIN_SDA, INPUT_PULLUP);
-        pinMode(PIN_SCL, INPUT_PULLUP);
         #if defined(ESP32)
         Wire.setTimeOut(wireTimeout);
         #endif
