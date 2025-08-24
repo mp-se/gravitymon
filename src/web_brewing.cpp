@@ -608,18 +608,26 @@ void BrewingWebServer::loop() {
     // Scan the i2c bus for devices, initialized in gyro.cpp
     JsonArray i2c = obj[PARAM_I2C].to<JsonArray>();
 
-    for (int i = 1, j = 0; i < 128; i++) {
+    for (int i = 1, j = 0; i < 128; i++) { 
+      // Abort if we get a timeout error (5)
       // The i2c_scanner uses the return value of
       // the Write.endTransmisstion to see if
       // a device did acknowledge to the address.
       Wire.beginTransmission(i);
       int err = Wire.endTransmission();
 
+      Log.notice(F("WEB : Scanning 0x%x, response %d." CR), i, err);
+
       if (err == 0) {
         Log.notice(F("WEB : Found device at 0x%x." CR), i);
         i2c[j][PARAM_ADRESS] = "0x" + String(i, 16);
         i2c[j][PARAM_BUS] = "Wire";
         j++;
+      } else if(err == 5) {
+        Log.notice(F("WEB : Timeout error at 0x%x." CR), i);
+        i2c[j][PARAM_ADRESS] = "0x" + String(i, 16);
+        i2c[j][PARAM_BUS] = "Timeout error, aborting scan";
+        break;
       }
     }
 
