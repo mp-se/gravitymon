@@ -40,13 +40,24 @@ RTC_DATA_ATTR RtcGyroData myRtcGyroData = {0};
 RTC_DATA_ATTR FilterData myRtcFilterData = {0};
 #endif
 
+int wireClock = 100000;
+#if defined(ESP32)
+int wireTimeout = 200;
+#endif
+
 GyroType GyroSensor::detectGyro() {
   Log.notice(F("GYRO: Detecting installed gyro." CR));
-  int clock = 400000;
   uint8_t addr;
 
   Wire.begin(PIN_SDA, PIN_SCL);
-  Wire.setClock(clock);  // 400kHz I2C clock.
+  Wire.setClock(wireClock);  // 400kHz I2C clock.
+  // Ensure internal pull-ups are enabled and allow more time for slow devices
+  // pinMode(PIN_SDA, INPUT_PULLUP);
+  // pinMode(PIN_SCL, INPUT_PULLUP);
+  Wire.setTimeOut(200);
+  #if defined(ESP32)
+  Wire.setTimeOut(wireTimeout);
+  #endif
 
   if (MPU6050Gyro::isDeviceDetected(addr)) {
     Log.notice(F("GYRO: MPU6050 detected." CR));
@@ -63,7 +74,6 @@ GyroType GyroSensor::detectGyro() {
 
 bool GyroSensor::setup(GyroMode mode, bool force) {
   uint8_t addr = 0;
-  int clock = 400000;
 
   if (_currentMode == GyroMode::GYRO_UNCONFIGURED || !_impl) {
     Log.notice(F("GYRO: Setting up hardware." CR));
@@ -76,7 +86,13 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
 
       case GyroType::GYRO_MPU6050: {
         Wire.begin(PIN_SDA, PIN_SCL);
-        Wire.setClock(clock);  // 400kHz I2C clock.
+        Wire.setClock(wireClock);  
+        // Enable internal pull-ups explicitly before starting I2C
+        // pinMode(PIN_SDA, INPUT_PULLUP);
+        // pinMode(PIN_SCL, INPUT_PULLUP);
+        #if defined(ESP32)
+        Wire.setTimeOut(wireTimeout);
+        #endif
 
         // Using RTC memory on an ESP32c3 zero or super mini will not work, the
         // code will hang when waiting for interrupt from the MPU6050.
@@ -89,7 +105,13 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
 
       case GyroType::GYRO_ICM42670P: {
         Wire.begin(PIN_SDA, PIN_SCL);
-        Wire.setClock(clock);  // 400kHz I2C clock.
+        Wire.setClock(wireClock);
+        // Enable internal pull-ups explicitly before starting I2C
+        pinMode(PIN_SDA, INPUT_PULLUP);
+        pinMode(PIN_SCL, INPUT_PULLUP);
+        #if defined(ESP32)
+        Wire.setTimeOut(wireTimeout);
+        #endif
 
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
         if (myRtcGyroData.IsDataAvailable == GYRO_RTC_DATA_AVAILABLE) {
