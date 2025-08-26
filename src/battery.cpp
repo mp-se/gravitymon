@@ -50,7 +50,7 @@ void BatteryVoltage::read() {
   float factor = _batteryConfig->getVoltageFactor();  // Default value is 1.63
   int v = 0;
 
-  if (_pin > 0) {
+  if (_pin >= 0) {
     v = analogRead(_pin);
   }
 
