@@ -616,7 +616,7 @@ void BrewingWebServer::loop() {
       Wire.beginTransmission(i);
       int err = Wire.endTransmission();
 
-      Log.notice(F("WEB : Scanning 0x%x, response %d." CR), i, err);
+      // Log.notice(F("WEB : Scanning 0x%x, response %d." CR), i, err);
 
       if (err == 0) {
         Log.notice(F("WEB : Found device at 0x%x." CR), i);
@@ -645,16 +645,17 @@ void BrewingWebServer::loop() {
     JsonArray feature = cpu[PARAM_FEATURES].to<JsonArray>();
 
     if (chip_info.features & CHIP_FEATURE_EMB_FLASH)
-      feature.add("embedded flash");
-    if (chip_info.features & CHIP_FEATURE_WIFI_BGN)
-      feature.add("Embedded Flash");
-    if (chip_info.features & CHIP_FEATURE_EMB_FLASH) feature.add("2.4Ghz WIFI");
+      feature.add("Embedded flash");
+    if (chip_info.features & CHIP_FEATURE_WIFI_BGN) feature.add("2.4Ghz WIFI");
     if (chip_info.features & CHIP_FEATURE_BLE) feature.add("Bluetooth LE");
     if (chip_info.features & CHIP_FEATURE_BT) feature.add("Bluetooth Classic");
     if (chip_info.features & CHIP_FEATURE_IEEE802154)
       feature.add("IEEE 802.15.4/LR-WPAN");
     if (chip_info.features & CHIP_FEATURE_EMB_PSRAM)
       feature.add("Embedded PSRAM");
+    if(heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
+      feature.add("Embedded RTC RAM");
+    }
 
     switch (chip_info.model) {
       case CHIP_ESP32:
