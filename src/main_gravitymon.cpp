@@ -296,9 +296,7 @@ bool loopReadGravity() {
     if (myConfig.isGravityTempAdj()) {
       gravitySG = corrGravitySG;
     } else if (myConfig.isGyroFilter()) {
-      // TODO: Uncomment this next line once the
-      // filters has been tested correctly
-      // gravitySG = filteredGravitySG;
+      gravitySG = filteredGravitySG;
     }
 
     float velocity = 0;
@@ -309,14 +307,9 @@ bool loopReadGravity() {
     velocity = gv.getVelocity();
 #endif
 
-    Log.warning(F("Main: Angle: %F (%F), Velocity: %F" CR), angle,
-                filteredAngle, velocity);
-
-#if LOG_LEVEL == 6
-    Log.verbose(F("Main: Sensor values gyro angle=%F, temp=%FC, gravity=%F, "
-                  "corr_gravity=%F." CR),
-                angle, tempC, gravitySG, corrGravitySG);
-#endif
+    Log.notice(F("Main: Sensor values gyro angle=%F, filtered_angle=%F, temp=%FC, gravity=%F, "
+                  "corr_gravity=%F, velocity=%F." CR),
+                angle, filteredAngle, tempC, gravitySG, corrGravitySG, velocity);
 
     bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
                         (myConfig.getSleepInterval() * 1000));
