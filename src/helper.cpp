@@ -27,6 +27,10 @@ SOFTWARE.
 #include <log.hpp>
 #include <main.hpp>
 
+#if ESP_ARDUINO_VERSION_MAJOR >= 3 // For Arduino Core 3.x
+#define SOC_ADC_MAX_BITWIDTH 12 
+#endif
+
 extern "C" {
 void write_bytes(int fd, char* buf, int n) { EspSerial.print(*buf); }
 }

@@ -31,8 +31,17 @@ SOFTWARE.
 #include <web_brewing.hpp>
 
 #if !defined(ESP8266)
-#include <esp_int_wdt.h>
 #include <esp_task_wdt.h>
+#endif
+
+#if !defined(ESP8266) && ESP_ARDUINO_VERSION_MAJOR == 2 // For Arduino Core 2.x
+#include <esp_int_wdt.h>
+#include <esp_system.h>
+#endif
+
+#if !defined(ESP8266) && ESP_ARDUINO_VERSION_MAJOR >= 3 // For Arduino Core 3.x
+#include <esp_chip_info.h>
+#include <esp_heap_caps.h>
 #endif
 
 extern bool sleepModeActive;
