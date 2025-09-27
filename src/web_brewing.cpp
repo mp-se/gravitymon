@@ -21,6 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#ifndef ESPFWK_DISABLE_WEBSERVER
+
 #include <Wire.h>
 
 #include <config_brewing.hpp>
@@ -695,5 +697,7 @@ void BrewingWebServer::loop() {
     _hardwareScanTask = false;
   }
 }
+
+#endif // ESPFWK_DISABLE_WEBSERVER
 
 // EOF

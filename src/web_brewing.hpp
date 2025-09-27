@@ -24,6 +24,8 @@ SOFTWARE.
 #ifndef SRC_WEB_BREWING_HPP_
 #define SRC_WEB_BREWING_HPP_
 
+#ifndef ESPFWK_DISABLE_WEBSERVER
+
 #include <basewebserver.hpp>
 #include <battery.hpp>
 #include <pushtarget.hpp>
@@ -118,6 +120,8 @@ class BrewingWebServer : public BaseWebServer {
   virtual bool setupWebServer(const char *serviceName);
   virtual void loop();
 };
+
+#endif // ESPFWK_DISABLE_WEBSERVER
 
 #endif  // SRC_WEB_BREWING_HPP_
 
