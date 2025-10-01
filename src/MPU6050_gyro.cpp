@@ -136,13 +136,19 @@ GyroResultData MPU6050Gyro::readSensor(GyroMode mode) {
 #endif
   }
 
-  raw.ax = average.ax / noIterations;
-  raw.ay = average.ay / noIterations;
-  raw.az = average.az / noIterations;
-  raw.gx = average.gx / noIterations;
-  raw.gy = average.gy / noIterations;
-  raw.gz = average.gz / noIterations;
-  raw.temp = average.temp / noIterations;
+  // Protect against division by zero
+  if (noIterations > 0) {
+    raw.ax = average.ax / noIterations;
+    raw.ay = average.ay / noIterations;
+    raw.az = average.az / noIterations;
+    raw.gx = average.gx / noIterations;
+    raw.gy = average.gy / noIterations;
+    raw.gz = average.gz / noIterations;
+    raw.temp = average.temp / noIterations;
+  } else {
+    Log.error(F("GYRO: No iterations performed, using zero values." CR));
+    raw.ax = raw.ay = raw.az = raw.gx = raw.gy = raw.gz = raw.temp = 0;
+  }
 
 #if defined(GYRO_SHOW_MINMAX) && LOG_LEVEL == 6
   Log.verbose(F("GYRO: Min    \t%d\t%d\t%d\t%d\t%d\t%d\t%d." CR), min.ax,

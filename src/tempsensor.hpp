@@ -62,7 +62,7 @@ class TempSensor {
   void setup(int pin);
   void readSensor(bool useGyro = false);
   bool isSensorAttached() { return _hasSensor; }
-  float getTempC() { return _temperatureC + _tempSensorAdjC; }
+  float getTempC() const { return _temperatureC + _tempSensorAdjC; }
 
   int getSensorCount() { return _sensors ? _sensors->getDS18Count() : 0; }
   void getSensorAddress(uint8_t *deviceAddress, int index) {
