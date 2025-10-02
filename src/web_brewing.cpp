@@ -601,12 +601,11 @@ void BrewingWebServer::loop() {
   BaseWebServer::loop();
 
   if (_sensorCalibrationTask) {
-    _sensorCalibrationTask = false;  // Clear flag first
     doTaskSensorCalibration();
+    _sensorCalibrationTask = false;  // Clear flag first
   }
 
   if (_pushTestTask) {
-    _pushTestTask = false;  // Clear flag first
     TemplatingEngine engine;
     BrewingPush push(_brewingConfig);
 
@@ -621,11 +620,10 @@ void BrewingWebServer::loop() {
     else
       Log.notice(F("WEB : Scheduled push test %s failed, not enabled" CR),
                  _pushTestTarget.c_str());
+    _pushTestTask = false;  // Clear flag first
   }
 
   if (_hardwareScanTask) {
-    _hardwareScanTask = false;
-
     JsonDocument doc;
     JsonObject obj = doc.to<JsonObject>();
 
@@ -663,6 +661,7 @@ void BrewingWebServer::loop() {
       } else {
         // Ignore the other errors, we are just scanning for devices
       }
+    _hardwareScanTask = false;
     }
 
     JsonObject cpu = obj[PARAM_CHIP].to<JsonObject>();
