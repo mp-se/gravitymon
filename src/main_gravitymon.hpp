@@ -38,6 +38,7 @@ SOFTWARE.
 #define PIN_DS D6
 #define PIN_VOLT PIN_A0
 #define CFG_FILENAMEBIN "firmware.bin"
+#define CFG_PCB "iSpindel"
 
 // #elif defined(WEMOS_D1_MINI32) // Support removed for this board
 // // Hardware config for ESP32-d1-mini, iSpindel hardware
