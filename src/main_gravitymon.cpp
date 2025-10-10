@@ -268,6 +268,11 @@ bool loopReadGravity() {
   Log.verbose(F("Main: Entering main loopGravity." CR));
 #endif
 
+  PERF_BEGIN("loop-temp-read");
+  myTempSensor.readSensor(myConfig.isGyroTemp());
+  float tempC = myTempSensor.getTempC();
+  PERF_END("loop-temp-read");
+
   // Process the sensor values and push data to targets.
   // ------------------------------------------------------------------------------------------------
   // If we dont get any readings we just skip this and try again the next
@@ -277,11 +282,6 @@ bool loopReadGravity() {
     angle = myGyro.getAngle();  // Gyro angle
     filteredAngle = myGyro.getFilteredAngle();
     stableGyroMillis = millis();  // Reset timer
-
-    PERF_BEGIN("loop-temp-read");
-    myTempSensor.readSensor(myConfig.isGyroTemp());
-    float tempC = myTempSensor.getTempC();
-    PERF_END("loop-temp-read");
 
     float gravitySG =
         calculateGravity(myConfig.getGravityFormula(), angle, tempC);
