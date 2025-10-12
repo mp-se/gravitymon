@@ -602,7 +602,7 @@ void BrewingWebServer::loop() {
 
   if (_sensorCalibrationTask) {
     doTaskSensorCalibration();
-    _sensorCalibrationTask = false;  // Clear flag first
+    _sensorCalibrationTask = false;
   }
 
   if (_pushTestTask) {
@@ -620,7 +620,7 @@ void BrewingWebServer::loop() {
     else
       Log.notice(F("WEB : Scheduled push test %s failed, not enabled" CR),
                  _pushTestTarget.c_str());
-    _pushTestTask = false;  // Clear flag first
+    _pushTestTask = false;
   }
 
   if (_hardwareScanTask) {
@@ -661,7 +661,6 @@ void BrewingWebServer::loop() {
       } else {
         // Ignore the other errors, we are just scanning for devices
       }
-    _hardwareScanTask = false;
     }
 
     JsonObject cpu = obj[PARAM_CHIP].to<JsonObject>();
@@ -720,6 +719,7 @@ void BrewingWebServer::loop() {
 
     serializeJson(obj, _hardwareScanData);
     Log.notice(F("WEB : Scan complete %s." CR), _hardwareScanData.c_str());
+    _hardwareScanTask = false;
   }
 }
 
