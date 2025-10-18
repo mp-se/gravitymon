@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-#if defined(ESP8266)
+#ifndef ESPFWK_DISABLE_WIFI
+
+#ifdef ESP8266
 #include <ESP8266mDNS.h>
 #endif
 
@@ -267,12 +269,26 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
   if (!useDefaultTemplate) {
     File file = LittleFS.open(fname, "r");
     if (file) {
-      char buf[file.size() + 1];
-      memset(&buf[0], 0, file.size() + 1);
-      file.readBytes(&buf[0], file.size());
-      _baseTemplate = String(&buf[0]);
+      size_t fileSize = file.size();
+      char* buf = (char*)malloc(fileSize + 1);
+      if (buf == nullptr) {
+        Log.error(F("PUSH: Failed to allocate %d bytes for template %s." CR), fileSize, fname.c_str());
+        file.close();
+        return _baseTemplate.c_str();
+      }
+      
+      memset(buf, 0, fileSize + 1);
+      size_t bytesRead = file.readBytes(buf, fileSize);
       file.close();
-      Log.notice(F("PUSH: Template loaded from disk %s." CR), fname.c_str());
+      
+      if (bytesRead == fileSize) {
+        _baseTemplate = String(buf);
+        Log.notice(F("PUSH: Template loaded from disk %s (%d bytes)." CR), fname.c_str(), bytesRead);
+      } else {
+        Log.warning(F("PUSH: Only read %d of %d bytes from %s." CR), bytesRead, fileSize, fname.c_str());
+      }
+      
+      free(buf);
     }
   }
 
@@ -282,5 +298,7 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
 
   return _baseTemplate.c_str();
 }
+
+#endif // ESPFWK_DISABLE_WIFI
 
 // EOF

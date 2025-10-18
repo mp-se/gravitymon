@@ -34,11 +34,12 @@ constexpr auto VELOCITY_PERIOD_TIME = 4;  // Each period is a 4 hour window
 constexpr auto VELOCITY_MIN_HOURS = 1;
 
 // Data stored in RTC memory should be aligned to 4 bytes
-struct GravityVelocityPeriodData {
+struct __attribute__((packed, aligned(4))) GravityVelocityPeriodData {
   float total;
   float min;
   float max;
   int16_t count;
+  int16_t _padding;  // Explicit padding for 4-byte alignment
 };
 
 struct GravityVelocityData {
@@ -106,9 +107,8 @@ class GravityVelocity {
 
     // Check if there is room for more values
     if (dataPoints >= _samplesPerPeriod * VELOCITY_PERIODS) {
-      for (int i = 1; i < VELOCITY_PERIODS; i++)
-        _data->period[i - 1] = _data->period[i];
-
+      memmove(&_data->period[0], &_data->period[1], 
+              sizeof(GravityVelocityPeriodData) * (VELOCITY_PERIODS - 1));
       _data->period[VELOCITY_PERIODS - 1] = {0};
     }
 
@@ -165,13 +165,15 @@ class GravityVelocity {
   }
 
   void dump() const {
-    for (int i = 0; i < VELOCITY_PERIODS; i++)
-      printf(
-          "Section %d (%dh): Min: %.4f Max: %.4f, Ave: %0.4F Total: %.4f # %d "
-          "(%d)\n",
+#if LOG_LEVEL == 6
+    for (int i = 0; i < VELOCITY_PERIODS; i++) {
+      float average = (_data->period[i].count > 0) ? 
+                     (_data->period[i].total / _data->period[i].count) : 0.0f;
+      Log.verbose(F("VEL : Section %d (%dh): Min: %.4f Max: %.4f, Ave: %.4f Total: %.4f # %d (%d)" CR),
           i, VELOCITY_PERIOD_TIME, _data->period[i].min, _data->period[i].max,
-          _data->period[i].total / _data->period[i].count,
-          _data->period[i].total, _data->period[i].count, _samplesPerPeriod);
+          average, _data->period[i].total, _data->period[i].count, _samplesPerPeriod);
+    }
+#endif
   }
 };
 

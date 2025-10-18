@@ -24,6 +24,8 @@ SOFTWARE.
 #ifndef SRC_PUSHTARGET_HPP_
 #define SRC_PUSHTARGET_HPP_
 
+#ifndef ESPFWK_DISABLE_WIFI
+
 #include <basepush.hpp>
 #include <config_brewing.hpp>
 #include <templating.hpp>
@@ -150,6 +152,8 @@ class PushIntervalTracker {
   void load();
   void save();
 };
+
+#endif // ESPFWK_DISABLE_WIFI
 
 #endif  // SRC_PUSHTARGET_HPP_
 

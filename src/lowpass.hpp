@@ -41,9 +41,8 @@ class FilterBase {
   void addValue(float newValue) {
     // Rotate the buffer if needed
     if (_data->bufferCount >= FILTER_BUFFER_SIZE) {
-      for (int i = 1; i < FILTER_BUFFER_SIZE; i++) {
-        _data->buffer[i - 1] = _data->buffer[i];
-      }
+      memmove(&_data->buffer[0], &_data->buffer[1], 
+              sizeof(float) * (FILTER_BUFFER_SIZE - 1));
       _data->bufferCount--;
     }
 
@@ -81,9 +80,11 @@ class MovingAverageFilter : public FilterBase {
 class TrimmedMovingAverageFilter : public FilterBase {
  private:
   float getValueMax() const {
+    int count = getValueCount();
+    if (count == 0) return 0.0;  // Handle empty buffer
+    
     float maxVal = _data->buffer[0];
-
-    for (int i = 0; i < getValueCount(); i++) {
+    for (int i = 1; i < count; i++) {  // Start from 1 since we already have buffer[0]
       if (_data->buffer[i] > maxVal) {
         maxVal = _data->buffer[i];
       }
@@ -93,9 +94,11 @@ class TrimmedMovingAverageFilter : public FilterBase {
   }
 
   float getValueMin() const {
+    int count = getValueCount();
+    if (count == 0) return 0.0;  // Handle empty buffer
+    
     float minVal = _data->buffer[0];
-
-    for (int i = 0; i < getValueCount(); i++) {
+    for (int i = 1; i < count; i++) {  // Start from 1 since we already have buffer[0]
       if (_data->buffer[i] < minVal) {
         minVal = _data->buffer[i];
       }

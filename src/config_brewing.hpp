@@ -58,8 +58,10 @@ class BrewingConfig : public BaseConfig,
  private:
 #if defined(ESP8266)
   float _voltageFactor = 1.59;
-#elif defined(ESP32C3)
+#elif defined(ESP32C3) && defined(LOLIN_C3_MINI)
   float _voltageFactor = 2.55;
+#elif defined(ESP32C3) && defined(TENSTAR_ESP32C3_SUPER_MINI) && defined(WAVESHARE_ESP32C3_ZERO)
+  float _voltageFactor = 1.74;
 #elif defined(ESP32S2)
   float _voltageFactor = 2.45;
 #elif defined(ESP32S3)

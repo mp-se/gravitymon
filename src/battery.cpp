@@ -26,6 +26,10 @@ SOFTWARE.
 #include <cmath>
 #include <log.hpp>
 
+#if ESP_ARDUINO_VERSION_MAJOR >= 3 // For Arduino Core 3.x
+#define SOC_ADC_MAX_BITWIDTH 12 
+#endif
+
 // #define SIMULATE_VOLTAGE 3.9
 
 BatteryVoltage::BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin) {
@@ -50,7 +54,7 @@ void BatteryVoltage::read() {
   float factor = _batteryConfig->getVoltageFactor();  // Default value is 1.63
   int v = 0;
 
-  if (_pin > 0) {
+  if (_pin >= 0) {
     v = analogRead(_pin);
   }
 

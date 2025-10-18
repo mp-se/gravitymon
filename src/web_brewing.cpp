@@ -21,6 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#ifndef ESPFWK_DISABLE_WEBSERVER
+
 #include <Wire.h>
 
 #include <config_brewing.hpp>
@@ -31,8 +33,17 @@ SOFTWARE.
 #include <web_brewing.hpp>
 
 #if !defined(ESP8266)
-#include <esp_int_wdt.h>
 #include <esp_task_wdt.h>
+#endif
+
+#if !defined(ESP8266) && ESP_ARDUINO_VERSION_MAJOR == 2 // For Arduino Core 2.x
+#include <esp_int_wdt.h>
+#include <esp_system.h>
+#endif
+
+#if !defined(ESP8266) && ESP_ARDUINO_VERSION_MAJOR >= 3 // For Arduino Core 3.x
+#include <esp_chip_info.h>
+#include <esp_heap_caps.h>
 #endif
 
 extern bool sleepModeActive;
@@ -346,12 +357,27 @@ void BrewingWebServer::webHandleHardwareScanStatus(
 String BrewingWebServer::readFile(String fname) {
   File file = LittleFS.open(fname, "r");
   if (file) {
-    char buf[file.size() + 1];
-    memset(&buf[0], 0, file.size() + 1);
-    file.readBytes(&buf[0], file.size());
+    size_t fileSize = file.size();
+    
+    char* buf = (char*)malloc(fileSize + 1);
+    if (buf == nullptr) {
+      Log.error(F("WEB : Failed to allocate %d bytes for file %s." CR), fileSize, fname.c_str());
+      file.close();
+      return "";
+    }
+    
+    memset(buf, 0, fileSize + 1);
+    size_t bytesRead = file.readBytes(buf, fileSize);
     file.close();
-    Log.notice(F("WEB : Read template data from %s." CR), fname.c_str());
-    return String(&buf[0]);
+    
+    if (bytesRead != fileSize) {
+      Log.warning(F("WEB : Only read %d of %d bytes from %s." CR), bytesRead, fileSize, fname.c_str());
+    }
+    
+    Log.notice(F("WEB : Read %d bytes from %s." CR), bytesRead, fname.c_str());
+    String result(buf);
+    free(buf);
+    return result;
   }
   return "";
 }
@@ -600,6 +626,7 @@ void BrewingWebServer::loop() {
   if (_hardwareScanTask) {
     JsonDocument doc;
     JsonObject obj = doc.to<JsonObject>();
+
     obj[PARAM_STATUS] = false;
     obj[PARAM_SUCCESS] = true;
     obj[PARAM_MESSAGE] = "";
@@ -608,18 +635,31 @@ void BrewingWebServer::loop() {
     // Scan the i2c bus for devices, initialized in gyro.cpp
     JsonArray i2c = obj[PARAM_I2C].to<JsonArray>();
 
-    for (int i = 1, j = 0; i < 128; i++) {
+    for (int i = 1, j = 0; i < 128 && j < 32; i++) {  // Limit to max 32 devices
+      // Abort if we get a timeout error (5)
       // The i2c_scanner uses the return value of
       // the Write.endTransmisstion to see if
       // a device did acknowledge to the address.
       Wire.beginTransmission(i);
       int err = Wire.endTransmission();
 
+      // Log.notice(F("WEB : Scanning 0x%x, response %d." CR), i, err);
+      char addr_str[8];
+      snprintf(addr_str, sizeof(addr_str), "0x%x", i);
+
       if (err == 0) {
-        Log.notice(F("WEB : Found device at 0x%x." CR), i);
-        i2c[j][PARAM_ADRESS] = "0x" + String(i, 16);
+        Log.notice(F("WEB : Found device at %s." CR), addr_str);
+        i2c[j][PARAM_ADRESS] = addr_str;
         i2c[j][PARAM_BUS] = "Wire";
         j++;
+      } else if(err == 5) {
+        Log.notice(F("WEB : Timeout error at %s." CR), addr_str);
+        i2c[j][PARAM_ADRESS] = addr_str;
+        i2c[j][PARAM_BUS] = "Timeout error, aborting scan";
+        j++;
+        break;
+      } else {
+        // Ignore the other errors, we are just scanning for devices
       }
     }
 
@@ -637,16 +677,21 @@ void BrewingWebServer::loop() {
     JsonArray feature = cpu[PARAM_FEATURES].to<JsonArray>();
 
     if (chip_info.features & CHIP_FEATURE_EMB_FLASH)
-      feature.add("embedded flash");
-    if (chip_info.features & CHIP_FEATURE_WIFI_BGN)
-      feature.add("Embedded Flash");
-    if (chip_info.features & CHIP_FEATURE_EMB_FLASH) feature.add("2.4Ghz WIFI");
+      feature.add("Embedded flash");
+    if (chip_info.features & CHIP_FEATURE_WIFI_BGN) feature.add("2.4Ghz WIFI");
     if (chip_info.features & CHIP_FEATURE_BLE) feature.add("Bluetooth LE");
     if (chip_info.features & CHIP_FEATURE_BT) feature.add("Bluetooth Classic");
     if (chip_info.features & CHIP_FEATURE_IEEE802154)
       feature.add("IEEE 802.15.4/LR-WPAN");
     if (chip_info.features & CHIP_FEATURE_EMB_PSRAM)
       feature.add("Embedded PSRAM");
+#if ESP_ARDUINO_VERSION_MAJOR >= 3
+    if(esp_heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
+#else
+    if(heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
+#endif
+      feature.add("Embedded RTC RAM");
+    }
 
     switch (chip_info.model) {
       case CHIP_ESP32:
@@ -677,5 +722,7 @@ void BrewingWebServer::loop() {
     _hardwareScanTask = false;
   }
 }
+
+#endif // ESPFWK_DISABLE_WEBSERVER
 
 // EOF

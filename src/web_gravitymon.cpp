@@ -81,7 +81,7 @@ void GravitymonWebServer::doWebFeature(JsonObject &obj) {
 #else
   obj[PARAM_FEATURE_CHARGING_SUPPORTED] = false;
 #endif
-  obj[PARAM_HARDWARE] = "ispindel";
+  obj[PARAM_HARDWARE] = CFG_PCB;
 }
 
 void GravitymonWebServer::doWebStatus(JsonObject &obj) {

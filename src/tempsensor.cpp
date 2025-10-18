@@ -44,7 +44,7 @@ void TempSensor::setup(int pin) {
   // Set the temp sensor adjustment values
   _tempSensorAdjC = _tempSensorConfig->getTempSensorAdjC();
 
-#if LOG_LEVEL == 6 && !defined(TSEN_DISABLE_LOGGING)
+#if LOG_LEVEL == 6
   Log.verbose(F("TSEN: Adjustment values for temp sensor %F C." CR),
               _tempSensorAdjC);
 #endif

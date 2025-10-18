@@ -41,7 +41,7 @@ I'm working on adding more ESP options and I will add the pinouts once they have
      - D6
      - A0
      - EN
-     - 
+     - n/a
      - D8 / D7
    * - Lolin ESP32 c3 mini
      - 7
@@ -68,21 +68,21 @@ I'm working on adding more ESP options and I will add the pinouts once they have
      - A11
      - A9 / A10
    * - Waveshare ESP32c3 Zero
-     - 
-     - 
-     - 
-     - 
-     - 
-     - 
-     - 
+     - IO6
+     - IO7
+     - IO5
+     - A0
+     - n/a
+     - A4
+     - A1 / A3
    * - Tenstar ESP32c3 super mini
-     - 
-     - 
-     - 
-     - 
-     - 
-     - 
-     - 
+     - IO7
+     - IO6
+     - IO5
+     - A3
+     - n/a
+     - A4
+     - IO10 / A1
 
 Custom boards
 +++++++++++++

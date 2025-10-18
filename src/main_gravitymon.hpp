@@ -38,6 +38,7 @@ SOFTWARE.
 #define PIN_DS D6
 #define PIN_VOLT PIN_A0
 #define CFG_FILENAMEBIN "firmware.bin"
+#define CFG_PCB "iSpindel"
 
 // #elif defined(WEMOS_D1_MINI32) // Support removed for this board
 // // Hardware config for ESP32-d1-mini, iSpindel hardware
@@ -67,6 +68,7 @@ SOFTWARE.
 #define PIN_CFG2 A4
 #define PIN_CHARGING A1  // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32c3.bin"
+#define CFG_PCB "iSpindel"
 
 #elif defined(LOLIN_C3_PICO)
 // Hardware config for ESP32-c3-pico, iSpindel hardware
@@ -79,6 +81,7 @@ SOFTWARE.
 #define PIN_CFG2 A4
 #define PIN_CHARGING 10  // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32c3pico.bin"
+#define CFG_PCB "iSpindel"
 
 #elif defined(WAVESHARE_ESP32C3_ZERO)
 // Hardware config for ESP32-c3-zero, iSpindel hardware
@@ -93,6 +96,7 @@ SOFTWARE.
 #define PIN_CFG2 A3
 #define PIN_CHARGING A4  // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32c3zero.bin"
+#define CFG_PCB "Gravitymon"
 
 #elif defined(LOLIN_S2_MINI)
 // Hardware config for ESP32-s2-mini, iSpindel hardware
@@ -105,6 +109,7 @@ SOFTWARE.
 #define PIN_VOLT A2
 #define PIN_CHARGING A6  // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32s2.bin"
+#define CFG_PCB "iSpindel"
 
 #elif defined(LOLIN_S3_MINI)
 // Hardware config for ESP32-s3-mini, iSpindel hardware
@@ -117,6 +122,7 @@ SOFTWARE.
 #define PIN_VOLT A1
 #define PIN_CHARGING A11  // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32s3.bin"
+#define CFG_PCB "iSpindel"
 
 #elif defined(OLIMEX_ESP32C3_DEVKIT_LIPO)
 // Hardware config for ESP32C3 from Olimex with build in Charger
@@ -129,6 +135,7 @@ SOFTWARE.
 #define PIN_CFG1 IO4
 #define PIN_CFG2 IO20
 #define CFG_FILENAMEBIN "custom-olimex_esp32c3_devkit_lipo.bin"
+#define CFG_PCB ""
 
 #elif defined(TENSTAR_ESP32C3_SUPER_MINI)
 // Hardware config for SUPER_MINI_ESP32C3, iSpindel hardware
@@ -143,6 +150,7 @@ SOFTWARE.
 #define PIN_CFG1 IO10
 #define PIN_CFG2 A1
 #define CFG_FILENAMEBIN "firmware32c3supermini.bin"
+#define CFG_PCB ""
 
 #else
 #warning "Unknown board type"
