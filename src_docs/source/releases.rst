@@ -18,6 +18,8 @@ New features
 * Added timeouts to the i2c bus and improved error handling when timeout occurs during hardware scan.
 * Added support for Tenstar ESP32c3 super mini (16-pin board)
 * Added support for Waveshare ESP32c3 zero (18-pin board)
+* Refactored UI code to reduce the size and simplify maintenance (30% size reduction)
+* Added charging pin feature so that device can go to deep sleep when charging.
 
 Dropped features
 ++++++++++++++++
@@ -26,7 +28,8 @@ Dropped features
 
 Bugs fixed
 ++++++++++
-* Fixed startup issue after deep sleep on some boards when RTCMEM was enabled.
+* Fixed startup issue after deep sleep on some boards when RTC_MEM was enabled.
+* Fixed issue that temperature sensor was not recognized when gyro had no valid values.
 
 v2.2.1
 ======
