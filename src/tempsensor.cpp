@@ -48,9 +48,16 @@ void TempSensor::setup(int pin) {
   Log.verbose(F("TSEN: Adjustment values for temp sensor %F C." CR),
               _tempSensorAdjC);
 #endif
+
+  _initialized = true;
 }
 
 void TempSensor::readSensor(bool useGyro) {
+  if (!_initialized) {
+    _temperatureC = INVALID_TEMPERATURE;
+    return;
+  }
+
   if (useGyro) {
     // When using the gyro temperature only the first read value will be
     // accurate so we will use this for processing.

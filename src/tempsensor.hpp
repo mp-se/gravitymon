@@ -53,6 +53,7 @@ class TempSensor {
   bool _hasSensor = false;
   float _tempSensorAdjC = 0;
   float _temperatureC = 0;
+  bool _initialized = false;
 
  public:
   explicit TempSensor(TempSensorConfigInterface *tempSensorConfig,
