@@ -100,6 +100,8 @@ void setup() {
   PERF_BEGIN("main-setup");
   runtimeMillis = millis();
 
+  ledOn(LedColor::WHITE);
+
   // Main startup
   Log.notice(F("Main: Started setup for %s." CR), myConfig.getID());
   printBuildOptions();
