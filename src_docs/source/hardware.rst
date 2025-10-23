@@ -3,13 +3,26 @@
 Hardware
 ########
 
-I'm not a hardware designer so I would recommend the following resources for more in depth information on this topic.
+Here are some option that can be used to build a gravitymon device
 
 * `Cherry Philip Hardware design <https://github.com/cherryphilip74/iSpindel-PCB>`_
 * `OpenSource Distilling <https://www.opensourcedistilling.com/ispindel>`_
 * `iSpindel Gravitymon Pill PCB <https://github.com/andreq/iSpindel-Gravitymon-Pill-PCB>`_
 * `iSpindel <https://github.com/hobipivo/iSpindel>`_
 
+I have now also created my own PCB design for Gravitymon which enable all the features not available in 
+most other projects. I'm working on more options but this is a slow process since delivery of prototypes 
+take time. 
+
+.. image:: images/gravitymon_pcb_zero_pet.png
+  :width: 400
+  :alt: Gravitymon PCB for PET
+
+My PCB's are designed in Kicad and stored in my repository `mp-se/pcb_designs <https://github.com/mp-se/pcb-designs/>`_
+
+You can also order the `PCB from PCBWAY here <https://www.pcbway.com/project/shareproject/Gravitymon_PCB_for_ESP32c3_Zero_PET_3a69bb89.html>`_
+
+Currently i'm also working on a PCB for the PILL casing with the Waveshare ESP32c3 Zero board.
 
 Supported ESP boards
 ====================
@@ -91,6 +104,43 @@ Besides the standard boards listed here (which are tested and verified by me) th
 to add custom boards which are included in the builds and made available through this gihub repository. 
 A list of these boards can be found here :ref:`custom-boards`. I cannot take full responsibility for these 
 builds since I dont have access to these boards for testing.
+
+Gravitymon based on Waveshare ESP32c3 Zero using PET casing
+===========================================================
+
+This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:
+
+* XL BIG PET Micro Geocaching container
+* Gravitymon PCB (Order from PCBWAY)
+* Waveshare ESP32c3 Zero board (18-pin board)
+* MPU-6050 (GY-521) or ICM-42670-P gyro board
+* 18650 battery holder for surface mount (smt)
+* 18650 battery
+* Wireless Charging reciver and transmitter (XKT510-24)
+* Resistor: 4 x 220k 0.25W
+* Resistor: 1 x 4.7k 0.25W
+* Charging module TP4056
+* Switch (SK12D07VG3)
+* Dallas DS18B20 temperature sensor
+
+This is the schematic that is used for this design enabling all the features in Gravitymon.
+
+.. image:: images/gravitymon_schema.png
+  :width: 600
+  :alt: Gravitymon Schema
+
+This is the back / front of the PCB design.
+
+.. image:: images/gravitymon_pcb_zero_pet.png
+  :width: 600
+  :alt: Gravitymon PCB for PET
+  
+.. image:: images/gravitymon_pcb_zero_pet_2.png
+  :width: 600
+  :alt: Gravitymon PCB for PET
+
+Assembly is quite simple the only consideration is to solder the TP-4056 module last since once that is soldered 
+you cant access all the waveshare pins. If you have questions raise a ticket on github or on homebrewtalk.com
 
 
 iSpindle based on esp8266

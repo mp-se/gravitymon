@@ -3,13 +3,16 @@
 Custom boards
 #############
 
-Its possible to add custom boards to the build process. These are the current ones supported and who has contributed:
+Its possible to add custom boards to the build process. These can be built from the source code, I dont take any 
+responsibiity for testing and ensuring those work as intended only that they will build without errors. I dont 
+have the boards to do testing. You are Welcome to submit issues for these targets and I will assign those to the 
+contributor. 
 
 .. list-table:: Custom boards
    :widths: 40 30 30
    :header-rows: 1
 
-   * - boardid
+   * - board-id
      - added in
      - contributor
    * - Olimex ESP32-C3-DevKit-Lipo

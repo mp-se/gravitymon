@@ -95,13 +95,9 @@ Device - Settings
     https://192.168.1.1/firmware/gravmon/
 
 
-* **Dark Mode:**
+* **User Interface:**
 
   Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.
-
-* **Enable flash logging:**
-
-  If disabled there will be no runtime logging on every run, this will prolong the lifespan of the device. 
 
 * **Factory default**
 
@@ -136,6 +132,12 @@ Device - Hardware
   magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm 
   long encapsulated in a small glass tube. See hardware section for more information, :ref:`hardware`.
 
+* **Charging PIN** :bdg-primary:`ESP32` 
+
+  When enabled and power is applied to the charging pin the device will go into deep sleep, this requires the Gravitymon PCB with this
+  feature enabled. This is useful when charging the device via a wireless charger so the device is in deep sleep and when removed from 
+  the charger it wakes up. This is an improved variant of the Storage sleep feature.
+
 * **Battery saving:**
 
   If this option is checked the sleep interval will be changed to 1 hour when battery drops below 20%. Default = on. 
@@ -161,25 +163,29 @@ Device - Hardware
   device is activated, since the gyro should be cool this is reflecting the surrounding temperature. After it has 
   been running the value would be totally off.  
 
-* **Calibration values:** 
 
-  These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.
+Device - Gyro
++++++++++++++
 
-  .. warning::
-
-    The device will **not** go into `gravity monitoring` mode unless calibrated
-
-
-.. image:: images/ui-device-hardware-icm.png
+.. image:: images/ui-device-gyro-6050.png
   :width: 800
-  :alt: Device Hardware (ICM)
+  :alt: Device Gyro MPU-6050
 
-When using a the ICM gyro the hardware page looks a little different since there is no calibration option and gyro settings. 
+* **Gyro options:** 
+
+  Select the gyro that is used in the device
+
+* **Low pass filter:** :bdg-primary:`ESP32` 
+
+  When enabled the gravity data will be sent through a low pass filter to reduce noise and peaks in the signal.
 
 * **Swap X and Y axis:** 
 
   When enabled this option will use the Y axis for the tilt calculation instead of the X axis. The ICM development boards uses this orientation.
 
+* **Calibration values:** 
+
+  These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.
 
 Device - WIFI
 +++++++++++++
@@ -214,6 +220,9 @@ If you have hidden SSID for your network then use the webflasher to configure th
 
   This is the amount of time allowed for a wifi connect. 
    
+* **Scan for strongest AP:**
+
+  When enabled the device will always scan for the strongest access point transmitting the configured SSID. This will drain power faster so use with caution.
 
 Gravity
 =======
@@ -230,7 +239,7 @@ Gravity - Settings
   Will apply a temperature calibration formula to the gravity as a second step after gravity has been calculated. It's also possible to 
   build this into the gravity formula.
 
-  .. warning::
+  .. tip::
 
     This formula assumes that the calibration has been done at 20°C / 68°F.
 
@@ -559,6 +568,8 @@ Push - Bluetooth
   - **TILT PRO iBeacon**: Higher accuracy tilt data transmission. Data: Gravity and Temperature   
   - **GM iBeacon**: Higher accuracy. Data: Gravity, Temperature, ID, Angle
   - **GM EDDYSTONE**: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle 
+  - **RAPT v1**: Beacon format used by the RAPT PILL. 
+  - **RAPT v2**: Beacon format used by the RAPT PILL. 
 
 Other
 =====
