@@ -285,19 +285,7 @@ with Ubuntu or on MacOS.</p>
 </section>
 <section id="targets">
 <h2>Targets<a class="headerlink" href="#targets" title="Permalink to this heading">¶</a></h2>
-<p>In the platformio config there are 3 targets defined</p>
-<ul class="simple">
-<li><p>gravity-debug; Maximum logging for trouble shooting, deep sleep is disabled.</p></li>
-<li><p>gravity-release; Standard release</p></li>
-<li><p>gravity32c3-release: Version for ESP32 C3 mini.</p></li>
-<li><p>gravity32s2-release: Version for ESP32 S2 mini.</p></li>
-<li><p>gravity32s3-release: Version for ESP32 S3 mini.</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the
-serial port can cause corruption and crashes. So only enable enough debugging to troubleshoot your changes.</p>
-</div>
+<p>In the platformio config there are a number of targets defined, each for a specific board.</p>
 </section>
 <section id="serial-debugging-on-battery">
 <h2>Serial debugging on battery<a class="headerlink" href="#serial-debugging-on-battery" title="Permalink to this heading">¶</a></h2>
@@ -353,59 +341,6 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
 </tr>
 <tr class="row-odd"><td><p>/test</p></td>
 <td><p>Test data for developing html files</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="options">
-<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
-<p>This is a list of C++ defines that is used to enable/disable functions in the code.</p>
-<div class="table-wrapper colwidths-given docutils container" id="id3">
-<table class="docutils align-default" id="id3">
-<caption><span class="caption-text">Defines</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
-<colgroup>
-<col style="width: 40.0%" />
-<col style="width: 60.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>define</p></th>
-<th class="head"><p>description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>USER_SSID</p></td>
-<td><p>If defined the device will always use this SSID</p></td>
-</tr>
-<tr class="row-odd"><td><p>USER_SSID_PWD</p></td>
-<td><p>Password to the SSID</p></td>
-</tr>
-<tr class="row-even"><td><p>LOG_LEVEL</p></td>
-<td><p>Defines the logging level used 4=INFO, 5=DEBUG, 6=VERBOSE</p></td>
-</tr>
-<tr class="row-odd"><td><p>CFG_APPVER</p></td>
-<td><p>Defines the version of the compiled software</p></td>
-</tr>
-<tr class="row-even"><td><p>CFG_GITREV</p></td>
-<td><p>Contains the last 6 digits of the git revision</p></td>
-</tr>
-<tr class="row-odd"><td><p>USE_SERIAL_PINS</p></td>
-<td><p>Will send the serial console to the TX/RX pins on an ESP32 target so that debugging can be done when on battery</p></td>
-</tr>
-<tr class="row-even"><td><p>ENABLE_REMOTE_UI_DEVELOPMENT</p></td>
-<td><p>When enabled this will enable the UI project to interact with a device without any security issues, should not be enabled for production builds. Can also be changed via the user interface or rest api.</p></td>
-</tr>
-<tr class="row-odd"><td><p>SKIP_SLEEPMODE</p></td>
-<td><p>The device never goes into sleep mode, useful when developing</p></td>
-</tr>
-<tr class="row-even"><td><p>COLLECT_PERFDATA</p></td>
-<td><p>Used to send performance data to an influx database for analysis (development)</p></td>
-</tr>
-<tr class="row-odd"><td><p>BOARD_ID</p></td>
-<td><p>A define will automatically be created with the board id (based on what is set in platformio.ini) so that pins can be configured correctly in main.hpp for that board. Example: for the d1_mini board a define called D1_MINI will be set.</p></td>
-</tr>
-<tr class="row-even"><td><p>ESP8266, ESP32, ESP32S2, ESP32S3, ESP32C3</p></td>
-<td><p>These are set to configure the target platform both in gravitymon but also the underlying espframework.</p></td>
 </tr>
 </tbody>
 </table>
@@ -474,7 +409,6 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
 <li><a class="reference internal" href="#targets">Targets</a></li>
 <li><a class="reference internal" href="#serial-debugging-on-battery">Serial debugging on battery</a></li>
 <li><a class="reference internal" href="#source-structure">Source structure</a></li>
-<li><a class="reference internal" href="#options">Options</a></li>
 </ul>
 </li>
 </ul>

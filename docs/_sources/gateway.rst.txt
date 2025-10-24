@@ -37,7 +37,8 @@ There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that doe
 * `Thorraks Tiltbridge case for D32 PRO <https://www.printables.com/model/141680-tiltbridge-case-d32-pro-w-tft>`_ 
 * `Modified Tiltbridge case for D32 s3 PRO <https://www.printables.com/model/939801-case-for-esp32-s3-pro-w-tft>`_ 
 
-Most of the UI is copied from Gravitymon with a few alterations so the documentation here will only point out the differences.
+Most of the UI is copied from Gravitymon with a few alterations so the documentation here will only point out the differences. In the recent releases 
+some of the codebase is shared across both projects.
 
 .. note::
 

@@ -258,42 +258,23 @@
         <article role="main" id="furo-main-content">
           <section id="software-installation">
 <span id="installation"></span><h1>Software Installation<a class="headerlink" href="#software-installation" title="Permalink to this heading">¶</a></h1>
-<section id="checklist-for-configuring-the-device">
-<h2>Checklist for configuring the device<a class="headerlink" href="#checklist-for-configuring-the-device" title="Permalink to this heading">¶</a></h2>
-<p>Install the firmware using one of the following options:</p>
-<ul class="simple">
-<li><p>Gravitymon Web Flasher (Recommended for new devices)</p></li>
-<li><p>Brewflasher via USB serial</p></li>
-<li><p>Brewflasher WEB via USB serial</p></li>
-<li><p>Esptool via USB serial</p></li>
-<li><p>iSpindel web interface (only ESP8266)</p></li>
-<li><p>Build from source and flash via VSCode + Platformio</p></li>
-</ul>
-</section>
 <section id="gravitymon-web-flasher">
 <h2>Gravitymon Web Flasher<a class="headerlink" href="#gravitymon-web-flasher" title="Permalink to this heading">¶</a></h2>
 <p>This web flasher is for all my projects and this one also support configuring wifi over the serial connection.
 You will find it here: <a class="reference external" href="https://www.gravitymon.com/flasher/index.html/">Gravitymon WebFlasher</a></p>
-</section>
-<section id="brewflasher">
-<h2>Brewflasher<a class="headerlink" href="#brewflasher" title="Permalink to this heading">¶</a></h2>
-<p>Option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works
-on both Windows and Mac. You can download the latest version from here: <a class="reference external" href="https://www.brewflasher.com/">Brewflasher</a> there is also a web based version
-available here <a class="reference external" href="https://web.brewflasher.com/">Brewflasher WEB</a>.</p>
-<p>In order to flash an C3 board you will need Brewflasher 1.5 or newer.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The S2 and C3 chips might need to be put in flash mode before flashing can be done. Hold the button on the opposite side from the RST button,
-press the RST button and release it before the first button you pressed. This should force the chip into download mode. If you connect a serial
-terminal it should say “waiting for download”.</p>
+<a class="reference internal image-reference" href="_images/webflasher.png"><img alt="webflasher" src="_images/webflasher.png" style="width: 600px;" /></a>
+<p>Just select the software to flash and what manufacturer the board has, then the flasher will use the correct binaries.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using the web flasher will erase the full device before flashing so make sure settings are backed up. For upgrades use
+the firmware feature in the software.</p>
 </div>
-<a class="reference internal image-reference" href="_images/brewflasher.png"><img alt="Serial output" src="_images/brewflasher.png" style="width: 600px;" /></a>
 <section id="binaries">
 <h3>Binaries<a class="headerlink" href="#binaries" title="Permalink to this heading">¶</a></h3>
 <p>In the /bin directory you will find 4 different firmware builds;</p>
 <ul>
 <li><p><strong>firmware.bin</strong></p>
-<p>This is the standard release build (preferred version)</p>
+<p>This is the standard release build for the ESP8266.</p>
 </li>
 <li><p><strong>firmware32c3.bin</strong></p>
 <p>This is the release build for an ESP32c3-mini variant v2.1 or newer. When flashing an ESP32 you also need the <em>partition32c3.bin</em> file that outlines the flash memory structure. Due to
@@ -305,6 +286,14 @@ the size of the firmware we are using a custom partition setup.</p>
 </li>
 <li><p><strong>firmware32s3.bin</strong></p>
 <p>This is the release build for an ESP32s3-mini variant. When flashing an ESP32 you also need the <em>partition32s3.bin</em> file that outlines the flash memory structure. Due to
+the size of the firmware we are using a custom partition setup.</p>
+</li>
+<li><p><strong>firmware32s3zero.bin</strong></p>
+<p>This is the release build for an Waveshare ESP32c3 zero variant. When flashing an ESP32 you also need the <em>partition32c3zero.bin</em> file that outlines the flash memory structure. Due to
+the size of the firmware we are using a custom partition setup.</p>
+</li>
+<li><p><strong>firmware32s3supermini.bin</strong></p>
+<p>This is the release build for an Tenstar ESP32c3 super mini variant. When flashing an ESP32 you also need the <em>partition32c3supermini.bin</em> file that outlines the flash memory structure. Due to
 the size of the firmware we are using a custom partition setup.</p>
 </li>
 </ul>
@@ -344,11 +333,10 @@ will check for a new version and if it finds a newer version it will do an updat
 <h3>Manual update<a class="headerlink" href="#manual-update" title="Permalink to this heading">¶</a></h3>
 <p>When the device in is configuration mode you can manually update with a new firmware. Just open this URL in the web
 browser and select the firmware.bin file that corresponds to the version you want to flash.</p>
-<p><code class="docutils literal notranslate"><span class="pre">http://&lt;device_name&gt;/firmware.htm</span></code></p>
 </section>
 </section>
 <section id="serial-monitoring">
-<span id="id2"></span><h2>Serial Monitoring<a class="headerlink" href="#serial-monitoring" title="Permalink to this heading">¶</a></h2>
+<span id="id1"></span><h2>Serial Monitoring<a class="headerlink" href="#serial-monitoring" title="Permalink to this heading">¶</a></h2>
 <p>To check output from the device (logs) there are several tools out there. I found this simple tool in the Windows Store called <code class="docutils literal notranslate"><span class="pre">Serial</span> <span class="pre">Port</span> <span class="pre">Monitoring</span></code>.
 Just select a baud rate of 115200, 8N1.</p>
 </section>
@@ -443,9 +431,7 @@ with finding the network name you can try the following:</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Software Installation</a><ul>
-<li><a class="reference internal" href="#checklist-for-configuring-the-device">Checklist for configuring the device</a></li>
-<li><a class="reference internal" href="#gravitymon-web-flasher">Gravitymon Web Flasher</a></li>
-<li><a class="reference internal" href="#brewflasher">Brewflasher</a><ul>
+<li><a class="reference internal" href="#gravitymon-web-flasher">Gravitymon Web Flasher</a><ul>
 <li><a class="reference internal" href="#binaries">Binaries</a></li>
 </ul>
 </li>

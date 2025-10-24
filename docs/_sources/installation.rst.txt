@@ -3,41 +3,23 @@
 Software Installation 
 ---------------------
 
-Checklist for configuring the device
-====================================
-
-Install the firmware using one of the following options:
-
-- Gravitymon Web Flasher (Recommended for new devices)
-- Brewflasher via USB serial
-- Brewflasher WEB via USB serial
-- Esptool via USB serial
-- iSpindel web interface (only ESP8266)
-- Build from source and flash via VSCode + Platformio
-
 Gravitymon Web Flasher
 ======================
 
 This web flasher is for all my projects and this one also support configuring wifi over the serial connection. 
 You will find it here: `Gravitymon WebFlasher <https://www.gravitymon.com/flasher/index.html/>`_  
 
-Brewflasher
-===========
-
-Option for flashing GravityMon is using BrewFlasher, its a tools that support many brewing related firmwares for ESP8266 and ESP32. This works 
-on both Windows and Mac. You can download the latest version from here: `Brewflasher <https://www.brewflasher.com/>`_ there is also a web based version 
-available here `Brewflasher WEB <https://web.brewflasher.com/>`_.
-
-In order to flash an C3 board you will need Brewflasher 1.5 or newer. 
-
-.. note::
-  The S2 and C3 chips might need to be put in flash mode before flashing can be done. Hold the button on the opposite side from the RST button,
-  press the RST button and release it before the first button you pressed. This should force the chip into download mode. If you connect a serial 
-  terminal it should say "waiting for download".
-
-.. image:: images/brewflasher.png
+.. image:: images/webflasher.png
   :width: 600
-  :alt: Serial output
+  :alt: webflasher
+
+Just select the software to flash and what manufacturer the board has, then the flasher will use the correct binaries. 
+
+.. warning::
+
+  Using the web flasher will erase the full device before flashing so make sure settings are backed up. For upgrades use
+  the firmware feature in the software.
+
 
 Binaries
 ********
@@ -46,7 +28,7 @@ In the /bin directory you will find 4 different firmware builds;
 
 * **firmware.bin**
 
-  This is the standard release build (preferred version) 
+  This is the standard release build for the ESP8266. 
 
 * **firmware32c3.bin**
 
@@ -61,6 +43,16 @@ In the /bin directory you will find 4 different firmware builds;
 * **firmware32s3.bin**
 
   This is the release build for an ESP32s3-mini variant. When flashing an ESP32 you also need the *partition32s3.bin* file that outlines the flash memory structure. Due to 
+  the size of the firmware we are using a custom partition setup.
+
+* **firmware32s3zero.bin**
+
+  This is the release build for an Waveshare ESP32c3 zero variant. When flashing an ESP32 you also need the *partition32c3zero.bin* file that outlines the flash memory structure. Due to 
+  the size of the firmware we are using a custom partition setup.
+
+* **firmware32s3supermini.bin**
+
+  This is the release build for an Tenstar ESP32c3 super mini variant. When flashing an ESP32 you also need the *partition32c3supermini.bin* file that outlines the flash memory structure. Due to
   the size of the firmware we are using a custom partition setup.
 
 Esptool (esp8266)
@@ -113,9 +105,6 @@ Manual update
 
 When the device in is configuration mode you can manually update with a new firmware. Just open this URL in the web 
 browser and select the firmware.bin file that corresponds to the version you want to flash. 
-
-``http://<device_name>/firmware.htm``
-
 
 .. _serial_monitoring:
 

@@ -257,32 +257,32 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="welcome-to-gravitymon">
-<h1>Welcome to GravityMon<a class="headerlink" href="#welcome-to-gravitymon" title="Permalink to this heading">¶</a></h1>
+<h1>Welcome to Gravitymon<a class="headerlink" href="#welcome-to-gravitymon" title="Permalink to this heading">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This documentation reflects <strong>v2.3.0 - beta</strong>. Last updated 2025-08-24</p>
 <p>Link to <a class="reference external" href="https://mp-se.github.io/gravitymon/v1.4/">previous documentation here</a></p>
 </div>
 <section id="what-is-gravitymon">
-<h2>What is GravityMon?<a class="headerlink" href="#what-is-gravitymon" title="Permalink to this heading">¶</a></h2>
-<p>GravityMon is a electronic hydrometer software that can be used to measure gravity and temperature during
+<h2>What is Gravitymon?<a class="headerlink" href="#what-is-gravitymon" title="Permalink to this heading">¶</a></h2>
+<p>Gravitymon is a electronic hydrometer software that can be used to measure gravity and temperature during
 fermentation of beer and report the progress to a number of external services. Is uses a gyro to measure the
 gravity since there is a correlation between gravity an the density of the fluid. Based on the density the
 hydrometer will float at a different angle. The graph below is an example on how the fermentation process
 can be tracked. The graph has been rendered using Fermentrack.</p>
 <a class="reference internal image-reference" href="_images/fermentation.png"><img alt="Example fermentation" src="_images/fermentation.png" style="width: 500px;" /></a>
-<p>GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
+<p>Gravitymon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
 implements a lot of the features that has been requested in the original iSpindle project but never implemented for
 various reasons.</p>
 <p>The firmware also supports a iSpindle built using an ESP32 which is pin compatible with esp8266, currently there are 3 options that are
 supported ESP32-C3 mini, ESP32-S2 mini, ESP32-S3 mini. See <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>. The more modern hardware
 will allow better support for SSL and other memory intensive functions.</p>
-<p>I started GravityMon because I like to create software and wanted to do some microcontroller programming. I had done a few
+<p>I started Gravitymon because I like to create software and wanted to do some microcontroller programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural.</p>
 <p>The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. For more
 information on this topic and function please visit <a class="reference external" href="https://www.ispindel.de">iSpindel Homepage</a> .</p>
 <p>My approach to this software is a little different from that the original iSpindle firmware as can be seen in the list of features.</p>
-<p>The github repository can be found here; <a class="reference external" href="https://github.com/mp-se/gravitymon">GravityMon on Github</a></p>
+<p>The github repository can be found here; <a class="reference external" href="https://github.com/mp-se/gravitymon">Gravitymon on Github</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>I don’t take responsibility for any errors or issues caused by the software or hardware.
@@ -293,7 +293,7 @@ The software is provided as-is. I will however try my best to fix issues that mi
 <section id="other-resouces">
 <h2>Other resouces<a class="headerlink" href="#other-resouces" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/">HomeBrewTalk Forum, discussion forum for GravityMon</a></p></li>
+<li><p><a class="reference external" href="https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/">HomeBrewTalk Forum, discussion forum for Gravitymon</a></p></li>
 <li><p><a class="reference external" href="https://www.diyhomebrewers.com/2023/02/gravity-mon-software-alternativo-para.html">Article on diybrewers (Spanish)</a></p></li>
 <li><p><a class="reference external" href="https://homebrewingdiy.beer/index.php/2022/04/28/s2-e4-beer-history-and-open-source-projects-with-peter-symons/">Podcast S2E4 with Peter Symons</a></p></li>
 </ul>
@@ -388,9 +388,7 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#checklist-for-configuring-the-device">Checklist for configuring the device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#gravitymon-web-flasher">Gravitymon Web Flasher</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#brewflasher">Brewflasher</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#esptool-esp8266">Esptool (esp8266)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#ispindel-esp8266">iSpindel (esp8266)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#updating-firmware">Updating firmware</a></li>
@@ -411,6 +409,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#supported-esp-boards">Supported ESP boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#gravitymon-based-on-waveshare-esp32c3-zero-using-pet-casing">Gravitymon based on Waveshare ESP32c3 Zero using PET casing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#ispindle-based-on-esp8266">iSpindle based on esp8266</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#what-is-different-for-the-esp32">What is different for the ESP32</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#modifications">Modifications</a></li>
@@ -459,7 +458,6 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#targets">Targets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#serial-debugging-on-battery">Serial debugging on battery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compiling.html#source-structure">Source structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="compiling.html#options">Options</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -540,8 +538,8 @@ the following libraries and without these this would have been much more difficu
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Welcome to GravityMon</a><ul>
-<li><a class="reference internal" href="#what-is-gravitymon">What is GravityMon?</a></li>
+<li><a class="reference internal" href="#">Welcome to Gravitymon</a><ul>
+<li><a class="reference internal" href="#what-is-gravitymon">What is Gravitymon?</a></li>
 <li><a class="reference internal" href="#other-resouces">Other resouces</a></li>
 <li><a class="reference internal" href="#software-architecture">Software architecture</a></li>
 <li><a class="reference internal" href="#credits-to">Credits to</a><ul>

@@ -324,11 +324,8 @@ code the update will be done during startup.</p>
 </pre></div>
 </div>
 </li>
-<li><p><strong>Dark Mode:</strong></p>
+<li><p><strong>User Interface:</strong></p>
 <p>Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.</p>
-</li>
-<li><p><strong>Enable flash logging:</strong></p>
-<p>If disabled there will be no runtime logging on every run, this will prolong the lifespan of the device.</p>
 </li>
 <li><p><strong>Factory default</strong></p>
 <p>This function will reset all settings to factory default. Use with caution!</p>
@@ -356,6 +353,11 @@ up you need to do a reset. One option is to attach a magnetic reed switch (defau
 magnet to force a reset without opening the tube. The reed switch is typically an electronic component of 14 mm
 long encapsulated in a small glass tube. See hardware section for more information, <a class="reference internal" href="hardware.html#hardware"><span class="std std-ref">Hardware</span></a>.</p>
 </li>
+<li><p><strong>Charging PIN</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span></p>
+<p>When enabled and power is applied to the charging pin the device will go into deep sleep, this requires the Gravitymon PCB with this
+feature enabled. This is useful when charging the device via a wireless charger so the device is in deep sleep and when removed from
+the charger it wakes up. This is an improved variant of the Storage sleep feature.</p>
+</li>
 <li><p><strong>Battery saving:</strong></p>
 <p>If this option is checked the sleep interval will be changed to 1 hour when battery drops below 20%. Default = on.</p>
 </li>
@@ -378,19 +380,23 @@ longer battery life (this is an experimental feature). The value used is the fir
 device is activated, since the gyro should be cool this is reflecting the surrounding temperature. After it has
 been running the value would be totally off.</p>
 </li>
-<li><p><strong>Calibration values:</strong></p>
-<p>These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The device will <strong>not</strong> go into <cite>gravity monitoring</cite> mode unless calibrated</p>
-</div>
-</li>
 </ul>
-<a class="reference internal image-reference" href="_images/ui-device-hardware-icm.png"><img alt="Device Hardware (ICM)" src="_images/ui-device-hardware-icm.png" style="width: 800px;" /></a>
-<p>When using a the ICM gyro the hardware page looks a little different since there is no calibration option and gyro settings.</p>
+</section>
+<section id="device-gyro">
+<h3>Device - Gyro<a class="headerlink" href="#device-gyro" title="Permalink to this heading">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-device-gyro-6050.png"><img alt="Device Gyro MPU-6050" src="_images/ui-device-gyro-6050.png" style="width: 800px;" /></a>
 <ul>
+<li><p><strong>Gyro options:</strong></p>
+<p>Select the gyro that is used in the device</p>
+</li>
+<li><p><strong>Low pass filter:</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span></p>
+<p>When enabled the gravity data will be sent through a low pass filter to reduce noise and peaks in the signal.</p>
+</li>
 <li><p><strong>Swap X and Y axis:</strong></p>
 <p>When enabled this option will use the Y axis for the tilt calculation instead of the X axis. The ICM development boards uses this orientation.</p>
+</li>
+<li><p><strong>Calibration values:</strong></p>
+<p>These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.</p>
 </li>
 </ul>
 </section>
@@ -417,6 +423,9 @@ been running the value would be totally off.</p>
 <li><p><strong>Connect timeout:</strong></p>
 <p>This is the amount of time allowed for a wifi connect.</p>
 </li>
+<li><p><strong>Scan for strongest AP:</strong></p>
+<p>When enabled the device will always scan for the strongest access point transmitting the configured SSID. This will drain power faster so use with caution.</p>
+</li>
 </ul>
 </section>
 </section>
@@ -429,8 +438,8 @@ been running the value would be totally off.</p>
 <li><p><strong>Temperature adjust gravity:</strong></p>
 <p>Will apply a temperature calibration formula to the gravity as a second step after gravity has been calculated. It’s also possible to
 build this into the gravity formula.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>This formula assumes that the calibration has been done at 20°C / 68°F.</p>
 <p>Formula used in temperature correction. The calibration temperature can be changed under advanced settings.</p>
 </div>
@@ -674,6 +683,8 @@ from the list. For more information on this topic, see <a class="reference inter
 <li><p><strong>TILT PRO iBeacon</strong>: Higher accuracy tilt data transmission. Data: Gravity and Temperature</p></li>
 <li><p><strong>GM iBeacon</strong>: Higher accuracy. Data: Gravity, Temperature, ID, Angle</p></li>
 <li><p><strong>GM EDDYSTONE</strong>: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle</p></li>
+<li><p><strong>RAPT v1</strong>: Beacon format used by the RAPT PILL.</p></li>
+<li><p><strong>RAPT v2</strong>: Beacon format used by the RAPT PILL.</p></li>
 </ul>
 </li>
 </ul>
@@ -796,6 +807,7 @@ changed for this to work.</p>
 <li><a class="reference internal" href="#device">Device</a><ul>
 <li><a class="reference internal" href="#device-settings">Device - Settings</a></li>
 <li><a class="reference internal" href="#device-hardware">Device - Hardware</a></li>
+<li><a class="reference internal" href="#device-gyro">Device - Gyro</a></li>
 <li><a class="reference internal" href="#device-wifi">Device - WIFI</a></li>
 </ul>
 </li>

@@ -32,17 +32,8 @@ I use pre-commit and their cpp style checks to validate the code. Plugin definti
 
 Targets 
 =======
-In the platformio config there are 3 targets defined
+In the platformio config there are a number of targets defined, each for a specific board.
 
-* gravity-debug; Maximum logging for trouble shooting, deep sleep is disabled.
-* gravity-release; Standard release
-* gravity32c3-release: Version for ESP32 C3 mini.
-* gravity32s2-release: Version for ESP32 S2 mini.
-* gravity32s3-release: Version for ESP32 S3 mini.
-
-.. warning::
-  The debug target can be unstable and crash the device under certain circumstanses. Excessive logging to the 
-  serial port can cause corruption and crashes. So only enable enough debugging to troubleshoot your changes.
 
 Serial debugging on battery
 ===========================
@@ -93,38 +84,3 @@ Source structure
      - Source code for documentation
    * - /test
      - Test data for developing html files
-
-
-Options 
-=======
-This is a list of C++ defines that is used to enable/disable functions in the code.
-
-.. list-table:: Defines
-   :widths: 40 60
-   :header-rows: 1
-
-   * - define
-     - description
-   * - USER_SSID
-     - If defined the device will always use this SSID
-   * - USER_SSID_PWD
-     - Password to the SSID
-   * - LOG_LEVEL
-     - Defines the logging level used 4=INFO, 5=DEBUG, 6=VERBOSE
-   * - CFG_APPVER
-     - Defines the version of the compiled software
-   * - CFG_GITREV
-     - Contains the last 6 digits of the git revision
-   * - USE_SERIAL_PINS
-     - Will send the serial console to the TX/RX pins on an ESP32 target so that debugging can be done when on battery
-   * - ENABLE_REMOTE_UI_DEVELOPMENT
-     - When enabled this will enable the UI project to interact with a device without any security issues, should not be enabled for production builds. Can also be changed via the user interface or rest api.
-   * - SKIP_SLEEPMODE
-     - The device never goes into sleep mode, useful when developing
-   * - COLLECT_PERFDATA
-     - Used to send performance data to an influx database for analysis (development)
-   * - BOARD_ID
-     - A define will automatically be created with the board id (based on what is set in platformio.ini) so that pins can be configured correctly in main.hpp for that board. Example: for the d1_mini board a define called D1_MINI will be set. 
-   * - ESP8266, ESP32, ESP32S2, ESP32S3, ESP32C3
-     - These are set to configure the target platform both in gravitymon but also the underlying espframework.  
-     
