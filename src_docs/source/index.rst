@@ -1,9 +1,9 @@
-.. GravityMon documentation master file, created by
+.. Gravitymon documentation master file, created by
    sphinx-quickstart on Wed Jan  5 22:46:42 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to GravityMon
+Welcome to Gravitymon
 #####################
 
 .. note::
@@ -12,10 +12,10 @@ Welcome to GravityMon
   Link to `previous documentation here <https://mp-se.github.io/gravitymon/v1.4/>`_ 
 
   
-What is GravityMon?
+What is Gravitymon?
 --------------------
 
-GravityMon is a electronic hydrometer software that can be used to measure gravity and temperature during 
+Gravitymon is a electronic hydrometer software that can be used to measure gravity and temperature during 
 fermentation of beer and report the progress to a number of external services. Is uses a gyro to measure the 
 gravity since there is a correlation between gravity an the density of the fluid. Based on the density the 
 hydrometer will float at a different angle. The graph below is an example on how the fermentation process 
@@ -25,7 +25,7 @@ can be tracked. The graph has been rendered using Fermentrack.
   :width: 500
   :alt: Example fermentation
 
-GravityMon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
+Gravitymon is a replacement firmware for the iSpindle and uses the same hardware configuration and is 100% compatible. It
 implements a lot of the features that has been requested in the original iSpindle project but never implemented for 
 various reasons. 
 
@@ -33,7 +33,7 @@ The firmware also supports a iSpindle built using an ESP32 which is pin compatib
 supported ESP32-C3 mini, ESP32-S2 mini, ESP32-S3 mini. See :ref:`hardware`. The more modern hardware 
 will allow better support for SSL and other memory intensive functions.
 
-I started GravityMon because I like to create software and wanted to do some microcontroller programming. I had done a few
+I started Gravitymon because I like to create software and wanted to do some microcontroller programming. I had done a few
 projects based on esp8266 and also started to brew beer so this combination was quite natural. 
 
 The hardware design comes from the fantastic iSpindle project so that is not covered in this documentation. For more 
@@ -41,7 +41,7 @@ information on this topic and function please visit `iSpindel Homepage <https://
 
 My approach to this software is a little different from that the original iSpindle firmware as can be seen in the list of features. 
 
-The github repository can be found here; `GravityMon on Github <https://github.com/mp-se/gravitymon>`_
+The github repository can be found here; `Gravitymon on Github <https://github.com/mp-se/gravitymon>`_
 
 .. note::  
   I don't take responsibility for any errors or issues caused by the software or hardware. 
@@ -53,7 +53,7 @@ The github repository can be found here; `GravityMon on Github <https://github.c
 Other resouces
 --------------
 
-* `HomeBrewTalk Forum, discussion forum for GravityMon <https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/>`_
+* `HomeBrewTalk Forum, discussion forum for Gravitymon <https://www.homebrewtalk.com/threads/replacement-firmware-for-ispindel-gravitymon.698058/>`_
 * `Article on diybrewers (Spanish) <https://www.diyhomebrewers.com/2023/02/gravity-mon-software-alternativo-para.html>`_
 * `Podcast S2E4 with Peter Symons <https://homebrewingdiy.beer/index.php/2022/04/28/s2-e4-beer-history-and-open-source-projects-with-peter-symons/>`_
 
