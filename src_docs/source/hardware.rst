@@ -142,6 +142,8 @@ This is the back / front of the PCB design.
 Assembly is quite simple the only consideration is to solder the TP-4056 module last since once that is soldered 
 you cant access all the waveshare pins. If you have questions raise a ticket on github or on homebrewtalk.com
 
+I would also recommend to flash the ESP before soldering it so you know it works and connects to your wifi correctly.
+
 
 iSpindle based on esp8266
 =========================
