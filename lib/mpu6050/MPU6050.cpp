@@ -3308,7 +3308,12 @@ void MPU6050_Base::CalibrateAccel(uint8_t Loops ) {
 }
 
 void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
-	uint8_t SaveAddress = (ReadAddress == 0x3B)?((getDeviceID() < 0x38 )? 0x06:0x77):0x13;
+    uint8_t deviceID = getDeviceID();
+	uint8_t SaveAddress = (ReadAddress == 0x3B)?((deviceID < 0x38 )? 0x06:0x77):0x13;
+
+    Serial.print(F("pid who: 0x"));
+    Serial.print(deviceID, HEX);
+    Serial.print("\n");
 
 	int16_t  Data;
 	float Reading;
@@ -3382,7 +3387,6 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 	resetFIFO();
 	resetDMP();
 }
-
 
 void MPU6050_Base::PrintActiveOffsets() {
     uint8_t deviceID = getDeviceID();

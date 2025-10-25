@@ -201,15 +201,15 @@ void MPU6050Gyro::calibrateSensor() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Calibrating sensor" CR));
 #endif
-  EspSerial.printf("Accel full scale range: %d\r\n", _accelgyro.getFullScaleAccelRange());
-  EspSerial.printf("Gyro full scale range: %d\r\n", _accelgyro.getFullScaleGyroRange());
+  EspSerial.printf("Accel full scale range: %d\n", _accelgyro.getFullScaleAccelRange());
+  EspSerial.printf("Gyro full scale range: %d\n", _accelgyro.getFullScaleGyroRange());
 
   int16_t ax, ay, az, gx, gy, gz;
   _accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-  EspSerial.printf("Raw accel: %d, %d, %d | Raw gyro: %d, %d, %d\r\n", ax, ay, az, gx, gy, gz);
+  EspSerial.printf("Raw accel: %d, %d, %d | Raw gyro: %d, %d, %d\n", ax, ay, az, gx, gy, gz);
 
   int16_t temp = _accelgyro.getTemperature();
-  EspSerial.printf("Temperature: %.2f C\r\n", temp / 100.0);
+  EspSerial.printf("Temperature: %.2f C\n", temp / 100.0);
 
   _accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
   _accelgyro.CalibrateAccel(6);  // 6 = 600 readings
