@@ -30,6 +30,7 @@ SOFTWARE.
 // #define I2CDEV_IMPLEMENTATION I2CDEV_BUILTIN_SBWIRE
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 #include <lowpass.hpp>
 #include <memory>
@@ -145,6 +146,7 @@ class GyroSensorInterface {
   virtual GyroResultData readSensor(GyroMode mode);
   virtual void calibrateSensor();
   virtual const char* getGyroFamily();
+  virtual void getGyroTestResult(JsonObject& doc);
   virtual uint8_t getGyroID();
   virtual GyroMode enterSleep(GyroMode mode);
   virtual bool needCalibration();
@@ -190,8 +192,11 @@ class GyroSensor : public SecondayTempSensorInterface {
   void calibrateSensor() {
     if (_impl) _impl->calibrateSensor();
   }
-  virtual const char* getGyroFamily() {
+  const char* getGyroFamily() {
     return _impl ? _impl->getGyroFamily() : "";
+  }
+  void getGyroTestResult(JsonObject& doc) {
+    if (_impl) _impl->getGyroTestResult(doc);
   }
   uint8_t getGyroID() { return _impl ? _impl->getGyroID() : 0; }
   bool isSensorMoving() { return _impl ? _impl->isSensorMoving() : 0; }

@@ -197,20 +197,133 @@ void MPU6050Gyro::applyCalibration() {
   _accelgyro.setZGyroOffset(_calibrationOffset.gz);
 }
 
+void MPU6050Gyro::getGyroTestResult(JsonObject& doc) {
+  EspSerial.printf("Accel full scale range: %d\n", _accelgyro.getFullScaleAccelRange());
+  EspSerial.printf("Gyro full scale range: %d\n", _accelgyro.getFullScaleGyroRange());
+  // int16_t temp = _accelgyro.getTemperature();
+  // EspSerial.printf("Temperature: %.2f C\n", temp / 100.0);
+
+  // doc["full_accel_range"] = _accelgyro.getFullScaleAccelRange();
+  // doc["full_gyro_range"] = _accelgyro.getFullScaleGyroRange();
+  doc["gyro_temp"] = _accelgyro.getTemperature() / 100.0;
+
+  // Read config registers to check self-test enable
+  uint8_t gyroConfig, accelConfig;
+  I2Cdev::readByte(_addr, MPU6050_RA_GYRO_CONFIG, &gyroConfig);
+  I2Cdev::readByte(_addr, MPU6050_RA_ACCEL_CONFIG, &accelConfig);
+  EspSerial.printf("Gyro Config: 0x%02X (XG_ST: %d, YG_ST: %d, ZG_ST: %d)\n", gyroConfig, (gyroConfig >> 7) & 1, (gyroConfig >> 6) & 1, (gyroConfig >> 5) & 1);
+  EspSerial.printf("Accel Config: 0x%02X (XA_ST: %d, YA_ST: %d, ZA_ST: %d)\n", accelConfig, (accelConfig >> 7) & 1, (accelConfig >> 6) & 1, (accelConfig >> 5) & 1);
+
+  // doc["gyro_config"]["xg_st"] = (gyroConfig >> 7) & 1;
+  // doc["gyro_config"]["yg_st"] = (gyroConfig >> 6) & 1;
+  // doc["gyro_config"]["zg_st"] = (gyroConfig >> 5) & 1;
+  // doc["accel_config"]["xa_st"] = (accelConfig >> 7) & 1;
+  // doc["accel_config"]["ya_st"] = (accelConfig >> 6) & 1;
+  // doc["accel_config"]["za_st"] = (accelConfig >> 5) & 1;
+
+  // Read self-test registers
+  uint8_t selfTestX, selfTestY, selfTestZ, selfTestA;
+  I2Cdev::readByte(_addr, MPU6050_RA_SELF_TEST_X, &selfTestX);
+  I2Cdev::readByte(_addr, MPU6050_RA_SELF_TEST_Y, &selfTestY);
+  I2Cdev::readByte(_addr, MPU6050_RA_SELF_TEST_Z, &selfTestZ);
+  I2Cdev::readByte(_addr, MPU6050_RA_SELF_TEST_A, &selfTestA);
+
+  // Extract and print accel and gyro self-test values separately
+  uint8_t xa_high = (selfTestX >> 5) & 0x07;
+  uint8_t xa_low = (selfTestA >> 4) & 0x03;
+  uint8_t xa_test = (xa_high << 2) | xa_low;
+  uint8_t xg_test = selfTestX & 0x1F;
+
+  uint8_t ya_high = (selfTestY >> 5) & 0x07;
+  uint8_t ya_low = (selfTestA >> 2) & 0x03;
+  uint8_t ya_test = (ya_high << 2) | ya_low;
+  uint8_t yg_test = selfTestY & 0x1F;
+
+  uint8_t za_high = (selfTestZ >> 5) & 0x07;
+  uint8_t za_low = selfTestA & 0x03;
+  uint8_t za_test = (za_high << 2) | za_low;
+  uint8_t zg_test = selfTestZ & 0x1F;
+
+  EspSerial.printf("Accel Self-Test: X=%d, Y=%d, Z=%d\n", xa_test, ya_test, za_test);
+  EspSerial.printf("Gyro Self-Test: X=%d, Y=%d, Z=%d\n", xg_test, yg_test, zg_test);
+
+  // doc["self_test"]["accel"]["x"] = xa_test;
+  // doc["self_test"]["accel"]["y"] = ya_test;
+  // doc["self_test"]["accel"]["z"] = za_test;
+  // doc["self_test"]["gyro"]["x"] = xg_test;
+  // doc["self_test"]["gyro"]["y"] = yg_test;
+  // doc["self_test"]["gyro"]["z"] = zg_test;  
+
+  // Perform self-test
+  EspSerial.printf("Performing MPU6050 Self-Test...\n");
+
+  // Enable self-test for all axes
+  I2Cdev::writeByte(_addr, MPU6050_RA_GYRO_CONFIG, 0xE0); // XG_ST=1, YG_ST=1, ZG_ST=1 (bits 7,6,5)
+  I2Cdev::writeByte(_addr, MPU6050_RA_ACCEL_CONFIG, 0xE0); // XA_ST=1, YA_ST=1, ZA_ST=1 (bits 7,6,5)
+  delay(100); // Allow settling
+
+  // Read average with self-test enabled
+  int16_t ax_st = 0, ay_st = 0, az_st = 0, gx_st = 0, gy_st = 0, gz_st = 0;
+  int16_t ax_temp, ay_temp, az_temp, gx_temp, gy_temp, gz_temp;
+  for (int i = 0; i < 10; i++) {
+    _accelgyro.getMotion6(&ax_temp, &ay_temp, &az_temp, &gx_temp, &gy_temp, &gz_temp);
+    ax_st += ax_temp; ay_st += ay_temp; az_st += az_temp;
+    gx_st += gx_temp; gy_st += gy_temp; gz_st += gz_temp;
+    delay(10);
+  }
+  ax_st /= 10; ay_st /= 10; az_st /= 10;
+  gx_st /= 10; gy_st /= 10; gz_st /= 10;
+
+  // Disable self-test
+  I2Cdev::writeByte(_addr, MPU6050_RA_GYRO_CONFIG, 0x00);
+  I2Cdev::writeByte(_addr, MPU6050_RA_ACCEL_CONFIG, 0x00);
+  delay(100);
+
+  // Read average with self-test disabled
+  int16_t ax_norm = 0, ay_norm = 0, az_norm = 0, gx_norm = 0, gy_norm = 0, gz_norm = 0;
+  for (int i = 0; i < 10; i++) {
+    _accelgyro.getMotion6(&ax_temp, &ay_temp, &az_temp, &gx_temp, &gy_temp, &gz_temp);
+    ax_norm += ax_temp; ay_norm += ay_temp; az_norm += az_temp;
+    gx_norm += gx_temp; gy_norm += gy_temp; gz_norm += gz_temp;
+    delay(10);
+  }
+  ax_norm /= 10; ay_norm /= 10; az_norm /= 10;
+  gx_norm /= 10; gy_norm /= 10; gz_norm /= 10;
+
+  // Calculate self-test response (change)
+  int16_t ax_delta = ax_st - ax_norm;
+  int16_t ay_delta = ay_st - ay_norm;
+  int16_t az_delta = az_st - az_norm;
+  int16_t gx_delta = gx_st - gx_norm;
+  int16_t gy_delta = gy_st - gy_norm;
+  int16_t gz_delta = gz_st - gz_norm;
+
+  EspSerial.printf("Self-Test Results:\n");
+  EspSerial.printf("Accel Delta: X=%d, Y=%d, Z=%d\n", ax_delta, ay_delta, az_delta);
+  EspSerial.printf("Gyro Delta: X=%d, Y=%d, Z=%d\n", gx_delta, gy_delta, gz_delta);
+
+  // doc["self_test"]["accel_delta"]["x"] = ax_delta;
+  // doc["self_test"]["accel_delta"]["y"] = ay_delta;
+  // doc["self_test"]["accel_delta"]["z"] = az_delta;
+  // doc["self_test"]["gyro_delta"]["x"] = gx_delta;     
+  // doc["self_test"]["gyro_delta"]["y"] = gy_delta;
+  // doc["self_test"]["gyro_delta"]["z"] = gz_delta;
+
+  // Check if deltas are within reasonable range (rough check, adjust as needed)
+  bool accel_pass = (abs(ax_delta) > 500 && abs(ay_delta) > 500 && abs(az_delta) > 500);
+  bool gyro_pass = (abs(gx_delta) > 500 && abs(gy_delta) > 500 && abs(gz_delta) > 500);
+  EspSerial.printf("Self-Test Pass: Accel=%s, Gyro=%s\n", accel_pass ? "YES" : "NO", gyro_pass ? "YES" : "NO");
+
+  doc["test_accel"] = accel_pass ? true : false;
+  doc["test_gyro"] = gyro_pass ? true : false;
+  }
+
 void MPU6050Gyro::calibrateSensor() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Calibrating sensor" CR));
 #endif
-  EspSerial.printf("Accel full scale range: %d\n", _accelgyro.getFullScaleAccelRange());
-  EspSerial.printf("Gyro full scale range: %d\n", _accelgyro.getFullScaleGyroRange());
 
-  int16_t ax, ay, az, gx, gy, gz;
-  _accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-  EspSerial.printf("Raw accel: %d, %d, %d | Raw gyro: %d, %d, %d\n", ax, ay, az, gx, gy, gz);
-
-  int16_t temp = _accelgyro.getTemperature();
-  EspSerial.printf("Temperature: %.2f C\n", temp / 100.0);
-
+  // Start of calibration sequence
   _accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
   _accelgyro.CalibrateAccel(6);  // 6 = 600 readings
   _accelgyro.CalibrateGyro(6);

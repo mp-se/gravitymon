@@ -273,6 +273,8 @@ void GravitymonWebServer::doTaskHardwareScanning(JsonObject &obj) {
 
   // Test the gyro
   obj[PARAM_GYRO][PARAM_FAMILY] = myGyro.getGyroFamily();
+  JsonObject gyro = obj[PARAM_GYRO];
+  myGyro.getGyroTestResult(gyro);
 }
 
 void GravitymonWebServer::webHandleGyro(AsyncWebServerRequest *request) {
