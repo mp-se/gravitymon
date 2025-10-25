@@ -3400,20 +3400,20 @@ void MPU6050_Base::PrintActiveOffsets() {
         I2Cdev::readWords(devAddr, AOffsetRegister+6, 1, (uint16_t *)(accelOffsets+2), I2Cdev::readTimeout, wireObj);
     }
 
-    Serial.print(F(", acc0: "));
+    Serial.print(F(", accel: "));
     Serial.print((float)accelOffsets[0], 5); 
-    Serial.print(F(", acc1: "));
+    Serial.print(F(", "));
     Serial.print((float)accelOffsets[1], 5); 
-    Serial.print(F(", acc2: "));
+    Serial.print(F(", "));
     Serial.print((float)accelOffsets[2], 5); 
 
     I2Cdev::readWords(devAddr, 0x13, 3, (uint16_t *)gyroOffsets, I2Cdev::readTimeout, wireObj);
 
-    Serial.print(F(", gyro0: "));
+    Serial.print(F(", gyro: "));
     Serial.print((float)gyroOffsets[0], 5); 
-    Serial.print(F(", gyro1: "));
+    Serial.print(F(", "));
     Serial.print((float)gyroOffsets[1], 5); 
-    Serial.print(F(", gyro2: "));
+    Serial.print(F(", "));
     Serial.print((float)gyroOffsets[2], 5); 
     Serial.print("\n");
 }
