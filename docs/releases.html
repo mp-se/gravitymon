@@ -274,6 +274,7 @@ features due to limitations on the devices supported, mainly the 4mb flash limit
 <li><p>Refactored UI code to reduce the size and simplify maintenance (30% size reduction)</p></li>
 <li><p>Added charging pin feature so that device can go to deep sleep when charging.</p></li>
 <li><p>Updated documentation to match the current features</p></li>
+<li><p>Added more debug output to MPU6050 calibration sequence to help troubleshooting gyro issues.</p></li>
 </ul>
 </section>
 <section id="dropped-features">
@@ -288,6 +289,7 @@ features due to limitations on the devices supported, mainly the 4mb flash limit
 <ul class="simple">
 <li><p>Fixed startup issue after deep sleep on some boards when RTC_MEM was enabled.</p></li>
 <li><p>Fixed issue that temperature sensor was not recognized when gyro had no valid values.</p></li>
+<li><p>Corrected R1 + R2 on Gravitymon PCB to 10k so wakeup after charger removed works correctly.</p></li>
 </ul>
 </section>
 </section>

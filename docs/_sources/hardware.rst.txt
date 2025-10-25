@@ -105,8 +105,11 @@ to add custom boards which are included in the builds and made available through
 A list of these boards can be found here :ref:`custom-boards`. I cannot take full responsibility for these 
 builds since I dont have access to these boards for testing.
 
-Gravitymon based on Waveshare ESP32c3 Zero using PET casing
-===========================================================
+Gravitymon PCB
+==============
+
+Waveshare ESP32c3 Zero using PET casing
++++++++++++++++++++++++++++++++++++++++
 
 This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:
 
@@ -117,8 +120,9 @@ This is my own design of a PCB for Gravitymon using the same PET casing as for t
 * 18650 battery holder for surface mount (smt)
 * 18650 battery
 * Wireless Charging reciver and transmitter (XKT510-24)
-* Resistor: 4 x 220k 0.25W
-* Resistor: 1 x 4.7k 0.25W
+* Resistor: 2 x 10k 0.25W (R1+R2)
+* Resistor: 2 x 220k 0.25W (R4+R5)
+* Resistor: 1 x 4.7k 0.25W (R3)
 * Charging module TP4056
 * Switch (SK12D07VG3)
 * Dallas DS18B20 temperature sensor
@@ -141,6 +145,8 @@ This is the back / front of the PCB design.
 
 Assembly is quite simple the only consideration is to solder the TP-4056 module last since once that is soldered 
 you cant access all the waveshare pins. If you have questions raise a ticket on github or on homebrewtalk.com
+
+I would also recommend to flash the ESP before soldering it so you know it works and connects to your wifi correctly.
 
 
 iSpindle based on esp8266

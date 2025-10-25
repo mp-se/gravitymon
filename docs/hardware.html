@@ -361,8 +361,10 @@ A list of these boards can be found here <a class="reference internal" href="cus
 builds since I dont have access to these boards for testing.</p>
 </section>
 </section>
-<section id="gravitymon-based-on-waveshare-esp32c3-zero-using-pet-casing">
-<h2>Gravitymon based on Waveshare ESP32c3 Zero using PET casing<a class="headerlink" href="#gravitymon-based-on-waveshare-esp32c3-zero-using-pet-casing" title="Permalink to this heading">¶</a></h2>
+<section id="gravitymon-pcb">
+<h2>Gravitymon PCB<a class="headerlink" href="#gravitymon-pcb" title="Permalink to this heading">¶</a></h2>
+<section id="waveshare-esp32c3-zero-using-pet-casing">
+<h3>Waveshare ESP32c3 Zero using PET casing<a class="headerlink" href="#waveshare-esp32c3-zero-using-pet-casing" title="Permalink to this heading">¶</a></h3>
 <p>This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:</p>
 <ul class="simple">
 <li><p>XL BIG PET Micro Geocaching container</p></li>
@@ -372,8 +374,9 @@ builds since I dont have access to these boards for testing.</p>
 <li><p>18650 battery holder for surface mount (smt)</p></li>
 <li><p>18650 battery</p></li>
 <li><p>Wireless Charging reciver and transmitter (XKT510-24)</p></li>
-<li><p>Resistor: 4 x 220k 0.25W</p></li>
-<li><p>Resistor: 1 x 4.7k 0.25W</p></li>
+<li><p>Resistor: 2 x 10k 0.25W (R1+R2)</p></li>
+<li><p>Resistor: 2 x 220k 0.25W (R4+R5)</p></li>
+<li><p>Resistor: 1 x 4.7k 0.25W (R3)</p></li>
 <li><p>Charging module TP4056</p></li>
 <li><p>Switch (SK12D07VG3)</p></li>
 <li><p>Dallas DS18B20 temperature sensor</p></li>
@@ -385,6 +388,8 @@ builds since I dont have access to these boards for testing.</p>
 <a class="reference internal image-reference" href="_images/gravitymon_pcb_zero_pet_2.png"><img alt="Gravitymon PCB for PET" src="_images/gravitymon_pcb_zero_pet_2.png" style="width: 600px;" /></a>
 <p>Assembly is quite simple the only consideration is to solder the TP-4056 module last since once that is soldered
 you cant access all the waveshare pins. If you have questions raise a ticket on github or on homebrewtalk.com</p>
+<p>I would also recommend to flash the ESP before soldering it so you know it works and connects to your wifi correctly.</p>
+</section>
 </section>
 <section id="ispindle-based-on-esp8266">
 <h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this heading">¶</a></h2>
@@ -502,7 +507,10 @@ that allows you to use the Y axis for tilt detection. The boards I used is pin c
 <li><a class="reference internal" href="#custom-boards">Custom boards</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#gravitymon-based-on-waveshare-esp32c3-zero-using-pet-casing">Gravitymon based on Waveshare ESP32c3 Zero using PET casing</a></li>
+<li><a class="reference internal" href="#gravitymon-pcb">Gravitymon PCB</a><ul>
+<li><a class="reference internal" href="#waveshare-esp32c3-zero-using-pet-casing">Waveshare ESP32c3 Zero using PET casing</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#ispindle-based-on-esp8266">iSpindle based on esp8266</a><ul>
 <li><a class="reference internal" href="#schema-for-esp8266-build">Schema for esp8266 build</a></li>
 </ul>
