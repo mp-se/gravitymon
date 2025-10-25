@@ -207,7 +207,6 @@ void MPU6050Gyro::calibrateSensor() {
   _accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
   _accelgyro.CalibrateAccel(6);  // 6 = 600 readings
   _accelgyro.CalibrateGyro(6);
-
   _accelgyro.PrintActiveOffsets();
   EspSerial.print(CR);
 
