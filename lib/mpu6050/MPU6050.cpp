@@ -3371,27 +3371,37 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 	resetDMP();
 }
 
-int16_t * MPU6050_Base::GetActiveOffsets() {
-    uint8_t AOffsetRegister = (getDeviceID() < 0x38 )? MPU6050_RA_XA_OFFS_H:0x77;
-    if(AOffsetRegister == 0x06)	I2Cdev::readWords(devAddr, AOffsetRegister, 3, (uint16_t *)offsets, I2Cdev::readTimeout, wireObj);
-    else {
-        I2Cdev::readWords(devAddr, AOffsetRegister, 1, (uint16_t *)offsets, I2Cdev::readTimeout, wireObj);
-        I2Cdev::readWords(devAddr, AOffsetRegister+3, 1, (uint16_t *)(offsets+1), I2Cdev::readTimeout, wireObj);
-        I2Cdev::readWords(devAddr, AOffsetRegister+6, 1, (uint16_t *)(offsets+2), I2Cdev::readTimeout, wireObj);
-    }
-    I2Cdev::readWords(devAddr, 0x13, 3, (uint16_t *)(offsets+3), I2Cdev::readTimeout, wireObj);
-    return offsets;
-}
 
 void MPU6050_Base::PrintActiveOffsets() {
-    GetActiveOffsets();
-	//	A_OFFSET_H_READ_A_OFFS(Data);
-    Serial.print((float)offsets[0], 5); Serial.print(",\t");
-    Serial.print((float)offsets[1], 5); Serial.print(",\t");
-    Serial.print((float)offsets[2], 5); Serial.print(",\t");
-	
-	//	XG_OFFSET_H_READ_OFFS_USR(Data);
-    Serial.print((float)offsets[3], 5); Serial.print(",\t");
-    Serial.print((float)offsets[4], 5); Serial.print(",\t");
-    Serial.print((float)offsets[5], 5); Serial.print("\n\n");
+    uint8_t deviceID = getDeviceID();
+    uint8_t AOffsetRegister = (deviceID < 0x38 )? MPU6050_RA_XA_OFFS_H:0x77;
+    int16_t accelOffsets[3], gyroOffsets[3];
+
+    Serial.print(F("who: 0x"));
+    Serial.print(deviceID, HEX);
+
+    if(AOffsetRegister == 0x06) {
+        I2Cdev::readWords(devAddr, AOffsetRegister, 3, (uint16_t *)accelOffsets, I2Cdev::readTimeout, wireObj);
+    } else {
+        I2Cdev::readWords(devAddr, AOffsetRegister, 1, (uint16_t *)accelOffsets, I2Cdev::readTimeout, wireObj);
+        I2Cdev::readWords(devAddr, AOffsetRegister+3, 1, (uint16_t *)(accelOffsets+1), I2Cdev::readTimeout, wireObj);
+        I2Cdev::readWords(devAddr, AOffsetRegister+6, 1, (uint16_t *)(accelOffsets+2), I2Cdev::readTimeout, wireObj);
+    }
+
+    Serial.print(F(", acc0: "));
+    Serial.print((float)accelOffsets[0], 5); 
+    Serial.print(F(", acc1: "));
+    Serial.print((float)accelOffsets[1], 5); 
+    Serial.print(F(", acc2: "));
+    Serial.print((float)accelOffsets[2], 5); 
+
+    I2Cdev::readWords(devAddr, 0x13, 3, (uint16_t *)gyroOffsets, I2Cdev::readTimeout, wireObj);
+
+    Serial.print(F(", gyro0: "));
+    Serial.print((float)gyroOffsets[0], 5); 
+    Serial.print(F(", gyro1: "));
+    Serial.print((float)gyroOffsets[1], 5); 
+    Serial.print(F(", gyro2: "));
+    Serial.print((float)gyroOffsets[2], 5); 
+    Serial.print("\n");
 }
