@@ -54,11 +54,12 @@ bool checkPinCharging(int pin) {
 #if defined(ESP8266)
   return false;
 #else
-  pinMode(pin, INPUT_PULLDOWN);
+  pinMode(pin, INPUT);
   delay(5);
   analogReadResolution(SOC_ADC_MAX_BITWIDTH);
   analogSetAttenuation(ADC_11db);
   int v = analogRead(pin);
+  Log.notice(F("Helper: Charging pin %d voltage %d"), pin, v);
   return v > 2500 ? true : false;  // > 2V on pin
 #endif
 }

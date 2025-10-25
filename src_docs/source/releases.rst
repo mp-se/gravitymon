@@ -21,6 +21,7 @@ New features
 * Refactored UI code to reduce the size and simplify maintenance (30% size reduction)
 * Added charging pin feature so that device can go to deep sleep when charging.
 * Updated documentation to match the current features
+* Added more debug output to MPU6050 calibration sequence to help troubleshooting gyro issues.
 
 Dropped features
 ++++++++++++++++
@@ -31,6 +32,7 @@ Bugs fixed
 ++++++++++
 * Fixed startup issue after deep sleep on some boards when RTC_MEM was enabled.
 * Fixed issue that temperature sensor was not recognized when gyro had no valid values.
+* Corrected R1 + R2 on Gravitymon PCB to 10k so wakeup after charger removed works correctly.
 
 v2.2.1
 ======
