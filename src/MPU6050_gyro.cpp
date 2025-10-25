@@ -207,7 +207,7 @@ void MPU6050Gyro::calibrateSensor() {
   _accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
   _accelgyro.CalibrateAccel(6);  // 6 = 600 readings
   _accelgyro.CalibrateGyro(6);
-  
+
   _accelgyro.PrintActiveOffsets();
   EspSerial.print(CR);
 
@@ -285,14 +285,15 @@ void MPU6050Gyro::debug() {
 }
 
 const char *MPU6050Gyro::getGyroFamily() {
-  switch (_accelgyro.getDeviceID()) {
+  const uint8_t who = _accelgyro.getDeviceID();
+  switch (who) {
     case 0x34:
       return "MPU6050";
     case 0x38:
       return "MPU6500";
     default: {
       static char buffer[16];
-      snprintf(buffer, sizeof(buffer), "0x%02X", _accelgyro.getDeviceID());
+      snprintf(buffer, sizeof(buffer), "0x%02X", who);
       return buffer;
     }
   }
