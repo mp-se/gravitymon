@@ -440,7 +440,7 @@ void BrewingWebServer::webHandleConfigFormatRead(
 }
 
 void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
-  PERF_BEGIN("webserver-api-status");
+  PERF_BEGIN("webserver-api-feature");
   Log.notice(F("WEB : webServer callback for /api/feature(get)." CR));
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
@@ -459,7 +459,7 @@ void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
 
   response->setLength();
   request->send(response);
-  PERF_END("webserver-api-status");
+  PERF_END("webserver-api-feature");
 }
 
 void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
