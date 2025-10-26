@@ -205,7 +205,7 @@ void MPU6050Gyro::getGyroTestResult(JsonObject& doc) {
 
   // doc["full_accel_range"] = _accelgyro.getFullScaleAccelRange();
   // doc["full_gyro_range"] = _accelgyro.getFullScaleGyroRange();
-  doc["gyro_temp"] = _accelgyro.getTemperature() / 100.0;
+  doc["gyro_temp"] = (static_cast<float>(_accelgyro.getTemperature())) / 340 + 36.53;
 
   // Read config registers to check self-test enable
   uint8_t gyroConfig, accelConfig;
@@ -302,20 +302,20 @@ void MPU6050Gyro::getGyroTestResult(JsonObject& doc) {
   EspSerial.printf("Accel Delta: X=%d, Y=%d, Z=%d\n", ax_delta, ay_delta, az_delta);
   EspSerial.printf("Gyro Delta: X=%d, Y=%d, Z=%d\n", gx_delta, gy_delta, gz_delta);
 
-  // doc["self_test"]["accel_delta"]["x"] = ax_delta;
-  // doc["self_test"]["accel_delta"]["y"] = ay_delta;
-  // doc["self_test"]["accel_delta"]["z"] = az_delta;
-  // doc["self_test"]["gyro_delta"]["x"] = gx_delta;     
-  // doc["self_test"]["gyro_delta"]["y"] = gy_delta;
-  // doc["self_test"]["gyro_delta"]["z"] = gz_delta;
+  doc["self_test"]["accel"]["x_delta"] = ax_delta;
+  doc["self_test"]["accel"]["y_delta"] = ay_delta;
+  doc["self_test"]["accel"]["z_delta"] = az_delta;
+  doc["self_test"]["gyro"]["x_delta"] = gx_delta;
+  doc["self_test"]["gyro"]["y_delta"] = gy_delta;
+  doc["self_test"]["gyro"]["z_delta"] = gz_delta;
 
   // Check if deltas are within reasonable range (rough check, adjust as needed)
   bool accel_pass = (abs(ax_delta) > 500 && abs(ay_delta) > 500 && abs(az_delta) > 500);
   bool gyro_pass = (abs(gx_delta) > 500 && abs(gy_delta) > 500 && abs(gz_delta) > 500);
   EspSerial.printf("Self-Test Pass: Accel=%s, Gyro=%s\n", accel_pass ? "YES" : "NO", gyro_pass ? "YES" : "NO");
 
-  doc["test_accel"] = accel_pass ? true : false;
-  doc["test_gyro"] = gyro_pass ? true : false;
+  doc["self_test"]["accel"]["result"] = accel_pass ? "passed" : "failed";
+  doc["self_test"]["gyro"]["result"] = gyro_pass ? "passed" : "failed";
   }
 
 void MPU6050Gyro::calibrateSensor() {
