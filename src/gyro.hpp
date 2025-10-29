@@ -192,9 +192,7 @@ class GyroSensor : public SecondayTempSensorInterface {
   void calibrateSensor() {
     if (_impl) _impl->calibrateSensor();
   }
-  const char* getGyroFamily() {
-    return _impl ? _impl->getGyroFamily() : "";
-  }
+  const char* getGyroFamily() { return _impl ? _impl->getGyroFamily() : ""; }
   void getGyroTestResult(JsonObject& doc) {
     if (_impl) _impl->getGyroTestResult(doc);
   }

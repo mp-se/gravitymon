@@ -272,22 +272,25 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
       size_t fileSize = file.size();
       char* buf = (char*)malloc(fileSize + 1);
       if (buf == nullptr) {
-        Log.error(F("PUSH: Failed to allocate %d bytes for template %s." CR), fileSize, fname.c_str());
+        Log.error(F("PUSH: Failed to allocate %d bytes for template %s." CR),
+                  fileSize, fname.c_str());
         file.close();
         return _baseTemplate.c_str();
       }
-      
+
       memset(buf, 0, fileSize + 1);
       size_t bytesRead = file.readBytes(buf, fileSize);
       file.close();
-      
+
       if (bytesRead == fileSize) {
         _baseTemplate = String(buf);
-        Log.notice(F("PUSH: Template loaded from disk %s (%d bytes)." CR), fname.c_str(), bytesRead);
+        Log.notice(F("PUSH: Template loaded from disk %s (%d bytes)." CR),
+                   fname.c_str(), bytesRead);
       } else {
-        Log.warning(F("PUSH: Only read %d of %d bytes from %s." CR), bytesRead, fileSize, fname.c_str());
+        Log.warning(F("PUSH: Only read %d of %d bytes from %s." CR), bytesRead,
+                    fileSize, fname.c_str());
       }
-      
+
       free(buf);
     }
   }
@@ -299,6 +302,6 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
   return _baseTemplate.c_str();
 }
 
-#endif // ESPFWK_DISABLE_WIFI
+#endif  // ESPFWK_DISABLE_WIFI
 
 // EOF

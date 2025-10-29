@@ -153,7 +153,7 @@ class PushIntervalTracker {
   void save();
 };
 
-#endif // ESPFWK_DISABLE_WIFI
+#endif  // ESPFWK_DISABLE_WIFI
 
 #endif  // SRC_PUSHTARGET_HPP_
 

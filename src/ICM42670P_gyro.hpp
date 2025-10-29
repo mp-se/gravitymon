@@ -53,7 +53,7 @@ class ICM42670pGyro : public GyroSensorInterface {
   GyroMode enterSleep(GyroMode mode);
   GyroResultData readSensor(GyroMode mode);
   const char *getGyroFamily();
-  void getGyroTestResult(JsonObject& doc) {}
+  void getGyroTestResult(JsonObject &doc) {}
   uint8_t getGyroID() { return 0x67; }
   bool needCalibration() { return false; }
 };
