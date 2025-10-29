@@ -209,7 +209,10 @@ void setup() {
         PERF_BEGIN("main-wifi-connect");
         if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
           if (!myWifi.connect(true)) {
-            Log.notice(F("Main: Failed to connect to wifi direct." CR));
+            Log.notice(F("Main: Failed to connect to wifi direct, trying to connect with regular wifi." CR));
+            if (!myWifi.connect()) {
+              Log.notice(F("Main: Failed to connect to wifi." CR));
+            }
           }
         } else {
           if (!myWifi.connect()) {
