@@ -132,6 +132,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     else
       sendHttpPost(doc);
     PERF_END("push-http");
+    yield();
   }
 
   if (_brewingConfig->hasTargetHttpPost2() && intDelay.useHttp2() &&
@@ -152,6 +153,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     else
       sendHttpPost2(doc);
     PERF_END("push-http2");
+    yield();
   }
 
   if (_brewingConfig->hasTargetHttpGet() && intDelay.useHttp3() &&
@@ -172,6 +174,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     else
       sendHttpGet(doc);
     PERF_END("push-http3");
+    yield();
   }
 
   if (_brewingConfig->hasTargetInfluxDb2() && intDelay.useInflux() &&
@@ -193,6 +196,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     else
       sendInfluxDb2(doc);
     PERF_END("push-influxdb2");
+    yield();
   }
 
   if (_brewingConfig->hasTargetMqtt() && intDelay.useMqtt() && enableMqtt) {
@@ -212,6 +216,7 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     else
       sendMqtt(doc);
     PERF_END("push-mqtt");
+    yield();
   }
 
   intDelay.save();
