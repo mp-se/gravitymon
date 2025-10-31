@@ -687,11 +687,7 @@ void BrewingWebServer::loop() {
       feature.add("IEEE 802.15.4/LR-WPAN");
     if (chip_info.features & CHIP_FEATURE_EMB_PSRAM)
       feature.add("Embedded PSRAM");
-#if ESP_ARDUINO_VERSION_MAJOR >= 3
-    if (esp_heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
-#else
     if (heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
-#endif
       feature.add("Embedded RTC RAM");
     }
 
