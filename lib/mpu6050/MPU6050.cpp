@@ -3325,6 +3325,8 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 	uint16_t gravity = 8192; // prevent uninitialized compiler warning
 	if (ReadAddress == 0x3B) gravity = 16384 >> getFullScaleAccelRange();
 	Serial.write('>');
+	uint32_t calibrationStartTime = millis(); // Track total calibration start time
+	uint32_t totalTimeoutMs = 30000; // 30 second total timeout for entire calibration
 	for (int i = 0; i < 3; i++) {
 		if (I2Cdev::readWords(devAddr, SaveAddress + (i * shift), 1, (uint16_t *)&Data, I2Cdev::readTimeout, wireObj) != 1) {
 			Serial.print(F("I2C read error at "));
@@ -3342,6 +3344,10 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 	for (int L = 0; L < Loops; L++) {
 		eSample = 0;
 		for (int c = 0; c < 100; c++) {// 100 PI Calculations
+			if((millis() - calibrationStartTime) > totalTimeoutMs) {
+				Serial.println(F("Aborting calibration sequence due to timeout, could be faulty gyro."));
+				return; 
+			}
 			eSum = 0;
 			for (int i = 0; i < 3; i++) {
 				if (I2Cdev::readWords(devAddr, ReadAddress + (i * 2), 1, (uint16_t *)&Data, I2Cdev::readTimeout, wireObj) != 1) {
