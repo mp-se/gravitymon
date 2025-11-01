@@ -362,6 +362,11 @@ Push - Settings
 
   This WIFI SSID will be used during gravity mode to send data to the GravityMon Gateway.
 
+  .. note::
+
+    When WIFI Direct is enabled and the device can't connect to the SSID then it will fallback to the standard SSID configured 
+    and try to send data that way using the defined push settings.
+
 * **WIFI Direct Password:** 
 
   This WIFI Password will be used during gravity mode to send data to the GravityMon Gateway.
