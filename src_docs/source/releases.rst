@@ -26,6 +26,7 @@ New features
 * Added MPU6050 self test feature to hardware test in order to help troubleshoot faulty gyros.
 * Added coloring to file viewer to make it easier to read (json, csv, formdata and mqtt template)
 * Added binary viewer in file viewer
+* Added 30s timeout during MPU6500 calibration if the gyro is not working properly
 
 Dropped features
 ++++++++++++++++
