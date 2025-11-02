@@ -356,7 +356,6 @@ Push - Settings
 
     A low value such as 30s will give a lifespan of 1-2 weeks and 300s (5 min) would last for 3+ weeks. This assumes that 
     there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain. 
-    The device will show the estimated lifespan based on the average connection time, if no data exist it will not be shown.
 
 * **WIFI Direct SSID:** 
 
