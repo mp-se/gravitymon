@@ -146,8 +146,11 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
 }
 
 void GravitymonWebServer::doTaskSensorCalibration() {
+  _gyroCalibrationSuccess = false;
+
   if (myGyro.isConnected()) {
     _gyroCalibrationSuccess = myGyro.calibrateSensor();
+    Log.info(F("WEB : Gyro calibration %s" CR), _gyroCalibrationSuccess ? "succeeded" : "failed");
   } else {
     Log.error(F("WEB : No gyro connected, skipping calibration" CR));
   }
