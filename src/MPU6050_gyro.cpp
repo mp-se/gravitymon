@@ -380,6 +380,7 @@ bool MPU6050Gyro::calibrateSensor() {
 
   _gyroConfig->setGyroCalibration(_calibrationOffset);
   _gyroConfig->saveFile();
+  return true;
 }
 
 void MPU6050Gyro::debug() {
