@@ -52,8 +52,13 @@ constexpr auto PARAM_FEATURE_CHARGING_SUPPORTED = "charging";
 
 void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
   if (myGyro.isConnected()) {
-    obj[PARAM_SUCCESS] = true;
-    obj[PARAM_MESSAGE] = "Calibration completed";
+    if(_gyroCalibrationSuccess) {
+      obj[PARAM_SUCCESS] = true;
+      obj[PARAM_MESSAGE] = "Calibration completed";
+    } else {
+      obj[PARAM_SUCCESS] = false;
+      obj[PARAM_MESSAGE] = "Calibration failed, faulty gyro or movement during calibration";
+    }
   } else {
     obj[PARAM_SUCCESS] = false;
     obj[PARAM_MESSAGE] = "Calibration failed, no gyro connected";
@@ -142,7 +147,7 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
 
 void GravitymonWebServer::doTaskSensorCalibration() {
   if (myGyro.isConnected()) {
-    myGyro.calibrateSensor();
+    _gyroCalibrationSuccess = myGyro.calibrateSensor();
   } else {
     Log.error(F("WEB : No gyro connected, skipping calibration" CR));
   }

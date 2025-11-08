@@ -3282,7 +3282,7 @@ void MPU6050_Base::setDMPConfig2(uint8_t config) {
 /**
   @brief      Fully calibrate Gyro from ZERO in about 6-7 Loops 600-700 readings
 */
-void MPU6050_Base::CalibrateGyro(uint8_t Loops ) {
+bool MPU6050_Base::CalibrateGyro(uint8_t Loops ) {
   double kP = 0.3;
   double kI = 90;
   float x;
@@ -3290,13 +3290,13 @@ void MPU6050_Base::CalibrateGyro(uint8_t Loops ) {
   kP *= x;
   kI *= x;
   
-  PID( 0x43,  kP, kI,  Loops);
+  return PID( 0x43,  kP, kI,  Loops);
 }
 
 /**
   @brief      Fully calibrate Accel from ZERO in about 6-7 Loops 600-700 readings
 */
-void MPU6050_Base::CalibrateAccel(uint8_t Loops ) {
+bool MPU6050_Base::CalibrateAccel(uint8_t Loops ) {
 
 	float kP = 0.3;
 	float kI = 20;
@@ -3304,10 +3304,10 @@ void MPU6050_Base::CalibrateAccel(uint8_t Loops ) {
 	x = (100 - map(Loops, 1, 5, 20, 0)) * .01;
 	kP *= x;
 	kI *= x;
-	PID( 0x3B, kP, kI,  Loops);
+	return PID( 0x3B, kP, kI,  Loops);
 }
 
-void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
+bool MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
     uint8_t deviceID = getDeviceID();
 	uint8_t SaveAddress = (ReadAddress == 0x3B)?((deviceID < 0x38 )? 0x06:0x77):0x13;
 
@@ -3326,12 +3326,12 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 	if (ReadAddress == 0x3B) gravity = 16384 >> getFullScaleAccelRange();
 	Serial.write('>');
 	uint32_t calibrationStartTime = millis(); // Track total calibration start time
-	uint32_t totalTimeoutMs = 30000; // 30 second total timeout for entire calibration
+	uint32_t totalTimeoutMs = 15000; // 15 second total timeout for entire calibration
 	for (int i = 0; i < 3; i++) {
 		if (I2Cdev::readWords(devAddr, SaveAddress + (i * shift), 1, (uint16_t *)&Data, I2Cdev::readTimeout, wireObj) != 1) {
 			Serial.print(F("I2C read error at "));
 			Serial.println(i);
-			return;
+			return false;
 		}
 		Reading = Data;
 		if(SaveAddress != 0x13){
@@ -3346,14 +3346,14 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 		for (int c = 0; c < 100; c++) {// 100 PI Calculations
 			if((millis() - calibrationStartTime) > totalTimeoutMs) {
 				Serial.println(F("Aborting calibration sequence due to timeout, could be faulty gyro."));
-				return; 
+				return false; 
 			}
 			eSum = 0;
 			for (int i = 0; i < 3; i++) {
 				if (I2Cdev::readWords(devAddr, ReadAddress + (i * 2), 1, (uint16_t *)&Data, I2Cdev::readTimeout, wireObj) != 1) {
 					Serial.print(F("I2C read error, PID, axis "));
 					Serial.println(i);
-					return;
+					return false;
 				}
 				Reading = Data;
 				if ((ReadAddress == 0x3B)&&(i == 2)) Reading -= gravity;	//remove Gravity
@@ -3368,7 +3368,7 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 				if (I2Cdev::writeWords(devAddr, SaveAddress + (i * shift), 1, (uint16_t *)&Data, wireObj) != 1) {
 					Serial.print(F("I2C write error, PID, axis "));
 					Serial.println(i);
-					return;
+					return false;
 				}
 			}
 			if((c == 99) && eSum > 1000){						// Error is still to great to continue 
@@ -3392,6 +3392,7 @@ void MPU6050_Base::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 	}
 	resetFIFO();
 	resetDMP();
+    return true;
 }
 
 void MPU6050_Base::PrintActiveOffsets() {

@@ -144,7 +144,7 @@ class GyroSensorInterface {
   /// or an issue occured
   virtual bool setup(GyroMode mode, bool force);
   virtual GyroResultData readSensor(GyroMode mode);
-  virtual void calibrateSensor();
+  virtual bool calibrateSensor();
   virtual const char* getGyroFamily();
   virtual void getGyroTestResult(JsonObject& doc);
   virtual uint8_t getGyroID();
@@ -189,8 +189,9 @@ class GyroSensor : public SecondayTempSensorInterface {
 
   bool setup(GyroMode mode, bool force);
   bool read();
-  void calibrateSensor() {
-    if (_impl) _impl->calibrateSensor();
+  bool calibrateSensor() {
+    if (_impl) return _impl->calibrateSensor();
+    return false;
   }
   const char* getGyroFamily() { return _impl ? _impl->getGyroFamily() : ""; }
   void getGyroTestResult(JsonObject& doc) {

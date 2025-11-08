@@ -374,10 +374,9 @@ GyroResultData ICM42670pGyro::readSensor(GyroMode mode) {
   return _result;
 }
 
-void ICM42670pGyro::calibrateSensor() {
+bool ICM42670pGyro::calibrateSensor() {
   // don't for now, these should be properly factory calibrated, any slight
-  // error during calibration will introduce more error fake calibration to get
-  // rid of error
+  return true;
 }
 
 void ICM42670pGyro::debug() {

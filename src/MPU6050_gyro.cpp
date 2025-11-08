@@ -353,15 +353,21 @@ void MPU6050Gyro::getGyroTestResult(JsonObject &doc) {
   doc["self_test"]["gyro"]["result"] = gyro_pass ? "passed" : "failed";
 }
 
-void MPU6050Gyro::calibrateSensor() {
+bool MPU6050Gyro::calibrateSensor() {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Calibrating sensor" CR));
 #endif
 
   // Start of calibration sequence
   _accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
-  _accelgyro.CalibrateAccel(6);  // 6 = 600 readings
-  _accelgyro.CalibrateGyro(6);
+  if(!_accelgyro.CalibrateAccel(6)) {  // 6 = 600 readings
+    return false;
+  }
+
+  if(!_accelgyro.CalibrateGyro(6)) { // 6 = 600 readings
+    return false;
+  }
+
   _accelgyro.PrintActiveOffsets();
   EspSerial.print(CR);
 
