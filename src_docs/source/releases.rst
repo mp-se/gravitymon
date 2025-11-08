@@ -4,8 +4,8 @@ Releases
 ########
 
 
-v2.3.0
-======
+v2.3.0 (beta 4)
+===============
 
 In this version I have dropped some fetures to make room for new options and 
 features due to limitations on the devices supported, mainly the 4mb flash limit. 
@@ -38,6 +38,7 @@ Bugs fixed
 * Fixed startup issue after deep sleep on some boards when RTC_MEM was enabled.
 * Fixed issue that temperature sensor was not recognized when gyro had no valid values.
 * Corrected R1 + R2 on Gravitymon PCB to 10k so wakeup after charger removed works correctly. 
+* Fixed battery voltage when pin 0 is used for voltage reading (applies to tenstar supermini target).
 
 v2.2.1
 ======

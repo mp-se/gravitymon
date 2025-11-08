@@ -171,6 +171,9 @@ Device - Gyro
   :width: 800
   :alt: Device Gyro MPU-6050
 
+When performing gyro calibration the device will now show an error if the calibration takes longer than 15 seconds for accelerometer 
+or 15 seconds for the gyro.
+
 * **Gyro options:** 
 
   Select the gyro that is used in the device
