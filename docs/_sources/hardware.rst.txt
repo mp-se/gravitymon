@@ -25,7 +25,7 @@ You can also order the `PCB from PCBWAY here <https://www.pcbway.com/project/sha
 Currently i'm also working on a PCB for the PILL casing with the Waveshare ESP32c3 Zero board.
 
 Supported ESP boards
-====================
+********************
 
 From v2.3 i have changed the main boards that I support as part of this project and the focus is now
 moving towards ESP32 based boards. The main reason is that the ESP8266 is old and resources are limited
@@ -106,10 +106,10 @@ A list of these boards can be found here :ref:`custom-boards`. I cannot take ful
 builds since I dont have access to these boards for testing.
 
 Gravitymon PCB
-==============
+**************
 
 Waveshare ESP32c3 Zero using PET casing
-+++++++++++++++++++++++++++++++++++++++
+=======================================
 
 This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:
 
@@ -143,14 +143,28 @@ This is the back / front of the PCB design.
   :width: 600
   :alt: Gravitymon PCB for PET
 
-Assembly is quite simple the only consideration is to solder the TP-4056 module last since once that is soldered 
-you cant access all the waveshare pins. If you have questions raise a ticket on github or on homebrewtalk.com
+
+Build instructions
+++++++++++++++++++
 
 I would also recommend to flash the ESP before soldering it so you know it works and connects to your wifi correctly.
 
+* Start with soldering the switch which goes under the charger module.
+* Solder the connectors for the ESP but dont mount the board just yet.
+* Solder the connectors for the GYRO, make sure the pins for the GYRO should not go all the way through, they need to be flush with the PCB since the battery holder goes on top. Then you can mount the gyro, place something under the gyro so its flat with the PCB so its leveled.
+* Mount the resistors and solder them in place. 
+* Mount the temperature sensor and also ensure the pins are flush with the PCB.
+* Mount the connectors for the charger module and solder that in place on top of the switch.
+* Solder the batter holder in place, start with putting solder on the pads and on the copper connectors, that way its easier to solder them in place.
+* Now solder the ESP in place
+* Finally you can solder the wireless charger module (this is optional) on either side, choose the one that fits your build.
+
+Once the device is mounted you can test it in water. It should be close to 25 degrees (+/- 2 degrees is acceptable), if not you can use 
+the balance pads to add some solder/weight to change the angle. If the angle is too high then use the bottom pads. I have noticed that the batteries
+can differ in weight, they should be around 44g.
 
 iSpindle based on esp8266
-=========================
+*************************
 
 There are lots of resouces out there on how to build the hardware for an iSpindle so I will not go into details on that part. I typically use one of the 
 excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip. Here is one of my standard builds using an esp8266.
@@ -160,7 +174,7 @@ excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip.
   :alt: iSpindle esp8266
 
 Schema for esp8266 build
-++++++++++++++++++++++++
+========================
 
 .. image:: images/schema_esp8266.png
   :width: 700
@@ -198,10 +212,10 @@ Here is an image of where I added the resistor for the voltage divider.
 
 
 Modifications
-=============
+*************
 
 Adding a reed (magnetic) reset switch
-+++++++++++++++++++++++++++++++++++++
+=====================================
 
 A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to 
 a magnet. 

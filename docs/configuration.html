@@ -385,6 +385,8 @@ been running the value would be totally off.</p>
 <section id="device-gyro">
 <h3>Device - Gyro<a class="headerlink" href="#device-gyro" title="Permalink to this heading">¶</a></h3>
 <a class="reference internal image-reference" href="_images/ui-device-gyro-6050.png"><img alt="Device Gyro MPU-6050" src="_images/ui-device-gyro-6050.png" style="width: 800px;" /></a>
+<p>When performing gyro calibration the device will now show an error if the calibration takes longer than 15 seconds for accelerometer
+or 15 seconds for the gyro.</p>
 <ul>
 <li><p><strong>Gyro options:</strong></p>
 <p>Select the gyro that is used in the device</p>
@@ -518,12 +520,16 @@ be set between 10 - 3600 seconds (60 minutes).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>A low value such as 30s will give a lifespan of 1-2 weeks and 300s (5 min) would last for 3+ weeks. This assumes that
-there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain.
-The device will show the estimated lifespan based on the average connection time, if no data exist it will not be shown.</p>
+there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain.</p>
 </div>
 </li>
 <li><p><strong>WIFI Direct SSID:</strong></p>
 <p>This WIFI SSID will be used during gravity mode to send data to the GravityMon Gateway.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When WIFI Direct is enabled and the device can’t connect to the SSID then it will fallback to the standard SSID configured
+and try to send data that way using the defined push settings.</p>
+</div>
 </li>
 <li><p><strong>WIFI Direct Password:</strong></p>
 <p>This WIFI Password will be used during gravity mode to send data to the GravityMon Gateway.</p>

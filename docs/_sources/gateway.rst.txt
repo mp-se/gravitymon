@@ -5,7 +5,7 @@ Gateway
 
 .. note::
 
-  This documentation reflects **v0.8.0 beta 1**. Last updated 2025-08-12
+  This documentation reflects **v0.8.1**. Last updated 2025-11-02
 
 GravityMon Gateway is an separate project that can act as a proxy between your Gravitymon/Pressuremon devices and services. It can:
 
@@ -14,6 +14,8 @@ GravityMon Gateway is an separate project that can act as a proxy between your G
 * Receive Chamber Controller 0.4+ BLE formats
 * Receive Gravitymon data via direct WiFi connection (http post). 
 * Receive Pressuremon data via direct WiFi connection (http post). 
+
+For complete release notes see the github project page.
 
 Hardware 
 ========
@@ -28,7 +30,8 @@ The second options is Lolin ESP32s3 PRO with a Lolin TFT
 * `Lolin TFT <https://www.wemos.cc/en/latest/d1_mini_shield/tft_2_4.html>`_ 
 * Cable to connect the display with the ESP
 
-There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board does not have BLE 5 support.
+There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board 
+does not have BLE 5 support or the SD card support.
 
 * `Releases for GravityMon Gateway <https://github.com/mp-se/gravitymon-gateway/releases>`_ 
 
@@ -37,8 +40,8 @@ There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that doe
 * `Thorraks Tiltbridge case for D32 PRO <https://www.printables.com/model/141680-tiltbridge-case-d32-pro-w-tft>`_ 
 * `Modified Tiltbridge case for D32 s3 PRO <https://www.printables.com/model/939801-case-for-esp32-s3-pro-w-tft>`_ 
 
-Most of the UI is copied from Gravitymon with a few alterations so the documentation here will only point out the differences. In the recent releases 
-some of the codebase is shared across both projects.
+Most of the UI is copied from Gravitymon with a few alterations so the documentation here will only point out the differences. 
+In the recent releases some of the codebase is shared across both projects.
 
 .. note::
 
@@ -146,9 +149,35 @@ Most of these settings are the same as for GravityMon with the following expecti
 
   Will create an SSID and Password
 
+Measurements
+============
+
+Measurements - Settings
++++++++++++++++++++++++
+
+.. image:: images/gw/ui-measurements-settings.png
+  :width: 800
+  :alt: Measurements Settings
+
+* **Number of SD log files**
+
+  How many log files should be kept on the SD card, each file is max 16kb in size. Default it 4.
+
+
+Measurements - View
++++++++++++++++++++
+
+.. image:: images/gw/ui-measurements-view.png
+  :width: 800
+  :alt: Measurements View
+
+Once the data is loaded a list of the device types loggged with be shown, one you select a type you can see all the
+data points stored and also a list of devices. If you then select a device a graph with the key data will be shown.
+
 
 Push targets
 ============
+
 
 Push - Settings
 +++++++++++++++

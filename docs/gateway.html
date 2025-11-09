@@ -260,7 +260,7 @@
 <span id="id1"></span><h1>Gateway<a class="headerlink" href="#gateway" title="Permalink to this heading">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v0.8.0 beta 1</strong>. Last updated 2025-08-12</p>
+<p>This documentation reflects <strong>v0.8.1</strong>. Last updated 2025-11-02</p>
 </div>
 <p>GravityMon Gateway is an separate project that can act as a proxy between your Gravitymon/Pressuremon devices and services. It can:</p>
 <ul class="simple">
@@ -270,6 +270,7 @@
 <li><p>Receive Gravitymon data via direct WiFi connection (http post).</p></li>
 <li><p>Receive Pressuremon data via direct WiFi connection (http post).</p></li>
 </ul>
+<p>For complete release notes see the github project page.</p>
 <section id="hardware">
 <h2>Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading">¶</a></h2>
 <p>The main supported hardware is an Waveshare ESP32s3 PRO with a built in TFT</p>
@@ -282,7 +283,8 @@
 <li><p><a class="reference external" href="https://www.wemos.cc/en/latest/d1_mini_shield/tft_2_4.html">Lolin TFT</a></p></li>
 <li><p>Cable to connect the display with the ESP</p></li>
 </ul>
-<p>There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board does not have BLE 5 support.</p>
+<p>There is also a build for the ESP32 PRO (Tiltbridge Hardware setup) but that does not support the new BLE formats since that board
+does not have BLE 5 support or the SD card support.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/mp-se/gravitymon-gateway/releases">Releases for GravityMon Gateway</a></p></li>
 </ul>
@@ -291,8 +293,8 @@
 <li><p><a class="reference external" href="https://www.printables.com/model/141680-tiltbridge-case-d32-pro-w-tft">Thorraks Tiltbridge case for D32 PRO</a></p></li>
 <li><p><a class="reference external" href="https://www.printables.com/model/939801-case-for-esp32-s3-pro-w-tft">Modified Tiltbridge case for D32 s3 PRO</a></p></li>
 </ul>
-<p>Most of the UI is copied from Gravitymon with a few alterations so the documentation here will only point out the differences. In the recent releases
-some of the codebase is shared across both projects.</p>
+<p>Most of the UI is copied from Gravitymon with a few alterations so the documentation here will only point out the differences.
+In the recent releases some of the codebase is shared across both projects.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Gravitymon Gateway does not support the BLE TILT / BLE RAPT options, it will detect and display but not forward these to the targets.</p>
@@ -370,6 +372,24 @@ The limitation is 63 chars but using long names might break endpoints that data 
 <p>Will create an SSID and Password</p>
 </li>
 </ul>
+</section>
+</section>
+<section id="measurements">
+<h2>Measurements<a class="headerlink" href="#measurements" title="Permalink to this heading">¶</a></h2>
+<section id="measurements-settings">
+<h3>Measurements - Settings<a class="headerlink" href="#measurements-settings" title="Permalink to this heading">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-measurements-settings.png"><img alt="Measurements Settings" src="_images/ui-measurements-settings.png" style="width: 800px;" /></a>
+<ul>
+<li><p><strong>Number of SD log files</strong></p>
+<p>How many log files should be kept on the SD card, each file is max 16kb in size. Default it 4.</p>
+</li>
+</ul>
+</section>
+<section id="measurements-view">
+<h3>Measurements - View<a class="headerlink" href="#measurements-view" title="Permalink to this heading">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-measurements-view.png"><img alt="Measurements View" src="_images/ui-measurements-view.png" style="width: 800px;" /></a>
+<p>Once the data is loaded a list of the device types loggged with be shown, one you select a type you can see all the
+data points stored and also a list of devices. If you then select a device a graph with the key data will be shown.</p>
 </section>
 </section>
 <section id="push-targets">
@@ -499,6 +519,11 @@ data is received the gateway will choose the correct template for that data. You
 <li><a class="reference internal" href="#device-settings">Device - Settings</a></li>
 <li><a class="reference internal" href="#device-hardware">Device - Hardware</a></li>
 <li><a class="reference internal" href="#device-wifi">Device - WIFI</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#measurements">Measurements</a><ul>
+<li><a class="reference internal" href="#measurements-settings">Measurements - Settings</a></li>
+<li><a class="reference internal" href="#measurements-view">Measurements - View</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#push-targets">Push targets</a><ul>
