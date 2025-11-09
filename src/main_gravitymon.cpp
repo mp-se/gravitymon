@@ -208,9 +208,16 @@ void setup() {
       if (needWifi) {
         PERF_BEGIN("main-wifi-connect");
         if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
-          myWifi.connect(true);
+          if (!myWifi.connect(true)) {
+            Log.notice(F("Main: Failed to connect to wifi direct, trying to connect with regular wifi." CR));
+            if (!myWifi.connect()) {
+              Log.notice(F("Main: Failed to connect to wifi." CR));
+            }
+          }
         } else {
-          myWifi.connect();
+          if (!myWifi.connect()) {
+            Log.notice(F("Main: Failed to connect to wifi." CR));
+          }
         }
         PERF_END("main-wifi-connect");
       }
@@ -309,9 +316,10 @@ bool loopReadGravity() {
     velocity = gv.getVelocity();
 #endif
 
-    Log.notice(F("Main: Sensor values gyro angle=%F, filtered_angle=%F, temp=%FC, gravity=%F, "
-                  "corr_gravity=%F, velocity=%F." CR),
-                angle, filteredAngle, tempC, gravitySG, corrGravitySG, velocity);
+    Log.notice(F("Main: Sensor values gyro angle=%F, filtered_angle=%F, "
+                 "temp=%FC, gravity=%F, "
+                 "corr_gravity=%F, velocity=%F." CR),
+               angle, filteredAngle, tempC, gravitySG, corrGravitySG, velocity);
 
     bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
                         (myConfig.getSleepInterval() * 1000));
@@ -370,7 +378,7 @@ bool loopReadGravity() {
 
       if (myWifi.isConnected() && angleValid) {  // no need to try if there is
                                                  // no wifi connection.
-        if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
+        if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode && WiFi.SSID() == String(myConfig.getWifiDirectSSID())) {
           Log.notice(F(
               "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
 
@@ -602,7 +610,7 @@ void checkSleepMode(float angle, float volt) {
                                    ESP_EXT1_WAKEUP_ANY_LOW);
 #endif
       esp_deep_sleep_start();
-      return; // This will never be reached
+      return;  // This will never be reached
     }
 #endif
     ESP.deepSleep(0xFFFFFFFF);  // indefinite sleep

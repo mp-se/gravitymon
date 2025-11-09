@@ -35,6 +35,7 @@ SOFTWARE.
 class GravitymonWebServer : public BrewingWebServer {
  private:
   GravitymonConfig *_gravConfig = nullptr;
+  bool _gyroCalibrationSuccess = false;
 
   void doTaskSensorCalibration();
   void doTaskPushTestSetup(TemplatingEngine &engine, BrewingPush &push);

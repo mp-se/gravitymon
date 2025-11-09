@@ -171,6 +171,9 @@ Device - Gyro
   :width: 800
   :alt: Device Gyro MPU-6050
 
+When performing gyro calibration the device will now show an error if the calibration takes longer than 15 seconds for accelerometer 
+or 15 seconds for the gyro.
+
 * **Gyro options:** 
 
   Select the gyro that is used in the device
@@ -356,11 +359,15 @@ Push - Settings
 
     A low value such as 30s will give a lifespan of 1-2 weeks and 300s (5 min) would last for 3+ weeks. This assumes that 
     there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain. 
-    The device will show the estimated lifespan based on the average connection time, if no data exist it will not be shown.
 
 * **WIFI Direct SSID:** 
 
   This WIFI SSID will be used during gravity mode to send data to the GravityMon Gateway.
+
+  .. note::
+
+    When WIFI Direct is enabled and the device can't connect to the SSID then it will fallback to the standard SSID configured 
+    and try to send data that way using the defined push settings.
 
 * **WIFI Direct Password:** 
 

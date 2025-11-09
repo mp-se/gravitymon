@@ -121,7 +121,7 @@ class BrewingWebServer : public BaseWebServer {
   virtual void loop();
 };
 
-#endif // ESPFWK_DISABLE_WEBSERVER
+#endif  // ESPFWK_DISABLE_WEBSERVER
 
 #endif  // SRC_WEB_BREWING_HPP_
 

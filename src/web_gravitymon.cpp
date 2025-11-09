@@ -52,8 +52,13 @@ constexpr auto PARAM_FEATURE_CHARGING_SUPPORTED = "charging";
 
 void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
   if (myGyro.isConnected()) {
-    obj[PARAM_SUCCESS] = true;
-    obj[PARAM_MESSAGE] = "Calibration completed";
+    if(_gyroCalibrationSuccess) {
+      obj[PARAM_SUCCESS] = true;
+      obj[PARAM_MESSAGE] = "Calibration completed";
+    } else {
+      obj[PARAM_SUCCESS] = false;
+      obj[PARAM_MESSAGE] = "Calibration failed, faulty gyro or movement during calibration";
+    }
   } else {
     obj[PARAM_SUCCESS] = false;
     obj[PARAM_MESSAGE] = "Calibration failed, no gyro connected";
@@ -141,8 +146,11 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
 }
 
 void GravitymonWebServer::doTaskSensorCalibration() {
+  _gyroCalibrationSuccess = false;
+
   if (myGyro.isConnected()) {
-    myGyro.calibrateSensor();
+    _gyroCalibrationSuccess = myGyro.calibrateSensor();
+    Log.info(F("WEB : Gyro calibration %s" CR), _gyroCalibrationSuccess ? "succeeded" : "failed");
   } else {
     Log.error(F("WEB : No gyro connected, skipping calibration" CR));
   }
@@ -273,6 +281,8 @@ void GravitymonWebServer::doTaskHardwareScanning(JsonObject &obj) {
 
   // Test the gyro
   obj[PARAM_GYRO][PARAM_FAMILY] = myGyro.getGyroFamily();
+  JsonObject gyro = obj[PARAM_GYRO];
+  myGyro.getGyroTestResult(gyro);
 }
 
 void GravitymonWebServer::webHandleGyro(AsyncWebServerRequest *request) {

@@ -36,12 +36,12 @@ SOFTWARE.
 #include <esp_task_wdt.h>
 #endif
 
-#if !defined(ESP8266) && ESP_ARDUINO_VERSION_MAJOR == 2 // For Arduino Core 2.x
+#if !defined(ESP8266) && ESP_ARDUINO_VERSION_MAJOR == 2  // For Arduino Core 2.x
 #include <esp_int_wdt.h>
 #include <esp_system.h>
 #endif
 
-#if !defined(ESP8266) && ESP_ARDUINO_VERSION_MAJOR >= 3 // For Arduino Core 3.x
+#if !defined(ESP8266) && ESP_ARDUINO_VERSION_MAJOR >= 3  // For Arduino Core 3.x
 #include <esp_chip_info.h>
 #include <esp_heap_caps.h>
 #endif
@@ -358,22 +358,24 @@ String BrewingWebServer::readFile(String fname) {
   File file = LittleFS.open(fname, "r");
   if (file) {
     size_t fileSize = file.size();
-    
-    char* buf = (char*)malloc(fileSize + 1);
+
+    char *buf = (char *)malloc(fileSize + 1);
     if (buf == nullptr) {
-      Log.error(F("WEB : Failed to allocate %d bytes for file %s." CR), fileSize, fname.c_str());
+      Log.error(F("WEB : Failed to allocate %d bytes for file %s." CR),
+                fileSize, fname.c_str());
       file.close();
       return "";
     }
-    
+
     memset(buf, 0, fileSize + 1);
     size_t bytesRead = file.readBytes(buf, fileSize);
     file.close();
-    
+
     if (bytesRead != fileSize) {
-      Log.warning(F("WEB : Only read %d of %d bytes from %s." CR), bytesRead, fileSize, fname.c_str());
+      Log.warning(F("WEB : Only read %d of %d bytes from %s." CR), bytesRead,
+                  fileSize, fname.c_str());
     }
-    
+
     Log.notice(F("WEB : Read %d bytes from %s." CR), bytesRead, fname.c_str());
     String result(buf);
     free(buf);
@@ -440,7 +442,7 @@ void BrewingWebServer::webHandleConfigFormatRead(
 }
 
 void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
-  PERF_BEGIN("webserver-api-status");
+  PERF_BEGIN("webserver-api-feature");
   Log.notice(F("WEB : webServer callback for /api/feature(get)." CR));
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
@@ -459,7 +461,7 @@ void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
 
   response->setLength();
   request->send(response);
-  PERF_END("webserver-api-status");
+  PERF_END("webserver-api-feature");
 }
 
 void BrewingWebServer::webHandleStatus(AsyncWebServerRequest *request) {
@@ -652,7 +654,7 @@ void BrewingWebServer::loop() {
         i2c[j][PARAM_ADRESS] = addr_str;
         i2c[j][PARAM_BUS] = "Wire";
         j++;
-      } else if(err == 5) {
+      } else if (err == 5) {
         Log.notice(F("WEB : Timeout error at %s." CR), addr_str);
         i2c[j][PARAM_ADRESS] = addr_str;
         i2c[j][PARAM_BUS] = "Timeout error, aborting scan";
@@ -685,11 +687,7 @@ void BrewingWebServer::loop() {
       feature.add("IEEE 802.15.4/LR-WPAN");
     if (chip_info.features & CHIP_FEATURE_EMB_PSRAM)
       feature.add("Embedded PSRAM");
-#if ESP_ARDUINO_VERSION_MAJOR >= 3
-    if(esp_heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
-#else
-    if(heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
-#endif
+    if (heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
       feature.add("Embedded RTC RAM");
     }
 
@@ -723,6 +721,6 @@ void BrewingWebServer::loop() {
   }
 }
 
-#endif // ESPFWK_DISABLE_WEBSERVER
+#endif  // ESPFWK_DISABLE_WEBSERVER
 
 // EOF
