@@ -12,6 +12,15 @@ features due to limitations on the devices supported, mainly the 4mb flash limit
 
 New features
 ++++++++++++
+* Added support for Tenstar ESP32c3 super mini (16-pin board)
+* Added more debug output to MPU6050 calibration sequence to help troubleshooting gyro issues.
+* Added wifi fallback when connection failes to wifi direct the standard wifi will be used instead.
+* Added MPU6050 self test feature to hardware test in order to help troubleshoot faulty gyros.
+* Added coloring to file viewer to make it easier to read (json, csv, formdata and mqtt template)
+* Added binary viewer in file viewer
+* Added 30s timeout during MPU6500 calibration if the gyro is not working properly
+
+* Added support for Waveshare ESP32c3 zero (18-pin board)
 * Added PCB for Waveshare ESP32c3 zero (18-pin board) 
 * Added feature flags to build so builds can be customized and UI will better adapt.
 * Added RAPT bluetooth transmission covering both v1 and v2 formats.
@@ -21,12 +30,6 @@ New features
 * Refactored UI code to reduce the size and simplify maintenance (30% size reduction)
 * Added charging pin feature so that device can go to deep sleep when charging.
 * Updated documentation to match the current features
-* Added more debug output to MPU6050 calibration sequence to help troubleshooting gyro issues.
-* Added wifi fallback when connection failes to wifi direct the standard wifi will be used instead.
-* Added MPU6050 self test feature to hardware test in order to help troubleshoot faulty gyros.
-* Added coloring to file viewer to make it easier to read (json, csv, formdata and mqtt template)
-* Added binary viewer in file viewer
-* Added 30s timeout during MPU6500 calibration if the gyro is not working properly
 
 Dropped features
 ++++++++++++++++
