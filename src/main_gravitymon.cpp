@@ -209,7 +209,9 @@ void setup() {
         PERF_BEGIN("main-wifi-connect");
         if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode) {
           if (!myWifi.connect(true)) {
-            Log.notice(F("Main: Failed to connect to wifi direct, trying to connect with regular wifi." CR));
+            Log.notice(
+                F("Main: Failed to connect to wifi direct, trying to connect "
+                  "with regular wifi." CR));
             if (!myWifi.connect()) {
               Log.notice(F("Main: Failed to connect to wifi." CR));
             }
@@ -223,7 +225,7 @@ void setup() {
       }
 
       PERF_BEGIN("main-temp-setup");
-      myTempSensor.setup(PIN_DS);
+      myTempSensor.setup(PIN_DS, PIN_DS2);
       PERF_END("main-temp-setup");
       break;
   }
@@ -363,14 +365,17 @@ bool loopReadGravity() {
           } break;
 
           case GravitymonBleFormat::BLE_RAPT_V1: {
-            myBleSender.sendRaptV1Data(myBatteryVoltage.getVoltage(), tempC,
-                                       gravitySG, angle);
+            myBleSender.sendRaptV1Data(
+                getBatteryPercentage(myBatteryVoltage.getVoltage(),
+                                     BatteryType::LithiumIon),
+                tempC, gravitySG, angle);
           } break;
 
           case GravitymonBleFormat::BLE_RAPT_V2: {
-            myBleSender.sendRaptV2Data(myBatteryVoltage.getVoltage(), tempC,
-                                       gravitySG, angle, velocity,
-                                       gv.isVelocityValid());
+            myBleSender.sendRaptV2Data(
+                getBatteryPercentage(myBatteryVoltage.getVoltage(),
+                                     BatteryType::LithiumIon),
+                tempC, gravitySG, angle, velocity, gv.isVelocityValid());
           } break;
         }
       }
@@ -378,7 +383,8 @@ bool loopReadGravity() {
 
       if (myWifi.isConnected() && angleValid) {  // no need to try if there is
                                                  // no wifi connection.
-        if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode && WiFi.SSID() == String(myConfig.getWifiDirectSSID())) {
+        if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode &&
+            WiFi.SSID() == String(myConfig.getWifiDirectSSID())) {
           Log.notice(F(
               "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
 

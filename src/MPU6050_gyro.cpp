@@ -360,11 +360,11 @@ bool MPU6050Gyro::calibrateSensor() {
 
   // Start of calibration sequence
   _accelgyro.setDLPFMode(MPU6050_DLPF_BW_5);
-  if(!_accelgyro.CalibrateAccel(6)) {  // 6 = 600 readings
+  if (!_accelgyro.CalibrateAccel(6)) {  // 6 = 600 readings
     return false;
   }
 
-  if(!_accelgyro.CalibrateGyro(6)) { // 6 = 600 readings
+  if (!_accelgyro.CalibrateGyro(6)) {  // 6 = 600 readings
     return false;
   }
 

@@ -4,7 +4,7 @@ Releases
 ########
 
 
-v2.3.0 (beta 4)
+v2.3.0 (beta 5)
 ===============
 
 In this version I have dropped some fetures to make room for new options and 
@@ -12,6 +12,7 @@ features due to limitations on the devices supported, mainly the 4mb flash limit
 
 New features
 ++++++++++++
+* Added support for defining more than one pin for DS18B20 sensor
 * Added support for Tenstar ESP32c3 super mini (16-pin board)
 * Added more debug output to MPU6050 calibration sequence to help troubleshooting gyro issues.
 * Added wifi fallback when connection failes to wifi direct the standard wifi will be used instead.
@@ -42,6 +43,7 @@ Bugs fixed
 * Fixed issue that temperature sensor was not recognized when gyro had no valid values.
 * Corrected R1 + R2 on Gravitymon PCB to 10k so wakeup after charger removed works correctly. 
 * Fixed battery voltage when pin 0 is used for voltage reading (applies to tenstar supermini target).
+* Fixed raptV1 och raptV2 format to send battery percentage instead of voltage.
 
 v2.2.1
 ======
