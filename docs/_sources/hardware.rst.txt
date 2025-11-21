@@ -91,7 +91,7 @@ I'm working on adding more ESP options and I will add the pinouts once they have
    * - Tenstar ESP32c3 super mini
      - IO7
      - IO6
-     - IO5
+     - A0
      - A3
      - n/a
      - A4

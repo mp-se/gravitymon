@@ -258,13 +258,14 @@
         <article role="main" id="furo-main-content">
           <section id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this heading">¶</a></h1>
-<section id="v2-3-0-beta-4">
-<h2>v2.3.0 (beta 4)<a class="headerlink" href="#v2-3-0-beta-4" title="Permalink to this heading">¶</a></h2>
+<section id="v2-3-0-beta-5">
+<h2>v2.3.0 (beta 5)<a class="headerlink" href="#v2-3-0-beta-5" title="Permalink to this heading">¶</a></h2>
 <p>In this version I have dropped some fetures to make room for new options and
 features due to limitations on the devices supported, mainly the 4mb flash limit.</p>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
+<li><p>Added support for defining more than one pin for DS18B20 sensor</p></li>
 <li><p>Added support for Tenstar ESP32c3 super mini (16-pin board)</p></li>
 <li><p>Added more debug output to MPU6050 calibration sequence to help troubleshooting gyro issues.</p></li>
 <li><p>Added wifi fallback when connection failes to wifi direct the standard wifi will be used instead.</p></li>
@@ -298,6 +299,7 @@ features due to limitations on the devices supported, mainly the 4mb flash limit
 <li><p>Fixed issue that temperature sensor was not recognized when gyro had no valid values.</p></li>
 <li><p>Corrected R1 + R2 on Gravitymon PCB to 10k so wakeup after charger removed works correctly.</p></li>
 <li><p>Fixed battery voltage when pin 0 is used for voltage reading (applies to tenstar supermini target).</p></li>
+<li><p>Fixed raptV1 och raptV2 format to send battery percentage instead of voltage.</p></li>
 </ul>
 </section>
 </section>
@@ -918,7 +920,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v2-3-0-beta-4">v2.3.0 (beta 4)</a><ul>
+<li><a class="reference internal" href="#v2-3-0-beta-5">v2.3.0 (beta 5)</a><ul>
 <li><a class="reference internal" href="#new-features">New features</a></li>
 <li><a class="reference internal" href="#dropped-features">Dropped features</a></li>
 <li><a class="reference internal" href="#bugs-fixed">Bugs fixed</a></li>
