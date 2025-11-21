@@ -145,6 +145,7 @@ SOFTWARE.
 #define PIN_SDA IO7
 #define PIN_SCL IO6
 #define PIN_DS A0
+#define PIN_DS2 A5
 #define PIN_VOLT A3
 #define PIN_CHARGING A4  // Needs to be an Analog and RTC connected pin
 #define PIN_CFG1 IO10
@@ -159,6 +160,10 @@ SOFTWARE.
 #if !defined(ESP8266) && !defined(ESP32) && !defined(ESP32C2) && \
     !defined(ESP32S3) && !defined(ESP32S2)
 #error "Target CPU is not defined or unknown!"
+#endif
+
+#if !defined(PIN_DS2)
+#define PIN_DS2 -1
 #endif
 
 #endif  // GRAVITYMON

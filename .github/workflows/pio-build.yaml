@@ -27,7 +27,8 @@ jobs:
       - name: PlatformIO Run
         uses: karniv00l/platformio-run-action@v1
         with:
-          environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s2_mini,gravity-32c3_zero,gravity-32c3_supermini,gravity-tenstar_esp32c3_super_mini,gravity-olimex_esp32c3_devkit_lipo"
+          environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s2_mini,gravity-32c3_zero,gravity-32c3_supermini,gravity-olimex_esp32c3_devkit_lipo"
+          # environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s2_mini,gravity-32c3_zero,gravity-32c3_supermini,gravity-tenstar_esp32c3_super_mini,gravity-olimex_esp32c3_devkit_lipo"
           # environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s3_mini,gravity-32c3_zero,gravity-tenstar_esp32c3_super_mini,gravity-olimex_esp32c3_devkit_lipo"
           # environments: "gravity-release,gravity32c3-release,gravity32s2-release,gravity32s3-release,gravity-olimex_esp32c3_devkit_lipo,gravity-tenstar_esp32c3_super_mini"
           # environments: "gravity-release,gravity32-release,gravity32c3-release,gravity32s2-release,gravity32s3-release,gravity32lite-release,gravity-olimex_esp32c3_devkit_lipo,gravity-tenstar_esp32c3_super_mini"

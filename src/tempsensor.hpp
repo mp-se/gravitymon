@@ -55,12 +55,14 @@ class TempSensor {
   float _temperatureC = 0;
   bool _initialized = false;
 
+  bool setupSensor(int pin);
+
  public:
   explicit TempSensor(TempSensorConfigInterface *tempSensorConfig,
                       SecondayTempSensorInterface *secondary = nullptr)
       : _tempSensorConfig(tempSensorConfig), _secondary(secondary) {}
 
-  void setup(int pin);
+  void setup(int pin, int pin2 = -1);
   void readSensor(bool useGyro = false);
   bool isSensorAttached() { return _hasSensor; }
   float getTempC() const { return _temperatureC + _tempSensorAdjC; }

@@ -24,21 +24,11 @@ SOFTWARE.
 #include <log.hpp>
 #include <tempsensor.hpp>
 
-void TempSensor::setup(int pin) {
-  _onewire.reset(new OneWire(pin));
-  _sensors.reset(new DallasTemperature(_onewire.get()));
-
-#if LOG_LEVEL == 6
-  Log.verbose(F("TSEN: Looking for temp sensors." CR));
-#endif
-  _sensors->begin();
-
-  if (_sensors->getDS18Count()) {
-    Log.notice(F("TSEN: Found %d temperature sensor(s). Using %d bit" CR),
-               _sensors->getDS18Count(),
-               _tempSensorConfig->getTempSensorResolution());
-  } else {
-    Log.warning(F("TSEN: No temp sensors found" CR));
+void TempSensor::setup(int pin, int pin2) {
+  if (!setupSensor(pin)) {
+    if (pin2 >= 0) {
+      setupSensor(pin2);
+    }
   }
 
   // Set the temp sensor adjustment values
@@ -50,6 +40,28 @@ void TempSensor::setup(int pin) {
 #endif
 
   _initialized = true;
+}
+
+bool TempSensor::setupSensor(int pin) {
+  _onewire.reset(new OneWire(pin));
+  _sensors.reset(new DallasTemperature(_onewire.get()));
+
+#if LOG_LEVEL == 6
+  Log.verbose(F("TSEN: Looking for temp sensors." CR));
+#endif
+  _sensors->begin();
+
+  if (_sensors->getDS18Count()) {
+    Log.notice(
+        F("TSEN: Found %d temperature sensor(s). Using %d bit on pin=%d" CR),
+        _sensors->getDS18Count(), _tempSensorConfig->getTempSensorResolution(),
+        pin);
+  } else {
+    Log.warning(F("TSEN: No temp sensors found on pin=%d" CR), pin);
+    return false;
+  }
+
+  return true;
 }
 
 void TempSensor::readSensor(bool useGyro) {
