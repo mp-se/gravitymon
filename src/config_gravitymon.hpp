@@ -47,6 +47,7 @@ constexpr auto CONFIG_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
 constexpr auto CONFIG_FORMULA_DEVIATION = "formula_max_deviation";
 constexpr auto CONFIG_FORMULA_CALIBRATION_TEMP = "formula_calibration_temp";
 constexpr auto CONFIG_CHARGING_PIN_ENABLED = "charging_pin_enabled";
+constexpr auto CONFIG_REGISTERED = "registered";
 
 enum GravitymonBleFormat {
   BLE_DISABLED = 0,
@@ -96,8 +97,16 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   int _gyroReadCount = 50;
   int _gyroReadDelay = 3150;  // us, empirical, to hold sampling to 200 Hz
 
+  bool _registered = false;
+
  public:
   GravitymonConfig(String baseMDNS, String fileName);
+
+  bool isRegistered() const { return _registered; }
+  void setRegistered(bool b) {
+    _registered = b;
+    _saveNeeded = true;
+  }
 
   GyroType getGyroType() const { return _gyroType; }
   void setGyroType(int t) {

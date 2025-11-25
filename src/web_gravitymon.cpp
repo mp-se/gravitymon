@@ -88,6 +88,7 @@ void GravitymonWebServer::doWebFeature(JsonObject &obj) {
   obj[PARAM_FEATURE_CHARGING_SUPPORTED] = false;
 #endif
   obj[PARAM_HARDWARE] = CFG_PCB;
+  obj[CONFIG_REGISTERED] = _gravConfig->isRegistered();
 }
 
 void GravitymonWebServer::doWebStatus(JsonObject &obj) {
