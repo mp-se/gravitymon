@@ -3,14 +3,16 @@
 Releases 
 ########
 
-v2.3.0 (beta 5)
-===============
+v2.3.0
+======
 
 In this version I have dropped some fetures to make room for new options and 
 features due to limitations on the devices supported, mainly the 4mb flash limit. 
 
 New features
 ++++++++++++
+* Added hardware usage reporting feature to collect data on what targets are used.
+* Added calibration usage reporting feature to collect data related to calibration
 * Added support for defining more than one pin for DS18B20 sensor
 * Added support for Tenstar ESP32c3 super mini (16-pin board)
 * Added more debug output to MPU6050 calibration sequence to help troubleshooting gyro issues.
@@ -19,7 +21,6 @@ New features
 * Added coloring to file viewer to make it easier to read (json, csv, formdata and mqtt template)
 * Added binary viewer in file viewer
 * Added 30s timeout during MPU6500 calibration if the gyro is not working properly
-
 * Added support for Waveshare ESP32c3 zero (18-pin board)
 * Added PCB for Waveshare ESP32c3 zero (18-pin board) 
 * Added feature flags to build so builds can be customized and UI will better adapt.

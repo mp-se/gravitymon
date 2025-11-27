@@ -109,7 +109,7 @@ Gravitymon PCB
 **************
 
 Waveshare ESP32c3 Zero using PET casing
-=======================================
++++++++++++++++++++++++++++++++++++++++
 
 This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:
 
@@ -174,14 +174,14 @@ excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip.
   :alt: iSpindle esp8266
 
 Schema for esp8266 build
-========================
+++++++++++++++++++++++++
 
 .. image:: images/schema_esp8266.png
   :width: 700
   :alt: Schema esp8266
 
 What is different for the ESP32
-===============================
++++++++++++++++++++++++++++++++
 
 You need to add a resistor between Battery PIN and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider 
 which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog 
@@ -215,7 +215,7 @@ Modifications
 *************
 
 Adding a reed (magnetic) reset switch
-=====================================
++++++++++++++++++++++++++++++++++++++
 
 A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to 
 a magnet. 
@@ -234,7 +234,7 @@ The reed switch is the glass tube visible under the esp8266.
   :alt: Reed build
 
 Gyro options
-============
+************
 
 Besides the standard MPU-6050 and MPU-6500 gravitymon now also supports the ICM-42670-p which can be obtained from Aliexpress as a development board. 
 There is some work ongoing to create a new PCB based on this gyro. I will update with links when available.
@@ -248,3 +248,6 @@ that allows you to use the Y axis for tilt detection. The boards I used is pin c
   
 .. note::
   The ICM gyro does not have any calibration feature since they are calibrated from the factory. So mounting the at the correct angle is important.
+
+.. note::
+  The ICM gyro boards that can be bought only support +3.3V power supply and most iSpindel boards use +5V to supply the gyro. 
