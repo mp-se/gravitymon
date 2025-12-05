@@ -59,7 +59,7 @@ bool checkPinCharging(int pin) {
   analogReadResolution(SOC_ADC_MAX_BITWIDTH);
   analogSetAttenuation(ADC_11db);
   int v = analogRead(pin);
-  Log.notice(F("Helper: Charging pin %d voltage %d"), pin, v);
+  // Log.notice(F("Helper: Charging pin %d voltage %d" CR), pin, v);
   return v > 2500 ? true : false;  // > 2V on pin
 #endif
 }
