@@ -113,6 +113,17 @@ Waveshare ESP32c3 Zero using PET casing
 
 This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:
 
+.. note::
+  The v1.0 and v1.1 of the PCB design has a misstake that needs to be corrected or this will damage the ESP32c3 board. The power 
+  and pull-up for the DS18B20 is to VCC which means pin 5 will eventually be damaged. THe ICM gyro will not work with 5V so this 
+  will make it possbible to use that option as well. The way to correct this is to supply the Gyro and Temperature sensors from 3.3V.  
+  I'm working on a new version of the PCB that uses 3.3V for these components. The solution is to cut the 5V trace at point 1 and 
+  then add a wire between the R3 resistor and the 3.3V pin on the ESP32c3 board at point 2.
+
+  .. image:: images/gravitymon_hw_fix.png
+
+These are the components needed. 
+
 * XL BIG PET Micro Geocaching container
 * Gravitymon PCB (Order from PCBWAY)
 * Waveshare ESP32c3 Zero board (18-pin board)
@@ -122,7 +133,7 @@ This is my own design of a PCB for Gravitymon using the same PET casing as for t
 * Wireless Charging reciver and transmitter (XKT510-24)
 * Resistor: 2 x 10k 0.25W (R1+R2)
 * Resistor: 2 x 220k 0.25W (R4+R5)
-* Resistor: 1 x 4.7k 0.25W (R3)
+* Resistor: 1 x 3.3k 0.25W (R3)
 * Charging module TP4056
 * Switch (SK12D07VG3)
 * Dallas DS18B20 temperature sensor
