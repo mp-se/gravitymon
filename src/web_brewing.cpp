@@ -457,6 +457,13 @@ void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
   obj[PARAM_APP_VER] = CFG_APPVER;
   obj[PARAM_APP_BUILD] = CFG_GITREV;
 
+  // Unique identifer for this board
+#if defined(ESP8266)
+  obj[PARAM_CHIP_ID] = String(ESP.getChipId(), HEX);
+#else
+  obj[PARAM_CHIP_ID] = String(ESP.getEfuseMac(), HEX);
+#endif
+
   doWebFeature(obj);
 
   response->setLength();

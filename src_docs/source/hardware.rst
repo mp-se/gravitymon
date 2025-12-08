@@ -109,9 +109,22 @@ Gravitymon PCB
 **************
 
 Waveshare ESP32c3 Zero using PET casing
-=======================================
++++++++++++++++++++++++++++++++++++++++
 
 This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:
+
+.. note::
+  The v1.0 and v1.1 of the PCB design has a misstake that needs to be corrected or this can damage the ESP32c3 board. The power 
+  and pull-up for the DS18B20 is to VCC which means pin 5 will eventually be damaged. The ICM-42670-p gyro will not work with 5V 
+  so this will make it possbible to use that option as well. The way to correct this is to supply the Gyro and Temperature sensors 
+  from 3.3V. I'm working on a new version of the PCB that uses 3.3V for these components. The solution is to cut the 5V trace at 
+  point 1 and then add a wire between the R3 resistor and the 3.3V pin on the ESP32c3 board at point 2. 
+
+  Another option is to connect the R3 pullup to 3.3V on the ESP32c3 board instead that way the data pin is compatible.
+
+  .. image:: images/gravitymon_hw_fix.png
+
+These are the components needed. 
 
 * XL BIG PET Micro Geocaching container
 * Gravitymon PCB (Order from PCBWAY)
@@ -122,7 +135,7 @@ This is my own design of a PCB for Gravitymon using the same PET casing as for t
 * Wireless Charging reciver and transmitter (XKT510-24)
 * Resistor: 2 x 10k 0.25W (R1+R2)
 * Resistor: 2 x 220k 0.25W (R4+R5)
-* Resistor: 1 x 4.7k 0.25W (R3)
+* Resistor: 1 x 3.3k 0.25W (R3)
 * Charging module TP4056
 * Switch (SK12D07VG3)
 * Dallas DS18B20 temperature sensor
@@ -174,14 +187,14 @@ excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip.
   :alt: iSpindle esp8266
 
 Schema for esp8266 build
-========================
+++++++++++++++++++++++++
 
 .. image:: images/schema_esp8266.png
   :width: 700
   :alt: Schema esp8266
 
 What is different for the ESP32
-===============================
++++++++++++++++++++++++++++++++
 
 You need to add a resistor between Battery PIN and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider 
 which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog 
@@ -215,7 +228,7 @@ Modifications
 *************
 
 Adding a reed (magnetic) reset switch
-=====================================
++++++++++++++++++++++++++++++++++++++
 
 A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to 
 a magnet. 
@@ -234,7 +247,7 @@ The reed switch is the glass tube visible under the esp8266.
   :alt: Reed build
 
 Gyro options
-============
+************
 
 Besides the standard MPU-6050 and MPU-6500 gravitymon now also supports the ICM-42670-p which can be obtained from Aliexpress as a development board. 
 There is some work ongoing to create a new PCB based on this gyro. I will update with links when available.
@@ -248,3 +261,6 @@ that allows you to use the Y axis for tilt detection. The boards I used is pin c
   
 .. note::
   The ICM gyro does not have any calibration feature since they are calibrated from the factory. So mounting the at the correct angle is important.
+
+.. note::
+  The ICM gyro boards that can be bought only support +3.3V power supply and most iSpindel boards use +5V to supply the gyro. 

@@ -38,6 +38,7 @@ constexpr auto PARAM_APP_VER = "app_ver";
 constexpr auto PARAM_APP_BUILD = "app_build";
 constexpr auto PARAM_PLATFORM = "platform";
 constexpr auto PARAM_BOARD = "board";
+constexpr auto PARAM_CHIP_ID = "chip_id";
 constexpr auto PARAM_FIRMWARE_FILE = "firmware_file";
 constexpr auto PARAM_SELF = "self_check";
 constexpr auto PARAM_SELF_BATTERY_LEVEL = "battery_level";

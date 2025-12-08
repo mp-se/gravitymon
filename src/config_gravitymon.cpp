@@ -67,6 +67,8 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_BLE_FORMAT] = getGravitymonBleFormat();
   doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
   doc[CONFIG_CHARGING_PIN_ENABLED] = this->isPinChargingMode();
+
+  doc[CONFIG_REGISTERED] = isRegistered();
 }
 
 void GravitymonConfig::parseJson(JsonObject& doc) {
@@ -146,6 +148,8 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     setBatterySaving(doc[CONFIG_BATTERY_SAVING].as<bool>());
   if (!doc[CONFIG_CHARGING_PIN_ENABLED].isNull())
     setPinChargingMode(doc[CONFIG_CHARGING_PIN_ENABLED].as<bool>());
+  if (!doc[CONFIG_REGISTERED].isNull())
+    setRegistered(doc[CONFIG_REGISTERED].as<bool>());
 }
 
 void GravitymonConfig::migrateSettings() {

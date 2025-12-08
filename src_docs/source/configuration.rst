@@ -30,6 +30,17 @@ One of the following conditions will place the device in ``configuration mode``:
   reset button once. 
 
 
+From v2.3 i have added a reporting feature to collect information on what targets are being used for 
+this project. It will report data anonymously and no personal data is collected. The data being sent is 
+shown in the table below. 
+
+.. image:: images/ui-device-report.png
+  :width: 400
+  :alt: Report device hardware
+
+There is also a data collection feature related to the calibration and formula creations to see if that 
+can be improved futher. 
+
 Home page 
 =========
 
@@ -99,6 +110,10 @@ Device - Settings
 
   Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.
 
+* **Check status**
+
+  Checks if this device has been reported to the data collection service.
+
 * **Factory default**
 
   This function will reset all settings to factory default. Use with caution!
@@ -107,6 +122,9 @@ Device - Settings
 
   Restarts the device, similar to pressing the reset button
 
+* **Report Usage**
+
+  Opens a dialog and allows the user to see the data beeing sent and confirm sending it to the data collection service.
 
 Device - Hardware
 +++++++++++++++++
@@ -302,31 +320,37 @@ Gravity - Formula
   When you submit the values the device will create formulas for order 1 to 4 and show those that are within the accepted deviation. You can also see 
   how the formula performs in relation to your datapoints and what the deviation is per angle. The more data points you have the better the graph.
 
+* **Report calibration data:**
+
+  Will send you formula and calibration data points to my collection server anonymously to help improve the formula creation in future releases.
+
+.. image:: images/ui-calibration-report.png
+  :width: 400
+  :alt: Formula collection
+
+Here a graph is shown with your current formula compared with the entered data points. 
 
 .. image:: images/ui-gravity-formula-current.png
   :width: 800
   :alt: Gravity Current
 
-Here a graph is shown with your current formula compared with the entered data points. 
-
+Here you can see the generated formulas. A drop down selector is available on the top to make it easy to select the formula you want.
 
 .. image:: images/ui-gravity-formula-formula.png
   :width: 800
   :alt: Gravity Formula 
 
-Here you can see the generated formulas. A drop down selector is available on the top to make it easy to select the formula you want.
+Table with calculated values per angle that has been used and the deviation from the entered data.
 
 .. image:: images/ui-gravity-formula-table.png
   :width: 800
   :alt: Gravity Table
 
-Table with calculated values per angle that has been used and the deviation from the entered data.
+Here a graph is shown with the created formulas. You can deselect a formula by selecting the color in the legend. 
 
 .. image:: images/ui-gravity-formula-graph.png
   :width: 800
   :alt: Gravity Graph
-
-Here a graph is shown with the created formulas. You can deselect a formula by selecting the color in the legend. 
 
 
 Push targets
