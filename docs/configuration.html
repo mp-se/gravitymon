@@ -281,6 +281,12 @@ be used as a failsafe mode if the sensors cause startup issues.</p>
 <p>The easiest way to enter configuration mode is to place the device on a flat surface and press the
 reset button once.</p>
 </div>
+<p>From v2.3 i have added a reporting feature to collect information on what targets are being used for
+this project. It will report data anonymously and no personal data is collected. The data being sent is
+shown in the table below.</p>
+<a class="reference internal image-reference" href="_images/ui-device-report.png"><img alt="Report device hardware" src="_images/ui-device-report.png" style="width: 400px;" /></a>
+<p>There is also a data collection feature related to the calibration and formula creations to see if that
+can be improved futher.</p>
 <section id="home-page">
 <h2>Home page<a class="headerlink" href="#home-page" title="Permalink to this heading">¶</a></h2>
 <p>URL: (<a class="reference external" href="http://gravmon.local">http://gravmon.local</a>)</p>
@@ -327,11 +333,17 @@ code the update will be done during startup.</p>
 <li><p><strong>User Interface:</strong></p>
 <p>Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.</p>
 </li>
+<li><p><strong>Check status</strong></p>
+<p>Checks if this device has been reported to the data collection service.</p>
+</li>
 <li><p><strong>Factory default</strong></p>
 <p>This function will reset all settings to factory default. Use with caution!</p>
 </li>
 <li><p><strong>Restart</strong></p>
 <p>Restarts the device, similar to pressing the reset button</p>
+</li>
+<li><p><strong>Report Usage</strong></p>
+<p>Opens a dialog and allows the user to see the data beeing sent and confirm sending it to the data collection service.</p>
 </li>
 </ul>
 </section>
@@ -488,15 +500,19 @@ will allow you to see more options.</p>
 <p>When you submit the values the device will create formulas for order 1 to 4 and show those that are within the accepted deviation. You can also see
 how the formula performs in relation to your datapoints and what the deviation is per angle. The more data points you have the better the graph.</p>
 </li>
+<li><p><strong>Report calibration data:</strong></p>
+<p>Will send you formula and calibration data points to my collection server anonymously to help improve the formula creation in future releases.</p>
+</li>
 </ul>
-<a class="reference internal image-reference" href="_images/ui-gravity-formula-current.png"><img alt="Gravity Current" src="_images/ui-gravity-formula-current.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/ui-calibration-report.png"><img alt="Formula collection" src="_images/ui-calibration-report.png" style="width: 400px;" /></a>
 <p>Here a graph is shown with your current formula compared with the entered data points.</p>
-<a class="reference internal image-reference" href="_images/ui-gravity-formula-formula.png"><img alt="Gravity Formula" src="_images/ui-gravity-formula-formula.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula-current.png"><img alt="Gravity Current" src="_images/ui-gravity-formula-current.png" style="width: 800px;" /></a>
 <p>Here you can see the generated formulas. A drop down selector is available on the top to make it easy to select the formula you want.</p>
-<a class="reference internal image-reference" href="_images/ui-gravity-formula-table.png"><img alt="Gravity Table" src="_images/ui-gravity-formula-table.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula-formula.png"><img alt="Gravity Formula" src="_images/ui-gravity-formula-formula.png" style="width: 800px;" /></a>
 <p>Table with calculated values per angle that has been used and the deviation from the entered data.</p>
-<a class="reference internal image-reference" href="_images/ui-gravity-formula-graph.png"><img alt="Gravity Graph" src="_images/ui-gravity-formula-graph.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula-table.png"><img alt="Gravity Table" src="_images/ui-gravity-formula-table.png" style="width: 800px;" /></a>
 <p>Here a graph is shown with the created formulas. You can deselect a formula by selecting the color in the legend.</p>
+<a class="reference internal image-reference" href="_images/ui-gravity-formula-graph.png"><img alt="Gravity Graph" src="_images/ui-gravity-formula-graph.png" style="width: 800px;" /></a>
 </section>
 </section>
 <section id="push-targets">

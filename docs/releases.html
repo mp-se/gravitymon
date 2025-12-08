@@ -258,13 +258,20 @@
         <article role="main" id="furo-main-content">
           <section id="releases">
 <span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Permalink to this heading">¶</a></h1>
-<section id="v2-3-0-beta-5">
-<h2>v2.3.0 (beta 5)<a class="headerlink" href="#v2-3-0-beta-5" title="Permalink to this heading">¶</a></h2>
+<section id="v2-3-0">
+<h2>v2.3.0<a class="headerlink" href="#v2-3-0" title="Permalink to this heading">¶</a></h2>
 <p>In this version I have dropped some fetures to make room for new options and
 features due to limitations on the devices supported, mainly the 4mb flash limit.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The v1.0 and v1.1 of the PCB design has a misstake that needs to be corrected or this will damage the ESP32c3 board.
+The power and pull-up for the DS18B20 is to VCC which means pin 5 will eventually be damaged.</p>
+</div>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
+<li><p>Added hardware usage reporting feature to collect data on what targets are used.</p></li>
+<li><p>Added calibration usage reporting feature to collect data related to calibration</p></li>
 <li><p>Added support for defining more than one pin for DS18B20 sensor</p></li>
 <li><p>Added support for Tenstar ESP32c3 super mini (16-pin board)</p></li>
 <li><p>Added more debug output to MPU6050 calibration sequence to help troubleshooting gyro issues.</p></li>
@@ -920,7 +927,7 @@ the behaviour in v0.6 is wanted this can be done via the format editor.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Releases</a><ul>
-<li><a class="reference internal" href="#v2-3-0-beta-5">v2.3.0 (beta 5)</a><ul>
+<li><a class="reference internal" href="#v2-3-0">v2.3.0</a><ul>
 <li><a class="reference internal" href="#new-features">New features</a></li>
 <li><a class="reference internal" href="#dropped-features">Dropped features</a></li>
 <li><a class="reference internal" href="#bugs-fixed">Bugs fixed</a></li>

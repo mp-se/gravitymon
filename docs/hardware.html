@@ -363,7 +363,20 @@ builds since I dont have access to these boards for testing.</p>
 </section>
 <section id="gravitymon-pcb">
 <h2>Gravitymon PCB<a class="headerlink" href="#gravitymon-pcb" title="Permalink to this heading">¶</a></h2>
+<section id="waveshare-esp32c3-zero-using-pet-casing">
+<h3>Waveshare ESP32c3 Zero using PET casing<a class="headerlink" href="#waveshare-esp32c3-zero-using-pet-casing" title="Permalink to this heading">¶</a></h3>
 <p>This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The v1.0 and v1.1 of the PCB design has a misstake that needs to be corrected or this can damage the ESP32c3 board. The power
+and pull-up for the DS18B20 is to VCC which means pin 5 will eventually be damaged. The ICM-42670-p gyro will not work with 5V
+so this will make it possbible to use that option as well. The way to correct this is to supply the Gyro and Temperature sensors
+from 3.3V. I’m working on a new version of the PCB that uses 3.3V for these components. The solution is to cut the 5V trace at
+point 1 and then add a wire between the R3 resistor and the 3.3V pin on the ESP32c3 board at point 2.</p>
+<p>Another option is to connect the R3 pullup to 3.3V on the ESP32c3 board instead that way the data pin is compatible.</p>
+<img alt="_images/gravitymon_hw_fix.png" src="_images/gravitymon_hw_fix.png" />
+</div>
+<p>These are the components needed.</p>
 <ul class="simple">
 <li><p>XL BIG PET Micro Geocaching container</p></li>
 <li><p>Gravitymon PCB (Order from PCBWAY)</p></li>
@@ -374,7 +387,7 @@ builds since I dont have access to these boards for testing.</p>
 <li><p>Wireless Charging reciver and transmitter (XKT510-24)</p></li>
 <li><p>Resistor: 2 x 10k 0.25W (R1+R2)</p></li>
 <li><p>Resistor: 2 x 220k 0.25W (R4+R5)</p></li>
-<li><p>Resistor: 1 x 4.7k 0.25W (R3)</p></li>
+<li><p>Resistor: 1 x 3.3k 0.25W (R3)</p></li>
 <li><p>Charging module TP4056</p></li>
 <li><p>Switch (SK12D07VG3)</p></li>
 <li><p>Dallas DS18B20 temperature sensor</p></li>
@@ -384,6 +397,7 @@ builds since I dont have access to these boards for testing.</p>
 <p>This is the back / front of the PCB design.</p>
 <a class="reference internal image-reference" href="_images/gravitymon_pcb_zero_pet.png"><img alt="Gravitymon PCB for PET" src="_images/gravitymon_pcb_zero_pet.png" style="width: 600px;" /></a>
 <a class="reference internal image-reference" href="_images/gravitymon_pcb_zero_pet_2.png"><img alt="Gravitymon PCB for PET" src="_images/gravitymon_pcb_zero_pet_2.png" style="width: 600px;" /></a>
+</section>
 <section id="build-instructions">
 <h3>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this heading">¶</a></h3>
 <p>I would also recommend to flash the ESP before soldering it so you know it works and connects to your wifi correctly.</p>
@@ -408,7 +422,12 @@ can differ in weight, they should be around 44g.</p>
 <p>There are lots of resouces out there on how to build the hardware for an iSpindle so I will not go into details on that part. I typically use one of the
 excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip. Here is one of my standard builds using an esp8266.</p>
 <a class="reference internal image-reference" href="_images/ispindel_esp8266.jpg"><img alt="iSpindle esp8266" src="_images/ispindel_esp8266.jpg" style="width: 500px;" /></a>
+<section id="schema-for-esp8266-build">
+<h3>Schema for esp8266 build<a class="headerlink" href="#schema-for-esp8266-build" title="Permalink to this heading">¶</a></h3>
 <a class="reference internal image-reference" href="_images/schema_esp8266.png"><img alt="Schema esp8266" src="_images/schema_esp8266.png" style="width: 700px;" /></a>
+</section>
+<section id="what-is-different-for-the-esp32">
+<h3>What is different for the ESP32<a class="headerlink" href="#what-is-different-for-the-esp32" title="Permalink to this heading">¶</a></h3>
 <p>You need to add a resistor between Battery PIN and ground of 220k. The reason is that the esp8266 has a build in resistor for a voltage divider
 which the esp32 does not have. So in order to get a valid voltage (less than 2.3V on the analog pin. This depends on the board) on the analog
 pin this is needed. Once the modification is done you might
@@ -418,6 +437,7 @@ sleep until the power is lost. This is intended to be used with wireless charger
 need to add a voltage divider and pull-down resistor for this to work correctly and not damage the ESP with more than 3.3V.</p>
 <p>The charging pin can also be used for doing a reset of the device that does not have an exposed reset pin, this applies to the smaller
 boards like Zero or Super Mini boards.</p>
+</section>
 <section id="example-esp32c3-mini">
 <h3>Example: ESP32c3 mini<a class="headerlink" href="#example-esp32c3-mini" title="Permalink to this heading">¶</a></h3>
 <p>This is model is fully supported by gravitymon.</p>
@@ -428,6 +448,8 @@ boards like Zero or Super Mini boards.</p>
 </section>
 <section id="modifications">
 <h2>Modifications<a class="headerlink" href="#modifications" title="Permalink to this heading">¶</a></h2>
+<section id="adding-a-reed-magnetic-reset-switch">
+<h3>Adding a reed (magnetic) reset switch<a class="headerlink" href="#adding-a-reed-magnetic-reset-switch" title="Permalink to this heading">¶</a></h3>
 <p>A reed switch is a switch that reacts to magnetic fields. The ones I have tested are normally open and close in proximity to
 a magnet.</p>
 <a class="reference internal image-reference" href="_images/reed.jpg"><img alt="Reed switch" src="_images/reed.jpg" style="width: 400px;" /></a>
@@ -435,6 +457,10 @@ a magnet.</p>
 I mounted the iSPINDLE PCB v4.0 just under the cap. The lower red circle shows the reset connection point for the reed switch.</p>
 <p>The reed switch is the glass tube visible under the esp8266.</p>
 <a class="reference internal image-reference" href="_images/reed_build.jpg"><img alt="Reed build" src="_images/reed_build.jpg" style="width: 400px;" /></a>
+</section>
+</section>
+<section id="gyro-options">
+<h2>Gyro options<a class="headerlink" href="#gyro-options" title="Permalink to this heading">¶</a></h2>
 <p>Besides the standard MPU-6050 and MPU-6500 gravitymon now also supports the ICM-42670-p which can be obtained from Aliexpress as a development board.
 There is some work ongoing to create a new PCB based on this gyro. I will update with links when available.</p>
 <a class="reference internal image-reference" href="_images/gyro-icm42670p.png"><img alt="ICM-42670-P" src="_images/gyro-icm42670p.png" style="width: 200px;" /></a>
@@ -443,6 +469,10 @@ that allows you to use the Y axis for tilt detection. The boards I used is pin c
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The ICM gyro does not have any calibration feature since they are calibrated from the factory. So mounting the at the correct angle is important.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The ICM gyro boards that can be bought only support +3.3V power supply and most iSpindel boards use +5V to supply the gyro.</p>
 </div>
 </section>
 </section>
@@ -508,14 +538,21 @@ that allows you to use the Y axis for tilt detection. The boards I used is pin c
 </ul>
 </li>
 <li><a class="reference internal" href="#gravitymon-pcb">Gravitymon PCB</a><ul>
+<li><a class="reference internal" href="#waveshare-esp32c3-zero-using-pet-casing">Waveshare ESP32c3 Zero using PET casing</a></li>
 <li><a class="reference internal" href="#build-instructions">Build instructions</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#ispindle-based-on-esp8266">iSpindle based on esp8266</a><ul>
+<li><a class="reference internal" href="#schema-for-esp8266-build">Schema for esp8266 build</a></li>
+<li><a class="reference internal" href="#what-is-different-for-the-esp32">What is different for the ESP32</a></li>
 <li><a class="reference internal" href="#example-esp32c3-mini">Example: ESP32c3 mini</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#modifications">Modifications</a></li>
+<li><a class="reference internal" href="#modifications">Modifications</a><ul>
+<li><a class="reference internal" href="#adding-a-reed-magnetic-reset-switch">Adding a reed (magnetic) reset switch</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gyro-options">Gyro options</a></li>
 </ul>
 </li>
 </ul>
