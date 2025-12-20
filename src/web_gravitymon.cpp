@@ -307,9 +307,8 @@ void GravitymonWebServer::webHandleGyro(AsyncWebServerRequest *request) {
 bool GravitymonWebServer::setupWebServer(const char *serviceName) {
   BrewingWebServer::setupWebServer(serviceName);
 
-  _server->on("/api/gyro", HTTP_GET,
-              std::bind(&GravitymonWebServer::webHandleGyro, this,
-                        std::placeholders::_1));
+  _server->on("/api/gyro", (WebRequestMethodComposite)HTTP_GET,
+              [this](AsyncWebServerRequest *request) { webHandleGyro(request); });
   return true;
 }
 
