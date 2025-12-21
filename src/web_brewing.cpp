@@ -546,6 +546,9 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
 
   BaseWebServer::setupWebServer();
   MDNS.addService(serviceName, "tcp", 80);
+  MDNS.addServiceTxt(serviceName, "tcp", "ver", CFG_APPVER);
+  MDNS.addServiceTxt(serviceName, "tcp", "app", CFG_APPNAME);
+  MDNS.addServiceTxt(serviceName, "tcp", "id", _webConfig->getID());
 
   Log.notice(F("WEB : Setting up handlers for web server." CR));
 
