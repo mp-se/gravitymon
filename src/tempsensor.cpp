@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+#include <math.h>
 #include <log.hpp>
 #include <tempsensor.hpp>
 
@@ -66,7 +67,7 @@ bool TempSensor::setupSensor(int pin) {
 
 void TempSensor::readSensor(bool useGyro) {
   if (!_initialized) {
-    _temperatureC = INVALID_TEMPERATURE;
+    _temperatureC = NAN;
     return;
   }
 
@@ -77,7 +78,7 @@ void TempSensor::readSensor(bool useGyro) {
       _temperatureC = _secondary->getInitialSensorTempC();
       _hasSensor = true;
     } else {
-      _temperatureC = INVALID_TEMPERATURE;
+      _temperatureC = NAN;
       _hasSensor = false;
     }
 #if LOG_LEVEL == 6
@@ -92,7 +93,7 @@ void TempSensor::readSensor(bool useGyro) {
 #if LOG_LEVEL == 6
     Log.notice(F("TSEN: No temperature sensors found. Skipping read." CR));
 #endif
-    _temperatureC = INVALID_TEMPERATURE;
+    _temperatureC = NAN;
     return;
   }
 

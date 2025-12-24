@@ -154,8 +154,6 @@ class GyroSensorInterface {
   bool isSensorMoving() { return _sensorMoving; }
 };
 
-#define INVALID_TEMPERATURE -273
-
 class GyroSensor : public SecondayTempSensorInterface {
  private:
   GyroConfigInterface* _gyroConfig;
@@ -168,7 +166,7 @@ class GyroSensor : public SecondayTempSensorInterface {
   float _angle = 0;
   float _filteredAngle = 0;
   float _temp = 0;
-  float _initialSensorTemp = INVALID_TEMPERATURE;
+  float _initialSensorTemp = NAN;
   bool _valid = false;
   GyroMode _currentMode = GyroMode::GYRO_UNCONFIGURED;
 

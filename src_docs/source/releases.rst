@@ -3,6 +3,20 @@
 Releases 
 ########
 
+v2.4.0
+======
+
+* Update dependencies to latest version
+
+New features
+++++++++++++
+* Added meta data to mDNS broadcast (app, version, id)
+* Updated code to use NAN instead of -273 as invalid temperature
+
+Bugs fixed
+++++++++++
+* If data is invalid or missing send the correct value in BLE transmissions
+
 v2.3.0
 ======
 

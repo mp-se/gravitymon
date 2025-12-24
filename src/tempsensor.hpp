@@ -30,8 +30,6 @@ SOFTWARE.
 
 #include <memory>
 
-constexpr auto INVALID_TEMPERATURE = -273.0f;
-
 class SecondayTempSensorInterface {
  public:
   virtual float getInitialSensorTempC() const = 0;

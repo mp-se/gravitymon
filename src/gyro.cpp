@@ -151,7 +151,7 @@ bool GyroSensor::read() {
     _angle = SIMULATE_ANGLE;
 #endif
 
-    if (_initialSensorTemp == INVALID_TEMPERATURE) {
+    if (_initialSensorTemp == NAN) {
       _initialSensorTemp = resultData.temp;
     }
 #if defined(ESP32) && defined(ENABLE_RTCMEM)

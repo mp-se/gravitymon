@@ -53,10 +53,10 @@ void BleSender::sendEddystoneData(float battery, float tempC, float gravSG,
 
   char beacon_data[25];
 
-  uint16_t g = gravSG * 10000;
-  uint16_t t = tempC * 1000;
-  uint16_t b = battery * 1000;
-  uint16_t a = angle * 100;
+  uint16_t g = isnan(gravSG) ? 0xffff : gravSG * 10000;
+  uint16_t t = isnan(tempC) ? 0xffff : tempC * 1000;
+  uint16_t b = isnan(battery) ? 0xffff : battery * 1000;
+  uint16_t a = isnan(angle) ? 0xffff : angle * 100;
   uint32_t chipId = 0;
 
   for (int i = 0; i < 17; i = i + 8) {
@@ -115,12 +115,12 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   else  // if (_color.compareTo("pink"))
     _uuid = BLEUUID::fromString("A495BB80-C5B1-4B44-B512-1370F02D74DE");
 
-  uint16_t gravity = gravSG * 1000;  // SG * 1000 or SG * 10000 for Tilt Pro/HD
-  uint16_t temperature = tempF;      // Deg F _or_ Deg F * 10 for Tilt Pro/HD
+  uint16_t gravity = isnan(gravSG) ? 0xffff : gravSG * 1000;  // SG * 1000 or SG * 10000 for Tilt Pro/HD
+  uint16_t temperature = isnan(tempF) ? 0xffff : tempF;      // Deg F _or_ Deg F * 10 for Tilt Pro/HD
 
   if (tiltPro) {
-    gravity = gravSG * 10000;
-    temperature = tempF * 10;
+    gravity = isnan(gravSG) ? 0xffff : gravSG * 10000;
+    temperature = isnan(tempF) ? 0xffff : tempF * 10;
   }
 
   BLEBeacon beacon = BLEBeacon();
@@ -151,9 +151,9 @@ void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG,
 
   _advertising->stop();
 
-  uint16_t t = (tempC + 273.15) * 128.0;
-  uint16_t b = battery * 256;
-  uint16_t a = angle * 16;
+  uint16_t t = isnan(tempC) ? 0xffff : (tempC + 273.15) * 128.0;
+  uint16_t b = isnan(battery) ? 0xffff : battery * 256;
+  uint16_t a = isnan(angle) ? 0xffff : angle * 16;
   uint32_t chipId = 0;
 
   union {  // For mapping the raw float to bytes
@@ -237,9 +237,9 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
     uint8_t b[4];
   } floatUnion;
 
-  uint16_t t = (tempC + 273.15) * 128.0;
-  uint16_t b = battery * 256;
-  uint16_t a = angle * 16;
+  uint16_t t = isnan(tempC) ? 0xffff : (tempC + 273.15) * 128.0;
+  uint16_t b = isnan(battery) ? 0xffff : battery * 256;
+  uint16_t a = isnan(angle) ? 0xffff : angle * 16;
 
   std::string mf = "";
 
@@ -310,13 +310,12 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
 void BleSender::sendCustomBeaconData(float battery, float tempC, float gravSG,
                                      float angle) {
   Log.info(F("Starting custom beacon data transmission" CR));
-
   _advertising->stop();
 
-  uint16_t g = gravSG * 10000;
-  uint16_t t = tempC * 1000;
-  uint16_t b = battery * 1000;
-  uint16_t a = angle * 100;
+  uint16_t g = isnan(gravSG) ? 0xffff :gravSG * 10000;
+  uint16_t t = isnan(tempC) ? 0xffff : tempC * 1000;
+  uint16_t b = isnan(battery) ? 0xffff : battery * 1000;
+  uint16_t a = isnan(angle) ? 0xffff : angle * 100;
   uint32_t chipId = 0;
 
   for (int i = 0; i < 17; i = i + 8) {
