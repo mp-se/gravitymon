@@ -554,7 +554,9 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
 
   AsyncCallbackJsonWebHandler *handler;
   _server->on("/api/format", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleConfigFormatRead(request); });
+              [this](AsyncWebServerRequest *request) {
+                webHandleConfigFormatRead(request);
+              });
   handler = new AsyncCallbackJsonWebHandler(
       "/api/format",
       std::bind(&BrewingWebServer::webHandleConfigFormatWrite, this,
@@ -565,28 +567,42 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
       std::bind(&BrewingWebServer::webHandleSleepmode, this,
                 std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
-  _server->on("/api/config", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleConfigRead(request); });
+  _server->on(
+      "/api/config", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleConfigRead(request); });
   handler = new AsyncCallbackJsonWebHandler(
       "/api/config", std::bind(&BrewingWebServer::webHandleConfigWrite, this,
                                std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
   _server->on("/api/calibrate/status", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleCalibrateStatus(request); });
-  _server->on("/api/calibrate", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleCalibrate(request); });
+              [this](AsyncWebServerRequest *request) {
+                webHandleCalibrateStatus(request);
+              });
+  _server->on(
+      "/api/calibrate", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleCalibrate(request); });
   _server->on("/api/hardware/status", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleHardwareScanStatus(request); });
+              [this](AsyncWebServerRequest *request) {
+                webHandleHardwareScanStatus(request);
+              });
   _server->on("/api/hardware", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleHardwareScan(request); });
+              [this](AsyncWebServerRequest *request) {
+                webHandleHardwareScan(request);
+              });
   _server->on("/api/factory", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleFactoryDefaults(request); });
-  _server->on("/api/status", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleStatus(request); });
-  _server->on("/api/feature", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleFeature(request); });
+              [this](AsyncWebServerRequest *request) {
+                webHandleFactoryDefaults(request);
+              });
+  _server->on(
+      "/api/status", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleStatus(request); });
+  _server->on(
+      "/api/feature", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleFeature(request); });
   _server->on("/api/push/status", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleTestPushStatus(request); });
+              [this](AsyncWebServerRequest *request) {
+                webHandleTestPushStatus(request);
+              });
   handler = new AsyncCallbackJsonWebHandler(
       "/api/push", std::bind(&BrewingWebServer::webHandleTestPush, this,
                              std::placeholders::_1, std::placeholders::_2));

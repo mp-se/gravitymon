@@ -115,8 +115,11 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   else  // if (_color.compareTo("pink"))
     _uuid = BLEUUID::fromString("A495BB80-C5B1-4B44-B512-1370F02D74DE");
 
-  uint16_t gravity = isnan(gravSG) ? 0xffff : gravSG * 1000;  // SG * 1000 or SG * 10000 for Tilt Pro/HD
-  uint16_t temperature = isnan(tempF) ? 0xffff : tempF;      // Deg F _or_ Deg F * 10 for Tilt Pro/HD
+  uint16_t gravity =
+      isnan(gravSG) ? 0xffff
+                    : gravSG * 1000;  // SG * 1000 or SG * 10000 for Tilt Pro/HD
+  uint16_t temperature =
+      isnan(tempF) ? 0xffff : tempF;  // Deg F _or_ Deg F * 10 for Tilt Pro/HD
 
   if (tiltPro) {
     gravity = isnan(gravSG) ? 0xffff : gravSG * 10000;
@@ -312,7 +315,7 @@ void BleSender::sendCustomBeaconData(float battery, float tempC, float gravSG,
   Log.info(F("Starting custom beacon data transmission" CR));
   _advertising->stop();
 
-  uint16_t g = isnan(gravSG) ? 0xffff :gravSG * 10000;
+  uint16_t g = isnan(gravSG) ? 0xffff : gravSG * 10000;
   uint16_t t = isnan(tempC) ? 0xffff : tempC * 1000;
   uint16_t b = isnan(battery) ? 0xffff : battery * 1000;
   uint16_t a = isnan(angle) ? 0xffff : angle * 100;
