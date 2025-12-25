@@ -10,12 +10,9 @@ v2.4.0
 
 New features
 ++++++++++++
-* Added meta data to mDNS broadcast (app, version, id)
+* Added meta data to mDNS broadcast (app, version, id), used by GravityMon Gateway to map device id towards name when using BLE. 
 * Updated code to use NAN instead of -273 as invalid temperature
-
-Bugs fixed
-++++++++++
-* If data is invalid or missing send the correct value in BLE transmissions
+* When data is invalid send 0xffff in the ble payload to indicate that,
 
 v2.3.0
 ======
