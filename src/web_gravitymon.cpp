@@ -110,23 +110,30 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
 
   obj[CONFIG_GRAVITY_UNIT] = String(_gravConfig->getGravityUnit());
 
-  obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+  if (!isnan(angle)) {
+    obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+  }
 
   if (_gravConfig->isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
         gravity, tempC, _gravConfig->getDefaultCalibrationTemp());
   }
-  if (_gravConfig->isGravityPlato()) {
-    obj[CONFIG_GRAVITY] =
-        serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
-  } else {
-    obj[CONFIG_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
+
+  if (!isnan(gravity)) {
+    if (_gravConfig->isGravityPlato()) {
+      obj[CONFIG_GRAVITY] =
+          serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
+    } else {
+      obj[CONFIG_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
+    }
   }
 
-  if (_gravConfig->isTempFormatC()) {
-    obj[PARAM_TEMP] = serialized(String(tempC, DECIMALS_TEMP));
-  } else {
-    obj[PARAM_TEMP] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
+  if (!isnan(tempC)) {
+    if (_gravConfig->isTempFormatC()) {
+      obj[PARAM_TEMP] = serialized(String(tempC, DECIMALS_TEMP));
+    } else {
+      obj[PARAM_TEMP] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
+    }
   }
 
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
@@ -307,8 +314,9 @@ void GravitymonWebServer::webHandleGyro(AsyncWebServerRequest *request) {
 bool GravitymonWebServer::setupWebServer(const char *serviceName) {
   BrewingWebServer::setupWebServer(serviceName);
 
-  _server->on("/api/gyro", (WebRequestMethodComposite)HTTP_GET,
-              [this](AsyncWebServerRequest *request) { webHandleGyro(request); });
+  _server->on(
+      "/api/gyro", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleGyro(request); });
   return true;
 }
 
