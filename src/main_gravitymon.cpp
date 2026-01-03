@@ -375,7 +375,7 @@ bool loopReadGravity() {
             myBleSender.sendRaptV2Data(
                 getBatteryPercentage(myBatteryVoltage.getVoltage(),
                                      BatteryType::LithiumIon),
-                tempC, gravitySG, angle, velocity, gv.isVelocityValid());
+                tempC, gravitySG, angle, gv.isVelocityValid() ? velocity : NAN);
           } break;
         }
       }

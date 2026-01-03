@@ -7,6 +7,7 @@ v2.4.0
 ======
 
 * Update dependencies to latest version
+* (Bug) Fixed bug in RAPT v2 format not sending the correct gravity value.
 
 New features
 ++++++++++++

@@ -148,14 +148,14 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   _advertising->stop();
 }
 
-void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG,
+void BleSender::sendRaptV1Data(float batteryPercentage, float tempC, float gravSG,
                                float angle) {
   Log.info(F("Starting rapt v1 beacon data transmission" CR));
 
   _advertising->stop();
 
   uint16_t t = isnan(tempC) ? 0xffff : (tempC + 273.15) * 128.0;
-  uint16_t b = isnan(battery) ? 0xffff : battery * 256;
+  uint16_t b = isnan(batteryPercentage) ? 0xffff : batteryPercentage * 256;
   uint16_t a = isnan(angle) ? 0xffff : angle * 16;
   uint32_t chipId = 0;
 
@@ -197,7 +197,7 @@ void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG,
   mf += static_cast<char>((t >> 8));  // Temperature
   mf += static_cast<char>((t & 0xFF));
 
-  floatUnion.f = gravSG * 1000;  // Gravity
+  floatUnion.f = gravSG;  // Gravity
   mf += static_cast<char>(floatUnion.b[3]);
   mf += static_cast<char>(floatUnion.b[2]);
   mf += static_cast<char>(floatUnion.b[1]);
@@ -228,9 +228,8 @@ void BleSender::sendRaptV1Data(float battery, float tempC, float gravSG,
   _advertising->stop();
 }
 
-void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
-                               float angle, float velocity,
-                               bool velocityValid) {
+void BleSender::sendRaptV2Data(float batteryPercentage, float tempC, float gravSG,
+                               float angle, float velocity) {
   Log.info(F("Starting rapt v2 beacon data transmission" CR));
 
   _advertising->stop();
@@ -241,7 +240,7 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
   } floatUnion;
 
   uint16_t t = isnan(tempC) ? 0xffff : (tempC + 273.15) * 128.0;
-  uint16_t b = isnan(battery) ? 0xffff : battery * 256;
+  uint16_t b = isnan(batteryPercentage) ? 0xffff : batteryPercentage * 256;
   uint16_t a = isnan(angle) ? 0xffff : angle * 16;
 
   std::string mf = "";
@@ -268,9 +267,9 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
   mf += static_cast<char>(0x02);  // Rapt v2
   mf += static_cast<char>(0x00);  // Padding
 
-  mf += static_cast<char>(velocityValid ? 0x01 : 0x00);  // Valocity valid
+  mf += static_cast<char>(isnan(velocity) ? 0x00 : 0x01); // Velocity valid
 
-  floatUnion.f = velocity;  // Velocity
+  floatUnion.f = velocity; // Velocity
   mf += static_cast<char>(floatUnion.b[3]);
   mf += static_cast<char>(floatUnion.b[2]);
   mf += static_cast<char>(floatUnion.b[1]);
@@ -279,7 +278,7 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
   mf += static_cast<char>((t >> 8));  // Temperature
   mf += static_cast<char>((t & 0xFF));
 
-  floatUnion.f = gravSG * 1000;  // Gravity
+  floatUnion.f = gravSG; // Gravity
   mf += static_cast<char>(floatUnion.b[3]);
   mf += static_cast<char>(floatUnion.b[2]);
   mf += static_cast<char>(floatUnion.b[1]);
@@ -292,7 +291,7 @@ void BleSender::sendRaptV2Data(float battery, float tempC, float gravSG,
   mf += static_cast<char>(0x00);  // Z
   mf += static_cast<char>(0x00);
 
-  mf += static_cast<char>((b >> 8));  // Battery (batt_v*1000)
+  mf += static_cast<char>((b >> 8));  // Battery (batt_v)
   mf += static_cast<char>((b & 0xFF));
 
 #if LOG_LEVEL == 6
