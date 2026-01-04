@@ -10,6 +10,7 @@ v2.4.0
 * Moved WifiDirect to own separate view in the UI for better clarity.
 * (Bug) Fixed bug in RAPT v2 format not sending the correct gravity value.
 * (Bug) Fixed issue that wifiDirect mode was not recognized as a push target and required at least one endpoint to be defined.
+* (Bug) Wifi direct can no longer be activated unless ssid and password is defined.
 
 New features
 ++++++++++++
