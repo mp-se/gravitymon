@@ -294,6 +294,10 @@ bool loopReadGravity() {
     filteredAngle = myGyro.getFilteredAngle();
     stableGyroMillis = millis();  // Reset timer
 
+    if(runMode == RunMode::configurationMode) {
+      filteredAngle = angle;  // No filtering in configuration mode, this will taint the calibration values
+    }
+
     float gravitySG =
         calculateGravity(myConfig.getGravityFormula(), angle, tempC);
     float filteredGravitySG =
