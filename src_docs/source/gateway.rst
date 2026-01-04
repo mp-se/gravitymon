@@ -5,7 +5,7 @@ Gateway
 
 .. note::
 
-  This documentation reflects **v0.8.1**. Last updated 2025-11-02
+  This documentation reflects **v0.9.0**. Last updated 2025-12-28
 
 GravityMon Gateway is an separate project that can act as a proxy between your Gravitymon/Pressuremon devices and services. It can:
 
