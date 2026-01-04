@@ -96,7 +96,7 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
       _gravConfig->isBleActive() || _gravConfig->hasTargetHttpPost() ||
               _gravConfig->hasTargetHttpPost2() ||
               _gravConfig->hasTargetHttpGet() || _gravConfig->hasTargetMqtt() ||
-              _gravConfig->hasTargetInfluxDb2()
+              _gravConfig->hasTargetInfluxDb2() || _gravConfig->isWifiDirect()
           ? true
           : false;
 

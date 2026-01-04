@@ -181,7 +181,7 @@ class BrewingConfig : public BaseConfig,
 
   bool isWifiPushActive() const {
     return (hasTargetHttpPost() || hasTargetHttpPost2() || hasTargetHttpGet() ||
-            hasTargetInfluxDb2() || hasTargetMqtt())
+            hasTargetInfluxDb2() || hasTargetMqtt() || isWifiDirect())
                ? true
                : false;
   }
