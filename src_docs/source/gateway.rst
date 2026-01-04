@@ -127,13 +127,16 @@ Device - Hardware
 
   Select the timezone so that date / time will be correcly displayed. This is not an extensive list of all timezones so let me know if you are missing one. 
 
+* **Display Layout:**
 
-Device - WIFI
-+++++++++++++
+  Select what data should be shown on the main TFT.
 
-.. image:: images/gw/ui-device-wifi.png
+Device - WIFI - AP
+++++++++++++++++++
+
+.. image:: images/gw/ui-device-wifi-ap.png
   :width: 800
-  :alt: Device WIFI
+  :alt: Device WIFI AP
 
 Most of these settings are the same as for GravityMon with the following expections.
 
@@ -149,6 +152,12 @@ Most of these settings are the same as for GravityMon with the following expecti
 
   Will create an SSID and Password
 
+
+Device - WIFI
++++++++++++++
+
+See GravityMon configuration.
+
 Measurements
 ============
 
@@ -163,6 +172,13 @@ Measurements - Settings
 
   How many log files should be kept on the SD card, each file is max 16kb in size. Default it 4.
 
+* **Size of each SD log file**
+
+  Currently not used, all files are 16kb in size.
+
+* **Minium time before logging BLE to SD**
+
+  How often BLE data should be logged to the SD card.
 
 Measurements - View
 +++++++++++++++++++
