@@ -12,6 +12,7 @@ v2.4.0
 * (Bug) Fixed issue that wifiDirect mode was not recognized as a push target and required at least one endpoint to be defined.
 * (Bug) Wifi direct can no longer be activated unless ssid and password is defined.
 * (Bug) When filter was active the displayed angle was not correct and this could impact formula creation. Filter is now ignored in config mode.
+* (Bug) Skip sleep mode flag is now correctly reflecting the device state (could be wrong if device was restarted)
 
 New features
 ++++++++++++
