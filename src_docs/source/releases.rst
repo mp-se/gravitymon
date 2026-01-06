@@ -6,6 +6,7 @@ Releases
 v2.4.0
 ======
 
+* Added build instructions for the Gravitymon PCB's
 * Update dependencies to latest version
 * Moved WifiDirect to own separate view in the UI for better clarity.
 * (Bug) Fixed bug in RAPT v2 format not sending the correct gravity value.

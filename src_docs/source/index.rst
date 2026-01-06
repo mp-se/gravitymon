@@ -132,6 +132,7 @@ the following libraries and without these this would have been much more difficu
    configuration
    format-template
    hardware
+   hardware_build
    services
    data
    gateway
