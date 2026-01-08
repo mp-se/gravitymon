@@ -55,6 +55,14 @@ located as shown in the image below.
   :width: 600
   :alt: Mount resistors
 
+If you are using v1.0 or v1.1 of the PET PCB i recommend to mount the R3 like this so the 
+tempsensor data pin is pulled to 3.3V instead of 5V.
+
+.. image:: images/hw/3a_resistor_mod.jpeg
+  :width: 600
+  :alt: Mount resistors
+
+
 Step 4 - Mount pins for ESP32
 +++++++++++++++++++++++++++++
 
@@ -84,18 +92,26 @@ top of the gyro. This also applies the temperature sensor.
   :width: 600
   :alt: Mount gyro pins
 
-Step 7 - Mount gyro & temperature sensor 
-++++++++++++++++++++++++++++++++++++++++
+Step 7 - Mount gyro
++++++++++++++++++++
 
-Mount and solder the gyro and temperature sensor. Try to mount them leveled with the PCB, a tip is 
-to place something flat between the gyro and PCB to ensure they are leveled. 
+Mount and solder the gyro. Try to mount it leveled with the PCB, a tip is 
+to place something flat between the gyro and PCB to ensure the gyro is leveled. 
 
-Mount the temperature sensor from the same side as the gyro (not yet shown in the images) as 
-indicated by the silkscreen.
+The image shows the ICM gyro but the MPU-6050 is mounted the same way.
 
 .. image:: images/hw/7_gyro.jpeg
   :width: 600
   :alt: Mount gyro
+
+Step 8 - Mount temperature sensor 
++++++++++++++++++++++++++++++++++
+
+Mount the temperature sensor from the same side as the gyro as indicated by the silkscreen.
+
+.. image:: images/hw/8_temp.jpeg
+  :width: 600
+  :alt: Mount temperature sensor
 
 Step 8 - Mount ESP32
 ++++++++++++++++++++
@@ -128,6 +144,12 @@ Finally its time to mount the coil for wireless charging (optional)
 .. image:: images/hw/11_coil.jpeg
   :width: 600
   :alt: Mount the coil
+
+The coils are not relly marked so here is how to identify then correctly.
+
+.. image:: images/hw/11a_coil_id.jpeg
+  :width: 600
+  :alt: Coil id
 
 Completed
 +++++++++
