@@ -447,7 +447,7 @@ The device need to have a name starting with iSpindle, for example `iSpindel000`
 
 
 BrewBlox
-++++++++++
+++++++++
 
 To send iSpindel data to brewblox over mqtt you need to modify the format template to match the expected format. Once you have configured the mqtt information you also need to update the format template 
 for this target. 
@@ -479,6 +479,7 @@ The json message on the mqtt topic  would look like this:
          "Plato": 0
       }
    }
+
 
 BierBot Bricks
 ++++++++++++++
@@ -525,3 +526,21 @@ Finally add the following format template to HTTP POST 1
 
   To test this set a short sleep interval and tilt the device so it goes into gravity mode. If you have issues you can 
   check the error log for any HTTP errors.
+
+
+CraftbeerPi
++++++++++++
+
+To send data to CraftbeerPi you need to also install a pluging that can receive the iSpindel data. See the 
+CraftbeerPi documentation for more information.
+
+The standard format template should work with the latest version of the plugin.
+
+:bdg-primary:`Endpoint: HTTP POST`
+
+This is the URL for the endpoint to send the data.
+
+.. code-block::
+
+   http://name_of_your_server/api/hydrometer/v1/data
+
