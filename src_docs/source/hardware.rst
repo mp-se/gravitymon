@@ -124,22 +124,6 @@ This is my own design of a PCB for Gravitymon using the same PET casing as for t
 
   .. image:: images/gravitymon_hw_fix.png
 
-These are the components needed. 
-
-* XL BIG PET Micro Geocaching container
-* Gravitymon PCB (Order from PCBWAY)
-* Waveshare ESP32c3 Zero board (18-pin board)
-* MPU-6050 (GY-521) or ICM-42670-P gyro board
-* 18650 battery holder for surface mount (smt)
-* 18650 battery
-* Wireless Charging reciver and transmitter (XKT510-24)
-* Resistor: 2 x 10k 0.25W (R1+R2)
-* Resistor: 2 x 220k 0.25W (R4+R5)
-* Resistor: 1 x 3.3k 0.25W (R3)
-* Charging module TP4056
-* Switch (SK12D07VG3)
-* Dallas DS18B20 temperature sensor
-
 This is the schematic that is used for this design enabling all the features in Gravitymon.
 
 .. image:: images/gravitymon_schema.png

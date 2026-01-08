@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2026 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -294,6 +294,10 @@ bool loopReadGravity() {
     filteredAngle = myGyro.getFilteredAngle();
     stableGyroMillis = millis();  // Reset timer
 
+    if(runMode == RunMode::configurationMode) {
+      filteredAngle = angle;  // No filtering in configuration mode, this will taint the calibration values
+    }
+
     float gravitySG =
         calculateGravity(myConfig.getGravityFormula(), angle, tempC);
     float filteredGravitySG =
@@ -375,7 +379,7 @@ bool loopReadGravity() {
             myBleSender.sendRaptV2Data(
                 getBatteryPercentage(myBatteryVoltage.getVoltage(),
                                      BatteryType::LithiumIon),
-                tempC, gravitySG, angle, velocity, gv.isVelocityValid());
+                tempC, gravitySG, angle, gv.isVelocityValid() ? velocity : NAN);
           } break;
         }
       }

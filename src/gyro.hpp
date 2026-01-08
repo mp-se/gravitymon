@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2026 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -154,8 +154,6 @@ class GyroSensorInterface {
   bool isSensorMoving() { return _sensorMoving; }
 };
 
-#define INVALID_TEMPERATURE -273
-
 class GyroSensor : public SecondayTempSensorInterface {
  private:
   GyroConfigInterface* _gyroConfig;
@@ -168,7 +166,7 @@ class GyroSensor : public SecondayTempSensorInterface {
   float _angle = 0;
   float _filteredAngle = 0;
   float _temp = 0;
-  float _initialSensorTemp = INVALID_TEMPERATURE;
+  float _initialSensorTemp = NAN;
   bool _valid = false;
   GyroMode _currentMode = GyroMode::GYRO_UNCONFIGURED;
 

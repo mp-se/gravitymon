@@ -41,7 +41,7 @@ test(gyro_readGyro) {
 
 test(gyro_readGyroTemp) {
   myGyro.setup(GyroMode::GYRO_CONTINUOUS, true);
-  float f = INVALID_TEMPERATURE;
+  float f = NAN;
   assertNotEqual(myGyro.getInitialSensorTempC(), f);
   assertNotEqual(myGyro.getSensorTempC(), f);
 }

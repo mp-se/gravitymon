@@ -7,7 +7,7 @@ Welcome to Gravitymon
 #####################
 
 .. note::
-  This documentation reflects **v2.3.0***. Last updated 2025-11-27
+  This documentation reflects **v2.4.0***. Last updated 2026-01-04
 
   Link to `previous documentation here <https://mp-se.github.io/gravitymon/v1.4/>`_ 
 
@@ -132,6 +132,7 @@ the following libraries and without these this would have been much more difficu
    configuration
    format-template
    hardware
+   hardware_build
    services
    data
    gateway

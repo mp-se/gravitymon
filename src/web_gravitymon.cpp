@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2026 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -96,7 +96,7 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
       _gravConfig->isBleActive() || _gravConfig->hasTargetHttpPost() ||
               _gravConfig->hasTargetHttpPost2() ||
               _gravConfig->hasTargetHttpGet() || _gravConfig->hasTargetMqtt() ||
-              _gravConfig->hasTargetInfluxDb2()
+              _gravConfig->hasTargetInfluxDb2() || _gravConfig->isWifiDirect()
           ? true
           : false;
 
@@ -110,23 +110,30 @@ void GravitymonWebServer::doWebStatus(JsonObject &obj) {
 
   obj[CONFIG_GRAVITY_UNIT] = String(_gravConfig->getGravityUnit());
 
-  obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+  if (!isnan(angle)) {
+    obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
+  }
 
   if (_gravConfig->isGravityTempAdj()) {
     gravity = gravityTemperatureCorrectionC(
         gravity, tempC, _gravConfig->getDefaultCalibrationTemp());
   }
-  if (_gravConfig->isGravityPlato()) {
-    obj[CONFIG_GRAVITY] =
-        serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
-  } else {
-    obj[CONFIG_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
+
+  if (!isnan(gravity)) {
+    if (_gravConfig->isGravityPlato()) {
+      obj[CONFIG_GRAVITY] =
+          serialized(String(convertToPlato(gravity), DECIMALS_PLATO));
+    } else {
+      obj[CONFIG_GRAVITY] = serialized(String(gravity, DECIMALS_SG));
+    }
   }
 
-  if (_gravConfig->isTempFormatC()) {
-    obj[PARAM_TEMP] = serialized(String(tempC, DECIMALS_TEMP));
-  } else {
-    obj[PARAM_TEMP] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
+  if (!isnan(tempC)) {
+    if (_gravConfig->isTempFormatC()) {
+      obj[PARAM_TEMP] = serialized(String(tempC, DECIMALS_TEMP));
+    } else {
+      obj[PARAM_TEMP] = serialized(String(convertCtoF(tempC), DECIMALS_TEMP));
+    }
   }
 
   obj[PARAM_GRAVITYMON1_CONFIG] = LittleFS.exists("/gravitymon.json");
@@ -307,9 +314,9 @@ void GravitymonWebServer::webHandleGyro(AsyncWebServerRequest *request) {
 bool GravitymonWebServer::setupWebServer(const char *serviceName) {
   BrewingWebServer::setupWebServer(serviceName);
 
-  _server->on("/api/gyro", HTTP_GET,
-              std::bind(&GravitymonWebServer::webHandleGyro, this,
-                        std::placeholders::_1));
+  _server->on(
+      "/api/gyro", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleGyro(request); });
   return true;
 }
 

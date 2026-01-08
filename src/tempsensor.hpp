@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2026 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,6 @@ SOFTWARE.
 #include <OneWire.h>
 
 #include <memory>
-
-constexpr auto INVALID_TEMPERATURE = -273.0f;
 
 class SecondayTempSensorInterface {
  public:

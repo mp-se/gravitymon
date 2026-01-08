@@ -384,6 +384,22 @@ Push - Settings
     A low value such as 30s will give a lifespan of 1-2 weeks and 300s (5 min) would last for 3+ weeks. This assumes that 
     there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain. 
 
+* **Estimated battery life:** 
+
+  Based on the hardware and the historical execution time the device will estimate how long it can run on a full battery
+  with the current interval.
+
+* **Push timeout:** 
+
+  How long the device will wait for a connection accept from the remote service.
+
+Push - Wifi Direct
+++++++++++++++++++
+
+.. image:: images/ui-push-wifi-direct.png
+  :width: 800
+  :alt: Push Wifi Direct
+
 * **WIFI Direct SSID:** 
 
   This WIFI SSID will be used during gravity mode to send data to the GravityMon Gateway.
@@ -400,15 +416,6 @@ Push - Settings
 * **Use WIFI Direct in gravity mode:** 
 
   Enabling this feature will disable all other push target settings and data will be sent to the gateway in a pre-defined format (iSpindle format) when in `gravity monitoring` mode.
-
-* **Estimated battery life:** 
-
-  Based on the hardware and the historical execution time the device will estimate how long it can run on a full battery
-  with the current interval.
-
-* **Push timeout:** 
-
-  How long the device will wait for a connection accept from the remote service.
 
 
 Push - HTTP Post

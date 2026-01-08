@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2026 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -546,13 +546,17 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
 
   BaseWebServer::setupWebServer();
   MDNS.addService(serviceName, "tcp", 80);
+  MDNS.addServiceTxt(serviceName, "tcp", "ver", CFG_APPVER);
+  MDNS.addServiceTxt(serviceName, "tcp", "app", CFG_APPNAME);
+  MDNS.addServiceTxt(serviceName, "tcp", "id", _webConfig->getID());
 
   Log.notice(F("WEB : Setting up handlers for web server." CR));
 
   AsyncCallbackJsonWebHandler *handler;
-  _server->on("/api/format", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleConfigFormatRead, this,
-                        std::placeholders::_1));
+  _server->on("/api/format", (WebRequestMethodComposite)HTTP_GET,
+              [this](AsyncWebServerRequest *request) {
+                webHandleConfigFormatRead(request);
+              });
   handler = new AsyncCallbackJsonWebHandler(
       "/api/format",
       std::bind(&BrewingWebServer::webHandleConfigFormatWrite, this,
@@ -563,42 +567,46 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
       std::bind(&BrewingWebServer::webHandleSleepmode, this,
                 std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
-  _server->on("/api/config", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleConfigRead, this,
-                        std::placeholders::_1));
+  _server->on(
+      "/api/config", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleConfigRead(request); });
   handler = new AsyncCallbackJsonWebHandler(
       "/api/config", std::bind(&BrewingWebServer::webHandleConfigWrite, this,
                                std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
-  _server->on("/api/calibrate/status", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleCalibrateStatus, this,
-                        std::placeholders::_1));
-  _server->on("/api/calibrate", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleCalibrate, this,
-                        std::placeholders::_1));
-  _server->on("/api/hardware/status", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleHardwareScanStatus, this,
-                        std::placeholders::_1));
-  _server->on("/api/hardware", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleHardwareScan, this,
-                        std::placeholders::_1));
-  _server->on("/api/factory", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleFactoryDefaults, this,
-                        std::placeholders::_1));
-  _server->on("/api/status", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleStatus, this,
-                        std::placeholders::_1));
-  _server->on("/api/feature", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleFeature, this,
-                        std::placeholders::_1));
-  _server->on("/api/push/status", HTTP_GET,
-              std::bind(&BrewingWebServer::webHandleTestPushStatus, this,
-                        std::placeholders::_1));
+  _server->on("/api/calibrate/status", (WebRequestMethodComposite)HTTP_GET,
+              [this](AsyncWebServerRequest *request) {
+                webHandleCalibrateStatus(request);
+              });
+  _server->on(
+      "/api/calibrate", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleCalibrate(request); });
+  _server->on("/api/hardware/status", (WebRequestMethodComposite)HTTP_GET,
+              [this](AsyncWebServerRequest *request) {
+                webHandleHardwareScanStatus(request);
+              });
+  _server->on("/api/hardware", (WebRequestMethodComposite)HTTP_GET,
+              [this](AsyncWebServerRequest *request) {
+                webHandleHardwareScan(request);
+              });
+  _server->on("/api/factory", (WebRequestMethodComposite)HTTP_GET,
+              [this](AsyncWebServerRequest *request) {
+                webHandleFactoryDefaults(request);
+              });
+  _server->on(
+      "/api/status", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleStatus(request); });
+  _server->on(
+      "/api/feature", (WebRequestMethodComposite)HTTP_GET,
+      [this](AsyncWebServerRequest *request) { webHandleFeature(request); });
+  _server->on("/api/push/status", (WebRequestMethodComposite)HTTP_GET,
+              [this](AsyncWebServerRequest *request) {
+                webHandleTestPushStatus(request);
+              });
   handler = new AsyncCallbackJsonWebHandler(
       "/api/push", std::bind(&BrewingWebServer::webHandleTestPush, this,
                              std::placeholders::_1, std::placeholders::_2));
   _server->addHandler(handler);
-
   Log.notice(F("WEB : Web server started." CR));
   return true;
 }

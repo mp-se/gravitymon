@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2026 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -48,9 +48,9 @@ class BleSender {
 
   // Beacons
   void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendRaptV1Data(float battery, float tempC, float gravSG, float angle);
-  void sendRaptV2Data(float battery, float tempC, float gravSG, float angle,
-                      float velocity, bool velocityValid);
+  void sendRaptV1Data(float batteryPercentage, float tempC, float gravSG, float angle);
+  void sendRaptV2Data(float batteryPercentage, float tempC, float gravSG, float angle,
+                      float velocity); // If velocity = NAN velocity valid flag is false
   void sendEddystoneData(float battery, float tempC, float gravSG, float angle);
   void sendCustomBeaconData(float battery, float tempC, float gravSG,
                             float angle);

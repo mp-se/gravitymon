@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2025 Magnus
+Copyright (c) 2021-2026 Magnus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -151,7 +151,7 @@ bool GyroSensor::read() {
     _angle = SIMULATE_ANGLE;
 #endif
 
-    if (_initialSensorTemp == INVALID_TEMPERATURE) {
+    if (_initialSensorTemp == NAN) {
       _initialSensorTemp = resultData.temp;
     }
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
