@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Format Templates" href="format-template.html" /><link rel="prev" title="Software Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Configuration - Gravitymon v2.3.0</title>
+        <title>Configuration - Gravitymon v2.4.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Gravitymon v2.3.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Gravitymon v2.3.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -212,6 +212,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_build.html">Building a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
@@ -539,6 +540,19 @@ be set between 10 - 3600 seconds (60 minutes).</p>
 there is good wifi connection that takes less than 1s to reconnect. Poor wifi connection is the main reason for battery drain.</p>
 </div>
 </li>
+<li><p><strong>Estimated battery life:</strong></p>
+<p>Based on the hardware and the historical execution time the device will estimate how long it can run on a full battery
+with the current interval.</p>
+</li>
+<li><p><strong>Push timeout:</strong></p>
+<p>How long the device will wait for a connection accept from the remote service.</p>
+</li>
+</ul>
+</section>
+<section id="push-wifi-direct">
+<h3>Push - Wifi Direct<a class="headerlink" href="#push-wifi-direct" title="Permalink to this heading">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-push-wifi-direct.png"><img alt="Push Wifi Direct" src="_images/ui-push-wifi-direct.png" style="width: 800px;" /></a>
+<ul>
 <li><p><strong>WIFI Direct SSID:</strong></p>
 <p>This WIFI SSID will be used during gravity mode to send data to the GravityMon Gateway.</p>
 <div class="admonition note">
@@ -552,13 +566,6 @@ and try to send data that way using the defined push settings.</p>
 </li>
 <li><p><strong>Use WIFI Direct in gravity mode:</strong></p>
 <p>Enabling this feature will disable all other push target settings and data will be sent to the gateway in a pre-defined format (iSpindle format) when in <cite>gravity monitoring</cite> mode.</p>
-</li>
-<li><p><strong>Estimated battery life:</strong></p>
-<p>Based on the hardware and the historical execution time the device will estimate how long it can run on a full battery
-with the current interval.</p>
-</li>
-<li><p><strong>Push timeout:</strong></p>
-<p>How long the device will wait for a connection accept from the remote service.</p>
 </li>
 </ul>
 </section>
@@ -798,7 +805,7 @@ changed for this to work.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2021-2025, Magnus Persson
+                Copyright &#169; 2021-2026, Magnus Persson
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -840,6 +847,7 @@ changed for this to work.</p>
 </li>
 <li><a class="reference internal" href="#push-targets">Push targets</a><ul>
 <li><a class="reference internal" href="#push-settings">Push - Settings</a></li>
+<li><a class="reference internal" href="#push-wifi-direct">Push - Wifi Direct</a></li>
 <li><a class="reference internal" href="#push-http-post">Push - HTTP Post</a></li>
 <li><a class="reference internal" href="#push-http-get">Push - HTTP Get</a></li>
 <li><a class="reference internal" href="#push-influxdb-v2">Push - InfluxDB v2</a></li>

@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="Getting started" href="intro.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Service Integration" href="services.html" /><link rel="prev" title="Hardware" href="hardware.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Software Installation - Gravitymon v2.4.0</title>
+        <title>Building a device - Gravitymon v2.4.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -208,11 +208,11 @@
 <li class="toctree-l1"><a class="reference internal" href="functionality.html">Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Getting started</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Software Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Software Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware_build.html">Building a device</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Building a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
@@ -257,122 +257,107 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="software-installation">
-<span id="installation"></span><h1>Software Installation<a class="headerlink" href="#software-installation" title="Permalink to this heading">¶</a></h1>
-<section id="gravitymon-web-flasher">
-<h2>Gravitymon Web Flasher<a class="headerlink" href="#gravitymon-web-flasher" title="Permalink to this heading">¶</a></h2>
-<p>This web flasher is for all my projects and this one also support configuring wifi over the serial connection.
-You will find it here: <a class="reference external" href="https://www.gravitymon.com/flasher/index.html/">Gravitymon WebFlasher</a></p>
-<a class="reference internal image-reference" href="_images/webflasher.png"><img alt="webflasher" src="_images/webflasher.png" style="width: 600px;" /></a>
-<p>Just select the software to flash and what manufacturer the board has, then the flasher will use the correct binaries.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Using the web flasher will erase the full device before flashing so make sure settings are backed up. For upgrades use
-the firmware feature in the software.</p>
-</div>
-<section id="binaries">
-<h3>Binaries<a class="headerlink" href="#binaries" title="Permalink to this heading">¶</a></h3>
-<p>In the /bin directory you will find 4 different firmware builds;</p>
-<ul>
-<li><p><strong>firmware.bin</strong></p>
-<p>This is the standard release build for the ESP8266.</p>
-</li>
-<li><p><strong>firmware32c3.bin</strong></p>
-<p>This is the release build for an ESP32c3-mini variant v2.1 or newer. When flashing an ESP32 you also need the <em>partition32c3.bin</em> file that outlines the flash memory structure. Due to
-the size of the firmware we are using a custom partition setup. If you have a v1.0 board use the firmware32c3v1.bin instead.</p>
-</li>
-<li><p><strong>firmware32s2.bin</strong></p>
-<p>This is the release build for an ESP32s2-mini variant. When flashing an ESP32 you also need the <em>partition32s2.bin</em> file that outlines the flash memory structure. Due to
-the size of the firmware we are using a custom partition setup.</p>
-</li>
-<li><p><strong>firmware32s3.bin</strong></p>
-<p>This is the release build for an ESP32s3-mini variant. When flashing an ESP32 you also need the <em>partition32s3.bin</em> file that outlines the flash memory structure. Due to
-the size of the firmware we are using a custom partition setup.</p>
-</li>
-<li><p><strong>firmware32s3zero.bin</strong></p>
-<p>This is the release build for an Waveshare ESP32c3 zero variant. When flashing an ESP32 you also need the <em>partition32c3zero.bin</em> file that outlines the flash memory structure. Due to
-the size of the firmware we are using a custom partition setup.</p>
-</li>
-<li><p><strong>firmware32s3supermini.bin</strong></p>
-<p>This is the release build for an Tenstar ESP32c3 super mini variant. When flashing an ESP32 you also need the <em>partition32c3supermini.bin</em> file that outlines the flash memory structure. Due to
-the size of the firmware we are using a custom partition setup.</p>
-</li>
-</ul>
-</section>
-</section>
-<section id="esptool-esp8266">
-<h2>Esptool (esp8266)<a class="headerlink" href="#esptool-esp8266" title="Permalink to this heading">¶</a></h2>
-<p>The other option for flashing esp8266 device is via the official esptool. Documentation can be found
-here; <a class="reference external" href="https://docs.espressif.com/projects/esptool/en/latest/esp32/">esptool home page</a></p>
-<p>Windows 10 should install a driver for the USB -&gt; Serial automatically when you connect a esp8266.</p>
-<p>The basic command for flashing an ESP8266 on Windows is;</p>
-<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">write_flash</span> <span class="pre">0x0</span> <span class="pre">firmware.bin</span></code></p>
-<p>The basic command for flashing an ESP32C3 on Windows is;</p>
-<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM6</span> <span class="pre">write_flash</span> <span class="pre">--flash_mode</span> <span class="pre">dio</span> <span class="pre">0x8000</span> <span class="pre">.\partitions32c3.bin</span> <span class="pre">0x10000</span> <span class="pre">.\firmware32c3.bin</span></code></p>
-<p>If there are issues you can try do erase the flash first using this command;</p>
-<p><code class="docutils literal notranslate"><span class="pre">esptool.py</span> <span class="pre">--port</span> <span class="pre">COM4</span> <span class="pre">erase_flash</span></code></p>
-</section>
-<section id="ispindel-esp8266">
-<h2>iSpindel (esp8266)<a class="headerlink" href="#ispindel-esp8266" title="Permalink to this heading">¶</a></h2>
-<p>If you already have the device flashed with iSpindel firmware you can go into the configuration mode where you will find
-an option for updating firmware. The option is under the maintenance menu.</p>
-<p>Select the esp8266 version of the firmware called firmware.bin and press upload.</p>
-<p>If you do an update this way GravityMon will notice that there is a stored configuration file and you will get the option to do a migration
-of the gravity formula and gyro calibration values so you don’t need to do a new calibration.</p>
-</section>
-<section id="updating-firmware">
-<h2>Updating firmware<a class="headerlink" href="#updating-firmware" title="Permalink to this heading">¶</a></h2>
-<p>You can use the above options for updating the firmware as well. But if you want to do updates without connecting the USB cable these
-are your options.</p>
-<section id="ota-option">
-<h3>OTA Option<a class="headerlink" href="#ota-option" title="Permalink to this heading">¶</a></h3>
-<p>You can use the OTA option by adding this URL to your configuration and when the device starts up in configuration mode it
-will check for a new version and if it finds a newer version it will do an update.</p>
-<p><code class="docutils literal notranslate"><span class="pre">https://gravitymon.com/firmware/</span></code></p>
-</section>
-<section id="manual-update">
-<h3>Manual update<a class="headerlink" href="#manual-update" title="Permalink to this heading">¶</a></h3>
-<p>When the device in is configuration mode you can manually update with a new firmware. Just open this URL in the web
-browser and select the firmware.bin file that corresponds to the version you want to flash.</p>
-</section>
-</section>
-<section id="serial-monitoring">
-<span id="id1"></span><h2>Serial Monitoring<a class="headerlink" href="#serial-monitoring" title="Permalink to this heading">¶</a></h2>
-<p>To check output from the device (logs) there are several tools out there. I found this simple tool in the Windows Store called <code class="docutils literal notranslate"><span class="pre">Serial</span> <span class="pre">Port</span> <span class="pre">Monitoring</span></code>.
-Just select a baud rate of 115200, 8N1.</p>
-</section>
-<section id="wifi-compatibility">
-<span id="setup-wifi"></span><h2>WIFI compatibility<a class="headerlink" href="#wifi-compatibility" title="Permalink to this heading">¶</a></h2>
-<p>The esp has limited wifi support and still relies on old standards so these are a few things to consider on the wifi setup.</p>
+          <section id="building-a-device">
+<span id="building-device"></span><h1>Building a device<a class="headerlink" href="#building-a-device" title="Permalink to this heading">¶</a></h1>
+<p>This is an instruction on how to build a device based on the Gravitymon PCB, the instructions shows the
+PET PCB but the steps are the same for the PILL PCB.</p>
+<p>I recommend to use the v1.2 of the Gravitymon PET PCB which has been converted to use 3.3V for all sensors.
+Older PCB use the standard iSpindel schematics which will put 5V when charging on the GPIO pins which can damage the ESP32c3. An easy fix
+for the older PCB is to connect the tempsensor pull-up to 3.3V on the ESP32 (use the inner hole) on the PCB.</p>
+<section id="step-1-gather-components">
+<h2>Step 1 - Gather components<a class="headerlink" href="#step-1-gather-components" title="Permalink to this heading">¶</a></h2>
+<p>First gather all the components and check that you have everything needed.</p>
+<p>These are the components needed.</p>
 <ul class="simple">
-<li><p>Don’t use space in your wifi SSID or wifi password</p></li>
-<li><p>Only supports 2.4Ghz bands, channels must be 1-13, other channels are not supported (In 802.11 b/g/n modes)</p></li>
-<li><p>Channels between 20-25 Mhz bands</p></li>
-<li><p>SSID must be visible (hidden SSID dont work)</p></li>
+<li><p>XL BIG PET Micro Geocaching container (not in picture)</p></li>
+<li><p>Gravitymon PCB (Order from PCBWAY)</p></li>
+<li><p>Waveshare ESP32c3 Zero board (18-pin board)</p></li>
+<li><p>MPU-6050 (GY-521) or ICM-42670-P gyro board</p></li>
+<li><p>18650 battery holder for surface mount (smt)</p></li>
+<li><p>18650 battery (not in picture)</p></li>
+<li><p>Wireless Charging reciver and transmitter (XKT510-24)</p></li>
+<li><p>Resistor: 2 x 10k 0.25W (R1+R2)</p></li>
+<li><p>Resistor: 2 x 220k 0.25W (R4+R5)</p></li>
+<li><p>Resistor: 1 x 3.3k 0.25W (R3)</p></li>
+<li><p>Charging module TP4056</p></li>
+<li><p>Switch (SK12D07VG3)</p></li>
+<li><p>Dallas DS18B20 temperature sensor</p></li>
 </ul>
-<p>Source: <a class="reference external" href="https://www.espressif.com/sites/default/files/esp8266_wi-fi_channel_selection_guidelines.pdf">https://www.espressif.com/sites/default/files/esp8266_wi-fi_channel_selection_guidelines.pdf</a></p>
+<a class="reference internal image-reference" href="_images/1_material.jpeg"><img alt="Overview of components" src="_images/1_material.jpeg" style="width: 600px;" /></a>
 </section>
-<section id="configuring-wifi">
-<h2>Configuring WIFI<a class="headerlink" href="#configuring-wifi" title="Permalink to this heading">¶</a></h2>
-<p>When the device is flashed it will need to have WIFI configuration in order to work. If you have used other software on
-the device its possible that wifi settings already exist.</p>
-<p>If you need to enter the WIFI setup mode after it has been configured, tap the reset button at least 3 times. Tap the reset
-button in 1-2 second intervals. Not to fast and not to slow.</p>
-<p>If this is not configured in the device it will create an wireless access point called <cite>GravityMon</cite>. The default password is <cite>password</cite>.</p>
-<p>Connect to this AP and enter the SSID and password you want to use. If the web page don’t open automatically you can enter the following address
-in the browser: <strong>http://192.168.4.1</strong></p>
-<p>WIFI settings can be found under Device - WIFI in the menu.</p>
+<section id="step-2-mount-switch">
+<h2>Step 2 - Mount switch<a class="headerlink" href="#step-2-mount-switch" title="Permalink to this heading">¶</a></h2>
+<p>First step is to mount and solder the switch, this will be under the charging module so make
+ure its placed on the correct side.</p>
+<a class="reference internal image-reference" href="_images/2_switch.jpeg"><img alt="Mount the switch" src="_images/2_switch.jpeg" style="width: 600px;" /></a>
 </section>
-<section id="finding-the-device-adress">
-<span id="setup-ip"></span><h2>Finding the device adress<a class="headerlink" href="#finding-the-device-adress" title="Permalink to this heading">¶</a></h2>
-<p>Once the wifi network settings have been added then the device will reboot and connect to your network. If the blue led is flashing then it’s up and running and is ready to be configured.</p>
-<p>If your computer supports mDNS the address you saw before can be used in your web browser to connect to the device. Windows does not have the best support for mDNS so if you are having issues
-with finding the network name you can try the following:</p>
-<ul class="simple">
-<li><p>Check your wireless router for the IP address and use that to connect instead, for example; <a class="reference external" href="http://192.168.1.56">http://192.168.1.56</a></p></li>
-<li><p>Download an IP scanner / Port Scanner on your Windows computer or mobile device and use that to find what devices are listening on port 80.</p></li>
-</ul>
-<p>Once you can access the user interface then proceed to the next step.</p>
+<section id="step-3-mount-resistors">
+<h2>Step 3 - Mount resistors<a class="headerlink" href="#step-3-mount-resistors" title="Permalink to this heading">¶</a></h2>
+<p>Next is to mount and solder all the resistors, these are placed on the side where the value is
+located as shown in the image below.</p>
+<a class="reference internal image-reference" href="_images/3_resistor.jpeg"><img alt="Mount resistors" src="_images/3_resistor.jpeg" style="width: 600px;" /></a>
+<p>If you are using v1.0 or v1.1 of the PET PCB i recommend to mount the R3 like this so the
+tempsensor data pin is pulled to 3.3V instead of 5V.</p>
+<a class="reference internal image-reference" href="_images/3a_resistor_mod.jpeg"><img alt="Mount resistors" src="_images/3a_resistor_mod.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="step-4-mount-pins-for-esp32">
+<h2>Step 4 - Mount pins for ESP32<a class="headerlink" href="#step-4-mount-pins-for-esp32" title="Permalink to this heading">¶</a></h2>
+<p>The pins for the ESP32 needs to be mounted and soldered before the LiPo charger module is mounted
+or you will not be able to solder the pins under the module.</p>
+<a class="reference internal image-reference" href="_images/4_pins_esp.jpeg"><img alt="Mount pins for ESP32" src="_images/4_pins_esp.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="step-5-mount-lipo-charger">
+<h2>Step 5 - Mount LiPo charger<a class="headerlink" href="#step-5-mount-lipo-charger" title="Permalink to this heading">¶</a></h2>
+<p>Mount and solder the lipo charger, total 6 pins are needed and this should be placed on top of the switch.</p>
+<a class="reference internal image-reference" href="_images/5_lipo.jpeg"><img alt="Mount LiPo charger" src="_images/5_lipo.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="step-6-mount-gyro-pins">
+<h2>Step 6 - Mount gyro pins<a class="headerlink" href="#step-6-mount-gyro-pins" title="Permalink to this heading">¶</a></h2>
+<p>The gyro pins needs to be mounted so they are flush with the PCB since the battery holder goes on
+top of the gyro. This also applies the temperature sensor.</p>
+<a class="reference internal image-reference" href="_images/6_gyro_pins.jpeg"><img alt="Mount gyro pins" src="_images/6_gyro_pins.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="step-7-mount-gyro">
+<h2>Step 7 - Mount gyro<a class="headerlink" href="#step-7-mount-gyro" title="Permalink to this heading">¶</a></h2>
+<p>Mount and solder the gyro. Try to mount it leveled with the PCB, a tip is
+to place something flat between the gyro and PCB to ensure the gyro is leveled.</p>
+<p>The image shows the ICM gyro but the MPU-6050 is mounted the same way.</p>
+<a class="reference internal image-reference" href="_images/7_gyro.jpeg"><img alt="Mount gyro" src="_images/7_gyro.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="step-8-mount-temperature-sensor">
+<h2>Step 8 - Mount temperature sensor<a class="headerlink" href="#step-8-mount-temperature-sensor" title="Permalink to this heading">¶</a></h2>
+<p>Mount the temperature sensor from the same side as the gyro as indicated by the silkscreen.</p>
+<a class="reference internal image-reference" href="_images/8_temp.jpeg"><img alt="Mount temperature sensor" src="_images/8_temp.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="step-8-mount-esp32">
+<h2>Step 8 - Mount ESP32<a class="headerlink" href="#step-8-mount-esp32" title="Permalink to this heading">¶</a></h2>
+<p>Next is mounting the ESP32 board, the USD connectior should be facing the edge where the resistor
+is located and make sure the USB connector is up.</p>
+<a class="reference internal image-reference" href="_images/9_esp32.jpeg"><img alt="Mount ESP32" src="_images/9_esp32.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="step-9-mount-battery-holder">
+<h2>Step 9 - Mount battery holder<a class="headerlink" href="#step-9-mount-battery-holder" title="Permalink to this heading">¶</a></h2>
+<p>To mount the battery holder first add some solder to the pads and connectors of the battery holder.
+It might be neccesarry to cut of a piece of the negative connector on the holder. Then solder the
+holder to the PCB which will be much easier now that there is solder on both sides.</p>
+<p>Try to mount the battery holder as far down as possible, this will give angle in water.</p>
+<a class="reference internal image-reference" href="_images/10_battery.jpeg"><img alt="Mount the battery holder" src="_images/10_battery.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="step-10-mount-coil">
+<h2>Step 10 - Mount coil<a class="headerlink" href="#step-10-mount-coil" title="Permalink to this heading">¶</a></h2>
+<p>Finally its time to mount the coil for wireless charging (optional)</p>
+<a class="reference internal image-reference" href="_images/11_coil.jpeg"><img alt="Mount the coil" src="_images/11_coil.jpeg" style="width: 600px;" /></a>
+<p>The coils are not relly marked so here is how to identify then correctly.</p>
+<a class="reference internal image-reference" href="_images/11a_coil_id.jpeg"><img alt="Coil id" src="_images/11a_coil_id.jpeg" style="width: 600px;" /></a>
+</section>
+<section id="completed">
+<h2>Completed<a class="headerlink" href="#completed" title="Permalink to this heading">¶</a></h2>
+<p>Now all the components are mounted so its time to flash the software and test / calibrate the device.</p>
+<p>Depending on the mounting of the battery holder and also the weight of the battery you might need to
+add some weights to the lower balance pads. I have got batteries that weigh between 40 and 44g. In this
+build I had to add 1.5g to the solder pads to get a 24 degree angle in water. Typically any starting value
+between 20-30 degrees is acceptable, but between 20-25 degrees are optimal.</p>
+<a class="reference internal image-reference" href="_images/12_complete.jpeg"><img alt="Mount the switch" src="_images/12_complete.jpeg" style="width: 600px;" /></a>
 </section>
 </section>
 
@@ -381,23 +366,23 @@ with finding the network name you can try the following:</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="configuration.html">
+          <a class="next-page" href="services.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Configuration</div>
+                <div class="title">Service Integration</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="intro.html">
+          <a class="prev-page" href="hardware.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Getting started</div>
+                <div class="title">Hardware</div>
                 
               </div>
             </a>
@@ -431,22 +416,19 @@ with finding the network name you can try the following:</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Software Installation</a><ul>
-<li><a class="reference internal" href="#gravitymon-web-flasher">Gravitymon Web Flasher</a><ul>
-<li><a class="reference internal" href="#binaries">Binaries</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#esptool-esp8266">Esptool (esp8266)</a></li>
-<li><a class="reference internal" href="#ispindel-esp8266">iSpindel (esp8266)</a></li>
-<li><a class="reference internal" href="#updating-firmware">Updating firmware</a><ul>
-<li><a class="reference internal" href="#ota-option">OTA Option</a></li>
-<li><a class="reference internal" href="#manual-update">Manual update</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#serial-monitoring">Serial Monitoring</a></li>
-<li><a class="reference internal" href="#wifi-compatibility">WIFI compatibility</a></li>
-<li><a class="reference internal" href="#configuring-wifi">Configuring WIFI</a></li>
-<li><a class="reference internal" href="#finding-the-device-adress">Finding the device adress</a></li>
+<li><a class="reference internal" href="#">Building a device</a><ul>
+<li><a class="reference internal" href="#step-1-gather-components">Step 1 - Gather components</a></li>
+<li><a class="reference internal" href="#step-2-mount-switch">Step 2 - Mount switch</a></li>
+<li><a class="reference internal" href="#step-3-mount-resistors">Step 3 - Mount resistors</a></li>
+<li><a class="reference internal" href="#step-4-mount-pins-for-esp32">Step 4 - Mount pins for ESP32</a></li>
+<li><a class="reference internal" href="#step-5-mount-lipo-charger">Step 5 - Mount LiPo charger</a></li>
+<li><a class="reference internal" href="#step-6-mount-gyro-pins">Step 6 - Mount gyro pins</a></li>
+<li><a class="reference internal" href="#step-7-mount-gyro">Step 7 - Mount gyro</a></li>
+<li><a class="reference internal" href="#step-8-mount-temperature-sensor">Step 8 - Mount temperature sensor</a></li>
+<li><a class="reference internal" href="#step-8-mount-esp32">Step 8 - Mount ESP32</a></li>
+<li><a class="reference internal" href="#step-9-mount-battery-holder">Step 9 - Mount battery holder</a></li>
+<li><a class="reference internal" href="#step-10-mount-coil">Step 10 - Mount coil</a></li>
+<li><a class="reference internal" href="#completed">Completed</a></li>
 </ul>
 </li>
 </ul>

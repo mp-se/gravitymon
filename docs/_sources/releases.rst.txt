@@ -3,6 +3,24 @@
 Releases 
 ########
 
+v2.4.0
+======
+
+* Added build instructions for the Gravitymon PCB's
+* Update dependencies to latest version
+* Moved WifiDirect to own separate view in the UI for better clarity.
+* (Bug) Fixed bug in RAPT v2 format not sending the correct gravity value.
+* (Bug) Fixed issue that wifiDirect mode was not recognized as a push target and required at least one endpoint to be defined.
+* (Bug) Wifi direct can no longer be activated unless ssid and password is defined.
+* (Bug) When filter was active the displayed angle was not correct and this could impact formula creation. Filter is now ignored in config mode.
+* (Bug) Skip sleep mode flag is now correctly reflecting the device state (could be wrong if device was restarted)
+
+New features
+++++++++++++
+* Added meta data to mDNS broadcast (app, version, id), used by GravityMon Gateway to map device id towards name when using BLE. 
+* Updated code to use NAN instead of -273 as invalid temperature
+* When data is invalid send 0xffff in the ble payload to indicate that,
+
 v2.3.0
 ======
 

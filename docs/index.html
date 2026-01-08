@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Functionality" href="functionality.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Gravitymon v2.3.0</title>
+        <title>Gravitymon v2.4.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">Gravitymon v2.3.0</div></a>
+      <a href="#"><div class="brand">Gravitymon v2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Gravitymon v2.3.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -212,6 +212,7 @@
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_build.html">Building a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gateway.html">Gateway</a></li>
@@ -260,7 +261,7 @@
 <h1>Welcome to Gravitymon<a class="headerlink" href="#welcome-to-gravitymon" title="Permalink to this heading">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v2.3.0*</strong>. Last updated 2025-11-27</p>
+<p>This documentation reflects <strong>v2.4.0*</strong>. Last updated 2026-01-04</p>
 <p>Link to <a class="reference external" href="https://mp-se.github.io/gravitymon/v1.4/">previous documentation here</a></p>
 </div>
 <section id="what-is-gravitymon">
@@ -356,6 +357,7 @@ the following libraries and without these this would have been much more difficu
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#v2-4-0">v2.4.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v2-3-0">v2.3.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v2-2-1">v2.2.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releases.html#v2-2-0">v2.2.0</a></li>
@@ -415,6 +417,21 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="hardware.html#gyro-options">Gyro options</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_build.html">Building a device</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-1-gather-components">Step 1 - Gather components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-2-mount-switch">Step 2 - Mount switch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-3-mount-resistors">Step 3 - Mount resistors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-4-mount-pins-for-esp32">Step 4 - Mount pins for ESP32</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-5-mount-lipo-charger">Step 5 - Mount LiPo charger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-6-mount-gyro-pins">Step 6 - Mount gyro pins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-7-mount-gyro">Step 7 - Mount gyro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-8-mount-temperature-sensor">Step 8 - Mount temperature sensor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-8-mount-esp32">Step 8 - Mount ESP32</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-9-mount-battery-holder">Step 9 - Mount battery holder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#step-10-mount-coil">Step 10 - Mount coil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware_build.html#completed">Completed</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="services.html#brewfather">Brewfather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="services.html#fermentrack">Fermentrack</a></li>
@@ -469,7 +486,7 @@ the following libraries and without these this would have been much more difficu
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#i-cant-see-any-sensor-values">I cant see any sensor values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-is-no-going-in-to-sleep-after-fully-charged">My device is no going in to sleep after fully charged</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#what-does-the-flashing-led-mean">What does the flashing led mean?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-reports-a-temperature-of-273c-or-491f">My device reports a temperature of -273C or -491F</a></li>
+<li class="toctree-l2"><a class="reference internal" href="q_and_a.html#my-device-reports-an-invalid-temperature">My device reports an invalid temperature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#calibration-error-unable-to-find-a-valid-formula">Calibration error (unable to find a valid formula)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#how-can-i-filter-data-on-influxdb-without-needing-to-know-the-time-range">How can I filter data on influxdb without needing to know the time range</a></li>
 <li class="toctree-l2"><a class="reference internal" href="q_and_a.html#device-only-reporting-data-once">Device only reporting data once</a></li>
@@ -512,7 +529,7 @@ the following libraries and without these this would have been much more difficu
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2021-2025, Magnus Persson
+                Copyright &#169; 2021-2026, Magnus Persson
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             

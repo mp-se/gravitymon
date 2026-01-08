@@ -28,8 +28,8 @@ On other devices there is only a single color led.
 - Slow Blinking = Config Mode
 - Solid = WiFi setup mode  
 
-My device reports a temperature of -273C or -491F
--------------------------------------------------
+My device reports an invalid temperature
+----------------------------------------
 - The DS18B20 temperature sensor cannot be found and this is the default value reported in this case.
 - Check the orientation of the sensor and the soldering.
 

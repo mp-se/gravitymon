@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Custom boards" href="custom.html" /><link rel="prev" title="Data Formats" href="data.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Gateway - Gravitymon v2.3.0</title>
+        <title>Gateway - Gravitymon v2.4.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Gravitymon v2.3.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Gravitymon v2.3.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -212,6 +212,7 @@
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="format-template.html">Format Templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_build.html">Building a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="services.html">Service Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data Formats</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Gateway</a></li>
@@ -260,7 +261,7 @@
 <span id="id1"></span><h1>Gateway<a class="headerlink" href="#gateway" title="Permalink to this heading">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This documentation reflects <strong>v0.8.1</strong>. Last updated 2025-11-02</p>
+<p>This documentation reflects <strong>v0.9.0</strong>. Last updated 2025-12-28</p>
 </div>
 <p>GravityMon Gateway is an separate project that can act as a proxy between your Gravitymon/Pressuremon devices and services. It can:</p>
 <ul class="simple">
@@ -355,11 +356,14 @@ The limitation is 63 chars but using long names might break endpoints that data 
 <li><p><strong>Time zone:</strong></p>
 <p>Select the timezone so that date / time will be correcly displayed. This is not an extensive list of all timezones so let me know if you are missing one.</p>
 </li>
+<li><p><strong>Display Layout:</strong></p>
+<p>Select what data should be shown on the main TFT.</p>
+</li>
 </ul>
 </section>
-<section id="device-wifi">
-<h3>Device - WIFI<a class="headerlink" href="#device-wifi" title="Permalink to this heading">¶</a></h3>
-<a class="reference internal image-reference" href="_images/ui-device-wifi1.png"><img alt="Device WIFI" src="_images/ui-device-wifi1.png" style="width: 800px;" /></a>
+<section id="device-wifi-ap">
+<h3>Device - WIFI - AP<a class="headerlink" href="#device-wifi-ap" title="Permalink to this heading">¶</a></h3>
+<a class="reference internal image-reference" href="_images/ui-device-wifi-ap.png"><img alt="Device WIFI AP" src="_images/ui-device-wifi-ap.png" style="width: 800px;" /></a>
 <p>Most of these settings are the same as for GravityMon with the following expections.</p>
 <ul>
 <li><p><strong>Direct SSID:</strong></p>
@@ -373,6 +377,10 @@ The limitation is 63 chars but using long names might break endpoints that data 
 </li>
 </ul>
 </section>
+<section id="device-wifi">
+<h3>Device - WIFI<a class="headerlink" href="#device-wifi" title="Permalink to this heading">¶</a></h3>
+<p>See GravityMon configuration.</p>
+</section>
 </section>
 <section id="measurements">
 <h2>Measurements<a class="headerlink" href="#measurements" title="Permalink to this heading">¶</a></h2>
@@ -382,6 +390,12 @@ The limitation is 63 chars but using long names might break endpoints that data 
 <ul>
 <li><p><strong>Number of SD log files</strong></p>
 <p>How many log files should be kept on the SD card, each file is max 16kb in size. Default it 4.</p>
+</li>
+<li><p><strong>Size of each SD log file</strong></p>
+<p>Currently not used, all files are 16kb in size.</p>
+</li>
+<li><p><strong>Minium time before logging BLE to SD</strong></p>
+<p>How often BLE data should be logged to the SD card.</p>
 </li>
 </ul>
 </section>
@@ -486,7 +500,7 @@ data is received the gateway will choose the correct template for that data. You
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2021-2025, Magnus Persson
+                Copyright &#169; 2021-2026, Magnus Persson
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -518,6 +532,7 @@ data is received the gateway will choose the correct template for that data. You
 <li><a class="reference internal" href="#device">Device</a><ul>
 <li><a class="reference internal" href="#device-settings">Device - Settings</a></li>
 <li><a class="reference internal" href="#device-hardware">Device - Hardware</a></li>
+<li><a class="reference internal" href="#device-wifi-ap">Device - WIFI - AP</a></li>
 <li><a class="reference internal" href="#device-wifi">Device - WIFI</a></li>
 </ul>
 </li>
