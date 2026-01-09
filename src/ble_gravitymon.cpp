@@ -148,8 +148,8 @@ void BleSender::sendTiltData(String& color, float tempF, float gravSG,
   _advertising->stop();
 }
 
-void BleSender::sendRaptV1Data(float batteryPercentage, float tempC, float gravSG,
-                               float angle) {
+void BleSender::sendRaptV1Data(float batteryPercentage, float tempC,
+                               float gravSG, float angle) {
   Log.info(F("Starting rapt v1 beacon data transmission" CR));
 
   _advertising->stop();
@@ -197,7 +197,7 @@ void BleSender::sendRaptV1Data(float batteryPercentage, float tempC, float gravS
   mf += static_cast<char>((t >> 8));  // Temperature
   mf += static_cast<char>((t & 0xFF));
 
-  floatUnion.f = gravSG;  // Gravity
+  floatUnion.f = gravSG * 1000;  // Gravity
   mf += static_cast<char>(floatUnion.b[3]);
   mf += static_cast<char>(floatUnion.b[2]);
   mf += static_cast<char>(floatUnion.b[1]);
@@ -228,8 +228,8 @@ void BleSender::sendRaptV1Data(float batteryPercentage, float tempC, float gravS
   _advertising->stop();
 }
 
-void BleSender::sendRaptV2Data(float batteryPercentage, float tempC, float gravSG,
-                               float angle, float velocity) {
+void BleSender::sendRaptV2Data(float batteryPercentage, float tempC,
+                               float gravSG, float angle, float velocity) {
   Log.info(F("Starting rapt v2 beacon data transmission" CR));
 
   _advertising->stop();
@@ -267,9 +267,9 @@ void BleSender::sendRaptV2Data(float batteryPercentage, float tempC, float gravS
   mf += static_cast<char>(0x02);  // Rapt v2
   mf += static_cast<char>(0x00);  // Padding
 
-  mf += static_cast<char>(isnan(velocity) ? 0x00 : 0x01); // Velocity valid
+  mf += static_cast<char>(isnan(velocity) ? 0x00 : 0x01);  // Velocity valid
 
-  floatUnion.f = velocity; // Velocity
+  floatUnion.f = velocity;  // Velocity
   mf += static_cast<char>(floatUnion.b[3]);
   mf += static_cast<char>(floatUnion.b[2]);
   mf += static_cast<char>(floatUnion.b[1]);
@@ -278,7 +278,7 @@ void BleSender::sendRaptV2Data(float batteryPercentage, float tempC, float gravS
   mf += static_cast<char>((t >> 8));  // Temperature
   mf += static_cast<char>((t & 0xFF));
 
-  floatUnion.f = gravSG; // Gravity
+  floatUnion.f = gravSG * 1000;  // Gravity
   mf += static_cast<char>(floatUnion.b[3]);
   mf += static_cast<char>(floatUnion.b[2]);
   mf += static_cast<char>(floatUnion.b[1]);
