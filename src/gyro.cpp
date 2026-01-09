@@ -58,9 +58,7 @@ GyroType GyroSensor::detectGyro() {
   if (MPU6050Gyro::isDeviceDetected(addr)) {
     Log.notice(F("GYRO: MPU6050 detected." CR));
     return GyroType::GYRO_MPU6050;
-  }
-
-  else if (ICM42670pGyro::isDeviceDetected(addr)) {
+  } else if (ICM42670pGyro::isDeviceDetected(addr)) {
     Log.notice(F("GYRO: ICM42670P detected." CR));
     return GyroType::GYRO_ICM42670P;
   }
@@ -108,16 +106,18 @@ bool GyroSensor::setup(GyroMode mode, bool force) {
           Log.notice(F("GYRO: Using ICM42670-p %x." CR), myRtcGyroData.Address);
           _impl.reset(new ICM42670pGyro(myRtcGyroData.Address, _gyroConfig));
           _currentMode = GyroMode::GYRO_RUN;
-        } else
-#endif
-            if (ICM42670pGyro::isDeviceDetected(addr)) {
+        } else if (ICM42670pGyro::isDeviceDetected(addr)) {
           Log.notice(F("GYRO: Detected ICM42670-p %x." CR), addr);
           _impl.reset(new ICM42670pGyro(addr, _gyroConfig));
-#if defined(ESP32) && defined(ENABLE_RTCMEM)
           myRtcGyroData = {.Address = addr,
                            .IsDataAvailable = GYRO_RTC_DATA_AVAILABLE};
-#endif
         }
+#else
+        if (ICM42670pGyro::isDeviceDetected(addr)) {
+          Log.notice(F("GYRO: Detected ICM42670-p %x." CR), addr);
+          _impl.reset(new ICM42670pGyro(addr, _gyroConfig));
+        }
+#endif
       } break;
     }
   }
@@ -151,7 +151,8 @@ bool GyroSensor::read() {
     _angle = SIMULATE_ANGLE;
 #endif
 
-    if (_initialSensorTemp == NAN) {
+    if (isnan(_initialSensorTemp)) {
+      Log.notice(F("GYRO: Assigning initial gyro temperature %F." CR), resultData.temp);
       _initialSensorTemp = resultData.temp;
     }
 #if defined(ESP32) && defined(ENABLE_RTCMEM)
