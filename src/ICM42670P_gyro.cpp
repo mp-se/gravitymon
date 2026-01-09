@@ -380,7 +380,7 @@ bool ICM42670pGyro::calibrateSensor() {
 }
 
 void ICM42670pGyro::debug() {
-  // TODO: Implement debug method for ICM gyro
+  // TODO(Levi--G) : Implement debug method for ICM gyro
 }
 
 const char *ICM42670pGyro::getGyroFamily() { return "ICM42670-p"; }
