@@ -275,7 +275,7 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
     File file = LittleFS.open(fname, "r");
     if (file) {
       size_t fileSize = file.size();
-      char* buf = (char*)malloc(fileSize + 1);
+      char* buf = reinterpret_cast<char*>(malloc(fileSize + 1));
       if (buf == nullptr) {
         Log.error(F("PUSH: Failed to allocate %d bytes for template %s." CR),
                   fileSize, fname.c_str());

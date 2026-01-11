@@ -48,9 +48,11 @@ class BleSender {
 
   // Beacons
   void sendTiltData(String& color, float tempF, float gravSG, bool tiltPro);
-  void sendRaptV1Data(float batteryPercentage, float tempC, float gravSG, float angle);
-  void sendRaptV2Data(float batteryPercentage, float tempC, float gravSG, float angle,
-                      float velocity); // If velocity = NAN velocity valid flag is false
+  void sendRaptV1Data(float batteryPercentage, float tempC, float gravSG,
+                      float angle);
+  void sendRaptV2Data(
+      float batteryPercentage, float tempC, float gravSG, float angle,
+      float velocity);  // If velocity = NAN velocity valid flag is false
   void sendEddystoneData(float battery, float tempC, float gravSG, float angle);
   void sendCustomBeaconData(float battery, float tempC, float gravSG,
                             float angle);

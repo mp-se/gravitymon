@@ -24,6 +24,7 @@ SOFTWARE.
 #if defined(GRAVITYMON)
 
 #include <MPU6050_gyro.hpp>
+#include <cstdio>
 #include <log.hpp>
 #include <main.hpp>
 

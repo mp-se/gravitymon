@@ -46,6 +46,8 @@ SOFTWARE.
 #include <esp_heap_caps.h>
 #endif
 
+#include <cstdio>
+
 extern bool sleepModeActive;
 extern bool sleepModeAlwaysSkip;
 
@@ -359,7 +361,7 @@ String BrewingWebServer::readFile(String fname) {
   if (file) {
     size_t fileSize = file.size();
 
-    char *buf = (char *)malloc(fileSize + 1);
+    char *buf = reinterpret_cast<char *>(malloc(fileSize + 1));
     if (buf == nullptr) {
       Log.error(F("WEB : Failed to allocate %d bytes for file %s." CR),
                 fileSize, fname.c_str());
