@@ -316,7 +316,8 @@ on brewfather, not other settings are needed. The stream endpoint URL has the fo
 and enter the <strong>name</strong> for the iSpindle and save it. Select the iSpindle under <strong>Equipment</strong> and open <strong>View instructions</strong> and make a note
 of the <strong>Server URL</strong> displayed (e.g. /iot/<strong>mydevice</strong>/ispindel). Where the <strong>mydevice</strong> value/content is different for each iSpindle.</p>
 <p><span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">Endpoint: HTTP POST</span></p>
-<p>Under Gravitymon configuration menue <strong>Push-Targets</strong> select <strong>HTTP-Post</strong>, into <strong>HTTP URL</strong> field enter the URL</p>
+<p>Under Gravitymon configuration menue <strong>Push-Targets</strong> select <strong>HTTP-Post</strong>, into <strong>HTTP URL</strong> field enter the URL. Set interval to a value higher
+than 900, ie. 910 to avoid server rejecting data.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">community</span><span class="o">.</span><span class="n">grainfather</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">iot</span><span class="o">/**</span><span class="n">mydevice</span><span class="o">**/</span><span class="n">ispindel</span>
 </pre></div>
 </div>

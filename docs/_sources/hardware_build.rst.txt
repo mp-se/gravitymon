@@ -56,11 +56,12 @@ located as shown in the image below.
   :alt: Mount resistors
 
 If you are using v1.0 or v1.1 of the PET PCB i recommend to mount the R3 like this so the 
-tempsensor data pin is pulled to 3.3V instead of 5V.
+tempsensor data pin is pulled to 3.3V instead of 5V. This only affects the temperature sensor 
+and not the MPU6050 gyro SDA/SCL pins.
 
 .. image:: images/hw/3a_resistor_mod.jpeg
   :width: 600
-  :alt: Mount resistors
+  :alt: Mount resistors for v1.0/v1.1 PET PCB
 
 
 Step 4 - Mount pins for ESP32
