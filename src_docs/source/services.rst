@@ -88,7 +88,8 @@ of the **Server URL** displayed (e.g. /iot/**mydevice**/ispindel). Where the **m
 
 :bdg-primary:`Endpoint: HTTP POST`
 
-Under Gravitymon configuration menue **Push-Targets** select **HTTP-Post**, into **HTTP URL** field enter the URL
+Under Gravitymon configuration menue **Push-Targets** select **HTTP-Post**, into **HTTP URL** field enter the URL. Set interval to a value higher 
+than 900, ie. 910 to avoid server rejecting data.
 
 .. code-block::
 

@@ -113,17 +113,6 @@ Waveshare ESP32c3 Zero using PET casing
 
 This is my own design of a PCB for Gravitymon using the same PET casing as for the iSpindel. For building this you need:
 
-.. note::
-  The v1.0 and v1.1 of the PCB design has a misstake that needs to be corrected or this can damage the ESP32c3 board. The power 
-  and pull-up for the DS18B20 is to VCC which means pin 5 will eventually be damaged. The ICM-42670-p gyro will not work with 5V 
-  so this will make it possbible to use that option as well. The way to correct this is to supply the Gyro and Temperature sensors 
-  from 3.3V. I'm working on a new version of the PCB that uses 3.3V for these components. The solution is to cut the 5V trace at 
-  point 1 and then add a wire between the R3 resistor and the 3.3V pin on the ESP32c3 board at point 2. 
-
-  Another option is to connect the R3 pullup to 3.3V on the ESP32c3 board instead that way the data pin is compatible.
-
-  .. image:: images/gravitymon_hw_fix.png
-
 This is the schematic that is used for this design enabling all the features in Gravitymon.
 
 .. image:: images/gravitymon_schema.png
@@ -140,25 +129,6 @@ This is the back / front of the PCB design.
   :width: 600
   :alt: Gravitymon PCB for PET
 
-
-Build instructions
-++++++++++++++++++
-
-I would also recommend to flash the ESP before soldering it so you know it works and connects to your wifi correctly.
-
-* Start with soldering the switch which goes under the charger module.
-* Solder the connectors for the ESP but dont mount the board just yet.
-* Solder the connectors for the GYRO, make sure the pins for the GYRO should not go all the way through, they need to be flush with the PCB since the battery holder goes on top. Then you can mount the gyro, place something under the gyro so its flat with the PCB so its leveled.
-* Mount the resistors and solder them in place. 
-* Mount the temperature sensor and also ensure the pins are flush with the PCB.
-* Mount the connectors for the charger module and solder that in place on top of the switch.
-* Solder the batter holder in place, start with putting solder on the pads and on the copper connectors, that way its easier to solder them in place.
-* Now solder the ESP in place
-* Finally you can solder the wireless charger module (this is optional) on either side, choose the one that fits your build.
-
-Once the device is mounted you can test it in water. It should be close to 25 degrees (+/- 2 degrees is acceptable), if not you can use 
-the balance pads to add some solder/weight to change the angle. If the angle is too high then use the bottom pads. I have noticed that the batteries
-can differ in weight, they should be around 44g.
 
 iSpindle based on esp8266
 *************************
