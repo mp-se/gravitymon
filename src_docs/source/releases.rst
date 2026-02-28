@@ -3,6 +3,14 @@
 Releases 
 ########
 
+v2.5.0
+======
+
+* Added the lost temperature sensor adjustment value to the config page. 
+* When force config is enabled the device will not enter sleep if charging mode is enabled.
+* Storage and charging mode can not be enabled since they are the same feature but triggered by different events.
+* Reduced WiFi power for the super mini target to improve wifi connection stability.
+
 v2.4.0
 ======
 
