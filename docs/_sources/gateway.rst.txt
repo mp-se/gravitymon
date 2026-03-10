@@ -22,7 +22,7 @@ Hardware
 
 The main supported hardware is an Waveshare ESP32s3 PRO with a built in TFT 
 
-* `Waveshare ESP32s3 TFT <https://www.waveshare.com/product/mcu-tools/development-boards/esp32/esp32-s3-touch-lcd-2.8.htm)>`_ 
+* `Waveshare ESP32s3 TFT <https://www.waveshare.com/product/mcu-tools/development-boards/esp32/esp32-s3-touch-lcd-2.8.htm>`_ 
 
 The second options is Lolin ESP32s3 PRO with a Lolin TFT 
 
