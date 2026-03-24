@@ -3,8 +3,11 @@
 Releases 
 ########
 
-v2.5.0
+v2.4.1
 ======
+
+Bugs fixed
+++++++++++
 
 * Added the lost temperature sensor adjustment value to the config page. 
 * When force config is enabled the device will not enter sleep if charging mode is enabled.
