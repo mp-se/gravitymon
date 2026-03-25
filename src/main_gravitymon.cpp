@@ -568,10 +568,16 @@ void checkSleepMode(float angle, float volt) {
   }
 
 #if defined(PIN_CHARGING)
-  // If there is voltage on the storage pin, we enter storage mode.
-  if (myConfig.isPinChargingMode() && checkPinCharging(PIN_CHARGING)) {
-    Log.info(F("MAIN: Charging pin active." CR));
-    runMode = RunMode::storageMode;
+  if( !checkPinConnected(PIN_CFG1, PIN_CFG2) ) {
+    // If there is voltage on the storage pin, we enter storage mode.
+    if (myConfig.isPinChargingMode() && checkPinCharging(PIN_CHARGING)) {
+      Log.info(F("MAIN: Charging pin active." CR));
+      runMode = RunMode::storageMode;
+    }
+  } else {
+    Log.warning(
+        F("MAIN: Skipping storage mode since force config pins are connected." CR),
+        PIN_CFG1, PIN_CFG2);
   }
 #endif
 
