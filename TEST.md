@@ -5,20 +5,20 @@ I have moved my test scripts into this project now. They are mainly based on pyt
 Create a virtual environment and install the needed dependecies
 ```
 python -m venv .env
-pip install -r requirements.txt
+pip install -r test/scripts/requirements.txt
 ```
 
 Before you runt the script you need to update the IP adress to match the device that you have on your network.
 
 Running the ALL tests
 ```
-cd src/test
+cd test/scripts
 python3 -m unittest -v apitests.py -v
 ```
 
 Running the ONE test
 ```
-cd src/test
+cd test/scripts
 python3 -m unittest -v apitests.API.test_status -v
 ```
 
