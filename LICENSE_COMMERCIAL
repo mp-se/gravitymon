@@ -1,0 +1,127 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                    GRAVITYMON — COMMERCIAL LICENSE AGREEMENT                   ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+Copyright (c) 2021-2026 Magnus
+Source: https://github.com/mp-se/gravitymon and https://github.com/mp-se/gravitymon-ui
+
+────────────────────────────────────────────────────────────────────────────────
+
+OVERVIEW
+
+This Commercial License governs the use of GravityMon software by parties who
+do not wish to comply with the obligations of the GNU General Public License
+v3.0 (GPL v3) — primarily the requirement to publish your full source code.
+
+This license is granted by Magnus ("Licensor") to the purchasing entity
+("Licensee") upon execution of a written agreement and payment of the
+applicable license fee.
+
+────────────────────────────────────────────────────────────────────────────────
+
+WHO NEEDS THIS LICENSE?
+
+You must obtain a Commercial License if you:
+
+  • Distribute GravityMon (or a derivative work) in a product or service
+    WITHOUT releasing your full source code under GPL v3
+
+  • Are a company, business entity, or organization distributing GravityMon
+    in any quantity
+
+  • Are an individual distributing more than 100 units per calendar year
+
+  • Sell products containing GravityMon on any marketplace (AliExpress,
+    Amazon, eBay, Tindie, etc.) beyond the Hobbyist Safe Harbor threshold
+
+  • Embed GravityMon into a SaaS product or commercial hosted service
+
+────────────────────────────────────────────────────────────────────────────────
+
+HOBBYIST SAFE HARBOR (No License Required)
+
+Individual makers and hobbyists are exempt from this Commercial License
+provided ALL of the following are true:
+
+  1. You are an individual person — not a company, LLC, or business entity
+  2. You distribute no more than 100 units per calendar year
+  3. You publish the full source code of your version under GPL v3
+  4. You include a visible link to https://github.com/mp-se/gravitymon
+  5. All original "Copyright (c) Magnus" notices remain intact
+
+  Exceeding any condition above requires a Commercial License.
+
+────────────────────────────────────────────────────────────────────────────────
+
+WHAT THE COMMERCIAL LICENSE GRANTS
+
+Upon execution of a written agreement with the Licensor, the Licensee receives:
+
+  ✓ The right to incorporate GravityMon into proprietary, closed-source
+    products without triggering GPL v3 source disclosure obligations
+
+  ✓ The right to distribute such products commercially without quantity limits
+
+  ✓ The right to modify GravityMon without publishing those modifications
+
+  ✓ A royalty-free license for the agreed scope/term as defined in the
+    signed agreement
+
+────────────────────────────────────────────────────────────────────────────────
+
+REQUIREMENTS UNDER COMMERCIAL LICENSE
+
+Regardless of the license tier, the Licensee must:
+
+  1. Retain all "Copyright (c) Magnus" notices in source code and
+     documentation
+
+  2. Display a copyright notice in any "About", "System Info", or
+     equivalent screen in the product UI:
+         "Portions copyright (c) Magnus — https://github.com/mp-se/gravitymon"
+
+  3. Not sublicense, resell, or transfer the Commercial License rights
+     to any third party without prior written consent from the Licensor
+
+  4. Not misrepresent the origin of the software or remove attribution
+
+────────────────────────────────────────────────────────────────────────────────
+
+NO WARRANTY
+
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM
+THE USE OF THIS SOFTWARE.
+
+────────────────────────────────────────────────────────────────────────────────
+
+HOW TO OBTAIN A COMMERCIAL LICENSE
+
+To inquire about commercial licensing terms and pricing, contact:
+
+  Name:    Magnus
+  Email:   mpersson42(at)gmail.com
+  GitHub:  https://github.com/mp-se
+
+Please include in your inquiry:
+  • Intended use / product description
+  • Estimated annual distribution volume
+  • Whether you are an individual or business entity
+
+────────────────────────────────────────────────────────────────────────────────
+
+VIOLATION & ENFORCEMENT
+
+Unauthorized commercial use without a valid Commercial License constitutes:
+
+  • A breach of copyright under applicable law
+  • A violation of the GPL v3 (if GPL terms are also not met)
+
+The Licensor reserves the right to pursue all available legal remedies
+including injunctive relief and damages for unauthorized commercial use.
+
+────────────────────────────────────────────────────────────────────────────────
