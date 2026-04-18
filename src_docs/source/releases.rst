@@ -3,6 +3,15 @@
 Releases 
 ########
 
+v2.5.0
+======
+
+New features
+++++++++++++
+
+* Added support for Cuckoo Tilt as a new supported target. 
+* Updated hardware options in the documentation to match the current supported targets.
+
 v2.4.1
 ======
 
