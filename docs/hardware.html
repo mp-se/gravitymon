@@ -259,12 +259,21 @@
         <article role="main" id="furo-main-content">
           <section id="hardware">
 <span id="id1"></span><h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading">¶</a></h1>
-<p>Here are some option that can be used to build a gravitymon device</p>
+<section id="pcb-options-for-diy-builds">
+<h2>PCB options for DIY builds<a class="headerlink" href="#pcb-options-for-diy-builds" title="Permalink to this heading">¶</a></h2>
+<p>Here are some option that can be used to build a gravitymon device (DIY)</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/cherryphilip74/iSpindel-PCB">Cherry Philip Hardware design</a></p></li>
 <li><p><a class="reference external" href="https://www.opensourcedistilling.com/ispindel">OpenSource Distilling</a></p></li>
 <li><p><a class="reference external" href="https://github.com/andreq/iSpindel-Gravitymon-Pill-PCB">iSpindel Gravitymon Pill PCB</a></p></li>
 <li><p><a class="reference external" href="https://github.com/hobipivo/iSpindel">iSpindel</a></p></li>
+</ul>
+</section>
+<section id="gravitymon-pcb-options-for-diy-builds">
+<h2>Gravitymon PCB options for DIY builds<a class="headerlink" href="#gravitymon-pcb-options-for-diy-builds" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>PET Casing option</p></li>
+<li><p>PILL Casing option (work in progress)</p></li>
 </ul>
 <p>I have now also created my own PCB design for Gravitymon which enable all the features not available in
 most other projects. I’m working on more options but this is a slow process since delivery of prototypes
@@ -273,6 +282,21 @@ take time.</p>
 <p>My PCB’s are designed in Kicad and stored in my repository <a class="reference external" href="https://github.com/mp-se/pcb-designs/">mp-se/pcb_designs</a></p>
 <p>You can also order the <a class="reference external" href="https://www.pcbway.com/project/shareproject/Gravitymon_PCB_for_ESP32c3_Zero_PET_3a69bb89.html">PCB from PCBWAY here</a></p>
 <p>Currently i’m also working on a PCB for the PILL casing with the Waveshare ESP32c3 Zero board.</p>
+</section>
+<section id="ispindle-based-on-esp8266">
+<h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this heading">¶</a></h2>
+<p>You can of course also use an ESP8266 based iSpindle design and flash it with the Gravitymon firmware. This is the original design and
+there are many resources available on how to build this.</p>
+</section>
+<section id="cuckoo-tilt">
+<h2>Cuckoo Tilt<a class="headerlink" href="#cuckoo-tilt" title="Permalink to this heading">¶</a></h2>
+<p>You can now also use the Cuckoo Tilt which can be found on chineese marketplaces. This is a ready to
+use device that can be flashed with the Gravitymon firmware. It has a built in battery and charging
+circuit and is based on the ESP32c3. The tilt sensor is an ICM-42670-p which is supported by Gravitymon.
+There firmware is a custom version of Gravitymon so support is not a problem.</p>
+<p><em>There is no serial usb port exposed on the device but its possible to flash the device using some
+soldering and usb-ttl adapter in case its gets bricked.</em></p>
+</section>
 <section id="supported-esp-boards">
 <h2>Supported ESP boards<a class="headerlink" href="#supported-esp-boards" title="Permalink to this heading">¶</a></h2>
 <p>From v2.3 i have changed the main boards that I support as part of this project and the focus is now
@@ -282,9 +306,9 @@ and components exist today.</p>
 <p>For the pcbs make for the ESP8266 some of the features will not be available but I’m currently working with
 some pcb designeers to create new options that full utilize the features in Gravitymon.</p>
 <p>I’m working on adding more ESP options and I will add the pinouts once they have been confirmed.</p>
-<div class="table-wrapper docutils container" id="id2">
-<table class="docutils align-default" id="id2">
-<caption><span class="caption-text">GPIO pins for ESP boards</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<div class="table-wrapper docutils container" id="id3">
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">GPIO pins for ESP boards</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Board</p></th>
 <th class="head"><p>SDA</p></th>
@@ -374,8 +398,8 @@ builds since I dont have access to these boards for testing.</p>
 <a class="reference internal image-reference" href="_images/gravitymon_pcb_zero_pet_2.png"><img alt="Gravitymon PCB for PET" src="_images/gravitymon_pcb_zero_pet_2.png" style="width: 600px;" /></a>
 </section>
 </section>
-<section id="ispindle-based-on-esp8266">
-<h2>iSpindle based on esp8266<a class="headerlink" href="#ispindle-based-on-esp8266" title="Permalink to this heading">¶</a></h2>
+<section id="id2">
+<h2>iSpindle based on esp8266<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
 <p>There are lots of resouces out there on how to build the hardware for an iSpindle so I will not go into details on that part. I typically use one of the
 excellent pcb boards that, for example the iSpindel PCB v4.0 from Cherry Philip. Here is one of my standard builds using an esp8266.</p>
 <a class="reference internal image-reference" href="_images/ispindel_esp8266.jpg"><img alt="iSpindle esp8266" src="_images/ispindel_esp8266.jpg" style="width: 500px;" /></a>
@@ -490,6 +514,10 @@ that allows you to use the Y axis for tilt detection. The boards I used is pin c
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Hardware</a><ul>
+<li><a class="reference internal" href="#pcb-options-for-diy-builds">PCB options for DIY builds</a></li>
+<li><a class="reference internal" href="#gravitymon-pcb-options-for-diy-builds">Gravitymon PCB options for DIY builds</a></li>
+<li><a class="reference internal" href="#ispindle-based-on-esp8266">iSpindle based on esp8266</a></li>
+<li><a class="reference internal" href="#cuckoo-tilt">Cuckoo Tilt</a></li>
 <li><a class="reference internal" href="#supported-esp-boards">Supported ESP boards</a><ul>
 <li><a class="reference internal" href="#custom-boards">Custom boards</a></li>
 </ul>
@@ -498,7 +526,7 @@ that allows you to use the Y axis for tilt detection. The boards I used is pin c
 <li><a class="reference internal" href="#waveshare-esp32c3-zero-using-pet-casing">Waveshare ESP32c3 Zero using PET casing</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#ispindle-based-on-esp8266">iSpindle based on esp8266</a><ul>
+<li><a class="reference internal" href="#id2">iSpindle based on esp8266</a><ul>
 <li><a class="reference internal" href="#schema-for-esp8266-build">Schema for esp8266 build</a></li>
 <li><a class="reference internal" href="#what-is-different-for-the-esp32">What is different for the ESP32</a></li>
 <li><a class="reference internal" href="#example-esp32c3-mini">Example: ESP32c3 mini</a></li>

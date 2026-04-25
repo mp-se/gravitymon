@@ -3,12 +3,21 @@
 Hardware
 ########
 
-Here are some option that can be used to build a gravitymon device
+PCB options for DIY builds
+**************************
+
+Here are some option that can be used to build a gravitymon device (DIY)
 
 * `Cherry Philip Hardware design <https://github.com/cherryphilip74/iSpindel-PCB>`_
 * `OpenSource Distilling <https://www.opensourcedistilling.com/ispindel>`_
 * `iSpindel Gravitymon Pill PCB <https://github.com/andreq/iSpindel-Gravitymon-Pill-PCB>`_
 * `iSpindel <https://github.com/hobipivo/iSpindel>`_
+
+Gravitymon PCB options for DIY builds
+*************************************
+
+* PET Casing option
+* PILL Casing option (work in progress)
 
 I have now also created my own PCB design for Gravitymon which enable all the features not available in 
 most other projects. I'm working on more options but this is a slow process since delivery of prototypes 
@@ -23,6 +32,23 @@ My PCB's are designed in Kicad and stored in my repository `mp-se/pcb_designs <h
 You can also order the `PCB from PCBWAY here <https://www.pcbway.com/project/shareproject/Gravitymon_PCB_for_ESP32c3_Zero_PET_3a69bb89.html>`_
 
 Currently i'm also working on a PCB for the PILL casing with the Waveshare ESP32c3 Zero board.
+
+iSpindle based on esp8266
+*************************
+
+You can of course also use an ESP8266 based iSpindle design and flash it with the Gravitymon firmware. This is the original design and 
+there are many resources available on how to build this.
+
+Cuckoo Tilt
+***********
+
+You can now also use the Cuckoo Tilt which can be found on chineese marketplaces. This is a ready to 
+use device that can be flashed with the Gravitymon firmware. It has a built in battery and charging 
+circuit and is based on the ESP32c3. The tilt sensor is an ICM-42670-p which is supported by Gravitymon. 
+There firmware is a custom version of Gravitymon so support is not a problem.
+
+*There is no serial usb port exposed on the device but its possible to flash the device using some 
+soldering and usb-ttl adapter in case its gets bricked.*
 
 Supported ESP boards
 ********************

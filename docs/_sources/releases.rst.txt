@@ -3,6 +3,16 @@
 Releases 
 ########
 
+v2.5.0
+======
+
+New features
+++++++++++++
+
+* Added support for Cuckoo Tilt as a new supported target (new firmware file). 
+* Updated hardware options in the documentation to match the current supported targets.
+* Added option in Formula editor to create data points based on current formula.
+
 v2.4.1
 ======
 
