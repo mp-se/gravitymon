@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "soc/soc_caps.h"
 
-static const uint8_t LED_BUILTIN = 7+SOC_GPIO_PIN_COUNT;
+static const uint8_t LED_BUILTIN = 8+SOC_GPIO_PIN_COUNT;
 #define BUILTIN_LED  LED_BUILTIN // backward compatibility
 #define LED_BUILTIN LED_BUILTIN  // allow testing #ifdef LED_BUILTIN
 #define RGB_BUILTIN LED_BUILTIN

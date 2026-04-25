@@ -47,6 +47,8 @@ use device that can be flashed with the Gravitymon firmware. It has a built in b
 circuit and is based on the ESP32c3. The tilt sensor is an ICM-42670-p which is supported by Gravitymon. 
 There firmware is a custom version of Gravitymon so support is not a problem.
 
+*There is no serial usb port exposed on the device but its possible to flash the device using some 
+soldering and usb-ttl adapter in case its gets bricked.*
 
 Supported ESP boards
 ********************

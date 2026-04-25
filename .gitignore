@@ -3,6 +3,7 @@
 .env
 __pycache__
 env
+cuckoo/
 .env/*
 *.pyc
 src_docs/_build/*
