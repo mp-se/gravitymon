@@ -37,4 +37,3 @@ Thanks to the following persons for supporting me and this project:
 * Andreas Dohl
 * StodgyWaif
 * Krump Lee
-
