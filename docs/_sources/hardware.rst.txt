@@ -6,12 +6,15 @@ Hardware
 PCB options for DIY builds
 **************************
 
-Here are some option that can be used to build a gravitymon device (DIY)
+Here are some option that can be used to build a ispindel device (DIY) based on ESP8266 / ESP32 Mini boards
 
 * `Cherry Philip Hardware design <https://github.com/cherryphilip74/iSpindel-PCB>`_
 * `OpenSource Distilling <https://www.opensourcedistilling.com/ispindel>`_
-* `iSpindel Gravitymon Pill PCB <https://github.com/andreq/iSpindel-Gravitymon-Pill-PCB>`_
-* `iSpindel <https://github.com/hobipivo/iSpindel>`_
+
+Here are some option that can be used to build a gravitymon device (DIY) based on ESP32
+
+* `Andreq - iSpindel / Gravitymon Pill PCB <https://github.com/andreq/iSpindel-Gravitymon-Pill-PCB>`_
+* `hobipivo - iSpindel / Gravitymon <https://github.com/hobipivo/iSpindel>`_
 
 Gravitymon PCB options for DIY builds
 *************************************
