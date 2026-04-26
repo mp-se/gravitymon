@@ -191,6 +191,20 @@ need to add a voltage divider and pull-down resistor for this to work correctly 
 The charging pin can also be used for doing a reset of the device that does not have an exposed reset pin, this applies to the smaller 
 boards like Zero or Super Mini boards.
 
+Wireless charging 
++++++++++++++++++
+
+Wireless charging is possible with the dedicated Gravitymon boards that has support for that. I have create to simple 3d models to show how 
+to create a stand for the two options i have boards for. The models can be downloaded here `3d models <https://github.com/mp-se/3d-designs>`_ and can be printed on a 3d printer.
+
+For the PET casing the wireless charging coil is mounted on the bottom of the tube and for the PILL casing its on the side. You can hook up any DC charger that produce 
+between 9-12V if you use the coils i recommend in my build.
+
+.. image:: images/wireless.jpg
+  :width: 700
+  :alt: Wireless stands
+
+
 Example: ESP32c3 mini
 +++++++++++++++++++++
 
