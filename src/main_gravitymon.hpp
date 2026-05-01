@@ -102,13 +102,12 @@
 // Hardware config for ESP32-c3, Cuckoo hardware
 // ------------------------------------------------------
 #define PIN_SDA 7
-
 #define PIN_SCL 6
 #define PIN_DS A0
 #define PIN_VOLT A3
 #define PIN_CFG1 A5
 #define PIN_CFG2 A4
-#define PIN_CHARGING 10  // Needs to be an Analog and RTC connected pin
+// #define PIN_CHARGING 10  // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32c3cuckoo.bin"
 #define CFG_PCB "Cuckoo"
 

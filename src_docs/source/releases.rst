@@ -9,6 +9,7 @@ v2.5.0
 New features
 ++++++++++++
 
+* Disabled charging pin for Cuckoo target since its not used
 * Added support for Cuckoo Tilt as a new supported target (new firmware file). 
 * Updated hardware options in the documentation to match the current supported targets.
 * Added option in Formula editor to create data points based on current formula.
