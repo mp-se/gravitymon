@@ -14,6 +14,10 @@ New features
 * Updated hardware options in the documentation to match the current supported targets.
 * Added option in Formula editor to create data points based on current formula.
 
+Bugs fixed
+++++++++++
+* Sometimes the LED was not turned off when going to deep sleep mode, added slight delay to ensure the LED is turned off.
+
 v2.4.1
 ======
 
