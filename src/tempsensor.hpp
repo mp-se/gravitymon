@@ -27,6 +27,7 @@
 #include <Arduino.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
+#include <ds18b20_checker.hpp>
 
 #include <memory>
 
@@ -52,6 +53,7 @@ class TempSensor {
   float _tempSensorAdjC = 0;
   float _temperatureC = 0;
   bool _initialized = false;
+  int _pin = -1;
 
   bool setupSensor(int pin);
 
@@ -59,6 +61,8 @@ class TempSensor {
   explicit TempSensor(TempSensorConfigInterface *tempSensorConfig,
                       SecondayTempSensorInterface *secondary = nullptr)
       : _tempSensorConfig(tempSensorConfig), _secondary(secondary) {}
+
+  bool searchForSensors();
 
   void setup(int pin, int pin2 = -1);
   void readSensor(bool useGyro = false);
@@ -72,6 +76,27 @@ class TempSensor {
     }
   }
   int getSensorResolution() { return _sensors ? _sensors->getResolution() : 0; }
+
+  // Returns number of deviations from genuine DS18B20 spec (0 = likely genuine).
+  // Uses only documented commands — safe to run on any sensor.
+  int checkForCounterfeit(int sensorIndex = 0) {
+    if (!_onewire || !_sensors || _sensors->getDS18Count() == 0) return -1;
+    uint8_t addr[8];
+    if (!_sensors->getAddress(addr, sensorIndex)) return -1;
+    DS18B20Checker checker(_onewire.get());
+    return checker.discover(addr);
+  }
+
+  // Classify clone family using undocumented commands.
+  // WARNING: may affect calibration of clone sensors.
+  const char* classifySensor(int sensorIndex = 0) {
+    if (!_onewire || !_sensors || _sensors->getDS18Count() == 0)
+      return ds18b20TypeName(DS18B20Type::UNKNOWN);
+    uint8_t addr[8];
+    if (!_sensors->getAddress(addr, sensorIndex)) return ds18b20TypeName(DS18B20Type::UNKNOWN);
+    DS18B20Checker checker(_onewire.get());
+    return ds18b20TypeName(checker.classify(addr));
+  }
 };
 
 extern TempSensor myTempSensor;

@@ -23,13 +23,19 @@
 
 #include <math.h>
 
+#if defined(ESP32)
+#include <driver/gpio.h>
+#endif
 #include <log.hpp>
 #include <tempsensor.hpp>
 
 void TempSensor::setup(int pin, int pin2) {
+  _pin = pin;
+  
   if (!setupSensor(pin)) {
     if (pin2 >= 0) {
       setupSensor(pin2);
+      _pin = pin2;
     }
   }
 
@@ -45,6 +51,15 @@ void TempSensor::setup(int pin, int pin2) {
 }
 
 bool TempSensor::setupSensor(int pin) {
+#if defined(ESP32)
+  gpio_reset_pin((gpio_num_t)pin);
+  // Issue a long reset pulse before library init — sensor needs >480us on this board
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, LOW);
+  delayMicroseconds(600);
+  pinMode(pin, INPUT);
+  delayMicroseconds(500);
+#endif
   _onewire.reset(new OneWire(pin));
   _sensors.reset(new DallasTemperature(_onewire.get()));
 
@@ -69,6 +84,7 @@ bool TempSensor::setupSensor(int pin) {
 void TempSensor::readSensor(bool useGyro) {
   if (!_initialized) {
     _temperatureC = NAN;
+    Log.error(F("TSEN: Sensor not initialized." CR));
     return;
   }
 
@@ -111,6 +127,18 @@ void TempSensor::readSensor(bool useGyro) {
                 _temperatureC);
 #endif
   }
+}
+
+bool TempSensor::searchForSensors() {
+  byte addr[8];
+  _onewire->reset_search();
+  if (!_onewire->search(addr)) {
+    Log.error(F("TSEN: No OneWire device found on bus" CR));
+    return false;
+  }
+  Log.notice(F("TSEN: Device found, family=0x%x CRC %s" CR), addr[0],
+      OneWire::crc8(addr, 7) == addr[7] ? "OK" : "FAIL");
+  return true;
 }
 
 // EOF

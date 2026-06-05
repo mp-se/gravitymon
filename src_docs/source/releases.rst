@@ -9,6 +9,7 @@ v2.5.0
 New features
 ++++++++++++
 
+* Addeded DS18B20 counterfeit check under hardware testing, using this; https://github.com/cpetrich/counterfeit_DS18B20, see project for sensor classification
 * Disabled charging pin for Cuckoo target since its not used
 * Added support for Cuckoo Tilt as a new supported target (new firmware file). 
 * Updated hardware options in the documentation to match the current supported targets.

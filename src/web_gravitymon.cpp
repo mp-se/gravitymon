@@ -44,6 +44,9 @@ constexpr auto PARAM_GYRO = "gyro";
 constexpr auto PARAM_GYRO_FAMILY = "gyro_family";
 constexpr auto PARAM_ONEWIRE = "onewire";
 constexpr auto PARAM_TEMP_SENSOR = "temp_sensor";
+constexpr auto PARAM_DS18B20_DETECTED = "ds18b20_detected";
+constexpr auto PARAM_DS18B20_COUNTERFEIT = "ds18b20_counterfeit";
+constexpr auto PARAM_DS18B20_TYPE = "ds18b20_type";
 
 constexpr auto PARAM_FEATURE_BLE_SUPPORTED = "ble";
 constexpr auto PARAM_FEATURE_FILTER_SUPPORTED = "filter";
@@ -257,6 +260,10 @@ void GravitymonWebServer::doTaskHardwareScanning(JsonObject &obj) {
     }
   }
 #endif
+
+  obj[PARAM_DS18B20_DETECTED] = myTempSensor.searchForSensors();
+  obj[PARAM_DS18B20_COUNTERFEIT] = myTempSensor.checkForCounterfeit();
+  obj[PARAM_DS18B20_TYPE] = myTempSensor.classifySensor();
 
   JsonArray sensor = obj[PARAM_TEMP_SENSOR].to<JsonArray>();
 
