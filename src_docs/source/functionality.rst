@@ -251,6 +251,19 @@ The main features
   add custom builds for boards that I dont have access to, in sense a community approach where everyone can 
   add new boards that can be supported. See: :ref:`custom-boards` 
 
+* **Hardware testing** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
+
+  There is a built in hardware testing function that can be used to test the different components of the 
+  device. This is useful for troubleshooting and to make sure that the device is working as it should. The 
+  tests include:
+
+  - Chip information (family, cores, revision, features)
+  - I2C bus scan (detected device addresses)
+  - Gyro test (MPU6050 self-test for accelerometer and gyroscope axes)
+  - Temperature sensor test (DS18B20 detection, address, resolution)
+  - DS18B20 counterfeit check (deviation count and sensor family classification)
+
+
 Battery life
 ------------
 
