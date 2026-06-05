@@ -185,9 +185,9 @@ int DS18B20Checker::discover(uint8_t* addr) {
     if (bitSetOk != 4) {
       fake_flags++;
     } else {
-      float r1 = (float)convTime[1] / max(1ul, convTime[0]);
-      float r2 = (float)convTime[2] / max(1ul, convTime[1]);
-      float r3 = (float)convTime[3] / max(1ul, convTime[2]);
+      float r1 = (float)convTime[1] / max(static_cast<uint32_t>(1), convTime[0]);
+      float r2 = (float)convTime[2] / max(static_cast<uint32_t>(1), convTime[1]);
+      float r3 = (float)convTime[3] / max(static_cast<uint32_t>(1), convTime[2]);
       float rAvg = (r1 + r2 + r3) / 3.0f;
       if (!(fabs(rAvg - 2.0f) < 0.3f)) fake_flags++;
     }
