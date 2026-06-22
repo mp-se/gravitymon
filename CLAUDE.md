@@ -91,3 +91,4 @@ Key external dependencies (pinned versions in `platformio.ini`):
 - `OneWireNg` + `Arduino-Temperature-Control-Library` — DS18B20 sensor
 - `NimBLE-Arduino` — BLE (ESP32 targets with `ENABLE_BLE`)
 - `AUnit` — unit test framework (unit test target only)
+
