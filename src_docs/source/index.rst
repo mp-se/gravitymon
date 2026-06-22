@@ -7,9 +7,7 @@ Welcome to Gravitymon
 #####################
 
 .. note::
-  This documentation reflects **v2.4.0**. Last updated 2026-01-12
-
-  Link to `previous documentation here <https://mp-se.github.io/gravitymon/v1.4/>`_ 
+  This documentation reflects **v2.5.0**. Last updated 2026-06-22
 
   
 What is Gravitymon?

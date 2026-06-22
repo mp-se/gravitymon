@@ -22,7 +22,7 @@ copyright = '2021-2026, Magnus Persson'
 author = 'Magnus Persson'
 
 # The full version, including alpha/beta/rc tags
-release = '2.2.0'
+release = '2.5.0'
 
 # -- General configuration ---------------------------------------------------
 
@@ -49,7 +49,7 @@ exclude_patterns = []
 #
 html_theme = 'furo'
 html_logo = "images/gravitymon_logo.png"
-html_title = "Gravitymon v2.4.0"
+html_title = "Gravitymon v2.5.0"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

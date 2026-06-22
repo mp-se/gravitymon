@@ -111,6 +111,7 @@ The main features
   - Tilt PRO. Same as above with higher accuracy.
   - Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.
   - Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.
+  - RAPT v1 / RAPT v2. Data: Gravity,Temp. Compatible with the RAPT pill format for services that support it.
 
 * **WIFI Direct to GravityMon Gateway** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
@@ -295,10 +296,6 @@ this can be as low as 1.5-2.0 seconds but in reality its probably around 3-4 sec
      - 12,000
      - 4 days
      - 43 days
-   * - ESP32 d1 (ble)
-     - 56,000
-     - 20 days
-     - 196 days
 
 
 As you can see from the table above there is quite some differences between the boards and connection methods. 
