@@ -125,6 +125,22 @@ I'm working on adding more ESP options and I will add the pinouts once they have
      - n/a
      - A4
      - IO10 / A1
+   * - Cuckoo Tilt (ESP32c3)
+     - 7
+     - 6
+     - A0
+     - A3
+     - n/a
+     - n/a
+     - A5 / A4
+   * - Olimex ESP32C3 DevKit Lipo
+     - IO1
+     - IO0
+     - IO5
+     - IO3
+     - n/a
+     - n/a
+     - IO4 / IO20
 
 Custom boards
 +++++++++++++

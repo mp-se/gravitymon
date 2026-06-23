@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="Custom boards" href="custom.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Compiling the software - Gravitymon v2.4.0</title>
+        <title>Compiling the software - Gravitymon v2.5.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Gravitymon v2.4.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Gravitymon v2.4.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -319,29 +319,23 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
 <tr class="row-odd"><td><p>/bin</p></td>
 <td><p>Contains compiled binaries</p></td>
 </tr>
-<tr class="row-even"><td><p>/data</p></td>
-<td><p>Directory for flashing device filesystem</p></td>
-</tr>
-<tr class="row-odd"><td><p>/doc</p></td>
-<td><p>Various external documents used as input</p></td>
-</tr>
 <tr class="row-even"><td><p>/html</p></td>
-<td><p>Copy of gravitymon-ui (User Interface) build</p></td>
+<td><p>Pre-built gravitymon-ui assets embedded into firmware (index.html, app.js.gz, app.css.gz, favicon.ico.gz)</p></td>
 </tr>
 <tr class="row-odd"><td><p>/lib</p></td>
-<td><p>External libraries used when compiling</p></td>
+<td><p>Local library copies (ds18b20_checker, mpu6050, tinyexpr)</p></td>
 </tr>
 <tr class="row-even"><td><p>/script</p></td>
-<td><p>Scripts used in build process</p></td>
+<td><p>Python build scripts run by PlatformIO (board flags, firmware copy, version JSON, git revision)</p></td>
 </tr>
 <tr class="row-odd"><td><p>/src</p></td>
-<td><p>Source code for software</p></td>
+<td><p>Firmware source code</p></td>
 </tr>
 <tr class="row-even"><td><p>/src_docs</p></td>
-<td><p>Source code for documentation</p></td>
+<td><p>Sphinx documentation source</p></td>
 </tr>
 <tr class="row-odd"><td><p>/test</p></td>
-<td><p>Test data for developing html files</p></td>
+<td><p>AUnit on-device unit tests (tests*.cpp) and Python API integration tests (scripts/)</p></td>
 </tr>
 </tbody>
 </table>
@@ -421,7 +415,7 @@ with the option <strong>DUSE_SERIAL_PINS</strong> and attach as USB to TTL cable
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=90673249"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1e3cc387"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

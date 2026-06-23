@@ -24,35 +24,40 @@ Just select the software to flash and what manufacturer the board has, then the 
 Binaries
 ********
 
-In the /bin directory you will find 4 different firmware builds;
+In the /bin directory you will find the following firmware builds;
 
 * **firmware.bin**
 
-  This is the standard release build for the ESP8266. 
+  This is the standard release build for the ESP8266.
 
 * **firmware32c3.bin**
 
-  This is the release build for an ESP32c3-mini variant v2.1 or newer. When flashing an ESP32 you also need the *partition32c3.bin* file that outlines the flash memory structure. Due to 
+  This is the release build for an ESP32c3-mini variant v2.1 or newer. When flashing an ESP32 you also need the *partitions32c3.bin* file that outlines the flash memory structure. Due to
   the size of the firmware we are using a custom partition setup. If you have a v1.0 board use the firmware32c3v1.bin instead.
 
 * **firmware32s2.bin**
 
-  This is the release build for an ESP32s2-mini variant. When flashing an ESP32 you also need the *partition32s2.bin* file that outlines the flash memory structure. Due to 
+  This is the release build for an ESP32s2-mini variant. When flashing an ESP32 you also need the *partitions32s2.bin* file that outlines the flash memory structure. Due to
   the size of the firmware we are using a custom partition setup.
 
 * **firmware32s3.bin**
 
-  This is the release build for an ESP32s3-mini variant. When flashing an ESP32 you also need the *partition32s3.bin* file that outlines the flash memory structure. Due to 
+  This is the release build for an ESP32s3-mini variant. When flashing an ESP32 you also need the *partitions32s3.bin* file that outlines the flash memory structure. Due to
   the size of the firmware we are using a custom partition setup.
 
-* **firmware32s3zero.bin**
+* **firmware32c3zero.bin**
 
-  This is the release build for an Waveshare ESP32c3 zero variant. When flashing an ESP32 you also need the *partition32c3zero.bin* file that outlines the flash memory structure. Due to 
+  This is the release build for a Waveshare ESP32c3 Zero variant. When flashing you also need the *partitions32c3zero.bin* file that outlines the flash memory structure. Due to
   the size of the firmware we are using a custom partition setup.
 
-* **firmware32s3supermini.bin**
+* **firmware32c3supermini.bin**
 
-  This is the release build for an Tenstar ESP32c3 super mini variant. When flashing an ESP32 you also need the *partition32c3supermini.bin* file that outlines the flash memory structure. Due to
+  This is the release build for a Tenstar ESP32c3 super mini variant. When flashing you also need the *partitions32c3supermini.bin* file that outlines the flash memory structure. Due to
+  the size of the firmware we are using a custom partition setup.
+
+* **firmware32c3cuckoo.bin**
+
+  This is the release build for the Cuckoo Tilt device (ESP32c3). When flashing you also need the *partitions32c3cuckoo.bin* file that outlines the flash memory structure. Due to
   the size of the firmware we are using a custom partition setup.
 
 Esptool (esp8266)

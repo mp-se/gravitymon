@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Releases" href="releases.html" /><link rel="prev" title="Welcome to Gravitymon" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Functionality - Gravitymon v2.4.0</title>
+        <title>Functionality - Gravitymon v2.5.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Gravitymon v2.4.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Gravitymon v2.4.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -346,6 +346,7 @@ more data to be transmitted.</p>
 <li><p>Tilt PRO. Same as above with higher accuracy.</p></li>
 <li><p>Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.</p></li>
 <li><p>Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.</p></li>
+<li><p>RAPT v1 / RAPT v2. Data: Gravity,Temp. Compatible with the RAPT pill format for services that support it.</p></li>
 </ul>
 </li>
 <li><p><strong>WIFI Direct to GravityMon Gateway</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
@@ -465,6 +466,18 @@ and change the sleep interval to 1 hour.</p>
 add custom builds for boards that I dont have access to, in sense a community approach where everyone can
 add new boards that can be supported. See: <a class="reference internal" href="custom.html#custom-boards"><span class="std std-ref">Custom boards</span></a></p>
 </li>
+<li><p><strong>Hardware testing</strong> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP32</span> <span class="sd-sphinx-override sd-badge sd-bg-primary sd-bg-text-primary">ESP8266</span></p>
+<p>There is a built in hardware testing function that can be used to test the different components of the
+device. This is useful for troubleshooting and to make sure that the device is working as it should. The
+tests include:</p>
+<ul class="simple">
+<li><p>Chip information (family, cores, revision, features)</p></li>
+<li><p>I2C bus scan (detected device addresses)</p></li>
+<li><p>Gyro test (MPU6050 self-test for accelerometer and gyroscope axes)</p></li>
+<li><p>Temperature sensor test (DS18B20 detection, address, resolution)</p></li>
+<li><p>DS18B20 counterfeit check (deviation count and sensor family classification)</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="battery-life">
@@ -503,11 +516,6 @@ this can be as low as 1.5-2.0 seconds but in reality its probably around 3-4 sec
 <td><p>12,000</p></td>
 <td><p>4 days</p></td>
 <td><p>43 days</p></td>
-</tr>
-<tr class="row-even"><td><p>ESP32 d1 (ble)</p></td>
-<td><p>56,000</p></td>
-<td><p>20 days</p></td>
-<td><p>196 days</p></td>
 </tr>
 </tbody>
 </table>
@@ -595,7 +603,7 @@ temperature would reduce the total runtime with 25%. Sending data over http take
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=90673249"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1e3cc387"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

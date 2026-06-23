@@ -68,19 +68,15 @@ Source structure
      - Automated github action workflows
    * - /bin
      - Contains compiled binaries
-   * - /data
-     - Directory for flashing device filesystem
-   * - /doc
-     - Various external documents used as input
    * - /html
-     - Copy of gravitymon-ui (User Interface) build
+     - Pre-built gravitymon-ui assets embedded into firmware (index.html, app.js.gz, app.css.gz, favicon.ico.gz)
    * - /lib
-     - External libraries used when compiling
+     - Local library copies (ds18b20_checker, mpu6050, tinyexpr)
    * - /script
-     - Scripts used in build process
+     - Python build scripts run by PlatformIO (board flags, firmware copy, version JSON, git revision)
    * - /src
-     - Source code for software
+     - Firmware source code
    * - /src_docs
-     - Source code for documentation
+     - Sphinx documentation source
    * - /test
-     - Test data for developing html files
+     - AUnit on-device unit tests (tests*.cpp) and Python API integration tests (scripts/)

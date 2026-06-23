@@ -111,6 +111,7 @@ The main features
   - Tilt PRO. Same as above with higher accuracy.
   - Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.
   - Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.
+  - RAPT v1 / RAPT v2. Data: Gravity,Temp. Compatible with the RAPT pill format for services that support it.
 
 * **WIFI Direct to GravityMon Gateway** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
@@ -251,6 +252,19 @@ The main features
   add custom builds for boards that I dont have access to, in sense a community approach where everyone can 
   add new boards that can be supported. See: :ref:`custom-boards` 
 
+* **Hardware testing** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
+
+  There is a built in hardware testing function that can be used to test the different components of the 
+  device. This is useful for troubleshooting and to make sure that the device is working as it should. The 
+  tests include:
+
+  - Chip information (family, cores, revision, features)
+  - I2C bus scan (detected device addresses)
+  - Gyro test (MPU6050 self-test for accelerometer and gyroscope axes)
+  - Temperature sensor test (DS18B20 detection, address, resolution)
+  - DS18B20 counterfeit check (deviation count and sensor family classification)
+
+
 Battery life
 ------------
 
@@ -282,10 +296,6 @@ this can be as low as 1.5-2.0 seconds but in reality its probably around 3-4 sec
      - 12,000
      - 4 days
      - 43 days
-   * - ESP32 d1 (ble)
-     - 56,000
-     - 20 days
-     - 196 days
 
 
 As you can see from the table above there is quite some differences between the boards and connection methods. 

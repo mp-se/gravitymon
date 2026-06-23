@@ -9,9 +9,15 @@ v2.5.0
 New features
 ++++++++++++
 
+* Addeded DS18B20 counterfeit check under hardware testing, using this; https://github.com/cpetrich/counterfeit_DS18B20, see project for sensor classification
+* Disabled charging pin for Cuckoo target since its not used
 * Added support for Cuckoo Tilt as a new supported target (new firmware file). 
 * Updated hardware options in the documentation to match the current supported targets.
 * Added option in Formula editor to create data points based on current formula.
+
+Bugs fixed
+++++++++++
+* Sometimes the LED was not turned off when going to deep sleep mode, added slight delay to ensure the LED is turned off.
 
 v2.4.1
 ======

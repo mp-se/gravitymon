@@ -164,3 +164,11 @@ detect the hidden SSID so you have the following options:
 
 * Temporarily make the SSID visible and connect the device to it.
 * Use the wifi configuration tool in the web flasher which allows you to enter any SSID/password combination.
+
+Counterfeit DS18B20 sensors
+---------------------------
+
+From v2.5.0 there is a check for counterfeit DS18B20 sensors, this is based on the work of Christian Petrich; 
+https://github.com/cpetrich/counterfeit_DS18B2, you can check his git hub repository for information on the result 
+from the hardware testing
+

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="Getting started" href="intro.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Software Installation - Gravitymon v2.4.0</title>
+        <title>Software Installation - Gravitymon v2.5.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Gravitymon v2.4.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Gravitymon v2.4.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -272,29 +272,33 @@ the firmware feature in the software.</p>
 </div>
 <section id="binaries">
 <h3>Binaries<a class="headerlink" href="#binaries" title="Permalink to this heading">¶</a></h3>
-<p>In the /bin directory you will find 4 different firmware builds;</p>
+<p>In the /bin directory you will find the following firmware builds;</p>
 <ul>
 <li><p><strong>firmware.bin</strong></p>
 <p>This is the standard release build for the ESP8266.</p>
 </li>
 <li><p><strong>firmware32c3.bin</strong></p>
-<p>This is the release build for an ESP32c3-mini variant v2.1 or newer. When flashing an ESP32 you also need the <em>partition32c3.bin</em> file that outlines the flash memory structure. Due to
+<p>This is the release build for an ESP32c3-mini variant v2.1 or newer. When flashing an ESP32 you also need the <em>partitions32c3.bin</em> file that outlines the flash memory structure. Due to
 the size of the firmware we are using a custom partition setup. If you have a v1.0 board use the firmware32c3v1.bin instead.</p>
 </li>
 <li><p><strong>firmware32s2.bin</strong></p>
-<p>This is the release build for an ESP32s2-mini variant. When flashing an ESP32 you also need the <em>partition32s2.bin</em> file that outlines the flash memory structure. Due to
+<p>This is the release build for an ESP32s2-mini variant. When flashing an ESP32 you also need the <em>partitions32s2.bin</em> file that outlines the flash memory structure. Due to
 the size of the firmware we are using a custom partition setup.</p>
 </li>
 <li><p><strong>firmware32s3.bin</strong></p>
-<p>This is the release build for an ESP32s3-mini variant. When flashing an ESP32 you also need the <em>partition32s3.bin</em> file that outlines the flash memory structure. Due to
+<p>This is the release build for an ESP32s3-mini variant. When flashing an ESP32 you also need the <em>partitions32s3.bin</em> file that outlines the flash memory structure. Due to
 the size of the firmware we are using a custom partition setup.</p>
 </li>
-<li><p><strong>firmware32s3zero.bin</strong></p>
-<p>This is the release build for an Waveshare ESP32c3 zero variant. When flashing an ESP32 you also need the <em>partition32c3zero.bin</em> file that outlines the flash memory structure. Due to
+<li><p><strong>firmware32c3zero.bin</strong></p>
+<p>This is the release build for a Waveshare ESP32c3 Zero variant. When flashing you also need the <em>partitions32c3zero.bin</em> file that outlines the flash memory structure. Due to
 the size of the firmware we are using a custom partition setup.</p>
 </li>
-<li><p><strong>firmware32s3supermini.bin</strong></p>
-<p>This is the release build for an Tenstar ESP32c3 super mini variant. When flashing an ESP32 you also need the <em>partition32c3supermini.bin</em> file that outlines the flash memory structure. Due to
+<li><p><strong>firmware32c3supermini.bin</strong></p>
+<p>This is the release build for a Tenstar ESP32c3 super mini variant. When flashing you also need the <em>partitions32c3supermini.bin</em> file that outlines the flash memory structure. Due to
+the size of the firmware we are using a custom partition setup.</p>
+</li>
+<li><p><strong>firmware32c3cuckoo.bin</strong></p>
+<p>This is the release build for the Cuckoo Tilt device (ESP32c3). When flashing you also need the <em>partitions32c3cuckoo.bin</em> file that outlines the flash memory structure. Due to
 the size of the firmware we are using a custom partition setup.</p>
 </li>
 </ul>
@@ -458,7 +462,7 @@ with finding the network name you can try the following:</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=90673249"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1e3cc387"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
