@@ -12,11 +12,6 @@ I use the following tools in order to build and manage the software:
 * Git for Windows
 * Python3 (for building docs)
 
-.. note::
-
-  From v2 the User Interface is built in VueJS and stored in a separate project (mp-se/gravitymon-ui). The github build 
-  scripts will automatically fetch the latest version from that repository.
-
 
 Code Formatting
 ===============
@@ -69,7 +64,7 @@ Source structure
    * - /bin
      - Contains compiled binaries
    * - /html
-     - Pre-built gravitymon-ui assets embedded into firmware (index.html, app.js.gz, app.css.gz, favicon.ico.gz)
+     - Pre-built ui assets embedded into firmware (index.html, app.js.gz, app.css.gz, favicon.ico.gz)
    * - /lib
      - Local library copies (ds18b20_checker, mpu6050, tinyexpr)
    * - /script

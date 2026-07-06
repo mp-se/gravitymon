@@ -189,7 +189,7 @@ New features
   to the Gateway and then forward this to the correct endpoint. 
 * Added line breaks to format editor for easier editing
 * Added check if device is responding and notify user when there is an issue
-* Redesign of user interface using VueJS as the base (UI moved to separate github project mp-se/gravitymon-ui) 
+* Redesign of user interface using VueJS as the base 
 * Added authorization for API access (currently basic and not really secure)
 * Redesigned REST-API to function better with VueJS
 * Updated documentation to match new version (Still some more work needed)
