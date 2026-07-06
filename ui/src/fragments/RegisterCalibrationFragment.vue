@@ -28,25 +28,22 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="registrationModalLabel">Report calibration data</h1>
+          <h1 class="modal-title fs-5" id="registrationModalLabel">{{ t('fragment_register_calibration.title') }}</h1>
         </div>
         <div class="modal-body">
           <p>
-            Do you want to help to identify improvements connected to device calibration please
-            report your data points. Its possible to report data multiple times if you improve your
-            data points. This is the data that will be sent and its anonymized. The chipid is a hash
-            (SHA256) of the actual chip ID to ensure privacy.
+            {{ t('fragment_register_calibration.intro') }}
           </p>
           <div class="mb-3">
-            <label for="registrationData" class="form-label">Anonymous data:</label>
+            <label for="registrationData" class="form-label">{{ t('fragment_register_calibration.data_label') }}</label>
             <pre id="registrationData" class="border p-2 bg-light">{{ registrationDataJson }}</pre>
           </div>
-          <p><b>Cancel</b> will close the dialog without action.</p>
-          <p><b>Send</b> will send the data above to the collection service.</p>
+          <p>{{ t('fragment_register_calibration.cancel_hint') }}</p>
+          <p>{{ t('fragment_register_calibration.send_hint') }}</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="cancel">Cancel</button>
-          <button type="button" class="btn btn-primary" @click="send">Send</button>
+          <button type="button" class="btn btn-secondary" @click="cancel">{{ t('fragment_register_calibration.cancel') }}</button>
+          <button type="button" class="btn btn-primary" @click="send">{{ t('fragment_register_calibration.send') }}</button>
         </div>
       </div>
     </div>
@@ -56,9 +53,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { global, config } from '@/modules/pinia'
 import { sharedHttpClient as http, logError, logInfo } from '@mp-se/espframework-ui-components'
 
+const { t } = useI18n()
 const emit = defineEmits(['close'])
 
 const registrationDataJson = ref('')
@@ -104,9 +103,9 @@ const send = async () => {
     })
 
     if (response) {
-      global.messageSuccess = 'Calibration data reported successfully!'
+      global.messageSuccess = t('fragment_register_calibration.success')
     } else {
-      global.messageError = 'Registration failed. Please try again.'
+      global.messageError = t('fragment_register_calibration.err_failed')
     }
   } catch (error) {
     // Extract status code from error message (format: "HTTP 401: Unauthorized")
@@ -114,16 +113,14 @@ const send = async () => {
     const status = statusMatch ? parseInt(statusMatch[1]) : null
 
     if (status === 401) {
-      global.messageError =
-        'Reporting failed: API key has been revoked. Please update to a newer software version to report data.'
+      global.messageError = t('fragment_register_calibration.err_401')
     } else if (status === 429) {
-      global.messageError =
-        'Reporting failed: Registration API is currently unavailable, please try again later.'
+      global.messageError = t('fragment_register_calibration.err_429')
     } else if (status === 500) {
-      global.messageError = 'Reporting failed: Internal server error, please try again later.'
+      global.messageError = t('fragment_register_calibration.err_500')
     } else {
       logError('RegisterCalibrationFragment.send()', 'Reporting error:', error)
-      global.messageError = 'An error occurred during reporting.'
+      global.messageError = t('fragment_register_calibration.err_generic')
     }
   } finally {
     global.disabled = false

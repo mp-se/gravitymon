@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">Push - MQTT</p>
+    <p class="h3">{{ t('push_mqtt.title') }}</p>
     <hr />
 
     <form
@@ -35,18 +35,18 @@
           <BsInputText
             v-model="config.mqtt_target"
             maxlength="120"
-            label="Server"
-            help="Name of server to connect to, use format servername.com"
+            :label="t('push_mqtt.server_label')"
+            :help="t('push_mqtt.server_help')"
             :disabled="pushDisabled"
           />
         </div>
         <div class="col-md-4">
           <BsInputNumber
             v-model="config.mqtt_port"
-            label="Port"
+            :label="t('push_mqtt.port_label')"
             min="0"
             max="65535"
-            help="Port number: 1883 (standard), 8883 (standard SSL), or 8000+ for SSL. Leave 0 for default."
+            :help="t('push_mqtt.port_help')"
             :disabled="pushDisabled"
           />
         </div>
@@ -54,8 +54,8 @@
           <BsInputText
             v-model="config.mqtt_user"
             maxlength="20"
-            label="User name"
-            help="Username to use. Leave blank if authentication is disabled"
+            :label="t('push_mqtt.user_label')"
+            :help="t('push_mqtt.user_help')"
             :disabled="pushDisabled"
           />
         </div>
@@ -64,23 +64,23 @@
             v-model="config.mqtt_pass"
             type="password"
             maxlength="20"
-            label="Password"
-            help="Password to use. Leave blank if authentication is disabled"
+            :label="t('push_mqtt.pass_label')"
+            :help="t('push_mqtt.pass_help')"
             :disabled="pushDisabled"
           />
         </div>
         <div class="col-md-4">
           <BsInputNumber
             v-model="config.mqtt_int"
-            label="Skip interval"
+            :label="t('push_common.skip_interval_label')"
             min="0"
             max="5"
             width="4"
-            help="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle. Default is 0."
+            :help="t('push_common.skip_interval_help')"
             :disabled="pushDisabled"
           />
         </div>
-        <!-- 
+        <!--
         <div class="col-md-6">
           <BsInputSwitch
             v-model="config.mqtt_retain"
@@ -94,8 +94,8 @@
           <BsInputTextAreaFormat
             v-model="config.mqtt_format_gravity"
             rows="6"
-            label="Data format (gravity)"
-            help="Format template used to create the data sent to the remote service"
+            :label="t('push_common.data_format_gravity_label')"
+            :help="t('push_common.data_format_help')"
             :disabled="pushDisabled || config.mqtt_gravity === false"
             v-if="global.ui.enableGravity"
           />
@@ -103,12 +103,12 @@
         <div class="col-md-3 gy-2" v-if="global.ui.enableGravity && global.ui.enablePressure">
           <BsInputSwitch
             v-model="config.mqtt_gravity"
-            label="Enable gravity"
+            :label="t('push_common.enable_gravity_label')"
             :disabled="global.disabled"
           />
           <BsDropdown
-            label="Predefined formats"
-            button="Formats"
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
             :options="gravityMqttFormatOptions"
             :callback="gravityMqttFormatCallback"
             :disabled="pushDisabled || config.mqtt_gravity === false"
@@ -119,15 +119,15 @@
             :code="true"
             :json="true"
             :mqtt="true"
-            title="Format preview"
-            button="Preview format"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
             :disabled="pushDisabled || config.mqtt_gravity === false"
           />
         </div>
         <div class="col-md-3 gy-2" v-if="global.ui.enableGravity && !global.ui.enablePressure">
           <BsDropdown
-            label="Predefined formats"
-            button="Formats"
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
             :options="gravityMqttFormatOptions"
             :callback="gravityMqttFormatCallback"
             :disabled="pushDisabled"
@@ -138,8 +138,8 @@
             :code="true"
             :json="true"
             :mqtt="true"
-            title="Format preview"
-            button="Preview format"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
             :disabled="pushDisabled"
           />
         </div>
@@ -147,8 +147,8 @@
           <BsInputTextAreaFormat
             v-model="config.mqtt_format_pressure"
             rows="6"
-            label="Data format (pressure)"
-            help="Format template used to create the data sent to the remote service"
+            :label="t('push_common.data_format_pressure_label')"
+            :help="t('push_common.data_format_help')"
             :disabled="pushDisabled || config.mqtt_pressure === false"
             v-if="global.ui.enablePressure"
           />
@@ -156,12 +156,12 @@
         <div class="col-md-3 gy-2" v-if="global.ui.enablePressure && global.ui.enableGravity">
           <BsInputSwitch
             v-model="config.mqtt_pressure"
-            label="Enable pressure"
+            :label="t('push_common.enable_pressure_label')"
             :disabled="global.disabled"
           />
           <BsDropdown
-            label="Predefined formats"
-            button="Formats"
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
             :options="pressureMqttFormatOptions"
             :callback="pressureMqttFormatCallback"
             :disabled="pushDisabled || config.mqtt_pressure === false"
@@ -172,15 +172,15 @@
             :code="true"
             :json="true"
             :mqtt="true"
-            title="Format preview"
-            button="Preview format"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
             :disabled="pushDisabled || config.mqtt_pressure === false"
           />
         </div>
         <div class="col-md-3 gy-2" v-if="global.ui.enablePressure && !global.ui.enableGravity">
           <BsDropdown
-            label="Predefined formats"
-            button="Formats"
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
             :options="pressureMqttFormatOptions"
             :callback="pressureMqttFormatCallback"
             :disabled="pushDisabled"
@@ -191,8 +191,8 @@
             :code="true"
             :json="true"
             :mqtt="true"
-            title="Format preview"
-            button="Preview format"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
             :disabled="pushDisabled"
           />
         </div>
@@ -213,7 +213,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Save</button
+            &nbsp;{{ t('push_common.save') }}</button
           >&nbsp;
 
           <button
@@ -229,7 +229,7 @@
               aria-hidden="true"
               :hidden="!global.disabled"
             ></span>
-            &nbsp;Run push gravity test</button
+            &nbsp;{{ t('push_common.run_push_gravity_test') }}</button
           >&nbsp;
           <button
             v-if="global.ui.enablePressure"
@@ -244,7 +244,7 @@
               aria-hidden="true"
               :hidden="!global.disabled"
             ></span>
-            &nbsp;Run push pressure test
+            &nbsp;{{ t('push_common.run_push_pressure_test') }}
           </button>
         </div>
       </div>
@@ -254,6 +254,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { gravityMqttFormatOptions } from '@/modules/gravityFormatOptions'
 import { pressureMqttFormatOptions } from '@/modules/pressureFormatOptions'
 import { applyTemplate } from '@/modules/formatTemplate'
@@ -261,10 +262,10 @@ import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, status, config } from '@/modules/pinia'
 import { logError } from '@mp-se/espframework-ui-components'
 
+const { t } = useI18n()
+
 // Constants
 const ESP8266_PAYLOAD_LIMIT = 500
-const ESP8266_WARNING_MSG =
-  'On an ESP8266 a large payload will likely cause a crash due to RAM limitations on device. Reduce your template.'
 
 const gravityRender = ref('')
 const pressureRender = ref('')
@@ -286,7 +287,7 @@ const checkPayloadLimit = (format) => {
  */
 const handleFormatValidation = (format) => {
   if (checkPayloadLimit(format)) {
-    global.messageWarning = ESP8266_WARNING_MSG
+    global.messageWarning = t('push_mqtt.warn_esp8266_payload')
   } else {
     global.messageWarning = ''
   }
@@ -318,7 +319,7 @@ const pushDisabled = computed(() => {
 const validateMqttPort = (port) => {
   if (!port) return { valid: true } // 0 is allowed default
   if (port < 0 || port > 65535) {
-    return { valid: false, message: 'Port must be between 0 and 65535' }
+    return { valid: false, message: t('push_mqtt.err_port_range') }
   }
   return { valid: true }
 }
@@ -330,13 +331,13 @@ const validateMqttPort = (port) => {
  */
 const validateMqttServer = (server) => {
   if (!server) {
-    return { valid: false, message: 'Server name or IP is required' }
+    return { valid: false, message: t('push_mqtt.err_server_required') }
   }
   // Basic validation: allow hostnames, domain names, and IP addresses
   const validHostname = /^[a-zA-Z0-9.-]+$/.test(server)
   const validIp = /^(\d{1,3}\.){3}\d{1,3}$/.test(server)
   if (!validHostname && !validIp) {
-    return { valid: false, message: 'Invalid server name or IP format' }
+    return { valid: false, message: t('push_mqtt.err_server_format') }
   }
   return { valid: true }
 }
@@ -348,13 +349,13 @@ const runTestGravity = async () => {
   try {
     const serverValidation = validateMqttServer(config.mqtt_target)
     if (!serverValidation.valid) {
-      global.messageError = `Cannot run test: ${serverValidation.message}`
+      global.messageError = t('push_mqtt.err_test_prefix', { message: serverValidation.message })
       return
     }
 
     const portValidation = validateMqttPort(config.mqtt_port)
     if (!portValidation.valid) {
-      global.messageError = `Cannot run test: ${portValidation.message}`
+      global.messageError = t('push_mqtt.err_test_prefix', { message: portValidation.message })
       return
     }
 
@@ -366,7 +367,7 @@ const runTestGravity = async () => {
     await config.runPushTest(data)
   } catch (error) {
     logError('PushMqttView.runTestGravity()', error)
-    global.messageError = 'Failed to start push test for gravity data'
+    global.messageError = t('push_mqtt.err_gravity_test')
   }
 }
 
@@ -377,13 +378,13 @@ const runTestPressure = async () => {
   try {
     const serverValidation = validateMqttServer(config.mqtt_target)
     if (!serverValidation.valid) {
-      global.messageError = `Cannot run test: ${serverValidation.message}`
+      global.messageError = t('push_mqtt.err_test_prefix', { message: serverValidation.message })
       return
     }
 
     const portValidation = validateMqttPort(config.mqtt_port)
     if (!portValidation.valid) {
-      global.messageError = `Cannot run test: ${portValidation.message}`
+      global.messageError = t('push_mqtt.err_test_prefix', { message: portValidation.message })
       return
     }
 
@@ -395,7 +396,7 @@ const runTestPressure = async () => {
     await config.runPushTest(data)
   } catch (error) {
     logError('PushMqttView.runTestPressure()', error)
-    global.messageError = 'Failed to start push test for pressure data'
+    global.messageError = t('push_mqtt.err_pressure_test')
   }
 }
 
@@ -411,7 +412,7 @@ const gravityMqttFormatCallback = (opt) => {
     handleFormatValidation(config.mqtt_format_gravity)
   } catch (error) {
     logError('PushMqttView.gravityMqttFormatCallback()', error)
-    global.messageError = 'Failed to apply gravity format'
+    global.messageError = t('push_mqtt.err_apply_gravity_format')
   }
 }
 
@@ -427,7 +428,7 @@ const pressureMqttFormatCallback = (opt) => {
     handleFormatValidation(config.mqtt_format_pressure)
   } catch (error) {
     logError('PushMqttView.pressureMqttFormatCallback()', error)
-    global.messageError = 'Failed to apply pressure format'
+    global.messageError = t('push_mqtt.err_apply_pressure_format')
   }
 }
 
@@ -460,7 +461,7 @@ const pressureRenderFormat = () => {
  */
 const save = async () => {
   if (!validateCurrentForm()) {
-    global.messageError = 'Please fix form validation errors'
+    global.messageError = t('push_mqtt.err_validation')
     return
   }
 
@@ -481,7 +482,7 @@ const save = async () => {
     await config.saveAll()
   } catch (error) {
     logError('PushMqttView.save()', error)
-    global.messageError = 'Failed to save configuration'
+    global.messageError = t('push_mqtt.err_save')
   }
 }
 </script>

@@ -21,12 +21,11 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">Links and device logs</p>
+    <p class="h3">{{ t('support.title') }}</p>
     <hr />
     <div class="row">
       <p>
-        If you need support, want to discuss the software or request any new features you can do
-        that on github.com or homebrewtalk.com.
+        {{ t('support.intro') }}
       </p>
     </div>
     <div class="row">
@@ -35,7 +34,7 @@
           class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
           href="https://github.com/mp-se/gravitymon"
           target="_blank"
-          >Report issues on github.com</a
+          >{{ t('support.link_issues') }}</a
         >
       </div>
       <div class="col-md-4">
@@ -43,7 +42,7 @@
           class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
           href="https://www.homebrewtalk.com/"
           target="_blank"
-          >Discuss on homebrewtalk.com</a
+          >{{ t('support.link_discuss') }}</a
         >
       </div>
       <div class="col-md-4">
@@ -51,7 +50,7 @@
           class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
           href="https://www.gravitymon.com/"
           target="_blank"
-          >Read docs on gravitymon.com</a
+          >{{ t('support.link_docs') }}</a
         >
       </div>
     </div>
@@ -60,14 +59,14 @@
     <div class="row">
       <div class="col">
         <p>
-          Platform:
+          {{ t('support.platform_label') }}
           <span class="badge bg-secondary">{{ global.platform }}</span>
-          Gyro:
+          {{ t('support.gyro_label') }}
           <span class="badge bg-secondary">{{ status.gyro_family }}</span>
-          Firmware:
+          {{ t('support.firmware_label') }}
           <span class="badge bg-secondary">{{ global.app_ver }} ({{ global.app_build }})</span>
-          Hardware:
-          <span class="badge bg-secondary">{{ global.hardware }}</span> User interface:
+          {{ t('support.hardware_label') }}
+          <span class="badge bg-secondary">{{ global.hardware }}</span> {{ t('support.ui_label') }}
           <span class="badge bg-secondary">{{ global.uiVersion }} ({{ global.uiBuild }})</span>
         </p>
       </div>
@@ -75,19 +74,21 @@
     <div class="row">
       <div class="col">
         <p>
-          Bluetooth:
-          <span class="badge bg-secondary">{{ global.feature.ble ? 'Enabled' : 'Disabled' }}</span>
-          Filter:
+          {{ t('support.bluetooth_label') }}
           <span class="badge bg-secondary">{{
-            global.feature.filter ? 'Enabled' : 'Disabled'
+            global.feature.ble ? t('support.enabled') : t('support.disabled')
           }}</span>
-          Velocity:
+          {{ t('support.filter_label') }}
           <span class="badge bg-secondary">{{
-            global.feature.velocity ? 'Enabled' : 'Disabled'
+            global.feature.filter ? t('support.enabled') : t('support.disabled')
           }}</span>
-          Charging:
+          {{ t('support.velocity_label') }}
           <span class="badge bg-secondary">{{
-            global.feature.charging ? 'Enabled' : 'Disabled'
+            global.feature.velocity ? t('support.enabled') : t('support.disabled')
+          }}</span>
+          {{ t('support.charging_label') }}
+          <span class="badge bg-secondary">{{
+            global.feature.charging ? t('support.enabled') : t('support.disabled')
           }}</span>
         </p>
       </div>
@@ -103,7 +104,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;View device logs</button
+          &nbsp;{{ t('support.view_logs') }}</button
         >&nbsp;
 
         <button
@@ -118,7 +119,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;Erase device logs</button
+          &nbsp;{{ t('support.erase_logs') }}</button
         >&nbsp;
 
         <button
@@ -133,7 +134,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;Hardware scan</button
+          &nbsp;{{ t('support.hardware_scan') }}</button
         >&nbsp;
 
         <button
@@ -148,7 +149,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;Toggle error help</button
+          &nbsp;{{ t('support.toggle_help') }}</button
         >&nbsp;
 
         <template v-if="status.ispindel_config">
@@ -164,7 +165,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Erase iSpindel config
+            &nbsp;{{ t('support.erase_ispindel') }}
           </button>
         </template>
       </div>
@@ -179,7 +180,7 @@
       <div class="col">
         <pre>{{ logData }}</pre>
       </div>
-      <div class="form-text">Starts with the latest log entry first.</div>
+      <div class="form-text">{{ t('support.log_hint') }}</div>
     </div>
 
     <div class="row" v-if="showHelp">
@@ -235,10 +236,12 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { status, config, global } from '@/modules/pinia'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 import { logDebug } from '@mp-se/espframework-ui-components'
 
+const { t } = useI18n()
 const logData = ref('')
 const showHelp = ref(false)
 
@@ -276,7 +279,7 @@ async function removeLogs() {
   logData.value = ''
   const r1 = await removeLog('/error2.log')
   const r2 = await removeLog('/error.log')
-  if (r1 && r2) global.messageSuccess = 'Log files are deleted'
+  if (r1 && r2) global.messageSuccess = t('support.logs_deleted')
   global.disabled = false
 }
 
@@ -286,7 +289,7 @@ async function removeLegacy() {
   logData.value = ''
   const r1 = await removeLog('/config.json')
   const r2 = await removeLog('/gravitymon.json')
-  if (r1 && r2) global.messageSuccess = 'Old configuration files are deleted'
+  if (r1 && r2) global.messageSuccess = t('support.old_config_deleted')
   global.disabled = false
 }
 

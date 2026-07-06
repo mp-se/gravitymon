@@ -1,6 +1,7 @@
 import { vi } from 'vitest'
 import { config as vtConfig } from '@vue/test-utils'
 import { ref } from 'vue'
+import i18n from '@/modules/i18n'
 
 // Mock localStorage before anything else
 class LocalStorageMock {
@@ -274,6 +275,8 @@ global.anonymizeChipId = vi.fn(async () => 'anon-chip-123')
 
 // Stub UI components from the espframework UI library used across fragments
 vtConfig.global = vtConfig.global || {}
+vtConfig.global.plugins = vtConfig.global.plugins || []
+vtConfig.global.plugins.push(i18n)
 vtConfig.global.components = vtConfig.global.components || {}
 const uiStubs = [
   'BsInputReadonly',

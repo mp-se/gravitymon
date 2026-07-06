@@ -21,11 +21,11 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h2">Device - Settings</p>
+    <p class="h2">{{ t('device_settings.title') }}</p>
     <hr />
 
     <BsMessage v-if="config.mdns === ''" dismissable="true" message="" alert="warning">
-      You need to define a mdns name for the device
+      {{ t('device_settings.mdns_warning') }}
     </BsMessage>
 
     <form @submit.prevent="saveSettings" class="needs-validation" novalidate>
@@ -35,8 +35,8 @@
             v-model="config.mdns"
             maxlength="63"
             minlength="1"
-            label="MDNS"
-            help="Enter device name used on the network, the suffix .local will be added to this name"
+            :label="t('device_settings.mdns_label')"
+            :help="t('device_settings.mdns_help')"
             :badge="badge.deviceMdnsBadge()"
             :disabled="global.disabled"
           >
@@ -47,33 +47,42 @@
           <hr />
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
           <BsInputRadio
             v-model="config.temp_unit"
             :options="tempOptions"
-            label="Temperature Format"
+            :label="t('device_settings.temp_format_label')"
             width=""
             :disabled="global.disabled"
           ></BsInputRadio>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <BsInputRadio
             v-model="config.gravity_unit"
             :options="gravityOptions"
-            label="Gravity Format"
+            :label="t('device_settings.gravity_format_label')"
             width=""
             :disabled="global.disabled"
           ></BsInputRadio>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
           <BsInputRadio
             v-model="config.dark_mode"
             :options="uiOptions"
-            label="User Interface"
+            :label="t('device_settings.ui_label')"
             width=""
             :disabled="global.disabled"
           ></BsInputRadio>
+        </div>
+
+        <div class="col-md-3">
+          <BsSelect
+            v-model="config.locale"
+            :options="localeOptions"
+            :label="t('device_settings.locale_label')"
+            :disabled="global.disabled"
+          ></BsSelect>
         </div>
 
         <div class="col-md-12">
@@ -85,8 +94,8 @@
             v-model="config.ota_url"
             type="url"
             maxlength="80"
-            label="OTA URL"
-            help="Base URL to where firmware and version.json file can be found. Needs to end with '/'', example: http://www.mysite.com/firmware/"
+            :label="t('device_settings.ota_url_label')"
+            :help="t('device_settings.ota_url_help')"
             :disabled="global.disabled"
           >
           </BsInputText>
@@ -94,7 +103,7 @@
 
         <div class="col-md-3">
           <BsDropdown
-            label="Predefined ota"
+            :label="t('device_settings.predefined_ota_label')"
             button="URL"
             :options="otaOptions"
             :callback="otaCallback"
@@ -108,7 +117,7 @@
           </div>
 
           <div class="col-md-12">
-            <BsInputReadonly v-model="registrationStatus" label="Device usage reporting">
+            <BsInputReadonly v-model="registrationStatus" :label="t('device_settings.reporting_label')">
             </BsInputReadonly>
           </div>
 
@@ -125,7 +134,7 @@
                 aria-hidden="true"
                 v-show="global.disabled"
               ></span>
-              &nbsp;Check status
+              &nbsp;{{ t('device_settings.check_status') }}
             </button>
           </div>
         </template>
@@ -147,7 +156,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Save</button
+            &nbsp;{{ t('device_settings.save') }}</button
           >&nbsp;
 
           <button
@@ -162,7 +171,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Restart device</button
+            &nbsp;{{ t('device_settings.restart') }}</button
           >&nbsp;
 
           <button
@@ -177,7 +186,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Restore factory defaults
+            &nbsp;{{ t('device_settings.factory_defaults') }}
           </button>
 
           <template v-if="global.ui.enableDeviceRegistration">
@@ -194,7 +203,7 @@
                 aria-hidden="true"
                 v-show="global.disabled"
               ></span>
-              &nbsp;Report Usage
+              &nbsp;{{ t('device_settings.report_usage') }}
             </button>
           </template>
         </div>
@@ -210,34 +219,53 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { BsInputReadonly, validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, status, config } from '@/modules/pinia'
 import * as badge from '@/modules/badge'
 import { logError, logInfo } from '@mp-se/espframework-ui-components'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
+import { resolveMessage } from '@/modules/utils'
+
+const { t } = useI18n()
 
 const otaOptions = ref([
   { label: '-blank-', value: '' },
   { label: 'Gravitymon.com', value: 'https://www.gravitymon.com/firmware/' }
 ])
 
-const tempOptions = ref([
-  { label: 'Celsius °C', value: 'C' },
-  { label: 'Fahrenheit °F', value: 'F' }
+const tempOptions = computed(() => [
+  { label: t('device_settings.temp_celsius'), value: 'C' },
+  { label: t('device_settings.temp_fahrenheit'), value: 'F' }
 ])
 
-const gravityOptions = ref([
-  { label: 'Specific Gravity', value: 'G' },
-  { label: 'Plato', value: 'P' }
+const gravityOptions = computed(() => [
+  { label: t('device_settings.gravity_sg'), value: 'G' },
+  { label: t('device_settings.gravity_plato'), value: 'P' }
 ])
 
-const uiOptions = ref([
-  { label: 'Day mode', value: false },
-  { label: 'Dark mode', value: true }
+const uiOptions = computed(() => [
+  { label: t('device_settings.ui_day_mode'), value: false },
+  { label: t('device_settings.ui_dark_mode'), value: true }
 ])
 
-const registrationStatus = ref('Unknown')
+const localeOptions = ref([
+  { label: 'English', value: 'en' },
+  { label: 'Svenska', value: 'sv' },
+  { label: 'Deutsch', value: 'de' },
+  { label: 'Français', value: 'fr' },
+  { label: 'Español', value: 'es' },
+  { label: '中文', value: 'zh' },
+  { label: 'Polski', value: 'pl' },
+  { label: 'Norsk', value: 'no' },
+  { label: 'Dansk', value: 'da' },
+  { label: 'Nederlands', value: 'nl' },
+  { label: 'Português', value: 'pt' },
+  { label: 'Italiano', value: 'it' }
+])
+
+const registrationStatus = ref(t('device_settings.reporting_unknown'))
 const showRegisterModal = ref(false)
 
 const otaCallback = (opt) => {
@@ -256,13 +284,15 @@ const checkReported = async () => {
       headers: { 'X-API-Key': `${global.registerApiKey}` }
     })
     if (checkResponse && checkResponse.exists) {
-      registrationStatus.value = `This device has been reported using ${checkResponse.software}.`
+      registrationStatus.value = t('device_settings.reporting_found', {
+        software: checkResponse.software
+      })
     } else {
-      registrationStatus.value = 'This device has not been reported'
+      registrationStatus.value = t('device_settings.reporting_not_found')
     }
   } catch (error) {
     logError('DeviceSettingsView.checkReported()', 'Failed to check registration status:', error)
-    registrationStatus.value = 'Error checking registration status'
+    registrationStatus.value = t('device_settings.reporting_error')
   } finally {
     global.disabled = false
   }
@@ -282,7 +312,7 @@ const factory = async () => {
     const json = await http.getJson('api/factory')
 
     if (json.success == true) {
-      global.messageSuccess = json.message
+      global.messageSuccess = resolveMessage(json.message_code, json.message)
       const reloadTimeout = setTimeout(() => {
         try {
           location.reload(true)
@@ -301,11 +331,11 @@ const factory = async () => {
         { once: true }
       )
     } else {
-      global.messageError = json.message
+      global.messageError = resolveMessage(json.message_code, json.message)
     }
   } catch (err) {
     logError('DeviceSettingsView.factory()', err)
-    global.messageError = 'Failed to do factory restore'
+    global.messageError = t('device_settings.err_factory_restore')
   } finally {
     global.disabled = false
   }

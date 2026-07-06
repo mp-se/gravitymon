@@ -21,24 +21,24 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">Device - WIFI</p>
+    <p class="h3">{{ t('device_wifi.title') }}</p>
     <hr />
 
     <BsMessage
       v-if="scanning"
       :dismissable="false"
-      message="Scanning for wifi networks in range"
+      :message="t('device_wifi.scanning')"
       alert="info"
     >
     </BsMessage>
 
     <template v-if="global.ui.enableManualWifiEntry && !scanning">
       <BsMessage dismissable="true" message="" alert="info">
-        If you have an hidden SSID then you can set it manually
+        {{ t('device_wifi.manual_entry_info') }}
         <router-link
           class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
           to="/device/wifi2"
-          >here</router-link
+          >{{ t('device_wifi.manual_entry_link') }}</router-link
         >
       </BsMessage>
     </template>
@@ -49,7 +49,7 @@
       message=""
       alert="warning"
     >
-      You need to define at least one wifi network
+      {{ t('device_wifi.need_network') }}
     </BsMessage>
 
     <form @submit.prevent="save" class="needs-validation" novalidate>
@@ -57,7 +57,7 @@
         <div class="col-md-6">
           <BsSelect
             v-model="config.wifi_ssid"
-            label="SSID #1"
+            :label="t('device_wifi.ssid1_label')"
             :options="networks"
             :badge="badge.deviceWifi1Badge()"
             :disabled="global.disabled"
@@ -68,8 +68,8 @@
             v-model="config.wifi_pass"
             type="password"
             maxlength="50"
-            label="Password #1"
-            help="Enter password for the first wifi network"
+            :label="t('device_wifi.pass1_label')"
+            :help="t('device_wifi.pass1_help')"
             :disabled="global.disabled"
           ></BsInputText>
         </div>
@@ -77,7 +77,7 @@
         <div class="col-md-6">
           <BsSelect
             v-model="config.wifi_ssid2"
-            label="SSID #2"
+            :label="t('device_wifi.ssid2_label')"
             :options="networks"
             :badge="badge.deviceWifi2Badge()"
             :disabled="global.disabled"
@@ -88,8 +88,8 @@
             v-model="config.wifi_pass2"
             type="password"
             maxlength="50"
-            label="Password #2"
-            help="Enter password for the first wifi network"
+            :label="t('device_wifi.pass2_label')"
+            :help="t('device_wifi.pass2_help')"
             :disabled="global.disabled"
           ></BsInputText>
         </div>
@@ -102,12 +102,12 @@
           <BsInputNumber
             v-model="config.wifi_portal_timeout"
             unit="seconds"
-            label="Portal timeout"
+            :label="t('device_wifi.portal_timeout_label')"
             min="10"
             max="240"
             step="1"
             width="5"
-            help="Max time the wifi portal is idle (10 to 240)"
+            :help="t('device_wifi.portal_timeout_help')"
             :disabled="global.disabled"
           ></BsInputNumber>
         </div>
@@ -115,12 +115,12 @@
           <BsInputNumber
             v-model="config.wifi_connect_timeout"
             unit="seconds"
-            label="Connection timeout"
+            :label="t('device_wifi.connect_timeout_label')"
             min="1"
             max="60"
             step="1"
             width="5"
-            help="Max time waiting for a wifi connection (1 to 60)"
+            :help="t('device_wifi.connect_timeout_help')"
             :disabled="global.disabled"
           >
           </BsInputNumber>
@@ -128,8 +128,8 @@
         <div class="col-md-6" v-if="global.ui.enableScanForStrongestAp">
           <BsInputSwitch
             v-model="config.wifi_scan_ap"
-            label="Scan for strongest AP"
-            help="Will do a scan and connect to the strongest AP found (longer connection time)"
+            :label="t('device_wifi.scan_strongest_label')"
+            :help="t('device_wifi.scan_strongest_help')"
             :disabled="global.disabled"
           >
           </BsInputSwitch>
@@ -152,7 +152,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Save</button
+            &nbsp;{{ t('device_wifi.save') }}</button
           >&nbsp;
 
           <button
@@ -167,7 +167,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Restart device
+            &nbsp;{{ t('device_wifi.restart') }}
           </button>
         </div>
       </div>
@@ -180,18 +180,20 @@ import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config } from '@/modules/pinia'
 import * as badge from '@/modules/badge'
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { logDebug } from '@mp-se/espframework-ui-components'
 
+const { t } = useI18n()
 const scanning = ref(false)
 const networks = ref([])
 
 function wifiName(label, rssi, encr) {
   var l = label
   if (encr) l += ' \u{1f512}'
-  if (rssi > -50) l += ' (Excellent)'
-  else if (rssi > -60) l += ' (Good)'
-  else if (rssi > -67) l += ' (Minimum)'
-  else l += ' (Poor)'
+  if (rssi > -50) l += t('device_wifi.wifi_signal_excellent')
+  else if (rssi > -60) l += t('device_wifi.wifi_signal_good')
+  else if (rssi > -67) l += t('device_wifi.wifi_signal_minimum')
+  else l += t('device_wifi.wifi_signal_poor')
   return l
 }
 
@@ -225,8 +227,7 @@ const save = async () => {
   if (!validateCurrentForm()) return
 
   await config.saveAll()
-  global.messageInfo =
-    'If WIFI settings are changed, restart the device and enter the new URL of the device!'
+  global.messageInfo = t('device_wifi.info_restart_needed')
 }
 
 const restart = async () => {

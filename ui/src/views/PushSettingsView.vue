@@ -21,11 +21,11 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">Push - Settings</p>
+    <p class="h3">{{ t('push_settings.title') }}</p>
     <hr />
 
     <BsMessage v-if="config.sleep_interval < 300" dismissable="true" message="" alert="warning">
-      A sleep-interval of less than 300 will reduce battery life, consider using 900
+      {{ t('push_settings.warn_short_interval') }}
     </BsMessage>
 
     <BsMessage
@@ -34,8 +34,7 @@
       message=""
       alert="warning"
     >
-      When using gyro temperature is used, select a sleep-interval that is greater than 300 for
-      accurate readings
+      {{ t('push_settings.warn_gyro_temp_interval') }}
     </BsMessage>
 
     <form @submit.prevent="save" class="needs-validation" novalidate>
@@ -44,8 +43,8 @@
           <BsInputText
             v-model="config.token"
             maxlength="50"
-            label="Token 1"
-            help="Token can be used in the format template as a variable, some services use this for authentication"
+            :label="t('push_settings.token1_label')"
+            :help="t('push_settings.token_help')"
             :disabled="global.disabled"
           />
         </div>
@@ -53,21 +52,21 @@
           <BsInputText
             v-model="config.token2"
             maxlength="50"
-            label="Token 2"
-            help="Token can be used in the format template as a variable, some services use this for authentication"
+            :label="t('push_settings.token2_label')"
+            :help="t('push_settings.token_help')"
             :disabled="global.disabled"
           />
         </div>
         <div class="col-md-6">
           <BsInputNumber
             v-model="config.sleep_interval"
-            :label="'Sleep interval' + sleepLabel"
+            :label="t('push_settings.sleep_interval_label') + sleepLabel"
             unit="s"
             min="10"
             max="3600"
             step="1"
             width="5"
-            help="The number of seconds that the device will sleep between gravity readings. Recommended value is 300s"
+            :help="t('push_settings.sleep_interval_help')"
             :disabled="global.disabled"
           />
         </div>
@@ -75,8 +74,8 @@
         <div class="col-md-6">
           <BsInputReadonly
             v-model="batteryLife"
-            label="Estimated battery life"
-            help="Estimated based on current platform, 2200mAh battery and 5 seconds runtime"
+            :label="t('push_settings.battery_life_label')"
+            :help="t('push_settings.battery_life_help')"
             :disabled="global.disabled"
           ></BsInputReadonly>
         </div>
@@ -84,21 +83,21 @@
         <div class="col-md-6">
           <BsInputNumber
             v-model="config.push_timeout"
-            label="Push timeout"
+            :label="t('push_settings.push_timeout_label')"
             unit="s"
             min="10"
             max="60"
             step="1"
             width="5"
-            help="The number of seconds that the device will wait until a remote service accepts the connection"
+            :help="t('push_settings.push_timeout_help')"
             :disabled="global.disabled"
           />
         </div>
         <div v-if="global.platform === 'esp8266'" class="col-md-6">
           <BsInputSwitch
             v-model="config.skip_ssl_on_test"
-            label="Skip SSL post in config mode"
-            help="Don't do SSL when running in configuration mode, on ESP8266 this can cause the device to crash due to low memory, only applies to ESP8266"
+            :label="t('push_settings.skip_ssl_label')"
+            :help="t('push_settings.skip_ssl_help')"
             :disabled="global.disabled"
           />
         </div>
@@ -121,7 +120,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Save
+            &nbsp;{{ t('push_settings.save') }}
           </button>
         </div>
       </div>
@@ -131,11 +130,13 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config } from '@/modules/pinia'
 import { storeToRefs } from 'pinia'
 import { logDebug, logError } from '@mp-se/espframework-ui-components'
 
+const { t } = useI18n()
 const { sleep_interval } = storeToRefs(config)
 const batteryLife = ref('')
 const sleepLabel = ref('')
@@ -236,6 +237,9 @@ const calculateBatteryLife = () => {
   )
   logDebug('PushSettingsView.calculateBatteryLife()', 'Estimated number of days = ' + days)
 
-  batteryLife.value = Math.floor(days / 7) + ' weeks ' + Math.floor(days % 7) + ' days'
+  batteryLife.value = t('push_settings.battery_life_weeks', {
+    weeks: Math.floor(days / 7),
+    days: Math.floor(days % 7)
+  })
 }
 </script>

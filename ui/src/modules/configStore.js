@@ -24,6 +24,7 @@ import { global, saveConfigState, getConfigChanges } from '@/modules/pinia'
 import { logDebug, logError, logInfo } from '@mp-se/espframework-ui-components'
 import { tempToC, tempToF, roundVal } from '@mp-se/espframework-ui-components'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
+import { resolveMessage } from '@/modules/utils'
 
 export const useConfigStore = defineStore('config', {
   state: () => {
@@ -33,6 +34,7 @@ export const useConfigStore = defineStore('config', {
       mdns: '',
       temp_unit: '',
       gravity_unit: '',
+      locale: 'en',
       // Hardware
       ota_url: '',
       storage_sleep: false,
@@ -157,6 +159,7 @@ export const useConfigStore = defineStore('config', {
         this.mdns = json.mdns
         this.temp_unit = json.temp_unit
         this.gravity_unit = json.gravity_unit
+        this.locale = json.locale || 'en'
         // Hardware
         this.ota_url = json.ota_url
         this.storage_sleep = json.storage_sleep
@@ -408,13 +411,13 @@ export const useConfigStore = defineStore('config', {
         const res = await http.restart(this.mdns, { redirectDelayMs: 8000 })
         if (res.success && res.json && res.json.status === true) {
           global.messageSuccess =
-            (res.json.message || '') +
+            resolveMessage(res.json.message_code, res.json.message || '') +
             ' Redirecting to http://' +
             this.mdns +
             '.local in 8 seconds.'
           logInfo('configStore.restart()', 'Restart requested, redirect scheduled')
         } else if (res.success && res.json) {
-          global.messageError = res.json.message || 'Failed to restart device'
+          global.messageError = resolveMessage(res.json.message_code, res.json.message) || 'Failed to restart device'
         } else {
           global.messageError = 'Failed to request restart'
         }

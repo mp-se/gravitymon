@@ -26,9 +26,7 @@
 
   <div class="row">
     <div class="form-text">
-      Below is a graphical representation of the formula options, click on the color to deselect one
-      or more of the formulas. If you dont see more than one, try to reduce the deviation to dismiss
-      invalid formulas.
+      {{ t('fragment_formula_graph.intro') }}
     </div>
   </div>
 
@@ -39,12 +37,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { config } from '@/modules/pinia'
 import { logError } from '@mp-se/espframework-ui-components'
 import { evaluateFormula } from '@/modules/formula'
 import { Chart } from 'chart.js'
 import 'chart.js/auto'
 
+const { t } = useI18n()
 const chart = ref(null)
 
 /**

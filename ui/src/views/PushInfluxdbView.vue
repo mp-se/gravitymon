@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">Push - Influxdb v2</p>
+    <p class="h3">{{ t('push_influxdb.title') }}</p>
     <hr />
 
     <form
@@ -36,8 +36,8 @@
             v-model="config.influxdb2_target"
             type="url"
             maxlength="120"
-            label="Server"
-            help="URL to push target, use format http://servername.com/resource (Supports http and https)"
+            :label="t('push_common.server_label')"
+            :help="t('push_common.http_url_help')"
             :disabled="pushDisabled"
           />
         </div>
@@ -45,8 +45,8 @@
           <BsInputText
             v-model="config.influxdb2_org"
             maxlength="50"
-            label="Organisation"
-            help="Identifier to what organisation to use"
+            :label="t('push_influxdb.org_label')"
+            :help="t('push_influxdb.org_help')"
             :disabled="pushDisabled"
           />
         </div>
@@ -54,8 +54,8 @@
           <BsInputText
             v-model="config.influxdb2_bucket"
             maxlength="50"
-            label="Bucket"
-            help="Identifier for the data bucket to use"
+            :label="t('push_influxdb.bucket_label')"
+            :help="t('push_influxdb.bucket_help')"
             :disabled="pushDisabled"
           />
         </div>
@@ -64,19 +64,19 @@
             v-model="config.influxdb2_token"
             type="password"
             maxlength="100"
-            label="Authentication token"
-            help="Authentication token for accessing data bucket"
+            :label="t('push_influxdb.token_label')"
+            :help="t('push_influxdb.token_help')"
             :disabled="pushDisabled"
           />
         </div>
         <div class="col-md-6">
           <BsInputNumber
             v-model="config.influxdb2_int"
-            label="Skip interval"
+            :label="t('push_common.skip_interval_label')"
             min="0"
             max="5"
             width="4"
-            help="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle. Default is 0."
+            :help="t('push_common.skip_interval_help')"
             :disabled="pushDisabled"
           />
         </div>
@@ -84,8 +84,8 @@
           <BsInputTextAreaFormat
             v-model="config.influxdb2_format_gravity"
             rows="6"
-            label="Data format (gravity)"
-            help="Format template used to create the data sent to the remote service"
+            :label="t('push_common.data_format_gravity_label')"
+            :help="t('push_common.data_format_help')"
             :disabled="pushDisabled || config.influxdb2_gravity === false"
             v-if="global.ui.enableGravity"
           />
@@ -93,12 +93,12 @@
         <div class="col-md-3 gy-2" v-if="global.ui.enableGravity && global.ui.enablePressure">
           <BsInputSwitch
             v-model="config.influxdb2_gravity"
-            label="Enable gravity"
+            :label="t('push_common.enable_gravity_label')"
             :disabled="global.disabled"
           />
           <BsDropdown
-            label="Predefined formats"
-            button="Formats"
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
             :options="gravityInfluxdb2FormatOptions"
             :callback="gravityInfluxdb2FormatCallback"
             :disabled="pushDisabled || config.influxdb2_gravity === false"
@@ -107,15 +107,15 @@
             @click="gravityRenderFormat"
             v-model="gravityRender"
             :code="true"
-            title="Format preview"
-            button="Preview format"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
             :disabled="pushDisabled || config.influxdb2_gravity === false"
           />
         </div>
         <div class="col-md-3 gy-2" v-if="global.ui.enableGravity && !global.ui.enablePressure">
           <BsDropdown
-            label="Predefined formats"
-            button="Formats"
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
             :options="gravityInfluxdb2FormatOptions"
             :callback="gravityInfluxdb2FormatCallback"
             :disabled="pushDisabled"
@@ -124,8 +124,8 @@
             @click="gravityRenderFormat"
             v-model="gravityRender"
             :code="true"
-            title="Format preview"
-            button="Preview format"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
             :disabled="pushDisabled"
           />
         </div>
@@ -133,8 +133,8 @@
           <BsInputTextAreaFormat
             v-model="config.influxdb2_format_pressure"
             rows="6"
-            label="Data format (pressure)"
-            help="Format template used to create the data sent to the remote service"
+            :label="t('push_common.data_format_pressure_label')"
+            :help="t('push_common.data_format_help')"
             :disabled="pushDisabled || config.influxdb2_pressure === false"
             v-if="global.ui.enablePressure"
           />
@@ -142,12 +142,12 @@
         <div class="col-md-3 gy-2" v-if="global.ui.enablePressure && global.ui.enableGravity">
           <BsInputSwitch
             v-model="config.influxdb2_pressure"
-            label="Enable pressure"
+            :label="t('push_common.enable_pressure_label')"
             :disabled="global.disabled"
           />
           <BsDropdown
-            label="Predefined formats"
-            button="Formats"
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
             :options="pressureInfluxdb2FormatOptions"
             :callback="pressureInfluxdb2FormatCallback"
             :disabled="pushDisabled || config.influxdb2_pressure === false"
@@ -156,15 +156,15 @@
             @click="pressureRenderFormat"
             v-model="pressureRender"
             :code="true"
-            title="Format preview"
-            button="Preview format"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
             :disabled="pushDisabled || config.influxdb2_pressure === false"
           />
         </div>
         <div class="col-md-3 gy-2" v-if="global.ui.enablePressure && !global.ui.enableGravity">
           <BsDropdown
-            label="Predefined formats"
-            button="Formats"
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
             :options="pressureInfluxdb2FormatOptions"
             :callback="pressureInfluxdb2FormatCallback"
             :disabled="pushDisabled"
@@ -173,8 +173,8 @@
             @click="pressureRenderFormat"
             v-model="pressureRender"
             :code="true"
-            title="Format preview"
-            button="Preview format"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
             :disabled="pushDisabled"
           />
         </div>
@@ -195,7 +195,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Save</button
+            &nbsp;{{ t('push_common.save') }}</button
           >&nbsp;
 
           <button
@@ -211,7 +211,7 @@
               aria-hidden="true"
               :hidden="!global.disabled"
             ></span>
-            &nbsp;Run push gravity test</button
+            &nbsp;{{ t('push_common.run_push_gravity_test') }}</button
           >&nbsp;
           <button
             v-if="global.ui.enablePressure"
@@ -226,7 +226,7 @@
               aria-hidden="true"
               :hidden="!global.disabled"
             ></span>
-            &nbsp;Run push pressure test
+            &nbsp;{{ t('push_common.run_push_pressure_test') }}
           </button>
         </div>
       </div>
@@ -236,6 +236,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { gravityInfluxdb2FormatOptions } from '@/modules/gravityFormatOptions'
 import { pressureInfluxdb2FormatOptions } from '@/modules/pressureFormatOptions'
 import { applyTemplate } from '@/modules/formatTemplate'
@@ -243,6 +244,7 @@ import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, status, config } from '@/modules/pinia'
 import { logError } from '@mp-se/espframework-ui-components'
 
+const { t } = useI18n()
 const gravityRender = ref('')
 const pressureRender = ref('')
 
@@ -260,7 +262,7 @@ const runTestGravity = async () => {
     await config.runPushTest(data)
   } catch (error) {
     logError('PushInfluxdbView.runTestGravity()', error)
-    global.messageError = 'Failed to start push test'
+    global.messageError = t('push_common.err_start_push_test')
   }
 }
 
@@ -274,7 +276,7 @@ const runTestPressure = async () => {
     await config.runPushTest(data)
   } catch (error) {
     logError('PushInfluxdbView.runTestPressure()', error)
-    global.messageError = 'Failed to start push test'
+    global.messageError = t('push_common.err_start_push_test')
   }
 }
 

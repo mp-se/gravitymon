@@ -26,8 +26,7 @@
 
   <div class="row">
     <div class="form-text">
-      Below is a graphical representation of the current formula and data points for formula
-      creation.
+      {{ t('fragment_gravity_graph.intro') }}
     </div>
   </div>
 
@@ -38,12 +37,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { config } from '@/modules/pinia'
 import { logError } from '@mp-se/espframework-ui-components'
 import { evaluateFormula } from '@/modules/formula'
 import { Chart } from 'chart.js'
 import 'chart.js/auto'
 
+const { t } = useI18n()
 const chart = ref(null)
 
 const chartDataForm = ref([])
