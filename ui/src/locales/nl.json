@@ -40,7 +40,8 @@
     "err_load_status": "Kon status niet laden van het apparaat, probeer de pagina opnieuw te laden!",
     "err_load_config": "Kon configuratiegegevens niet laden van het apparaat, probeer de pagina opnieuw te laden!",
     "err_load_format": "Kon formaatsjablonen niet laden van het apparaat, probeer de pagina opnieuw te laden!",
-    "err_init_failed": "Initialisatie mislukt: {error}"
+    "err_init_failed": "Initialisatie mislukt: {error}",
+    "err_locale_pack_missing": "Taalpakket is niet geïnstalleerd op dit apparaat. Installeer het onder Apparaatinstellingen, Engels wordt in plaats daarvan getoond."
   },
   "device_settings": {
     "title": "Apparaat - Instellingen",
@@ -545,5 +546,12 @@
     "err_500": "Registratie mislukt: interne serverfout, probeer het later opnieuw.",
     "err_generic": "Er is een fout opgetreden tijdens de registratie.",
     "err_update_status": "Kon registratiestatus niet bijwerken"
+  },
+  "language_packs": {
+    "available_title": "Beschikbare talen",
+    "install_success": "Taalpakket geïnstalleerd",
+    "err_install_failed": "Installeren van taalpakket mislukt, probeer het handmatig te uploaden",
+    "delete_success": "Taalpakket verwijderd",
+    "err_delete_failed": "Verwijderen van taalpakket mislukt"
   }
 }

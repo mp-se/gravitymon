@@ -40,7 +40,8 @@
     "err_load_status": "Échec du chargement du statut depuis l'appareil, veuillez recharger la page !",
     "err_load_config": "Échec du chargement de la configuration depuis l'appareil, veuillez recharger la page !",
     "err_load_format": "Échec du chargement des modèles de format depuis l'appareil, veuillez recharger la page !",
-    "err_init_failed": "Échec de l'initialisation : {error}"
+    "err_init_failed": "Échec de l'initialisation : {error}",
+    "err_locale_pack_missing": "Le pack de langue n'est pas installé sur cet appareil. Installez-le sous Paramètres de l'appareil, l'anglais est affiché à la place."
   },
   "device_settings": {
     "title": "Appareil - Paramètres",
@@ -545,5 +546,12 @@
     "err_500": "Échec de l'enregistrement : erreur interne du serveur, veuillez réessayer plus tard.",
     "err_generic": "Une erreur s'est produite lors de l'enregistrement.",
     "err_update_status": "Échec de la mise à jour du statut d'enregistrement"
+  },
+  "language_packs": {
+    "available_title": "Langues disponibles",
+    "install_success": "Pack de langue installé",
+    "err_install_failed": "Échec de l'installation du pack de langue, essayez de le téléverser manuellement",
+    "delete_success": "Pack de langue supprimé",
+    "err_delete_failed": "Échec de la suppression du pack de langue"
   }
 }

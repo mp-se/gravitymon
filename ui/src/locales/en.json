@@ -40,7 +40,8 @@
     "err_load_status": "Failed to load status from device, please try to reload page!",
     "err_load_config": "Failed to load configuration data from device, please try to reload page!",
     "err_load_format": "Failed to load format templates from device, please try to reload page!",
-    "err_init_failed": "Initialization failed: {error}"
+    "err_init_failed": "Initialization failed: {error}",
+    "err_locale_pack_missing": "Language pack not installed on this device. Install it under Device Settings, showing English instead."
   },
   "device_settings": {
     "title": "Device - Settings",
@@ -545,5 +546,12 @@
     "err_500": "Registration failed: Internal server error, please try again later.",
     "err_generic": "An error occurred during registration.",
     "err_update_status": "Failed to update registration status"
+  },
+  "language_packs": {
+    "available_title": "Available languages",
+    "install_success": "Language pack installed",
+    "err_install_failed": "Failed to install language pack, try uploading it manually instead",
+    "delete_success": "Language pack removed",
+    "err_delete_failed": "Failed to remove language pack"
   }
 }

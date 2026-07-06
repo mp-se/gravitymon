@@ -71,6 +71,39 @@ void BrewingWebServer::webHandleConfigRead(AsyncWebServerRequest *request) {
   PERF_END("webserver-api-config-read");
 }
 
+void BrewingWebServer::webHandleFileDownload(AsyncWebServerRequest *request) {
+  if (!isAuthenticated(request)) {
+    return;
+  }
+
+  if (!request->hasParam("file")) {
+    request->send(400);
+    return;
+  }
+
+  String file = request->getParam("file")->value();
+  if (!file.startsWith("/")) {
+    file = "/" + file;
+  }
+
+  Log.notice(F("WEB : File download requested for %s." CR), file.c_str());
+
+  if (!LittleFS.exists(file)) {
+    Log.warning(F("WEB : File %s does not exist, returning 404." CR),
+                file.c_str());
+    request->send(404);
+    return;
+  }
+
+  File f = LittleFS.open(file, "r");
+  size_t fileSize = f.size();
+  f.close();
+  Log.notice(F("WEB : Sending file %s, size %d bytes, free heap %d." CR),
+             file.c_str(), fileSize, ESP.getFreeHeap());
+
+  request->send(LittleFS, file, "application/octet-stream");
+}
+
 void BrewingWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
                                             JsonVariant &json) {
   if (!isAuthenticated(request)) {
@@ -614,6 +647,10 @@ bool BrewingWebServer::setupWebServer(const char *serviceName) {
   _server->on(
       "/api/status", (WebRequestMethodComposite)HTTP_GET,
       [this](AsyncWebServerRequest *request) { webHandleStatus(request); });
+  _server->on("/api/language", (WebRequestMethodComposite)HTTP_GET,
+              [this](AsyncWebServerRequest *request) {
+                webHandleFileDownload(request);
+              });
   _server->on(
       "/api/feature", (WebRequestMethodComposite)HTTP_GET,
       [this](AsyncWebServerRequest *request) { webHandleFeature(request); });

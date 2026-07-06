@@ -40,7 +40,8 @@
     "err_load_status": "Det gick inte att läsa in status från enheten, försök ladda om sidan!",
     "err_load_config": "Det gick inte att läsa in konfigurationen från enheten, försök ladda om sidan!",
     "err_load_format": "Det gick inte att läsa in formatmallar från enheten, försök ladda om sidan!",
-    "err_init_failed": "Initiering misslyckades: {error}"
+    "err_init_failed": "Initiering misslyckades: {error}",
+    "err_locale_pack_missing": "Språkpaketet är inte installerat på denna enhet. Installera det under Enhetsinställningar, visar engelska istället."
   },
   "device_settings": {
     "title": "Enhet - Inställningar",
@@ -545,5 +546,12 @@
     "err_500": "Registreringen misslyckades: Internt serverfel, försök igen senare.",
     "err_generic": "Ett fel uppstod vid registrering.",
     "err_update_status": "Det gick inte att uppdatera registreringsstatus"
+  },
+  "language_packs": {
+    "available_title": "Tillgängliga språk",
+    "install_success": "Språkpaket installerat",
+    "err_install_failed": "Det gick inte att installera språkpaketet, försök ladda upp det manuellt istället",
+    "delete_success": "Språkpaket borttaget",
+    "err_delete_failed": "Det gick inte att ta bort språkpaketet"
   }
 }

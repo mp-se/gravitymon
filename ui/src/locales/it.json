@@ -40,7 +40,8 @@
     "err_load_status": "Impossibile caricare lo stato dal dispositivo, prova a ricaricare la pagina!",
     "err_load_config": "Impossibile caricare i dati di configurazione dal dispositivo, prova a ricaricare la pagina!",
     "err_load_format": "Impossibile caricare i modelli di formato dal dispositivo, prova a ricaricare la pagina!",
-    "err_init_failed": "Inizializzazione fallita: {error}"
+    "err_init_failed": "Inizializzazione fallita: {error}",
+    "err_locale_pack_missing": "Il pacchetto lingua non è installato su questo dispositivo. Installalo in Impostazioni dispositivo, verrà mostrato l'inglese."
   },
   "device_settings": {
     "title": "Dispositivo - Impostazioni",
@@ -545,5 +546,12 @@
     "err_500": "Registrazione fallita: errore interno del server, riprova più tardi.",
     "err_generic": "Si è verificato un errore durante la registrazione.",
     "err_update_status": "Impossibile aggiornare lo stato di registrazione"
+  },
+  "language_packs": {
+    "available_title": "Lingue disponibili",
+    "install_success": "Pacchetto lingua installato",
+    "err_install_failed": "Impossibile installare il pacchetto lingua, prova a caricarlo manualmente",
+    "delete_success": "Pacchetto lingua rimosso",
+    "err_delete_failed": "Impossibile rimuovere il pacchetto lingua"
   }
 }

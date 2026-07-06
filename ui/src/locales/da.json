@@ -40,7 +40,8 @@
     "err_load_status": "Kunne ikke indlæse status fra enheden, prøv at genindlæse siden!",
     "err_load_config": "Kunne ikke indlæse konfigurationsdata fra enheden, prøv at genindlæse siden!",
     "err_load_format": "Kunne ikke indlæse formatskabeloner fra enheden, prøv at genindlæse siden!",
-    "err_init_failed": "Initialisering mislykkedes: {error}"
+    "err_init_failed": "Initialisering mislykkedes: {error}",
+    "err_locale_pack_missing": "Sprogpakken er ikke installeret på denne enhed. Installer den under Enhedsindstillinger, viser engelsk i stedet."
   },
   "device_settings": {
     "title": "Enhed - Indstillinger",
@@ -545,5 +546,12 @@
     "err_500": "Registrering mislykkedes: Intern serverfejl, prøv igen senere.",
     "err_generic": "Der opstod en fejl under registrering.",
     "err_update_status": "Kunne ikke opdatere registreringsstatus"
+  },
+  "language_packs": {
+    "available_title": "Tilgængelige sprog",
+    "install_success": "Sprogpakke installeret",
+    "err_install_failed": "Kunne ikke installere sprogpakken, prøv at uploade den manuelt i stedet",
+    "delete_success": "Sprogpakke fjernet",
+    "err_delete_failed": "Kunne ikke fjerne sprogpakken"
   }
 }

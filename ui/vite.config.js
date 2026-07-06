@@ -39,6 +39,14 @@ export default defineConfig(({ mode }) => {
   define: {
     __VUE_OPTIONS_API__: false, // Disable Options API if not used
     __VUE_PROD_DEVTOOLS__: false,
+    // vue-i18n bundle-size flags: we only ever set plain-object locale
+    // messages (no legacy API, no full-component install), and the lighter
+    // JIT message compiler is sufficient since packs are just interpolated
+    // strings loaded at runtime via setLocaleMessage().
+    __VUE_I18N_FULL_INSTALL__: false,
+    __VUE_I18N_LEGACY_API__: false,
+    __INTLIFY_JIT_COMPILATION__: true,
+    __INTLIFY_PROD_DEVTOOLS__: false,
     // Environment-specific settings
     __APP_VERSION__: JSON.stringify(pkg.version),
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),

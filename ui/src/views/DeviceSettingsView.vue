@@ -85,6 +85,37 @@
           ></BsSelect>
         </div>
 
+        <div class="col-md-12" v-if="availableLanguages.length > 0">
+          <hr />
+        </div>
+
+        <div class="col-md-12" v-if="availableLanguages.length > 0">
+          <h6>{{ t('language_packs.available_title') }}</h6>
+          <div class="button-group">
+            <template v-for="entry in availableLanguages" :key="entry.code">
+              <button
+                type="button"
+                class="btn btn-sm"
+                :class="isInstalled(entry.code) ? 'btn-primary' : 'btn-outline-secondary'"
+                :disabled="global.disabled || installingCode !== null"
+                @click.prevent="toggleLanguage(entry)"
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                  v-show="installingCode === entry.code"
+                ></span>
+                {{ entry.name }}</button
+              >&nbsp;
+            </template>
+          </div>
+          <div v-if="installingCode !== null && installProgress > 0" class="col-md-6">
+            <p></p>
+            <BsProgress :progress="installProgress"></BsProgress>
+          </div>
+        </div>
+
         <div class="col-md-12">
           <hr />
         </div>
@@ -219,7 +250,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { BsInputReadonly, validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, status, config } from '@/modules/pinia'
@@ -227,6 +258,12 @@ import * as badge from '@/modules/badge'
 import { logError, logInfo } from '@mp-se/espframework-ui-components'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 import { resolveMessage } from '@/modules/utils'
+import {
+  installPackFromUrl,
+  listInstalledPacks,
+  removeLocalePack,
+  loadLocalePackWithRetry
+} from '@/modules/localePacks'
 
 const { t } = useI18n()
 
@@ -250,26 +287,96 @@ const uiOptions = computed(() => [
   { label: t('device_settings.ui_dark_mode'), value: true }
 ])
 
-const localeOptions = ref([
-  { label: 'English', value: 'en' },
-  { label: 'Svenska', value: 'sv' },
-  { label: 'Deutsch', value: 'de' },
-  { label: 'Français', value: 'fr' },
-  { label: 'Español', value: 'es' },
-  { label: '中文', value: 'zh' },
-  { label: 'Polski', value: 'pl' },
-  { label: 'Norsk', value: 'no' },
-  { label: 'Dansk', value: 'da' },
-  { label: 'Nederlands', value: 'nl' },
-  { label: 'Português', value: 'pt' },
-  { label: 'Italiano', value: 'it' }
-])
-
 const registrationStatus = ref(t('device_settings.reporting_unknown'))
 const showRegisterModal = ref(false)
 
 const otaCallback = (opt) => {
   config.ota_url = opt
+}
+
+// Convenience list of downloadable language packs, read from the same
+// version.json already used for firmware update checks (same base URL as
+// config.ota_url, defaulting to gravitymon.com like the OTA dropdown above).
+const availableLanguages = ref([])
+const installedCodes = ref([])
+const installingCode = ref(null)
+const installProgress = ref(0)
+
+const isInstalled = (code) => installedCodes.value.includes(code)
+
+// The dropdown only lists languages that are actually installed on the
+// device (English is always available since it ships embedded) - selecting
+// a language with no pack installed would just fall back to English anyway.
+const localeOptions = computed(() => {
+  const options = [{ label: 'English', value: 'en' }]
+  for (const code of installedCodes.value) {
+    const entry = availableLanguages.value.find((lang) => lang.code === code)
+    options.push({ label: entry ? entry.name : code, value: code })
+  }
+  return options
+})
+
+const otaBaseUrl = () => config.ota_url || 'https://www.gravitymon.com/firmware/'
+
+const refreshInstalledCodes = async () => {
+  installedCodes.value = await listInstalledPacks()
+}
+
+onMounted(async () => {
+  await refreshInstalledCodes()
+  try {
+    const res = await fetch(`${otaBaseUrl()}version.json`)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const json = await res.json()
+    availableLanguages.value = json.languages || []
+  } catch (error) {
+    logError('DeviceSettingsView.loadAvailableLanguages()', error)
+    availableLanguages.value = []
+  }
+})
+
+const toggleLanguage = async (entry) => {
+  if (installingCode.value !== null) return
+
+  installingCode.value = entry.code
+  installProgress.value = 0
+  global.clearMessages()
+
+  try {
+    if (isInstalled(entry.code)) {
+      const res = await removeLocalePack(entry.code)
+      if (res && res.success) {
+        global.messageSuccess = t('language_packs.delete_success')
+        await refreshInstalledCodes()
+      } else {
+        global.messageError = t('language_packs.err_delete_failed')
+      }
+    } else {
+      await installPackFromUrl(otaBaseUrl(), entry, {
+        onProgress: (percent) => {
+          installProgress.value = Math.round(percent)
+        }
+      })
+      await refreshInstalledCodes()
+
+      const loaded = await loadLocalePackWithRetry(entry.code)
+      if (loaded) {
+        global.messageSuccess = t('language_packs.install_success')
+      } else {
+        // Uploaded but failed to load back - treat as a failed install rather
+        // than silently leaving a broken/incomplete file on the device.
+        await removeLocalePack(entry.code)
+        await refreshInstalledCodes()
+        global.messageError = t('language_packs.err_install_failed')
+      }
+    }
+  } catch (error) {
+    logError('DeviceSettingsView.toggleLanguage()', error)
+    global.messageError = t('language_packs.err_install_failed')
+  } finally {
+    installingCode.value = null
+    installProgress.value = 0
+  }
 }
 
 const checkReported = async () => {

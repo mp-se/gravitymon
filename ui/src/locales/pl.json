@@ -40,7 +40,8 @@
     "err_load_status": "Nie udało się wczytać statusu z urządzenia, spróbuj odświeżyć stronę!",
     "err_load_config": "Nie udało się wczytać danych konfiguracyjnych z urządzenia, spróbuj odświeżyć stronę!",
     "err_load_format": "Nie udało się wczytać szablonów formatu z urządzenia, spróbuj odświeżyć stronę!",
-    "err_init_failed": "Inicjalizacja nie powiodła się: {error}"
+    "err_init_failed": "Inicjalizacja nie powiodła się: {error}",
+    "err_locale_pack_missing": "Pakiet językowy nie jest zainstalowany na tym urządzeniu. Zainstaluj go w Ustawieniach urządzenia, wyświetlany jest angielski."
   },
   "device_settings": {
     "title": "Urządzenie - Ustawienia",
@@ -545,5 +546,12 @@
     "err_500": "Rejestracja nie powiodła się: wewnętrzny błąd serwera, spróbuj ponownie później.",
     "err_generic": "Wystąpił błąd podczas rejestracji.",
     "err_update_status": "Nie udało się zaktualizować statusu rejestracji"
+  },
+  "language_packs": {
+    "available_title": "Dostępne języki",
+    "install_success": "Pakiet językowy zainstalowany",
+    "err_install_failed": "Nie udało się zainstalować pakietu językowego, spróbuj przesłać go ręcznie",
+    "delete_success": "Pakiet językowy usunięty",
+    "err_delete_failed": "Nie udało się usunąć pakietu językowego"
   }
 }

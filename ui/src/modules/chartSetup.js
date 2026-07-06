@@ -19,17 +19,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-import { createI18n } from 'vue-i18n'
-import en from '@/locales/en.json'
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
 
-// Only English ships embedded in the firmware bundle to keep it small.
-// Other languages are optional "packs" fetched at runtime from the device's
-// LittleFS (or downloaded + installed via ui/src/modules/localePacks.js).
-const i18n = createI18n({
-  legacy: false,
-  locale: 'en',
-  fallbackLocale: 'en',
-  messages: { en }
-})
+// Only line charts are used anywhere in this app (GravityGraphFragment,
+// FormulaGraphFragment) - registering just what they need instead of
+// 'chart.js/auto' (which pulls in every chart type/scale/plugin) is a
+// meaningful firmware size saving on boards with tight OTA partitions.
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend)
 
-export default i18n
+export { Chart }

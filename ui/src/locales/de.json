@@ -40,7 +40,8 @@
     "err_load_status": "Status konnte nicht vom Gerät geladen werden, bitte Seite neu laden!",
     "err_load_config": "Konfigurationsdaten konnten nicht vom Gerät geladen werden, bitte Seite neu laden!",
     "err_load_format": "Formatvorlagen konnten nicht vom Gerät geladen werden, bitte Seite neu laden!",
-    "err_init_failed": "Initialisierung fehlgeschlagen: {error}"
+    "err_init_failed": "Initialisierung fehlgeschlagen: {error}",
+    "err_locale_pack_missing": "Sprachpaket ist auf diesem Gerät nicht installiert. Installiere es unter Geräteeinstellungen, es wird stattdessen Englisch angezeigt."
   },
   "device_settings": {
     "title": "Gerät - Einstellungen",
@@ -545,5 +546,12 @@
     "err_500": "Registrierung fehlgeschlagen: Interner Serverfehler, bitte später erneut versuchen.",
     "err_generic": "Bei der Registrierung ist ein Fehler aufgetreten.",
     "err_update_status": "Registrierungsstatus konnte nicht aktualisiert werden"
+  },
+  "language_packs": {
+    "available_title": "Verfügbare Sprachen",
+    "install_success": "Sprachpaket installiert",
+    "err_install_failed": "Sprachpaket konnte nicht installiert werden, versuche es stattdessen manuell hochzuladen",
+    "delete_success": "Sprachpaket entfernt",
+    "err_delete_failed": "Sprachpaket konnte nicht entfernt werden"
   }
 }

@@ -40,7 +40,8 @@
     "err_load_status": "无法从设备加载状态，请重新加载页面！",
     "err_load_config": "无法从设备加载配置数据，请重新加载页面！",
     "err_load_format": "无法从设备加载格式模板，请重新加载页面！",
-    "err_init_failed": "初始化失败：{error}"
+    "err_init_failed": "初始化失败：{error}",
+    "err_locale_pack_missing": "此设备未安装语言包。请在设备设置中安装，暂时显示英文。"
   },
   "device_settings": {
     "title": "设备 - 设置",
@@ -545,5 +546,12 @@
     "err_500": "注册失败：内部服务器错误，请稍后重试。",
     "err_generic": "注册过程中发生错误。",
     "err_update_status": "更新注册状态失败"
+  },
+  "language_packs": {
+    "available_title": "可用语言",
+    "install_success": "语言包已安装",
+    "err_install_failed": "语言包安装失败，请尝试手动上传",
+    "delete_success": "语言包已移除",
+    "err_delete_failed": "语言包移除失败"
   }
 }

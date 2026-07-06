@@ -40,7 +40,8 @@
     "err_load_status": "Falha ao carregar o status do dispositivo, tente recarregar a página!",
     "err_load_config": "Falha ao carregar os dados de configuração do dispositivo, tente recarregar a página!",
     "err_load_format": "Falha ao carregar os modelos de formato do dispositivo, tente recarregar a página!",
-    "err_init_failed": "Falha na inicialização: {error}"
+    "err_init_failed": "Falha na inicialização: {error}",
+    "err_locale_pack_missing": "O pacote de idioma não está instalado neste dispositivo. Instale-o em Configurações do dispositivo; o inglês será exibido em vez disso."
   },
   "device_settings": {
     "title": "Dispositivo - Configurações",
@@ -545,5 +546,12 @@
     "err_500": "Falha no registro: erro interno do servidor, tente novamente mais tarde.",
     "err_generic": "Ocorreu um erro durante o registro.",
     "err_update_status": "Falha ao atualizar o status de registro"
+  },
+  "language_packs": {
+    "available_title": "Idiomas disponíveis",
+    "install_success": "Pacote de idioma instalado",
+    "err_install_failed": "Falha ao instalar o pacote de idioma, tente enviá-lo manualmente",
+    "delete_success": "Pacote de idioma removido",
+    "err_delete_failed": "Falha ao remover o pacote de idioma"
   }
 }
