@@ -28,26 +28,30 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="registrationModalLabel">{{ t('fragment_register_device.title') }}</h1>
+          <h1 class="modal-title fs-5" id="registrationModalLabel">Report usage</h1>
         </div>
         <div class="modal-body">
           <p>
-            {{ t('fragment_register_device.intro') }}
+            Do you want to help me determine what boards and configurations are used for this
+            project so I can better focus on those going forward. This is the data that will be sent
+            and its anonymized. The chipid is a hash (SHA256) of the actual chip ID to ensure
+            privacy.
           </p>
           <div class="mb-3">
-            <label for="registrationData" class="form-label">{{ t('fragment_register_device.data_label') }}</label>
+            <label for="registrationData" class="form-label">Anonymous data:</label>
             <pre id="registrationData" class="border p-2 bg-light">{{ registrationDataJson }}</pre>
           </div>
-          <p>{{ t('fragment_register_device.cancel_hint') }}</p>
+          <p><b>Cancel</b> will close the dialog without action.</p>
           <p>
-            {{ t('fragment_register_device.ignore_hint') }}
+            <b>Ignore</b> will not prompt you again on this device, but you want this can be
+            triggered from the device settings page.
           </p>
-          <p>{{ t('fragment_register_device.send_hint') }}</p>
+          <p><b>Send</b> will send the data above to the collection service.</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="cancel">{{ t('fragment_register_device.cancel') }}</button>
-          <button type="button" class="btn btn-secondary" @click="ignore">{{ t('fragment_register_device.ignore') }}</button>
-          <button type="button" class="btn btn-primary" @click="send">{{ t('fragment_register_device.send') }}</button>
+          <button type="button" class="btn btn-secondary" @click="cancel">Cancel</button>
+          <button type="button" class="btn btn-secondary" @click="ignore">Ignore</button>
+          <button type="button" class="btn btn-primary" @click="send">Send</button>
         </div>
       </div>
     </div>
@@ -57,11 +61,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { global } from '@/modules/pinia'
 import { sharedHttpClient as http, logError, logInfo } from '@mp-se/espframework-ui-components'
-
-const { t } = useI18n()
 
 const props = defineProps({
   software: {
@@ -102,7 +103,7 @@ const ignore = async () => {
     global.registered = true
   } catch (error) {
     logError('RegisterDeviceFragment.ignore()', 'Failed to mark as registered:', error)
-    global.messageError = t('fragment_register_device.err_update_status')
+    global.messageError = 'Failed to update registration status'
   } finally {
     global.disabled = false
   }
@@ -127,9 +128,9 @@ const send = async () => {
     if (response) {
       await http.postJson('api/config', { registered: true })
       global.registered = true
-      global.messageSuccess = t('fragment_register_device.success')
+      global.messageSuccess = 'Device registered successfully!'
     } else {
-      global.messageError = t('fragment_register_device.err_failed')
+      global.messageError = 'Registration failed. Please try again.'
     }
   } catch (error) {
     // Extract status code from error message (format: "HTTP 401: Unauthorized")
@@ -137,14 +138,16 @@ const send = async () => {
     const status = statusMatch ? parseInt(statusMatch[1]) : null
 
     if (status === 401) {
-      global.messageError = t('fragment_register_device.err_401')
+      global.messageError =
+        'Registration failed: API key has been revoked. Please update to a newer software version to register.'
     } else if (status === 429) {
-      global.messageError = t('fragment_register_device.err_429')
+      global.messageError =
+        'Registration failed: Registration API is currently unavailable, please try again later.'
     } else if (status === 500) {
-      global.messageError = t('fragment_register_device.err_500')
+      global.messageError = 'Registration failed: Internal server error, please try again later.'
     } else {
       logError('RegisterDeviceFragment.send()', 'Registration error:', error)
-      global.messageError = t('fragment_register_device.err_generic')
+      global.messageError = 'An error occurred during registration.'
     }
   } finally {
     global.disabled = false

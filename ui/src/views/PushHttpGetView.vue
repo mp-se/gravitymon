@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">{{ t('push_http_get.title') }}</p>
+    <p class="h3">Push - HTTP Get</p>
     <hr />
 
     <form @submit.prevent="save" class="needs-validation" novalidate>
@@ -31,15 +31,15 @@
             v-model="config.http_get_target"
             type="url"
             maxlength="120"
-            :label="t('push_common.http_url_label')"
-            :help="t('push_common.http_url_help')"
+            label="HTTP URL"
+            help="URL to push target, use format http://servername.com/resource (Supports http and https)"
             :disabled="pushDisabled"
           />
         </div>
         <div class="col-md-3">
           <BsDropdown
-            :label="t('push_common.predefined_urls_label')"
-            :button="t('push_common.url_button')"
+            label="Predefined URLs"
+            button="URL"
             :options="httpGetUrlOptions"
             :callback="httpUrlCallback"
             :disabled="pushDisabled"
@@ -50,15 +50,15 @@
             v-model="config.http_get_header1"
             maxlength="120"
             pattern="(.+): (.+)"
-            :label="t('push_common.header1_label')"
+            label="HTTP Header #1"
             help=""
             :disabled="pushDisabled"
           />
         </div>
         <div class="col-md-3">
           <BsDropdown
-            :label="t('push_common.predefined_headers_label')"
-            :button="t('push_common.header_button')"
+            label="Predefined headers"
+            button="Header"
             :options="httpHeaderOptions"
             :callback="httpHeaderH1Callback"
             :disabled="pushDisabled"
@@ -69,15 +69,15 @@
             v-model="config.http_get_header2"
             maxlength="120"
             pattern="(.+): (.+)"
-            :label="t('push_common.header2_label')"
-            :help="t('push_common.header2_help')"
+            label="HTTP Header #2"
+            help="Set a http headers, empty string is skipped, example: Content-Type: application/json"
             :disabled="pushDisabled"
           />
         </div>
         <div class="col-md-3">
           <BsDropdown
-            :label="t('push_common.predefined_headers_label')"
-            :button="t('push_common.header_button')"
+            label="Predefined headers"
+            button="Header"
             :options="httpHeaderOptions"
             :callback="httpHeaderH2Callback"
             :disabled="pushDisabled"
@@ -86,11 +86,11 @@
         <div class="col-md-6">
           <BsInputNumber
             v-model="config.http_get_int"
-            :label="t('push_common.skip_interval_label')"
+            label="Skip interval"
             min="0"
             max="5"
             width="4"
-            :help="t('push_common.skip_interval_help')"
+            help="Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle. Default is 0."
             :disabled="pushDisabled"
           />
         </div>
@@ -100,20 +100,20 @@
           <BsInputTextAreaFormat
             v-model="config.http_get_format_gravity"
             rows="6"
-            :label="t('push_common.data_format_gravity_label')"
-            :help="t('push_common.data_format_help')"
+            label="Data format (gravity)"
+            help="Format template used to create the data sent to the remote service"
             :disabled="pushDisabled || config.http_get_gravity === false"
           />
         </div>
         <div v-if="global.ui.enableGravity && global.ui.enablePressure" class="col-md-3">
           <BsInputSwitch
             v-model="config.http_get_gravity"
-            :label="t('push_common.enable_gravity_label')"
+            label="Enable gravity"
             :disabled="global.disabled"
           />
           <BsDropdown
-            :label="t('push_common.predefined_formats_label')"
-            :button="t('push_common.formats_button')"
+            label="Predefined formats"
+            button="Formats"
             :options="gravityHttpGetFormatOptions"
             :callback="gravityHttpFormatCallback"
             :disabled="pushDisabled || config.http_get_gravity === false"
@@ -122,15 +122,15 @@
             @click="gravityRenderFormat"
             v-model="gravityRender"
             :code="true"
-            :title="t('push_common.format_preview_title')"
-            :button="t('push_common.preview_format_button')"
+            title="Format preview"
+            button="Preview format"
             :disabled="pushDisabled || config.http_get_gravity === false"
           />
         </div>
         <div v-if="global.ui.enableGravity && !global.ui.enablePressure" class="col-md-3">
           <BsDropdown
-            :label="t('push_common.predefined_formats_label')"
-            :button="t('push_common.formats_button')"
+            label="Predefined formats"
+            button="Formats"
             :options="gravityHttpGetFormatOptions"
             :callback="gravityHttpFormatCallback"
             :disabled="pushDisabled"
@@ -139,8 +139,8 @@
             @click="gravityRenderFormat"
             v-model="gravityRender"
             :code="true"
-            :title="t('push_common.format_preview_title')"
-            :button="t('push_common.preview_format_button')"
+            title="Format preview"
+            button="Preview format"
             :disabled="pushDisabled"
           />
         </div>
@@ -150,20 +150,20 @@
           <BsInputTextAreaFormat
             v-model="config.http_get_format_pressure"
             rows="6"
-            :label="t('push_common.data_format_pressure_label')"
-            :help="t('push_common.data_format_help')"
+            label="Data format (pressure)"
+            help="Format template used to create the data sent to the remote service"
             :disabled="pushDisabled || config.http_get_pressure === false"
           />
         </div>
         <div v-if="global.ui.enablePressure && global.ui.enableGravity" class="col-md-3">
           <BsInputSwitch
             v-model="config.http_get_pressure"
-            :label="t('push_common.enable_pressure_label')"
+            label="Enable pressure"
             :disabled="global.disabled"
           />
           <BsDropdown
-            :label="t('push_common.predefined_formats_label')"
-            :button="t('push_common.formats_button')"
+            label="Predefined formats"
+            button="Formats"
             :options="pressureHttpGetFormatOptions"
             :callback="pressureHttpFormatCallback"
             :disabled="pushDisabled || config.http_get_pressure === false"
@@ -172,15 +172,15 @@
             @click="pressureRenderFormat"
             v-model="pressureRender"
             :code="true"
-            :title="t('push_common.format_preview_title')"
-            :button="t('push_common.preview_format_button')"
+            title="Format preview"
+            button="Preview format"
             :disabled="pushDisabled || config.http_get_pressure === false"
           />
         </div>
         <div v-if="global.ui.enablePressure && !global.ui.enableGravity" class="col-md-3">
           <BsDropdown
-            :label="t('push_common.predefined_formats_label')"
-            :button="t('push_common.formats_button')"
+            label="Predefined formats"
+            button="Formats"
             :options="pressureHttpGetFormatOptions"
             :callback="pressureHttpFormatCallback"
             :disabled="pushDisabled"
@@ -189,8 +189,8 @@
             @click="pressureRenderFormat"
             v-model="pressureRender"
             :code="true"
-            :title="t('push_common.format_preview_title')"
-            :button="t('push_common.preview_format_button')"
+            title="Format preview"
+            button="Preview format"
             :disabled="pushDisabled"
           />
         </div>
@@ -211,7 +211,7 @@
               aria-hidden="true"
               :hidden="!global.disabled"
             ></span>
-            &nbsp;{{ t('push_common.save') }}</button
+            &nbsp;Save</button
           >&nbsp;
 
           <button
@@ -227,7 +227,7 @@
               aria-hidden="true"
               :hidden="!global.disabled"
             ></span>
-            &nbsp;{{ t('push_common.run_push_gravity_test') }}</button
+            &nbsp;Run push gravity test</button
           >&nbsp;
           <button
             v-if="global.ui.enablePressure"
@@ -242,7 +242,7 @@
               aria-hidden="true"
               :hidden="!global.disabled"
             ></span>
-            &nbsp;{{ t('push_common.run_push_pressure_test') }}
+            &nbsp;Run push pressure test
           </button>
         </div>
       </div>
@@ -252,7 +252,6 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { validateCurrentForm, logError } from '@mp-se/espframework-ui-components'
 import { httpGetUrlOptions, httpHeaderOptions } from '@/modules/utils'
 import { gravityHttpGetFormatOptions } from '@/modules/gravityFormatOptions'
@@ -260,7 +259,6 @@ import { pressureHttpGetFormatOptions } from '@/modules/pressureFormatOptions'
 import { applyTemplate } from '@/modules/formatTemplate'
 import { global, status, config } from '@/modules/pinia'
 
-const { t } = useI18n()
 const gravityRender = ref('')
 const pressureRender = ref('')
 
@@ -275,7 +273,7 @@ const runTestGravity = async () => {
     await config.runPushTest(data)
   } catch (error) {
     logError('PushHttpGetView.runTestGravity()', error)
-    global.messageError = t('push_common.err_start_push_test')
+    global.messageError = 'Failed to start push test'
   }
 }
 
@@ -286,7 +284,7 @@ const runTestPressure = async () => {
     await config.runPushTest(data)
   } catch (error) {
     logError('PushHttpGetView.runTestPressure()', error)
-    global.messageError = t('push_common.err_start_push_test')
+    global.messageError = 'Failed to start push test'
   }
 }
 

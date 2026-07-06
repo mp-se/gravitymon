@@ -20,12 +20,7 @@
 -->
 <template>
   <BsMessage :dismissable="false" alert="danger">
-    {{ t('not_found.message', { path: $route.path }) }}
+    Page not found! <span class="fw-bold">{{ this.$route.path }}</span> is not a valid URL for this
+    application!
   </BsMessage>
 </template>
-
-<script setup>
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
-</script>

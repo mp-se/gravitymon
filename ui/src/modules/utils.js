@@ -21,7 +21,6 @@
  */
 import { ref } from 'vue'
 import { config } from '@/modules/pinia'
-import i18n from '@/modules/i18n'
 
 export const httpHeaderOptions = ref([
   { label: 'JSON data', value: 'Content-Type: application/json' },
@@ -68,11 +67,4 @@ export function isGyroCalibrated() {
   const g = config.gyro_calibration_data
   if (g.ax + g.ay + g.az + g.gx + g.gy + g.gz == 0) return false
   return true
-}
-
-// Translates a firmware ESPFWK_WEB_ERR message code, falling back to the
-// device's raw (English) message text for codes not yet in locales/*.json.
-export function resolveMessage(code, fallbackText) {
-  const { t, te } = i18n.global
-  return code && te(`messages.${code}`) ? t(`messages.${code}`) : fallbackText
 }

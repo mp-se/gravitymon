@@ -28,9 +28,9 @@
           <BsFileUpload
             name="upload"
             id="upload"
-            :label="t('fragment_advanced_files.select_file_label')"
+            label="Select firmware file"
             accept=""
-            :help="t('fragment_advanced_files.select_file_help')"
+            help="Choose a file to upload to the file system"
             :disabled="global.disabled"
             @change="onFileChange"
           >
@@ -44,7 +44,7 @@
             id="upload-btn"
             value="upload"
             data-bs-toggle="tooltip"
-            :title="t('fragment_advanced_files.update_title')"
+            title="Update the device with the selected firmware"
             :disabled="global.disabled || !hasFileSelected"
           >
             <span
@@ -53,7 +53,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;{{ t('fragment_advanced_files.upload_button') }}
+            &nbsp;Upload file
           </button>
         </div>
         <div v-if="progress > 0" class="col-md-12">
@@ -107,7 +107,7 @@
       :callback="confirmDeleteCallback"
       :message="confirmDeleteMessage"
       :id="modalId"
-      :title="t('fragment_advanced_files.confirm_delete_title')"
+      title="Delete file"
       :disabled="global.disabled"
     />
   </div>
@@ -115,12 +115,9 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { global } from '@/modules/pinia'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 import { logDebug, logError } from '@mp-se/espframework-ui-components'
-
-const { t } = useI18n()
 
 const props = defineProps({
   type: {
@@ -142,19 +139,15 @@ const confirmDeleteFile = ref(null)
 
 // Computed properties for dynamic content based on type
 const uploadTitle = computed(() => {
-  return t('fragment_advanced_files.upload_title')
+  return 'Upload files to file system'
 })
 
 const deleteTitle = computed(() => {
-  return props.type === 'sd'
-    ? t('fragment_advanced_files.delete_title_sd')
-    : t('fragment_advanced_files.delete_title_fs')
+  return props.type === 'sd' ? 'Delete files from SD file system' : 'Delete files from file system'
 })
 
 const listButtonText = computed(() => {
-  return props.type === 'sd'
-    ? t('fragment_advanced_files.list_button_sd')
-    : t('fragment_advanced_files.list_button_fs')
+  return props.type === 'sd' ? 'Delete SD files' : 'List files'
 })
 
 const modalId = computed(() => {
@@ -204,7 +197,7 @@ const confirmDeleteCallback = async (result) => {
 }
 
 const deleteFile = (f) => {
-  confirmDeleteMessage.value = t('fragment_advanced_files.confirm_delete_message', { file: f })
+  confirmDeleteMessage.value = 'Do you really want to delete file ' + f
   confirmDeleteFile.value = f
   document.getElementById(modalId.value).click()
 }
@@ -248,7 +241,7 @@ async function upload() {
   const fileElement = document.getElementById('upload')
 
   if (fileElement.files.length === 0) {
-    global.messageError = t('fragment_advanced_files.err_no_file')
+    global.messageError = 'You need to select one file with firmware to upload'
     return
   }
 
@@ -267,14 +260,14 @@ async function upload() {
 
     progress.value = 100
     if (res && res.success) {
-      global.messageSuccess = t('fragment_advanced_files.upload_success')
+      global.messageSuccess = 'File upload completed!'
       global.messageError = ''
     } else {
-      global.messageError = t('fragment_advanced_files.upload_failed', { status: res && res.status })
+      global.messageError = `File upload failed: ${res && res.status}`
     }
   } catch (err) {
     logError('AdvancedFilesFragment.upload()', err)
-    global.messageError = t('fragment_advanced_files.upload_error')
+    global.messageError = 'File upload failed!'
   } finally {
     global.disabled = false
     filesDelete.value = []

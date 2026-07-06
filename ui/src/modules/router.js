@@ -19,14 +19,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-import { computed } from 'vue'
+import { ref } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import * as badge from '@/modules/badge'
 import { global } from '@/modules/pinia'
-import i18n from '@/modules/i18n'
-
-const { t } = i18n.global
 
 import HomeView from '@/views/HomeView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
@@ -186,134 +183,134 @@ router.beforeEach(() => {
   return true
 })
 
-const items = computed(() => [
+const items = ref([
   {
-    label: t('router.home'),
+    label: 'Home',
     icon: 'IconHome',
     path: '/',
     subs: []
   },
   {
-    label: t('router.device'),
+    label: 'Device',
     icon: 'IconCpu',
     path: '/device',
     badge: badge.deviceBadge,
     subs: [
       {
-        label: t('router.device_settings'),
+        label: 'Settings',
         badge: badge.deviceSettingBadge,
         path: '/device/settings'
       },
       {
-        label: t('router.device_hardware'),
+        label: 'Hardware',
         badge: badge.deviceHardwareBadge,
         path: '/device/hardware'
       },
       {
-        label: t('router.device_gyro'),
+        label: 'Gyro',
         badge: badge.deviceGyroBadge,
         path: '/device/gyro'
       },
       {
-        label: t('router.device_wifi'),
+        label: 'Wifi',
         badge: badge.deviceWifiBadge,
         path: '/device/wifi'
       }
     ]
   },
   {
-    label: t('router.gravity'),
+    label: 'Gravity',
     icon: 'IconGraphUpArrow',
     path: '/gravity',
     badge: badge.gravityBadge,
     subs: [
       {
-        label: t('router.gravity_settings'),
+        label: 'Settings',
         badge: badge.gravitySettingBadge,
         path: '/gravity/settings'
       },
       {
-        label: t('router.gravity_formula'),
+        label: 'Formula',
         badge: badge.gravityFormulaBadge,
         path: '/gravity/formula'
       }
     ]
   },
   {
-    label: t('router.push_targets'),
+    label: 'Push targets',
     icon: 'IconCloudUpArrow',
     path: '/push',
     badge: badge.pushBadge,
     subs: [
       {
-        label: t('router.push_settings'),
+        label: 'Settings',
         badge: badge.pushSettingBadge,
         path: '/push/settings'
       },
       {
-        label: t('router.push_wifi_direct'),
+        label: 'WiFi Direct',
         badge: badge.pushWifiDirectBadge,
         path: '/push/wifi-direct'
       },
       {
-        label: t('router.push_http_post1'),
+        label: 'HTTP Post 1',
         badge: badge.pushHttpPost1Badge,
         path: '/push/http-post1'
       },
       {
-        label: t('router.push_http_post2'),
+        label: 'HTTP Post 2',
         badge: badge.pushHttpPost2Badge,
         path: '/push/http-post2'
       },
       {
-        label: t('router.push_http_get'),
+        label: 'HTTP Get',
         badge: badge.pushHttpGetBadge,
         path: '/push/http-get'
       },
       {
-        label: t('router.push_influxdb'),
+        label: 'Influxdb v2',
         badge: badge.pushInfluxdb2Badge,
         path: '/push/influxdb'
       },
       {
-        label: t('router.push_mqtt'),
+        label: 'MQTT',
         badge: badge.pushMqttBadge,
         path: '/push/mqtt'
       },
       {
-        label: t('router.push_bluetooth'),
+        label: 'Bluetooth',
         badge: badge.pushBluetoothBadge,
         path: '/push/bluetooth'
       }
     ]
   },
   {
-    label: t('router.other'),
+    label: 'Other',
     icon: 'IconTools',
     path: '/other',
     subs: [
       {
-        label: t('router.other_serial'),
+        label: 'Serial console',
         path: '/other/serial'
       },
       {
-        label: t('router.other_backup'),
+        label: 'Backup & Restore',
         path: '/other/backup'
       },
       {
-        label: t('router.other_firmware'),
+        label: 'Firmware update',
         path: '/other/firmware'
       },
       {
-        label: t('router.other_support'),
+        label: 'Support',
         path: '/other/support'
       },
       {
-        label: t('router.other_tools'),
+        label: 'Tools',
         path: '/other/tools'
       },
       {
-        label: t('router.other_about'),
+        label: 'About',
         path: '/other/about'
       }
     ]

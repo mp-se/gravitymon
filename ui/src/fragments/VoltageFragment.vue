@@ -19,18 +19,18 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 <template>
-  <h5>{{ t('fragment_voltage.title') }}</h5>
+  <h5>Calculate a new voltage factor</h5>
   <div class="row">
     <div class="col-md-4">
       <BsInputNumber
         v-model="measuredVoltage"
-        :label="t('fragment_voltage.measured_label')"
+        label="Measured voltage"
         min="0"
         max="6"
         step=".01"
         width="4"
         unit="V"
-        :help="t('fragment_voltage.measured_help')"
+        help="Enter the measured voltage on the device"
         :disabled="global.disabled"
       >
       </BsInputNumber>
@@ -39,18 +39,18 @@
       <BsInputReadonly
         v-model="status.battery"
         unit="V"
-        :label="t('fragment_voltage.last_label')"
+        label="Last voltage reading"
         width="4"
-        :help="t('fragment_voltage.last_help')"
+        help="Last measured battery voltage"
         :disabled="global.disabled"
       ></BsInputReadonly>
     </div>
     <div class="col-md-4">
       <BsInputReadonly
         v-model="config.voltage_factor"
-        :label="t('fragment_voltage.current_label')"
+        label="Current voltage factor"
         width="4"
-        :help="t('fragment_voltage.current_help')"
+        help="Current voltage factor"
         :disabled="global.disabled"
       ></BsInputReadonly>
     </div>
@@ -71,7 +71,7 @@
           aria-hidden="true"
           v-show="global.disabled"
         ></span>
-        &nbsp;{{ t('fragment_voltage.calculate_button') }}
+        &nbsp;Calculate factor
       </button>
     </div>
   </div>
@@ -79,11 +79,9 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { global, config, status, saveConfigState } from '@/modules/pinia'
 import { logDebug } from '@mp-se/espframework-ui-components'
 
-const { t } = useI18n()
 const measuredVoltage = ref(0)
 
 const calculateFactor = () => {
@@ -93,7 +91,7 @@ const calculateFactor = () => {
   var mv = parseFloat(measuredVoltage.value)
 
   if (isNaN(mv)) {
-    global.messageError = t('fragment_voltage.err_invalid')
+    global.messageError = 'Not a valid measurement'
     return
   }
 
@@ -107,7 +105,7 @@ const calculateFactor = () => {
     setTimeout(async () => {
       const s2 = await status.load()
       logDebug('VoltageFragment.calculateFactor()', s2, status.battery)
-      global.messageInfo = t('fragment_voltage.info_new_factor')
+      global.messageInfo = 'New factor applied, check if the current battery reading is correct'
       global.disabled = false
     }, 1000)
   })()

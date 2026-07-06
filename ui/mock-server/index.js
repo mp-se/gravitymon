@@ -82,8 +82,7 @@ app.get('/api/calibrate/status', (req, res) => {
     data = {
       status: false,
       success: true,
-      message: "Gyro calibration completed...",
-      message_code: 'CALIBRATION_COMPLETE'
+      message: "Gyro calibration completed..."
     }
   }
   res.type('application/json')
@@ -113,8 +112,7 @@ app.post('/api/push', (req, res) => {
   setTimeout(() => { testRunning = false }, 5000)
   var data = {
     success: true,
-    message: "Test scheduled.",
-    message_code: 'TEST_PUSH_SCHEDULED'
+    message: "Test scheduled."
   }
   res.type('application/json')
   res.send(data)
@@ -134,15 +132,13 @@ app.get('/api/push/status', (req, res) => {
     data = {
       status: testRunning,
       success: false,
-      message: "Push test running...",
-      message_code: 'TEST_PUSH_RUNNING'
+      message: "Push test running..."
     }
   } else {
     data = {
       status: false,
       success: true,
       message: "Push test completed...",
-      message_code: 'TEST_PUSH_COMPLETE',
       push_return_code: 200,
       push_enabled: true
     }
@@ -217,7 +213,6 @@ app.post('/api/format', (req, res) => {
   var data = {
     success: true,
     message: "Format stored",
-    message_code: 'TEMPLATE_STORED'
   }
   res.type('application/json')
   res.send(data)

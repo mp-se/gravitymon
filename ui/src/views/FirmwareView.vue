@@ -21,24 +21,24 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">{{ t('firmware.title') }}</p>
+    <p class="h3">Firmware Upload</p>
     <hr />
 
     <div class="row">
       <form @submit.prevent="upload">
         <div style="col-md-12">
           <p>
-            {{ t('firmware.select_info') }}
+            Selet the firmware file that matches your device. Platform:
             <span class="badge bg-secondary">{{ global.platform }}</span>
             <template v-if="global.app_ver && global.app_build"
-              >{{ t('firmware.version_label') }}<span class="badge bg-secondary">{{ global.app_ver }}</span> ({{
+              >, Version: <span class="badge bg-secondary">{{ global.app_ver }}</span> ({{
                 global.app_build
               }})
             </template>
             <template v-if="global.hardware"
-              >{{ t('firmware.hardware_label') }}<span class="badge bg-secondary">{{ global.hardware }}</span></template
+              >, Hardware: <span class="badge bg-secondary">{{ global.hardware }}</span></template
             ><template v-if="global.firmware_file"
-              >{{ t('firmware.filename_label') }}
+              >, Filename:
               <span class="badge bg-secondary">{{ global.firmware_file }}</span></template
             >
           </p>
@@ -48,9 +48,9 @@
           <BsFileUpload
             name="upload"
             id="upload"
-            :label="t('firmware.select_file_label')"
+            label="Select firmware file"
             accept=".bin"
-            :help="t('firmware.select_file_help')"
+            help="Choose the firmware file (.bin) that will be used to update the device. The upload button will be enabled once a file is selected."
             :disabled="global.disabled"
             @change="onFileChange"
           >
@@ -67,8 +67,8 @@
             data-bs-toggle="tooltip"
             :title="
               !hasFileSelected
-                ? t('firmware.select_first_title')
-                : t('firmware.update_title')
+                ? 'Please select a firmware file first'
+                : 'Update the device with the selected firmware'
             "
             :disabled="global.disabled || !hasFileSelected"
           >
@@ -78,7 +78,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;{{ t('firmware.flash_button') }}
+            &nbsp;Flash firmware
           </button>
         </div>
 
@@ -93,12 +93,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { global } from '@/modules/pinia'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 import { logDebug, logError } from '@mp-se/espframework-ui-components'
 
-const { t } = useI18n()
 const progress = ref(0)
 const hasFileSelected = ref(false)
 
@@ -111,7 +109,7 @@ async function upload() {
   const fileElement = document.getElementById('upload')
 
   if (fileElement.files.length === 0) {
-    global.messageError = t('firmware.err_no_file')
+    global.messageError = 'You need to select one file with firmware to upload'
   } else {
     global.disabled = true
     logDebug('FirmwareView.upload()', 'Selected file: ' + fileElement.files[0].name)
@@ -128,7 +126,8 @@ async function upload() {
       })
       progress.value = 100
       if (res.success) {
-        global.messageSuccess = t('firmware.upload_success')
+        global.messageSuccess =
+          'File upload completed, waiting for device to restart before doing refresh!'
         global.messageError = ''
 
         // Use a more reliable redirect with timeout cleanup
@@ -151,10 +150,10 @@ async function upload() {
           { once: true }
         )
       } else {
-        global.messageError = t('firmware.upload_failed', { status: res.status })
+        global.messageError = `Upload failed: ${res.status}`
       }
     } catch (err) {
-      global.messageError = t('firmware.upload_error', { error: err.message || err })
+      global.messageError = `Upload error: ${err.message || err}`
     } finally {
       global.disabled = false
     }

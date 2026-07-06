@@ -26,7 +26,8 @@
 
   <div class="row">
     <div class="form-text">
-      {{ t('fragment_formula_table.intro') }}
+      Below is a list of calculated values based on the formula options, devaition from input value
+      is also shown.
     </div>
 
     <table class="table table-striped">
@@ -64,11 +65,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { config } from '@/modules/pinia'
 import { calculate } from '@/modules/formula'
-
-const { t } = useI18n()
 
 /**
  * Hold results from regression library.

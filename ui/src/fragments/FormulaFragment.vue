@@ -25,18 +25,18 @@
   </div>
 
   <div class="row">
-    <div class="form-text">{{ t('fragment_formula.intro') }}</div>
+    <div class="form-text">Below is a list of the generated formulas.</div>
   </div>
 
   <div class="row">
     <div class="col-md-12" v-for="(i, index) in expressions" :key="index">
       <BsInputReadonly
-        :label="t('fragment_formula.order_label', { index })"
+        :label="'Formula order ' + index"
         v-model="expressions[index]"
         v-if="expressions[index] != ''"
       ></BsInputReadonly>
       <BsInputReadonly
-        :label="t('fragment_formula.order_label', { index })"
+        :label="'Formula order ' + index"
         v-model="rejected"
         v-if="expressions[index] == ''"
       ></BsInputReadonly>
@@ -46,9 +46,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
 
 /**
  * Hold results from regression library.
@@ -57,5 +54,5 @@ const expressions = defineModel('expressions', {
   type: Array,
   default: () => []
 }) // Hold results from regression library
-const rejected = ref(t('fragment_formula.rejected'))
+const rejected = ref('Formula rejected')
 </script>

@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">{{ t('tools.title') }}</p>
+    <p class="h3">Tools</p>
     <hr />
 
     <template v-if="global.ui.enableVoltageFragment">
@@ -54,7 +54,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;{{ t('tools.enable_advanced') }}
+          &nbsp;Enable Advanced
         </button>
       </div>
     </div>
@@ -72,10 +72,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { global } from '@/modules/pinia'
 
-const { t } = useI18n()
 const hideAdvanced = ref(true)
 
 function enableAdvanced() {

@@ -29,7 +29,7 @@
         message=""
         alert="danger"
       >
-        {{ t('home.no_push_targets') }}
+        No remote services are active. Check your push settings and enable at least one service.
       </BsMessage>
 
       <BsMessage
@@ -38,7 +38,7 @@
         message=""
         alert="danger"
       >
-        {{ t('home.no_gyro') }}
+        No gyro is detected. Try to reboot / power-off. If this persists, check for hardware issues.
       </BsMessage>
     </template>
 
@@ -52,7 +52,7 @@
             status.gravity !== undefined
           "
         >
-          <BsCard :header="t('home.measurement')" color="info" :title="t('home.gravity')">
+          <BsCard header="Measurement" color="info" title="Gravity">
             <p class="text-center">
               {{ status.gravity }}
               {{ status.gravity_unit === 'G' ? ' SG' : ' P' }}
@@ -64,14 +64,14 @@
           class="col-md-4"
           v-if="!status.self_check.gravity_formula && status.wifi_setup == false"
         >
-          <BsCard :header="t('home.measurement')" :title="t('home.error')" :iserr="true" icon="bi-x-circle">
+          <BsCard header="Measurement" title="Error" :iserr="true" icon="bi-x-circle">
             <p class="text-center">
-              {{ t('home.missing_formula') }}
+              Missing
               <router-link
                 class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                 to="/gravity/formula"
-                >{{ t('home.missing_formula_link') }}</router-link
-              >{{ t('home.missing_formula_suffix') }}
+                >formula</router-link
+              >, unable to calculate gravity
             </p>
           </BsCard>
         </div>
@@ -85,9 +85,9 @@
             status.angle !== undefined
           "
         >
-          <BsCard :header="t('home.measurement')" color="info" :title="t('home.angle')">
+          <BsCard header="Measurement" color="info" title="Angle">
             <p class="text-center">
-              <template v-if="status.self_check.gyro_moving"> {{ t('home.gyro_moving') }} </template>
+              <template v-if="status.self_check.gyro_moving"> Gyro is moving </template>
               <template v-else>
                 {{ status.angle }}
               </template>
@@ -103,7 +103,7 @@
             status.angle !== undefined
           "
         >
-          <BsCard :header="t('home.measurement')" color="info" :title="t('home.average_angle')">
+          <BsCard header="Measurement" color="info" title="Average Angle">
             <p class="text-center">
               {{ angle.average }} ({{ angle.count }})
               <button
@@ -112,7 +112,7 @@
                 class="btn btn-outline-info btn-sm"
                 style="font-size: 0.7rem"
               >
-                {{ t('home.clear') }}
+                Clear
               </button>
             </p>
           </BsCard>
@@ -121,15 +121,15 @@
           class="col-md-4"
           v-if="!status.self_check.gyro_calibration && status.wifi_setup == false"
         >
-          <BsCard :header="t('home.measurement')" :title="t('home.error')" :iserr="true" icon="bi-x-circle">
+          <BsCard header="Measurement" title="Error" :iserr="true" icon="bi-x-circle">
             <p class="text-center">
-              {{ t('home.not_calibrated') }}
+              Gyro has not been
               <router-link
                 class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                 to="/device/gyro"
-                >{{ t('home.not_calibrated_link') }}</router-link
+                >calibrated</router-link
               >
-              {{ t('home.not_calibrated_suffix') }}
+              at 90 degrees
             </p>
           </BsCard>
         </div>
@@ -142,7 +142,7 @@
             status.temp !== undefined
           "
         >
-          <BsCard :header="t('home.measurement')" color="info" :title="t('home.temperature')">
+          <BsCard header="Measurement" color="info" title="Temperature">
             <p class="text-center">{{ status.temp }} °{{ status.temp_unit }}</p>
           </BsCard>
         </div>
@@ -151,8 +151,8 @@
           class="col-md-4"
           v-if="!status.self_check.temp_connected && status.wifi_setup == false"
         >
-          <BsCard :header="t('home.measurement')" :title="t('home.error')" :iserr="true" icon="bi-x-circle">
-            <p class="text-center">{{ t('home.no_temp_sensor') }}</p>
+          <BsCard header="Measurement" title="Error" :iserr="true" icon="bi-x-circle">
+            <p class="text-center">No temperature sensor detected</p>
           </BsCard>
         </div>
 
@@ -160,24 +160,24 @@
           class="col-md-4"
           v-if="status.self_check.battery_level && status.battery !== undefined"
         >
-          <BsCard :header="t('home.measurement')" color="info" :title="t('home.battery')">
+          <BsCard header="Measurement" color="info" title="Battery">
             <p class="text-center">{{ status.battery }} V ({{ batteryPercentage }})</p>
           </BsCard>
         </div>
         <div class="col-md-4" v-if="!status.self_check.battery_level">
-          <BsCard :header="t('home.measurement')" :title="t('home.error')" :iserr="true" icon="bi-x-circle">
-            <p class="text-center">{{ t('home.battery_invalid') }}</p>
+          <BsCard header="Measurement" title="Error" :iserr="true" icon="bi-x-circle">
+            <p class="text-center">Battery level not valid</p>
           </BsCard>
         </div>
 
         <div class="col-md-4">
-          <BsCard :header="t('home.device')" :title="t('home.wifi')">
+          <BsCard header="Device" title="WIFI">
             <p class="text-center">{{ status.rssi }} dBm - {{ status.wifi_ssid }}</p>
           </BsCard>
         </div>
 
         <div class="col-md-4">
-          <BsCard :header="t('home.device')" :title="t('home.ip_address')">
+          <BsCard header="Device" title="IP Address">
             <p class="text-center">
               {{ status.ip }}
             </p>
@@ -185,17 +185,17 @@
         </div>
 
         <div class="col-md-4">
-          <BsCard :header="t('home.device')" :title="t('home.memory')">
+          <BsCard header="Device" title="Memory">
             <p class="text-center">
-              {{ t('home.memory_text', { free: status.free_heap, total: status.total_heap }) }}
+              Free: {{ status.free_heap }} kb, Total: {{ status.total_heap }} kb
             </p>
           </BsCard>
         </div>
 
         <div class="col-md-4" v-if="newVersion.new">
-          <BsCard :header="t('home.device')" :title="t('home.upgrade_available')">
+          <BsCard header="Device" title="Upgrade available">
             <p class="text-center">
-              {{ t('home.upgrade_available_text', { version: newVersion.ver }) }}
+              {{ newVersion.ver }} available on
               <a
                 class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                 href="https://github.com/mp-se/gravitymon/releases"
@@ -207,48 +207,41 @@
         </div>
 
         <div class="col-md-4">
-          <BsCard :header="t('home.device')" :title="t('home.software_version')">
+          <BsCard header="Device" title="Software version">
             <p class="text-center">
-              {{
-                t('home.software_version_text', {
-                  appVer: global.app_ver,
-                  appBuild: global.app_build,
-                  uiVersion: global.uiVersion,
-                  uiBuild: global.uiBuild
-                })
-              }}
+              Firmware: {{ global.app_ver }} ({{ global.app_build }}) UI: {{ global.uiVersion }} ({{
+                global.uiBuild
+              }})
             </p>
           </BsCard>
         </div>
 
         <div class="col-md-4">
-          <BsCard :header="t('home.device')" :title="t('home.platform')">
+          <BsCard header="Device" title="Platform">
             <p class="text-center">
-              {{ t('home.platform_text') }}<span class="badge bg-secondary">{{ global.platform }}</span
-              >{{ t('home.variant_text') }}
+              Platform: <span class="badge bg-secondary">{{ global.platform }}</span> Variant:
               <span class="badge bg-secondary">{{ global.hardware }}</span>
             </p>
           </BsCard>
         </div>
 
         <div class="col-md-4" v-if="status.wifi_setup == false">
-          <BsCard :header="t('home.device')" :title="t('home.hardware')">
+          <BsCard header="Device" title="Hardware">
             <p class="text-center">
-              {{ t('home.hardware_board_text') }}<span class="badge bg-secondary">{{ global.board }}</span
-              >{{ t('home.hardware_gyro_text') }}
+              Board: <span class="badge bg-secondary">{{ global.board }}</span> Gyro:
               <span class="badge bg-secondary">{{ status.gyro_family }}</span>
             </p>
           </BsCard>
         </div>
 
         <div class="col-md-4">
-          <BsCard :header="t('home.device')" :title="t('home.id')">
+          <BsCard header="Device" title="ID">
             <p class="text-center">{{ status.id }}</p>
           </BsCard>
         </div>
 
         <div class="col-md-4">
-          <BsCard :header="t('home.device')" :title="t('home.force_config_mode')">
+          <BsCard header="Device" title="Force config mode">
             <div class="d-flex justify-content-center">
               <div class="form-check form-switch">
                 <input
@@ -277,9 +270,7 @@ import { status, global, config } from '@/modules/pinia'
 import { logDebug, logError, logInfo } from '@mp-se/espframework-ui-components'
 import { useTimers, useFetch } from '@mp-se/espframework-ui-components'
 import { storeToRefs } from 'pinia'
-import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
 const { createInterval, createTimeout } = useTimers()
 const { managedFetch } = useFetch()
 

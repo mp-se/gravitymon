@@ -21,11 +21,12 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">{{ t('support.title') }}</p>
+    <p class="h3">Links and device logs</p>
     <hr />
     <div class="row">
       <p>
-        {{ t('support.intro') }}
+        If you need support, want to discuss the software or request any new features you can do
+        that on github.com or homebrewtalk.com.
       </p>
     </div>
     <div class="row">
@@ -34,7 +35,7 @@
           class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
           href="https://github.com/mp-se/gravitymon"
           target="_blank"
-          >{{ t('support.link_issues') }}</a
+          >Report issues on github.com</a
         >
       </div>
       <div class="col-md-4">
@@ -42,7 +43,7 @@
           class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
           href="https://www.homebrewtalk.com/"
           target="_blank"
-          >{{ t('support.link_discuss') }}</a
+          >Discuss on homebrewtalk.com</a
         >
       </div>
       <div class="col-md-4">
@@ -50,7 +51,7 @@
           class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
           href="https://www.gravitymon.com/"
           target="_blank"
-          >{{ t('support.link_docs') }}</a
+          >Read docs on gravitymon.com</a
         >
       </div>
     </div>
@@ -59,14 +60,14 @@
     <div class="row">
       <div class="col">
         <p>
-          {{ t('support.platform_label') }}
+          Platform:
           <span class="badge bg-secondary">{{ global.platform }}</span>
-          {{ t('support.gyro_label') }}
+          Gyro:
           <span class="badge bg-secondary">{{ status.gyro_family }}</span>
-          {{ t('support.firmware_label') }}
+          Firmware:
           <span class="badge bg-secondary">{{ global.app_ver }} ({{ global.app_build }})</span>
-          {{ t('support.hardware_label') }}
-          <span class="badge bg-secondary">{{ global.hardware }}</span> {{ t('support.ui_label') }}
+          Hardware:
+          <span class="badge bg-secondary">{{ global.hardware }}</span> User interface:
           <span class="badge bg-secondary">{{ global.uiVersion }} ({{ global.uiBuild }})</span>
         </p>
       </div>
@@ -74,21 +75,19 @@
     <div class="row">
       <div class="col">
         <p>
-          {{ t('support.bluetooth_label') }}
+          Bluetooth:
+          <span class="badge bg-secondary">{{ global.feature.ble ? 'Enabled' : 'Disabled' }}</span>
+          Filter:
           <span class="badge bg-secondary">{{
-            global.feature.ble ? t('support.enabled') : t('support.disabled')
+            global.feature.filter ? 'Enabled' : 'Disabled'
           }}</span>
-          {{ t('support.filter_label') }}
+          Velocity:
           <span class="badge bg-secondary">{{
-            global.feature.filter ? t('support.enabled') : t('support.disabled')
+            global.feature.velocity ? 'Enabled' : 'Disabled'
           }}</span>
-          {{ t('support.velocity_label') }}
+          Charging:
           <span class="badge bg-secondary">{{
-            global.feature.velocity ? t('support.enabled') : t('support.disabled')
-          }}</span>
-          {{ t('support.charging_label') }}
-          <span class="badge bg-secondary">{{
-            global.feature.charging ? t('support.enabled') : t('support.disabled')
+            global.feature.charging ? 'Enabled' : 'Disabled'
           }}</span>
         </p>
       </div>
@@ -104,7 +103,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;{{ t('support.view_logs') }}</button
+          &nbsp;View device logs</button
         >&nbsp;
 
         <button
@@ -119,7 +118,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;{{ t('support.erase_logs') }}</button
+          &nbsp;Erase device logs</button
         >&nbsp;
 
         <button
@@ -134,7 +133,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;{{ t('support.hardware_scan') }}</button
+          &nbsp;Hardware scan</button
         >&nbsp;
 
         <button
@@ -149,7 +148,7 @@
             aria-hidden="true"
             v-show="global.disabled"
           ></span>
-          &nbsp;{{ t('support.toggle_help') }}</button
+          &nbsp;Toggle error help</button
         >&nbsp;
 
         <template v-if="status.ispindel_config">
@@ -165,7 +164,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;{{ t('support.erase_ispindel') }}
+            &nbsp;Erase iSpindel config
           </button>
         </template>
       </div>
@@ -180,7 +179,7 @@
       <div class="col">
         <pre>{{ logData }}</pre>
       </div>
-      <div class="form-text">{{ t('support.log_hint') }}</div>
+      <div class="form-text">Starts with the latest log entry first.</div>
     </div>
 
     <div class="row" v-if="showHelp">
@@ -236,12 +235,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { status, config, global } from '@/modules/pinia'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 import { logDebug } from '@mp-se/espframework-ui-components'
 
-const { t } = useI18n()
 const logData = ref('')
 const showHelp = ref(false)
 
@@ -279,7 +276,7 @@ async function removeLogs() {
   logData.value = ''
   const r1 = await removeLog('/error2.log')
   const r2 = await removeLog('/error.log')
-  if (r1 && r2) global.messageSuccess = t('support.logs_deleted')
+  if (r1 && r2) global.messageSuccess = 'Log files are deleted'
   global.disabled = false
 }
 
@@ -289,7 +286,7 @@ async function removeLegacy() {
   logData.value = ''
   const r1 = await removeLog('/config.json')
   const r2 = await removeLog('/gravitymon.json')
-  if (r1 && r2) global.messageSuccess = t('support.old_config_deleted')
+  if (r1 && r2) global.messageSuccess = 'Old configuration files are deleted'
   global.disabled = false
 }
 

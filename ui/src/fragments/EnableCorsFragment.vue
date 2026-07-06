@@ -19,7 +19,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 <template>
-  <h5>{{ t('fragment_enable_cors.title') }}</h5>
+  <h5>Developer settings</h5>
   <div class="row gy-4">
     <div class="col-md-3">
       <button
@@ -34,19 +34,16 @@
           aria-hidden="true"
           v-show="global.disabled"
         ></span>
-        &nbsp;{{ t('fragment_enable_cors.enable_button') }}</button
+        &nbsp;Enable CORS</button
       >&nbsp;
     </div>
   </div>
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
 import { global } from '@/modules/pinia'
 import { logInfo, logError } from '@mp-se/espframework-ui-components'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
-
-const { t } = useI18n()
 
 const enableCors = async () => {
   try {
@@ -60,14 +57,14 @@ const enableCors = async () => {
     try {
       await http.postJson('api/config', data)
       logInfo('EnableCorsFragment.enableCors()', 'Sending /api/config completed')
-      global.messageSuccess = t('fragment_enable_cors.success')
+      global.messageSuccess = 'CORS enabled in configuration, please reboot to take effect.'
     } catch (err) {
       logError('EnableCorsFragment.enableCors()', 'Sending /api/config failed', err)
-      global.messageError = t('fragment_enable_cors.err_failed')
+      global.messageError = 'Failed to enable CORS.'
     }
   } catch (err) {
     logError('EnableCorsFragment.enableCors()', 'Error enabling CORS:', err)
-    global.messageError = t('fragment_enable_cors.err_failed_detail', { error: err.message || err })
+    global.messageError = 'Failed to enable CORS: ' + (err.message || err)
   } finally {
     global.disabled = false
   }

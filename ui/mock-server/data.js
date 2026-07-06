@@ -9,7 +9,6 @@ export var configData = {
   id: '7376ef',
   mdns: 'gravmon3',
   temp_unit: 'C',
-  locale: 'en',
   // Hardware
   ota_url: 'https://www.gravitymon.com/firmware/',
   storage_sleep: true,

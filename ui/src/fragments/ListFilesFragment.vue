@@ -56,19 +56,14 @@
   </div>
 
   <div v-if="filesystemUsage > 0" class="col-md-12">
-    <h6>{{ t('fragment_list_files.usage_title') }}</h6>
+    <h6>File system usage</h6>
     <BsProgress :progress="filesystemUsage"></BsProgress>
     <p>{{ filesystemUsageText }}</p>
   </div>
 
   <div v-if="fileData !== null" class="col-md-12">
     <h6>
-      {{
-        t('fragment_list_files.contents_title', {
-          format: dataType ? t('fragment_list_files.contents_format', { type: dataType }) : '',
-          size: fileDataSize
-        })
-      }}
+      File contents{{ dataType ? ', format: ' + dataType : '' }}, size {{ fileDataSize }} bytes
     </h6>
     <pre class="border p-2" v-html="fileData"></pre>
   </div>
@@ -76,12 +71,9 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { global } from '@/modules/pinia'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 import { isValidJson, isValidFormData, isValidMqttData } from '@mp-se/espframework-ui-components'
-
-const { t } = useI18n()
 
 const props = defineProps({
   type: {
@@ -103,11 +95,11 @@ const dataType = ref('')
 
 // Computed properties for dynamic defaults based on type
 const title = computed(() => {
-  return props.type === 'sd' ? t('fragment_list_files.title_sd') : t('fragment_list_files.title_fs')
+  return props.type === 'sd' ? 'Explore the SD file system' : 'Explore the file system'
 })
 
 const listButtonText = computed(() => {
-  return props.type === 'sd' ? t('fragment_list_files.list_button_sd') : t('fragment_list_files.list_button_fs')
+  return props.type === 'sd' ? 'List SD files' : 'List files'
 })
 
 const sendSecureDiskRequest = async (data) => {
@@ -345,11 +337,13 @@ const listFilesView = async () => {
       const json = JSON.parse(res.text)
       if (json.used && json.total) {
         filesystemUsage.value = (json.used / json.total) * 100
-        filesystemUsageText.value = t('fragment_list_files.usage_text', {
-          total: formatFileSize(json.total),
-          free: formatFileSize(json.free),
-          used: formatFileSize(json.used)
-        })
+        filesystemUsageText.value =
+          'Total space ' +
+          formatFileSize(json.total) +
+          ', Free space ' +
+          formatFileSize(json.free) +
+          ', Used space ' +
+          formatFileSize(json.used)
       }
 
       if (json.files) {

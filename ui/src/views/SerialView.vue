@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">{{ t('serial.title', { state: connected }) }}</p>
+    <p class="h3">Serial console ({{ connected }})</p>
     <hr />
 
     <pre>{{ serial }}</pre>
@@ -32,7 +32,7 @@
       </div>
       <div class="col-md-12">
         <button @click="clear" type="button" class="btn btn-primary w-2" :disabled="!isConnected">
-          {{ t('serial.clear') }}</button
+          Clear</button
         >&nbsp;
 
         <button
@@ -41,7 +41,7 @@
           class="btn btn-secondary w-2"
           :disabled="isConnected"
         >
-          {{ t('serial.connect') }}
+          Connect
         </button>
       </div>
     </div>
@@ -50,10 +50,8 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 
-const { t } = useI18n()
 const socket = ref(null)
 let socketCloser = null
 const serial = ref('')
@@ -86,7 +84,7 @@ const isConnected = computed(() => {
 })
 
 const connected = computed(() => {
-  return socket.value === null ? t('serial.not_connected') : t('serial.connected')
+  return socket.value === null ? 'Not connected' : 'Connected'
 })
 
 function connect() {

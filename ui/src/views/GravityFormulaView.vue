@@ -21,11 +21,11 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h2">{{ t('gravity_formula.title') }}</p>
+    <p class="h2">Gravity - Formula</p>
     <hr />
 
     <BsMessage v-if="config.gravity_formula === ''" dismissable="true" message="" alert="warning">
-      {{ t('gravity_formula.need_formula') }}
+      You need to enter a formula in order to report gravity
     </BsMessage>
 
     <div
@@ -39,9 +39,9 @@
       <div class="alert alert-info">
         <div class="row">
           <div class="col-md-6">
-            <label class="form-label fs-6 fw-bold">{{ t('gravity_formula.angle_label') }}</label>&nbsp;
+            <label class="form-label fs-6 fw-bold">Angle:</label>&nbsp;
             <label class="form-label fs-6">{{ angle.last }}</label
-            >&nbsp; <label class="form-label fs-6 fw-bold">{{ t('gravity_formula.average_angle_label') }}</label>&nbsp;
+            >&nbsp; <label class="form-label fs-6 fw-bold">Average angle:</label>&nbsp;
             <label class="form-label fs-6">{{ angle.average }} ({{ angle.count }})</label>&nbsp;
 
             <button
@@ -50,7 +50,7 @@
               class="btn btn-outline-primary btn-sm"
               style="font-size: 0.7rem"
             >
-              {{ t('gravity_formula.clear') }}
+              Clear
             </button>
           </div>
         </div>
@@ -63,8 +63,8 @@
           <BsInputText
             v-model="config.gravity_formula"
             maxlength="200"
-            :label="t('gravity_formula.formula_label')"
-            :help="t('gravity_formula.formula_help')"
+            label="Gravity formula"
+            help="Formula used to convert angle to gravity. If created outside Gravitymon the formula needs to be created for Specific Gravity!"
             :badge="badge.gravityFormulaBadge()"
             :disabled="global.disabled"
           >
@@ -73,7 +73,7 @@
 
         <div class="col-md-2">
           <BsDropdown
-            :label="t('gravity_formula.formulas_label')"
+            label="Formulas"
             button="Formula"
             :options="formulaOptions"
             :callback="formulaSelectCallback"
@@ -82,7 +82,7 @@
         </div>
 
         <div class="col-md-12">
-          <label class="form-label fw-bold">{{ t('gravity_formula.data_label') }}</label>
+          <label class="form-label fw-bold">Data for gravity calculation (Angle and Gravity)</label>
         </div>
 
         <template v-for="(data, index) in config.formula_calculation_data" :key="index">
@@ -119,18 +119,19 @@
         </template>
 
         <div class="form-text">
-          {{ t('gravity_formula.data_help') }}
+          Enter the data that is used to create a new formula. The most optimal formula will be
+          selected and also validated towards these values.
         </div>
 
         <div class="col-md-6">
           <BsInputNumber
             v-model="config.formula_max_deviation"
-            :label="t('gravity_formula.max_deviation_label')"
+            label="Max allowed deviation"
             min="0"
             max="10"
             step=".0001"
             width="4"
-            :help="t('gravity_formula.max_deviation_help')"
+            help="When validating the derived formula this is the maximum accepted deviation for the supplied values, use graph below to visually check where there are deviations"
             :disabled="global.disabled"
           ></BsInputNumber>
         </div>
@@ -138,12 +139,12 @@
         <div class="col-md-6">
           <BsInputNumber
             v-model="noDecimals"
-            :label="t('gravity_formula.decimals_label')"
+            label="Number of decimals in formula"
             min="1"
             max="10"
             step="1"
             width="4"
-            :help="t('gravity_formula.decimals_help')"
+            help="How many decimals to try to limit in the formula"
             :disabled="global.disabled"
           ></BsInputNumber>
         </div>
@@ -163,7 +164,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;{{ t('gravity_formula.save') }}</button
+            &nbsp;Save</button
           >&nbsp;
           <button
             @click.prevent="createFormula"
@@ -171,7 +172,7 @@
             class="btn btn-primary w-2"
             :disabled="global.disabled"
           >
-            {{ t('gravity_formula.create_formula') }}</button
+            Create formula</button
           >&nbsp;
           <button
             v-if="global.ui.enableCalibrationRegistration"
@@ -180,7 +181,7 @@
             class="btn btn-secondary w-2"
             :disabled="global.disabled || status.wifi_setup == true"
           >
-            {{ t('gravity_formula.report_calibration') }}</button
+            Report calibration data</button
           >&nbsp;
           <button
             v-if="!hasFormulaCalculationData"
@@ -189,7 +190,7 @@
             class="btn btn-secondary w-2"
             :disabled="global.disabled || status.wifi_setup == true"
           >
-            {{ t('gravity_formula.generate_datapoints') }}</button
+            Generate datapoints based on formula</button
           >&nbsp;
         </div>
       </div>
@@ -198,7 +199,7 @@
         <BsInputRadio
           v-model="formulaOutput"
           :options="formulaOutputOptions"
-          :label="t('gravity_formula.output_format_label')"
+          label="Output format"
           :disabled="global.disabled"
         ></BsInputRadio>
       </div>
@@ -224,7 +225,6 @@
 
 <script setup>
 import { nextTick, ref, onBeforeMount, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { validateCurrentForm, roundVal } from '@mp-se/espframework-ui-components'
 import { global, status, config } from '@/modules/pinia'
 import GravityGraphFragment from '@/fragments/GravityGraphFragment.vue'
@@ -238,7 +238,6 @@ import { validateFormula, calculate } from '@/modules/formula'
 import { gravityToSG } from '@mp-se/espframework-ui-components'
 import { useTimers } from '@mp-se/espframework-ui-components'
 
-const { t } = useI18n()
 const showRegisterModal = ref(false)
 
 const { createInterval } = useTimers()
@@ -250,11 +249,11 @@ const noDecimals = ref(8)
 const formulaOptions = ref([])
 const renderComponent = ref(true)
 const formulaOutput = ref(0)
-const formulaOutputOptions = computed(() => [
-  { label: t('gravity_formula.output_current'), value: 0 },
-  { label: t('gravity_formula.output_formula'), value: 1 },
-  { label: t('gravity_formula.output_table'), value: 2 },
-  { label: t('gravity_formula.output_graph'), value: 3 }
+const formulaOutputOptions = ref([
+  { label: 'Current', value: 0 },
+  { label: 'Formula', value: 1 },
+  { label: 'Table', value: 2 },
+  { label: 'Graph', value: 3 }
 ])
 
 const hasFormulaCalculationData = computed(() => {
@@ -331,7 +330,7 @@ const createFormula = () => {
 
     if (validateFormula(f)) {
       res[i] = f
-      formulaOptions.value.push({ value: f, label: t('fragment_formula.order_label', { index: i }) })
+      formulaOptions.value.push({ value: f, label: 'Formula Order ' + i })
     } else {
       res[i] = ''
     }
@@ -349,7 +348,7 @@ const forceRerender = async () => {
 
 const generateFormulaCalculationData = () => {
   if (!config.gravity_formula) {
-    global.messageWarning = t('gravity_formula.warn_no_formula')
+    global.messageWarning = 'No formula defined. Please enter a formula first.'
     return
   }
 
@@ -365,7 +364,7 @@ const generateFormulaCalculationData = () => {
     config.formula_calculation_data[i].g = roundVal(gravityValue, 4)
   }
 
-  global.messageSuccess = t('gravity_formula.generated_datapoints', { count: numberOfPositions })
+  global.messageSuccess = `Generated ${numberOfPositions} data points for formula validation`
 }
 
 const save = async () => {

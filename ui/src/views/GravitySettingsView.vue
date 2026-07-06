@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h2">{{ t('gravity_settings.title') }}</p>
+    <p class="h2">Gravity - Settings</p>
     <hr />
 
     <form @submit.prevent="save" class="needs-validation" novalidate>
@@ -29,8 +29,8 @@
         <div class="col-md-6">
           <BsInputSwitch
             v-model="config.gravity_temp_adjustment"
-            :label="t('gravity_settings.temp_adjust_label')"
-            :help="t('gravity_settings.temp_adjust_help')"
+            label="Temperature adjust gravity"
+            help="Adjust the calculated gravity based on the current temperature. Assumes that calibration is done using 20C / 68F"
             :disabled="global.disabled"
           ></BsInputSwitch>
         </div>
@@ -38,42 +38,42 @@
           <BsInputNumber
             v-model="config.formula_calibration_temp"
             :unit="'°' + config.temp_unit"
-            :label="t('gravity_settings.cal_temp_label')"
+            label="Gravity calibration temp"
             min="0"
             max="100"
             step=".01"
             width="4"
-            :help="t('gravity_settings.cal_temp_help')"
+            help="Calibration temperature, used in temperatur correction formula, default 20C/68F"
             :disabled="calTempAdj"
           ></BsInputNumber>
         </div>
         <div class="col-md-6">
           <BsInputSwitch
             v-model="config.ignore_low_angles"
-            :label="t('gravity_settings.ignore_low_label')"
-            :help="t('gravity_settings.ignore_low_help')"
+            label="Ignore low angles"
+            help="When active, angles below water will be ignored. Note! Angle must be defined under calibration, first field."
             :disabled="global.disabled"
           ></BsInputSwitch>
         </div>
         <div class="col-md-6">
           <BsInputNumber
             v-model="config.gyro_read_count"
-            :label="t('gravity_settings.gyro_reads_label')"
+            label="Gyro reads"
             min="10"
             max="100"
             width="4"
-            :help="t('gravity_settings.gyro_reads_help')"
+            help="How many times should we read the gyro to get an accurate angle. More reads = better accuracy but higher battery drain"
             :disabled="global.disabled"
           ></BsInputNumber>
         </div>
         <div class="col-md-6">
           <BsInputNumber
             v-model="config.gyro_moving_threashold"
-            :label="t('gravity_settings.gyro_threshold_label')"
+            label="Gyro moving threshold"
             min="50"
             max="1000"
             width="4"
-            :help="t('gravity_settings.gyro_threshold_help')"
+            help="How much deviation between gyro reads are acceptable in order to regard this as a valid angle"
             :disabled="global.disabled"
           ></BsInputNumber>
         </div>
@@ -94,7 +94,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;{{ t('gravity_settings.save') }}
+            &nbsp;Save
           </button>
         </div>
       </div>
@@ -104,11 +104,8 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config } from '@/modules/pinia'
-
-const { t } = useI18n()
 
 const calTempAdj = computed(() => {
   return !config.gravity_temp_adjustment || global.disabled

@@ -147,8 +147,7 @@ export function registerEspFwk(app) {
       var data = {
         status: true,
         success: true,
-        message: 'Device is restarting...',
-        message_code: 'RESTARTING'
+        message: 'Device is restarting...'
       }
       res.type('application/json')
       res.send(data)
@@ -167,8 +166,7 @@ export function registerEspFwk(app) {
     setTimeout(() => {
       var data = {
         success: true,
-        message: 'Factory settings restored',
-        message_code: 'FACTORY_RESET_COMPLETED'
+        message: 'Factory settings restored'
       }
       res.type('application/json')
       res.send(data)
@@ -216,8 +214,7 @@ export function registerEspFwk(app) {
     }
     var data = {
       success: true,
-      message: 'Configuration stored',
-      message_code: 'CONFIG_UPDATED'
+      message: 'Configuration stored'
     }
     res.type('application/json')
     res.send(data)
@@ -238,8 +235,7 @@ export function registerEspFwk(app) {
     }, 8000)
     var data = {
       success: true,
-      message: 'Wifi scan started.',
-      message_code: 'WIFI_SCAN_SCHEDULED'
+      message: 'Wifi scan started.'
     }
     res.type('application/json')
     res.send(data)
@@ -259,8 +255,7 @@ export function registerEspFwk(app) {
       data = {
         status: wifiScanRunning,
         success: false,
-        message: 'Wifi scan running...',
-        message_code: 'WIFI_SCAN_RUNNING'
+        message: 'Wifi scan running...'
       }
     } else {
       data = {

@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">{{ t('device_gyro.title') }}</p>
+    <p class="h3">Device - Gyro</p>
     <hr />
 
     <BsMessage
@@ -30,7 +30,7 @@
       message=""
       alert="warning"
     >
-      {{ t('device_gyro.need_calibration') }}
+      You need to calibrate the gyro at 90 degrees
     </BsMessage>
 
     <form @submit.prevent="save" class="needs-validation" novalidate>
@@ -40,8 +40,8 @@
             <BsInputRadio
               v-model="config.gyro_type"
               :options="gyroOptions"
-              :label="t('device_gyro.gyro_options_label')"
-              :help="t('device_gyro.gyro_options_help')"
+              label="Gyro options"
+              help="Select the gyro type used for this board."
               :disabled="global.disabled"
             ></BsInputRadio>
           </div>
@@ -54,24 +54,24 @@
         <div class="col-md-6">
           <BsInputSwitch
             v-model="config.gyro_filter"
-            :label="t('device_gyro.filter_label')"
-            :help="t('device_gyro.filter_help')"
+            label="Filter gyro data"
+            help="When active the gyro data will be filtered through a lowpass filter to remove noise ans spikes, applies to ESP32"
             :disabled="global.disabled || !global.feature.filter"
           ></BsInputSwitch>
         </div>
         <div class="col-md-6" v-if="!global.isCuckoo">
           <BsInputSwitch
             v-model="config.gyro_swap_xy"
-            :label="t('device_gyro.swap_xy_label')"
+            label="Swap X and Y axis"
             :disabled="global.disabled || config.gyro_type != 2"
-            :help="t('device_gyro.swap_xy_help')"
+            help="Normally the X asis is used for tilt but some boards have a different orientation and use Y axis instead, applies to ICM42670-p"
           ></BsInputSwitch>
         </div>
         <div class="col-md-6">
           <BsInputReadonly
             v-model="calibrationValues"
-            :label="t('device_gyro.calibration_label')"
-            :help="t('device_gyro.calibration_help')"
+            label="Gyro calibration"
+            help="Shows the current gyro calibraton values, applies to MPU-6050/6500"
           ></BsInputReadonly>
         </div>
       </div>
@@ -91,7 +91,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;{{ t('device_gyro.save') }}</button
+            &nbsp;Save</button
           >&nbsp;
 
           <button
@@ -106,7 +106,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;{{ t('device_gyro.restart') }}</button
+            &nbsp;Restart device</button
           >&nbsp;
 
           <template v-if="config.gyro_type == 1">
@@ -122,7 +122,7 @@
                 aria-hidden="true"
                 v-show="global.disabled"
               ></span>
-              &nbsp;{{ t('device_gyro.clear_calibration') }}</button
+              &nbsp;Clear calibration</button
             >&nbsp;
           </template>
 
@@ -144,7 +144,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;{{ t('device_gyro.calibrate_gyro') }}&nbsp;<span
+            &nbsp;Calibrate gyro&nbsp;<span
               v-if="badge.deviceGyroCalibratedBadge()"
               class="badge text-bg-danger rounded-circle"
               >1</span
@@ -164,7 +164,7 @@
                 aria-hidden="true"
                 v-show="global.disabled"
               ></span>
-              &nbsp;{{ t('device_gyro.import_ispindel') }}&nbsp;<span
+              &nbsp;Import iSpindel config&nbsp;<span
                 v-if="badge.deviceMigrateIspindelBadge()"
                 class="badge text-bg-danger rounded-circle"
                 >1</span
@@ -179,7 +179,6 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { isGyroCalibrated } from '@/modules/utils'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config, status } from '@/modules/pinia'
@@ -187,8 +186,6 @@ import * as badge from '@/modules/badge'
 import { logDebug, logError, logInfo } from '@mp-se/espframework-ui-components'
 import { storeToRefs } from 'pinia'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
-
-const { t } = useI18n()
 
 const gyroOptions = ref([
   // value 0 is used internally at startup to check if gyro has been defined.
@@ -199,7 +196,7 @@ const gyroOptions = ref([
 const calibrationValues = computed(() => {
   if (config.gyro_type == 1) return JSON.stringify(config.gyro_calibration_data)
 
-  return t('device_gyro.calibration_not_needed')
+  return 'Calibration not needed for this gyro'
 })
 
 const { gyro_type } = storeToRefs(config)
@@ -230,7 +227,8 @@ const ispindel = () => {
 
       config.gravity_formula = json.POLY
 
-      global.messageSuccess = t('device_gyro.err_import')
+      global.messageSuccess =
+        'Imported gyro calibration data and formula from old configuration. Please save!'
     }
     global.disabled = false
   })()
@@ -255,7 +253,7 @@ const calibrate = async () => {
     const started = await http.request('api/calibrate')
 
     if (!started || started.ok === false) {
-      global.messageError = t('device_gyro.err_start_calibration')
+      global.messageError = 'Failed to start calibration'
       return false
     }
 
@@ -264,7 +262,7 @@ const calibrate = async () => {
       while (true) {
         const statusRes = await http.getJson('api/calibrate/status')
         if (!statusRes) {
-          global.messageError = t('device_gyro.err_get_status')
+          global.messageError = 'Failed to get calibrate status'
           return false
         }
 
@@ -278,9 +276,8 @@ const calibrate = async () => {
 
         // Calibration completed, check success flag
         if (!statusRes.success) {
-          global.messageError = t('device_gyro.err_calibration_failed', {
-            code: statusRes.message || 'unknown'
-          })
+          global.messageError =
+            'Calibration failed with code (' + (statusRes.message || 'unknown') + ')'
           return false
         }
 
@@ -292,16 +289,16 @@ const calibrate = async () => {
       // Reload configuration after successful calibration
       const configLoaded = await config.load()
       if (configLoaded) {
-        global.messageSuccess = t('device_gyro.calibration_success')
+        global.messageSuccess = 'Gyro calibrated'
       } else {
-        global.messageError = t('device_gyro.err_load_config')
+        global.messageError = 'Failed to load configuration'
       }
     }
 
     return result
   } catch (err) {
     logError('DeviceHardwareView.calibrate()', err)
-    global.messageError = t('device_gyro.err_calibration_unexpected')
+    global.messageError = 'Calibration failed unexpectedly'
     return false
   } finally {
     global.disabled = false

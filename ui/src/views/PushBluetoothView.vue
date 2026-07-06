@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">{{ t('push_bluetooth.title') }}</p>
+    <p class="h3">Push - Bluetooth</p>
     <hr />
 
     <template v-if="global.feature.ble">
@@ -31,8 +31,8 @@
             <BsInputRadio
               v-model="config.ble_tilt_color"
               :options="bleTiltColorOptions"
-              :label="t('push_bluetooth.tilt_color_label')"
-              :help="t('push_bluetooth.tilt_color_help')"
+              label="Tilt color"
+              help="Tilt color beacon. Only used when tilt type is selected."
               :disabled="tilt"
             />
           </div>
@@ -40,14 +40,14 @@
             <BsInputRadio
               v-model="config.ble_format"
               :options="bleFormatOptions"
-              :label="t('push_bluetooth.format_label')"
-              :help="t('push_bluetooth.format_help')"
+              label="Bluetooth data format"
+              help="Select the type of bluetooth transmission used."
               :disabled="global.disabled32"
             />
           </div>
           <div class="col-md-12">
             <p></p>
-            <p>{{ t('push_bluetooth.restart_hint') }}</p>
+            <p>Changing bluetooth settings might require a restart to function properly</p>
           </div>
         </div>
         <div class="row gy-2">
@@ -66,7 +66,7 @@
                 aria-hidden="true"
                 :hidden="!global.disabled32"
               ></span>
-              &nbsp;{{ t('push_bluetooth.save') }}
+              &nbsp;Save
             </button>
           </div>
         </div>
@@ -75,7 +75,7 @@
     <template v-else>
       <div class="row">
         <div class="col-md-12">
-          <p>{{ t('push_bluetooth.not_available') }}</p>
+          <p>Bluetooth is not available on this platform</p>
         </div>
       </div>
     </template>
@@ -84,11 +84,8 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config } from '@/modules/pinia'
-
-const { t } = useI18n()
 
 const bleTiltColorOptions = ref([
   { label: 'red', value: 'red' },
