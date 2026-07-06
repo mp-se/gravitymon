@@ -3,6 +3,14 @@
 Releases 
 ########
 
+v2.6.0
+======
+
+New features
+++++++++++++
+- Merged the UI project into the main project to avoid having two separate repositories. The UI is now built into the firmware and will be served from the device itself. This simplifies the build process and ensures that the UI is always in sync with the firmware version.
+
+
 v2.5.0
 ======
 

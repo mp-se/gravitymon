@@ -22,8 +22,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'npm'
-          cache-dependency-path: ui/package-lock.json
 
       - name: Build UI version info
         working-directory: ui
