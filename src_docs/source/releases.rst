@@ -3,6 +3,14 @@
 Releases 
 ########
 
+v2.6.0
+======
+
+New features
+++++++++++++
+- Merged the UI project into the main project to avoid having two separate repositories. The UI is now built into the firmware and will be served from the device itself. This simplifies the build process and ensures that the UI is always in sync with the firmware version.
+
+
 v2.5.0
 ======
 
@@ -189,7 +197,7 @@ New features
   to the Gateway and then forward this to the correct endpoint. 
 * Added line breaks to format editor for easier editing
 * Added check if device is responding and notify user when there is an issue
-* Redesign of user interface using VueJS as the base (UI moved to separate github project mp-se/gravitymon-ui) 
+* Redesign of user interface using VueJS as the base 
 * Added authorization for API access (currently basic and not really secure)
 * Redesigned REST-API to function better with VueJS
 * Updated documentation to match new version (Still some more work needed)

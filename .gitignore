@@ -9,3 +9,11 @@ cuckoo/
 src_docs/_build/*
 .DS_Store
 *.map
+
+ui/.env.local
+ui/.env.*.local
+ui/npm-debug.log*
+ui/node_modules
+ui/dist
+ui/coverage
+ui/package-lock.json

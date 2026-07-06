@@ -1,29 +1,54 @@
-name: PlatformIO CI
+name: Build CI
 
-on: 
+on:
   pull_request:
   push:
-    branches: 
+    branches:
       - dev
       - cuckoo
 
 jobs:
-  pio-build:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      VITE_APP_REGISTER_APIKEY: ${{ secrets.REGISTER_APIKEY }}
 
     steps:
-      - name: Checkout 
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Checkout UI
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Build UI version info
+        working-directory: ui
         run: |
-          echo "Checkout UI"
-          git clone https://github.com/mp-se/gravitymon-ui gravitymon-ui 
-          cp gravitymon-ui/dist/assets/style.css.gz html/app.css.gz
-          cp gravitymon-ui/dist/assets/index.js.gz html/app.js.gz
-        
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git fetch --tags
+          REV=`git rev-parse HEAD | rev | cut -c 1-6 | rev`
+          TAG=`git tag --sort=creatordate | tail -1`
+          echo "VITE_APP_BUILD=..$REV" >> .env
+          echo "VITE_APP_VERSION=$TAG" >> .env
+          cat .env
+
+      - name: Build UI
+        working-directory: ui
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
+          npm run build
+
+      - name: Copy UI assets into firmware
+        run: |
+          cp ui/dist/assets/style.css.gz html/app.css.gz
+          cp ui/dist/assets/index.js.gz html/app.js.gz
+
       - name: Setup PlatformIO
-        uses: n-vr/setup-platformio-action@v1.0.1    
+        uses: n-vr/setup-platformio-action@v1.0.1
 
       - name: PlatformIO Run
         uses: karniv00l/platformio-run-action@v1
@@ -38,7 +63,7 @@ jobs:
           silent: false
           verbose: true
           disable-auto-clean: false
-    
+
       - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version. https://github.com/marketplace/actions/add-commit
         with:
           add: 'bin html'
