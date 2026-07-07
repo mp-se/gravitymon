@@ -11,8 +11,145 @@ const require = createRequire(import.meta.url)
 const multer = require('multer')
 const path = require('path')
 const upload = multer({ dest: './' })
+const fs = require('fs')
 
 var wifiScanRunning = false
+
+// Generic in-memory file store backing /api/filesystem's dir/get/del and
+// /api/filesystem/upload, used for testing arbitrary uploads (e.g. language
+// packs) that aren't part of the hardcoded demo file list below.
+const mockFiles = new Map()
+
+// Serves the hardcoded demo files used by the filesystem tools views
+// (Tools > Explore file system). Returns true if it handled the request.
+function sendStaticMockFile(res, file) {
+  if (file == '/error.log') {
+    setTimeout(() => {
+      res.send('Log entry 5\nLog entry 4\nLog entry 3\nLog entry 2\nLog entry 1\n')
+    }, 200)
+  } else if (file == '/error2.log') {
+    setTimeout(() => {
+      res.send('Log entry 9\nLog entry 8\nLog entry 7\nLog entry 6\n')
+    }, 500)
+  } else if (file == '/config.json') {
+    var ispindel = {
+      Name: '',
+      Token: '',
+      Sleep: 900,
+      Server: '',
+      API: 0,
+      Port: 80,
+      Channel: 0,
+      URI: '',
+      Username: '',
+      Password: '',
+      Job: 'ispindel',
+      Instance: '000',
+      Hassio: false,
+      UseHTTPS: false,
+      Vfact: 191.8000031,
+      TS: 0,
+      OWpin: 12,
+      POLY: '-0.00031*tilt^2+0.557*tilt-14.054',
+      SSID: 'my-wifi',
+      PSK: 'wifi-pass',
+      Offset: [614, 628, 740, 96, -60, 3]
+    }
+    res.send(ispindel)
+  } else if (file == '/gravitymon.json') {
+    var gravmon = {
+      mdns: 'gravitymone18798',
+      id: 'e18798',
+      'ota-url': 'http://ota',
+      'wifi-ssid': '@home',
+      'wifi-pass': '',
+      'wifi-ssid2': '',
+      'wifi-pass2': '',
+      ble: 'pink',
+      'temp-format': 'C',
+      token: 'token',
+      token2: 'token2',
+      'http-push': 'http://push1',
+      'http-push-h1': 'Content-Type: application/json1',
+      'http-push-h2': 'c: d',
+      'http-push2': 'http://push2',
+      'http-push2-h1': 'Content-Type: application/json2',
+      'http-push2-h2': 'a: b',
+      'http-push3': 'http://push3',
+      'influxdb2-push': 'push4',
+      'influxdb2-org': 'org',
+      'influxdb2-bucket': 'bucket',
+      'influxdb2-auth': 'auth',
+      'mqtt-push': 'push5',
+      'mqtt-port': 1883,
+      'mqtt-user': 'user',
+      'mqtt-pass': 'pass',
+      'sleep-interval': 900,
+      'voltage-factor': 0.59,
+      'voltage-config': 4.15,
+      'gravity-formula': 'tilt*2+til*3+1.0334',
+      'gravity-format': 'G',
+      'temp-adjustment-value': 0,
+      'gravity-temp-adjustment': false,
+      'gyro-temp': false,
+      'storage-sleep': false,
+      'gravitymon-ble': false,
+      'gyro-calibration-data': {
+        ax: 0,
+        ay: 1,
+        az: 2,
+        gx: 3,
+        gy: 4,
+        gz: 5
+      },
+      'formula-calculation-data': {
+        a1: 1,
+        a2: 2,
+        a3: 3,
+        a4: 4,
+        a5: 5,
+        a6: 6,
+        a7: 7,
+        a8: 8,
+        a9: 9,
+        a10: 10,
+        g1: 1.01,
+        g2: 1.02,
+        g3: 1.03,
+        g4: 1.04,
+        g5: 1.05,
+        g6: 1.06,
+        g7: 1.07,
+        g8: 1.08,
+        g9: 1.09,
+        g10: 1.1
+      },
+      'app-ver': '1.4.0',
+      'app-build': 'beta-2',
+      angle: 89.943,
+      gravity: 0,
+      battery: 1.95,
+      'runtime-average': 0,
+      platform: 'esp32s3'
+    }
+    res.send(gravmon)
+  } else if (file == '/data.csv') {
+    var csv = 'data,data2,data3,data4,data5,data6,data7,data8,data9,data0\ndata,data2,data3,data4,data5,data6,data7,data8,data9,data0\ndata,data2,data3,data4,data5,data6,data7,data8,data9,data0\ndata,data2,data3,data4,data5,data6,data7,data8,data9,data0\n'
+    res.send(csv)
+  } else if (file == '/mqtt.tpl') {
+    var mqtt = 'ispindel/${mdns}/tilt:${angle}|ispindel/${mdns}/temperature:${temp}|ispindel/${mdns}/temp_units:${temp-unit}|ispindel/${mdns}/battery:${battery}|ispindel/${mdns}/gravity:${gravity}|ispindel/${mdns}/interval:${sleep-interval}|ispindel/${mdns}/RSSI:${rssi}|'
+    res.send(mqtt)
+  } else if (file == '/formdata.tpl') {
+    var formdata = '?value=data&value2=data2&value3=data3&value4=data4'
+    res.send(formdata)
+  } else if (file == '/bin.dat') {
+    var bin = Buffer.from([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF,0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF,0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF,0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF,0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF])
+    res.send(bin)
+  } else {
+    return false
+  }
+  return true
+}
 
 export function registerEspFwk(app) {
   // Helper function to validate Bearer token
@@ -70,11 +207,15 @@ export function registerEspFwk(app) {
   })
 
   app.post('/api/filesystem/upload', upload.single('file'), function (req, res) {
-    const title = req.body.title
     const file = req.file
 
-    console.log(title)
-    console.log(file)
+    console.log('Uploaded file:', file && file.originalname)
+
+    if (file) {
+      const buffer = fs.readFileSync(file.path)
+      mockFiles.set('/' + file.originalname, buffer)
+      fs.unlink(file.path, () => {})
+    }
 
     res.sendStatus(200)
   })
@@ -273,6 +414,17 @@ export function registerEspFwk(app) {
     res.send(data)
   })
 
+  app.get('/api/language', (req, res) => {
+    const file = req.query.file
+    console.log('GET: /api/language', file)
+    if (mockFiles.has(file)) {
+      res.type('application/octet-stream')
+      res.send(mockFiles.get(file))
+    } else if (!sendStaticMockFile(res, file)) {
+      res.sendStatus(404)
+    }
+  })
+
   app.post('/api/filesystem', (req, res) => {
     console.log('POST: /api/filesystem')
     /* 
@@ -301,7 +453,8 @@ export function registerEspFwk(app) {
           { file: '/data.csv', size: 10 },
           { file: '/mqtt.tpl', size: 10 },
           { file: '/formdata.tpl', size: 10 },
-          { file: '/bin.dat', size: 10 }
+          { file: '/bin.dat', size: 10 },
+          ...Array.from(mockFiles.entries()).map(([file, buf]) => ({ file, size: buf.length }))
         ]
       }
       res.type('application/json')
@@ -309,134 +462,18 @@ export function registerEspFwk(app) {
       return
     } else if (req.body.command == 'del') {
       console.log(req.body.file)
+      mockFiles.delete(req.body.file)
       setTimeout(() => {
         res.sendStatus(200)
       }, 2000)
       return
     } else if (req.body.command == 'get') {
       console.log(req.body.file)
-      if (req.body.file == '/error.log') {
-        setTimeout(() => {
-          res.send('Log entry 5\nLog entry 4\nLog entry 3\nLog entry 2\nLog entry 1\n')
-        }, 200)
-      } else if (req.body.file == '/error2.log') {
-        setTimeout(() => {
-          res.send('Log entry 9\nLog entry 8\nLog entry 7\nLog entry 6\n')
-        }, 500)
-      } else if (req.body.file == '/config.json') {
-        var ispindel = {
-          Name: '',
-          Token: '',
-          Sleep: 900,
-          Server: '',
-          API: 0,
-          Port: 80,
-          Channel: 0,
-          URI: '',
-          Username: '',
-          Password: '',
-          Job: 'ispindel',
-          Instance: '000',
-          Hassio: false,
-          UseHTTPS: false,
-          Vfact: 191.8000031,
-          TS: 0,
-          OWpin: 12,
-          POLY: '-0.00031*tilt^2+0.557*tilt-14.054',
-          SSID: 'my-wifi',
-          PSK: 'wifi-pass',
-          Offset: [614, 628, 740, 96, -60, 3]
-        }
-        res.send(ispindel)
-      } else if (req.body.file == '/gravitymon.json') {
-        var gravmon = {
-          mdns: 'gravitymone18798',
-          id: 'e18798',
-          'ota-url': 'http://ota',
-          'wifi-ssid': '@home',
-          'wifi-pass': '',
-          'wifi-ssid2': '',
-          'wifi-pass2': '',
-          ble: 'pink',
-          'temp-format': 'C',
-          token: 'token',
-          token2: 'token2',
-          'http-push': 'http://push1',
-          'http-push-h1': 'Content-Type: application/json1',
-          'http-push-h2': 'c: d',
-          'http-push2': 'http://push2',
-          'http-push2-h1': 'Content-Type: application/json2',
-          'http-push2-h2': 'a: b',
-          'http-push3': 'http://push3',
-          'influxdb2-push': 'push4',
-          'influxdb2-org': 'org',
-          'influxdb2-bucket': 'bucket',
-          'influxdb2-auth': 'auth',
-          'mqtt-push': 'push5',
-          'mqtt-port': 1883,
-          'mqtt-user': 'user',
-          'mqtt-pass': 'pass',
-          'sleep-interval': 900,
-          'voltage-factor': 0.59,
-          'voltage-config': 4.15,
-          'gravity-formula': 'tilt*2+til*3+1.0334',
-          'gravity-format': 'G',
-          'temp-adjustment-value': 0,
-          'gravity-temp-adjustment': false,
-          'gyro-temp': false,
-          'storage-sleep': false,
-          'gravitymon-ble': false,
-          'gyro-calibration-data': {
-            ax: 0,
-            ay: 1,
-            az: 2,
-            gx: 3,
-            gy: 4,
-            gz: 5
-          },
-          'formula-calculation-data': {
-            a1: 1,
-            a2: 2,
-            a3: 3,
-            a4: 4,
-            a5: 5,
-            a6: 6,
-            a7: 7,
-            a8: 8,
-            a9: 9,
-            a10: 10,
-            g1: 1.01,
-            g2: 1.02,
-            g3: 1.03,
-            g4: 1.04,
-            g5: 1.05,
-            g6: 1.06,
-            g7: 1.07,
-            g8: 1.08,
-            g9: 1.09,
-            g10: 1.1
-          },
-          'app-ver': '1.4.0',
-          'app-build': 'beta-2',
-          angle: 89.943,
-          gravity: 0,
-          battery: 1.95,
-          'runtime-average': 0,
-          platform: 'esp32s3'
-        }
-        res.send(gravmon)
-      } else if (req.body.file == '/data.csv') {
-        var csv = 'data,data2,data3,data4,data5,data6,data7,data8,data9,data0\ndata,data2,data3,data4,data5,data6,data7,data8,data9,data0\ndata,data2,data3,data4,data5,data6,data7,data8,data9,data0\ndata,data2,data3,data4,data5,data6,data7,data8,data9,data0\n'
-        res.send(csv)
-      } else if (req.body.file == '/mqtt.tpl') {
-        var mqtt = 'ispindel/${mdns}/tilt:${angle}|ispindel/${mdns}/temperature:${temp}|ispindel/${mdns}/temp_units:${temp-unit}|ispindel/${mdns}/battery:${battery}|ispindel/${mdns}/gravity:${gravity}|ispindel/${mdns}/interval:${sleep-interval}|ispindel/${mdns}/RSSI:${rssi}|'
-        res.send(mqtt)
-      } else if (req.body.file == '/formdata.tpl') {
-        var formdata = '?value=data&value2=data2&value3=data3&value4=data4'
-        res.send(formdata)
-      } else if (req.body.file == '/bin.dat') {
-        var bin = Buffer.from([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF,0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF,0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF,0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF,0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x01, 0x02, 0x03, 0xFF])
-        res.send(bin)
+      if (mockFiles.has(req.body.file)) {
+        res.type('application/octet-stream')
+        res.send(mockFiles.get(req.body.file))
+      } else if (!sendStaticMockFile(res, req.body.file)) {
+        res.sendStatus(404)
       }
       return
     }

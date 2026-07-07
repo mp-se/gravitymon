@@ -110,6 +110,24 @@ Device - Settings
 
   Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.
 
+* **Language:**
+
+  Selects the language used for the web interface. Only English ships built into the firmware; other
+  languages are optional "language packs" installed at runtime, since bundling all of them would make
+  the firmware too large to fit on some devices.
+
+  If a language other than English is selected but its pack isn't installed on the device yet, the
+  interface falls back to English and shows a warning telling you to install it first.
+
+  Below the language selector, an **Available languages** list shows every language pack that can be
+  downloaded (read from the same ``version.json`` used for firmware update checks, hosted at the same
+  location as the OTA URL above, defaulting to `gravitymon.com <https://www.gravitymon.com/firmware/>`_).
+  Clicking a language downloads it directly in the browser and uploads it to the device automatically -
+  no manual file handling needed. Toggling a language off removes its pack from the device.
+
+  This requires the browser used for configuration to have internet access, since it does the actual
+  download - the device itself doesn't need internet access, only the browser you're using to configure it.
+
 * **Check status**
 
   Checks if this device has been reported to the data collection service.
@@ -679,6 +697,29 @@ Other - Tools
 * **List files**
 
   Shows the files on the device and allows a user to show the contents of those files.
+
+* **Enable Advanced**
+
+  Reveals an advanced file upload/delete section that can, among other things, be used to install
+  language packs manually - useful if the device has no internet access (only the browser used for
+  the **Available languages** list in Device Settings needs internet access) or if you'd rather not
+  rely on gravitymon.com at all.
+
+  To install a language pack this way:
+
+  1. Download the language pack file for the language you want, named ``lang_<code>.json.gz``
+     (e.g. ``lang_de.json.gz`` for German), from
+     `gravitymon.com/firmware <https://www.gravitymon.com/firmware/>`_ or wherever you self-host it
+     (same location as your OTA URL).
+  2. Click **Enable Advanced** to reveal the file upload section.
+  3. Select the downloaded ``lang_<code>.json.gz`` file and upload it.
+  4. Go to Device Settings and select the newly installed language from the dropdown - it only lists
+     languages that are actually installed on the device.
+
+  .. note::
+
+    The uploaded file must keep the exact ``lang_<code>.json.gz`` name for the device to recognize it
+    as a language pack.
 
 Other - About
 +++++++++++++

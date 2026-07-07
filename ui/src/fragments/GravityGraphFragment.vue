@@ -41,8 +41,7 @@ import { ref, onMounted } from 'vue'
 import { config } from '@/modules/pinia'
 import { logError } from '@mp-se/espframework-ui-components'
 import { evaluateFormula } from '@/modules/formula'
-import { Chart } from 'chart.js'
-import 'chart.js/auto'
+import { Chart } from '@/modules/chartSetup'
 
 const chart = ref(null)
 

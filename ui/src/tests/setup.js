@@ -310,16 +310,25 @@ uiStubs.forEach((name) => {
 })
 
 // Mock Chart.js to avoid canvas/context issues in JSDOM
-vi.mock('chart.js', () => ({
-  Chart: class {
-    constructor(_ctx, _cfg) {
-      // no-op: do not attempt to access canvas context in tests
-      this.ctx = null
-      this.config = _cfg
-    }
-    update() {}
-    destroy() {}
+class MockChart {
+  constructor(_ctx, _cfg) {
+    // no-op: do not attempt to access canvas context in tests
+    this.ctx = null
+    this.config = _cfg
   }
-}))
+  update() {}
+  destroy() {}
+}
+MockChart.register = () => {}
 
-vi.mock('chart.js/auto', () => ({}))
+vi.mock('chart.js', () => ({
+  Chart: MockChart,
+  LineController: class {},
+  LineElement: class {},
+  PointElement: class {},
+  LinearScale: class {},
+  CategoryScale: class {},
+  Title: class {},
+  Tooltip: class {},
+  Legend: class {}
+}))

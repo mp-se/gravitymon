@@ -126,10 +126,35 @@ import { storeToRefs } from 'pinia'
 import { useTimers } from '@mp-se/espframework-ui-components'
 import { logError, logInfo, version } from '@mp-se/espframework-ui-components'
 import { items } from './modules/router'
+import { loadLocalePack } from './modules/localePacks'
 
 const { createInterval } = useTimers()
 const polling = ref(null)
 const showRegisterModal = ref(false)
+
+// Keep the active vue-i18n locale in sync with the device-stored config value.
+// Non-English locales need their pack loaded from the device's LittleFS first
+// (uploaded via Tools > Language Packs or the Device Settings toggle list);
+// if that pack isn't installed, fall back to English rather than switching to
+// a locale with no messages loaded.
+watch(
+  () => config.locale,
+  async (newValue) => {
+    if (!newValue) return
+    if (newValue === 'en') {
+      locale.value = 'en'
+      return
+    }
+    const loaded = await loadLocalePack(newValue)
+    if (loaded) {
+      locale.value = newValue
+    } else {
+      locale.value = 'en'
+      global.messageWarning = t('app.err_locale_pack_missing')
+    }
+  },
+  { immediate: true }
+)
 
 const { disabled } = storeToRefs(global)
 

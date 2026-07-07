@@ -17,7 +17,9 @@ vi.mock('@mp-se/espframework-ui-components', () => ({
   sharedHttpClient: {
     get: vi.fn(),
     post: vi.fn(),
-    getJson: vi.fn()
+    getJson: vi.fn(),
+    filesystemRequest: vi.fn(async () => ({ success: false, text: '' })),
+    uploadFile: vi.fn(async () => ({ success: true }))
   }
 }))
 
@@ -25,6 +27,12 @@ describe('DeviceSettingsView (interaction tests)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.useFakeTimers()
+    // DeviceSettingsView fetches version.json on mount to list available
+    // language packs; stub it so tests don't hit the real network.
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.reject(new Error('network disabled in tests')))
+    )
   })
 
   afterEach(() => {

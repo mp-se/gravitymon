@@ -23,6 +23,11 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
 
+// Serves version.json + lang_*.json.gz for local testing of the Device
+// Settings "available languages" list. Generate with:
+//   node mock-server/build-language-packs.js
+app.use('/firmware', express.static(new URL('./firmware', import.meta.url).pathname))
+
 registerEspFwk(app)
 
 var calibrateRunning = false

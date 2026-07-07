@@ -88,6 +88,7 @@ class BrewingWebServer : public BaseWebServer {
 
   void webHandleStatus(AsyncWebServerRequest *request);
   void webHandleFeature(AsyncWebServerRequest *request);
+  void webHandleFileDownload(AsyncWebServerRequest *request);
   void webHandleConfigRead(AsyncWebServerRequest *request);
   void webHandleConfigWrite(AsyncWebServerRequest *request, JsonVariant &json);
   void webHandleConfigFormatRead(AsyncWebServerRequest *request);

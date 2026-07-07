@@ -16,4 +16,5 @@ ui/npm-debug.log*
 ui/node_modules
 ui/dist
 ui/coverage
+ui/mock-server/firmware
 ui/package-lock.json
