@@ -21,7 +21,7 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">Device - WIFI (Manual)</p>
+    <p class="h3">{{ t('device_wifi2.title') }}</p>
     <hr />
 
     <BsMessage
@@ -30,7 +30,7 @@
       message=""
       alert="warning"
     >
-      You need to define at least one wifi network
+      {{ t('device_wifi2.need_network') }}
     </BsMessage>
 
     <form @submit.prevent="save" class="needs-validation" novalidate>
@@ -38,7 +38,7 @@
         <div class="col-md-6">
           <BsInputText
             v-model="config.wifi_ssid"
-            label="SSID #1"
+            :label="t('device_wifi2.ssid1_label')"
             maxlength="30"
             :badge="badge.deviceWifi1Badge()"
             :disabled="global.disabled"
@@ -49,8 +49,8 @@
             v-model="config.wifi_pass"
             type="password"
             maxlength="50"
-            label="Password #1"
-            help="Enter password for the first wifi network"
+            :label="t('device_wifi2.pass1_label')"
+            :help="t('device_wifi2.pass1_help')"
             :disabled="global.disabled"
           ></BsInputText>
         </div>
@@ -58,7 +58,7 @@
         <div class="col-md-6">
           <BsInputText
             v-model="config.wifi_ssid2"
-            label="SSID #2"
+            :label="t('device_wifi2.ssid2_label')"
             maxlength="30"
             :badge="badge.deviceWifi2Badge()"
             :disabled="global.disabled"
@@ -69,8 +69,8 @@
             v-model="config.wifi_pass2"
             type="password"
             maxlength="50"
-            label="Password #2"
-            help="Enter password for the first wifi network"
+            :label="t('device_wifi2.pass2_label')"
+            :help="t('device_wifi2.pass2_help')"
             :disabled="global.disabled"
           ></BsInputText>
         </div>
@@ -83,12 +83,12 @@
           <BsInputNumber
             v-model="config.wifi_portal_timeout"
             unit="seconds"
-            label="Portal timeout"
+            :label="t('device_wifi2.portal_timeout_label')"
             min="10"
             max="240"
             step="1"
             width="5"
-            help="Max time the wifi portal is idle (10 to 240)"
+            :help="t('device_wifi2.portal_timeout_help')"
             :disabled="global.disabled"
           ></BsInputNumber>
         </div>
@@ -96,12 +96,12 @@
           <BsInputNumber
             v-model="config.wifi_connect_timeout"
             unit="seconds"
-            label="Connection timeout"
+            :label="t('device_wifi2.connect_timeout_label')"
             min="1"
             max="60"
             step="1"
             width="5"
-            help="Max time waiting for a wifi connection (1 to 60)"
+            :help="t('device_wifi2.connect_timeout_help')"
             :disabled="global.disabled"
           >
           </BsInputNumber>
@@ -109,8 +109,8 @@
         <div class="col-md-6" v-if="global.ui.enableScanForStrongestAp">
           <BsInputSwitch
             v-model="config.wifi_scan_ap"
-            label="Scan for strongest AP"
-            help="Will do a scan and connect to the strongest AP found (longer connection time)"
+            :label="t('device_wifi2.scan_strongest_label')"
+            :help="t('device_wifi2.scan_strongest_help')"
             :disabled="global.disabled"
           >
           </BsInputSwitch>
@@ -133,7 +133,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Save</button
+            &nbsp;{{ t('device_wifi2.save') }}</button
           >&nbsp;
 
           <button
@@ -148,7 +148,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Restart device
+            &nbsp;{{ t('device_wifi2.restart') }}
           </button>
         </div>
       </div>
@@ -157,16 +157,18 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config } from '@/modules/pinia'
 import * as badge from '@/modules/badge'
+
+const { t } = useI18n()
 
 const save = async () => {
   if (!validateCurrentForm()) return
 
   await config.saveAll()
-  global.messageInfo =
-    'If WIFI settings are changed, restart the device and enter the new URL of the device!'
+  global.messageInfo = t('device_wifi2.info_restart_needed')
 }
 
 const restart = async () => {

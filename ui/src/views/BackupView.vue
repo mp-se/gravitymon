@@ -21,12 +21,12 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">Backup & Restore</p>
+    <p class="h3">{{ t('backup.title') }}</p>
     <hr />
 
     <div class="row">
       <div class="col-md-12">
-        <p>Create a backup of the device configuration and store this in a textfile</p>
+        <p>{{ t('backup.create_text') }}</p>
       </div>
 
       <div class="col-md-12">
@@ -37,7 +37,7 @@
           data-bs-toggle="tooltip"
           :disabled="global.disabled"
         >
-          Create backup
+          {{ t('backup.create_button') }}
         </button>
       </div>
 
@@ -46,7 +46,7 @@
       </div>
 
       <div class="col-md-12">
-        <p>Restore a previous backup of the device configuration by uploading it.</p>
+        <p>{{ t('backup.restore_text') }}</p>
       </div>
     </div>
 
@@ -56,7 +56,7 @@
           <BsFileUpload
             name="upload"
             id="upload"
-            label="Select backup file"
+            :label="t('backup.select_file_label')"
             accept=".txt"
             :disabled="global.disabled"
             @change="onFileChange"
@@ -71,7 +71,7 @@
             class="btn btn-primary"
             value="upload"
             data-bs-toggle="tooltip"
-            title="Upload the configuration to the device"
+            :title="t('backup.restore_button_title')"
             :disabled="global.disabled || !fileSelected"
           >
             <span
@@ -80,7 +80,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Restore
+            &nbsp;{{ t('backup.restore_button') }}
           </button>
         </div>
 
@@ -95,9 +95,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { global, config, getConfigChanges } from '@/modules/pinia'
 import { logDebug, logError } from '@mp-se/espframework-ui-components'
 
+const { t } = useI18n()
 const progress = ref(0)
 const fileSelected = ref(false)
 
@@ -133,7 +135,7 @@ function backup() {
   const s = JSON.stringify(backup, null, 2)
   const name = config.mdns + '.txt'
   download(s, 'text/plain', name)
-  global.messageSuccess = 'Backup file created and downloaded as: ' + name
+  global.messageSuccess = t('backup.backup_created', { name })
 }
 
 async function restore() {
@@ -141,12 +143,12 @@ async function restore() {
 
   // Validate file element exists
   if (!fileElement) {
-    global.messageError = 'Upload element not found'
+    global.messageError = t('backup.err_upload_missing')
     return
   }
 
   if (fileElement.files.length === 0) {
-    global.messageError = 'You need to select one file to restore configuration from'
+    global.messageError = t('backup.err_no_file_selected')
     return
   }
 
@@ -168,11 +170,11 @@ async function restore() {
       } else if (data.meta.software === 'GravityMon') {
         await doRestore1(data)
       } else {
-        global.messageError = 'Unknown format, unable to process'
+        global.messageError = t('backup.err_unknown_format')
       }
     } catch (error) {
       logError('BackupView.restore()', error)
-      global.messageError = 'Unable to parse configuration file for GravityMon.'
+      global.messageError = t('backup.err_parse_failed')
     } finally {
       global.disabled = false
       // Reset file selection after operation
@@ -183,7 +185,7 @@ async function restore() {
 
   reader.addEventListener('error', () => {
     logError('BackupView.restore()', 'File reading failed')
-    global.messageError = 'Failed to read the backup file'
+    global.messageError = t('backup.err_read_failed')
     global.disabled = false
     // Reset file selection after error
     fileSelected.value = false

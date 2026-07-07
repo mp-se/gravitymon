@@ -21,23 +21,22 @@
 <template>
   <div class="container">
     <p></p>
-    <p class="h3">Push - Wifi Direct</p>
+    <p class="h3">{{ t('push_wifi_direct.title') }}</p>
     <hr />
 
     <form @submit.prevent="save" class="needs-validation" novalidate>
       <div class="row">
         <div class="col-md-12">
           <p>
-            Using the WIFI direct feature means that the device will connect to the AP and send data
-            using HTTP post to the Gravitymon Gateway.
+            {{ t('push_wifi_direct.intro') }}
           </p>
         </div>
 
         <div class="col-md-6">
           <BsInputText
             v-model="config.wifi_direct_ssid"
-            label="Direct SSID"
-            help="Enter the SSID for the wifi direct functionallity"
+            :label="t('push_wifi_direct.ssid_label')"
+            :help="t('push_wifi_direct.ssid_help')"
             :disabled="global.disabled"
           />
         </div>
@@ -46,8 +45,8 @@
             v-model="config.wifi_direct_pass"
             type="password"
             maxlength="50"
-            label="Direct Password"
-            help="Enter password for the wifi direct network"
+            :label="t('push_wifi_direct.pass_label')"
+            :help="t('push_wifi_direct.pass_help')"
             :disabled="global.disabled"
           ></BsInputText>
         </div>
@@ -55,8 +54,8 @@
         <div class="col-md-6">
           <BsInputSwitch
             v-model="config.use_wifi_direct"
-            label="Use wifi direct in gravity mode"
-            help="In gravity mode the wifi direct SSID/Password will be used for connection"
+            :label="t('push_wifi_direct.use_label')"
+            :help="t('push_wifi_direct.use_help')"
             :disabled="global.disabled"
           ></BsInputSwitch>
         </div>
@@ -78,7 +77,7 @@
               aria-hidden="true"
               v-show="global.disabled"
             ></span>
-            &nbsp;Save
+            &nbsp;{{ t('push_wifi_direct.save') }}
           </button>
         </div>
       </div>
@@ -87,15 +86,18 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config } from '@/modules/pinia'
+
+const { t } = useI18n()
 
 const save = async () => {
   if (!validateCurrentForm()) return
 
   if (config.use_wifi_direct) {
     if (config.wifi_direct_ssid === '' || config.wifi_direct_pass === '') {
-      global.messageError = 'SSID and Password are required when using wifi direct'
+      global.messageError = t('push_wifi_direct.err_missing_credentials')
       return
     }
   }
