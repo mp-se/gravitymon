@@ -97,9 +97,9 @@ export async function loadLocalePackWithRetry(code, { retries = 3, delayMs = 400
   return false
 }
 
-export async function installPackFromUrl(baseUrl, entry, opts = {}) {
-  // entry: { code, name, file } from version.json's "languages" array
-  const res = await fetch(baseUrl + entry.file)
+export async function installPackFromUrl(url, entry, opts = {}) {
+  // url: absolute URL to the .gz pack file (resolved from manifest)
+  const res = await fetch(url)
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const rawBlob = await res.blob()
   const blob = await ensureGzipBlob(rawBlob)

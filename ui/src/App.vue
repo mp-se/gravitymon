@@ -124,7 +124,8 @@ import { storeToRefs } from 'pinia'
 import { useTimers } from '@mp-se/espframework-ui-components'
 import { logError, logInfo, version } from '@mp-se/espframework-ui-components'
 import { items } from './modules/router'
-import { loadLocalePack } from './modules/localePacks'
+import { loadLocalePack, listInstalledPacks } from './modules/localePacks'
+import { fetchManifest, getCompatibilityMessage } from './lib/langpacks'
 
 const { t, locale } = useI18n()
 const { createInterval } = useTimers()
@@ -251,6 +252,23 @@ async function initializeApp() {
     saveConfigState()
     handleDarkModeUpdate(config.dark_mode)
     global.initialized = true
+
+    // Check if installed language packs are compatible with current firmware.
+    // Run async but don't block initialization.
+    ;(async () => {
+      try {
+        const installed = await listInstalledPacks()
+        if (installed.length > 0) {
+          const manifest = await fetchManifest('gravitymon', global.app_ver)
+          const warning = installed
+            .map((code) => getCompatibilityMessage(manifest, status.app_ver, code))
+            .find(Boolean)
+          if (warning) global.messageWarning = warning
+        }
+      } catch {
+        // Network unavailable — skip silently
+      }
+    })()
 
     // Trigger register modal if device is not registered
     if (!global.registered && global.ui.enableDeviceRegistration && status.wifi_setup == false) {

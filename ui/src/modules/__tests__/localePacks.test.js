@@ -157,6 +157,7 @@ describe('localePacks', () => {
 
   describe('installPackFromUrl', () => {
     const entry = { code: 'de', name: 'Deutsch', file: 'lang_de.json.gz' }
+    const url = 'https://example.com/lang_de.json.gz'
 
     it('uploads the downloaded blob as-is when it is already gzip', async () => {
       const gz = gzipBlobOf(JSON.stringify({ hello: 'world' }))
@@ -166,7 +167,7 @@ describe('localePacks', () => {
       )
       uploadFileMock.mockResolvedValue({ success: true, status: 200 })
 
-      await installPackFromUrl('https://example.com/', entry)
+      await installPackFromUrl(url, entry)
 
       // Already-gzip input should pass through unmodified (no recompression).
       const uploadedFile = uploadFileMock.mock.calls[0][1]
@@ -184,7 +185,7 @@ describe('localePacks', () => {
       )
       uploadFileMock.mockResolvedValue({ success: true, status: 200 })
 
-      await installPackFromUrl('https://example.com/', entry)
+      await installPackFromUrl(url, entry)
 
       // Recompressed output should be smaller than the plain input (proving
       // it actually went through CompressionStream, not just passed along).
@@ -194,7 +195,7 @@ describe('localePacks', () => {
 
     it('throws when the download itself fails', async () => {
       vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 404 })))
-      await expect(installPackFromUrl('https://example.com/', entry)).rejects.toThrow('HTTP 404')
+      await expect(installPackFromUrl(url, entry)).rejects.toThrow('HTTP 404')
       expect(uploadFileMock).not.toHaveBeenCalled()
     })
 
@@ -206,7 +207,7 @@ describe('localePacks', () => {
       )
       uploadFileMock.mockResolvedValue({ success: false, status: 500 })
 
-      await expect(installPackFromUrl('https://example.com/', entry)).rejects.toThrow(
+      await expect(installPackFromUrl(url, entry)).rejects.toThrow(
         'Upload failed'
       )
     })

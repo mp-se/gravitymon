@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && python3 ../script/gen_lang_manifest.py --product gravitymon --version $npm_package_version --src src/locales --out ../bin",
     "test": "vitest run",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watch",

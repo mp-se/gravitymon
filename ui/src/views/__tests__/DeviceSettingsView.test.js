@@ -23,16 +23,15 @@ vi.mock('@mp-se/espframework-ui-components', () => ({
   }
 }))
 
+vi.mock('@/lib/langpacks', () => ({
+  fetchManifest: vi.fn(async () => ({ product: 'gravitymon', version: '2.5.0', packs: [] })),
+  getCompatibilityMessage: vi.fn(() => null)
+}))
+
 describe('DeviceSettingsView (interaction tests)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.useFakeTimers()
-    // DeviceSettingsView fetches version.json on mount to list available
-    // language packs; stub it so tests don't hit the real network.
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(() => Promise.reject(new Error('network disabled in tests')))
-    )
   })
 
   afterEach(() => {

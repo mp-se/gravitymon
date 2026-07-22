@@ -264,6 +264,7 @@ import {
   removeLocalePack,
   loadLocalePackWithRetry
 } from '@/modules/localePacks'
+import { fetchManifest } from '@/lib/langpacks'
 
 const { t } = useI18n()
 
@@ -301,6 +302,7 @@ const availableLanguages = ref([])
 const installedCodes = ref([])
 const installingCode = ref(null)
 const installProgress = ref(0)
+let cachedManifest = null
 
 const isInstalled = (code) => installedCodes.value.includes(code)
 
@@ -322,13 +324,19 @@ const refreshInstalledCodes = async () => {
   installedCodes.value = await listInstalledPacks()
 }
 
+const checkPackCompatibility = () => {}
+
 onMounted(async () => {
   await refreshInstalledCodes()
   try {
-    const res = await fetch(`${otaBaseUrl()}version.json`)
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const json = await res.json()
-    availableLanguages.value = json.languages || []
+    cachedManifest = await fetchManifest('gravitymon', global.app_ver)
+    availableLanguages.value = (cachedManifest.packs || []).map((p) => ({
+      code: p.lang,
+      name: p.name || p.lang,
+      file: p.filename,
+      url: p.url  // resolved to absolute by fetchManifest
+    }))
+    checkPackCompatibility()
   } catch (error) {
     logError('DeviceSettingsView.loadAvailableLanguages()', error)
     availableLanguages.value = []
@@ -348,11 +356,12 @@ const toggleLanguage = async (entry) => {
       if (res && res.success) {
         global.messageSuccess = t('language_packs.delete_success')
         await refreshInstalledCodes()
+        checkPackCompatibility()
       } else {
         global.messageError = t('language_packs.err_delete_failed')
       }
     } else {
-      await installPackFromUrl(otaBaseUrl(), entry, {
+      await installPackFromUrl(entry.url, entry, {
         onProgress: (percent) => {
           installProgress.value = Math.round(percent)
         }
@@ -362,6 +371,7 @@ const toggleLanguage = async (entry) => {
       const loaded = await loadLocalePackWithRetry(entry.code)
       if (loaded) {
         global.messageSuccess = t('language_packs.install_success')
+        checkPackCompatibility()
       } else {
         // Uploaded but failed to load back - treat as a failed install rather
         // than silently leaving a broken/incomplete file on the device.

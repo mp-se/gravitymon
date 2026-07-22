@@ -218,7 +218,7 @@ export var featureData = {
   // chip_id: "test_500", // Used for testing internal server error scenario
   board: 'D1_MINI',
   platform: 'esp32c3',
-  app_ver: '2.0.0',
+  app_ver: '2.6.0',
   app_build: 'gitrev',
   hardware: 'ispindel',
   firmware_file: 'firmware.bin',
