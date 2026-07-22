@@ -10,9 +10,7 @@ src_docs/_build/*
 .DS_Store
 *.map
 
-ui/.env.local
-ui/.env.*.local
-ui/npm-debug.log*
+ui/.env.development
 ui/node_modules
 ui/dist
 ui/coverage
