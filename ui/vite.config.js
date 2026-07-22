@@ -81,7 +81,7 @@ export default defineConfig(({ mode }) => {
         comments: false
       }
     },
-    rollupOptions: {
+    rolldownOptions: {
       treeshake: true, // Use default tree-shaking instead of aggressive preset
       external: [
         'json-parse-even-better-errors'
@@ -98,7 +98,7 @@ export default defineConfig(({ mode }) => {
         warn(warning)
       },
       output: {
-        inlineDynamicImports: true,
+        codeSplitting: false,
         entryFileNames: `assets/[name].js`,
         chunkFileNames: `assets/[name].js`,
         assetFileNames: `assets/[name].[ext]`,

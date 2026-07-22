@@ -5,13 +5,11 @@
  * `npm run mock`. Mirrors what script/create_versionjson.py does for real
  * firmware builds. Run with: node mock-server/build-language-packs.js
  */
-import { createRequire } from 'module'
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { gzipSync } from 'zlib'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const LANGUAGE_NAMES = {
