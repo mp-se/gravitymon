@@ -1,6 +1,7 @@
 .pio
 .vscode
 .env
+.claude
 __pycache__
 env
 cuckoo/

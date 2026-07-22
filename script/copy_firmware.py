@@ -20,7 +20,7 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
-    elif name == "gravity-unit" :
+    elif name == "gravity-unit32" :
         print( "Skipping copy of unit test build" )
 
     # elif name == "gravity32-release" :
