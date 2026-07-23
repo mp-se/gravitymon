@@ -85,11 +85,11 @@
           ></BsSelect>
         </div>
 
-        <div class="col-md-12" v-if="availableLanguages.length > 0">
+        <div class="col-md-12" v-if="global.ui.enableLanguageDownload && availableLanguages.length > 0">
           <hr />
         </div>
 
-        <div class="col-md-12" v-if="availableLanguages.length > 0">
+        <div class="col-md-12" v-if="global.ui.enableLanguageDownload && availableLanguages.length > 0">
           <h6>{{ t('language_packs.available_title') }}</h6>
           <div class="button-group">
             <template v-for="entry in availableLanguages" :key="entry.code">
@@ -328,6 +328,9 @@ const checkPackCompatibility = () => {}
 
 onMounted(async () => {
   await refreshInstalledCodes()
+
+  if (!global.ui.enableLanguageDownload) return
+
   try {
     cachedManifest = await fetchManifest('gravitymon', global.app_ver)
     availableLanguages.value = (cachedManifest.packs || []).map((p) => ({
