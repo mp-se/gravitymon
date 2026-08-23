@@ -84,7 +84,7 @@
 #define CFG_PCB "iSpindel"
 
 #elif defined(WAVESHARE_ESP32C3_ZERO)
-// Hardware config for ESP32-c3-zero, iSpindel hardware
+// Hardware config for ESP32-c3-zero, gravitymon hardware
 // ------------------------------------------------------
 // IO10 is connected to RBG LED
 // A2. IO8, IO9 are strapping pins
@@ -96,6 +96,25 @@
 #define PIN_CFG2 A3
 #define PIN_CHARGING A4  // Needs to be an Analog and RTC connected pin
 #define CFG_FILENAMEBIN "firmware32c3zero.bin"
+#define CFG_PCB "Gravitymon"
+
+#elif defined(WAVESHARE_ESP32S3_ZERO)
+// Hardware config for ESP32-s3-zero, gravitymon hardware
+// ------------------------------------------------------
+// Same pad locations as the c3-zero, but the s3-zero has no GP0 so every
+// pad on the headers is shifted up by one GPIO compared to the c3-zero.
+// IO21 is connected to RBG LED
+// IO0, IO3, IO45, IO46 are strapping pins
+// IO35-IO37 are used by the octal PSRAM
+// Only ADC1 (IO1-IO10) is usable, ADC2 is blocked while WiFi is active
+#define PIN_SDA IO7
+#define PIN_SCL IO8
+#define PIN_DS IO6
+#define PIN_VOLT A0      // IO1
+#define PIN_CFG1 A1      // IO2
+#define PIN_CFG2 A3      // IO4
+#define PIN_CHARGING A4  // IO5, needs to be an Analog and RTC connected pin
+#define CFG_FILENAMEBIN "firmware32s3zero.bin"
 #define CFG_PCB "Gravitymon"
 
 #elif defined(CUCKOO_C3)

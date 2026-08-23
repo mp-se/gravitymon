@@ -49,7 +49,7 @@ jobs:
       - name: PlatformIO Run 1/2
         uses: karniv00l/platformio-run-action@v1
         with:
-          environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s2_mini,gravity-32c3_zero"
+          environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s2_mini,gravity-32c3_zero,gravity-32s3_zero"
           jobs: 1
           silent: false
           verbose: true
