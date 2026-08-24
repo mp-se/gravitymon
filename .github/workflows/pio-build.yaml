@@ -43,31 +43,21 @@ jobs:
           npm install
           npm run build
 
-      - name: Setup PlatformIO
-        uses: n-vr/setup-platformio-action@v1.0.1
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Install dependencies
+      - name: Install PlatformIO
         run: |
           python -m pip install --upgrade pip
-          ~/.platformio/penv/bin/pip install intelhex
+          pip install platformio intelhex
 
       - name: PlatformIO Run 1/2
-        uses: karniv00l/platformio-run-action@v1
-        with:
-          environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s2_mini,gravity-32c3_zero,gravity-32s3_zero"
-          jobs: 1
-          silent: false
-          verbose: true
-          disable-auto-clean: false
+        run: pio run -e gravity-8266 -e gravity-32c3_mini -e gravity-32s3_mini -e gravity-32s2_mini -e gravity-32c3_zero -e gravity-32s3_zero -j 1 -v
 
       - name: PlatformIO Run 2/2
-        uses: karniv00l/platformio-run-action@v1
-        with:
-          environments: "gravity-32c3_supermini,gravity-32c3_cuckoo,gravity-32c3_cuckoo_v2,gravity-olimex_esp32c3_devkit_lipo"
-          jobs: 1
-          silent: false
-          verbose: true
-          disable-auto-clean: false
+        run: pio run -e gravity-32c3_supermini -e gravity-32c3_cuckoo -e gravity-32c3_cuckoo_v2 -e gravity-olimex_esp32c3_devkit_lipo -j 1 -v
 
       - uses: EndBug/add-and-commit@v9
         with:
