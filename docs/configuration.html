@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Format Templates" href="format-template.html" /><link rel="prev" title="Software Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Configuration - Gravitymon v2.5.0</title>
+        <title>Configuration - Gravitymon v2.6.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Gravitymon v2.5.0</div></a>
+      <a href="index.html"><div class="brand">Gravitymon v2.6.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/gravitymon_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Gravitymon v2.5.0</span>
+  <span class="sidebar-brand-text">Gravitymon v2.6.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -333,6 +333,20 @@ code the update will be done during startup.</p>
 </li>
 <li><p><strong>User Interface:</strong></p>
 <p>Switches the UI between light and dark mode. You can also use the toggle on the menubar for that.</p>
+</li>
+<li><p><strong>Language:</strong></p>
+<p>Selects the language used for the web interface. Only English ships built into the firmware; other
+languages are optional “language packs” installed at runtime, since bundling all of them would make
+the firmware too large to fit on some devices.</p>
+<p>If a language other than English is selected but its pack isn’t installed on the device yet, the
+interface falls back to English and shows a warning telling you to install it first.</p>
+<p>Below the language selector, an <strong>Available languages</strong> list shows every language pack that can be
+downloaded (read from the same <code class="docutils literal notranslate"><span class="pre">version.json</span></code> used for firmware update checks, hosted at the same
+location as the OTA URL above, defaulting to <a class="reference external" href="https://www.gravitymon.com/firmware/">gravitymon.com</a>).
+Clicking a language downloads it directly in the browser and uploads it to the device automatically -
+no manual file handling needed. Toggling a language off removes its pack from the device.</p>
+<p>This requires the browser used for configuration to have internet access, since it does the actual
+download - the device itself doesn’t need internet access, only the browser you’re using to configure it.</p>
 </li>
 <li><p><strong>Check status</strong></p>
 <p>Checks if this device has been reported to the data collection service.</p>
@@ -765,6 +779,28 @@ changed for this to work.</p>
 </li>
 <li><p><strong>List files</strong></p>
 <p>Shows the files on the device and allows a user to show the contents of those files.</p>
+</li>
+<li><p><strong>Enable Advanced</strong></p>
+<p>Reveals an advanced file upload/delete section that can, among other things, be used to install
+language packs manually - useful if the device has no internet access (only the browser used for
+the <strong>Available languages</strong> list in Device Settings needs internet access) or if you’d rather not
+rely on gravitymon.com at all.</p>
+<p>To install a language pack this way:</p>
+<ol class="arabic simple">
+<li><p>Download the language pack file for the language you want, named <code class="docutils literal notranslate"><span class="pre">lang_&lt;code&gt;.json.gz</span></code>
+(e.g. <code class="docutils literal notranslate"><span class="pre">lang_de.json.gz</span></code> for German), from
+<a class="reference external" href="https://www.gravitymon.com/firmware/">gravitymon.com/firmware</a> or wherever you self-host it
+(same location as your OTA URL).</p></li>
+<li><p>Click <strong>Enable Advanced</strong> to reveal the file upload section.</p></li>
+<li><p>Select the downloaded <code class="docutils literal notranslate"><span class="pre">lang_&lt;code&gt;.json.gz</span></code> file and upload it.</p></li>
+<li><p>Go to Device Settings and select the newly installed language from the dropdown - it only lists
+languages that are actually installed on the device.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The uploaded file must keep the exact <code class="docutils literal notranslate"><span class="pre">lang_&lt;code&gt;.json.gz</span></code> name for the device to recognize it
+as a language pack.</p>
+</div>
 </li>
 </ul>
 </section>

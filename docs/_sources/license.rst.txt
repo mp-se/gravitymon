@@ -8,7 +8,7 @@ GravityMon dual license
 
 Copyright (c) 2021-2026 Magnus
 
-Source: https://github.com/mp-se/gravitymon and https://github.com/mp-se/gravitymon-ui
+Source: https://github.com/mp-se/gravitymon
 
 GravityMon is available under two separate licenses. Choose the one that applies to your use case:
 
@@ -41,7 +41,7 @@ Individual hobbyists may distribute this software in pre-assembled hardware prod
 1. You are an individual person, not a company or business entity
 2. Total units distributed do not exceed 100 per calendar year
 3. You publish the full source code of your version under GPL v3
-4. You include a visible link to https://github.com/mp-se/gravitymon and https://github.com/mp-se/gravitymon-ui
+4. You include a visible link to https://github.com/mp-se/gravitymon
 5. All original copyright notices remain intact
 
 Exceeding any of these conditions requires a Commercial License.
