@@ -1,6 +1,7 @@
 .pio
 .vscode
 .env
+.claude
 __pycache__
 env
 cuckoo/
@@ -9,3 +10,10 @@ cuckoo/
 src_docs/_build/*
 .DS_Store
 *.map
+
+ui/.env.development
+ui/node_modules
+ui/dist
+ui/coverage
+ui/mock-server/firmware
+ui/package-lock.json

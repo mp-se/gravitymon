@@ -1,44 +1,65 @@
-name: PlatformIO CI
+name: Build CI
 
-on: 
+on:
   pull_request:
   push:
-    branches: 
+    branches:
       - dev
+      - cuckoo
+      - language
 
 jobs:
-  pio-build:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      VITE_APP_REGISTER_APIKEY: ${{ secrets.REGISTER_APIKEY }}
 
     steps:
-      - name: Checkout 
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Checkout UI
-        run: |
-          echo "Checkout UI"
-          git clone https://github.com/mp-se/gravitymon-ui gravitymon-ui 
-          cp gravitymon-ui/dist/assets/style.css.gz html/app.css.gz
-          cp gravitymon-ui/dist/assets/index.js.gz html/app.js.gz
-        
-      - name: Setup PlatformIO
-        uses: n-vr/setup-platformio-action@v1.0.1    
-
-      - name: PlatformIO Run
-        uses: karniv00l/platformio-run-action@v1
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
-          environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s2_mini,gravity-32c3_zero,gravity-32c3_supermini,gravity-32c3_cuckoo,gravity-olimex_esp32c3_devkit_lipo"
-          # environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s2_mini,gravity-32c3_zero,gravity-32c3_supermini,gravity-tenstar_esp32c3_super_mini,gravity-olimex_esp32c3_devkit_lipo"
-          # environments: "gravity-8266,gravity-32c3_mini,gravity-32s3_mini,gravity-32s3_mini,gravity-32c3_zero,gravity-tenstar_esp32c3_super_mini,gravity-olimex_esp32c3_devkit_lipo"
-          # environments: "gravity-release,gravity32c3-release,gravity32s2-release,gravity32s3-release,gravity-olimex_esp32c3_devkit_lipo,gravity-tenstar_esp32c3_super_mini"
-          # environments: "gravity-release,gravity32-release,gravity32c3-release,gravity32s2-release,gravity32s3-release,gravity32lite-release,gravity-olimex_esp32c3_devkit_lipo,gravity-tenstar_esp32c3_super_mini"
-          # environments: "gravity-release,gravity32-release,gravity32c3-release,gravity32s2-release,gravity32s3-release,gravity32lite-release"
-          jobs: 6
-          silent: false
-          verbose: true
-          disable-auto-clean: false
-    
-      - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version. https://github.com/marketplace/actions/add-commit
+          node-version: 24
+
+      - name: Build UI version info
+        working-directory: ui
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git fetch --tags
+          REV=`git rev-parse HEAD | rev | cut -c 1-6 | rev`
+          TAG=`git tag --sort=creatordate | tail -1`
+          echo "VITE_APP_BUILD=..$REV" >> .env
+          echo "VITE_APP_VERSION=$TAG" >> .env
+          cat .env
+
+      - name: Build UI
+        working-directory: ui
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
+          npm run build
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install platformio intelhex
+
+      - name: PlatformIO Run 1/2
+        run: pio run -e gravity-8266 -e gravity-32c3_mini -e gravity-32s3_mini -e gravity-32s2_mini -e gravity-32c3_zero -e gravity-32s3_zero -j 1 -v
+
+      - name: PlatformIO Run 2/2
+        run: pio run -e gravity-32c3_supermini -e gravity-32c3_cuckoo -e gravity-32c3_cuckoo_v2 -e gravity-olimex_esp32c3_devkit_lipo -j 1 -v
+
+      - uses: EndBug/add-and-commit@v9
         with:
           add: 'bin html'
           author_name: GitHub Action

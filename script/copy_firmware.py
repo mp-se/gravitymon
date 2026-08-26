@@ -20,7 +20,7 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
-    elif name == "gravity-unit" :
+    elif name == "gravity-unit32" :
         print( "Skipping copy of unit test build" )
 
     # elif name == "gravity32-release" :
@@ -67,6 +67,17 @@ def after_build(source, target, env):
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )
 
+    elif name == "gravity-32s3_zero" :
+        target = dir + "/bin/firmware32s3zero.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32s3zero.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
     elif name == "gravity-32c3_cuckoo" :
         target = dir + "/bin/firmware32c3cuckoo.bin"
         source = dir + "/.pio/build/" + name + "/firmware.bin"
@@ -74,6 +85,17 @@ def after_build(source, target, env):
         shutil.copyfile( source, target )
 
         target = dir + "/bin/partitions32c3cuckoo.bin"
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+    elif name == "gravity-32c3_cuckoo_v2" :
+        target = dir + "/bin/firmware32c3cuckoo2.bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        target = dir + "/bin/partitions32c3cuckoo2.bin"
         source = dir + "/.pio/build/" + name + "/partitions.bin"
         print( "Copy file : " + source + " -> " + target )
         shutil.copyfile( source, target )

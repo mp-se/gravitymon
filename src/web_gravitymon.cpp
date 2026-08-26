@@ -58,14 +58,17 @@ void GravitymonWebServer::doWebCalibrateStatus(JsonObject &obj) {
     if (_gyroCalibrationSuccess) {
       obj[PARAM_SUCCESS] = true;
       obj[PARAM_MESSAGE] = "Calibration completed";
+      obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("CALIBRATION_COMPLETE");
     } else {
       obj[PARAM_SUCCESS] = false;
       obj[PARAM_MESSAGE] =
           "Calibration failed, faulty gyro or movement during calibration";
+      obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("CALIBRATION_FAILED");
     }
   } else {
     obj[PARAM_SUCCESS] = false;
     obj[PARAM_MESSAGE] = "Calibration failed, no gyro connected";
+    obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("CALIBRATION_NO_GYRO");
   }
 }
 

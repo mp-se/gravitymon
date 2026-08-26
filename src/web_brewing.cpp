@@ -91,6 +91,7 @@ void BrewingWebServer::webHandleConfigWrite(AsyncWebServerRequest *request,
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Configuration updated";
+  obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("CONFIG_UPDATED");
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-config-write");
@@ -108,6 +109,7 @@ void BrewingWebServer::webHandleCalibrate(AsyncWebServerRequest *request) {
   JsonObject obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Scheduled device calibration";
+  obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("CALIBRATION_SCHEDULED");
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-calibrate");
@@ -141,6 +143,7 @@ void BrewingWebServer::webHandleFactoryDefaults(
   JsonObject obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Factory reset completed, rebooting";
+  obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("FACTORY_RESET_COMPLETED");
   response->setLength();
   request->send(response);
 
@@ -237,8 +240,10 @@ void BrewingWebServer::webHandleConfigFormatWrite(
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = success > 0 ? true : false;
-  obj[PARAM_MESSAGE] = success > 0 ? "Pressure template stored"
-                                   : "Failed to store pressure template";
+  obj[PARAM_MESSAGE] = success > 0 ? "Template stored"
+                                   : "Failed to store template";
+  obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR(success > 0 ? "TEMPLATE_STORED"
+                                         : "TEMPLATE_FAILED");
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-config-format-write");
@@ -262,6 +267,8 @@ void BrewingWebServer::webHandleTestPush(AsyncWebServerRequest *request,
   obj = response->getRoot().as<JsonObject>();
   obj[PARAM_SUCCESS] = true;
   obj[PARAM_MESSAGE] = "Scheduled test for " + _pushTestTarget;
+  obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("TEST_PUSH_SCHEDULED");
+  obj[PARAM_MESSAGE_CODE_ARG] = _pushTestTarget;
   response->setLength();
   request->send(response);
   PERF_END("webserver-api-test-push");
@@ -272,20 +279,25 @@ void BrewingWebServer::webHandleTestPushStatus(AsyncWebServerRequest *request) {
   Log.notice(F("WEB : webServer callback for /api/test/push/status." CR));
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   JsonObject obj = response->getRoot().as<JsonObject>();
-  String s;
 
-  if (_pushTestTask)
-    s = "Running push tests for " + _pushTestTarget;
-  else if (!_pushTestTask && _pushTestLastCode == 0)
-    s = "No push test has been started";
-  else if (!_pushTestTask && _pushTestLastCode < 0)
-    s = "Push test has failed";
-  else
-    s = "Push test for " + _pushTestTarget + " is complete";
+  if (_pushTestTask) {
+    obj[PARAM_MESSAGE] = "Running push tests for " + _pushTestTarget;
+    obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("TEST_PUSH_RUNNING");
+    obj[PARAM_MESSAGE_CODE_ARG] = _pushTestTarget;
+  } else if (!_pushTestTask && _pushTestLastCode == 0) {
+    obj[PARAM_MESSAGE] = "No push test has been started";
+    obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("TEST_PUSH_NOT_STARTED");
+  } else if (!_pushTestTask && _pushTestLastCode < 0) {
+    obj[PARAM_MESSAGE] = "Push test has failed";
+    obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("TEST_PUSH_FAILED");
+  } else {
+    obj[PARAM_MESSAGE] = "Push test for " + _pushTestTarget + " is complete";
+    obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("TEST_PUSH_COMPLETE");
+    obj[PARAM_MESSAGE_CODE_ARG] = _pushTestTarget;
+  }
 
   obj[PARAM_STATUS] = static_cast<bool>(_pushTestTask);
   obj[PARAM_SUCCESS] = _pushTestLastSuccess;
-  obj[PARAM_MESSAGE] = s;
   obj[PARAM_PUSH_ENABLED] = _pushTestEnabled;
   obj[PARAM_PUSH_RETURN_CODE] = _pushTestLastCode;
   response->setLength();
@@ -349,6 +361,9 @@ void BrewingWebServer::webHandleHardwareScanStatus(
     obj[PARAM_SUCCESS] = false;
     obj[PARAM_MESSAGE] =
         _hardwareScanTask ? "Hardware scanning running" : "No scanning running";
+    obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR(_hardwareScanTask
+                                                 ? "HARDWARE_SCAN_RUNNING"
+                                                 : "HARDWARE_SCAN_NOT_RUNNING");
     response->setLength();
     request->send(response);
   } else {
@@ -533,6 +548,7 @@ void BrewingWebServer::webHandleCalibrateStatus(
   obj[PARAM_STATUS] = static_cast<bool>(_sensorCalibrationTask);
   obj[PARAM_SUCCESS] = false;
   obj[PARAM_MESSAGE] = "Calibration running";
+  obj[PARAM_MESSAGE_CODE] = ESPFWK_WEB_ERR("CALIBRATION_RUNNING");
 
   if (!_sensorCalibrationTask) {
     doWebCalibrateStatus(obj);
