@@ -65,8 +65,10 @@ class BrewingConfig : public BaseConfig,
   float _voltageFactor = 1.74;
 #elif defined(ESP32S2)
   float _voltageFactor = 2.45;
-#elif defined(ESP32S3)
+#elif defined(ESP32S3) && defined(LOLIN_S3_MINI)
   float _voltageFactor = 3.05;
+#elif defined(ESP32S3) &&  defined(WAVESHARE_ESP32S3_ZERO)
+  float _voltageFactor = 2.26;
 #elif defined(ESP32)
   float _voltageFactor = 2.45;
 #else
