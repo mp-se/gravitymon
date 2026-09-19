@@ -476,7 +476,7 @@ void goToSleep(int sleepInterval) {
   LittleFS.end();
   ledOff();
   delay(100);
-  uint32_t wake = sleepInterval * 1000000;
+  uint64_t wake = static_cast<uint64_t>(sleepInterval) * 1000000ULL;
   ESP.deepSleep(wake);
 }
 
