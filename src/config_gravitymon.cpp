@@ -117,6 +117,11 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     int i = 0;
 
     for (JsonVariant v : array) {
+      if (i >= FORMULA_DATA_SIZE) {
+        Log.warning(F("Formula array exceeds maximum size (%d), truncating" CR),
+                    FORMULA_DATA_SIZE);
+        break;
+      }
       _formulaData.a[i] = v["a"].as<double>();
       _formulaData.g[i] = v["g"].as<double>();
       i++;
@@ -272,6 +277,7 @@ void GravitymonConfig::migrateHwSettings() {
   serializeJson(obj2, EspSerial);
   EspSerial.print(CR);
 #endif
+  parseJson(obj2);
   obj2.clear();
 
   if (saveFile()) {
