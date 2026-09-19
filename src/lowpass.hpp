@@ -25,6 +25,7 @@
 #define SRC_LOWPASS_HPP_
 
 #include <Arduino.h>
+#include <cmath>
 
 constexpr auto FILTER_BUFFER_SIZE = 5;
 
@@ -39,6 +40,20 @@ class FilterBase {
   FilterData* _data;
 
   void addValue(float newValue) {
+    // RTC memory can survive resets but is not guaranteed to contain valid
+    // data (for example after a brownout). Never use a corrupted count as an
+    // array index.
+    if (_data->bufferCount < 0 || _data->bufferCount > FILTER_BUFFER_SIZE) {
+      *_data = {0};
+    } else {
+      for (int i = 0; i < _data->bufferCount; i++) {
+        if (!std::isfinite(_data->buffer[i])) {
+          *_data = {0};
+          break;
+        }
+      }
+    }
+
     // Rotate the buffer if needed
     if (_data->bufferCount >= FILTER_BUFFER_SIZE) {
       memmove(&_data->buffer[0], &_data->buffer[1],

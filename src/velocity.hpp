@@ -26,6 +26,7 @@
 
 #include <Arduino.h>
 
+#include <cmath>
 #include <lowpass.hpp>
 #include <memory>
 
@@ -52,6 +53,24 @@ class GravityVelocity {
   GravityVelocityData* _data;
   std::unique_ptr<FilterBase> _filter;
   int16_t _samplesPerPeriod;
+
+  bool hasValidData() const {
+    if (_data->filter.bufferCount < 0 ||
+        _data->filter.bufferCount > FILTER_BUFFER_SIZE) {
+      return false;
+    }
+
+    for (int i = 0; i < VELOCITY_PERIODS; i++) {
+      const auto& period = _data->period[i];
+      if (period.count < 0 || period.count > _samplesPerPeriod ||
+          (period.count > 0 &&
+           (!std::isfinite(period.total) || !std::isfinite(period.min) ||
+            !std::isfinite(period.max)))) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   int16_t getNoValues() const {
     int16_t dataPoints = 0;
@@ -96,9 +115,13 @@ class GravityVelocity {
  public:
   explicit GravityVelocity(GravityVelocityData* data, int sleepInterval)
       : _data(data) {
-    _samplesPerPeriod = sleepInterval >= (3600 * VELOCITY_PERIOD_TIME)
+    const int validSleepInterval = sleepInterval > 0 ? sleepInterval : 1;
+    _samplesPerPeriod = validSleepInterval >= (3600 * VELOCITY_PERIOD_TIME)
                             ? 1
-                            : (3600 * VELOCITY_PERIOD_TIME) / sleepInterval;
+                            : (3600 * VELOCITY_PERIOD_TIME) / validSleepInterval;
+    if (!hasValidData()) {
+      *_data = {0};
+    }
     _filter.reset(new MovingAverageFilter(&data->filter));
   }
 
