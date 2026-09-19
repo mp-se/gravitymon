@@ -121,12 +121,13 @@ class BrewingConfig : public BaseConfig,
 
   int getSleepInterval() const { return _sleepInterval; }
   void setSleepInterval(int v) {
-    _sleepInterval = v;
-    _saveNeeded = true;
+    if (v > 0) {
+      _sleepInterval = v;
+      _saveNeeded = true;
+    }
   }
   void setSleepInterval(String s) {
-    _sleepInterval = s.toInt();
-    _saveNeeded = true;
+    setSleepInterval(s.toInt());
   }
 
   float getVoltageFactor() const { return _voltageFactor; }
