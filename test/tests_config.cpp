@@ -80,6 +80,40 @@ test(config_gravitymonValues) {
   assertEqual(myConfig.isGravityTempAdj(), false);
 }
 
+test(config_rejects_non_positive_intervals) {
+  myConfig.setSleepInterval(300);
+  myConfig.setSleepInterval(0);
+  assertEqual(myConfig.getSleepInterval(), 300);
+  myConfig.setSleepInterval(-1);
+  assertEqual(myConfig.getSleepInterval(), 300);
+  myConfig.setSleepInterval(900);
+
+  myConfig.setGyroReadCount(25);
+  myConfig.setGyroReadCount(0);
+  assertEqual(myConfig.getGyroReadCount(), 25);
+  myConfig.setGyroReadCount(-1);
+  assertEqual(myConfig.getGyroReadCount(), 25);
+  myConfig.setGyroReadCount(50);
+}
+
+test(config_truncates_oversized_formula_data) {
+  JsonDocument doc;
+  JsonArray values = doc["formula_calculation_data"].to<JsonArray>();
+  for (int i = 0; i < FORMULA_DATA_SIZE + 1; i++) {
+    values[i]["a"] = i;
+    values[i]["g"] = i + 1;
+  }
+
+  JsonObject config = doc.as<JsonObject>();
+  myConfig.parseJson(config);
+
+  const RawFormulaData& formula = myConfig.getFormulaData();
+  assertEqual(formula.a[FORMULA_DATA_SIZE - 1],
+              static_cast<double>(FORMULA_DATA_SIZE - 1));
+  assertEqual(formula.g[FORMULA_DATA_SIZE - 1],
+              static_cast<double>(FORMULA_DATA_SIZE));
+}
+
 test(config_gravityFormat) {
   myConfig.setGravityUnit('P');
   assertEqual(myConfig.getGravityUnit(), 'P');
