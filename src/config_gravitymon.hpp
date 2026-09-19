@@ -110,7 +110,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
 
   GyroType getGyroType() const { return _gyroType; }
   void setGyroType(int t) {
-    _gyroType = (GyroType)t;
+    _gyroType = static_cast<GyroType>(t);
     _saveNeeded = true;
   }
   void setGyroType(GyroType t) {
@@ -214,8 +214,10 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
 
   int getGyroReadCount() const { return _gyroReadCount; }
   void setGyroReadCount(int c) {
-    _gyroReadCount = c;
-    _saveNeeded = true;
+    if (c > 0) {
+      _gyroReadCount = c;
+      _saveNeeded = true;
+    }
   }
 
   int getGyroReadDelay() const { return _gyroReadDelay; }
@@ -232,7 +234,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
     return _gravitymonBleFormat;
   }
   void setGravitymonBleFormat(int b) {
-    _gravitymonBleFormat = (GravitymonBleFormat)b;
+    _gravitymonBleFormat = static_cast<GravitymonBleFormat>(b);
     _saveNeeded = true;
   }
   void setGravitymonBleFormat(GravitymonBleFormat b) {
