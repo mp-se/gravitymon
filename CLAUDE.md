@@ -26,7 +26,7 @@ pio run -e gravity-unit32
 pio run -e gravity-unit32 -t upload
 ```
 
-**Active targets:** `gravity-8266`, `gravity-32c3_mini`, `gravity-32c3_zero`, `gravity-32c3_supermini`, `gravity-32c3_cuckoo`, `gravity-32s2_mini`, `gravity-32s3_mini`, `gravity-olimex_esp32c3_devkit_lipo`
+**Active targets:** `gravity-8266`, `gravity-32c3_mini`, `gravity-32c3_zero`, `gravity-32c3_supermini`, `gravity-32c3_cuckoo`, `gravity-32c3_cuckoo_v2`, `gravity-32s2_mini`, `gravity-32s3_mini`, `gravity-32s3_zero`, `gravity-olimex_esp32c3_devkit_lipo`
 
 **Unit test target:** `gravity-unit32` — links `test/tests*.cpp` instead of `main*.cpp`, uses AUnit framework on-device.
 
@@ -78,10 +78,13 @@ Update the device IP in the test script before running.
 - `SKIP_SLEEPMODE` / `FORCE_GRAVITY_MODE` — debug flags
 
 ### HTML UI
-The web UI is a pre-built SPA. Compressed assets live in `html/` and are embedded into the firmware binary via `board_build.embed_txtfiles`. To update the UI, run `copy_ui.sh`.
+The web UI is a pre-built SPA. Compressed assets live in `html/` and are embedded into the firmware binary via `board_build.embed_txtfiles`. To update the UI, run `npm run build` in `ui/`; the `script/copy_ui.py` pre-build step then copies `ui/dist/assets/*.gz` into `html/` as `app.js.gz` / `app.css.gz`.
 
 ### Build Scripts (`script/`)
-Python scripts run as PlatformIO extra_scripts: `board.py` sets board-specific flags, `copy_firmware.py` copies built binaries to `bin/`, `create_versionjson.py` writes `bin/version.json`, `git_rev.py` injects the git revision as a build flag.
+Python scripts run as PlatformIO extra_scripts: `copy_ui.py` copies the built UI into `html/`, `board.py` sets board-specific flags, `copy_firmware.py` copies built binaries to `bin/`, `create_versionjson.py` writes `bin/version.json`. `git_rev.py` injects the git revision as a build flag but is currently disabled in `platformio.ini` (`CFG_GITREV` is hardcoded).
+
+### CI (`.github/workflows/pio-build.yaml`)
+Builds the UI, then all release targets (not `gravity-unit32`; unit tests need a device). On push to `dev`/`cuckoo`/`language` it commits the updated `bin/` and `html/`; on pull requests it only verifies that the build works.
 
 ## Libraries
 Key external dependencies (pinned versions in `platformio.ini`):
