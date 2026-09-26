@@ -41,6 +41,11 @@ jobs:
           npm install
           npm run build
 
+      - name: Copy UI to html
+        run: |
+          cp ui/dist/assets/style.css.gz html/app.css.gz
+          cp ui/dist/assets/index.js.gz html/app.js.gz
+
       - name: Setup Python
         uses: actions/setup-python@v7
         with:
