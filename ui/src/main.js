@@ -78,9 +78,9 @@ import RegisterDeviceFragment from '@/fragments/RegisterDeviceFragment.vue'
 import RegisterCalibrationFragment from '@/fragments/RegisterCalibrationFragment.vue'
 import VoltageFragment from '@/fragments/VoltageFragment.vue'
 
-// Import Bootstrap CSS and JS first, then library CSS to allow overrides
+// Import Bootstrap CSS first, then library CSS to allow overrides. The UI uses
+// Bootstrap styling only; no Bootstrap JavaScript components are initialized.
 import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap/dist/js/bootstrap.bundle.js'
 // import '@mp-se/espframework-ui-components/dist/style.css'
 
 // Register Bootstrap components

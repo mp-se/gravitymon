@@ -28,6 +28,9 @@ export default defineConfig(({ mode }) => {
     viteCompression({
       algorithm: 'gzip',
       threshold: 1024,
+      compressionOptions: {
+        level: 9
+      },
       deleteOriginFile: false
     })
   ],
@@ -54,35 +57,17 @@ export default defineConfig(({ mode }) => {
     __REGISTER_API_KEY__: JSON.stringify(encodedApiKey)
   },
   build: {
-    minify: 'terser',
+    minify: 'oxc',
     cssCodeSplit: false,
     sourcemap: false,
-    target: 'es2015',
+    target: 'es2020',
     chunkSizeWarningLimit: 1000, // Disable chunk size warning (default is 500kB)
-    terserOptions: {
-      compress: {
-        drop_console: false, // Keep console for debugging
-        drop_debugger: true,
-        passes: 2,
-        unsafe: false, // Disable unsafe optimizations that might break code
-        unsafe_comps: false,
-        unsafe_Function: false,
-        unsafe_math: false,
-        unsafe_methods: false,
-        unsafe_proto: false,
-        unsafe_regexp: false,
-        unsafe_undefined: false,
-        side_effects: false
-      },
-      mangle: {
-        properties: false // Disable property mangling to avoid breaking Vue
-      },
-      format: {
-        comments: false
-      }
-    },
     rolldownOptions: {
-      treeshake: true, // Use default tree-shaking instead of aggressive preset
+      treeshake: {
+        annotations: true,
+        propertyReadSideEffects: false,
+        unknownGlobalSideEffects: false
+      },
       external: [
         'json-parse-even-better-errors'
       ],
