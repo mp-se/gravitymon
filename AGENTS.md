@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Codex, Claude Code, etc.) when working with code in this repository.
 
 ## What This Project Is
 
@@ -78,10 +78,10 @@ Update the device IP in the test script before running.
 - `SKIP_SLEEPMODE` / `FORCE_GRAVITY_MODE` — debug flags
 
 ### HTML UI
-The web UI is a pre-built SPA. Compressed assets live in `html/` and are embedded into the firmware binary via `board_build.embed_txtfiles`. To update the UI, run `npm run build` in `ui/`; the `script/copy_ui.py` pre-build step then copies `ui/dist/assets/*.gz` into `html/` as `app.js.gz` / `app.css.gz`.
+The web UI is a pre-built SPA. Compressed assets live in `html/` and are embedded into the firmware binary via `board_build.embed_txtfiles`. To update the UI, run `npm run build` in `ui/`, then copy `ui/dist/assets/index.js.gz` → `html/app.js.gz` and `ui/dist/assets/style.css.gz` → `html/app.css.gz`. This is done manually when the UI changes, and by the CI workflow; the firmware build does not copy it.
 
 ### Build Scripts (`script/`)
-Python scripts run as PlatformIO extra_scripts: `copy_ui.py` copies the built UI into `html/`, `board.py` sets board-specific flags, `copy_firmware.py` copies built binaries to `bin/`, `create_versionjson.py` writes `bin/version.json`. `git_rev.py` injects the git revision as a build flag but is currently disabled in `platformio.ini` (`CFG_GITREV` is hardcoded).
+Python scripts run as PlatformIO extra_scripts: `board.py` sets board-specific flags, `copy_firmware.py` copies built binaries to `bin/`, `create_versionjson.py` writes `bin/version.json`. `git_rev.py` injects the git revision as a build flag but is currently disabled in `platformio.ini` (`CFG_GITREV` is hardcoded).
 
 ### CI (`.github/workflows/pio-build.yaml`)
 Builds the UI, then all release targets (not `gravity-unit32`; unit tests need a device). On push to `dev`/`cuckoo`/`language` it commits the updated `bin/` and `html/`; on pull requests it only verifies that the build works.
