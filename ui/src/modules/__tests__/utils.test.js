@@ -3,7 +3,8 @@ import {
   isGyroCalibrated,
   httpHeaderOptions,
   httpPostUrlOptions,
-  httpGetUrlOptions
+  httpGetUrlOptions,
+  skipIntervalHint
 } from '@/modules/utils'
 import { config } from '@/modules/pinia'
 
@@ -58,5 +59,30 @@ describe('utils - exported options/constants', () => {
   it('exports httpGetUrlOptions', () => {
     expect(httpGetUrlOptions).toBeTruthy()
     expect(httpGetUrlOptions.value).toBeTruthy()
+  })
+})
+
+describe('utils.skipIntervalHint', () => {
+  it('sends every cycle when skip is 0', () => {
+    expect(skipIntervalHint(900, 0)).toBe('Data is sent every 15 min.')
+  })
+
+  it('multiplies the sleep interval by skip + 1', () => {
+    expect(skipIntervalHint(30, 29)).toBe('Data is sent every 15 min.')
+  })
+
+  it('formats hours, minutes and seconds', () => {
+    expect(skipIntervalHint(3665, 0)).toBe('Data is sent every 1 h 1 min 5 s.')
+    expect(skipIntervalHint(45, 0)).toBe('Data is sent every 45 s.')
+  })
+
+  it('accepts numeric strings from the inputs', () => {
+    expect(skipIntervalHint('300', '1')).toBe('Data is sent every 10 min.')
+  })
+
+  it('returns an empty hint for invalid values', () => {
+    expect(skipIntervalHint(0, 0)).toBe('')
+    expect(skipIntervalHint(undefined, 0)).toBe('')
+    expect(skipIntervalHint(900, undefined)).toBe('')
   })
 })

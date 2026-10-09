@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Intervalo de omissão",
     "skip_interval_help": "Define quantos ciclos de suspensão pular entre os envios de dados para este destino, 1 = a cada segundo ciclo. Padrão é 0.",
+    "skip_interval_hint": "Os dados são enviados a cada {period}.",
     "data_format_gravity_label": "Formato de dados (Gravity)",
     "data_format_pressure_label": "Formato de dados (pressão)",
     "data_format_help": "Modelo de formato usado para criar os dados enviados ao serviço remoto",

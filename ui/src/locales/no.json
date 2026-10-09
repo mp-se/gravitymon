@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Hoppintervall",
     "skip_interval_help": "Definerer hvor mange hvilesykluser som skal hoppes over mellom hver push til dette målet, 1 = hver andre syklus. Standard er 0.",
+    "skip_interval_hint": "Data sendes hvert {period}.",
     "data_format_gravity_label": "Dataformat (Gravity)",
     "data_format_pressure_label": "Dataformat (trykk)",
     "data_format_help": "Formatmal brukt til å lage dataene som sendes til den eksterne tjenesten",

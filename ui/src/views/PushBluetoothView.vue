@@ -47,6 +47,9 @@
           </div>
           <div class="col-md-12">
             <p></p>
+            <p v-if="config.ble_format !== 0" data-test="ble-interval-hint">
+              {{ skipIntervalHint(config.sleep_interval, 0) }}
+            </p>
             <p>{{ t('push_bluetooth.restart_hint') }}</p>
           </div>
         </div>
@@ -87,6 +90,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config } from '@/modules/pinia'
+import { skipIntervalHint } from '@/modules/utils'
 
 const { t } = useI18n()
 

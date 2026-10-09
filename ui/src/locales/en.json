@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Skip interval",
     "skip_interval_help": "Defines how many sleep cycles to skip between pushing data to this target, 1 = every second cycle. Default is 0.",
+    "skip_interval_hint": "Data is sent every {period}.",
     "data_format_gravity_label": "Data format (gravity)",
     "data_format_pressure_label": "Data format (pressure)",
     "data_format_help": "Format template used to create the data sent to the remote service",

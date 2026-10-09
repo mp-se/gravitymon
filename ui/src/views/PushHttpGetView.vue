@@ -90,7 +90,7 @@
             min="0"
             max="5"
             width="4"
-            :help="t('push_common.skip_interval_help')"
+            :help="t('push_common.skip_interval_help') + ' ' + skipIntervalHint(config.sleep_interval, config.http_get_int)"
             :disabled="pushDisabled"
           />
         </div>
@@ -254,7 +254,7 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { validateCurrentForm, logError } from '@mp-se/espframework-ui-components'
-import { httpGetUrlOptions, httpHeaderOptions } from '@/modules/utils'
+import { httpGetUrlOptions, httpHeaderOptions, skipIntervalHint } from '@/modules/utils'
 import { gravityHttpGetFormatOptions } from '@/modules/gravityFormatOptions'
 import { pressureHttpGetFormatOptions } from '@/modules/pressureFormatOptions'
 import { applyTemplate } from '@/modules/formatTemplate'

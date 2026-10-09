@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Intervallo di salto",
     "skip_interval_help": "Definisce quanti cicli di sospensione saltare tra un invio di dati e l'altro a questa destinazione, 1 = ogni secondo ciclo. Il valore predefinito è 0.",
+    "skip_interval_hint": "I dati vengono inviati ogni {period}.",
     "data_format_gravity_label": "Formato dati (Gravity)",
     "data_format_pressure_label": "Formato dati (pressione)",
     "data_format_help": "Modello di formato usato per creare i dati inviati al servizio remoto",

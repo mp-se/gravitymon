@@ -118,7 +118,7 @@
             min="0"
             max="5"
             width="4"
-            :help="t('push_common.skip_interval_help')"
+            :help="t('push_common.skip_interval_help') + ' ' + skipIntervalHint(config.sleep_interval, config.http_post_int)"
             :disabled="pushDisabled"
             v-if="config.http_post_tcp === false || global.ui.enableHttpPostTcpMode === false"
           />
@@ -284,7 +284,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { httpHeaderOptions, httpPostUrlOptions } from '@/modules/utils'
+import { httpHeaderOptions, httpPostUrlOptions, skipIntervalHint } from '@/modules/utils'
 import { gravityHttpPostFormatOptions } from '@/modules/gravityFormatOptions'
 import { pressureHttpPostFormatOptions } from '@/modules/pressureFormatOptions'
 import { applyTemplate } from '@/modules/formatTemplate'

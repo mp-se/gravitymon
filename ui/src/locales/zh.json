@@ -359,6 +359,7 @@
     "url_button": "网址",
     "skip_interval_label": "跳过间隔",
     "skip_interval_help": "定义在向此目标推送数据之间跳过多少个休眠周期，1 = 每隔一个周期。默认值为 0。",
+    "skip_interval_hint": "每 {period} 发送一次数据。",
     "data_format_gravity_label": "数据格式（Gravity）",
     "data_format_pressure_label": "数据格式（压力）",
     "data_format_help": "用于创建发送到远程服务的数据的格式模板",

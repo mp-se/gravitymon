@@ -258,6 +258,34 @@ describe('PushBluetoothView (action tests)', () => {
     global.feature.ble = true
   })
 
+  it('shows how often data is sent when bluetooth is enabled', async () => {
+    const { createTestingPinia } = await import('../../tests/testUtils')
+    const { mount } = await import('@vue/test-utils')
+    const { default: View } = await import('../PushBluetoothView.vue')
+    const { config } = await import('@/modules/pinia')
+    config.ble_format = 1
+    config.sleep_interval = 300
+    const wrapper = mount(View, {
+      global: { plugins: [createTestingPinia()], stubs: { BsInputRadio: true } }
+    })
+    expect(wrapper.find('[data-test="ble-interval-hint"]').text()).toBe(
+      'Data is sent every 5 min.'
+    )
+    config.ble_format = 0
+  })
+
+  it('hides the send interval hint when bluetooth is disabled', async () => {
+    const { createTestingPinia } = await import('../../tests/testUtils')
+    const { mount } = await import('@vue/test-utils')
+    const { default: View } = await import('../PushBluetoothView.vue')
+    const { config } = await import('@/modules/pinia')
+    config.ble_format = 0
+    const wrapper = mount(View, {
+      global: { plugins: [createTestingPinia()], stubs: { BsInputRadio: true } }
+    })
+    expect(wrapper.find('[data-test="ble-interval-hint"]').exists()).toBe(false)
+  })
+
   it('v-model bindings on BsInputRadio trigger config updates', async () => {
     const { createTestingPinia } = await import('../../tests/testUtils')
     const { mount } = await import('@vue/test-utils')

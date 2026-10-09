@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Springinterval",
     "skip_interval_help": "Definerer hvor mange dvalecyklusser der skal springes over mellem push af data til dette mål, 1 = hver anden cyklus. Standard er 0.",
+    "skip_interval_hint": "Data sendes hvert {period}.",
     "data_format_gravity_label": "Dataformat (Gravity)",
     "data_format_pressure_label": "Dataformat (tryk)",
     "data_format_help": "Formatskabelon brugt til at oprette de data, der sendes til den eksterne tjeneste",

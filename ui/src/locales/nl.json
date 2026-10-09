@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Overslaginterval",
     "skip_interval_help": "Bepaalt hoeveel slaapcycli worden overgeslagen tussen het pushen van gegevens naar dit doel, 1 = elke tweede cyclus. Standaard is 0.",
+    "skip_interval_hint": "Gegevens worden elke {period} verzonden.",
     "data_format_gravity_label": "Gegevensformaat (Gravity)",
     "data_format_pressure_label": "Gegevensformaat (druk)",
     "data_format_help": "Formaatsjabloon gebruikt om de gegevens te maken die naar de externe service worden gestuurd",

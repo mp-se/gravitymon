@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Interwał pomijania",
     "skip_interval_help": "Określa, ile cykli uśpienia pominąć między wysyłkami danych do tego celu, 1 = co drugi cykl. Domyślnie 0.",
+    "skip_interval_hint": "Dane są wysyłane co {period}.",
     "data_format_gravity_label": "Format danych (Gravity)",
     "data_format_pressure_label": "Format danych (ciśnienie)",
     "data_format_help": "Szablon formatu używany do tworzenia danych wysyłanych do usługi zdalnej",

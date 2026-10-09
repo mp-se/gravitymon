@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Hoppintervall",
     "skip_interval_help": "Definierar hur många vilocykler som ska hoppas över mellan varje push till detta mål, 1 = varannan cykel. Standard är 0.",
+    "skip_interval_hint": "Data skickas var {period}.",
     "data_format_gravity_label": "Dataformat (gravity)",
     "data_format_pressure_label": "Dataformat (tryck)",
     "data_format_help": "Formatmall som används för att skapa datat som skickas till fjärrtjänsten",

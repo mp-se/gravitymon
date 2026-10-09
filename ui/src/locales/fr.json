@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Intervalle d'omission",
     "skip_interval_help": "Définit combien de cycles de veille sauter entre l'envoi de données à cette cible, 1 = un cycle sur deux. Par défaut 0.",
+    "skip_interval_hint": "Les données sont envoyées toutes les {period}.",
     "data_format_gravity_label": "Format de données (gravity)",
     "data_format_pressure_label": "Format de données (pression)",
     "data_format_help": "Modèle de format utilisé pour créer les données envoyées au service distant",

@@ -70,6 +70,19 @@ export function isGyroCalibrated() {
   return true
 }
 
+// Describes how often a push target sends data, given the device sleep interval
+// and the target's skip interval (number of sleep cycles to skip between pushes).
+export function skipIntervalHint(sleepInterval, skip) {
+  const total = Number(sleepInterval) * (Number(skip) + 1)
+  if (!Number.isFinite(total) || total <= 0) return ''
+
+  const h = Math.floor(total / 3600)
+  const m = Math.floor((total % 3600) / 60)
+  const s = total % 60
+  const period = [h && `${h} h`, m && `${m} min`, s && `${s} s`].filter(Boolean).join(' ')
+  return i18n.global.t('push_common.skip_interval_hint', { period })
+}
+
 // Translates a firmware ESPFWK_WEB_ERR message code, falling back to the
 // device's raw (English) message text for codes not yet in locales/*.json.
 export function resolveMessage(code, fallbackText) {

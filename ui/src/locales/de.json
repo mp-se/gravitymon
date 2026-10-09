@@ -359,6 +359,7 @@
     "url_button": "URL",
     "skip_interval_label": "Überspringintervall",
     "skip_interval_help": "Legt fest, wie viele Schlafzyklen zwischen dem Senden von Daten an dieses Ziel übersprungen werden, 1 = jeder zweite Zyklus. Standard ist 0.",
+    "skip_interval_hint": "Daten werden alle {period} gesendet.",
     "data_format_gravity_label": "Datenformat (Gravity)",
     "data_format_pressure_label": "Datenformat (Druck)",
     "data_format_help": "Formatvorlage zur Erstellung der an den Remote-Dienst gesendeten Daten",

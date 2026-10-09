@@ -76,7 +76,7 @@
             min="0"
             max="5"
             width="4"
-            :help="t('push_common.skip_interval_help')"
+            :help="t('push_common.skip_interval_help') + ' ' + skipIntervalHint(config.sleep_interval, config.mqtt_int)"
             :disabled="pushDisabled"
           />
         </div>
@@ -255,6 +255,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { skipIntervalHint } from '@/modules/utils'
 import { gravityMqttFormatOptions } from '@/modules/gravityFormatOptions'
 import { pressureMqttFormatOptions } from '@/modules/pressureFormatOptions'
 import { applyTemplate } from '@/modules/formatTemplate'
