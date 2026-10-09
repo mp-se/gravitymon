@@ -82,7 +82,7 @@ GyroMode MPU6050Gyro::enterSleep(GyroMode mode) {
 GyroResultData MPU6050Gyro::readSensor(GyroMode mode) {
   int noIterations = _gyroConfig->getGyroReadCount();
 #if !defined(GYRO_USE_INTERRUPT)
-  int delayTime = myConfig.getGyroReadDelay();
+  int delayTime = _gyroConfig->getGyroReadDelay();
 #endif
   RawGyroDataL average = {0, 0, 0, 0, 0, 0};
 
