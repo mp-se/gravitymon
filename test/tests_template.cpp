@@ -9,6 +9,7 @@
 
 #include <AUnit.h>
 
+#include <main.hpp>
 #include <templating.hpp>
 #include <pushtarget.hpp>
 #include <config_gravitymon.hpp>
@@ -144,6 +145,23 @@ test(template_applyTemplate7) {
   // When run using charger the level should be 100%
   String v = "4.20-100";
   assertEqual(s, v);
+}
+
+test(template_applyTemplate8) {
+  TemplatingEngine e;
+  const char* tpl = "${ip-address}|${run-mode}";
+
+  RunMode saved = runMode;
+
+  runMode = RunMode::measurementMode;
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  assertEqual(e.create(tpl), WiFi.localIP().toString() + "|measurement");
+
+  runMode = RunMode::configurationMode;
+  setupTemplateEngineGravity(&myConfig, e, 45.0, 0, 1.123, 1.223, 21.2, 2.98, 3.88);
+  assertEqual(e.create(tpl), WiFi.localIP().toString() + "|configuration");
+
+  runMode = saved;
 }
 
 // EOF

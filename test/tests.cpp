@@ -17,6 +17,7 @@ using aunit::Printer;
 using aunit::TestRunner;
 using aunit::Verbosity;
 
+RunMode runMode = RunMode::measurementMode;
 GravitymonConfig myConfig("test", "test.cfg");
 GyroSensor myGyro(&myConfig);
 BatteryVoltage myBatteryVoltage(&myConfig);

@@ -108,4 +108,10 @@ These are the format keys available for use in the format.
    * - ${app-build}
      - Software revision (git hash)
      - ..e456743
+   * - ${ip-address}
+     - IP address of the device
+     - 192.168.1.50
+   * - ${run-mode}
+     - Mode the device is running in when data is sent, `measurement` or `configuration`
+     - measurement
 

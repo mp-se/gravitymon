@@ -66,6 +66,11 @@ void setupTemplateEngineGravity(GravitymonConfig* config,
   // Performance metrics
   engine.setVal(TPL_RUN_TIME, runTime, DECIMALS_RUNTIME);
   engine.setVal(TPL_RSSI, WiFi.RSSI());
+  engine.setVal(TPL_IP_ADDRESS, WiFi.localIP().toString());
+  // Data is only pushed in measurement or configuration mode.
+  engine.setVal(TPL_RUN_MODE, runMode == RunMode::measurementMode
+                                  ? "measurement"
+                                  : "configuration");
 
   // Angle/Tilt
   engine.setVal(TPL_TILT, angle, DECIMALS_TILT);
