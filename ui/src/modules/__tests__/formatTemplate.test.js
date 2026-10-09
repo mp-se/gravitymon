@@ -163,6 +163,25 @@ describe('formatTemplate.applyTemplate', () => {
     expect(result).toContain('"build": "42"')
   })
 
+  it('replaces ip-address and run-mode placeholders', () => {
+    const status = { temp: 20, angle: 0, rssi: 0, gravity: 1.0, battery: 0, ip: '192.168.1.50' }
+    const cfg = {
+      mdns: 'test',
+      id: '1',
+      sleep_interval: 60,
+      token: '',
+      token2: '',
+      temp_unit: 'C',
+      gravity_unit: 'G'
+    }
+
+    const template = '{"ip": "${ip-address}", "mode": "${run-mode}"}'
+    const result = applyTemplate(status, cfg, template)
+
+    expect(result).toContain('"ip": "192.168.1.50"')
+    expect(result).toContain('"mode": "measurement"')
+  })
+
   it('returns formatted JSON when template is valid JSON', () => {
     const status = { temp: 20, angle: 0, rssi: 0, gravity: 1.0, battery: 0 }
     const cfg = {

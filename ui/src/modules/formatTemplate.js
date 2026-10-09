@@ -106,6 +106,8 @@ export function applyTemplate(status, config, template) {
   s = s.replaceAll('${app-build}', global.app_build)
   s = s.replaceAll('${battery-percent}', 100)
   s = s.replaceAll('${rssi}', status.rssi)
+  s = s.replaceAll('${ip-address}', status.ip)
+  s = s.replaceAll('${run-mode}', 'measurement') // or 'configuration', depends on device mode
   s = s.replaceAll('${run-time}', 5)
   s = s.replaceAll('${battery}', status.battery)
 
