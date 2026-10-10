@@ -10,6 +10,7 @@ cuckoo/
 src_docs/_build/*
 .DS_Store
 *.map
+tasks/
 
 ui/.env.development
 ui/node_modules
