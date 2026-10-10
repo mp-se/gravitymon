@@ -293,7 +293,7 @@
   },
   "firmware": {
     "title": "Firmware Upload",
-    "select_info": "Selet the firmware file that matches your device. Platform:",
+    "select_info": "Select the firmware file that matches your device. Platform:",
     "version_label": ", Version: ",
     "hardware_label": ", Hardware: ",
     "filename_label": ", Filename: ",
