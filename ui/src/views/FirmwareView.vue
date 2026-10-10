@@ -27,7 +27,7 @@
     <div class="row">
       <form @submit.prevent="upload">
         <div style="col-md-12">
-          <p>
+          <p v-if="global.ui.enableFirmwareDetails">
             {{ t('firmware.select_info') }}
             <span class="badge bg-secondary">{{ global.platform }}</span>
             <template v-if="global.app_ver && global.app_build"

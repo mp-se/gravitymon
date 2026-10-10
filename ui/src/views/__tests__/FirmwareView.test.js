@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import FirmwareView from '../FirmwareView.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
+import { global } from '@/modules/pinia'
 
 // Mock the UI components library
 vi.mock('@mp-se/espframework-ui-components', () => ({
@@ -453,5 +454,40 @@ describe('FirmwareView (action tests)', () => {
     vi.useRealTimers()
     vi.restoreAllMocks()
     expect(wrapper.exists()).toBe(true)
+  })
+
+  it('hides platform, version, hardware and file name when enableFirmwareDetails is off', () => {
+    global.platform = 'ESP32C3'
+    global.hardware = 'CUCKOO'
+    global.firmware_file = 'firmware32c3.bin'
+    global.ui.enableFirmwareDetails = false
+
+    const wrapper = mount(FirmwareView, {
+      global: { stubs: { BsFileUpload: true, BsProgress: true } }
+    })
+
+    expect(wrapper.text()).not.toContain('ESP32C3')
+    expect(wrapper.text()).not.toContain('CUCKOO')
+    expect(wrapper.text()).not.toContain('firmware32c3.bin')
+    expect(wrapper.find('.badge').exists()).toBe(false)
+    // The upload itself is still there
+    expect(wrapper.text()).toContain('Flash firmware')
+
+    global.ui.enableFirmwareDetails = true
+  })
+
+  it('shows platform, hardware and file name when enableFirmwareDetails is on', () => {
+    global.platform = 'ESP32C3'
+    global.hardware = 'CUCKOO'
+    global.firmware_file = 'firmware32c3.bin'
+    global.ui.enableFirmwareDetails = true
+
+    const wrapper = mount(FirmwareView, {
+      global: { stubs: { BsFileUpload: true, BsProgress: true } }
+    })
+
+    expect(wrapper.text()).toContain('ESP32C3')
+    expect(wrapper.text()).toContain('CUCKOO')
+    expect(wrapper.text()).toContain('firmware32c3.bin')
   })
 })

@@ -46,7 +46,8 @@ export const useGlobalStore = defineStore('global', {
         enableGravity: true,
         enablePressure: false,
         enableHttpPostTcpMode: true,
-        enableLanguageDownload: true
+        enableLanguageDownload: true,
+        enableFirmwareDetails: true
       },
 
       feature: {
