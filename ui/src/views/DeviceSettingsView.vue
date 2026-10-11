@@ -122,7 +122,7 @@
 
         <div class="col-md-9">
           <BsInputText
-            v-model="config.ota_url"
+            v-model="otaUrl"
             type="url"
             maxlength="80"
             :label="t('device_settings.ota_url_label')"
@@ -294,6 +294,14 @@ const showRegisterModal = ref(false)
 const otaCallback = (opt) => {
   config.ota_url = opt
 }
+
+// Leading/trailing blanks (from a paste) would break the update check URL
+const otaUrl = computed({
+  get: () => config.ota_url,
+  set: (value) => {
+    config.ota_url = value ? value.trim() : ''
+  }
+})
 
 // Convenience list of downloadable language packs, read from the same
 // version.json already used for firmware update checks (same base URL as

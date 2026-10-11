@@ -776,6 +776,15 @@ describe('DeviceSettingsView (action tests)', () => {
     expect(config.ota_url).toBe('https://www.example.com/firmware/')
   })
 
+  it('otaUrl trims blanks when set', async () => {
+    const wrapper = mountView()
+    wrapper.vm.otaUrl = '  https://www.example.com/firmware/ '
+    const { config } = await import('@/modules/pinia')
+    expect(config.ota_url).toBe('https://www.example.com/firmware/')
+    wrapper.vm.otaUrl = ''
+    expect(config.ota_url).toBe('')
+  })
+
   it('reportUsage sets showRegisterModal to true', async () => {
     const wrapper = mountView()
     await wrapper.vm.reportUsage()
