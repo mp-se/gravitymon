@@ -140,6 +140,17 @@ describe('configStore', () => {
     expect(store.temp_unit).toBe('F')
   })
 
+  it('load calls registered callbacks with the full response', async () => {
+    const callback = vi.fn((json, cfg) => cfg.$patch({ extra_setting: json.extra_setting }))
+    store.registerLoadCallback(callback)
+    http.getJson.mockResolvedValueOnce({ id: 'test-id', extra_setting: 42 })
+    const result = await store.load()
+    expect(result).toBe(true)
+    expect(callback).toHaveBeenCalledTimes(1)
+    expect(callback.mock.calls[0][0].extra_setting).toBe(42)
+    expect(store.$state.extra_setting).toBe(42)
+  })
+
   it('sendConfig sends changes', async () => {
     getConfigChanges.mockReturnValueOnce({ id: 'new-id' })
     http.postJson.mockResolvedValueOnce({ ok: true })

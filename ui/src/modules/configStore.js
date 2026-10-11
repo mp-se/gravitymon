@@ -26,6 +26,9 @@ import { tempToC, tempToF, roundVal } from '@mp-se/espframework-ui-components'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 import { resolveMessage } from '@/modules/utils'
 
+// Callbacks that get the full /api/config response after it has been loaded, see registerLoadCallback()
+const loadCallbacks = []
+
 export const useConfigStore = defineStore('config', {
   state: () => {
     return {
@@ -147,6 +150,13 @@ export const useConfigStore = defineStore('config', {
       logInfo('configStore.toJSON()', dest)
       return JSON.stringify(dest, null, 2)
     },
+    // Lets a custom UI handle settings that the standard config does not know about. The callback is
+    // called with (json, store) after each load, with the full response. Adding the values to the
+    // store state, for example with store.$patch(), makes them part of the change detection and
+    // they are sent by saveAll() in the same request as the standard settings.
+    registerLoadCallback(callback) {
+      loadCallbacks.push(callback)
+    },
     async load() {
       global.disabled = true
       logInfo('configStore.load()', 'Fetching /api/config')
@@ -237,6 +247,8 @@ export const useConfigStore = defineStore('config', {
         this.formula_calculation_data = json.formula_calculation_data
         this.gyro_calibration_data = json.gyro_calibration_data
         this.dark_mode = json.dark_mode
+
+        loadCallbacks.forEach((callback) => callback(json, this))
 
         this.internal_temp_unit = 'C'
         this.convertTemp()
