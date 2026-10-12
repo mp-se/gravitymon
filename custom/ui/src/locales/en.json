@@ -1,0 +1,90 @@
+{
+  "cuckoo": {
+    "app": {
+      "initializing": "Initializing the CuckooTilt web interface",
+      "no_response": "No response from the device",
+      "err_auth": "Failed to authenticate with the device",
+      "err_load": "Failed to load data from the device",
+      "footer_by": "by",
+      "footer_based_on": "Based on"
+    },
+    "nav": {
+      "language": "Language",
+      "save_needed": "Save needed",
+      "back": "Back to main"
+    },
+    "sleep_interval": "Sleep interval",
+    "home": {
+      "wifi_header": "WIFI",
+      "wifi_link": "WIFI Settings",
+      "http_post_header": "HTTP Post",
+      "http_post_link": "HTTP Post Settings",
+      "bluetooth_header": "Bluetooth",
+      "bluetooth_link": "Bluetooth Settings",
+      "formula_header": "Gravity Formula",
+      "formula_link": "Gravity Formula Settings",
+      "firmware_header": "Firmware",
+      "firmware_text": "Current Version: {version}",
+      "firmware_link": "Firmware Upload",
+      "battery_header": "Battery",
+      "battery_link": "Battery Settings",
+      "device_header": "Device",
+      "copy_id": "Copy ID",
+      "copied": "Copied!",
+      "tools_text": "Firmware update, About and restore",
+      "tools_link": "System Tools"
+    },
+    "wifi": {
+      "title": "CuckooTilt - WiFi",
+      "ssid_label": "SSID",
+      "pass_label": "Password",
+      "device_id": "Device ID",
+      "direct_title": "WIFI Direct"
+    },
+    "http_post": {
+      "title": "Push - HTTP Post",
+      "switch_label": "Http Post Switch",
+      "interval_help": "The number of seconds that the device will sleep between gravity readings. Recommended value is 900s",
+      "data_format": "Data Format",
+      "run_test": "Run push test"
+    },
+    "bluetooth": {
+      "switch_label": "Bluetooth Switch",
+      "interval_help": "The number of seconds that the device will sleep between gravity readings. Recommended value is 30s"
+    },
+    "formula": {
+      "title": "Gravity Formula",
+      "help": "Formula used to convert angle to gravity. If created outside CuckooTilt the formula needs to be created for Specific Gravity!",
+      "use_default": "Use default formula"
+    },
+    "battery": {
+      "title": "Device - Battery",
+      "save": "Save"
+    },
+    "tools": {
+      "title": "System tools",
+      "intro": "Maintenance, diagnostics and firmware for this device.",
+      "version": "Firmware version: {version}",
+      "firmware_title": "Firmware update",
+      "firmware_text": "Open a firmware update page to install a new firmware version.",
+      "about_title": "About",
+      "about_text": "About CuckooTilt, GravityMon and licensing.",
+      "open": "Open",
+      "restore_title": "Restore default settings",
+      "restore_text": "Keep the WIFI settings, reset all other settings, remove uploaded templates and restart the device.",
+      "restore_button": "Restore defaults",
+      "restore_confirm": "Do you really want to restore default settings? WIFI settings are kept, all other settings are lost and the device will restart.",
+      "restore_requesting": "Sending restore request...",
+      "restore_accepted": "Device is resetting and restarting, the page will reload",
+      "restore_failed": "Failed to restore settings, check the device connection and retry"
+    },
+    "about": {
+      "title": "About - CuckooTilt",
+      "based_on": "Based on GravityMon",
+      "intro_before": "CuckooTilt is a product by Cuckoo (ckbrew.com). It is based on",
+      "intro_after": "by Magnus Persson (mp-se) and has been modified for the Cuckoo brewing platform. It is used and distributed under a commercial license obtained from the author. Cuckoo (ckbrew.com) is a corporate sponsor of the GravityMon project.",
+      "license_title": "License & Attribution",
+      "license_text": "GravityMon is Copyright (c) 2021-2026 Magnus Persson, originally released under the MIT License. The original copyright notice and permission notice are retained below as required."
+    }
+  }
+}

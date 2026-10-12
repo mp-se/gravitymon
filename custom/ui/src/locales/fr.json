@@ -1,0 +1,90 @@
+{
+  "cuckoo": {
+    "app": {
+      "initializing": "Initialisation de l'interface web CuckooTilt",
+      "no_response": "Aucune réponse de l'appareil",
+      "err_auth": "Échec de l'authentification auprès de l'appareil",
+      "err_load": "Échec du chargement des données de l'appareil",
+      "footer_by": "par",
+      "footer_based_on": "Basé sur"
+    },
+    "nav": {
+      "language": "Langue",
+      "save_needed": "Enregistrement requis",
+      "back": "Retour à l'accueil"
+    },
+    "sleep_interval": "Intervalle de veille",
+    "home": {
+      "wifi_header": "WIFI",
+      "wifi_link": "Paramètres WIFI",
+      "http_post_header": "HTTP Post",
+      "http_post_link": "Paramètres HTTP Post",
+      "bluetooth_header": "Bluetooth",
+      "bluetooth_link": "Paramètres Bluetooth",
+      "formula_header": "Formule de densité",
+      "formula_link": "Paramètres de la formule de densité",
+      "firmware_header": "Firmware",
+      "firmware_text": "Version actuelle : {version}",
+      "firmware_link": "Mise à jour du firmware",
+      "battery_header": "Batterie",
+      "battery_link": "Paramètres de la batterie",
+      "device_header": "Appareil",
+      "copy_id": "Copier l'ID",
+      "copied": "Copié !",
+      "tools_text": "Mise à jour du firmware, À propos et réinitialisation",
+      "tools_link": "Outils système"
+    },
+    "wifi": {
+      "title": "CuckooTilt - WiFi",
+      "ssid_label": "SSID",
+      "pass_label": "Mot de passe",
+      "device_id": "ID de l'appareil",
+      "direct_title": "WIFI Direct"
+    },
+    "http_post": {
+      "title": "Envoi - HTTP Post",
+      "switch_label": "Activer HTTP Post",
+      "interval_help": "Nombre de secondes pendant lesquelles l'appareil reste en veille entre deux mesures de densité. La valeur recommandée est 900 s",
+      "data_format": "Format des données",
+      "run_test": "Lancer un test d'envoi"
+    },
+    "bluetooth": {
+      "switch_label": "Activer Bluetooth",
+      "interval_help": "Nombre de secondes pendant lesquelles l'appareil reste en veille entre deux mesures de densité. La valeur recommandée est 30 s"
+    },
+    "formula": {
+      "title": "Formule de densité",
+      "help": "Formule utilisée pour convertir l'angle en densité. Si elle a été créée en dehors de CuckooTilt, elle doit être créée pour la densité spécifique (SG) !",
+      "use_default": "Utiliser la formule par défaut"
+    },
+    "battery": {
+      "title": "Appareil - Batterie",
+      "save": "Enregistrer"
+    },
+    "tools": {
+      "title": "Outils système",
+      "intro": "Maintenance, diagnostic et firmware de cet appareil.",
+      "version": "Version du firmware : {version}",
+      "firmware_title": "Mise à jour du firmware",
+      "firmware_text": "Ouvre la page de mise à jour pour installer une nouvelle version du firmware.",
+      "about_title": "À propos",
+      "about_text": "À propos de CuckooTilt, de GravityMon et des licences.",
+      "open": "Ouvrir",
+      "restore_title": "Restaurer les paramètres par défaut",
+      "restore_text": "Conserve les paramètres WIFI, réinitialise tous les autres paramètres, supprime les modèles téléversés et redémarre l'appareil.",
+      "restore_button": "Restaurer",
+      "restore_confirm": "Voulez-vous vraiment restaurer les paramètres par défaut ? Les paramètres WIFI sont conservés, tous les autres sont perdus et l'appareil va redémarrer.",
+      "restore_requesting": "Envoi de la demande de restauration...",
+      "restore_accepted": "L'appareil se réinitialise et redémarre, la page va se recharger",
+      "restore_failed": "Échec de la restauration, vérifiez la connexion à l'appareil et réessayez"
+    },
+    "about": {
+      "title": "À propos - CuckooTilt",
+      "based_on": "Basé sur GravityMon",
+      "intro_before": "CuckooTilt est un produit de Cuckoo (ckbrew.com). Il est basé sur",
+      "intro_after": "de Magnus Persson (mp-se) et a été modifié pour la plateforme de brassage Cuckoo. Il est utilisé et distribué sous une licence commerciale obtenue auprès de l'auteur. Cuckoo (ckbrew.com) est un sponsor du projet GravityMon.",
+      "license_title": "Licence et attribution",
+      "license_text": "GravityMon est Copyright (c) 2021-2026 Magnus Persson, publié à l'origine sous licence MIT. L'avis de copyright et l'avis de permission d'origine sont conservés ci-dessous, comme requis."
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "cuckoo": {
+    "app": {
+      "initializing": "正在初始化 CuckooTilt 网页界面",
+      "no_response": "设备无响应",
+      "err_auth": "设备认证失败",
+      "err_load": "无法从设备加载数据",
+      "footer_by": "由",
+      "footer_based_on": "基于"
+    },
+    "nav": {
+      "language": "语言",
+      "save_needed": "需要保存",
+      "back": "返回首页"
+    },
+    "sleep_interval": "休眠间隔",
+    "home": {
+      "wifi_header": "WIFI",
+      "wifi_link": "WIFI 设置",
+      "http_post_header": "HTTP Post",
+      "http_post_link": "HTTP Post 设置",
+      "bluetooth_header": "蓝牙",
+      "bluetooth_link": "蓝牙设置",
+      "formula_header": "比重公式",
+      "formula_link": "比重公式设置",
+      "firmware_header": "固件",
+      "firmware_text": "当前版本：{version}",
+      "firmware_link": "固件上传",
+      "battery_header": "电池",
+      "battery_link": "电池设置",
+      "device_header": "设备",
+      "copy_id": "复制 ID",
+      "copied": "已复制！",
+      "tools_text": "固件更新、关于和恢复",
+      "tools_link": "系统工具"
+    },
+    "wifi": {
+      "title": "CuckooTilt - WiFi",
+      "ssid_label": "SSID",
+      "pass_label": "密码",
+      "device_id": "设备 ID",
+      "direct_title": "WIFI 直连"
+    },
+    "http_post": {
+      "title": "推送 - HTTP Post",
+      "switch_label": "HTTP Post 开关",
+      "interval_help": "两次比重读数之间设备休眠的秒数。推荐值为 900 秒",
+      "data_format": "数据格式",
+      "run_test": "运行推送测试"
+    },
+    "bluetooth": {
+      "switch_label": "蓝牙开关",
+      "interval_help": "两次比重读数之间设备休眠的秒数。推荐值为 30 秒"
+    },
+    "formula": {
+      "title": "比重公式",
+      "help": "用于将角度转换为比重的公式。如果公式不是在 CuckooTilt 中创建的，则必须是针对比重 (SG) 创建的！",
+      "use_default": "使用默认公式"
+    },
+    "battery": {
+      "title": "设备 - 电池",
+      "save": "保存"
+    },
+    "tools": {
+      "title": "系统工具",
+      "intro": "此设备的维护、诊断和固件。",
+      "version": "固件版本：{version}",
+      "firmware_title": "固件更新",
+      "firmware_text": "打开固件更新页面以安装新的固件版本。",
+      "about_title": "关于",
+      "about_text": "关于 CuckooTilt、GravityMon 和许可证。",
+      "open": "打开",
+      "restore_title": "恢复默认设置",
+      "restore_text": "保留 WIFI 设置，重置所有其他设置，删除已上传的模板并重启设备。",
+      "restore_button": "恢复默认",
+      "restore_confirm": "确定要恢复默认设置吗？WIFI 设置将被保留，其他所有设置将丢失，设备将重启。",
+      "restore_requesting": "正在发送恢复请求...",
+      "restore_accepted": "设备正在重置并重启，页面将重新加载",
+      "restore_failed": "恢复设置失败，请检查设备连接后重试"
+    },
+    "about": {
+      "title": "关于 - CuckooTilt",
+      "based_on": "基于 GravityMon",
+      "intro_before": "CuckooTilt 是 Cuckoo (ckbrew.com) 的产品，基于",
+      "intro_after": "（作者 Magnus Persson，mp-se），并已针对 Cuckoo 酿造平台进行修改。本软件根据从作者处获得的商业许可使用和分发。Cuckoo (ckbrew.com) 是 GravityMon 项目的企业赞助商。",
+      "license_title": "许可证与署名",
+      "license_text": "GravityMon 版权所有 (c) 2021-2026 Magnus Persson，最初以 MIT 许可证发布。按要求，原始版权声明和许可声明保留如下。"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "cuckootilt-ui",
+  "version": "2.6.0",
+  "private": true,
+  "type": "module",
+  "description": "CuckooTilt UI. Reuses the stores, components and some views of ../../ui; dependencies are installed there.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:firmware": "vite build && cp dist/assets/index.js.gz ../html/app.js.gz && cp dist/assets/style.css.gz ../html/app.css.gz",
+    "mock": "node mock-server.js"
+  }
+}
