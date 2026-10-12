@@ -55,9 +55,9 @@
 
           <div class="col-md-6">
             <BsInputSwitch
-              v-model="config.always_send_ble"
-              :label="t('push_bluetooth.always_send_ble_label')"
-              :help="t('push_bluetooth.always_send_ble_help')"
+              v-model="config.send_ble_without_measurement"
+              :label="t('push_bluetooth.send_ble_without_measurement_label')"
+              :help="t('push_bluetooth.send_ble_without_measurement_help')"
               :disabled="global.disabled32"
             />
           </div>

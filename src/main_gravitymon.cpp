@@ -345,7 +345,8 @@ bool loopReadGravity() {
       PERF_BEGIN("loop-push");
 
 #if defined(ENABLE_BLE)
-      if (myConfig.isBleActive() && (angleValid || myConfig.isAlwaysSendBle())) {
+      if (myConfig.isBleActive() &&
+          (angleValid || myConfig.shouldSendBleWithoutMeasurement())) {
         myBleSender.init();
 
         switch (myConfig.getGravitymonBleFormat()) {
@@ -436,7 +437,8 @@ bool loopReadGravity() {
     bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
                         (myConfig.getSleepInterval() * 1000));
 
-    if (pushExpired && myConfig.isBleActive() && myConfig.isAlwaysSendBle()) {
+    if (pushExpired && myConfig.isBleActive() &&
+        myConfig.shouldSendBleWithoutMeasurement()) {
       pushMillis = millis();
 
       myBleSender.init();

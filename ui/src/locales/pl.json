@@ -454,8 +454,8 @@
     "restart_hint": "Zmiana ustawień Bluetooth może wymagać ponownego uruchomienia, aby działać prawidłowo",
     "save": "Zapisz",
     "not_available": "Bluetooth nie jest dostępny na tej platformie",
-    "always_send_ble_label": "Zawsze wysyłaj dane BLE",
-    "always_send_ble_help": "Po włączeniu dane BLE będą wysyłane nawet wtedy, gdy nie są dostępne prawidłowe pomiary. Jest to przydatne do testowania BLE."
+    "send_ble_without_measurement_label": "Wysyłaj dane BLE bez pomiaru",
+    "send_ble_without_measurement_help": "W regularnym interwale raportowania dane BLE z niedostępnymi wartościami są wysyłane, gdy nie można uzyskać prawidłowego pomiaru."
   },
   "fragment_voltage": {
     "title": "Oblicz nowy współczynnik napięcia",

@@ -65,7 +65,8 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
   doc[CONFIG_IGNORE_LOW_ANGLES] = this->isIgnoreLowAngles();
   doc[CONFIG_BLE_FORMAT] = getGravitymonBleFormat();
-  doc[CONFIG_ALWAYS_SEND_BLE] = isAlwaysSendBle();
+  doc[CONFIG_SEND_BLE_WITHOUT_MEASUREMENT] =
+      shouldSendBleWithoutMeasurement();
   doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
   doc[CONFIG_CHARGING_PIN_ENABLED] = this->isPinChargingMode();
 
@@ -150,8 +151,12 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     setIgnoreLowAngles(doc[CONFIG_IGNORE_LOW_ANGLES].as<bool>());
   if (!doc[CONFIG_BLE_FORMAT].isNull())
     setGravitymonBleFormat(doc[CONFIG_BLE_FORMAT].as<int>());
-  if (!doc[CONFIG_ALWAYS_SEND_BLE].isNull())
-    setAlwaysSendBle(doc[CONFIG_ALWAYS_SEND_BLE].as<bool>());
+  if (!doc[CONFIG_SEND_BLE_WITHOUT_MEASUREMENT].isNull())
+    setSendBleWithoutMeasurement(
+        doc[CONFIG_SEND_BLE_WITHOUT_MEASUREMENT].as<bool>());
+  else if (!doc[CONFIG_ALWAYS_SEND_BLE_LEGACY].isNull())
+    setSendBleWithoutMeasurement(
+        doc[CONFIG_ALWAYS_SEND_BLE_LEGACY].as<bool>());
   if (!doc[CONFIG_BATTERY_SAVING].isNull())
     setBatterySaving(doc[CONFIG_BATTERY_SAVING].as<bool>());
   if (!doc[CONFIG_CHARGING_PIN_ENABLED].isNull())

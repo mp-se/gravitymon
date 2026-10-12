@@ -454,8 +454,8 @@
     "restart_hint": "Alterar as configurações de Bluetooth pode exigir uma reinicialização para funcionar corretamente",
     "save": "Salvar",
     "not_available": "Bluetooth não está disponível nesta plataforma",
-    "always_send_ble_label": "Sempre enviar dados BLE",
-    "always_send_ble_help": "Quando ativado, os dados BLE serão enviados mesmo quando não houver medições válidas. Isso é útil para testar o BLE."
+    "send_ble_without_measurement_label": "Enviar dados BLE sem uma medição",
+    "send_ble_without_measurement_help": "No intervalo regular de envio, os dados BLE com valores indisponíveis são enviados quando não for possível obter uma medição válida."
   },
   "fragment_voltage": {
     "title": "Calcular um novo fator de tensão",

@@ -42,7 +42,9 @@ constexpr auto CONFIG_STORAGE_SLEEP = "storage_sleep";
 constexpr auto CONFIG_FORMULA_DATA = "formula_calculation_data";
 constexpr auto CONFIG_GRAVITY = "gravity";
 constexpr auto CONFIG_BLE_TILT_COLOR = "ble_tilt_color";
-constexpr auto CONFIG_ALWAYS_SEND_BLE = "always_send_ble";
+constexpr auto CONFIG_SEND_BLE_WITHOUT_MEASUREMENT =
+    "send_ble_without_measurement";
+constexpr auto CONFIG_ALWAYS_SEND_BLE_LEGACY = "always_send_ble";
 constexpr auto CONFIG_GYRO_READ_COUNT = "gyro_read_count";
 constexpr auto CONFIG_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
 constexpr auto CONFIG_FORMULA_DEVIATION = "formula_max_deviation";
@@ -78,7 +80,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
   GravitymonBleFormat _gravitymonBleFormat = GravitymonBleFormat::BLE_DISABLED;
-  bool _alwaysSendBle = false;
+  bool _sendBleWithoutMeasurement = false;
   GyroType _gyroType = GyroType::GYRO_NONE;
 
   bool _gravityTempAdj = false;
@@ -244,9 +246,11 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
     _saveNeeded = true;
   }
 
-  bool isAlwaysSendBle() const { return _alwaysSendBle; }
-  void setAlwaysSendBle(bool b) {
-    _alwaysSendBle = b;
+  bool shouldSendBleWithoutMeasurement() const {
+    return _sendBleWithoutMeasurement;
+  }
+  void setSendBleWithoutMeasurement(bool b) {
+    _sendBleWithoutMeasurement = b;
     _saveNeeded = true;
   }
 

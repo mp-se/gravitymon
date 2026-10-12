@@ -454,8 +454,8 @@
     "restart_hint": "更改蓝牙设置可能需要重启才能正常工作",
     "save": "保存",
     "not_available": "此平台不支持蓝牙",
-    "always_send_ble_label": "始终发送 BLE 数据",
-    "always_send_ble_help": "启用后，即使没有有效测量值，也会发送 BLE 数据。这对于测试 BLE 很有用。"
+    "send_ble_without_measurement_label": "无测量值时发送 BLE 数据",
+    "send_ble_without_measurement_help": "在常规报告间隔内，当无法获得有效测量值时，会发送包含不可用值的 BLE 数据。"
   },
   "fragment_voltage": {
     "title": "计算新的电压系数",

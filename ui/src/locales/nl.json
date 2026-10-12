@@ -454,8 +454,8 @@
     "restart_hint": "Het wijzigen van bluetooth-instellingen kan een herstart vereisen om correct te werken",
     "save": "Opslaan",
     "not_available": "Bluetooth is niet beschikbaar op dit platform",
-    "always_send_ble_label": "Altijd BLE-gegevens verzenden",
-    "always_send_ble_help": "Indien ingeschakeld worden BLE-gegevens ook verzonden als er geen geldige metingen beschikbaar zijn. Dit is nuttig voor het testen van BLE."
+    "send_ble_without_measurement_label": "BLE-gegevens zonder meting verzenden",
+    "send_ble_without_measurement_help": "Op het normale rapportage-interval worden BLE-gegevens met niet-beschikbare waarden verzonden wanneer geen geldige meting kan worden verkregen."
   },
   "fragment_voltage": {
     "title": "Bereken een nieuwe spanningsfactor",

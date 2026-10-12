@@ -454,8 +454,8 @@
     "restart_hint": "Ændring af bluetooth-indstillinger kan kræve en genstart for at fungere korrekt",
     "save": "Gem",
     "not_available": "Bluetooth er ikke tilgængeligt på denne platform",
-    "always_send_ble_label": "Send altid BLE-data",
-    "always_send_ble_help": "Når aktiveret, sendes BLE-data også, selv hvis der ikke findes gyldige målinger. Dette er nyttigt til test af BLE."
+    "send_ble_without_measurement_label": "Send BLE-data uden en måling",
+    "send_ble_without_measurement_help": "Ved det normale rapporteringsinterval sendes BLE-data med utilgængelige værdier, når en gyldig måling ikke kan opnås."
   },
   "fragment_voltage": {
     "title": "Beregn en ny spændingsfaktor",
