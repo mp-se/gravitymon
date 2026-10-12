@@ -11,6 +11,7 @@ src_docs/_build/*
 .DS_Store
 *.map
 tasks/
+custom/
 
 ui/.env.development
 ui/node_modules
