@@ -453,7 +453,9 @@
     "format_help": "Wybierz typ używanej transmisji Bluetooth.",
     "restart_hint": "Zmiana ustawień Bluetooth może wymagać ponownego uruchomienia, aby działać prawidłowo",
     "save": "Zapisz",
-    "not_available": "Bluetooth nie jest dostępny na tej platformie"
+    "not_available": "Bluetooth nie jest dostępny na tej platformie",
+    "always_send_ble_label": "Zawsze wysyłaj dane BLE",
+    "always_send_ble_help": "Po włączeniu dane BLE będą wysyłane nawet wtedy, gdy nie są dostępne prawidłowe pomiary. Jest to przydatne do testowania BLE."
   },
   "fragment_voltage": {
     "title": "Oblicz nowy współczynnik napięcia",

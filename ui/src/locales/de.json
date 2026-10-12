@@ -453,7 +453,9 @@
     "format_help": "Wähle die Art der verwendeten Bluetooth-Übertragung.",
     "restart_hint": "Das Ändern der Bluetooth-Einstellungen kann einen Neustart erfordern, um korrekt zu funktionieren",
     "save": "Speichern",
-    "not_available": "Bluetooth ist auf dieser Plattform nicht verfügbar"
+    "not_available": "Bluetooth ist auf dieser Plattform nicht verfügbar",
+    "always_send_ble_label": "BLE-Daten immer senden",
+    "always_send_ble_help": "Wenn aktiviert, werden BLE-Daten auch gesendet, wenn keine gültigen Messwerte vorhanden sind. Dies ist zum Testen von BLE nützlich."
   },
   "fragment_voltage": {
     "title": "Neuen Spannungsfaktor berechnen",

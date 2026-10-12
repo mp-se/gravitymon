@@ -453,7 +453,9 @@
     "format_help": "选择使用的蓝牙传输类型。",
     "restart_hint": "更改蓝牙设置可能需要重启才能正常工作",
     "save": "保存",
-    "not_available": "此平台不支持蓝牙"
+    "not_available": "此平台不支持蓝牙",
+    "always_send_ble_label": "始终发送 BLE 数据",
+    "always_send_ble_help": "启用后，即使没有有效测量值，也会发送 BLE 数据。这对于测试 BLE 很有用。"
   },
   "fragment_voltage": {
     "title": "计算新的电压系数",

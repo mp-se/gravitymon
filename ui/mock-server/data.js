@@ -71,6 +71,7 @@ export var configData = {
   // Push BLE
   ble_tilt_color: 'pink',
   ble_format: 1,
+  always_send_ble: false,
   // Gravity - Generic
   gyro_type: 1,
   gravity_formula: '-0.0000047197506*tilt^2+0.0019926321*tilt+0.96079491',

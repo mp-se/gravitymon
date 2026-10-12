@@ -453,7 +453,9 @@
     "format_help": "Selecione o tipo de transmissão Bluetooth usada.",
     "restart_hint": "Alterar as configurações de Bluetooth pode exigir uma reinicialização para funcionar corretamente",
     "save": "Salvar",
-    "not_available": "Bluetooth não está disponível nesta plataforma"
+    "not_available": "Bluetooth não está disponível nesta plataforma",
+    "always_send_ble_label": "Sempre enviar dados BLE",
+    "always_send_ble_help": "Quando ativado, os dados BLE serão enviados mesmo quando não houver medições válidas. Isso é útil para testar o BLE."
   },
   "fragment_voltage": {
     "title": "Calcular um novo fator de tensão",

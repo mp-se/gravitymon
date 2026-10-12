@@ -453,7 +453,9 @@
     "format_help": "Select the type of bluetooth transmission used.",
     "restart_hint": "Changing bluetooth settings might require a restart to function properly",
     "save": "Save",
-    "not_available": "Bluetooth is not available on this platform"
+    "not_available": "Bluetooth is not available on this platform",
+    "always_send_ble_label": "Always send BLE data",
+    "always_send_ble_help": "When enabled, BLE data will be even if not valid measurements exist, this is useful for testing BLE."
   },
   "fragment_voltage": {
     "title": "Calculate a new voltage factor",

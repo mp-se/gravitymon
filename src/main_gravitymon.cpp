@@ -345,7 +345,7 @@ bool loopReadGravity() {
       PERF_BEGIN("loop-push");
 
 #if defined(ENABLE_BLE)
-      if (myConfig.isBleActive() && angleValid) {
+      if (myConfig.isBleActive() && (angleValid || myConfig.isAlwaysSendBle())) {
         myBleSender.init();
 
         switch (myConfig.getGravitymonBleFormat()) {
@@ -430,6 +430,53 @@ bool loopReadGravity() {
     }
     return true;
   } else {
+  
+#if defined(ENABLE_BLE)
+    // This section is used to send BLE data even when no valid readings are found, this is useful for testing BLE.
+    bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
+                        (myConfig.getSleepInterval() * 1000));
+
+    if (pushExpired && myConfig.isBleActive() && myConfig.isAlwaysSendBle()) {
+      pushMillis = millis();
+
+      myBleSender.init();
+
+      switch (myConfig.getGravitymonBleFormat()) {
+        case GravitymonBleFormat::BLE_TILT: {
+          String color = myConfig.getBleTiltColor();
+          myBleSender.sendTiltData(color, NAN, NAN, false);
+        } break;
+        case GravitymonBleFormat::BLE_TILT_PRO: {
+          String color = myConfig.getBleTiltColor();
+          myBleSender.sendTiltData(color, NAN, NAN, true);
+        } break;
+        case GravitymonBleFormat::BLE_GRAVITYMON_IBEACON: {
+          myBleSender.sendCustomBeaconData(myBatteryVoltage.getVoltage(),
+                                          NAN, NAN, NAN);
+        } break;
+
+        case GravitymonBleFormat::BLE_GRAVITYMON_EDDYSTONE: {
+          myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), NAN,
+                                        NAN, NAN);
+        } break;
+
+        case GravitymonBleFormat::BLE_RAPT_V1: {
+          myBleSender.sendRaptV1Data(
+              getBatteryPercentage(myBatteryVoltage.getVoltage(),
+                                  BatteryType::LithiumIon),
+              NAN, NAN, NAN);
+        } break;
+
+        case GravitymonBleFormat::BLE_RAPT_V2: {
+          myBleSender.sendRaptV2Data(
+              getBatteryPercentage(myBatteryVoltage.getVoltage(),
+                                  BatteryType::LithiumIon),
+              NAN, NAN, NAN, NAN);
+        } break;
+      }
+    }
+#endif  // ENABLE_BLE
+  
     // Log.error(F("MAIN: No gyro value found, the device might be moving."
     // CR));
   }

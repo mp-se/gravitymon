@@ -52,6 +52,15 @@
             </p>
             <p>{{ t('push_bluetooth.restart_hint') }}</p>
           </div>
+
+          <div class="col-md-6">
+            <BsInputSwitch
+              v-model="config.always_send_ble"
+              :label="t('push_bluetooth.always_send_ble_label')"
+              :help="t('push_bluetooth.always_send_ble_help')"
+              :disabled="global.disabled32"
+            />
+          </div>
         </div>
         <div class="row gy-2">
           <div class="col-md-12">

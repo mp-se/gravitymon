@@ -453,7 +453,9 @@
     "format_help": "Velg typen bluetooth-overføring som brukes.",
     "restart_hint": "Endring av bluetooth-innstillinger kan kreve en omstart for å fungere korrekt",
     "save": "Lagre",
-    "not_available": "Bluetooth er ikke tilgjengelig på denne plattformen"
+    "not_available": "Bluetooth er ikke tilgjengelig på denne plattformen",
+    "always_send_ble_label": "Send alltid BLE-data",
+    "always_send_ble_help": "Når aktivert, sendes BLE-data også når ingen gyldige målinger er tilgjengelige. Dette er nyttig for å teste BLE."
   },
   "fragment_voltage": {
     "title": "Beregn en ny spenningsfaktor",

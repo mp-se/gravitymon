@@ -10,6 +10,7 @@ New features
 ++++++++++++
 - Merged the UI project into the main project to avoid having two separate repositories. The UI is now built into the firmware and will be served from the device itself. This simplifies the build process and ensures that the UI is always in sync with the firmware version.
 - Added language support for English, Swedish, Spanish, German, French, Dutch, Norwegian, Danish, Polish, Portuguese, Italian and Chinese. The language can be selected in the configuration page and will be saved in the device settings.
+- Added flag to force the device to send BLE data even when no valid readings are found. This is useful for testing BLE functionality and can be enabled in the configuration page.
 
 v2.5.0
 ======

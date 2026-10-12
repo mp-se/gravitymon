@@ -1,73 +1,73 @@
 {
   "product": "gravitymon",
   "version": "2.6.0",
-  "generated_at": "2026-09-26T17:15:20Z",
+  "generated_at": "2026-10-12T18:31:50Z",
   "packs": [
     {
       "lang": "da",
       "name": "Dansk",
       "filename": "lang_da.json.gz",
-      "crc32": "9ad0d77d"
+      "crc32": "321e55b2"
     },
     {
       "lang": "de",
       "name": "Deutsch",
       "filename": "lang_de.json.gz",
-      "crc32": "1afbd8a3"
+      "crc32": "1a1f70be"
     },
     {
       "lang": "es",
       "name": "Español",
       "filename": "lang_es.json.gz",
-      "crc32": "30a61dc6"
+      "crc32": "0a3bba35"
     },
     {
       "lang": "fr",
       "name": "Français",
       "filename": "lang_fr.json.gz",
-      "crc32": "8ca644c6"
+      "crc32": "b4b13c0d"
     },
     {
       "lang": "it",
       "name": "Italiano",
       "filename": "lang_it.json.gz",
-      "crc32": "d16924b4"
+      "crc32": "a73e6a01"
     },
     {
       "lang": "nl",
       "name": "Nederlands",
       "filename": "lang_nl.json.gz",
-      "crc32": "f27eb681"
+      "crc32": "f6d0f79c"
     },
     {
       "lang": "no",
       "name": "Norsk",
       "filename": "lang_no.json.gz",
-      "crc32": "523b4065"
+      "crc32": "7601036e"
     },
     {
       "lang": "pl",
       "name": "Polski",
       "filename": "lang_pl.json.gz",
-      "crc32": "ccddd849"
+      "crc32": "1466d49c"
     },
     {
       "lang": "pt",
       "name": "Português",
       "filename": "lang_pt.json.gz",
-      "crc32": "ae305142"
+      "crc32": "f1957a0d"
     },
     {
       "lang": "sv",
       "name": "Svenska",
       "filename": "lang_sv.json.gz",
-      "crc32": "36974759"
+      "crc32": "019ef0be"
     },
     {
       "lang": "zh",
       "name": "中文",
       "filename": "lang_zh.json.gz",
-      "crc32": "da7d8e34"
+      "crc32": "75044f62"
     }
   ]
 }

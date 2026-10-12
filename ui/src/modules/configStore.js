@@ -103,6 +103,7 @@ export const useConfigStore = defineStore('config', {
       // Push BLE
       ble_tilt_color: '',
       ble_format: 0,
+      always_send_ble: false,
       // Gravity formula
       gyro_type: 0,
       gravity_formula: '',
@@ -236,6 +237,7 @@ export const useConfigStore = defineStore('config', {
         // Push BLE
         this.ble_tilt_color = json.ble_tilt_color
         this.ble_format = json.ble_format
+        this.always_send_ble = json.always_send_ble
         // Gravity formula
         this.gravity_formula = json.gravity_formula
         this.gravity_temp_adjustment = json.gravity_temp_adjustment

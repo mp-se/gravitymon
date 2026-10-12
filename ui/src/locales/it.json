@@ -453,7 +453,9 @@
     "format_help": "Seleziona il tipo di trasmissione bluetooth usata.",
     "restart_hint": "La modifica delle impostazioni bluetooth potrebbe richiedere un riavvio per funzionare correttamente",
     "save": "Salva",
-    "not_available": "Bluetooth non è disponibile su questa piattaforma"
+    "not_available": "Bluetooth non è disponibile su questa piattaforma",
+    "always_send_ble_label": "Invia sempre dati BLE",
+    "always_send_ble_help": "Quando abilitato, i dati BLE verranno inviati anche se non sono disponibili misurazioni valide. È utile per testare il BLE."
   },
   "fragment_voltage": {
     "title": "Calcola un nuovo fattore di tensione",
