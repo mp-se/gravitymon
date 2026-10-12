@@ -25,6 +25,8 @@
 
 // #define FORCE_GRAVITY_MODE
 
+#include <cmath>
+
 #include <main_gravitymon.hpp>
 
 // EspFramework
@@ -91,6 +93,62 @@ uint32_t runtimeMillis;   // Used to calculate the total time since start/wakeup
 uint32_t stableGyroMillis;  // Used to calculate the total time since last
                             // stable gyro reading
 RunMode runMode = RunMode::measurementMode;
+
+struct GravityMeasurement {
+  float tempC = NAN;
+  float batteryVoltage = NAN;
+  float angle = NAN;
+  float gravitySG = NAN;
+  float correctedGravitySG = NAN;
+  float velocity = NAN;
+  bool hasValidGravity = false;
+};
+
+float pushValue(float value) { return isnan(value) ? 0.0F : value; }
+
+#if defined(ENABLE_BLE)
+void sendBleMeasurement(const GravityMeasurement& measurement) {
+  myBleSender.init();
+
+  const float gravity =
+      measurement.hasValidGravity ? measurement.gravitySG : NAN;
+  const float angle = measurement.hasValidGravity ? measurement.angle : NAN;
+
+  switch (myConfig.getGravitymonBleFormat()) {
+    case GravitymonBleFormat::BLE_TILT: {
+      String color = myConfig.getBleTiltColor();
+      myBleSender.sendTiltData(color, convertCtoF(measurement.tempC),
+                               gravity, false);
+    } break;
+    case GravitymonBleFormat::BLE_TILT_PRO: {
+      String color = myConfig.getBleTiltColor();
+      myBleSender.sendTiltData(color, convertCtoF(measurement.tempC),
+                               gravity, true);
+    } break;
+    case GravitymonBleFormat::BLE_GRAVITYMON_IBEACON:
+      myBleSender.sendCustomBeaconData(
+          measurement.batteryVoltage, measurement.tempC, gravity, angle);
+      break;
+    case GravitymonBleFormat::BLE_GRAVITYMON_EDDYSTONE:
+      myBleSender.sendEddystoneData(measurement.batteryVoltage,
+                                    measurement.tempC, gravity, angle);
+      break;
+    case GravitymonBleFormat::BLE_RAPT_V1:
+      myBleSender.sendRaptV1Data(
+          getBatteryPercentage(measurement.batteryVoltage,
+                               BatteryType::LithiumIon),
+          measurement.tempC, gravity, angle);
+      break;
+    case GravitymonBleFormat::BLE_RAPT_V2:
+      myBleSender.sendRaptV2Data(
+          getBatteryPercentage(measurement.batteryVoltage,
+                               BatteryType::LithiumIon),
+          measurement.tempC, gravity, angle,
+          measurement.velocity);
+      break;
+  }
+}
+#endif  // ENABLE_BLE
 
 void checkSleepMode(float angle, float volt);
 void runGpioHardwareTests();
@@ -270,10 +328,11 @@ void setup() {
       millis();  // Dont include time for wifi connection
 }
 
-// Main loop that does gravity readings and push data to targets
-// Return true if gravity reading was successful
+// Main loop that reads sensors and pushes data to targets.
+// Returns true when a gyro reading is available, allowing measurement mode to sleep.
 bool loopReadGravity() {
-  float angle = 0, filteredAngle = 0;
+  GravityMeasurement measurement;
+  float filteredAngle = NAN;
 
 #if LOG_LEVEL == 6
   Log.verbose(F("Main: Entering main loopGravity." CR));
@@ -281,208 +340,122 @@ bool loopReadGravity() {
 
   PERF_BEGIN("loop-temp-read");
   myTempSensor.readSensor(myConfig.isGyroTemp());
-  float tempC = myTempSensor.getTempC();
+  measurement.tempC = myTempSensor.getTempC();
   PERF_END("loop-temp-read");
 
-  // Process the sensor values and push data to targets.
-  // ------------------------------------------------------------------------------------------------
-  // If we dont get any readings we just skip this and try again the next
-  // interval.
-  //
-  if (myGyro.hasValue()) {
-    angle = myGyro.getAngle();  // Gyro angle
+  measurement.batteryVoltage = myBatteryVoltage.getVoltage();
+  const bool hasGyroReading = myGyro.hasValue();
+
+  if (hasGyroReading) {
+    measurement.angle = myGyro.getAngle();
     filteredAngle = myGyro.getFilteredAngle();
-    stableGyroMillis = millis();  // Reset timer
+    stableGyroMillis = millis();
+  }
 
+  const bool pushExpired =
+      abs(static_cast<int32_t>(millis() - pushMillis)) >
+      myConfig.getSleepInterval() * 1000;
+  const bool shouldPush = pushExpired || runMode == RunMode::measurementMode;
+  if (!shouldPush) return hasGyroReading;
+
+  if (hasGyroReading) {
     if (runMode == RunMode::configurationMode) {
-      filteredAngle = angle;  // No filtering in configuration mode, this will
-                              // taint the calibration values
+      filteredAngle = measurement.angle;
     }
 
-    float gravitySG =
-        calculateGravity(myConfig.getGravityFormula(), angle, tempC);
+    measurement.gravitySG = calculateGravity(myConfig.getGravityFormula(),
+                                              measurement.angle,
+                                              measurement.tempC);
     float filteredGravitySG =
-        calculateGravity(myConfig.getGravityFormula(), filteredAngle, tempC);
-    float corrGravitySG = gravityTemperatureCorrectionC(
-        myConfig.isGyroFilter() ? filteredGravitySG : gravitySG, tempC,
-        myConfig.getDefaultCalibrationTemp());
+        calculateGravity(myConfig.getGravityFormula(), filteredAngle,
+                         measurement.tempC);
+    measurement.correctedGravitySG = gravityTemperatureCorrectionC(
+        myConfig.isGyroFilter() ? filteredGravitySG : measurement.gravitySG,
+        measurement.tempC, myConfig.getDefaultCalibrationTemp());
 
-    // Corrected gravity can contain either temperature corrected gravity /
-    // filtered gravity.
     if (myConfig.isGravityTempAdj()) {
-      gravitySG = corrGravitySG;
+      measurement.gravitySG = measurement.correctedGravitySG;
     } else if (myConfig.isGyroFilter()) {
-      gravitySG = filteredGravitySG;
+      measurement.gravitySG = filteredGravitySG;
     }
 
-    float velocity = 0;
-
-#if defined(ESP32)
-    GravityVelocity gv(&data, myConfig.getSleepInterval());
-    gv.addValue(gravitySG);
-    velocity = gv.getVelocity();
-#endif
-
-    Log.notice(F("Main: Sensor values gyro angle=%F, filtered_angle=%F, "
-                 "temp=%FC, gravity=%F, "
-                 "corr_gravity=%F, velocity=%F." CR),
-               angle, filteredAngle, tempC, gravitySG, corrGravitySG, velocity);
-
-    bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
-                        (myConfig.getSleepInterval() * 1000));
-    bool angleValid = true;
+    measurement.hasValidGravity = std::isfinite(measurement.gravitySG);
 
     if (myConfig.isIgnoreLowAngles() &&
-        (angle < myConfig.getFormulaData().a[0])) {
+        (measurement.angle < myConfig.getFormulaData().a[0])) {
       Log.warning(
           F("Main: Angle is lower than water, so we regard this as faulty and "
             "dont send any data." CR));
-      angleValid = false;
+      measurement.hasValidGravity = false;
+      measurement.gravitySG = NAN;
+      measurement.correctedGravitySG = NAN;
+      measurement.velocity = NAN;
     }
-
-    if (pushExpired || runMode == RunMode::measurementMode) {
-      pushMillis = millis();
-      PERF_BEGIN("loop-push");
-
-#if defined(ENABLE_BLE)
-      if (myConfig.isBleActive() &&
-          (angleValid || myConfig.shouldSendBleWithoutMeasurement())) {
-        myBleSender.init();
-
-        switch (myConfig.getGravitymonBleFormat()) {
-          case GravitymonBleFormat::BLE_TILT: {
-            String color = myConfig.getBleTiltColor();
-            myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
-                                     false);
-          } break;
-          case GravitymonBleFormat::BLE_TILT_PRO: {
-            String color = myConfig.getBleTiltColor();
-            myBleSender.sendTiltData(color, convertCtoF(tempC), gravitySG,
-                                     true);
-          } break;
-          case GravitymonBleFormat::BLE_GRAVITYMON_IBEACON: {
-            myBleSender.sendCustomBeaconData(myBatteryVoltage.getVoltage(),
-                                             tempC, gravitySG, angle);
-          } break;
-
-          case GravitymonBleFormat::BLE_GRAVITYMON_EDDYSTONE: {
-            myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), tempC,
-                                          gravitySG, angle);
-          } break;
-
-          case GravitymonBleFormat::BLE_RAPT_V1: {
-            myBleSender.sendRaptV1Data(
-                getBatteryPercentage(myBatteryVoltage.getVoltage(),
-                                     BatteryType::LithiumIon),
-                tempC, gravitySG, angle);
-          } break;
-
-          case GravitymonBleFormat::BLE_RAPT_V2: {
-            myBleSender.sendRaptV2Data(
-                getBatteryPercentage(myBatteryVoltage.getVoltage(),
-                                     BatteryType::LithiumIon),
-                tempC, gravitySG, angle, gv.isVelocityValid() ? velocity : NAN);
-          } break;
-        }
-      }
-#endif  // ENABLE_BLE
-
-      if (myWifi.isConnected() && angleValid) {  // no need to try if there is
-                                                 // no wifi connection.
-        if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode &&
-            WiFi.SSID() == String(myConfig.getWifiDirectSSID())) {
-          Log.notice(F(
-              "Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
-
-          TemplatingEngine engine;
-          BrewingPush push(&myConfig);
-          setupTemplateEngineGravity(&myConfig, engine, angle, velocity,
-                                     gravitySG, corrGravitySG, tempC,
-                                     (millis() - runtimeMillis) / 1000,
-                                     myBatteryVoltage.getVoltage());
-          String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1,
-                                        true);  // Use default post template
-          String payload = engine.create(tpl.c_str());
-          myConfig.setTargetHttpPost(
-              "http://192.168.4.1/post");  // Default URL for Gravitymon Gateway
-                                           // v0.3+
-          myConfig.setHeader1HttpPost("Content-Type: application/json");
-          myConfig.setHeader2HttpPost("");
-          push.sendHttpPost(payload);
-        } else if (angleValid) {
-          Log.notice(F("Main: Sending data to all defined push targets." CR));
-
-          TemplatingEngine engine;
-          BrewingPush push(&myConfig);
-
-          setupTemplateEngineGravity(&myConfig, engine, angle, velocity,
-                                     gravitySG, corrGravitySG, tempC,
-                                     (millis() - runtimeMillis) / 1000,
-                                     myBatteryVoltage.getVoltage());
-          push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
-        }
-      }
-      PERF_END("loop-push");
-
-      // Send stats to influx after each push run.
-      if (runMode == RunMode::configurationMode) {
-        PERF_PUSH();
-      }
-    }
-    return true;
-  } else {
-  
-#if defined(ENABLE_BLE)
-    // This section is used to send BLE data even when no valid readings are found, this is useful for testing BLE.
-    bool pushExpired = (abs(static_cast<int32_t>((millis() - pushMillis))) >
-                        (myConfig.getSleepInterval() * 1000));
-
-    if (pushExpired && myConfig.isBleActive() &&
-        myConfig.shouldSendBleWithoutMeasurement()) {
-      pushMillis = millis();
-
-      myBleSender.init();
-
-      switch (myConfig.getGravitymonBleFormat()) {
-        case GravitymonBleFormat::BLE_TILT: {
-          String color = myConfig.getBleTiltColor();
-          myBleSender.sendTiltData(color, NAN, NAN, false);
-        } break;
-        case GravitymonBleFormat::BLE_TILT_PRO: {
-          String color = myConfig.getBleTiltColor();
-          myBleSender.sendTiltData(color, NAN, NAN, true);
-        } break;
-        case GravitymonBleFormat::BLE_GRAVITYMON_IBEACON: {
-          myBleSender.sendCustomBeaconData(myBatteryVoltage.getVoltage(),
-                                          NAN, NAN, NAN);
-        } break;
-
-        case GravitymonBleFormat::BLE_GRAVITYMON_EDDYSTONE: {
-          myBleSender.sendEddystoneData(myBatteryVoltage.getVoltage(), NAN,
-                                        NAN, NAN);
-        } break;
-
-        case GravitymonBleFormat::BLE_RAPT_V1: {
-          myBleSender.sendRaptV1Data(
-              getBatteryPercentage(myBatteryVoltage.getVoltage(),
-                                  BatteryType::LithiumIon),
-              NAN, NAN, NAN);
-        } break;
-
-        case GravitymonBleFormat::BLE_RAPT_V2: {
-          myBleSender.sendRaptV2Data(
-              getBatteryPercentage(myBatteryVoltage.getVoltage(),
-                                  BatteryType::LithiumIon),
-              NAN, NAN, NAN, NAN);
-        } break;
-      }
-    }
-#endif  // ENABLE_BLE
-  
-    // Log.error(F("MAIN: No gyro value found, the device might be moving."
-    // CR));
   }
-  return false;
+
+#if defined(ESP32)
+  if (runMode == RunMode::measurementMode && measurement.hasValidGravity) {
+    GravityVelocity gv(&data, myConfig.getSleepInterval());
+    gv.addValue(measurement.gravitySG);
+    if (gv.isVelocityValid()) measurement.velocity = gv.getVelocity();
+  }
+#endif
+
+  Log.notice(F("Main: Sensor values gyro angle=%F, filtered_angle=%F, "
+               "temp=%FC, gravity=%F, corr_gravity=%F, velocity=%F." CR),
+             measurement.angle, filteredAngle, measurement.tempC,
+             measurement.gravitySG, measurement.correctedGravitySG,
+             measurement.velocity);
+
+  pushMillis = millis();
+  PERF_BEGIN("loop-push");
+
+#if defined(ENABLE_BLE)
+  if (myConfig.isBleActive() &&
+      (measurement.hasValidGravity ||
+       myConfig.shouldSendBleWithoutMeasurement())) {
+    sendBleMeasurement(measurement);
+  }
+#endif  // ENABLE_BLE
+
+  if (myWifi.isConnected() && measurement.hasValidGravity) {
+    const float pushAngle = pushValue(measurement.angle);
+    const float pushVelocity = pushValue(measurement.velocity);
+    const float pushGravity = pushValue(measurement.gravitySG);
+    const float pushCorrectedGravity = pushValue(measurement.correctedGravitySG);
+    const float pushTemp = pushValue(measurement.tempC);
+    const float pushBattery = pushValue(measurement.batteryVoltage);
+
+    TemplatingEngine engine;
+    BrewingPush push(&myConfig);
+    setupTemplateEngineGravity(
+        &myConfig, engine, pushAngle, pushVelocity, pushGravity,
+        pushCorrectedGravity, pushTemp, (millis() - runtimeMillis) / 1000,
+        pushBattery);
+
+    if (myConfig.isWifiDirect() && runMode == RunMode::measurementMode &&
+        WiFi.SSID() == String(myConfig.getWifiDirectSSID())) {
+      Log.notice(
+          F("Main: Sending data via Wifi Direct to Gravitymon Gateway." CR));
+
+      String tpl = push.getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1,
+                                    true);  // Default post template
+      String payload = engine.create(tpl.c_str());
+      myConfig.setTargetHttpPost(
+          "http://192.168.4.1/post");  // Default URL for Gravitymon Gateway v0.3+
+      myConfig.setHeader1HttpPost("Content-Type: application/json");
+      myConfig.setHeader2HttpPost("");
+      push.sendHttpPost(payload);
+    } else {
+      Log.notice(F("Main: Sending data to all defined push targets." CR));
+      push.sendAll(engine, BrewingPush::MeasurementType::GRAVITY);
+    }
+  }
+  PERF_END("loop-push");
+
+  if (runMode == RunMode::configurationMode) PERF_PUSH();
+
+  return hasGyroReading;
 }
 
 // Wrapper for loopGravity that only calls every 200ms so that we dont overload
