@@ -133,7 +133,6 @@ the following libraries and without these this would have been much more difficu
    hardware_build
    services
    data
-   gateway
    custom
    compiling
    contributing

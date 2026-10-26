@@ -133,6 +133,14 @@ I'm working on adding more ESP options and I will add the pinouts once they have
      - n/a
      - n/a
      - A5 / A4
+   * - Waveshare ESP32-S3 Zero
+     - See board pinout
+     - See board pinout
+     - See board pinout
+     - See board pinout
+     - n/a
+     - See board pinout
+     - See board pinout
    * - Olimex ESP32C3 DevKit Lipo
      - IO1
      - IO0

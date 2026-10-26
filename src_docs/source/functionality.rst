@@ -31,21 +31,10 @@ The main features
   in theory you can use them all. However this will consume more battery power so use only as many as needed. Its much 
   more efficient to have the endpoints on your local network than on the internet. 
 
-  Currently the device supports the following endpoints.  
-
-  * http (ssl optional)
-  * influxdb v2 (ssl optional)
-  * MQTT (ssl optional)
-  * Brewfather
-  * Home Assistant
-  * Brew Spy
-  * Brewers Friend
-  * Fermentrack
-  * Ubidots
-  * Thingsspeak
-
-
-  Under the :ref:`services` section you can find guides for how to connect GravityMon to these services. For a 
+  The firmware supports two HTTP POST targets, an HTTP GET target, InfluxDB v2 and MQTT. Each target can be
+  configured independently and can use a data template to match the receiving service. The UI includes
+  predefined formats for several brewing, monitoring and home automation services. Under the :ref:`services`
+  section you can find guides for supported services. For a
   description of what data is transmitted you can see :ref:`data-formats`. 
   
   The software support SSL endpoints but currently without CA validation, this means that the data is encrypted 
@@ -82,7 +71,7 @@ The main features
 
 * **Storage mode** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
   
-  When placed on the cap (close to 9 degrees) the device will go into storage mode and sleep for a long time. Its recommended to 
+  When the measured angle is below 5 degrees and storage sleep is enabled, the device sleeps for a long time. It is recommended to
   have a reed (magnetic) switch connected to the reset pin to wake up the device when needed.
 
 * **Storage mode when charging** :bdg-primary:`ESP32`
@@ -109,15 +98,14 @@ The main features
 
   - Tilt. Data: Gravity,Temp. Works with passive or active scanning by the client.
   - Tilt PRO. Same as above with higher accuracy.
-  - Gravmon Eddystone. Data: Gravity,Temp,Angle,Battery,ChipID. Requires active scanning by the client.
-  - Gravmon Service. Data: Full iSpindle JSON payload. Works with passive or active scanning by the client but require to a connection.
+  - GravityMon iBeacon. Data: Gravity, temperature, device ID and angle.
+  - GravityMon Eddystone. Data: Gravity, temperature, angle, battery and chip ID. Requires active scanning by the client.
   - RAPT v1 / RAPT v2. Data: Gravity,Temp. Compatible with the RAPT pill format for services that support it.
 
-* **WIFI Direct to GravityMon Gateway** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
+* **Wi-Fi Direct receiver mode** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
-  This works in combination with the GravityMon Gatewat that will act as an Access Point (AP) and receive data from GravityMon and then forward 
-  it to the right destination. The Gatewway works with both BLE and WIFI. This works only in gravity mode and will force the device to connect to the closest
-  defined AP with the best reception.
+  The device can connect to a configured receiver access point and send its measurement by HTTP. This option is only used in
+  gravity monitoring mode; if the receiver network is unavailable, the device falls back to its normal Wi-Fi settings.
 
 * **Create gravity formulas on the device** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
@@ -243,7 +231,7 @@ The main features
 
 * **Battery saving** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`
 
-  If the battery voltage drops below 20%, then the device will enter battery savings mode 
+  If the estimated battery charge drops below 30%, then the device will enter battery savings mode
   and change the sleep interval to 1 hour.
 
 * **Custom board support** :bdg-primary:`ESP32` :bdg-primary:`ESP8266`

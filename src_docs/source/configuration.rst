@@ -70,7 +70,7 @@ Device
 ======
 
 Device - Settings
-+++++++++++++++++
+++++++++++++++++++
 
 .. image:: images/ui-device-settings.png
   :width: 800
@@ -145,7 +145,7 @@ Device - Settings
   Opens a dialog and allows the user to see the data beeing sent and confirm sending it to the data collection service.
 
 Device - Hardware
-+++++++++++++++++
+------------------
 
 .. image:: images/ui-device-hardware.png
   :width: 800
@@ -176,7 +176,7 @@ Device - Hardware
 
 * **Battery saving:**
 
-  If this option is checked the sleep interval will be changed to 1 hour when battery drops below 20%. Default = on. 
+  If this option is checked the sleep interval will be changed to 1 hour when estimated battery charge drops below 30%. Default = on.
 
 * **DS18B20 Resolution:**
 
@@ -411,8 +411,8 @@ Push - Settings
 
   How long the device will wait for a connection accept from the remote service.
 
-Push - Wifi Direct
-++++++++++++++++++
+Push - Wi-Fi Direct
++++++++++++++++++++
 
 .. image:: images/ui-push-wifi-direct.png
   :width: 800
@@ -420,7 +420,7 @@ Push - Wifi Direct
 
 * **WIFI Direct SSID:** 
 
-  This WIFI SSID will be used during gravity mode to send data to the GravityMon Gateway.
+  This Wi-Fi SSID is used during gravity mode to send data to a configured receiver.
 
   .. note::
 
@@ -429,15 +429,15 @@ Push - Wifi Direct
 
 * **WIFI Direct Password:** 
 
-  This WIFI Password will be used during gravity mode to send data to the GravityMon Gateway.
+  This Wi-Fi password is used during gravity mode to connect to the receiver access point.
 
 * **Use WIFI Direct in gravity mode:** 
 
-  Enabling this feature will disable all other push target settings and data will be sent to the gateway in a pre-defined format (iSpindle format) when in `gravity monitoring` mode.
+  Enabling this feature sends measurements to the receiver using the built-in iSpindle-compatible HTTP POST format. Other push targets are bypassed while connected to this access point.
 
 
-Push - HTTP Post
-++++++++++++++++
+Push - HTTP POST 1
+------------------
 
 .. image:: images/ui-push-post.png
   :width: 800
@@ -482,6 +482,13 @@ Push - HTTP Post
   .. note::
 
     If you right click in this field a list of available variables will be shown.
+
+Push - HTTP POST 2
+++++++++++++++++++
+
+HTTP POST 2 is a second, independent POST target. It has its own URL, headers, skip interval and data format,
+so the same measurement can be sent to a second service or endpoint. It uses the same template variables and
+format editor described above. Unlike HTTP POST 1, this target does not provide the **Use TCP** option.
 
 
 Push - HTTP Get
@@ -538,7 +545,7 @@ Push - InfluxDB v2
 
   Endpoint to send data via http to InfluxDB. Format used :ref:`data-formats-influxdb2`. You can customize the format using :ref:`format-template`.
 
-  SSL is not supported for this target. Raise a issue on github if this is wanted.
+  Use an ``https://`` URL to enable SSL. The device encrypts the connection but does not validate the server certificate against a CA.
 
 * **Organisation:**
 
@@ -626,6 +633,10 @@ Push - Bluetooth
   - **GM EDDYSTONE**: Beacon format that requires active scanning by the client. Data: Gravity, ID, Temperature and Angle 
   - **RAPT v1**: Beacon format used by the RAPT PILL. 
   - **RAPT v2**: Beacon format used by the RAPT PILL. 
+
+  **Send BLE without a valid measurement** can be enabled to advertise even when a gravity measurement is unavailable.
+  RAPT v2 also includes the gravity velocity value when it is available. The old GravityMon Service option is not
+  currently offered by the UI.
 
 Other
 =====

@@ -11,6 +11,9 @@ New features
 - Merged the UI project into the main project to avoid having two separate repositories. The UI is now built into the firmware and will be served from the device itself. This simplifies the build process and ensures that the UI is always in sync with the firmware version.
 - Added language support for English, Swedish, Spanish, German, French, Dutch, Norwegian, Danish, Polish, Portuguese, Italian and Chinese. The language can be selected in the configuration page and will be saved in the device settings.
 - Added flag to force the device to send BLE data even when no valid readings are found. This is useful for testing BLE functionality and can be enabled in the configuration page.
+- Updated BLE measurement handling and clarified the setting for sending BLE data without a valid measurement.
+- Added a BrewGraph Gravity HTTP POST URL preset.
+- Added the ``${ip-address}`` and ``${run-mode}`` placeholders to custom push templates.
 
 v2.5.0
 ======
@@ -52,7 +55,7 @@ v2.4.0
 
 New features
 ++++++++++++
-* Added meta data to mDNS broadcast (app, version, id), used by GravityMon Gateway to map device id towards name when using BLE. 
+* Added metadata to the mDNS broadcast (app, version, id), which can help compatible receivers identify a device.
 * Updated code to use NAN instead of -273 as invalid temperature
 * When data is invalid send 0xffff in the ble payload to indicate that,
 
@@ -127,7 +130,7 @@ New features
 * Removed flash logging of runtime data since this is no longer needed.
 * New gyro support ICM-42670-P
 * Adds support for ImprovWiFi which allows for configuraition of wifi settings when flashed with the web flasher.
-* Refactored code base so its now shared with Gravitymon Gateway and Pressuremon.
+* Refactored the code base so it could be shared with related firmware projects.
 * Format editor will now validate json payloads for http post and mqtt when selecting preview. 
 * Optimized reset counter code to avoid writes to flash.
 
@@ -194,8 +197,7 @@ New features
 * Added feature to force device to search for the stronget AP.
 * Fixed the issue with gyro not working on c3 board (had to disable LED since it collides with gyro).
 * Removed BLE GravityMon Service option since this is not really performing well.
-* Added WIFI Direct Connect option with GravityMon Gateway, I hope this will help with wifi connection issues in my steel fermenter and force a connect to the designated AP. Wifi Direct will send the data via http 
-  to the Gateway and then forward this to the correct endpoint. 
+* Added Wi-Fi Direct Connect mode for sending measurements to a configured receiver access point over HTTP.
 * Added line breaks to format editor for easier editing
 * Added check if device is responding and notify user when there is an issue
 * Redesign of user interface using VueJS as the base 
@@ -280,7 +282,7 @@ Features
 * Added option to select a default gravity formula under settings. This is based on measurements from several different devices.
 * Increased the number of decimals for tilt/angle (3), temperature (2), plato (2), runtime (2).
 * Added ${battery-percent} as new variable for use in format templates.
-* Added battery saving mode. When battery drops below 20% the sleep interval will be changed to 1 hour. Can be disabled in advanced configuration.
+* Added battery saving mode. In the current firmware, when estimated battery charge drops below 30%, the sleep interval is changed to 1 hour. The feature can be disabled in advanced configuration.
 
 Documentation
 +++++++++++++

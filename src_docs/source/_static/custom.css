@@ -1,0 +1,10 @@
+/* Keep the project name visible beside the mark, matching the shared docs style. */
+.sy-head-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sy-head-brand img + strong {
+  display: inline;
+}
