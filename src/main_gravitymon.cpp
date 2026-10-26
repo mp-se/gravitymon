@@ -358,6 +358,25 @@ bool loopReadGravity() {
   const bool shouldPush = pushExpired || runMode == RunMode::measurementMode;
   if (!shouldPush) return hasGyroReading;
 
+  // Without a gyro reading nothing is sent, as before, unless BLE should be
+  // sent without a measurement. Measurement mode retries on every loop pass, so
+  // only send that troubleshooting message once per wake-up.
+  if (!hasGyroReading) {
+#if defined(ENABLE_BLE)
+    const bool bleWithoutGyro =
+        myConfig.isBleActive() && myConfig.shouldSendBleWithoutMeasurement();
+#else
+    const bool bleWithoutGyro = false;
+#endif
+    if (!bleWithoutGyro) return false;
+
+    static bool noGyroPushDone = false;
+    if (runMode == RunMode::measurementMode) {
+      if (noGyroPushDone) return false;
+      noGyroPushDone = true;
+    }
+  }
+
   if (hasGyroReading) {
     if (runMode == RunMode::configurationMode) {
       filteredAngle = measurement.angle;
