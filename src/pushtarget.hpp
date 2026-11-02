@@ -39,6 +39,12 @@ extern const char iGravityHttpGetFormat[] PROGMEM;
 extern const char iGravityInfluxDbFormat[] PROGMEM;
 extern const char iGravityMqttFormat[] PROGMEM;
 
+constexpr auto TPL_TEMP_NULL = "${temp-null}";
+constexpr auto TPL_GRAVITY_NULL = "${gravity-null}";
+constexpr auto TPL_GRAVITY_CORR_NULL = "${corr-gravity-null}";
+constexpr auto TPL_TILT_NULL = "${tilt-null}";
+constexpr auto TPL_PRESSURE_NULL = "${pressure-null}";
+
 constexpr auto TPL_MDNS = "${mdns}";
 constexpr auto TPL_ID = "${id}";
 constexpr auto TPL_TOKEN = "${token}";

@@ -46,17 +46,27 @@ export function applyTemplate(status, config, template) {
 
   s = s.replaceAll('${temp-c}', c)
   s = s.replaceAll('${temp-f}', f)
+  s = s.replaceAll(
+    '${temp-null}',
+    Number.isFinite(status.temp) ? (config.temp_unit === 'C' ? status.temp : f) : 'null'
+  )
 
   // NOTE: Gravity handling (gated by feature flag)
   if (global.ui.enableGravity) {
     s = s.replaceAll('${angle}', status.angle)
     s = s.replaceAll('${tilt}', status.angle)
+    s = s.replaceAll('${tilt-null}', Number.isFinite(status.angle) ? status.angle : 'null')
     s = s.replaceAll('${velocity}', -12)
     s = s.replaceAll('${corr-gravity}', status.gravity)
+    s = s.replaceAll(
+      '${corr-gravity-null}',
+      Number.isFinite(status.gravity) ? status.gravity : 'null'
+    )
 
     if (config.gravity_unit === 'G') {
       const sg = status.gravity
       s = s.replaceAll('${gravity}', sg)
+      s = s.replaceAll('${gravity-null}', Number.isFinite(sg) ? sg : 'null')
       s = s.replaceAll('${gravity-sg}', sg)
       s = s.replaceAll('${corr-gravity-sg}', sg)
       const plato = 259 - (259 - sg)
@@ -65,6 +75,7 @@ export function applyTemplate(status, config, template) {
     } else {
       const plato = status.gravity
       s = s.replaceAll('${gravity}', plato)
+      s = s.replaceAll('${gravity-null}', Number.isFinite(plato) ? plato : 'null')
       s = s.replaceAll('${gravity-plato}', plato)
       s = s.replaceAll('${corr-gravity-plato}', plato)
       const sg = 259 / (259 - plato)

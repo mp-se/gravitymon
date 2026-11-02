@@ -57,6 +57,9 @@ These are the format keys available for use in the format.
    * - ${temp-f}
      - Temperature in F, two decimals
      - 58.02
+    * - ${temp-null}
+      - Temperature in the configured format, or the literal `null` when invalid
+      - 21.23 / null
    * - ${temp-unit}
      - Temperature format `C` or `F`
      - C
@@ -78,12 +81,18 @@ These are the format keys available for use in the format.
    * - ${tilt}
      - Same as angle.
      - 28.673
+    * - ${tilt-null}
+      - Tilt angle, or the literal `null` when invalid
+      - 28.673 / null
    * - ${velocity}
      - Calculated gravity velocity, 1 decimal
      - 2.1
    * - ${gravity}
      - Calculated gravity, 4 decimals for SG and 2 for Plato.
      - 1.0456
+    * - ${gravity-null}
+      - Calculated gravity in the configured format, or the literal `null` when invalid
+      - 1.0456 / null
    * - ${gravity-sg}
      - Calculated gravity in SG, 4 decimals
      - 1.0456
@@ -93,6 +102,9 @@ These are the format keys available for use in the format.
    * - ${corr-gravity}
      - Temperature corrected gravity, 4 decimals for SG and 2 for Plato.
      - 1.0456
+    * - ${corr-gravity-null}
+      - Temperature corrected gravity in the configured format, or the literal `null` when invalid
+      - 1.0456 / null
    * - ${corr-gravity-sg}
      - Temperature corrected gravity in SG, 4 decimals
      - 1.0456

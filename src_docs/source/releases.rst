@@ -14,6 +14,7 @@ New features
 - Updated BLE measurement handling and clarified the setting for sending BLE data without a valid measurement.
 - Added a BrewGraph Gravity HTTP POST URL preset.
 - Added the ``${ip-address}`` and ``${run-mode}`` placeholders to custom push templates.
+- Added null-capable measurement placeholders (for example ``${temp-null}``, ``${gravity-null}``, ``${tilt-null}``, and ``${corr-gravity-null}``) for payloads that need ``null`` instead of invalid numeric values, along with a matching HTTP POST quick-selector preset.
 
 v2.5.0
 ======

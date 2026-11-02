@@ -34,11 +34,21 @@
 #include <WiFi.h>
 #endif
 
+#include <cmath>
+
 void setupTemplateEngineGravity(GravitymonConfig* config,
                                 TemplatingEngine& engine, float angle,
                                 float velocity, float gravitySG,
                                 float corrGravitySG, float tempC, float runTime,
                                 float voltage) {
+  const auto setNullValue = [&engine](const char* token, float value,
+                                      int decimals) {
+    if (std::isfinite(value))
+      engine.setVal(token, value, decimals);
+    else
+      engine.setVal(token, "null");
+  };
+
   // Names
   engine.setVal(TPL_MDNS, config->getMDNS());
   engine.setVal(TPL_ID, config->getID());
@@ -48,8 +58,11 @@ void setupTemplateEngineGravity(GravitymonConfig* config,
   // Temperature
   if (config->isTempFormatC()) {
     engine.setVal(TPL_TEMP, tempC, DECIMALS_TEMP);
+    setNullValue(TPL_TEMP_NULL, tempC, DECIMALS_TEMP);
   } else {
-    engine.setVal(TPL_TEMP, convertCtoF(tempC), DECIMALS_TEMP);
+    const float tempF = convertCtoF(tempC);
+    engine.setVal(TPL_TEMP, tempF, DECIMALS_TEMP);
+    setNullValue(TPL_TEMP_NULL, tempF, DECIMALS_TEMP);
   }
 
   engine.setVal(TPL_TEMP_C, tempC, DECIMALS_TEMP);
@@ -75,16 +88,22 @@ void setupTemplateEngineGravity(GravitymonConfig* config,
   // Angle/Tilt
   engine.setVal(TPL_TILT, angle, DECIMALS_TILT);
   engine.setVal(TPL_ANGLE, angle, DECIMALS_TILT);
+  setNullValue(TPL_TILT_NULL, angle, DECIMALS_TILT);
   engine.setVal(TPL_VELOCITY, velocity, 1);
 
   // Gravity options
   if (config->isGravitySG()) {
     engine.setVal(TPL_GRAVITY, gravitySG, DECIMALS_SG);
+    setNullValue(TPL_GRAVITY_NULL, gravitySG, DECIMALS_SG);
     engine.setVal(TPL_GRAVITY_CORR, corrGravitySG, DECIMALS_SG);
+    setNullValue(TPL_GRAVITY_CORR_NULL, corrGravitySG, DECIMALS_SG);
   } else {
-    engine.setVal(TPL_GRAVITY, convertToPlato(gravitySG), DECIMALS_PLATO);
-    engine.setVal(TPL_GRAVITY_CORR, convertToPlato(corrGravitySG),
-                  DECIMALS_PLATO);
+    const float gravityPlato = convertToPlato(gravitySG);
+    const float corrGravityPlato = convertToPlato(corrGravitySG);
+    engine.setVal(TPL_GRAVITY, gravityPlato, DECIMALS_PLATO);
+    setNullValue(TPL_GRAVITY_NULL, gravityPlato, DECIMALS_PLATO);
+    engine.setVal(TPL_GRAVITY_CORR, corrGravityPlato, DECIMALS_PLATO);
+    setNullValue(TPL_GRAVITY_CORR_NULL, corrGravityPlato, DECIMALS_PLATO);
   }
 
   engine.setVal(TPL_GRAVITY_G, gravitySG, DECIMALS_SG);
