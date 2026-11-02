@@ -44,6 +44,7 @@ constexpr auto TPL_GRAVITY_NULL = "${gravity-null}";
 constexpr auto TPL_GRAVITY_CORR_NULL = "${corr-gravity-null}";
 constexpr auto TPL_TILT_NULL = "${tilt-null}";
 constexpr auto TPL_PRESSURE_NULL = "${pressure-null}";
+constexpr auto TPL_PRESSURE1_NULL = "${pressure1-null}";
 
 constexpr auto TPL_MDNS = "${mdns}";
 constexpr auto TPL_ID = "${id}";
@@ -81,9 +82,6 @@ constexpr auto TPL_PRESSURE_KPA = "${pressure-kpa}";
 constexpr auto TPL_PRESSURE1_KPA = "${pressure1-kpa}";
 constexpr auto TPL_PRESSURE_UNIT = "${pressure-unit}";  // PSI, BAR, KPA
 constexpr auto TPL_APP_BUILD = "${app-build}";
-constexpr auto TPL_TEMP_NULL = "${temp-null}";
-constexpr auto TPL_PRESSURE_NULL = "${pressure-null}";
-constexpr auto TPL_PRESSURE1_NULL = "${pressure1-null}";
 
 constexpr auto TPL_GRAVITY_FNAME_POST = "/http-1.tpl";
 constexpr auto TPL_GRAVITY_FNAME_POST2 = "/http-2.tpl";
