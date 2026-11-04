@@ -31,20 +31,19 @@
   </div>
 
   <div class="row">
-    <canvas id="formulaChart"></canvas>
+    <LineChart id="formulaChart" :datasets="datasets" x-title="Angle" y-title="Gravity" :x-min="25" :y-min="1.0" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { config } from '@/modules/pinia'
 import { logError } from '@mp-se/espframework-ui-components'
 import { evaluateFormula } from '@/modules/formula'
-import { Chart } from '@/modules/chartSetup'
+import LineChart from '@/components/LineChart.vue'
 
 const { t } = useI18n()
-const chart = ref(null)
 
 /**
  * Hold results from regression library.
@@ -64,78 +63,39 @@ const dataSetChart = ref({
   datasets: [
     {
       label: 'Raw data',
-      borderColor: 'blue',
-      backgroundColor: 'blue',
-      data: chartDataForm.value
+      color: 'blue',
+      points: chartDataForm.value
     },
     {
       label: 'Order 1',
-      borderColor: 'green',
-      backgroundColor: 'green',
-      data: chartDataOrder1.value,
+      color: 'green',
+      points: chartDataOrder1.value,
       hidden: false
     },
     {
       label: 'Order 2',
-      borderColor: 'purple',
-      backgroundColor: 'purple',
-      data: chartDataOrder2.value,
+      color: 'purple',
+      points: chartDataOrder2.value,
       hidden: false
     },
     {
       label: 'Order 3',
-      borderColor: 'orange',
-      backgroundColor: 'orange',
-      data: chartDataOrder3.value,
+      color: 'orange',
+      points: chartDataOrder3.value,
       hidden: false
     },
     {
       label: 'Order 4',
-      borderColor: 'pink',
-      backgroundColor: 'pink',
-      data: chartDataOrder4.value,
+      color: 'pink',
+      points: chartDataOrder4.value,
       hidden: false
     }
   ]
 })
 
-const configChart = ref({
-  type: 'line',
-  data: dataSetChart.value,
-  options: {
-    responsive: true,
-    interaction: {
-      intersect: false
-    },
-    scales: {
-      x: {
-        display: true,
-        type: 'linear',
-        grace: '5%',
-        title: {
-          display: true,
-          text: 'Angle'
-        },
-        ticks: {
-          crossAlign: 'far'
-        },
-        suggestedMin: 25
-      },
-      y: {
-        display: true,
-        title: {
-          display: true,
-          text: 'Gravity'
-        },
-        suggestedMin: 1.0
-      }
-    }
-  }
-})
+const datasets = computed(() => dataSetChart.value.datasets)
 
 onMounted(() => {
-  // TODO: ChartJS does not render if i just copy the result, figure out why...
-
   // Ensure expressions is an array with at least 4 elements
   if (!expressions.value || !Array.isArray(expressions.value) || expressions.value.length < 4) {
     logError('FormulaGraphFragment.onMounted()', 'Invalid expressions data')
@@ -180,12 +140,6 @@ onMounted(() => {
         x: config.formula_calculation_data[i].a,
         y: config.formula_calculation_data[i].g
       })
-  }
-
-  try {
-    chart.value = new Chart(document.getElementById('formulaChart'), configChart.value)
-  } catch (err) {
-    logError('GravityAnalysisView.onMounted()', err)
   }
 })
 </script>

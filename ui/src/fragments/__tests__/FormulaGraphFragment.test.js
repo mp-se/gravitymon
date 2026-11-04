@@ -69,7 +69,7 @@ describe('FormulaGraphFragment (interaction tests)', () => {
     expect(wrapper.findAll('.row').length).toBeGreaterThan(0)
   })
 
-  it('displays canvas element for graph', () => {
+  it('displays svg element for graph', () => {
     const pinia = createTestingPinia()
     const wrapper = mount(FormulaGraphFragment, {
       props: {
@@ -82,7 +82,7 @@ describe('FormulaGraphFragment (interaction tests)', () => {
       },
       global: { plugins: [pinia] }
     })
-    expect(wrapper.find('canvas').exists()).toBe(true)
+    expect(wrapper.find('svg').exists()).toBe(true)
   })
 
   it('has horizontal rule separator', () => {
@@ -118,7 +118,7 @@ describe('FormulaGraphFragment (interaction tests)', () => {
     expect(paragraphs.length).toBeGreaterThan(0)
   })
 
-  it('canvas has id attribute', () => {
+  it('chart has id attribute', () => {
     const pinia = createTestingPinia()
     const wrapper = mount(FormulaGraphFragment, {
       props: {
@@ -131,8 +131,8 @@ describe('FormulaGraphFragment (interaction tests)', () => {
       },
       global: { plugins: [pinia] }
     })
-    const canvas = wrapper.find('canvas')
-    expect(canvas.attributes('id')).toBeDefined()
+    const chart = wrapper.find('.line-chart')
+    expect(chart.attributes('id')).toBeDefined()
   })
 })
 

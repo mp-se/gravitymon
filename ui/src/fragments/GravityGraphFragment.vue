@@ -31,20 +31,18 @@
   </div>
 
   <div class="row">
-    <canvas id="gravityChart"></canvas>
+    <LineChart id="gravityChart" :datasets="datasets" x-title="Angle" y-title="Gravity" :x-min="25" :y-min="1.0" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { config } from '@/modules/pinia'
-import { logError } from '@mp-se/espframework-ui-components'
 import { evaluateFormula } from '@/modules/formula'
-import { Chart } from '@/modules/chartSetup'
+import LineChart from '@/components/LineChart.vue'
 
 const { t } = useI18n()
-const chart = ref(null)
 
 const chartDataForm = ref([])
 const chartDataCalc = ref([])
@@ -53,55 +51,20 @@ const dataSetChart = ref({
   datasets: [
     {
       label: 'Data for gravity calculation',
-      borderColor: 'blue',
-      backgroundColor: 'blue',
-      data: chartDataForm.value
+      color: 'blue',
+      points: chartDataForm.value
     },
     {
       label: 'Data based on current formula',
-      borderColor: 'green',
-      backgroundColor: 'green',
-      data: chartDataCalc.value
+      color: 'green',
+      points: chartDataCalc.value
     }
   ]
 })
 
-const configChart = ref({
-  type: 'line',
-  data: dataSetChart.value,
-  options: {
-    responsive: true,
-    interaction: {
-      intersect: false
-    },
-    scales: {
-      x: {
-        display: true,
-        type: 'linear',
-        grace: '5%',
-        title: {
-          display: true,
-          text: 'Angle'
-        },
-        ticks: {
-          crossAlign: 'far'
-        },
-        suggestedMin: 25
-      },
-      y: {
-        display: true,
-        title: {
-          display: true,
-          text: 'Gravity'
-        },
-        suggestedMin: 1.0
-      }
-    }
-  }
-})
+const datasets = computed(() => dataSetChart.value.datasets)
 
 onMounted(() => {
-  // TODO: ChartJS does not render if i just copy the result, figure out why...
   evaluateFormula(config.gravity_formula).forEach((p) => {
     chartDataCalc.value.push(p)
   })
@@ -115,12 +78,6 @@ onMounted(() => {
         x: data[i].a,
         y: data[i].g
       })
-  }
-
-  try {
-    chart.value = new Chart(document.getElementById('gravityChart'), configChart.value)
-  } catch (err) {
-    logError('GravityGraphFragment.onMounted()', err)
   }
 })
 </script>

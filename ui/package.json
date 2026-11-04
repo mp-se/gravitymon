@@ -17,7 +17,6 @@
   "dependencies": {
     "@mp-se/espframework-ui-components": "github:mp-se/espframework-ui-components#v2.2.0",
     "bootstrap": "^5.3.3",
-    "chart.js": "^4.5.1",
     "crypto-js": "^4.2.0",
     "json-parse-even-better-errors": "^4.0.0",
     "ml-regression-polynomial": "^3.0.1",

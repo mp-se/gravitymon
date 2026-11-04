@@ -9,10 +9,10 @@ describe('GravityGraphFragment (smoke)', () => {
     expect(wrapper.exists()).toBe(true)
   })
 
-  it('renders canvas element for chart', () => {
+  it('renders svg element for chart', () => {
     const pinia = createTestingPinia()
     const wrapper = mount(GravityGraphFragment, { global: { plugins: [pinia] } })
-    expect(wrapper.find('canvas').exists()).toBe(true)
+    expect(wrapper.find('svg').exists()).toBe(true)
   })
 
   it('renders the form-text description', () => {
@@ -58,6 +58,6 @@ describe('GravityGraphFragment (smoke)', () => {
     config.gravity_formula = '0.0001*tilt+1.0'
     const wrapper = mount(GravityGraphFragment, { global: { plugins: [pinia] } })
     await flushPromises()
-    expect(wrapper.find('canvas#gravityChart').exists()).toBe(true)
+    expect(wrapper.find('#gravityChart').exists()).toBe(true)
   })
 })
