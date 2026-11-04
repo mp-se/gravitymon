@@ -402,8 +402,8 @@
     "ssid_help": "SSID für die WIFI-Direkt-Funktion eingeben",
     "pass_label": "Direkt-Passwort",
     "pass_help": "Passwort für das WIFI-Direkt-Netzwerk eingeben",
-    "use_label": "WIFI Direct im Gravity-Modus verwenden",
-    "use_help": "Im Gravity-Modus wird die WIFI-Direkt-SSID/Passwort für die Verbindung verwendet",
+    "use_label": "WIFI Direct im Messmodus verwenden",
+    "use_help": "Im Messmodus wird die WIFI-Direkt-SSID/Passwort für die Verbindung verwendet",
     "save": "Speichern",
     "err_missing_credentials": "SSID und Passwort sind bei Verwendung von WIFI Direct erforderlich"
   },

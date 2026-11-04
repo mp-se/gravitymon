@@ -402,8 +402,8 @@
     "ssid_help": "Voer het SSID in voor de wifi direct-functionaliteit",
     "pass_label": "Direct-wachtwoord",
     "pass_help": "Voer het wachtwoord in voor het wifi direct-netwerk",
-    "use_label": "Wifi direct gebruiken in Gravity-modus",
-    "use_help": "In Gravity-modus wordt het wifi direct-SSID/wachtwoord gebruikt voor verbinding",
+    "use_label": "Wifi direct gebruiken in meetmodus",
+    "use_help": "In meetmodus wordt het wifi direct-SSID/wachtwoord gebruikt voor verbinding",
     "save": "Opslaan",
     "err_missing_credentials": "SSID en wachtwoord zijn vereist bij gebruik van wifi direct"
   },

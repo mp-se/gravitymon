@@ -402,8 +402,8 @@
     "ssid_help": "输入 WiFi 直连功能的 SSID",
     "pass_label": "直连密码",
     "pass_help": "输入 WiFi 直连网络的密码",
-    "use_label": "在 Gravity 模式下使用 WiFi 直连",
-    "use_help": "在 Gravity 模式下，将使用 WiFi 直连的 SSID/密码进行连接",
+    "use_label": "在测量模式下使用 WiFi 直连",
+    "use_help": "在测量模式下，将使用 WiFi 直连的 SSID/密码进行连接",
     "save": "保存",
     "err_missing_credentials": "使用 WiFi 直连时需要 SSID 和密码"
   },

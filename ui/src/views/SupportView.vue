@@ -211,7 +211,7 @@
         <li>-9 - Error encoding</li>
         <li>-10 - Error writing to stream</li>
         <li>-11 - Read timeout</li>
-        <li>-100 - Endpoint skipped since its SSL and the device is in gravity mode</li>
+        <li>-100 - Endpoint skipped since its SSL and the device is in measurement mode</li>
         <br />
         MQTT push on topic errors:
         <li>-1 - Buffer to short</li>

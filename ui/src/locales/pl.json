@@ -402,8 +402,8 @@
     "ssid_help": "Wprowadź SSID dla funkcji WiFi Direct",
     "pass_label": "Hasło Direct",
     "pass_help": "Wprowadź hasło dla sieci WiFi Direct",
-    "use_label": "Użyj WiFi Direct w trybie Gravity",
-    "use_help": "W trybie Gravity SSID/hasło WiFi Direct będzie używane do połączenia",
+    "use_label": "Użyj WiFi Direct w trybie pomiaru",
+    "use_help": "W trybie pomiaru SSID/hasło WiFi Direct będzie używane do połączenia",
     "save": "Zapisz",
     "err_missing_credentials": "SSID i hasło są wymagane przy używaniu WiFi Direct"
   },

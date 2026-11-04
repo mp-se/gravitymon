@@ -402,8 +402,8 @@
     "ssid_help": "Angiv SSID for wifi direct-funktionaliteten",
     "pass_label": "Direkte adgangskode",
     "pass_help": "Angiv adgangskode til wifi direct-netværket",
-    "use_label": "Brug wifi direct i Gravity-tilstand",
-    "use_help": "I Gravity-tilstand bruges wifi direct SSID/adgangskode til forbindelse",
+    "use_label": "Brug wifi direct i målingstilstand",
+    "use_help": "I målingstilstand bruges wifi direct SSID/adgangskode til forbindelse",
     "save": "Gem",
     "err_missing_credentials": "SSID og adgangskode er påkrævet ved brug af wifi direct"
   },

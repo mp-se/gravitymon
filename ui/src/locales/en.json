@@ -402,8 +402,8 @@
     "ssid_help": "Enter the SSID for the wifi direct functionallity",
     "pass_label": "Direct Password",
     "pass_help": "Enter password for the wifi direct network",
-    "use_label": "Use wifi direct in gravity mode",
-    "use_help": "In gravity mode the wifi direct SSID/Password will be used for connection",
+    "use_label": "Use wifi direct in measurement mode",
+    "use_help": "In measurement mode the wifi direct SSID/Password will be used for connection",
     "save": "Save",
     "err_missing_credentials": "SSID and Password are required when using wifi direct"
   },

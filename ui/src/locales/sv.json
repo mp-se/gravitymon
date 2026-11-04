@@ -402,8 +402,8 @@
     "ssid_help": "Ange SSID för wifi-direktfunktionen",
     "pass_label": "Direktlösenord",
     "pass_help": "Ange lösenord för wifi-direktnätverket",
-    "use_label": "Använd wifi direct i gravity-läge",
-    "use_help": "I gravity-läge används wifi-direkt SSID/lösenord för anslutning",
+    "use_label": "Använd wifi direct i mätläge",
+    "use_help": "I mätläge används wifi-direkt SSID/lösenord för anslutning",
     "save": "Spara",
     "err_missing_credentials": "SSID och lösenord krävs vid användning av wifi direct"
   },

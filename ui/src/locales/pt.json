@@ -402,8 +402,8 @@
     "ssid_help": "Digite o SSID para a funcionalidade wifi direct",
     "pass_label": "Senha direta",
     "pass_help": "Digite a senha para a rede wifi direct",
-    "use_label": "Usar wifi direct no modo Gravity",
-    "use_help": "No modo Gravity, o SSID/senha do wifi direct será usado para conexão",
+    "use_label": "Usar wifi direct no modo de medição",
+    "use_help": "No modo de medição, o SSID/senha do wifi direct será usado para conexão",
     "save": "Salvar",
     "err_missing_credentials": "SSID e senha são necessários ao usar wifi direct"
   },

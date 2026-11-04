@@ -402,8 +402,8 @@
     "ssid_help": "Entrez le SSID pour la fonctionnalité wifi direct",
     "pass_label": "Mot de passe direct",
     "pass_help": "Entrez le mot de passe pour le réseau wifi direct",
-    "use_label": "Utiliser wifi direct en mode gravity",
-    "use_help": "En mode gravity, le SSID/mot de passe wifi direct sera utilisé pour la connexion",
+    "use_label": "Utiliser wifi direct en mode mesure",
+    "use_help": "En mode mesure, le SSID/mot de passe wifi direct sera utilisé pour la connexion",
     "save": "Enregistrer",
     "err_missing_credentials": "Le SSID et le mot de passe sont requis lors de l'utilisation de wifi direct"
   },
