@@ -30,14 +30,18 @@
 #include <config_brewing.hpp>
 #include <templating.hpp>
 
+#if defined(PRESSUREMON) || defined(GATEWAY)
 extern const char iPressureHttpPostFormat[] PROGMEM;
 extern const char iPressureHttpGetFormat[] PROGMEM;
 extern const char iPressureInfluxDbFormat[] PROGMEM;
 extern const char iPressureMqttFormat[] PROGMEM;
+#endif
+#if defined(GRAVITYMON) || defined(GATEWAY)
 extern const char iGravityHttpPostFormat[] PROGMEM;
 extern const char iGravityHttpGetFormat[] PROGMEM;
 extern const char iGravityInfluxDbFormat[] PROGMEM;
 extern const char iGravityMqttFormat[] PROGMEM;
+#endif
 
 constexpr auto TPL_TEMP_NULL = "${temp-null}";
 constexpr auto TPL_GRAVITY_NULL = "${gravity-null}";
@@ -95,15 +99,32 @@ constexpr auto TPL_PRESSURE_FNAME_GET = "/http-p3.tpl";
 constexpr auto TPL_PRESSURE_FNAME_INFLUXDB = "/influxdb-p.tpl";
 constexpr auto TPL_PRESSURE_FNAME_MQTT = "/mqtt-p.tpl";
 
+constexpr auto TPL_TEMPERATURE_FNAME_POST = "/http-t1.tpl";
+constexpr auto TPL_TEMPERATURE_FNAME_POST2 = "/http-t2.tpl";
+constexpr auto TPL_TEMPERATURE_FNAME_GET = "/http-t3.tpl";
+constexpr auto TPL_TEMPERATURE_FNAME_INFLUXDB = "/influxdb-t.tpl";
+constexpr auto TPL_TEMPERATURE_FNAME_MQTT = "/mqtt-t.tpl";
+
+#if defined(GRAVITYMON) || defined(GATEWAY)
 extern const char iGravityHttpPostFormat[] PROGMEM;
 extern const char iGravityHttpGetFormat[] PROGMEM;
 extern const char iGravityInfluxDbFormat[] PROGMEM;
 extern const char iGravityMqttFormat[] PROGMEM;
+#endif
 
+#if defined(PRESSUREMON) || defined(GATEWAY)
 extern const char iPressureHttpPostFormat[] PROGMEM;
 extern const char iPressureHttpGetFormat[] PROGMEM;
 extern const char iPressureInfluxDbFormat[] PROGMEM;
 extern const char iPressureMqttFormat[] PROGMEM;
+#endif
+
+#if defined(TEMPMON) || defined(GATEWAY)
+extern const char iTemperatureHttpPostFormat[] PROGMEM;
+extern const char iTemperatureHttpGetFormat[] PROGMEM;
+extern const char iTemperatureInfluxDbFormat[] PROGMEM;
+extern const char iTemperatureMqttFormat[] PROGMEM;
+#endif
 
 class BrewingPush : public BasePush {
  private:
@@ -114,22 +135,41 @@ class BrewingPush : public BasePush {
   explicit BrewingPush(BrewingConfig* brewingConfig);
 
   enum Templates {
+#if defined(GRAVITYMON) || defined(GATEWAY)
     GRAVITY_TEMPLATE_HTTP1 = 0,
     GRAVITY_TEMPLATE_HTTP2 = 1,
     GRAVITY_TEMPLATE_HTTP3 = 2,
     GRAVITY_TEMPLATE_INFLUX = 3,
     GRAVITY_TEMPLATE_MQTT = 4,
+#endif
 
+#if defined(PRESSUREMON) || defined(GATEWAY)
     PRESSURE_TEMPLATE_HTTP1 = 10,
     PRESSURE_TEMPLATE_HTTP2 = 11,
     PRESSURE_TEMPLATE_HTTP3 = 12,
     PRESSURE_TEMPLATE_INFLUX = 13,
     PRESSURE_TEMPLATE_MQTT = 14,
+#endif
+
+#if defined(TEMPMON) || defined(GATEWAY)
+    TEMPERATURE_TEMPLATE_HTTP1 = 20,
+    TEMPERATURE_TEMPLATE_HTTP2 = 21,
+    TEMPERATURE_TEMPLATE_HTTP3 = 22,
+    TEMPERATURE_TEMPLATE_INFLUX = 23,
+    TEMPERATURE_TEMPLATE_MQTT = 24,
+#endif
   };
 
   enum MeasurementType {
+#if defined(GRAVITYMON) || defined(GATEWAY)
     GRAVITY = 0,
+#endif
+#if defined(PRESSUREMON) || defined(GATEWAY)
     PRESSURE = 1,
+#endif
+#if defined(TEMPMON) || defined(GATEWAY)
+    TEMPERATURE = 2,
+#endif
   };
 
   void sendAll(TemplatingEngine& engine, MeasurementType type,

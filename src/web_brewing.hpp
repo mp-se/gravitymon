@@ -67,6 +67,11 @@ constexpr auto PARAM_FORMAT_POST2_PRESSURE = "http_post2_format_pressure";
 constexpr auto PARAM_FORMAT_GET_PRESSURE = "http_get_format_pressure";
 constexpr auto PARAM_FORMAT_INFLUXDB_PRESSURE = "influxdb2_format_pressure";
 constexpr auto PARAM_FORMAT_MQTT_PRESSURE = "mqtt_format_pressure";
+constexpr auto PARAM_FORMAT_POST_TEMPERATURE = "http_post_format_temperature";
+constexpr auto PARAM_FORMAT_POST2_TEMPERATURE = "http_post2_format_temperature";
+constexpr auto PARAM_FORMAT_GET_TEMPERATURE = "http_get_format_temperature";
+constexpr auto PARAM_FORMAT_INFLUXDB_TEMPERATURE = "influxdb2_format_temperature";
+constexpr auto PARAM_FORMAT_MQTT_TEMPERATURE = "mqtt_format_temperature";
 
 constexpr auto PARAM_PUSH_FORMAT = "push_format";
 constexpr auto PARAM_PUSH_RETURN_CODE = "push_return_code";

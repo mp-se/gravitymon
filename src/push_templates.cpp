@@ -25,6 +25,8 @@
 
 #include <pushtarget.hpp>
 
+#if defined(PRESSUREMON) || defined(GATEWAY)
+
 const char iPressureHttpPostFormat[] PROGMEM =
     "{"
     "\"name\": \"${mdns}\", "
@@ -80,6 +82,10 @@ const char iPressureMqttFormat[] PROGMEM =
     "pressuremon/${mdns}/interval:${sleep-interval}|"
     "pressuremon/${mdns}/RSSI:${rssi}|";
 
+#endif  // PRESSUREMON || GATEWAY
+
+#if defined(GRAVITYMON) || defined(GATEWAY)
+
 // Use iSpindle format for compatibility, HTTP POST
 const char iGravityHttpPostFormat[] PROGMEM =
     "{"
@@ -133,5 +139,48 @@ const char iGravityMqttFormat[] PROGMEM =
     "ispindel/${mdns}/velocity:${velocity}|"
     "ispindel/${mdns}/interval:${sleep-interval}|"
     "ispindel/${mdns}/RSSI:${rssi}|";
+
+#endif  // GRAVITYMON || GATEWAY
+
+#if defined(TEMPMON) || defined(GATEWAY)
+
+// The default temperature formats must be identical to the first entry of each list in
+// ui/src/modules/temperatureFormatOptions.js (tempmon).
+const char iTemperatureHttpPostFormat[] PROGMEM =
+    "{"
+    "\"name\":\"${mdns}\","
+    "\"id\":\"${id}\","
+    "\"token\":\"${token}\","
+    "\"interval\":${sleep-interval},"
+    "\"temperature\":${temp},"
+    "\"temperature-unit\":\"${temp-unit}\","
+    "\"battery\":${battery},"
+    "\"rssi\":${rssi},"
+    "\"run-time\":${run-time}"
+    "}";
+
+const char iTemperatureHttpGetFormat[] PROGMEM =
+    "?name=${mdns}"
+    "&id=${id}"
+    "&token=${token2}"
+    "&interval=${sleep-interval}"
+    "&temperature=${temp}"
+    "&temperature-unit=${temp-unit}"
+    "&battery=${battery}"
+    "&rssi=${rssi}"
+    "&run-time=${run-time}";
+
+const char iTemperatureInfluxDbFormat[] PROGMEM =
+    "measurement,host=${mdns},device=${id},temperature-unit=${temp-unit} "
+    "temp=${temp},battery=${battery},rssi=${rssi}\n";
+
+const char iTemperatureMqttFormat[] PROGMEM =
+    "tempmon/${mdns}/temperature:${temp}|"
+    "tempmon/${mdns}/temperature-unit:${temp-unit}|"
+    "tempmon/${mdns}/battery:${battery}|"
+    "tempmon/${mdns}/interval:${sleep-interval}|"
+    "tempmon/${mdns}/RSSI:${rssi}|";
+
+#endif  // TEMPMON || GATEWAY
 
 // EOF

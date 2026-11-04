@@ -72,6 +72,9 @@ void printBuildOptions() {
 #if defined(PRESSUREMON)
                "PRESSUREMON "
 #endif
+#if defined(TEMPMON)
+               "TEMPMON "
+#endif
 #if defined(GATEWAY)
                "GATEWAY "
 #endif

@@ -119,10 +119,18 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_BEGIN("push-http");
     String tpl;
 
+#if defined(GRAVITYMON) || defined(GATEWAY)
     if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP1);
-    else
+#endif
+#if defined(PRESSUREMON) || defined(GATEWAY)
+    if (type == MeasurementType::PRESSURE)
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP1);
+#endif
+#if defined(TEMPMON) || defined(GATEWAY)
+    if (type == MeasurementType::TEMPERATURE)
+      tpl = getTemplate(BrewingPush::TEMPERATURE_TEMPLATE_HTTP1);
+#endif
 
     String doc = engine.create(tpl.c_str());
 
@@ -140,10 +148,18 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_BEGIN("push-http2");
     String tpl;
 
+#if defined(GRAVITYMON) || defined(GATEWAY)
     if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP2);
-    else
+#endif
+#if defined(PRESSUREMON) || defined(GATEWAY)
+    if (type == MeasurementType::PRESSURE)
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP2);
+#endif
+#if defined(TEMPMON) || defined(GATEWAY)
+    if (type == MeasurementType::TEMPERATURE)
+      tpl = getTemplate(BrewingPush::TEMPERATURE_TEMPLATE_HTTP2);
+#endif
 
     String doc = engine.create(tpl.c_str());
 
@@ -161,10 +177,18 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_BEGIN("push-http3");
     String tpl;
 
+#if defined(GRAVITYMON) || defined(GATEWAY)
     if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_HTTP3);
-    else
+#endif
+#if defined(PRESSUREMON) || defined(GATEWAY)
+    if (type == MeasurementType::PRESSURE)
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_HTTP3);
+#endif
+#if defined(TEMPMON) || defined(GATEWAY)
+    if (type == MeasurementType::TEMPERATURE)
+      tpl = getTemplate(BrewingPush::TEMPERATURE_TEMPLATE_HTTP3);
+#endif
 
     String doc = engine.create(tpl.c_str());
 
@@ -182,10 +206,18 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_BEGIN("push-influxdb2");
     String tpl;
 
+#if defined(GRAVITYMON) || defined(GATEWAY)
     if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_INFLUX);
-    else
+#endif
+#if defined(PRESSUREMON) || defined(GATEWAY)
+    if (type == MeasurementType::PRESSURE)
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_INFLUX);
+#endif
+#if defined(TEMPMON) || defined(GATEWAY)
+    if (type == MeasurementType::TEMPERATURE)
+      tpl = getTemplate(BrewingPush::TEMPERATURE_TEMPLATE_INFLUX);
+#endif
 
     String doc = engine.create(tpl.c_str());
 
@@ -203,10 +235,18 @@ void BrewingPush::sendAll(TemplatingEngine& engine, MeasurementType type,
     PERF_BEGIN("push-mqtt");
     String tpl;
 
+#if defined(GRAVITYMON) || defined(GATEWAY)
     if (type == MeasurementType::GRAVITY)
       tpl = getTemplate(BrewingPush::GRAVITY_TEMPLATE_MQTT);
-    else
+#endif
+#if defined(PRESSUREMON) || defined(GATEWAY)
+    if (type == MeasurementType::PRESSURE)
       tpl = getTemplate(BrewingPush::PRESSURE_TEMPLATE_MQTT);
+#endif
+#if defined(TEMPMON) || defined(GATEWAY)
+    if (type == MeasurementType::TEMPERATURE)
+      tpl = getTemplate(BrewingPush::TEMPERATURE_TEMPLATE_MQTT);
+#endif
 
     String doc = engine.create(tpl.c_str());
 
@@ -228,6 +268,7 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
 
   // Load templates from memory
   switch (t) {
+#if defined(GRAVITYMON) || defined(GATEWAY)
     case GRAVITY_TEMPLATE_HTTP1:
       _baseTemplate = String(iGravityHttpPostFormat);
       fname = TPL_GRAVITY_FNAME_POST;
@@ -248,7 +289,9 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
       _baseTemplate = String(iGravityMqttFormat);
       fname = TPL_GRAVITY_FNAME_MQTT;
       break;
+#endif
 
+#if defined(PRESSUREMON) || defined(GATEWAY)
     case PRESSURE_TEMPLATE_HTTP1:
       _baseTemplate = String(iPressureHttpPostFormat);
       fname = TPL_PRESSURE_FNAME_POST;
@@ -269,6 +312,30 @@ const char* BrewingPush::getTemplate(Templates t, bool useDefaultTemplate) {
       _baseTemplate = String(iPressureMqttFormat);
       fname = TPL_PRESSURE_FNAME_MQTT;
       break;
+#endif
+
+#if defined(TEMPMON) || defined(GATEWAY)
+    case TEMPERATURE_TEMPLATE_HTTP1:
+      _baseTemplate = String(iTemperatureHttpPostFormat);
+      fname = TPL_TEMPERATURE_FNAME_POST;
+      break;
+    case TEMPERATURE_TEMPLATE_HTTP2:
+      _baseTemplate = String(iTemperatureHttpPostFormat);
+      fname = TPL_TEMPERATURE_FNAME_POST2;
+      break;
+    case TEMPERATURE_TEMPLATE_HTTP3:
+      _baseTemplate = String(iTemperatureHttpGetFormat);
+      fname = TPL_TEMPERATURE_FNAME_GET;
+      break;
+    case TEMPERATURE_TEMPLATE_INFLUX:
+      _baseTemplate = String(iTemperatureInfluxDbFormat);
+      fname = TPL_TEMPERATURE_FNAME_INFLUXDB;
+      break;
+    case TEMPERATURE_TEMPLATE_MQTT:
+      _baseTemplate = String(iTemperatureMqttFormat);
+      fname = TPL_TEMPERATURE_FNAME_MQTT;
+      break;
+#endif
   }
 
   if (!useDefaultTemplate) {

@@ -125,17 +125,29 @@ void BrewingWebServer::webHandleFactoryDefaults(
   _brewingConfig->saveFileWifiOnly();
   LittleFS.remove(ERR_FILENAME);
 
+#if defined(GRAVITYMON) || defined(GATEWAY)
   LittleFS.remove(TPL_GRAVITY_FNAME_POST);
   LittleFS.remove(TPL_GRAVITY_FNAME_POST2);
   LittleFS.remove(TPL_GRAVITY_FNAME_GET);
   LittleFS.remove(TPL_GRAVITY_FNAME_INFLUXDB);
   LittleFS.remove(TPL_GRAVITY_FNAME_MQTT);
+#endif
 
+#if defined(PRESSUREMON) || defined(GATEWAY)
   LittleFS.remove(TPL_PRESSURE_FNAME_POST);
   LittleFS.remove(TPL_PRESSURE_FNAME_POST2);
   LittleFS.remove(TPL_PRESSURE_FNAME_GET);
   LittleFS.remove(TPL_PRESSURE_FNAME_INFLUXDB);
   LittleFS.remove(TPL_PRESSURE_FNAME_MQTT);
+#endif
+
+#if defined(TEMPMON) || defined(GATEWAY)
+  LittleFS.remove(TPL_TEMPERATURE_FNAME_POST);
+  LittleFS.remove(TPL_TEMPERATURE_FNAME_POST2);
+  LittleFS.remove(TPL_TEMPERATURE_FNAME_GET);
+  LittleFS.remove(TPL_TEMPERATURE_FNAME_INFLUXDB);
+  LittleFS.remove(TPL_TEMPERATURE_FNAME_MQTT);
+#endif
   LittleFS.end();
 
   Log.notice(F("WEB : Deleted files in filesystem, rebooting." CR));
@@ -183,6 +195,7 @@ void BrewingWebServer::webHandleConfigFormatWrite(
   JsonObject obj = json.as<JsonObject>();
   int success = 0;
 
+#if defined(GRAVITYMON) || defined(GATEWAY)
   if (!obj[PARAM_FORMAT_POST_GRAVITY].isNull()) {
     success += writeFile(TPL_GRAVITY_FNAME_POST, obj[PARAM_FORMAT_POST_GRAVITY])
                    ? 1
@@ -208,7 +221,9 @@ void BrewingWebServer::webHandleConfigFormatWrite(
                    ? 1
                    : 0;
   }
+#endif
 
+#if defined(PRESSUREMON) || defined(GATEWAY)
   if (!obj[PARAM_FORMAT_POST_PRESSURE].isNull()) {
     success +=
         writeFile(TPL_PRESSURE_FNAME_POST, obj[PARAM_FORMAT_POST_PRESSURE]) ? 1
@@ -236,6 +251,40 @@ void BrewingWebServer::webHandleConfigFormatWrite(
         writeFile(TPL_PRESSURE_FNAME_MQTT, obj[PARAM_FORMAT_MQTT_PRESSURE]) ? 1
                                                                             : 0;
   }
+#endif
+
+#if defined(TEMPMON) || defined(GATEWAY)
+  if (!obj[PARAM_FORMAT_POST_TEMPERATURE].isNull()) {
+    success += writeFile(TPL_TEMPERATURE_FNAME_POST,
+                         obj[PARAM_FORMAT_POST_TEMPERATURE])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_POST2_TEMPERATURE].isNull()) {
+    success += writeFile(TPL_TEMPERATURE_FNAME_POST2,
+                         obj[PARAM_FORMAT_POST2_TEMPERATURE])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_GET_TEMPERATURE].isNull()) {
+    success += writeFile(TPL_TEMPERATURE_FNAME_GET,
+                         obj[PARAM_FORMAT_GET_TEMPERATURE])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_INFLUXDB_TEMPERATURE].isNull()) {
+    success += writeFile(TPL_TEMPERATURE_FNAME_INFLUXDB,
+                         obj[PARAM_FORMAT_INFLUXDB_TEMPERATURE])
+                   ? 1
+                   : 0;
+  }
+  if (!obj[PARAM_FORMAT_MQTT_TEMPERATURE].isNull()) {
+    success += writeFile(TPL_TEMPERATURE_FNAME_MQTT,
+                         obj[PARAM_FORMAT_MQTT_TEMPERATURE])
+                   ? 1
+                   : 0;
+  }
+#endif
 
   AsyncJsonResponse *response = new AsyncJsonResponse(false);
   obj = response->getRoot().as<JsonObject>();
@@ -451,6 +500,29 @@ void BrewingWebServer::webHandleConfigFormatRead(
   s = readFile(TPL_PRESSURE_FNAME_MQTT);
   obj[PARAM_FORMAT_MQTT_PRESSURE] =
       s.length() ? urlencode(s) : urlencode(String(&iPressureMqttFormat[0]));
+#endif
+
+#if defined(TEMPMON) || defined(GATEWAY)
+  s = readFile(TPL_TEMPERATURE_FNAME_POST);
+  obj[PARAM_FORMAT_POST_TEMPERATURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iTemperatureHttpPostFormat[0]));
+  s = readFile(TPL_TEMPERATURE_FNAME_POST2);
+  obj[PARAM_FORMAT_POST2_TEMPERATURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iTemperatureHttpPostFormat[0]));
+  s = readFile(TPL_TEMPERATURE_FNAME_GET);
+  obj[PARAM_FORMAT_GET_TEMPERATURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iTemperatureHttpGetFormat[0]));
+  s = readFile(TPL_TEMPERATURE_FNAME_INFLUXDB);
+  obj[PARAM_FORMAT_INFLUXDB_TEMPERATURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iTemperatureInfluxDbFormat[0]));
+  s = readFile(TPL_TEMPERATURE_FNAME_MQTT);
+  obj[PARAM_FORMAT_MQTT_TEMPERATURE] =
+      s.length() ? urlencode(s)
+                 : urlencode(String(&iTemperatureMqttFormat[0]));
 #endif
 
   response->setLength();
