@@ -362,9 +362,11 @@
     "skip_interval_hint": "每 {period} 发送一次数据。",
     "data_format_gravity_label": "数据格式（Gravity）",
     "data_format_pressure_label": "数据格式（压力）",
+    "data_format_temperature_label": "数据格式（温度）",
     "data_format_help": "用于创建发送到远程服务的数据的格式模板",
     "enable_gravity_label": "启用 Gravity",
     "enable_pressure_label": "启用压力",
+    "enable_temperature_label": "启用温度",
     "predefined_formats_label": "预定义格式",
     "formats_button": "格式",
     "format_preview_title": "格式预览",
@@ -372,6 +374,7 @@
     "save": "保存",
     "run_push_gravity_test": "运行 Gravity 推送测试",
     "run_push_pressure_test": "运行压力推送测试",
+    "run_push_temperature_test": "运行温度推送测试",
     "err_start_push_test": "启动推送测试失败"
   },
   "push_settings": {
@@ -441,8 +444,10 @@
     "err_test_prefix": "无法运行测试：{message}",
     "err_gravity_test": "启动 Gravity 数据推送测试失败",
     "err_pressure_test": "启动压力数据推送测试失败",
+    "err_temperature_test": "启动温度数据推送测试失败",
     "err_apply_gravity_format": "应用 Gravity 格式失败",
     "err_apply_pressure_format": "应用压力格式失败",
+    "err_apply_temperature_format": "应用温度格式失败",
     "err_save": "保存配置失败"
   },
   "push_bluetooth": {

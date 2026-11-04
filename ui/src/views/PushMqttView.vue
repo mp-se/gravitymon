@@ -90,6 +90,7 @@
             :disabled="pushDisabled"
           />
         </div>-->
+        <!-- Gravity: data format, predefined formats and preview -->
         <div class="col-md-9">
           <BsInputTextAreaFormat
             v-model="config.mqtt_format_gravity"
@@ -143,6 +144,7 @@
             :disabled="pushDisabled"
           />
         </div>
+        <!-- Pressure: data format, predefined formats and preview -->
         <div class="col-md-9">
           <BsInputTextAreaFormat
             v-model="config.mqtt_format_pressure"
@@ -188,6 +190,60 @@
           <BsModal
             @click="pressureRenderFormat"
             v-model="pressureRender"
+            :code="true"
+            :json="true"
+            :mqtt="true"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
+            :disabled="pushDisabled"
+          />
+        </div>
+        <!-- Temperature: data format, predefined formats and preview -->
+        <div class="col-md-9">
+          <BsInputTextAreaFormat
+            v-model="config.mqtt_format_temperature"
+            rows="6"
+            :label="t('push_common.data_format_temperature_label')"
+            :help="t('push_common.data_format_help')"
+            :disabled="pushDisabled || config.mqtt_temperature === false"
+            v-if="global.ui.enableTemperature"
+          />
+        </div>
+        <div class="col-md-3 gy-2" v-if="global.ui.enableTemperature && (global.ui.enableGravity || global.ui.enablePressure)">
+          <BsInputSwitch
+            v-model="config.mqtt_temperature"
+            :label="t('push_common.enable_temperature_label')"
+            :disabled="global.disabled"
+          />
+          <BsDropdown
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
+            :options="temperatureMqttFormatOptions"
+            :callback="temperatureMqttFormatCallback"
+            :disabled="pushDisabled || config.mqtt_temperature === false"
+          />
+          <BsModal
+            @click="temperatureRenderFormat"
+            v-model="temperatureRender"
+            :code="true"
+            :json="true"
+            :mqtt="true"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
+            :disabled="pushDisabled || config.mqtt_temperature === false"
+          />
+        </div>
+        <div class="col-md-3 gy-2" v-if="global.ui.enableTemperature && !global.ui.enableGravity && !global.ui.enablePressure">
+          <BsDropdown
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
+            :options="temperatureMqttFormatOptions"
+            :callback="temperatureMqttFormatCallback"
+            :disabled="pushDisabled"
+          />
+          <BsModal
+            @click="temperatureRenderFormat"
+            v-model="temperatureRender"
             :code="true"
             :json="true"
             :mqtt="true"
@@ -246,6 +302,21 @@
             ></span>
             &nbsp;{{ t('push_common.run_push_pressure_test') }}
           </button>
+          <button
+            v-if="global.ui.enableTemperature"
+            @click="runTestTemperature"
+            type="button"
+            class="btn btn-secondary"
+            :disabled="pushDisabled"
+          >
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+              :hidden="!global.disabled"
+            ></span>
+            &nbsp;{{ t('push_common.run_push_temperature_test') }}
+          </button>
         </div>
       </div>
     </form>
@@ -258,6 +329,7 @@ import { useI18n } from 'vue-i18n'
 import { skipIntervalHint } from '@/modules/utils'
 import { gravityMqttFormatOptions } from '@/modules/gravityFormatOptions'
 import { pressureMqttFormatOptions } from '@/modules/pressureFormatOptions'
+import { temperatureMqttFormatOptions } from '@/modules/temperatureFormatOptions'
 import { applyTemplate } from '@/modules/formatTemplate'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, status, config } from '@/modules/pinia'
@@ -270,6 +342,7 @@ const ESP8266_PAYLOAD_LIMIT = 500
 
 const gravityRender = ref('')
 const pressureRender = ref('')
+const temperatureRender = ref('')
 
 /**
  * Check if format template exceeds ESP8266 payload limit
@@ -305,6 +378,13 @@ watch(
   () => config.mqtt_format_pressure,
   () => {
     handleFormatValidation(config.mqtt_format_pressure)
+  }
+)
+
+watch(
+  () => config.mqtt_format_temperature,
+  () => {
+    handleFormatValidation(config.mqtt_format_temperature)
   }
 )
 
@@ -402,6 +482,35 @@ const runTestPressure = async () => {
 }
 
 /**
+ * Run temperature test with proper error handling
+ */
+const runTestTemperature = async () => {
+  try {
+    const serverValidation = validateMqttServer(config.mqtt_target)
+    if (!serverValidation.valid) {
+      global.messageError = t('push_mqtt.err_test_prefix', { message: serverValidation.message })
+      return
+    }
+
+    const portValidation = validateMqttPort(config.mqtt_port)
+    if (!portValidation.valid) {
+      global.messageError = t('push_mqtt.err_test_prefix', { message: portValidation.message })
+      return
+    }
+
+    const data = {
+      push_format: 'mqtt_format_temperature'
+    }
+
+    global.clearMessages()
+    await config.runPushTest(data)
+  } catch (error) {
+    logError('PushMqttView.runTestTemperature()', error)
+    global.messageError = t('push_mqtt.err_temperature_test')
+  }
+}
+
+/**
  * Handle gravity format callback with proper decoding and formatting
  * @param {string} opt - URL-encoded format option
  */
@@ -434,6 +543,22 @@ const pressureMqttFormatCallback = (opt) => {
 }
 
 /**
+ * Handle temperature format callback with proper decoding and formatting
+ * @param {string} opt - URL-encoded format option
+ */
+const temperatureMqttFormatCallback = (opt) => {
+  try {
+    config.mqtt_format_temperature = decodeURIComponent(opt)
+    config.mqtt_format_temperature = config.mqtt_format_temperature.replaceAll('|', '|\n')
+    // Trigger validation after setting
+    handleFormatValidation(config.mqtt_format_temperature)
+  } catch (error) {
+    logError('PushMqttView.temperatureMqttFormatCallback()', error)
+    global.messageError = t('push_mqtt.err_apply_temperature_format')
+  }
+}
+
+/**
  * Render gravity format template preview
  */
 const gravityRenderFormat = () => {
@@ -454,6 +579,18 @@ const pressureRenderFormat = () => {
   } catch (error) {
     logError('PushMqttView.pressureRenderFormat()', error)
     pressureRender.value = `Error rendering format: ${error.message}`
+  }
+}
+
+/**
+ * Render temperature format template preview
+ */
+const temperatureRenderFormat = () => {
+  try {
+    temperatureRender.value = applyTemplate(status, config, config.mqtt_format_temperature)
+  } catch (error) {
+    logError('PushMqttView.temperatureRenderFormat()', error)
+    temperatureRender.value = `Error rendering format: ${error.message}`
   }
 }
 

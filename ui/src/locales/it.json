@@ -362,9 +362,11 @@
     "skip_interval_hint": "I dati vengono inviati ogni {period}.",
     "data_format_gravity_label": "Formato dati (Gravity)",
     "data_format_pressure_label": "Formato dati (pressione)",
+    "data_format_temperature_label": "Formato dati (temperatura)",
     "data_format_help": "Modello di formato usato per creare i dati inviati al servizio remoto",
     "enable_gravity_label": "Abilita Gravity",
     "enable_pressure_label": "Abilita pressione",
+    "enable_temperature_label": "Abilita temperatura",
     "predefined_formats_label": "Formati predefiniti",
     "formats_button": "Formati",
     "format_preview_title": "Anteprima formato",
@@ -372,6 +374,7 @@
     "save": "Salva",
     "run_push_gravity_test": "Esegui test di invio Gravity",
     "run_push_pressure_test": "Esegui test di invio pressione",
+    "run_push_temperature_test": "Esegui test di invio temperatura",
     "err_start_push_test": "Impossibile avviare il test di invio"
   },
   "push_settings": {
@@ -441,8 +444,10 @@
     "err_test_prefix": "Impossibile eseguire il test: {message}",
     "err_gravity_test": "Impossibile avviare il test di invio per i dati Gravity",
     "err_pressure_test": "Impossibile avviare il test di invio per i dati di pressione",
+    "err_temperature_test": "Impossibile avviare il test di invio per i dati di temperatura",
     "err_apply_gravity_format": "Impossibile applicare il formato Gravity",
     "err_apply_pressure_format": "Impossibile applicare il formato pressione",
+    "err_apply_temperature_format": "Impossibile applicare il formato temperatura",
     "err_save": "Impossibile salvare la configurazione"
   },
   "push_bluetooth": {

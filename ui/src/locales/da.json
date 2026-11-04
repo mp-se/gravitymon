@@ -362,9 +362,11 @@
     "skip_interval_hint": "Data sendes hvert {period}.",
     "data_format_gravity_label": "Dataformat (Gravity)",
     "data_format_pressure_label": "Dataformat (tryk)",
+    "data_format_temperature_label": "Dataformat (temperatur)",
     "data_format_help": "Formatskabelon brugt til at oprette de data, der sendes til den eksterne tjeneste",
     "enable_gravity_label": "Aktiver Gravity",
     "enable_pressure_label": "Aktiver tryk",
+    "enable_temperature_label": "Aktiver temperatur",
     "predefined_formats_label": "Foruddefinerede formater",
     "formats_button": "Formater",
     "format_preview_title": "Formatforhåndsvisning",
@@ -372,6 +374,7 @@
     "save": "Gem",
     "run_push_gravity_test": "Kør push Gravity-test",
     "run_push_pressure_test": "Kør push tryktest",
+    "run_push_temperature_test": "Kør push temperaturtest",
     "err_start_push_test": "Kunne ikke starte push-test"
   },
   "push_settings": {
@@ -441,8 +444,10 @@
     "err_test_prefix": "Kan ikke køre test: {message}",
     "err_gravity_test": "Kunne ikke starte push-test for Gravity-data",
     "err_pressure_test": "Kunne ikke starte push-test for trykdata",
+    "err_temperature_test": "Kunne ikke starte push-test for temperaturdata",
     "err_apply_gravity_format": "Kunne ikke anvende Gravity-format",
     "err_apply_pressure_format": "Kunne ikke anvende trykformat",
+    "err_apply_temperature_format": "Kunne ikke anvende temperaturformat",
     "err_save": "Kunne ikke gemme konfigurationen"
   },
   "push_bluetooth": {

@@ -96,6 +96,7 @@
         </div>
 
         <!-- GRAVITY SECTION -->
+        <!-- Gravity: data format, predefined formats and preview -->
         <div v-if="global.ui.enableGravity" class="col-md-9">
           <BsInputTextAreaFormat
             v-model="config.http_get_format_gravity"
@@ -146,6 +147,7 @@
         </div>
 
         <!-- PRESSURE SECTION -->
+        <!-- Pressure: data format, predefined formats and preview -->
         <div v-if="global.ui.enablePressure" class="col-md-9">
           <BsInputTextAreaFormat
             v-model="config.http_get_format_pressure"
@@ -188,6 +190,55 @@
           <BsModal
             @click="pressureRenderFormat"
             v-model="pressureRender"
+            :code="true"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
+            :disabled="pushDisabled"
+          />
+        </div>
+        <!-- Temperature: data format, predefined formats and preview -->
+        <div v-if="global.ui.enableTemperature" class="col-md-9">
+          <BsInputTextAreaFormat
+            v-model="config.http_get_format_temperature"
+            rows="6"
+            :label="t('push_common.data_format_temperature_label')"
+            :help="t('push_common.data_format_help')"
+            :disabled="pushDisabled || config.http_get_temperature === false"
+          />
+        </div>
+        <div v-if="global.ui.enableTemperature && (global.ui.enableGravity || global.ui.enablePressure)" class="col-md-3">
+          <BsInputSwitch
+            v-model="config.http_get_temperature"
+            :label="t('push_common.enable_temperature_label')"
+            :disabled="global.disabled"
+          />
+          <BsDropdown
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
+            :options="temperatureHttpGetFormatOptions"
+            :callback="temperatureHttpFormatCallback"
+            :disabled="pushDisabled || config.http_get_temperature === false"
+          />
+          <BsModal
+            @click="temperatureRenderFormat"
+            v-model="temperatureRender"
+            :code="true"
+            :title="t('push_common.format_preview_title')"
+            :button="t('push_common.preview_format_button')"
+            :disabled="pushDisabled || config.http_get_temperature === false"
+          />
+        </div>
+        <div v-if="global.ui.enableTemperature && !global.ui.enableGravity && !global.ui.enablePressure" class="col-md-3">
+          <BsDropdown
+            :label="t('push_common.predefined_formats_label')"
+            :button="t('push_common.formats_button')"
+            :options="temperatureHttpGetFormatOptions"
+            :callback="temperatureHttpFormatCallback"
+            :disabled="pushDisabled"
+          />
+          <BsModal
+            @click="temperatureRenderFormat"
+            v-model="temperatureRender"
             :code="true"
             :title="t('push_common.format_preview_title')"
             :button="t('push_common.preview_format_button')"
@@ -244,6 +295,21 @@
             ></span>
             &nbsp;{{ t('push_common.run_push_pressure_test') }}
           </button>
+          <button
+            v-if="global.ui.enableTemperature"
+            @click="runTestTemperature"
+            type="button"
+            class="btn btn-secondary"
+            :disabled="pushDisabled"
+          >
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+              :hidden="!global.disabled"
+            ></span>
+            &nbsp;{{ t('push_common.run_push_temperature_test') }}
+          </button>
         </div>
       </div>
     </form>
@@ -257,12 +323,14 @@ import { validateCurrentForm, logError } from '@mp-se/espframework-ui-components
 import { httpGetUrlOptions, httpHeaderOptions, skipIntervalHint } from '@/modules/utils'
 import { gravityHttpGetFormatOptions } from '@/modules/gravityFormatOptions'
 import { pressureHttpGetFormatOptions } from '@/modules/pressureFormatOptions'
+import { temperatureHttpGetFormatOptions } from '@/modules/temperatureFormatOptions'
 import { applyTemplate } from '@/modules/formatTemplate'
 import { global, status, config } from '@/modules/pinia'
 
 const { t } = useI18n()
 const gravityRender = ref('')
 const pressureRender = ref('')
+const temperatureRender = ref('')
 
 const pushDisabled = computed(() => {
   return global.disabled || config.use_wifi_direct
@@ -290,6 +358,17 @@ const runTestPressure = async () => {
   }
 }
 
+const runTestTemperature = async () => {
+  try {
+    const data = { push_format: 'http_get_format_temperature' }
+    global.clearMessages()
+    await config.runPushTest(data)
+  } catch (error) {
+    logError('PushHttpGetView.runTestTemperature()', error)
+    global.messageError = t('push_common.err_start_push_test')
+  }
+}
+
 const httpUrlCallback = (opt) => {
   config.http_get_target = opt
 }
@@ -310,6 +389,10 @@ const pressureHttpFormatCallback = (opt) => {
   config.http_get_format_pressure = decodeURIComponent(opt)
 }
 
+const temperatureHttpFormatCallback = (opt) => {
+  config.http_get_format_temperature = decodeURIComponent(opt)
+}
+
 const gravityRenderFormat = () => {
   var s = applyTemplate(status, config, config.http_get_format_gravity)
   gravityRender.value = s
@@ -318,6 +401,11 @@ const gravityRenderFormat = () => {
 const pressureRenderFormat = () => {
   var s = applyTemplate(status, config, config.http_get_format_pressure)
   pressureRender.value = s
+}
+
+const temperatureRenderFormat = () => {
+  var s = applyTemplate(status, config, config.http_get_format_temperature)
+  temperatureRender.value = s
 }
 
 const save = async () => {

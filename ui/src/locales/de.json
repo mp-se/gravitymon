@@ -362,9 +362,11 @@
     "skip_interval_hint": "Daten werden alle {period} gesendet.",
     "data_format_gravity_label": "Datenformat (Gravity)",
     "data_format_pressure_label": "Datenformat (Druck)",
+    "data_format_temperature_label": "Datenformat (Temperatur)",
     "data_format_help": "Formatvorlage zur Erstellung der an den Remote-Dienst gesendeten Daten",
     "enable_gravity_label": "Gravity aktivieren",
     "enable_pressure_label": "Druck aktivieren",
+    "enable_temperature_label": "Temperatur aktivieren",
     "predefined_formats_label": "Vordefinierte Formate",
     "formats_button": "Formate",
     "format_preview_title": "Formatvorschau",
@@ -372,6 +374,7 @@
     "save": "Speichern",
     "run_push_gravity_test": "Push-Gravity-Test ausführen",
     "run_push_pressure_test": "Push-Drucktest ausführen",
+    "run_push_temperature_test": "Push-Temperaturtest ausführen",
     "err_start_push_test": "Push-Test konnte nicht gestartet werden"
   },
   "push_settings": {
@@ -441,8 +444,10 @@
     "err_test_prefix": "Test kann nicht ausgeführt werden: {message}",
     "err_gravity_test": "Push-Test für Gravity-Daten konnte nicht gestartet werden",
     "err_pressure_test": "Push-Test für Druckdaten konnte nicht gestartet werden",
+    "err_temperature_test": "Push-Test für Temperaturdaten konnte nicht gestartet werden",
     "err_apply_gravity_format": "Gravity-Format konnte nicht angewendet werden",
     "err_apply_pressure_format": "Druckformat konnte nicht angewendet werden",
+    "err_apply_temperature_format": "Temperaturformat konnte nicht angewendet werden",
     "err_save": "Konfiguration konnte nicht gespeichert werden"
   },
   "push_bluetooth": {

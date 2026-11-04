@@ -362,9 +362,11 @@
     "skip_interval_hint": "Data is sent every {period}.",
     "data_format_gravity_label": "Data format (gravity)",
     "data_format_pressure_label": "Data format (pressure)",
+    "data_format_temperature_label": "Data format (temperature)",
     "data_format_help": "Format template used to create the data sent to the remote service",
     "enable_gravity_label": "Enable gravity",
     "enable_pressure_label": "Enable pressure",
+    "enable_temperature_label": "Enable temperature",
     "predefined_formats_label": "Predefined formats",
     "formats_button": "Formats",
     "format_preview_title": "Format preview",
@@ -372,6 +374,7 @@
     "save": "Save",
     "run_push_gravity_test": "Run push gravity test",
     "run_push_pressure_test": "Run push pressure test",
+    "run_push_temperature_test": "Run push temperature test",
     "err_start_push_test": "Failed to start push test"
   },
   "push_settings": {
@@ -441,8 +444,10 @@
     "err_test_prefix": "Cannot run test: {message}",
     "err_gravity_test": "Failed to start push test for gravity data",
     "err_pressure_test": "Failed to start push test for pressure data",
+    "err_temperature_test": "Failed to start push test for temperature data",
     "err_apply_gravity_format": "Failed to apply gravity format",
     "err_apply_pressure_format": "Failed to apply pressure format",
+    "err_apply_temperature_format": "Failed to apply temperature format",
     "err_save": "Failed to save configuration"
   },
   "push_bluetooth": {

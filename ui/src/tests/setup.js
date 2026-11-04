@@ -103,6 +103,7 @@ vi.mock('@/modules/globalStore', () => ({
       enableCalibrationRegistration: true,
       enableGravity: true,
       enablePressure: false,
+      enableTemperature: false,
       enableHttpPostTcpMode: false,
       enableLanguageDownload: true,
       enableFirmwareDetails: true

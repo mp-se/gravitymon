@@ -362,9 +362,11 @@
     "skip_interval_hint": "Data skickas var {period}.",
     "data_format_gravity_label": "Dataformat (gravity)",
     "data_format_pressure_label": "Dataformat (tryck)",
+    "data_format_temperature_label": "Dataformat (temperatur)",
     "data_format_help": "Formatmall som används för att skapa datat som skickas till fjärrtjänsten",
     "enable_gravity_label": "Aktivera gravity",
     "enable_pressure_label": "Aktivera tryck",
+    "enable_temperature_label": "Aktivera temperatur",
     "predefined_formats_label": "Fördefinierade format",
     "formats_button": "Format",
     "format_preview_title": "Formatförhandsgranskning",
@@ -372,6 +374,7 @@
     "save": "Spara",
     "run_push_gravity_test": "Kör push-gravitytest",
     "run_push_pressure_test": "Kör push-trycktest",
+    "run_push_temperature_test": "Kör push-temperaturtest",
     "err_start_push_test": "Det gick inte att starta push-testet"
   },
   "push_settings": {
@@ -441,8 +444,10 @@
     "err_test_prefix": "Kan inte köra test: {message}",
     "err_gravity_test": "Det gick inte att starta push-test för gravity-data",
     "err_pressure_test": "Det gick inte att starta push-test för tryckdata",
+    "err_temperature_test": "Det gick inte att starta push-test för temperaturdata",
     "err_apply_gravity_format": "Det gick inte att tillämpa gravity-formatet",
     "err_apply_pressure_format": "Det gick inte att tillämpa tryckformatet",
+    "err_apply_temperature_format": "Det gick inte att tillämpa temperaturformatet",
     "err_save": "Det gick inte att spara konfigurationen"
   },
   "push_bluetooth": {
