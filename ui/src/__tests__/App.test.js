@@ -375,6 +375,66 @@ describe('App.vue (initializeApp tests)', () => {
     expect(wrapper.vm.showRegisterModal).toBe(false)
   })
 
+  it('initializeApp shows brewgraph promo when registered and enabled', async () => {
+    globalStore.registered = true
+    globalStore.brewgraph = false
+    globalStore.ui = { ...globalStore.ui, enableBrewgraphPromo: true }
+    statusStore.wifi_setup = false
+    const { shallowMount } = await import('@vue/test-utils')
+    const { default: AppComponent } = await import('../App.vue')
+    const wrapper = shallowMount(AppComponent, { global: { plugins: [createTestingPinia()] } })
+    await wrapper.vm.initializeApp()
+    expect(wrapper.vm.showBrewgraphPromo).toBe(true)
+    expect(wrapper.vm.showRegisterModal).toBe(false)
+  })
+
+  it('initializeApp does not show brewgraph promo together with the register modal', async () => {
+    globalStore.registered = false
+    globalStore.brewgraph = false
+    globalStore.ui = { ...globalStore.ui, enableDeviceRegistration: true, enableBrewgraphPromo: true }
+    statusStore.wifi_setup = false
+    http.getJson = vi.fn(async () => ({ exists: false }))
+    const { shallowMount } = await import('@vue/test-utils')
+    const { default: AppComponent } = await import('../App.vue')
+    const wrapper = shallowMount(AppComponent, { global: { plugins: [createTestingPinia()] } })
+    await wrapper.vm.initializeApp()
+    expect(wrapper.vm.showRegisterModal).toBe(true)
+    expect(wrapper.vm.showBrewgraphPromo).toBe(false)
+  })
+
+  it('initializeApp does not show brewgraph promo when already seen', async () => {
+    globalStore.registered = true
+    globalStore.brewgraph = true
+    globalStore.ui = { ...globalStore.ui, enableBrewgraphPromo: true }
+    statusStore.wifi_setup = false
+    const { shallowMount } = await import('@vue/test-utils')
+    const { default: AppComponent } = await import('../App.vue')
+    const wrapper = shallowMount(AppComponent, { global: { plugins: [createTestingPinia()] } })
+    await wrapper.vm.initializeApp()
+    expect(wrapper.vm.showBrewgraphPromo).toBe(false)
+  })
+
+  it('closeBrewgraphPromo persists the seen flag on the device', async () => {
+    const { shallowMount } = await import('@vue/test-utils')
+    const { default: AppComponent } = await import('../App.vue')
+    const wrapper = shallowMount(AppComponent, { global: { plugins: [createTestingPinia()] } })
+    await wrapper.vm.closeBrewgraphPromo()
+    expect(http.postJson).toHaveBeenCalledWith('api/config', { brewgraph: true })
+    expect(wrapper.vm.showBrewgraphPromo).toBe(false)
+  })
+
+  it('initializeApp does not show brewgraph promo when disabled', async () => {
+    globalStore.registered = true
+    globalStore.brewgraph = false
+    globalStore.ui = { ...globalStore.ui, enableBrewgraphPromo: false }
+    statusStore.wifi_setup = false
+    const { shallowMount } = await import('@vue/test-utils')
+    const { default: AppComponent } = await import('../App.vue')
+    const wrapper = shallowMount(AppComponent, { global: { plugins: [createTestingPinia()] } })
+    await wrapper.vm.initializeApp()
+    expect(wrapper.vm.showBrewgraphPromo).toBe(false)
+  })
+
   it('initializeApp handles registration check exception and continues', async () => {
     globalStore.registered = false
     globalStore.ui = { ...globalStore.ui, enableDeviceRegistration: true }

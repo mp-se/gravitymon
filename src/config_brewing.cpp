@@ -52,6 +52,7 @@ void BrewingConfig::createJson(JsonObject& doc) const {
   doc[CONFIG_PUSH_INTERVAL_MQTT] = this->getPushIntervalMqtt();
 
   doc[CONFIG_TEMPSENSOR_RESOLUTION] = this->getTempSensorResolution();
+  doc[CONFIG_BREWGRAPH] = isBrewgraph();
 }
 
 void BrewingConfig::parseJson(JsonObject& doc) {
@@ -60,6 +61,8 @@ void BrewingConfig::parseJson(JsonObject& doc) {
   parseJsonOta(doc);
   parseJsonPush(doc);
 
+  if (!doc[CONFIG_BREWGRAPH].isNull())
+    setBrewgraph(doc[CONFIG_BREWGRAPH].as<bool>());
   if (!doc[CONFIG_USE_WIFI_DIRECT].isNull())
     setWifiDirect(doc[CONFIG_USE_WIFI_DIRECT]);
 

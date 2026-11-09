@@ -224,6 +224,7 @@ export var featureData = {
   hardware: 'ispindel',
   firmware_file: 'firmware.bin',
   registered: true,
+  brewgraph: false,
 
   // Feature flags
   ble: true,

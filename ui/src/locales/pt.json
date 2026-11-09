@@ -555,6 +555,12 @@
     "err_generic": "Ocorreu um erro durante o registro.",
     "err_update_status": "Falha ao atualizar o status de registro"
   },
+  "fragment_brewgraph_promo": {
+    "title": "Experimente o BrewGraph",
+    "intro": "Comecei um novo projeto, o BrewGraph, um serviço para recolher e apresentar em gráficos os teus dados de produção do GravityMon e de outros dispositivos. Dá uma vista de olhos se quiseres acompanhar as tuas fermentações ao longo do tempo.",
+    "close": "Fechar",
+    "visit": "Visitar o BrewGraph"
+  },
   "language_packs": {
     "available_title": "Idiomas disponíveis",
     "install_success": "Pacote de idioma instalado",

@@ -111,6 +111,11 @@
     @close="closeRegisterModal"
   />
 
+  <BrewgraphPromoFragment
+    v-if="showBrewgraphPromo && $route?.name === 'home'"
+    @close="closeBrewgraphPromo"
+  />
+
   <router-view v-if="global.initialized" />
   <BsFooter v-if="global.initialized" :text="t('app.footer')" />
 </template>
@@ -131,6 +136,7 @@ const { t, locale } = useI18n()
 const { createInterval } = useTimers()
 const polling = ref(null)
 const showRegisterModal = ref(false)
+const showBrewgraphPromo = ref(false)
 
 // Keep the active vue-i18n locale in sync with the device-stored config value.
 // Non-English locales need their pack loaded from the device's LittleFS first
@@ -273,12 +279,29 @@ async function initializeApp() {
     // Trigger register modal if device is not registered
     if (!global.registered && global.ui.enableDeviceRegistration && status.wifi_setup == false) {
       showRegisterModal.value = true
+    } else if (
+      global.ui.enableBrewgraphPromo &&
+      !global.brewgraph &&
+      status.wifi_setup == false
+    ) {
+      // Banner on the home page, only until dismissed (persisted on the device), and never together with the register dialog
+      showBrewgraphPromo.value = true
     }
   } catch (error) {
     logError('App.initializeApp()', error)
     global.messageError = t('app.err_init_failed', { error: error.message })
   } finally {
     hideSpinner()
+  }
+}
+
+async function closeBrewgraphPromo() {
+  showBrewgraphPromo.value = false
+  global.brewgraph = true
+  try {
+    await http.postJson('api/config', { brewgraph: true })
+  } catch (error) {
+    logError('App.closeBrewgraphPromo()', error)
   }
 }
 

@@ -555,6 +555,12 @@
     "err_generic": "Der opstod en fejl under registrering.",
     "err_update_status": "Kunne ikke opdatere registreringsstatus"
   },
+  "fragment_brewgraph_promo": {
+    "title": "Prøv BrewGraph",
+    "intro": "Jeg har startet et nyt projekt, BrewGraph, en tjeneste til at indsamle og vise grafer over dine brygdata fra GravityMon og andre enheder. Tag et kig, hvis du vil følge dine gæringer over tid.",
+    "close": "Luk",
+    "visit": "Besøg BrewGraph"
+  },
   "language_packs": {
     "available_title": "Tilgængelige sprog",
     "install_success": "Sprogpakke installeret",

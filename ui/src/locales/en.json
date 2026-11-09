@@ -555,6 +555,12 @@
     "err_generic": "An error occurred during registration.",
     "err_update_status": "Failed to update registration status"
   },
+  "fragment_brewgraph_promo": {
+    "title": "Try BrewGraph",
+    "intro": "I have started a new project, BrewGraph, a service for collecting and graphing your brewing data from GravityMon and other devices. Take a look if you want to see your fermentations over time.",
+    "close": "Close",
+    "visit": "Visit BrewGraph"
+  },
   "language_packs": {
     "available_title": "Available languages",
     "install_success": "Language pack installed",

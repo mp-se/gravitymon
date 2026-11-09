@@ -74,6 +74,7 @@ import {
 import AdvancedFilesFragment from '@/fragments/AdvancedFilesFragment.vue'
 import EnableCorsFragment from '@/fragments/EnableCorsFragment.vue'
 import ListFilesFragment from '@/fragments/ListFilesFragment.vue'
+import BrewgraphPromoFragment from '@/fragments/BrewgraphPromoFragment.vue'
 import RegisterDeviceFragment from '@/fragments/RegisterDeviceFragment.vue'
 import RegisterCalibrationFragment from '@/fragments/RegisterCalibrationFragment.vue'
 import VoltageFragment from '@/fragments/VoltageFragment.vue'
@@ -122,6 +123,7 @@ app.component('IconInfoCircle', IconInfoCircle)
 app.component('AdvancedFilesFragment', AdvancedFilesFragment)
 app.component('EnableCorsFragment', EnableCorsFragment)
 app.component('ListFilesFragment', ListFilesFragment)
+app.component('BrewgraphPromoFragment', BrewgraphPromoFragment)
 app.component('RegisterDeviceFragment', RegisterDeviceFragment)
 app.component('RegisterCalibrationFragment', RegisterCalibrationFragment)
 app.component('VoltageFragment', VoltageFragment)

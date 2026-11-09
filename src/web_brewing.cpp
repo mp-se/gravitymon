@@ -553,6 +553,8 @@ void BrewingWebServer::webHandleFeature(AsyncWebServerRequest *request) {
   obj[PARAM_CHIP_ID] = String(ESP.getEfuseMac(), HEX);
 #endif
 
+  obj[CONFIG_BREWGRAPH] = _brewingConfig->isBrewgraph();
+
   doWebFeature(obj);
 
   response->setLength();

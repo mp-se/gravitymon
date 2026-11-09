@@ -36,12 +36,14 @@ export const useGlobalStore = defineStore('global', {
       hardware: '',
       firmware_file: '',
       registered: true,
+      brewgraph: true,
 
       ui: {
         enableVoltageFragment: true,
         enableManualWifiEntry: true,
         enableScanForStrongestAp: true,
         enableDeviceRegistration: true,
+        enableBrewgraphPromo: true,
         enableCalibrationRegistration: true,
         enableGravity: true,
         enablePressure: false,
@@ -150,6 +152,8 @@ export const useGlobalStore = defineStore('global', {
         this.hardware = json.hardware.toUpperCase()
         this.firmware_file = json.firmware_file.toLowerCase()
         this.registered = json.registered
+        // Firmware without the flag (other products) counts as seen, so no promo
+        this.brewgraph = json.brewgraph ?? true
 
         this.feature.ble = json.ble
         this.feature.velocity = json.velocity

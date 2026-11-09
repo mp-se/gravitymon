@@ -555,6 +555,12 @@
     "err_generic": "Er is een fout opgetreden tijdens de registratie.",
     "err_update_status": "Kon registratiestatus niet bijwerken"
   },
+  "fragment_brewgraph_promo": {
+    "title": "Probeer BrewGraph",
+    "intro": "Ik ben een nieuw project gestart, BrewGraph, een dienst om je brouwdata van GravityMon en andere apparaten te verzamelen en in grafieken te tonen. Neem een kijkje als je je gistingen in de tijd wilt volgen.",
+    "close": "Sluiten",
+    "visit": "Bezoek BrewGraph"
+  },
   "language_packs": {
     "available_title": "Beschikbare talen",
     "install_success": "Taalpakket geïnstalleerd",

@@ -51,6 +51,7 @@ constexpr auto CONFIG_IGNORE_LOW_ANGLES = "ignore_low_angles";
 constexpr auto CONFIG_BATTERY_SAVING = "battery_saving";
 constexpr auto CONFIG_TEMPSENSOR_RESOLUTION = "tempsensor_resolution";
 constexpr auto CONFIG_FLASH_LOGGING = "flash_logging";
+constexpr auto CONFIG_BREWGRAPH = "brewgraph";
 
 class BrewingConfig : public BaseConfig,
                       public BatteryConfigInterface,
@@ -99,8 +100,16 @@ class BrewingConfig : public BaseConfig,
 
   int _tempSensorResolution = 9;  // bits
 
+  bool _brewgraph = false;  // true when the BrewGraph promo has been shown
+
  public:
   explicit BrewingConfig(String baseMDNS, String fileName);
+
+  bool isBrewgraph() const { return _brewgraph; }
+  void setBrewgraph(bool b) {
+    _brewgraph = b;
+    _saveNeeded = true;
+  }
 
   bool isWifiDirect() const { return _wifiDirect; }
   void setWifiDirect(bool b) {

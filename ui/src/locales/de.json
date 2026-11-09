@@ -555,6 +555,12 @@
     "err_generic": "Bei der Registrierung ist ein Fehler aufgetreten.",
     "err_update_status": "Registrierungsstatus konnte nicht aktualisiert werden"
   },
+  "fragment_brewgraph_promo": {
+    "title": "BrewGraph ausprobieren",
+    "intro": "Ich habe ein neues Projekt gestartet, BrewGraph, einen Dienst zum Sammeln und Darstellen deiner Branddaten von GravityMon und anderen Geräten. Schau vorbei, wenn du deine Gärungen im Zeitverlauf sehen möchtest.",
+    "close": "Schließen",
+    "visit": "BrewGraph besuchen"
+  },
   "language_packs": {
     "available_title": "Verfügbare Sprachen",
     "install_success": "Sprachpaket installiert",

@@ -555,6 +555,12 @@
     "err_generic": "Une erreur s'est produite lors de l'enregistrement.",
     "err_update_status": "Échec de la mise à jour du statut d'enregistrement"
   },
+  "fragment_brewgraph_promo": {
+    "title": "Essayez BrewGraph",
+    "intro": "J'ai lancé un nouveau projet, BrewGraph, un service pour collecter et afficher les données de brassage de GravityMon et d'autres appareils sous forme de graphiques. Jetez un œil si vous souhaitez suivre vos fermentations dans le temps.",
+    "close": "Fermer",
+    "visit": "Visiter BrewGraph"
+  },
   "language_packs": {
     "available_title": "Langues disponibles",
     "install_success": "Pack de langue installé",
