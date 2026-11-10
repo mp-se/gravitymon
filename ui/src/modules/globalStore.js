@@ -43,7 +43,7 @@ export const useGlobalStore = defineStore('global', {
         enableManualWifiEntry: true,
         enableScanForStrongestAp: true,
         enableDeviceRegistration: true,
-        enableBrewgraphPromo: true,
+        enableBrewgraphPromo: false,
         enableCalibrationRegistration: true,
         enableGravity: true,
         enablePressure: false,
