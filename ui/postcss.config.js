@@ -3,7 +3,7 @@ import cssnano from 'cssnano'
 
 export default {
   plugins: [
-    purgecss.default({
+    purgecss({
       content: [
         './index.html',
         './src/**/*.{vue,js,ts,jsx,tsx}',

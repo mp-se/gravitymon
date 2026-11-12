@@ -12,6 +12,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: 'src/tests/setup.js',
+    // vitest 5 defaults to true; pinia.test.js reads mock calls recorded at module load
+    clearMocks: false,
     coverage: {
       provider: 'istanbul',
       include: ['src/**/*.{js,vue}'],
