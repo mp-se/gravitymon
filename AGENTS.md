@@ -74,7 +74,7 @@ Update the device IP in the test script before running.
 - `ESP32C3`, `ESP32S2`, `ESP32S3` — chip-specific GPIO and feature flags
 - `ENABLE_BLE` — BLE advertising support (most ESP32 targets)
 - `ENABLE_RTCMEM` — persist gyro state across deep sleep via RTC memory (ESP32 only)
-- `RUN_HARDWARE_TEST` — diagnostic GPIO validation mode (uncomment in `platformio.ini`)
+- `RUN_HARDWARE_TEST` — hardware test mode (`src/hwtest.cpp`): no wifi, checks gyro/temp sensor/battery/filesystem/chip, prints a PASS/FAIL report on the serial console. Built by the `gravity-hw-*` targets, output goes to `bin/hw-test/`
 - `SKIP_SLEEPMODE` / `FORCE_GRAVITY_MODE` — debug flags
 
 ### HTML UI
@@ -84,7 +84,7 @@ The web UI is a pre-built SPA. Compressed assets live in `html/` and are embedde
 Python scripts run as PlatformIO extra_scripts: `board.py` sets board-specific flags, `copy_firmware.py` copies built binaries to `bin/`, `create_versionjson.py` writes `bin/version.json`. `git_rev.py` injects the git revision as a build flag but is currently disabled in `platformio.ini` (`CFG_GITREV` is hardcoded).
 
 ### CI (`.github/workflows/pio-build.yaml`)
-Builds the UI, then all release targets (not `gravity-unit32`; unit tests need a device). On push to `dev`/`cuckoo`/`language` it commits the updated `bin/` and `html/`; on pull requests it only verifies that the build works.
+Builds the UI, then all release targets and the `gravity-hw-*` hardware test targets (not `gravity-unit32`; unit tests need a device). On push to `dev`/`cuckoo`/`language` it commits the updated `bin/` and `html/`; on pull requests it only verifies that the build works.
 
 ## Libraries
 Key external dependencies (pinned versions in `platformio.ini`):
