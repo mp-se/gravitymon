@@ -58,6 +58,8 @@ void BatteryVoltage::read() {
     v = analogRead(_pin);
   }
 
+  _rawValue = v;
+
   // An ESP8266 has a ADC range of 0-1023 and a maximum voltage of 3.3V
   // An ESP32 has an ADC range of 0-4095 and a maximum voltage of 3.3V
 

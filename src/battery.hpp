@@ -40,6 +40,7 @@ class BatteryConfigInterface {
 class BatteryVoltage {
  private:
   float _batteryVoltage = 0;
+  int _rawValue = 0;
   int _pin;
   BatteryConfigInterface *_batteryConfig = nullptr;
 
@@ -47,6 +48,7 @@ class BatteryVoltage {
   explicit BatteryVoltage(BatteryConfigInterface *batteryConfig, int pin = -1);
   void read();
   float getVoltage() const { return _batteryVoltage; }
+  int getRawValue() const { return _rawValue; }  // Last raw ADC reading
 };
 
 float getBatteryPercentage(float value, BatteryType type);

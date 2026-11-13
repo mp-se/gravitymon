@@ -50,6 +50,7 @@
 #include <calc.hpp>
 #include <config_gravitymon.hpp>
 #include <gyro.hpp>
+#include <hwtest.hpp>
 #include <push_gravitymon.hpp>
 #include <tempsensor.hpp>
 #include <velocity.hpp>
@@ -151,7 +152,6 @@ void sendBleMeasurement(const GravityMeasurement& measurement) {
 #endif  // ENABLE_BLE
 
 void checkSleepMode(float angle, float volt);
-void runGpioHardwareTests();
 
 void setup() {
   PERF_BEGIN("run-time");
@@ -166,11 +166,7 @@ void setup() {
   detectChipRevision();
 
 #if defined(RUN_HARDWARE_TEST)
-  Log.notice(
-      F("Main: Entering harware pin test, ensure that LED are connected to all "
-        "relevant pints." CR));
-  delay(2000);
-  runGpioHardwareTests();
+  runHardwareTest();  // Never returns, see hwtest.cpp
 #endif
 
   PERF_BEGIN("main-config-load");
@@ -674,75 +670,6 @@ void checkSleepMode(float angle, float volt) {
     ESP.deepSleep(0xFFFFFFFF);  // indefinite sleep
 #endif
   }
-}
-
-void runGpioHardwareTests() {
-#if defined(RUN_HARDWARE_TEST)
-  int max = 10;
-
-  Log.notice(F("Main: Configuring GPIO for output." CR));
-  pinMode(PIN_SDA, OUTPUT);
-  pinMode(PIN_SCL, OUTPUT);
-  pinMode(PIN_CFG1, OUTPUT);
-  pinMode(PIN_CFG2, OUTPUT);
-  pinMode(PIN_DS, OUTPUT);
-  pinMode(PIN_VOLT, OUTPUT);
-  delay(100);
-  digitalWrite(PIN_SDA, LOW);
-  digitalWrite(PIN_SCL, LOW);
-  digitalWrite(PIN_CFG1, LOW);
-  digitalWrite(PIN_CFG2, LOW);
-  digitalWrite(PIN_DS, LOW);
-  digitalWrite(PIN_VOLT, LOW);
-  delay(100);
-
-  int sleep = 700;
-
-  Log.notice(F("Main: Testing SDA." CR));
-  for (int i = 0; i < max; i++) {
-    digitalWrite(PIN_SDA, i % 2);
-    delay(sleep);
-  }
-  digitalWrite(PIN_SDA, LOW);
-
-  Log.notice(F("Main: Testing SCL." CR));
-  for (int i = 0; i < max; i++) {
-    digitalWrite(PIN_SCL, i % 2);
-    delay(sleep);
-  }
-  digitalWrite(PIN_SCL, LOW);
-
-  Log.notice(F("Main: Testing CFG1." CR));
-  for (int i = 0; i < max; i++) {
-    digitalWrite(PIN_CFG1, i % 2);
-    delay(sleep);
-  }
-  digitalWrite(PIN_CFG1, LOW);
-
-  Log.notice(F("Main: Testing CFG2." CR));
-  for (int i = 0; i < max; i++) {
-    digitalWrite(PIN_CFG2, i % 2);
-    delay(sleep);
-  }
-  digitalWrite(PIN_CFG2, LOW);
-
-  Log.notice(F("Main: Testing DS." CR));
-  for (int i = 0; i < max; i++) {
-    digitalWrite(PIN_DS, i % 2);
-    delay(sleep);
-  }
-  digitalWrite(PIN_DS, LOW);
-
-  Log.notice(F("Main: Testing VOLT." CR));
-  for (int i = 0; i < max; i++) {
-    digitalWrite(PIN_VOLT, i % 2);
-    delay(sleep);
-  }
-  digitalWrite(PIN_VOLT, LOW);
-
-  Log.notice(F("Main: Tests finished, enter waiting for reset." CR));
-  while (true) delay(sleep);
-#endif  // RUN_HARDWARE_TEST
 }
 
 #endif  // GRAVITYMON

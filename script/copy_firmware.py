@@ -1,4 +1,5 @@
 Import("env")
+import os
 import shutil
 
 def get_build_flag_value(flag_name):
@@ -12,9 +13,28 @@ def after_build(source, target, env):
     dir    = env.GetLaunchDir()
     name   = env.get( "PIOENV" )
 
+    # Hardware test firmware, stored separately so it is not flashed by mistake
+    # bin/hw-test/firmware-<board>.bin and partitions-<board>.bin (only on ESP32)
+
+    if name.startswith( "gravity-hw-" ) :
+        board = name[len( "gravity-hw-" ):]
+        outdir = dir + "/bin/hw-test"
+        os.makedirs( outdir, exist_ok=True )
+
+        target = outdir + "/firmware-" + board + ".bin"
+        source = dir + "/.pio/build/" + name + "/firmware.bin"
+        print( "Copy file : " + source + " -> " + target )
+        shutil.copyfile( source, target )
+
+        source = dir + "/.pio/build/" + name + "/partitions.bin"
+        if os.path.exists( source ) :
+            target = outdir + "/partitions-" + board + ".bin"
+            print( "Copy file : " + source + " -> " + target )
+            shutil.copyfile( source, target )
+
     # Gravity
 
-    if name == "gravity-8266" :
+    elif name == "gravity-8266" :
         target = dir + "/bin/firmware.bin"
         source = dir + "/.pio/build/" + name + "/firmware.bin"
         print( "Copy file : " + source + " -> " + target )

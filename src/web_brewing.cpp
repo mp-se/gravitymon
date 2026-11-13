@@ -26,6 +26,7 @@
 #include <Wire.h>
 
 #include <config_brewing.hpp>
+#include <hardware_scan.hpp>
 #include <helper.hpp>
 #include <main.hpp>
 #include <perf.hpp>
@@ -741,84 +742,7 @@ void BrewingWebServer::loop() {
     obj[PARAM_MESSAGE] = "";
     Log.notice(F("WEB : Scanning hardware." CR));
 
-    // Scan the i2c bus for devices, initialized in gyro.cpp
-    JsonArray i2c = obj[PARAM_I2C].to<JsonArray>();
-
-    for (int i = 1, j = 0; i < 128 && j < 32; i++) {  // Limit to max 32 devices
-      // Abort if we get a timeout error (5)
-      // The i2c_scanner uses the return value of
-      // the Write.endTransmisstion to see if
-      // a device did acknowledge to the address.
-      Wire.beginTransmission(i);
-      int err = Wire.endTransmission();
-
-      // Log.notice(F("WEB : Scanning 0x%x, response %d." CR), i, err);
-      char addr_str[8];
-      snprintf(addr_str, sizeof(addr_str), "0x%x", i);
-
-      if (err == 0) {
-        Log.notice(F("WEB : Found device at %s." CR), addr_str);
-        i2c[j][PARAM_ADRESS] = addr_str;
-        i2c[j][PARAM_BUS] = "Wire";
-        j++;
-      } else if (err == 5) {
-        Log.notice(F("WEB : Timeout error at %s." CR), addr_str);
-        i2c[j][PARAM_ADRESS] = addr_str;
-        i2c[j][PARAM_BUS] = "Timeout error, aborting scan";
-        j++;
-        break;
-      } else {
-        // Ignore the other errors, we are just scanning for devices
-      }
-    }
-
-    JsonObject cpu = obj[PARAM_CHIP].to<JsonObject>();
-
-#if defined(ESP8266)
-    cpu[PARAM_FAMILY] = "ESP8266";
-#else
-    esp_chip_info_t chip_info;
-    esp_chip_info(&chip_info);
-
-    cpu[PARAM_REVISION] = chip_info.revision;
-    cpu[PARAM_CORES] = chip_info.cores;
-
-    JsonArray feature = cpu[PARAM_FEATURES].to<JsonArray>();
-
-    if (chip_info.features & CHIP_FEATURE_EMB_FLASH)
-      feature.add("Embedded flash");
-    if (chip_info.features & CHIP_FEATURE_WIFI_BGN) feature.add("2.4Ghz WIFI");
-    if (chip_info.features & CHIP_FEATURE_BLE) feature.add("Bluetooth LE");
-    if (chip_info.features & CHIP_FEATURE_BT) feature.add("Bluetooth Classic");
-    if (chip_info.features & CHIP_FEATURE_IEEE802154)
-      feature.add("IEEE 802.15.4/LR-WPAN");
-    if (chip_info.features & CHIP_FEATURE_EMB_PSRAM)
-      feature.add("Embedded PSRAM");
-    if (heap_caps_get_free_size(MALLOC_CAP_RTCRAM) > 0) {
-      feature.add("Embedded RTC RAM");
-    }
-
-    switch (chip_info.model) {
-      case CHIP_ESP32:
-        cpu[PARAM_FAMILY] = "ESP32";
-        break;
-      case CHIP_ESP32S2:
-        cpu[PARAM_FAMILY] = "ESP32S2";
-        break;
-      case CHIP_ESP32S3:
-        cpu[PARAM_FAMILY] = "ESP32S3";
-        break;
-      case CHIP_ESP32C3:
-        cpu[PARAM_FAMILY] = "ESP32C3";
-        break;
-      case CHIP_ESP32H2:
-        cpu[PARAM_FAMILY] = "ESP32H2";
-        break;
-      default:
-        cpu[PARAM_FAMILY] = String(chip_info.model);
-        break;
-    }
-#endif
+    scanHardwareCommon(obj);
 
     doTaskHardwareScanning(obj);
 

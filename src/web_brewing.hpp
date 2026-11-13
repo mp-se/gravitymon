@@ -28,6 +28,7 @@
 
 #include <basewebserver.hpp>
 #include <battery.hpp>
+#include <hardware_scan.hpp>
 #include <pushtarget.hpp>
 #include <templating.hpp>
 
@@ -47,15 +48,6 @@ constexpr auto PARAM_TOTAL_HEAP = "total_heap";
 constexpr auto PARAM_FREE_HEAP = "free_heap";
 constexpr auto PARAM_IP = "ip";
 constexpr auto PARAM_WIFI_SETUP = "wifi_setup";
-constexpr auto PARAM_I2C = "i2c";
-constexpr auto PARAM_ADRESS = "adress";
-constexpr auto PARAM_BUS = "bus";
-constexpr auto PARAM_RESOLUTION = "resolution";
-constexpr auto PARAM_FAMILY = "family";
-constexpr auto PARAM_CHIP = "chip";
-constexpr auto PARAM_REVISION = "revision";
-constexpr auto PARAM_CORES = "cores";
-constexpr auto PARAM_FEATURES = "features";
 
 constexpr auto PARAM_FORMAT_POST_GRAVITY = "http_post_format_gravity";
 constexpr auto PARAM_FORMAT_POST2_GRAVITY = "http_post2_format_gravity";

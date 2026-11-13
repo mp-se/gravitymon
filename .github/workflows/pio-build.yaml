@@ -58,11 +58,15 @@ jobs:
           pip install platformio intelhex
 
       - name: PlatformIO Run 1/2
-        run: pio run -e gravity-8266 -e gravity-32c3_mini -e gravity-32s3_mini -e gravity-32s2_mini -e gravity-32c3_zero -e gravity-32s3_zero -j 1 -v
+        run: pio run -e gravity-8266 -e gravity-32c3_mini -e gravity-32s3_mini -e gravity-32s2_mini -e gravity-32c3_zero -e gravity-32s3_zero -j 1
 
       - name: PlatformIO Run 2/2
-        # run: pio run -e gravity-32c3_supermini -e gravity-32c3_cuckoo -e gravity-32c3_cuckoo_v2 -e gravity-olimex_esp32c3_devkit_lipo -j 1 -v
-        run: pio run -e gravity-32c3_supermini -e gravity-32c3_cuckoo -e gravity-olimex_esp32c3_devkit_lipo -j 1 -v
+        # run: pio run -e gravity-32c3_supermini -e gravity-32c3_cuckoo -e gravity-32c3_cuckoo_v2 -e gravity-olimex_esp32c3_devkit_lipo -j 1
+        run: pio run -e gravity-32c3_supermini -e gravity-32c3_cuckoo -e gravity-olimex_esp32c3_devkit_lipo -j 1
+
+      - name: PlatformIO Hardware test builds
+        # Production test firmware for PCB manufacturing, output goes to bin/hw-test/
+        run: pio run -e gravity-hw-8266 -e gravity-hw-32c3_mini -e gravity-hw-32c3_zero -e gravity-hw-32c3_supermini -e gravity-hw-32s2_mini -e gravity-hw-32s3_mini -e gravity-hw-32s3_zero -j 1
 
       # Pull requests only verify that the build works, nothing is committed
       - uses: EndBug/add-and-commit@v11
