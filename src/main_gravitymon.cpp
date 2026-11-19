@@ -168,10 +168,6 @@ void setup() {
 
   ledOn(LedColor::WHITE);
 
-  for(int i = 0; i < 10000; i++) {
-    delay(10000);
-  }
-
   // Main startup
   Log.notice(F("Main: Started setup for %s." CR), myConfig.getID());
   printBuildOptions();
