@@ -303,6 +303,9 @@
     "update_title": "Update the device with the selected firmware",
     "flash_button": "Flash firmware",
     "err_no_file": "You need to select one file with firmware to upload",
+    "err_not_firmware": "The selected file is not a valid firmware image",
+    "err_wrong_chip": "The selected firmware is built for another chip, this device is an {platform}",
+    "err_wrong_name": "The selected file does not have the expected name {file}. Use the firmware file for this device and make sure it has not been renamed, for example by the browser when downloaded twice",
     "upload_success": "File upload completed, waiting for device to restart before doing refresh!",
     "upload_failed": "Upload failed: {status}",
     "upload_error": "Upload error: {error}"

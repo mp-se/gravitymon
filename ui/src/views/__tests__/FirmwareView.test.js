@@ -18,6 +18,15 @@ vi.mock('@mp-se/espframework-ui-components', () => ({
   }
 }))
 
+// Minimal firmware image header: magic byte 0xE9 and the chip id at bytes 12-13
+function validFirmwareFile(chipId = 0, name = 'firmware.bin') {
+  const header = new Uint8Array(16)
+  header[0] = 0xe9
+  header[12] = chipId & 0xff
+  header[13] = chipId >> 8
+  return new File([header], name)
+}
+
 describe('FirmwareView (interaction tests)', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -260,7 +269,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('upload calls http.uploadFile when file is selected', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: true })
@@ -271,7 +280,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('upload sets messageSuccess on successful upload', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: true })
@@ -283,7 +292,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('upload sets messageError on failed upload', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: false, status: 500 })
@@ -295,7 +304,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('upload sets messageError on exception', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockRejectedValue(new Error('network error'))
@@ -307,7 +316,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('progress resets to 0 on new upload', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: true })
@@ -320,7 +329,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('upload calls onProgress callback which updates progress value', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
 
@@ -338,7 +347,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('upload sets messageSuccess on successful upload', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: true })
@@ -354,9 +363,9 @@ describe('FirmwareView (action tests)', () => {
   })
 
   it('upload success setTimeout fires redirect', async () => {
-    vi.useFakeTimers()
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: true })
@@ -375,7 +384,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('upload sets messageError when response has success=false', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: false, status: 503 })
@@ -391,7 +400,7 @@ describe('FirmwareView (action tests)', () => {
 
   it('onFileChange sets hasFileSelected when a file is chosen', async () => {
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const event = { target: { files: [fakeFile] } }
     wrapper.vm.onFileChange(event)
     expect(wrapper.vm.hasFileSelected).toBe(true)
@@ -405,9 +414,9 @@ describe('FirmwareView (action tests)', () => {
   })
 
   it('upload success setTimeout catch block executes when location.href setter throws', async () => {
-    vi.useFakeTimers()
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: true })
@@ -434,9 +443,9 @@ describe('FirmwareView (action tests)', () => {
   })
 
   it('upload success beforeunload handler clears timeout when event fires', async () => {
-    vi.useFakeTimers()
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
     const wrapper = mountView()
-    const fakeFile = new File(['fw'], 'firmware.bin')
+    const fakeFile = validFirmwareFile()
     const fakeElement = { files: [fakeFile] }
     vi.spyOn(document, 'getElementById').mockReturnValue(fakeElement)
     http.uploadFile.mockResolvedValue({ success: true })
@@ -489,5 +498,69 @@ describe('FirmwareView (action tests)', () => {
     expect(wrapper.text()).toContain('ESP32C3')
     expect(wrapper.text()).toContain('CUCKOO')
     expect(wrapper.text()).toContain('firmware32c3.bin')
+  })
+
+  describe('firmware file validation before upload', () => {
+    const mountWithFile = (file, platform, firmwareFile = '') => {
+      global.platform = platform
+      global.firmware_file = firmwareFile
+      global.messageError = ''
+      const wrapper = mount(FirmwareView, {
+        global: { stubs: { BsFileUpload: true, BsProgress: true } }
+      })
+      vi.spyOn(document, 'getElementById').mockReturnValue({ files: [file] })
+      return wrapper
+    }
+
+    it('uploads a firmware built for this chip', async () => {
+      http.uploadFile.mockClear()
+      http.uploadFile.mockResolvedValue({ success: true })
+      const wrapper = mountWithFile(validFirmwareFile(5), 'ESP32C3')
+      await wrapper.vm.upload()
+      expect(http.uploadFile).toHaveBeenCalledTimes(1)
+      vi.restoreAllMocks()
+    })
+
+    it('rejects a firmware built for another chip without uploading', async () => {
+      http.uploadFile.mockClear()
+      const wrapper = mountWithFile(validFirmwareFile(2), 'ESP32C3')
+      await wrapper.vm.upload()
+      expect(http.uploadFile).not.toHaveBeenCalled()
+      expect(global.messageError).toContain('another chip')
+      expect(global.disabled).toBe(false)
+      vi.restoreAllMocks()
+    })
+
+    it('rejects a file with another name than the device reported without uploading', async () => {
+      http.uploadFile.mockClear()
+      const wrapper = mountWithFile(
+        validFirmwareFile(5, 'firmware32c3supermini.bin'),
+        'ESP32C3',
+        'firmware32c3.bin'
+      )
+      await wrapper.vm.upload()
+      expect(http.uploadFile).not.toHaveBeenCalled()
+      expect(global.messageError).toContain('firmware32c3.bin')
+      vi.restoreAllMocks()
+    })
+
+    it('clears the previous error when flash is pressed again', async () => {
+      http.uploadFile.mockClear()
+      http.uploadFile.mockResolvedValue({ success: true })
+      const wrapper = mountWithFile(validFirmwareFile(5), 'ESP32C3')
+      global.messageError = 'Error from a previous attempt'
+      await wrapper.vm.upload()
+      expect(global.messageError).toBe('')
+      vi.restoreAllMocks()
+    })
+
+    it('rejects a file that is not a firmware image without uploading', async () => {
+      http.uploadFile.mockClear()
+      const wrapper = mountWithFile(new File(['not firmware at all'], 'notes.txt'), 'ESP32C3')
+      await wrapper.vm.upload()
+      expect(http.uploadFile).not.toHaveBeenCalled()
+      expect(global.messageError).toContain('not a valid firmware')
+      vi.restoreAllMocks()
+    })
   })
 })

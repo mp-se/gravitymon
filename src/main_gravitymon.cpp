@@ -58,6 +58,7 @@
 
 #if defined(ESP32)
 #include <esp_attr.h>
+#include <ota_guard.hpp>
 #endif
 
 const char* CFG_FILENAME = "/gravitymon2.json";
@@ -84,6 +85,7 @@ BleSender myBleSender;
 GyroSensor myGyro(&myConfig);
 TempSensor myTempSensor(&myConfig, &myGyro);
 #if defined(ESP32)
+OtaGuard myOtaGuard;
 RTC_DATA_ATTR GravityVelocityData data = {0};
 #endif
 LoopTimer timerLoop(200);
@@ -154,11 +156,21 @@ void sendBleMeasurement(const GravityMeasurement& measurement) {
 void checkSleepMode(float angle, float volt);
 
 void setup() {
+#if defined(ESP32)
+  // Must be first, a hang or crash before this point cannot be rolled back
+  myOtaGuard.checkBootloader();
+  myOtaGuard.begin();  // May roll back to previous firmware, see ota_guard.hpp
+#endif
+
   PERF_BEGIN("run-time");
   PERF_BEGIN("main-setup");
   runtimeMillis = millis();
 
   ledOn(LedColor::WHITE);
+
+  for(int i = 0; i < 10000; i++) {
+    delay(10000);
+  }
 
   // Main startup
   Log.notice(F("Main: Started setup for %s." CR), myConfig.getID());
@@ -528,6 +540,9 @@ void loop() {
       myWebServer.loop();
       myWifi.loop();
       loopGravityOnInterval();
+#if defined(ESP32)
+      myOtaGuard.loop();
+#endif
       delay(1);
       break;
 
@@ -543,6 +558,9 @@ void loop() {
       }
 
       if (loopReadGravity()) {
+#if defined(ESP32)
+        myOtaGuard.markValid();  // Gyro read worked, firmware is good
+#endif
         goToSleep(myConfig.getSleepInterval());
       }
 
@@ -645,6 +663,9 @@ void checkSleepMode(float angle, float volt) {
     Log.notice(
         F("Main: Charging/Storage mode entered, going to sleep for maximum "
           "time." CR));
+#if defined(ESP32)
+    myOtaGuard.markValid();  // Booted fine, nothing more to prove in this mode
+#endif
     myWifi.stopDoubleReset();  // Ensure we dont go into wifi mode when wakeup
     LittleFS.end();
     ledOff();

@@ -95,6 +95,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { global } from '@/modules/pinia'
+import { checkFirmwareFile } from '@/modules/firmwareCheck'
 import { sharedHttpClient as http } from '@mp-se/espframework-ui-components'
 import { logDebug, logError } from '@mp-se/espframework-ui-components'
 
@@ -110,9 +111,27 @@ const onFileChange = (event) => {
 async function upload() {
   const fileElement = document.getElementById('upload')
 
+  // Start from a clean slate, a message from a previous attempt is outdated
+  global.messageError = ''
+  global.messageSuccess = ''
+
   if (fileElement.files.length === 0) {
     global.messageError = t('firmware.err_no_file')
   } else {
+    // Reject a wrong file now instead of after the whole file has been sent
+    const check = await checkFirmwareFile(
+      fileElement.files[0],
+      global.platform,
+      global.firmware_file
+    )
+    if (!check.ok) {
+      global.messageError = t('firmware.err_' + check.error, {
+        platform: global.platform,
+        file: global.firmware_file
+      })
+      return
+    }
+
     global.disabled = true
     logDebug('FirmwareView.upload()', 'Selected file: ' + fileElement.files[0].name)
 
