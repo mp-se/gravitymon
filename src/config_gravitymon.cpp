@@ -178,10 +178,20 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     setRegistered(doc[CONFIG_REGISTERED].as<bool>());
 }
 
+extern const char* CFG_FILENAME;  // Defined in main_gravitymon.cpp
+
 void GravitymonConfig::migrateSettings() {
   constexpr auto CFG_FILENAME_OLD = "/gravitymon.json";
 
   if (!LittleFS.exists(CFG_FILENAME_OLD)) {
+    return;
+  }
+
+  // Never overwrite a current config with an old one (e.g. after a downgrade),
+  // the old file is kept untouched.
+  if (LittleFS.exists(CFG_FILENAME)) {
+    Log.warning(F("CFG : Skipping migration, %s already exists." CR),
+                CFG_FILENAME);
     return;
   }
 
@@ -204,7 +214,7 @@ void GravitymonConfig::migrateSettings() {
   }
 
   JsonObject obj = doc.as<JsonObject>();
-  JsonObject obj2 = doc2.as<JsonObject>();
+  JsonObject obj2 = doc2.to<JsonObject>();
 
   serializeJson(obj, EspSerial);
   EspSerial.print(CR);
@@ -284,7 +294,7 @@ void GravitymonConfig::migrateHwSettings() {
   }
 
   JsonObject obj = doc.as<JsonObject>();
-  JsonObject obj2 = doc2.as<JsonObject>();
+  JsonObject obj2 = doc2.to<JsonObject>();
 
   serializeJson(obj, EspSerial);
   EspSerial.print(CR);

@@ -19,6 +19,12 @@ New features
 - Added protection for firmware updates. The firmware file is now checked before it is flashed, both in the web UI (before the upload starts) and on the device (the first bytes of the upload). A file that is not a firmware image, is built for another chip, or has a different file name than the one the device reports is rejected.
 - Added automatic rollback on ESP32 targets. If a newly flashed firmware crashes or hangs and never reports that it works, the device restarts into the previous working firmware after a few attempts. Rollback only works for updates made to a version that includes this feature, so the first update to this version is not protected. A firmware that fails before the startup code runs can only be recovered by flashing the device again.
 - Added a hardware test firmware (``gravity-hw-*`` targets, binaries in ``bin/hw-test/``) for checking a newly built device. It runs without WiFi, tests the gyro, temperature sensor, battery, file system and chip, and prints a PASS/FAIL report on the serial console (115200 baud).
+- BLE and charging pin settings are no longer compiled into the ESP8266 firmware to reduce memory usage (about 120 bytes RAM and 480 bytes flash). They are only available on ESP32 targets.
+
+Bugs fixed
+++++++++++
+- Migration of the old v1 configuration (``/gravitymon.json``) and hardware settings (``/hardware.json``) lost all migrated settings, including the gyro calibration, formula data and push targets, because the migrated values were written to an empty JSON object (ArduinoJson 7 incompatibility). The device then started with default settings and the old file was removed.
+- The migration is now skipped if a current configuration file (``/gravitymon2.json``) already exists, so an old v1 file (for example after a downgrade) can no longer overwrite newer settings. The old file is left untouched.
 
 v2.5.0
 ======

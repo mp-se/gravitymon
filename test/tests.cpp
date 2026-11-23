@@ -18,7 +18,8 @@ using aunit::TestRunner;
 using aunit::Verbosity;
 
 RunMode runMode = RunMode::measurementMode;
-GravitymonConfig myConfig("test", "test.cfg");
+const char* CFG_FILENAME = "test.cfg";  // Used by config migration
+GravitymonConfig myConfig("test", CFG_FILENAME);
 GyroSensor myGyro(&myConfig);
 BatteryVoltage myBatteryVoltage(&myConfig);
 TempSensor myTempSensor(&myConfig, &myGyro);
