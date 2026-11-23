@@ -47,6 +47,7 @@ export const useConfigStore = defineStore('config', {
       gyro_swap_xy: false,
       gyro_filter: false,
       battery_saving: false,
+      disable_led_gravity: false,
       tempsensor_resolution: 0,
       temp_adjustment_value: 0, // C or F
       charging_pin_enabled: false,
@@ -181,6 +182,7 @@ export const useConfigStore = defineStore('config', {
         this.gyro_swap_xy = json.gyro_swap_xy
         this.gyro_filter = json.gyro_filter
         this.battery_saving = json.battery_saving
+        this.disable_led_gravity = json.disable_led_gravity
         this.tempsensor_resolution = json.tempsensor_resolution
         this.temp_adjustment_value = json.temp_adjustment_value
         this.charging_pin_enabled = json.charging_pin_enabled

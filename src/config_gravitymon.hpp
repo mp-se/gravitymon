@@ -35,23 +35,29 @@ constexpr auto CONFIG_GRAVITY_UNIT = "gravity_unit";
 constexpr auto CONFIG_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto CONFIG_GYRO_CALIBRATION = "gyro_calibration_data";
 constexpr auto CONFIG_GYRO_TEMP = "gyro_temp";
+constexpr auto CONFIG_DISABLE_LED_GRAVITY = "disable_led_gravity";
 constexpr auto CONFIG_GYRO_FILTER = "gyro_filter";
 constexpr auto CONFIG_GYRO_TYPE = "gyro_type";
 constexpr auto CONFIG_GYRO_SWAP_XY = "gyro_swap_xy";
 constexpr auto CONFIG_STORAGE_SLEEP = "storage_sleep";
 constexpr auto CONFIG_FORMULA_DATA = "formula_calculation_data";
 constexpr auto CONFIG_GRAVITY = "gravity";
+#if !defined(ESP8266)  // BLE and charging pin are not available on ESP8266
 constexpr auto CONFIG_BLE_TILT_COLOR = "ble_tilt_color";
 constexpr auto CONFIG_SEND_BLE_WITHOUT_MEASUREMENT =
     "send_ble_without_measurement";
 constexpr auto CONFIG_ALWAYS_SEND_BLE_LEGACY = "always_send_ble";
+#endif
 constexpr auto CONFIG_GYRO_READ_COUNT = "gyro_read_count";
 constexpr auto CONFIG_GYRO_MOVING_THREASHOLD = "gyro_moving_threashold";
 constexpr auto CONFIG_FORMULA_DEVIATION = "formula_max_deviation";
 constexpr auto CONFIG_FORMULA_CALIBRATION_TEMP = "formula_calibration_temp";
+#if !defined(ESP8266)
 constexpr auto CONFIG_CHARGING_PIN_ENABLED = "charging_pin_enabled";
+#endif
 constexpr auto CONFIG_REGISTERED = "registered";
 
+#if !defined(ESP8266)
 enum GravitymonBleFormat {
   BLE_DISABLED = 0,
   BLE_TILT = 1,
@@ -61,6 +67,7 @@ enum GravitymonBleFormat {
   BLE_RAPT_V1 = 6,
   BLE_RAPT_V2 = 7,
 };
+#endif
 
 // Used for holding formulaData (used for calculating formula on device)
 #define FORMULA_DATA_SIZE 20
@@ -73,14 +80,19 @@ struct RawFormulaData {
 class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
  private:
   String _gravityFormula = "";
+#if !defined(ESP8266)
   String _bleTiltColor;
+#endif
 
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
   RawFormulaData _formulaData = {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+#if !defined(ESP8266)
   GravitymonBleFormat _gravitymonBleFormat = GravitymonBleFormat::BLE_DISABLED;
   bool _sendBleWithoutMeasurement = false;
+  bool _pinChargingMode = false;
+#endif
   GyroType _gyroType = GyroType::GYRO_NONE;
 
   bool _gravityTempAdj = false;
@@ -90,7 +102,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool _gyroFilter = false;
   bool _gyroTemp = false;
   bool _batterySaving = true;
-  bool _pinChargingMode = false;
+  bool _disableLedGravity = false;
 
   char _gravityUnit = 'G';
 
@@ -168,11 +180,13 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   bool isGravitySG() const { return _gravityUnit == 'G'; }
   bool isGravityPlato() const { return _gravityUnit == 'P'; }
 
+#if !defined(ESP8266)
   const char* getBleTiltColor() const { return _bleTiltColor.c_str(); }
   void setBleTiltColor(String c) {
     _bleTiltColor = c;
     _saveNeeded = true;
   }
+#endif
 
   const RawGyroData& getGyroCalibration() const { return _gyroCalibration; }
   void setGyroCalibration(const RawGyroData& r) {
@@ -230,6 +244,9 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
     _saveNeeded = true;
   }
 
+#if defined(ESP8266)
+  bool isBleActive() const { return false; }
+#else
   bool isBleActive() const {
     return (_gravitymonBleFormat != GravitymonBleFormat::BLE_DISABLED);
   }
@@ -253,6 +270,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
     _sendBleWithoutMeasurement = b;
     _saveNeeded = true;
   }
+#endif
 
   bool isIgnoreLowAngles() const { return _ignoreLowAngles; }
   void setIgnoreLowAngles(bool b) {
@@ -266,11 +284,19 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
     _saveNeeded = true;
   }
 
+  bool isDisableLedGravity() const { return _disableLedGravity; }
+  void setDisableLedGravity(bool b) {
+    _disableLedGravity = b;
+    _saveNeeded = true;
+  }
+
+#if !defined(ESP8266)
   bool isPinChargingMode() const { return _pinChargingMode; }
   void setPinChargingMode(bool b) {
     _pinChargingMode = b;
     _saveNeeded = true;
   }
+#endif
 
   void createJson(JsonObject& doc) const;
   void parseJson(JsonObject& doc);

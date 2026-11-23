@@ -87,6 +87,14 @@
             :disabled="global.disabled"
           ></BsInputSwitch>
         </div>
+        <div class="col-md-6">
+          <BsInputSwitch
+            v-model="config.disable_led_gravity"
+            :label="t('device_hardware.disable_led_gravity_label')"
+            :help="t('device_hardware.disable_led_gravity_help')"
+            :disabled="global.disabled"
+          ></BsInputSwitch>
+        </div>
         <div class="col-md-12">
           <hr />
         </div>

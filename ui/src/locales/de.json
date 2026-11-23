@@ -195,6 +195,8 @@
     "charging_pin_help": "Wenn aktiviert, geht das Gerät in den Schlafmodus, wenn die Ladeleistung am definierten Pin 2V überschreitet, und wacht auf, wenn die Leistung verloren geht.",
     "battery_saving_label": "Batteriesparmodus",
     "battery_saving_help": "Wenn aktiv, wird das Schlafintervall auf 1 Stunde geändert, wenn der Akku unter 20 % fällt (3,73V)",
+    "disable_led_gravity_label": "LED im Gravity-Modus deaktivieren",
+    "disable_led_gravity_help": "Wenn aktiv, wird die LED im Gravity-Modus (Messmodus) nicht eingeschaltet, was Akku spart. Im Konfigurations- und WLAN-Einrichtungsmodus wird die LED weiterhin verwendet.",
     "ds18b20_label": "DS18B20-Auflösung",
     "ds18b20_help": "Auflösung beim Lesen des DS18B20-Temperatursensors, höhere Auflösung bietet bessere Genauigkeit, benötigt aber mehr Verarbeitungszeit und verringert die Akkulaufzeit",
     "temp_adjustment_label": "Temperaturanpassung",

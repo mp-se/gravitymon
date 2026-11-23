@@ -129,6 +129,7 @@ test(config_gravityFormula) {
   assertEqual(myConfig.getGravityFormula(), "2+2^2");
 }
 
+#if !defined(ESP8266)
 test(config_tiltColor) {
   assertEqual(myConfig.getBleTiltColor(), "");
 
@@ -138,6 +139,7 @@ test(config_tiltColor) {
   myConfig.setBleTiltColor("");
   assertEqual(myConfig.getBleTiltColor(), "");
 }
+#endif
 
 test(config_formulaDeviation) {
   float f = 0.01;

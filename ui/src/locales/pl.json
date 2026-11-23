@@ -195,6 +195,8 @@
     "charging_pin_help": "Jeśli włączone, urządzenie przejdzie w uśpienie, gdy moc ładowania przekroczy 2V na zdefiniowanym pinie, i obudzi się, gdy zasilanie zostanie utracone.",
     "battery_saving_label": "Oszczędzanie baterii",
     "battery_saving_help": "Gdy aktywne, interwał uśpienia zostanie zmieniony na 1 godzinę, gdy bateria spadnie poniżej 20% (3.73V)",
+    "disable_led_gravity_label": "Wyłącz LED w trybie gravity",
+    "disable_led_gravity_help": "Gdy aktywne, dioda LED nie jest włączana w trybie gravity (pomiarowym), co oszczędza baterię. Dioda nadal jest używana w trybie konfiguracji i konfiguracji wifi.",
     "ds18b20_label": "Rozdzielczość DS18B20",
     "ds18b20_help": "Rozdzielczość podczas odczytu czujnika temperatury DS18B20, wyższa rozdzielczość zapewnia lepszą dokładność, ale zajmuje więcej czasu i skraca żywotność baterii",
     "temp_adjustment_label": "Korekta temperatury",

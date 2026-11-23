@@ -195,6 +195,8 @@
     "charging_pin_help": "If enabled and the device will go into sleep when charging power exceeds 2V on the defined pin and wakeup when power is lost.",
     "battery_saving_label": "Battery saving",
     "battery_saving_help": "When active, the sleep interval will be changed to 1 hour when battery drops below 20% (3.73V)",
+    "disable_led_gravity_label": "Disable LED in gravity mode",
+    "disable_led_gravity_help": "When active, the LED is not turned on during gravity (measurement) mode, which saves battery. The LED is still used in configuration and wifi setup mode.",
     "ds18b20_label": "DS18B20 resolution",
     "ds18b20_help": "Resolution when reading the DS18B20 temperature sensor, higher resolution give better accuracy but takes longer to process and reduces battery life",
     "temp_adjustment_label": "Temperature adjustment",

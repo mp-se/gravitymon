@@ -33,7 +33,9 @@ GravitymonConfig::GravitymonConfig(String baseMDNS, String fileName)
 void GravitymonConfig::createJson(JsonObject& doc) const {
   BrewingConfig::createJson(doc);
 
+#if !defined(ESP8266)
   doc[CONFIG_BLE_TILT_COLOR] = getBleTiltColor();
+#endif
   doc[CONFIG_GRAVITY_FORMULA] = getGravityFormula();
   doc[CONFIG_GRAVITY_UNIT] = String(getGravityUnit());
   doc[CONFIG_GYRO_TEMP] = isGyroTemp();
@@ -64,11 +66,14 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
       serialized(String(this->getMaxFormulaCreationDeviation(), DECIMALS_TILT));
   doc[CONFIG_FORMULA_CALIBRATION_TEMP] = this->getDefaultCalibrationTemp();
   doc[CONFIG_IGNORE_LOW_ANGLES] = this->isIgnoreLowAngles();
+#if !defined(ESP8266)
   doc[CONFIG_BLE_FORMAT] = getGravitymonBleFormat();
   doc[CONFIG_SEND_BLE_WITHOUT_MEASUREMENT] =
       shouldSendBleWithoutMeasurement();
-  doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
   doc[CONFIG_CHARGING_PIN_ENABLED] = this->isPinChargingMode();
+#endif
+  doc[CONFIG_BATTERY_SAVING] = this->isBatterySaving();
+  doc[CONFIG_DISABLE_LED_GRAVITY] = this->isDisableLedGravity();
 
   doc[CONFIG_REGISTERED] = isRegistered();
 }
@@ -76,8 +81,10 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
 void GravitymonConfig::parseJson(JsonObject& doc) {
   BrewingConfig::parseJson(doc);
 
+#if !defined(ESP8266)
   if (!doc[CONFIG_BLE_TILT_COLOR].isNull())
     setBleTiltColor(doc[CONFIG_BLE_TILT_COLOR]);
+#endif
   if (!doc[CONFIG_GRAVITY_FORMULA].isNull())
     setGravityFormula(doc[CONFIG_GRAVITY_FORMULA]);
   if (!doc[CONFIG_GRAVITY_TEMP_ADJ].isNull())
@@ -149,6 +156,7 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
         doc[CONFIG_FORMULA_CALIBRATION_TEMP].as<float>());
   if (!doc[CONFIG_IGNORE_LOW_ANGLES].isNull())
     setIgnoreLowAngles(doc[CONFIG_IGNORE_LOW_ANGLES].as<bool>());
+#if !defined(ESP8266)
   if (!doc[CONFIG_BLE_FORMAT].isNull())
     setGravitymonBleFormat(doc[CONFIG_BLE_FORMAT].as<int>());
   if (!doc[CONFIG_SEND_BLE_WITHOUT_MEASUREMENT].isNull())
@@ -157,10 +165,15 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
   else if (!doc[CONFIG_ALWAYS_SEND_BLE_LEGACY].isNull())
     setSendBleWithoutMeasurement(
         doc[CONFIG_ALWAYS_SEND_BLE_LEGACY].as<bool>());
+#endif
   if (!doc[CONFIG_BATTERY_SAVING].isNull())
     setBatterySaving(doc[CONFIG_BATTERY_SAVING].as<bool>());
+  if (!doc[CONFIG_DISABLE_LED_GRAVITY].isNull())
+    setDisableLedGravity(doc[CONFIG_DISABLE_LED_GRAVITY].as<bool>());
+#if !defined(ESP8266)
   if (!doc[CONFIG_CHARGING_PIN_ENABLED].isNull())
     setPinChargingMode(doc[CONFIG_CHARGING_PIN_ENABLED].as<bool>());
+#endif
   if (!doc[CONFIG_REGISTERED].isNull())
     setRegistered(doc[CONFIG_REGISTERED].as<bool>());
 }
@@ -202,7 +215,9 @@ void GravitymonConfig::migrateSettings() {
     if (k != "formula_calculation_data") obj2[k] = obj[kv.key().c_str()];
   }
 
+#if !defined(ESP8266)
   obj2[CONFIG_BLE_TILT_COLOR] = obj["ble"];
+#endif
 
   JsonArray fdArray = obj2[CONFIG_FORMULA_DATA].to<JsonArray>();
   for (int i = 0; i < FORMULA_DATA_SIZE; i++) {

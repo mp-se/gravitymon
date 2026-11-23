@@ -195,6 +195,8 @@
     "charging_pin_help": "Si activé, l'appareil passera en veille lorsque la puissance de charge dépasse 2V sur la broche définie et se réveillera en cas de perte de puissance.",
     "battery_saving_label": "Économie de batterie",
     "battery_saving_help": "Lorsqu'actif, l'intervalle de veille sera changé à 1 heure lorsque la batterie descend sous 20% (3,73V)",
+    "disable_led_gravity_label": "Désactiver la LED en mode gravity",
+    "disable_led_gravity_help": "Lorsqu'actif, la LED n'est pas allumée en mode gravity (mesure), ce qui économise la batterie. La LED reste utilisée en mode configuration et en mode configuration wifi.",
     "ds18b20_label": "Résolution DS18B20",
     "ds18b20_help": "Résolution lors de la lecture du capteur de température DS18B20, une résolution plus élevée offre une meilleure précision mais prend plus de temps à traiter et réduit l'autonomie de la batterie",
     "temp_adjustment_label": "Ajustement de température",

@@ -195,6 +195,8 @@
     "charging_pin_help": "启用后，当定义引脚上的充电功率超过 2V 时设备将进入休眠，电源丢失时唤醒。",
     "battery_saving_label": "省电模式",
     "battery_saving_help": "启用后，当电池低于 20%（3.73V）时休眠间隔将改为 1 小时",
+    "disable_led_gravity_label": "在 gravity 模式下禁用 LED",
+    "disable_led_gravity_help": "启用后，在 gravity（测量）模式下不会点亮 LED，以节省电量。在配置模式和 wifi 设置模式下仍会使用 LED。",
     "ds18b20_label": "DS18B20 分辨率",
     "ds18b20_help": "读取 DS18B20 温度传感器时的分辨率，分辨率越高精度越好但处理时间更长且降低电池寿命",
     "temp_adjustment_label": "温度调整",

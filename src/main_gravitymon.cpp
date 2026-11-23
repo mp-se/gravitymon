@@ -166,8 +166,6 @@ void setup() {
   PERF_BEGIN("main-setup");
   runtimeMillis = millis();
 
-  ledOn(LedColor::WHITE);
-
   // Main startup
   Log.notice(F("Main: Started setup for %s." CR), myConfig.getID());
   printBuildOptions();
@@ -185,6 +183,9 @@ void setup() {
   myConfig.migrateHwSettings();
   myConfig.loadFile();
   PERF_END("main-config-load");
+
+  if (!myConfig.isDisableLedGravity())
+    ledOn(LedColor::WHITE);
 
   // For restoring ispindel backup to test migration
   // LittleFS.rename("/ispindel.json", "/config.json");
@@ -321,8 +322,10 @@ void setup() {
 
     default:
       // We cant use LED on ESP32C3 since that pin is connected to GYRO
-      ledOn(
-          LedColor::GREEN);  // Green or fast flashing to indicate gravity mode
+      if (!myConfig.isDisableLedGravity()) {
+        ledOn(LedColor::GREEN);  // Green or fast flashing to indicate gravity
+                                 // mode
+      }
       break;
   }
 

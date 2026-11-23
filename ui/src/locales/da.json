@@ -195,6 +195,8 @@
     "charging_pin_help": "Hvis aktiveret, går enheden i dvale, når opladningseffekten overstiger 2V på det definerede ben, og vågner, når strømmen forsvinder.",
     "battery_saving_label": "Batteribesparelse",
     "battery_saving_help": "Når aktiv ændres dvaleintervallet til 1 time, når batteriet falder under 20% (3,73V)",
+    "disable_led_gravity_label": "Deaktiver LED i gravity-tilstand",
+    "disable_led_gravity_help": "Når aktiv tændes LED'en ikke i gravity-tilstand (måletilstand), hvilket sparer batteri. LED'en bruges stadig i konfigurations- og wifi-opsætningstilstand.",
     "ds18b20_label": "DS18B20-opløsning",
     "ds18b20_help": "Opløsning ved aflæsning af DS18B20-temperatursensoren, højere opløsning giver bedre nøjagtighed, men tager længere tid at behandle og reducerer batterilevetiden",
     "temp_adjustment_label": "Temperaturjustering",

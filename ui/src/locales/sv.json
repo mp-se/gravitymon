@@ -195,6 +195,8 @@
     "charging_pin_help": "Om aktiverad går enheten in i vila när laddningseffekten överstiger 2V på den definierade pinnen och vaknar när strömmen försvinner.",
     "battery_saving_label": "Batterisparläge",
     "battery_saving_help": "När aktiv ändras vilointervallet till 1 timme när batteriet sjunker under 20% (3.73V)",
+    "disable_led_gravity_label": "Stäng av LED i gravity-läge",
+    "disable_led_gravity_help": "När aktiv tänds inte LED under gravity-läge (mätläge), vilket sparar batteri. LED används fortfarande i konfigurations- och wifi-setup-läge.",
     "ds18b20_label": "DS18B20-upplösning",
     "ds18b20_help": "Upplösning vid avläsning av DS18B20-temperatursensorn, högre upplösning ger bättre noggrannhet men tar längre tid att bearbeta och minskar batteritiden",
     "temp_adjustment_label": "Temperaturjustering",

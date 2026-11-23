@@ -37,6 +37,7 @@ export const mockConfigState = {
   gyro_swap_xy: false,
   gyro_filter: false,
   battery_saving: false,
+  disable_led_gravity: false,
   tempsensor_resolution: 0,
   temp_adjustment_value: 0,
   charging_pin_enabled: false,

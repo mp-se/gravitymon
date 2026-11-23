@@ -195,6 +195,8 @@
     "charging_pin_help": "Se abilitato, il dispositivo entrerà in sospensione quando la potenza di ricarica supera 2V sul pin definito e si riattiverà quando l'alimentazione viene persa.",
     "battery_saving_label": "Risparmio batteria",
     "battery_saving_help": "Quando attivo, l'intervallo di sospensione verrà cambiato a 1 ora quando la batteria scende sotto il 20% (3,73V)",
+    "disable_led_gravity_label": "Disattiva LED in modalità gravity",
+    "disable_led_gravity_help": "Quando attivo, il LED non viene acceso in modalità gravity (misurazione), risparmiando batteria. Il LED continua a essere usato in modalità configurazione e configurazione wifi.",
     "ds18b20_label": "Risoluzione DS18B20",
     "ds18b20_help": "Risoluzione durante la lettura del sensore di temperatura DS18B20, una risoluzione più alta offre migliore precisione ma richiede più tempo di elaborazione e riduce la durata della batteria",
     "temp_adjustment_label": "Regolazione temperatura",

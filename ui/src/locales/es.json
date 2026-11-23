@@ -195,6 +195,8 @@
     "charging_pin_help": "Si está habilitado, el dispositivo entrará en reposo cuando la energía de carga exceda 2V en el pin definido y se despertará cuando se pierda la energía.",
     "battery_saving_label": "Ahorro de batería",
     "battery_saving_help": "Cuando está activo, el intervalo de reposo cambiará a 1 hora cuando la batería baje del 20% (3.73V)",
+    "disable_led_gravity_label": "Desactivar LED en modo gravity",
+    "disable_led_gravity_help": "Cuando está activo, el LED no se enciende en modo gravity (medición), lo que ahorra batería. El LED se sigue usando en el modo de configuración y de configuración wifi.",
     "ds18b20_label": "Resolución DS18B20",
     "ds18b20_help": "Resolución al leer el sensor de temperatura DS18B20, mayor resolución ofrece mejor precisión pero tarda más en procesar y reduce la vida de la batería",
     "temp_adjustment_label": "Ajuste de temperatura",

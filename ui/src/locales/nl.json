@@ -195,6 +195,8 @@
     "charging_pin_help": "Indien ingeschakeld gaat het apparaat in slaap wanneer het oplaadvermogen op de gedefinieerde pen 2V overschrijdt, en wordt het wakker wanneer de stroom wegvalt.",
     "battery_saving_label": "Batterijbesparing",
     "battery_saving_help": "Wanneer actief wordt het slaapinterval gewijzigd naar 1 uur wanneer de batterij onder 20% (3,73V) komt",
+    "disable_led_gravity_label": "LED uitschakelen in gravity-modus",
+    "disable_led_gravity_help": "Wanneer actief wordt de LED niet ingeschakeld in gravity-modus (meetmodus), wat batterij bespaart. De LED wordt nog steeds gebruikt in configuratie- en wifi-setupmodus.",
     "ds18b20_label": "DS18B20-resolutie",
     "ds18b20_help": "Resolutie bij het uitlezen van de DS18B20-temperatuursensor, hogere resolutie geeft betere nauwkeurigheid maar duurt langer en vermindert de batterijduur",
     "temp_adjustment_label": "Temperatuurcorrectie",

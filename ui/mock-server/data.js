@@ -19,6 +19,7 @@ export var configData = {
   gyro_swap_xy: false,
   gyro_filter: false,
   battery_saving: true,
+  disable_led_gravity: false,
   tempsensor_resolution: 9,
   temp_adjustment_value: 0,
   charging_pin_enabled: false,
