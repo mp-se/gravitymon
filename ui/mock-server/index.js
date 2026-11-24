@@ -162,8 +162,17 @@ app.get('/api/gyro', (req, res) => {
    * Note:           -
    * Return:         200 OK
    */
+  // Simulates a device on a table that is rolled to a new position every 5
+  // seconds. The sensor is mounted 2.5 degrees off and has a small bias.
+  const r = (Math.floor(Date.now() / 5000) * 70 % 360) * Math.PI / 180
+  const m = 2.5 * Math.PI / 180
+  const g = [Math.sin(r), 0, Math.cos(r)]
   var data = {
-    angle: 45
+    angle: 45,
+    valid: true,
+    ax: (g[0] + 0.03).toFixed(5),
+    ay: (g[1] * Math.cos(m) - g[2] * Math.sin(m) - 0.02).toFixed(5),
+    az: (g[1] * Math.sin(m) + g[2] * Math.cos(m) + 0.05).toFixed(5)
   }
 
   res.type('application/json')

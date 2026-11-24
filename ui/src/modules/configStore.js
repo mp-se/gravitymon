@@ -116,6 +116,7 @@ export const useConfigStore = defineStore('config', {
       formula_calibration_temp: 0, // C or F
       ignore_low_angles: false,
       gyro_calibration_data: [],
+      gyro_axis_calibration: { nx: 0, ny: 0, nz: 0, bx: 0, by: 0, bz: 0 },
       dark_mode: false
     }
   },
@@ -251,6 +252,8 @@ export const useConfigStore = defineStore('config', {
         this.ignore_low_angles = json.ignore_low_angles
         this.formula_calculation_data = json.formula_calculation_data
         this.gyro_calibration_data = json.gyro_calibration_data
+        // Not available in firmware before axis calibration was added
+        this.gyro_axis_calibration = json.gyro_axis_calibration || { nx: 0, ny: 0, nz: 0, bx: 0, by: 0, bz: 0 }
         this.dark_mode = json.dark_mode
 
         loadCallbacks.forEach((callback) => callback(json, this))

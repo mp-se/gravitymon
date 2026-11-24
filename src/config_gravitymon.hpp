@@ -34,6 +34,7 @@ constexpr auto CONFIG_GRAVITY_FORMULA = "gravity_formula";
 constexpr auto CONFIG_GRAVITY_UNIT = "gravity_unit";
 constexpr auto CONFIG_GRAVITY_TEMP_ADJ = "gravity_temp_adjustment";
 constexpr auto CONFIG_GYRO_CALIBRATION = "gyro_calibration_data";
+constexpr auto CONFIG_GYRO_AXIS_CALIBRATION = "gyro_axis_calibration";
 constexpr auto CONFIG_GYRO_TEMP = "gyro_temp";
 constexpr auto CONFIG_DISABLE_LED_GRAVITY = "disable_led_gravity";
 constexpr auto CONFIG_GYRO_FILTER = "gyro_filter";
@@ -85,6 +86,7 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
 #endif
 
   RawGyroData _gyroCalibration = {0, 0, 0, 0, 0, 0};
+  GyroAxisData _gyroAxisCalibration = {0, 0, 0, 0, 0, 0};
   RawFormulaData _formulaData = {
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
@@ -192,6 +194,19 @@ class GravitymonConfig : public BrewingConfig, public GyroConfigInterface {
   void setGyroCalibration(const RawGyroData& r) {
     _gyroCalibration = r;
     _saveNeeded = true;
+  }
+
+  const GyroAxisData& getGyroAxisCalibration() const {
+    return _gyroAxisCalibration;
+  }
+  void setGyroAxisCalibration(const GyroAxisData& a) {
+    _gyroAxisCalibration = a;
+    _saveNeeded = true;
+  }
+  bool hasGyroAxisCalibration() const {
+    // The axis is a unit vector when valid, all zeros means not calibrated
+    const GyroAxisData& a = _gyroAxisCalibration;
+    return (a.nx * a.nx + a.ny * a.ny + a.nz * a.nz) > 0.5;
   }
 
   bool hasGyroCalibration() const {

@@ -91,7 +91,29 @@ struct GyroResultData {
   bool valid;
   float angle;
   float temp;
+  float ax;  // Acceleration in g, used for the axis calibration
+  float ay;
+  float az;
 };
+
+// Axis calibration. n is the long axis of the case in sensor coordinates and b
+// is the accelerometer bias in g. Both are estimated by rolling the device on
+// a table, see ui/src/modules/gyroAxis.js. With this data the tilt is
+// calculated for the case and not for the sensor so it will not depend on how
+// the sensor is mounted or how the device is rolled.
+struct GyroAxisData {
+  float nx;
+  float ny;
+  float nz;
+  float bx;
+  float by;
+  float bz;
+};
+
+// Calculate the tilt in degrees from acceleration in g. If axis is null the
+// sensor Y axis (or X if swapXY is set) is regarded as the axis of the device.
+float calculateTiltAngle(float ax, float ay, float az, bool swapXY,
+                         const GyroAxisData* axis);
 
 // Represents the mode of the gyro
 enum GyroMode {
@@ -111,6 +133,9 @@ class GyroConfigInterface {
   virtual bool isGyroSwapXY() const = 0;
   virtual int getGyroSensorMovingThreashold() const = 0;
   virtual GyroType getGyroType() const = 0;
+  virtual const GyroAxisData& getGyroAxisCalibration() const = 0;
+  virtual void setGyroAxisCalibration(const GyroAxisData& a) = 0;
+  virtual bool hasGyroAxisCalibration() const = 0;
 
   // Methods for ICM42670p
   virtual int getSleepInterval() const = 0;
@@ -166,6 +191,7 @@ class GyroSensor : public SecondayTempSensorInterface {
   float _angle = 0;
   float _filteredAngle = 0;
   float _temp = 0;
+  float _ax = 0, _ay = 0, _az = 0;
   float _initialSensorTemp = NAN;
   bool _valid = false;
   GyroMode _currentMode = GyroMode::GYRO_UNCONFIGURED;
@@ -201,6 +227,9 @@ class GyroSensor : public SecondayTempSensorInterface {
   const RawGyroData& getLastGyroData() const { return _lastGyroData; }
   float getAngle() const { return _angle; }
   float getFilteredAngle() const { return _filteredAngle; }
+  float getAccelX() const { return _ax; }
+  float getAccelY() const { return _ay; }
+  float getAccelZ() const { return _az; }
   float getSensorTempC() const { return _temp; }
   float getInitialSensorTempC() const { return _initialSensorTemp; }
   bool isConnected() const {

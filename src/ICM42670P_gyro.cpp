@@ -302,6 +302,9 @@ GyroResultData ICM42670pGyro::readSensor(GyroMode mode) {
               az = (static_cast<float>(average.az)) / 16384;
         _result.valid = true;
         _result.angle = calculateAngle(ax, ay, az);
+        _result.ax = ax;
+        _result.ay = ay;
+        _result.az = az;
         _result.temp = (static_cast<float>(average.temp)) / count / 2 + 25;
         Log.notice(F("ICM : angle=%F, temp=%F" CR), _result.angle,
                    _result.temp);
@@ -368,6 +371,9 @@ GyroResultData ICM42670pGyro::readSensor(GyroMode mode) {
             az = (static_cast<float>(raw.az)) / 16384;
 
       _result.angle = calculateAngle(ax, ay, az);
+      _result.ax = ax;
+      _result.ay = ay;
+      _result.az = az;
     }
     _result.temp = (static_cast<float>(raw.temp)) / 340 + 36.53;
   }

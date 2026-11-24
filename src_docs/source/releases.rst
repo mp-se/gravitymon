@@ -3,6 +3,14 @@
 Releases 
 ########
 
+Unreleased
+==========
+
+New features
+++++++++++++
+- Added axis calibration for the gyro. By capturing a few positions while rolling the device on a table the real axis of the case and the accelerometer bias is calculated, the angle will then be the same regardless of how the device is rolled or how the gyro is mounted. The gravity formula needs to be recreated after doing this calibration.
+- The /api/gyro endpoint now also returns the acceleration (ax, ay, az in g) and if the reading is valid.
+
 v2.6.0
 ======
 
