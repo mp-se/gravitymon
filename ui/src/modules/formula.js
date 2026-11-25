@@ -37,7 +37,9 @@ export function calculate(formula, tilt) {
     let f = applyValuesToFormula(formula, tilt)
 
     try {
-      let g = eval(f)
+      // Indirect eval, the expression only contains numbers. A direct eval stops
+      // the minifier from shortening the names in the bundle.
+      let g = (0, eval)(f)
       return config.gravity_unit === 'P' ? gravityToPlato(g) : g
     } catch (err) {
       logError('formula.evaluateFormula()', err)
@@ -65,7 +67,9 @@ export function validateFormula(formula) {
     let f = applyValuesToFormula(formula, d.a)
 
     try {
-      let g = eval(f)
+      // Indirect eval, the expression only contains numbers. A direct eval stops
+      // the minifier from shortening the names in the bundle.
+      let g = (0, eval)(f)
       if (config.gravity_unit === 'P') g = gravityToPlato(g)
 
       if (Math.abs(g - d.g) > config.formula_max_deviation) {
