@@ -3,19 +3,13 @@
 Releases 
 ########
 
-Unreleased
-==========
-
-New features
-++++++++++++
-- Added axis calibration for the gyro. By capturing a few positions while rolling the device on a table the real axis of the case and the accelerometer bias is calculated, the angle will then be the same regardless of how the device is rolled or how the gyro is mounted. The gravity formula needs to be recreated after doing this calibration.
-- The /api/gyro endpoint now also returns the acceleration (ax, ay, az in g) and if the reading is valid.
-
 v2.6.0
 ======
 
 New features
 ++++++++++++
+- Added axis calibration for the gyro. By capturing a few positions while rolling the device on a table the real axis of the case and the accelerometer bias is calculated, the angle will then be the same regardless of how the device is rolled or how the gyro is mounted. The gravity formula needs to be recreated after doing this calibration.
+- The /api/gyro endpoint now also returns the acceleration (ax, ay, az in g) and if the reading is valid.
 - Merged the UI project into the main project to avoid having two separate repositories. The UI is now built into the firmware and will be served from the device itself. This simplifies the build process and ensures that the UI is always in sync with the firmware version.
 - Added language support for English, Swedish, Spanish, German, French, Dutch, Norwegian, Danish, Polish, Portuguese, Italian and Chinese. The language can be selected in the configuration page and will be saved in the device settings.
 - Added flag to force the device to send BLE data even when no valid readings are found. This is useful for testing BLE functionality and can be enabled in the configuration page.
