@@ -262,7 +262,9 @@ void GravitymonConfig::migrateSettings() {
   obj2.clear();
 
   if (saveFile()) {
-    LittleFS.remove(CFG_FILENAME_OLD);
+    // Keep the old file as .bak, the migration is lossy
+    LittleFS.remove("/gravitymon.json.bak");
+    LittleFS.rename(CFG_FILENAME_OLD, "/gravitymon.json.bak");
   }
 
   Log.notice(F("CFG : Migrated old config /gravitymon.json." CR));
@@ -305,6 +307,13 @@ void GravitymonConfig::migrateHwSettings() {
     obj2[k] = obj[kv.key().c_str()];
   }
 
+  // Push intervals are stored in the hardware file in the old format
+  obj2[CONFIG_PUSH_INTERVAL_POST] = obj["int-http1"];
+  obj2[CONFIG_PUSH_INTERVAL_POST2] = obj["int-http2"];
+  obj2[CONFIG_PUSH_INTERVAL_GET] = obj["int-http3"];
+  obj2[CONFIG_PUSH_INTERVAL_INFLUX] = obj["int-influx"];
+  obj2[CONFIG_PUSH_INTERVAL_MQTT] = obj["int-mqtt"];
+
   obj.clear();
 #if LOG_LEVEL == 6
   serializeJson(obj2, EspSerial);
@@ -314,7 +323,8 @@ void GravitymonConfig::migrateHwSettings() {
   obj2.clear();
 
   if (saveFile()) {
-    LittleFS.remove(CFG_FILENAME_HW_OLD);
+    LittleFS.remove("/hardware.json.bak");
+    LittleFS.rename(CFG_FILENAME_HW_OLD, "/hardware.json.bak");
   }
 
   Log.notice(F("CFG : Migrated old hw config /hardware.json." CR));

@@ -127,6 +127,8 @@ void BrewingWebServer::webHandleFactoryDefaults(
   LittleFS.remove(ERR_FILENAME);
 
 #if defined(GRAVITYMON) || defined(GATEWAY)
+  LittleFS.remove("/gravitymon.json.bak");  // Backups from config migration
+  LittleFS.remove("/hardware.json.bak");
   LittleFS.remove(TPL_GRAVITY_FNAME_POST);
   LittleFS.remove(TPL_GRAVITY_FNAME_POST2);
   LittleFS.remove(TPL_GRAVITY_FNAME_GET);
