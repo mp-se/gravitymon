@@ -157,7 +157,7 @@ GyroResultData MPU6050Gyro::readSensor(GyroMode mode) {
   Log.verbose(F("GYRO: Max    \t%d\t%d\t%d\t%d\t%d\t%d\t%d." CR), max.ax,
               max.ay, max.az, max.gx, max.gy, max.gz, max.temp);
 #endif
-  GyroResultData result;
+  GyroResultData result = {false, 0, 0, 0, 0, 0};
   result.valid = !isSensorMoving(raw.gx, raw.gy, raw.gz);
 
   if (result.valid) {
@@ -171,6 +171,9 @@ GyroResultData MPU6050Gyro::readSensor(GyroMode mode) {
           az = (static_cast<float>(raw.az)) / 16384;
 
     result.angle = calculateAngle(ax, ay, az);
+    result.ax = ax;
+    result.ay = ay;
+    result.az = az;
   }
 
   result.temp = (static_cast<float>(raw.temp)) / 340 + 36.53;
@@ -380,6 +383,9 @@ bool MPU6050Gyro::calibrateSensor() {
   _calibrationOffset.gz = _accelgyro.getZGyroOffset();
 
   _gyroConfig->setGyroCalibration(_calibrationOffset);
+  // The axis calibration includes the remaining bias for the offsets that was
+  // active when it was created, so its no longer valid.
+  _gyroConfig->setGyroAxisCalibration({0, 0, 0, 0, 0, 0});
   _gyroConfig->saveFile();
   return true;
 }

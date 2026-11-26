@@ -146,6 +146,9 @@ bool GyroSensor::read() {
   if (resultData.valid) {
     _angle = resultData.angle;
     _temp = resultData.temp;
+    _ax = resultData.ax;
+    _ay = resultData.ay;
+    _az = resultData.az;
 
 #if defined(SIMULATE_ANGLE)
     _angle = SIMULATE_ANGLE;
@@ -169,24 +172,44 @@ void GyroSensor::enterSleep() {
   if (_impl) _currentMode = _impl->enterSleep(_currentMode);
 }
 
+float calculateTiltAngle(float ax, float ay, float az, bool swapXY,
+                         const GyroAxisData* axis) {
+  if (axis) {
+    // Remove the bias and measure the angle between gravity and the long axis
+    // of the case.
+    ax -= axis->bx;
+    ay -= axis->by;
+    az -= axis->bz;
+
+    float len = sqrt(ax * ax + ay * ay + az * az);
+    if (len == 0) return 0;
+
+    float d = fabs(ax * axis->nx + ay * axis->ny + az * axis->nz) / len;
+    return acos(d > 1 ? 1 : d) * 180.0 / PI;
+  }
+
+  // Source: https://www.nxp.com/docs/en/application-note/AN3461.pdf
+  float len = sqrt(ax * ax + ay * ay + az * az);
+  if (len == 0) return 0;
+
+  return acos(fabs(swapXY ? ax : ay) / len) * 180.0 / PI;
+}
+
 float GyroSensorInterface::calculateAngle(float ax, float ay, float az) {
 #if LOG_LEVEL == 6
   Log.verbose(F("GYRO: Calculating the angle." CR));
 #endif
 
-  // Source: https://www.nxp.com/docs/en/application-note/AN3461.pdf
-  float vY = (acos(abs(ay) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 / PI);
-  // float vZ = (acos(abs(az) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 /
-  // PI);
-  float vX = (acos(abs(ax) / sqrt(ax * ax + ay * ay + az * az)) * 180.0 / PI);
+  float v = calculateTiltAngle(ax, ay, az, _gyroConfig->isGyroSwapXY(),
+                               _gyroConfig->hasGyroAxisCalibration()
+                                   ? &_gyroConfig->getGyroAxisCalibration()
+                                   : nullptr);
 
 #if LOG_LEVEL == 6
-  // Log.notice(F("GYRO: angleX= %F." CR), vX);
-  Log.notice(F("GYRO: angleY= %F." CR), vY);
-  // Log.notice(F("GYRO: angleZ= %F." CR), vZ);
+  Log.notice(F("GYRO: angle= %F." CR), v);
 #endif
 
-  return _gyroConfig->isGyroSwapXY() ? vX : vY;
+  return v;
 }
 
 bool GyroSensorInterface::isSensorMoving(int16_t gx, int16_t gy, int16_t gz) {

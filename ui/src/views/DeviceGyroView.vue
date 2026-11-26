@@ -174,6 +174,8 @@
         </div>
       </div>
     </form>
+
+    <GyroAxisCalibrationFragment v-if="config.gyro_type == 1 || config.gyro_type == 2" />
   </div>
 </template>
 
@@ -181,6 +183,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { isGyroCalibrated } from '@/modules/utils'
+import GyroAxisCalibrationFragment from '@/fragments/GyroAxisCalibrationFragment.vue'
 import { validateCurrentForm } from '@mp-se/espframework-ui-components'
 import { global, config, status } from '@/modules/pinia'
 import * as badge from '@/modules/badge'
@@ -243,6 +246,8 @@ const clearCalibration = async () => {
   config.gyro_calibration_data.gx = 0
   config.gyro_calibration_data.gy = 0
   config.gyro_calibration_data.gz = 0
+  // The axis calibration depends on the offsets so its no longer valid
+  config.gyro_axis_calibration = { nx: 0, ny: 0, nz: 0, bx: 0, by: 0, bz: 0 }
   await config.saveAll()
 }
 

@@ -53,6 +53,14 @@ void GravitymonConfig::createJson(JsonObject& doc) const {
   cal["gy"] = _gyroCalibration.gy;
   cal["gz"] = _gyroCalibration.gz;
 
+  JsonObject axis = doc[CONFIG_GYRO_AXIS_CALIBRATION].to<JsonObject>();
+  axis["nx"] = serialized(String(_gyroAxisCalibration.nx, 5));
+  axis["ny"] = serialized(String(_gyroAxisCalibration.ny, 5));
+  axis["nz"] = serialized(String(_gyroAxisCalibration.nz, 5));
+  axis["bx"] = serialized(String(_gyroAxisCalibration.bx, 5));
+  axis["by"] = serialized(String(_gyroAxisCalibration.by, 5));
+  axis["bz"] = serialized(String(_gyroAxisCalibration.bz, 5));
+
   JsonArray fdArray = doc[CONFIG_FORMULA_DATA].to<JsonArray>();
   for (int i = 0; i < FORMULA_DATA_SIZE; i++) {
     fdArray[i]["a"] = serialized(String(_formulaData.a[i], DECIMALS_TILT));
@@ -120,6 +128,15 @@ void GravitymonConfig::parseJson(JsonObject& doc) {
     _gyroCalibration.gy = doc[CONFIG_GYRO_CALIBRATION]["gy"];
   if (!doc[CONFIG_GYRO_CALIBRATION]["gz"].isNull())
     _gyroCalibration.gz = doc[CONFIG_GYRO_CALIBRATION]["gz"];
+
+  // Axis calibration is only accepted as a complete set
+  JsonVariantConst axis = doc[CONFIG_GYRO_AXIS_CALIBRATION];
+  if (!axis["nx"].isNull() && !axis["ny"].isNull() && !axis["nz"].isNull() &&
+      !axis["bx"].isNull() && !axis["by"].isNull() && !axis["bz"].isNull()) {
+    _gyroAxisCalibration = {axis["nx"].as<float>(), axis["ny"].as<float>(),
+                            axis["nz"].as<float>(), axis["bx"].as<float>(),
+                            axis["by"].as<float>(), axis["bz"].as<float>()};
+  }
 
   if (!doc[CONFIG_FORMULA_DATA].isNull()) {
     JsonArray array = doc[CONFIG_FORMULA_DATA].as<JsonArray>();

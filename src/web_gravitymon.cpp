@@ -256,6 +256,13 @@ void GravitymonWebServer::webHandleGyro(AsyncWebServerRequest *request) {
 
   obj[PARAM_ANGLE] = serialized(String(angle, DECIMALS_TILT));
 
+  // Acceleration in g, used by the UI to do the axis calibration. Only valid
+  // when the device is not moving.
+  obj["valid"] = myGyro.hasValue();
+  obj["ax"] = serialized(String(myGyro.getAccelX(), 5));
+  obj["ay"] = serialized(String(myGyro.getAccelY(), 5));
+  obj["az"] = serialized(String(myGyro.getAccelZ(), 5));
+
   response->setLength();
   request->send(response);
 }

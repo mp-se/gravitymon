@@ -161,6 +161,14 @@ gravity_unit: 'G',
     gy: 0,
     gz: 0
   },
+  gyro_axis_calibration: {
+    nx: 0,
+    ny: 0,
+    nz: 0,
+    bx: 0,
+    by: 0,
+    bz: 0
+  },
   dark_mode: false,
 }
 

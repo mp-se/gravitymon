@@ -226,6 +226,30 @@ or 15 seconds for the gyro.
 
   These are calibration data for the gyro. Place the device flat on a table and press the button to save the default orientation values. Without this calibration we cannot calculate the correct angle/tilt.
 
+* **Axis calibration:**
+
+  The gyro is never mounted perfectly straight inside the case, and the device is round so there is no defined
+  position when it is placed on a table. The result is that the angle depends on how the device is rolled, a
+  sensor that is mounted 2.5 degrees off will show angles that differ 5 degrees between two positions that are
+  half a turn apart. The axis calibration finds the long axis of the case as seen by the gyro and the bias
+  of the accelerometer, the angle is then calculated for the case and not for the gyro so it will be
+  the same regardless of how the device is rolled. This is optional and works with all gyro types.
+
+  1. For the MPU-6050/6500, do the normal gyro calibration first. Running that again will remove the axis calibration.
+  2. Place the device on a flat and level table, wait until it is still and press **Capture position**.
+  3. Roll the device about a quarter of a turn around its long axis and capture again. Repeat until there are at
+     least 4 positions that cover a full turn (3 is the minimum).
+  4. Optional: Turn the device end for end so it points in the opposite direction and use **Capture end for end** for
+     a few more positions. A table that is not level will add its slope as a constant offset to the angle, with these
+     positions the slope is measured and removed.
+  5. The table shows the angle for each position with and without the calibration. The variation in angle should be
+     close to zero after the calibration. Press **Save axis calibration**.
+
+  .. note::
+
+    The axis calibration will change the angles that the device reports, so the gravity formula needs to be created
+    again after this has been done or changed.
+
 Device - WIFI
 +++++++++++++
 

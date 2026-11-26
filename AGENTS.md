@@ -81,7 +81,7 @@ Update the device IP in the test script before running.
 The web UI is a pre-built SPA. Compressed assets live in `html/` and are embedded into the firmware binary via `board_build.embed_txtfiles`. To update the UI, run `npm run build` in `ui/`, then copy `ui/dist/assets/index.js.gz` → `html/app.js.gz` and `ui/dist/assets/style.css.gz` → `html/app.css.gz`. This is done manually when the UI changes, and by the CI workflow; the firmware build does not copy it.
 
 ### Build Scripts (`script/`)
-Python scripts run as PlatformIO extra_scripts: `board.py` sets board-specific flags, `copy_firmware.py` copies built binaries to `bin/`, `create_versionjson.py` writes `bin/version.json`. `git_rev.py` injects the git revision as a build flag but is currently disabled in `platformio.ini` (`CFG_GITREV` is hardcoded).
+Python scripts run as PlatformIO extra_scripts: `board.py` sets board-specific flags, `check_size.py` fails the build if `firmware.bin` is larger than the app partition (PlatformIO's own size check is based on the ELF sections and does not catch this), `copy_firmware.py` copies built binaries to `bin/`, `create_versionjson.py` writes `bin/version.json`. `git_rev.py` injects the git revision as a build flag but is currently disabled in `platformio.ini` (`CFG_GITREV` is hardcoded).
 
 ### CI (`.github/workflows/pio-build.yaml`)
 Builds the UI, then all release targets and the `gravity-hw-*` hardware test targets (not `gravity-unit32`; unit tests need a device). On push to `dev`/`cuckoo`/`language` it commits the updated `bin/` and `html/`; on pull requests it only verifies that the build works.
