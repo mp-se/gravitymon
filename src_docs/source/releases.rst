@@ -25,6 +25,9 @@ Bugs fixed
 ++++++++++
 - Migration of the old v1 configuration (``/gravitymon.json``) and hardware settings (``/hardware.json``) lost all migrated settings, including the gyro calibration, formula data and push targets, because the migrated values were written to an empty JSON object (ArduinoJson 7 incompatibility). The device then started with default settings and the old file was removed.
 - The migration is now skipped if a current configuration file (``/gravitymon2.json``) already exists, so an old v1 file (for example after a downgrade) can no longer overwrite newer settings. The old file is left untouched.
+- After a successful migration the old files are now renamed to ``/gravitymon.json.bak`` and ``/hardware.json.bak`` instead of being deleted, so the original settings can be downloaded and checked from the file list in the UI. The backups are removed by a factory reset.
+- The confirmation dialogs in the UI (for example when deleting a file) did not open since the Bootstrap script was replaced with a smaller version, which meant that no delete command was sent. The dialogs now work again.
+- The help texts on the input fields in the UI were not shown, they are now displayed as tooltips.
 
 v2.5.0
 ======
